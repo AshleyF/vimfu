@@ -52,6 +52,9 @@ type Motion =
     | BackSectionStart
     | SectionEnd
     | BackSectionEnd
+    | StartOfNextLine
+    | StartOfPreviousLine
+    | MatchingBraces
 
 type Action =
     | Launch
@@ -92,6 +95,7 @@ type Action =
     | QuitWithoutSaving
     | SetFileType of string
     | Find of char
+    | Till of char
     | JoinLine
     | Key of string * string * string
     | Move of Motion
@@ -102,7 +106,7 @@ let rec edit = function
     | Launch -> KeyCast.set "Starting" "One moment..."; key "^({ESC}E)"; pause 500; key "nvim"; pause 500; key "{ENTER}"; pause 5000; key ":file Fu{ENTER}:{ESC}"; pause 4000
     | Start message -> KeyCast.set "VimFu" message; pause 800
     | Finish -> pause 800; KeyCast.set "Finished" "Cut!"; key "{ESC}:q!{ENTER}"
-    | Setup lines -> key ":set noautoindent{ENTER}{ESC}i"; lines |> Seq.iter (fun line -> key line; key "{ENTER}"); key "{ESC}ddgg0:set autoindent{ENTER}:{ESC}"
+    | Setup lines -> key ":set noautoindent{ENTER}{ESC}i"; lines |> Seq.iter (fun line -> key (line.Replace("{", "__LEFT_CURLY__").Replace("}", "__RIGHT_CURLY__").Replace("+", "{+}").Replace("^", "{^}").Replace("%", "{%}").Replace("(", "{(}").Replace(")", "{)}").Replace("__LEFT_CURLY__", "{{}").Replace("__RIGHT_CURLY__", "{}}")); key "{ENTER}"); key "{ESC}ddgg0:set autoindent{ENTER}:{ESC}"
     | Esc -> KeyCast.set "⎋" "normal mode"; key "{ESC}"
     | Text text -> KeyCast.set "⌨" ""; typing text
     | Normal (text, caption) -> KeyCast.set text caption; typing text
@@ -140,6 +144,9 @@ let rec edit = function
     | Move BackSectionStart -> KeyCast.set "[[" "prev section start"; key "{[}{[}"
     | Move SectionEnd -> KeyCast.set "][" "next section end"; key "{]}{[}"
     | Move BackSectionEnd -> KeyCast.set "[]" "prev section end"; key "{[}{]}"
+    | Move StartOfNextLine -> KeyCast.set "⇧+" "start of next line"; key "{+}"
+    | Move StartOfPreviousLine -> KeyCast.set "-" "start of prev line"; key "-"
+    | Move MatchingBraces -> KeyCast.set "%" "matching"; key "{%}"
     | Repeat -> KeyCast.set "." "repeat"; key ".";
     | Undo -> KeyCast.set "u" "undo"; key "u"
     | OpenBelow -> KeyCast.set "o" "open below"; key "o"
@@ -165,6 +172,7 @@ let rec edit = function
     | QuitWithoutSaving -> KeyCast.set ":q!⏎" "quit without saving"; key ":q!{ENTER}"
     | SetFileType kind -> key $":set filetype={kind}"; key "{ENTER}:{ESC}"; pause 2000
     | Find c -> KeyCast.set $"f{shift c}" $"find '{c}'"; key $"f{c}"
+    | Till c -> KeyCast.set $"t{shift c}" $"till '{c}'"; key $"f{c}"
     | JoinLine -> KeyCast.set "⇧J" "join line"; key "J"
     | Key (cast, desc, k) -> KeyCast.set cast desc; key k
 

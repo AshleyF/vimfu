@@ -45,7 +45,7 @@ let tracey = // first ever test of the system
 
 let dontRepeat = // using dot
     [ Launch
-      Setup ["var foo = 1"; "var bar = 'a'"; "var foobar = foo {+} bar"]
+      Setup ["var foo = 1"; "var bar = 'a'"; "var foobar = foo + bar"]
       Start "Don't Repeat Yourself"
       Say "Let's say that we want to add semicolons after each line."
       SayWhile ("We could use dollar to move to the end of the first line.", Move EndOfLine)
@@ -144,7 +144,7 @@ let numbers = // numbering list with `g^a`
 
 let alignText = // aligning text with `:norm` commands
     [ Launch
-      Setup ["{{} first: \"Ash\","; "  last: \"Ford\","; "  height: 1.83,"; "  age: 50,"; "  eyes: \"blue\" {}}"]
+      Setup ["{ first: \"Ash\","; "  last: \"Ford\","; "  height: 1.83,"; "  age: 50,"; "  eyes: \"blue\" }"]
       SetFileType "javascript"
       Start "Align Text"
       Pause 2000
@@ -244,7 +244,7 @@ let basicMotions2 = // w b e ge
 
 let basicMotions3 = // W B E gE
     [ Launch
-      Setup [""; ""; "def fact{(}n{)}:"; "  if n == 0:"; "    return 1"; "  return n*fact{(}n-1{)}"; ""; "print{(}fact{(}7{)}{)}"]
+      Setup [""; ""; "def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"]
       Pause 10000
       SetFileType "python"
       Start "Basic Motions 3"
@@ -273,7 +273,7 @@ let basicMotions3 = // W B E gE
 
 let basicMotions4 = // $ ^ 0
     [ Launch
-      Setup [""; ""; "def fact{(}n{)}:"; "  if n == 0:"; "    return 1"; "  return n*fact{(}n-1{)}"; ""; "print{(}fact{(}7{)}{)}"]
+      Setup [""; ""; "def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"]
       Pause 10000
       SetFileType "python"
       Start "Basic Motions 4"
@@ -304,7 +304,7 @@ let basicMotions4 = // $ ^ 0
 
 let basicMotions5 = // H L M gg G
     [ Launch
-      Setup ["def fact{(}n{)}:"; "  if n == 0:"; "    return 1"; "  return n*fact{(}n-1{)}"; ""; "print{(}fact{(}7{)}{)}"; ""; "def fib{(}n{)}:"; "  if n <= 1:"; "    return n"; "  return fib{(}n-1{)} + fib{(}n-2{)}"; ""; "print{(}fib{(}7{)}{)}"]
+      Setup ["def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"; ""; "def fib(n):"; "  if n <= 1:"; "    return n"; "  return fib(n-1) +"; "    fib(n-2)"; ""; "print(fib(7))"]
       Pause 10000
       SetFileType "python"
       Start "Basic Motions 5"
@@ -348,7 +348,7 @@ let basicMotions5 = // H L M gg G
 
 let basicMotions6 = // ) ( } {
     [ Launch
-      Setup ["# It's a sentence.  And again!          And another         one... How          about this? Indeed!"; ""; "def fact{(}n{)}:"; "  if n == 0:"; "    return 1"; "  return n*fact{(}n-1{)}"; ""; "print{(}fact{(}7{)}{)}"; ""; "def fib{(}n{)}:"; "  if n <= 1:"; "    return n"; "  return fib{(}n-1{)} + fib{(}n-2{)}"; ""; "print{(}fib{(}7{)}{)}"]
+      Setup ["# It's a sentence.  And again!          And another         one... How          about this? Indeed!"; ""; "def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"; ""; "def fib(n):"; "  if n <= 1:"; "    return n"; "  return fib(n-1) +"; "    (n-2)"; ""; "print(fib(7))"]
       Pause 10000
       SetFileType "python"
       Start "Basic Motions 6"
@@ -372,7 +372,7 @@ let basicMotions6 = // ) ( } {
 
 let basicMotions7 = // ]] [[ ][ []
     [ Launch
-      Setup ["#include <stdio.h>"; ""; "int isEven{(}int n{)}"; "{{}"; "  return n {%} 2 == 0;"; "{}}"; ""; "void msg{(}char *m{)}"; "{{}"; "  printf{(}\"{%}s\\n\",m{)};"; "{}}"; ""; "int main{(}{)}"; "{{}"; "  if {(}!isEven{(}42{)}{)}"; "  {{}"; "    msg{(}\"Panic!\"{)};"; "  {}}"; "  return 0;"; "{}}"; ""]
+      Setup ["#include <stdio.h>"; ""; "int isEven(int n)"; "{"; "  return n % 2 == 0;"; "}"; ""; "void msg(char *m)"; "{"; "  printf(\"%s\\n\",m);"; "}"; ""; "int main()"; "{"; "  if (!isEven(42))"; "  {"; "    msg(\"Panic!\");"; "  }"; "  return 0;"; "}"; ""]
       Pause 10000
       Text ":set cursorline"
       Enter
@@ -400,10 +400,117 @@ let basicMotions7 = // ]] [[ ][ []
       SayWhile ("Combinations of pairs of brackets make navigation pretty quick.", Compound (200, [Move BackSectionStart; Move BackSectionStart; Move BackSectionStart; Move BackSectionStart; Move SectionEnd; Move SectionEnd; Move SectionEnd; Move SectionEnd; Move BackSectionEnd; Move BackSectionEnd; Move BackSectionEnd; Move BackSectionEnd; Move BackSectionEnd; Move SectionEnd; Move SectionEnd; Move SectionEnd; Move SectionEnd; Move SectionEnd]))
       Finish ]
 
-//    -=  \   ~!@  % &   _+  O"<> :" 
-//  a cd    i     opqrs u  xyz
-//  A CD    IJK   OPQRS U  XYZ
-//  
+let basicMotions8 = // + -
+    [ Launch
+      Setup ["def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"; ""; "def fib(n):"; "  if n <= 1:"; "    return n"; "  return fib(n-1) +"; "    fib(n-2)"; ""; "print(fib(7))"]
+      Pause 10000
+      SetFileType "python"
+      Start "Basic Motions 8"
+      SayWhile ("Let's say we're at the end of the first line and we want to move to the start of the next line.", Move EndOfLine)
+      Pause 800
+      SayWhile ("We could move down with J...", Move Down)
+      Pause 800
+      SayWhile ("... then to the first non-blank character with carrot.", Move StartOfLine)
+      Pause 800
+      SayWhile ("And again, down...", Move Down)
+      Pause 500
+      SayWhile ("... then start of line.", Move StartOfLine)
+      Pause 500
+      SayWhile ("Down...", Move Down)
+      Pause 500
+      SayWhile ("... start.", Move StartOfLine)
+      Pause 500
+      SayWhile ("And the same idea to move up to the start of each line.", Compound (800, [Move Up; Move StartOfLine; Move Up; Move StartOfLine; Move Up; Move StartOfLine]))
+      Pause 800
+      Say "This is pretty tedious and is common enough that there are single keys for this!"
+      Pause 800
+      Say "Plus and minus do exactly this."
+      Pause 800
+      SayWhile ("Plus to move down.", Compound (400, [Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; ]))
+      Pause 800
+      SayWhile ("And minus to move up.", Compound (400, [Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; ]))
+      Finish ]
+
+let matchingPairs = // %
+    [ Launch
+      Setup ["{ x = true"; "  y = [1; 2; 3]"; "  z = ((4, 2),"; "       \"life\")"; "} |> test"; ""; ""; ""]
+      Pause 10000
+      SetFileType "ocaml"
+      Start "Matching Pairs"
+      Say "It can be quite handy to quickly jump between matching pairs of braces and brackets."
+      Pause 800
+      SayWhile ("We can jump between these curly braces by pressing percent.", Compound(800, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces]))
+      Pause 800
+      SayWhile ("It works with square brackets too.", Move Down)
+      Pause 800
+      Say "Notice that we don't have to be on the first bracket for it to work."
+      Pause 800
+      Say "Pressing percent from here at the first column..."
+      Pause 800
+      SayWhile ("...finds the first bracket and jumps to it's pair at the end of the line.", Move MatchingBraces)
+      Pause 800
+      SayWhile ("The same is true when the cursor is inside the brackets.", Compound (0, [Move Left; Move Left; Move Left; Move Left]))
+      Pause 800
+      SayWhile ("Pressing percent finds the closing bracket.", Move MatchingBraces);
+      Pause 800
+      SayWhile ("From there, pressing percent jumps between the pairs.", Compound (800, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces]))
+      Pause 800
+      SayWhile ("Of course, it works with parenthesis as well.", Move Down)
+      Pause 800
+      Compound(800, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces])
+      Pause 800
+      SayWhile ("And works with nesting.", Move Right)
+      Compound(800, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces])
+      Say "Pretty handy!"
+      Finish ]
+
+let uselessUnderscore = // _
+    let underscore = Key ("⇧_", "", "_")
+    [ Launch
+      Setup ["{ first: \"Ash\","; "  last: \"Ford\","; "  height: 1.83,"; "  age: 50,"; "  eyes: \"blue\" }"]
+      Pause 10000
+      SetFileType "ocaml"
+      Start "Useless Underscore"
+      SayWhile ("The underscore key is virtually useless.", Compound (0, [Move WordEnd; Move Down]))
+      Pause 600
+      SayWhile ("When pressed, it does the same thing as the carrot key by moving to the first non-blank character of the current line.", Key ("⇧_", "start of line", "{^}"))
+      Pause 600
+      SayWhile ("One difference is that carrot doesn't use a count, but underscore does; moving down by n minus 1 lines.", Move BigWordEnd)
+      SayWhile ("Three underscore, moves down two lines.", Key ("3⇧_", "start of line", "{+}{+}"))
+      Pause 600
+      SayWhile("But we already have similar behavior with the plus key", Compound (0, [Move Up; Move Up; Move BigWordEnd]))
+      Pause 600
+      SayWhile ("Two plus also moves down 2 lines.", Key ("2⇧+", "start of next line", "{+}{+}"))
+      Pause 600
+      Say "So I don't see a use for underscore that isn't already covered by carrot and plus."
+      Pause 400
+      Say "We can't let a key go unused though!"
+      Pause 400
+      SayWhile ("So I personally map it...", Text ":map _ ")
+      Pause 400
+      SayWhile ("...to insert a space...", Text "i ")
+      SayWhile ("...and return to normal mode...", Text "<Esc>")
+      Say "You'd be surprised how handy this is!"
+      Pause 400
+      Enter
+      SayWhile ("For example, we can quickly align this while in normal mode.", Compound (100, [Move BigWord]))
+      Pause 500
+      Compound (200, [underscore; underscore; underscore])
+      Pause 800
+      Move Down
+      Pause 500
+      Compound (200, [underscore; underscore])
+      Pause 800
+      Compound (200, [Move Up; Move Up; Move Up])
+      Pause 500
+      Compound (200, [underscore; underscore])
+      Pause 800
+      Compound (200, [Move Up; Move Word])
+      Pause 500
+      underscore
+      Say "Much more useful now!"
+      Finish ]
+
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
 //  Basic Motions 3  W B E gE
@@ -411,8 +518,40 @@ let basicMotions7 = // ]] [[ ][ []
 //  Basic Motions 5  H L M gg G
 //  Basic Motions 6  ) ( } {
 //  Basic Motions 7  ]] [[ ][ []
-//  Mark m ' ` '' ``
-//  Find f F t T ; ,
-//  Search * # n N / ?
-//  Visual v V ^v
-//  Dot .
+//  Basic Motions 8  + -
+//  Matching  %
+
+//  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
+//  Underscore  _  (Just like carrot except with count)
+//  Mark  m ' ` '' ``
+//  Find  f F t T ; ,
+//  Search  * # n N / ?
+//  Visual  v V ^v o gv '< '>  (bad habit possibly)
+//  Case  ~ g~ gu gU  (combined with visual or motion)
+//  Join  J
+//  Undo  u U ^r
+//  Dot  .
+//  Insert  i a I A o O ⎋  (thick cursor, before/after)
+//  Delete/Yank/Put  d dd D y yy Y p P
+//  Change/Substitute  c cc C s S
+//  Delete char/Replace  x X r R
+//  Macros  q @ @@
+//  Indenting  < << > >>  :set
+//  Commands  :
+//  Registers  "
+//  Scrolling  ^e ^y zt zb zz
+//  Jumping  ^d ^u ^f ^b
+//  Quitting  ZZ ZQ
+//  Formatting  = ==
+//  Leader  \
+//  Search & Replace  :s/foo/bar & :%s/foo/bar
+//  Advanced 1  !
+//  Advanced 3  K
+//  Advanced 4  Q
+//  Line Wrap  :set nowrap  :set number  gh gj gk gl g$ g^ (display vs. real lines)
+//  Pattern * cw foo <esc> n . n . n .
+//  Text objects
+//  Surround?
+//  :noremap ^ _  :nmap _ i <esc>
+//  Unexpected motions: f{char} /foo
+//  Interacting with the shell:  :w !{cmd}  :r !{cmd}  !  !!  ^z
