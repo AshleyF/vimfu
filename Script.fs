@@ -3,8 +3,9 @@
 open System
 open System.Threading
 open System.Windows.Forms
-//open NeuralVoice // or SpeechSynth
-open SpeechSynth // or NeuralVoice
+open System.Runtime.InteropServices
+open NeuralVoice // or SpeechSynth
+//open SpeechSynth // or NeuralVoice
 
 let both f0 f1 =
     let t0 = new Thread(new ThreadStart(f0))
@@ -21,7 +22,7 @@ let key k = SendKeys.SendWait(k)
 let typing text =
     for k in text do
         string k |> key
-        pause 45
+        pause 50
 
 type Motion =
     | Up
@@ -78,6 +79,7 @@ type Action =
     | Insert
     | InsertBefore
     | Enter
+    | Tab
     | After
     | AfterLine
     | Repeat
@@ -110,19 +112,34 @@ type Action =
 
 let shift c = if Char.IsUpper(c) then $"⇧{c}" else c.ToString()
 
+[<DllImport("user32.dll", EntryPoint = "SetCursorPos")>]
+extern bool SetCursorPos(int X, int Y)
+
+[<DllImport("user32.dll", EntryPoint = "mouse_event")>]
+extern void MouseEvent(uint dwFlags, uint dx, uint dy, uint dwData, int dwExtraInfo)
+
+let focusHack() =
+    let MOUSEEVENTF_LEFTDOWN = 0x0002u
+    let MOUSEEVENTF_LEFTUP = 0x0004u
+    SetCursorPos(100, 1000) |> ignore
+    MouseEvent(MOUSEEVENTF_LEFTDOWN, 0u, 0u, 0u, 0)
+    MouseEvent(MOUSEEVENTF_LEFTUP, 0u, 0u, 0u, 0)
+
 let rec edit = function
-    | Launch -> KeyCast.set "Starting" "One moment..."; key "^({ESC}E)"; pause 500; key "nvim"; pause 500; key "{ENTER}"; pause 5000; key ":file Fu{ENTER}:{ESC}"; pause 4000
+    //| Launch -> KeyCast.set "Starting" "One moment..."; key "^({ESC}e)"; pause 5000; key "cmd"; pause 5000; key "{enter}"; pause 5000; key "^+{5}"; pause 5000; key "alias vi=nvim{enter}clear{enter}"
+    | Launch -> KeyCast.set "Starting" "One moment..."; focusHack(); key "^+{5}"; pause 5000; focusHack(); key "alias vi=nvim{enter}rm -rf {~}/.local/share/nvim/swap/{enter}clear{enter}vi{enter}:file Fu{ENTER}:{ESC}"
     | Start message -> KeyCast.set "VimFu" message; pause 800
     | Finish -> pause 800; KeyCast.set "Finished" "Cut!"; key "{ESC}:q!{ENTER}"
-    | Setup lines -> key ":set noautoindent{ENTER}{ESC}i"; lines |> Seq.iter (fun line -> key (line.Replace("{", "__LEFT_CURLY__").Replace("}", "__RIGHT_CURLY__").Replace("+", "{+}").Replace("^", "{^}").Replace("%", "{%}").Replace("(", "{(}").Replace(")", "{)}").Replace("__LEFT_CURLY__", "{{}").Replace("__RIGHT_CURLY__", "{}}")); key "{ENTER}"); key "{ESC}ddgg0:set autoindent{ENTER}:{ESC}"
+    | Setup lines -> key ":set noautoindent{ENTER}"; pause 300; key "{ESC}i"; lines |> Seq.iter (fun line -> key (line.Replace("{", "__LEFT_CURLY__").Replace("}", "__RIGHT_CURLY__").Replace("+", "{+}").Replace("^", "{^}").Replace("%", "{%}").Replace("(", "{(}").Replace(")", "{)}").Replace("__LEFT_CURLY__", "{{}").Replace("__RIGHT_CURLY__", "{}}")); key "{ENTER}"); key "{ESC}"; pause 1000; key "ddgg0:set autoindent{ENTER}:{ESC}"
     | Esc -> KeyCast.set "⎋" "normal mode"; key "{ESC}"
     | Text text -> KeyCast.set "⌨" ""; typing text
     | Normal (text, caption) -> KeyCast.set text caption; typing text
     | Pause ms -> pause ms
     | Insert -> KeyCast.set "i" "insert"; key "i"
-    | InsertBefore -> KeyCast.set "⇧I" "insert before"; key "I"
+    | InsertBefore -> KeyCast.set "⇧I" "insert before line"; key "I"
     | Enter -> KeyCast.set "⌨" ""; key "{ENTER}"
-    | After -> KeyCast.set "a" "after"; key "A"
+    | Tab -> KeyCast.set "⌨" ""; key "{TAB}"
+    | After -> KeyCast.set "a" "after"; key "a"
     | AfterLine -> KeyCast.set "⇧A" "after line"; key "A"
     | Move Up -> KeyCast.set "k" "up"; key "k"
     | Move Down -> KeyCast.set "j" "down"; key "j"
@@ -178,7 +195,7 @@ let rec edit = function
     | SayWhile (text, action) -> both (fun () -> say text) (fun () -> edit action)
     | Compound (wait, actions) -> Seq.iter (fun a -> pause wait; edit a) actions
     | QuitWithoutSaving -> KeyCast.set ":q!⏎" "quit without saving"; key ":q!{ENTER}"
-    | SetFileType kind -> key $":set filetype={kind}"; key "{ENTER}:{ESC}"; pause 2000
+    | SetFileType kind -> key $":set filetype={kind}"; pause 300; key "{ENTER}"; pause 200; key ":{ESC}"; pause 2000
     | Move (Find c) -> KeyCast.set $"f{shift c}" $"find '{c}'"; key $"f{c}"
     | Move (Till c) -> KeyCast.set $"t{shift c}" $"till '{c}'"; key $"t{c}"
     | Move (FindReverse c) -> KeyCast.set $"⇧F{shift c}" $"reverse find '{c}'"; key $"F{c}"

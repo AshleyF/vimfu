@@ -31,8 +31,8 @@ KeyCast.start ()
 //Lesson.matchingPairs |> go; pause 5000
 //Lesson.findCharacter |> go; pause 5000
 //Lesson.search |> go; pause 5000
-
-Lesson.joinLines |> go; pause 5000
+//Lesson.joinLines |> go; pause 5000
+//Lesson.quitting |> go; pause 5000
 
 (*
 - Run KeyClicker.py

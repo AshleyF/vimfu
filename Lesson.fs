@@ -614,6 +614,7 @@ let search = // * # n N / ?
 
 let joinLines = // J gJ
     [ Launch
+      Pause 5000
       Setup [""; ""; "fruits = ["; "  'lime',"; "  'fig',"; "  'kiwi',"; "  'pear'"; "]";]
       SetFileType "python"
       Move Down; Move Down; Move Down; 
@@ -621,7 +622,7 @@ let joinLines = // J gJ
       Say "Joining lines is pretty useful. Pressing shift J will join the current line with the one below."
       JoinLine
       Pause 1000
-      Say "Notice that it leave a single space under the cursor."
+      Say "Notice that it leaves a single space under the cursor."
       Pause 1000
       Move Down
       JoinLine
@@ -629,7 +630,49 @@ let joinLines = // J gJ
       Say "To bring up the final closing bracket, perhaps we don't want a space. For that we can press G followed by shift J"
       Key ("g⇧J", "join line no space", "gJ")
       Pause 1000
-      SayWhile ("It's surprising how often the J key comes in handy!", JoinLine)
+      Say "It's surprising how often the J key comes in handy!"
+      Finish ]
+
+let quitting = // :q :q! ZQ  :wq :x ZZ  ^z  fg
+    [ Launch
+      Pause 5000
+      Setup [""; ""; "def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"]
+      SetFileType "python"
+      Pause 3000
+      Text ":file fact.py"; Enter
+      Text ":w!"; Enter
+      Text "ZZ"; Pause 1000; Text "clear"; Enter; Text "vi fact.py"; Enter
+      Start "Quitting"
+      Say "It's a running joke that people have to power off their computers to exit Vim, but c'mon it's really not difficult."
+      Pause 500
+      Say "Simply pressing ZZ will save and quit."
+      Key ("⇧ZZ", "save and quit", "ZZ")
+      Pause 2000
+      Text "vi fa"; Tab; Enter
+      Pause 1000
+      SayWhile ("Entering the command colon X does the same thing.", Text ":x")
+      Text "\b"
+      SayWhile ("Or the more verbose colon W Q also writes and quits.", Text "wq")
+      Enter
+      Pause 1000
+      Text "!!"; Enter; Enter
+      Pause 1000
+      SayWhile ("If we make a change to the file...", Compound (150, [Move Down; Move Down; Move WordEnd; Move WordEnd; After; Text "orial"; Esc]))
+      Say "Then we now have a choice. We can save and quit with ZZ, or we can abandon our changes with ZQ"
+      Key ("⇧ZQ", "quit without saving", "ZQ")
+      Pause 1000
+      Text "!!"; Enter; Enter
+      Pause 1000
+      Say "When be come back, our changes have not been saved."
+      SayWhile ("The command colon Q bang also quits without saving.", Text ":q!")
+      SayWhile ("Without the bang quits too, but only when there are no changes to be saved.", Text "\b")
+      Pause 500
+      Esc
+      Say "One more way to get out of Vim is to suspend it with control Z"
+      Key ("⌃z", "suspend", "^z")
+      Pause 1000
+      Say "We can resume the process later with F G"
+      Text "fg"; Enter
       Finish ]
 
 
@@ -646,6 +689,7 @@ let joinLines = // J gJ
 //  Find  f F t T ; ,
 //  Search  * # n N / ?
 //  Join  J gJ
+//  Quitting   :q :q! ZQ  :wq :x ZZ  ^z  fg
 
 //  Mark  m ' ` '' ``
 //  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
@@ -663,7 +707,6 @@ let joinLines = // J gJ
 //  Registers  "
 //  Scrolling  ^e ^y zt zb zz
 //  Jumping  ^d ^u ^f ^b
-//  Quitting  ZZ ZQ
 //  Formatting  = ==
 //  Leader  \
 //  Search & Replace  :s/foo/bar & :%s/foo/bar  also n.n. trick
