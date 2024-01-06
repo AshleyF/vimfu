@@ -643,7 +643,7 @@ let quitting = // :q :q! ZQ  :wq :x ZZ  ^z  fg
       Text ":w!"; Enter
       Text "ZZ"; Pause 1000; Text "clear"; Enter; Text "vi fact.py"; Enter
       Start "Quitting"
-      Say "It's a running joke that people have to power off their computers to exit Vim, but c'mon it's really not difficult."
+      Say "It's a running joke that people have to power off their computers to exit Vim, but come on it's really not difficult."
       Pause 500
       Say "Simply pressing ZZ will save and quit."
       Key ("⇧ZZ", "save and quit", "ZZ")
@@ -675,6 +675,71 @@ let quitting = // :q :q! ZQ  :wq :x ZZ  ^z  fg
       Text "fg"; Enter
       Finish ]
 
+let revertFile = // :e!
+    [ Launch
+      Pause 5000
+      Setup [""; "def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"; ""; "def fib(n):"; "  if n <= 1:"; "    return n"; "  return fib(n-1) +"; "    fib(n-2)"; ""; "print(fib(7))"]
+      SetFileType "python"
+      Text ":file fact.py"; Enter
+      Text ":w!"; Enter
+      Text "ZZ"; Pause 1000; Text "clear"; Enter; Text "vi fact.py"; Enter
+      Text ":set nohls"; Enter; Text ":"; Esc
+      Restart
+      Start "Reverting"
+      SayWhile ("If we make a bunch of changes to this file...", Compound (150, [
+        Key ("/", "search", "/")
+        Text "fact"
+        Enter
+        Change Word
+        Text "factorial"
+        Esc
+        Pause 500
+        Move SearchNext
+        Dot
+        Pause 500
+        Move SearchNext
+        Dot
+        Pause 500
+        Move Down
+        ZoomTop
+        Pause 500
+        Delete BottomOfDocument
+        Pause 1000
+        Move TopOfDocument
+        ]))
+      Say "And we change our mind and want to revert everything... we could either press U a bunch of times..."
+      SayWhile ("...or choose the nuclear option with colon E bang.", Text ":e!")
+      Enter
+      SayWhile ("And boom! We've reverted to the last saved version.", Compound (100, [Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Pause 500; Move TopOfDocument]))
+      Finish ]
+
+let scrolling = // ^e ^y zt zb zz ^f ^b ^d ^u
+    [ Launch
+      Pause 5000
+      Setup ["# Grocery List"; ""; "## Fruits"; ""; "- Apples"; "- Bananas"; "- Citrus"; "  - Oranges"; "  - Lemons"; "- Berries"; "  - Strawberries"; "  - Blueberries"; ""; "## Vegetables"; ""; "- Leafy Greens"; "  - Spinach"; "  - Kale"; "- Root Vegetables"; "  - Carrots"; "  - Potatoes"; ""; "### Dairy"; ""; "- Milk"; "- Cheese"; "- Yogurt"; ""; "### Bakery"; ""; "- Bread"; "  - Wheat"; "  - Rye"; "- Pastries"; ""; "## Meat"; ""; "- Chicken"; "- Beef"; "- Pork"]
+      SetFileType "markdown"
+      Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down
+      Restart
+      Start "Scrolling and Jumping"
+      Say "Sometimes we want to scroll the viewport without moving the cursor, and most importantly without reaching for the track pad or scroll wheel."
+      SayWhile ("Control Y will scroll down, and control E will scroll up. Notice that the cursor stays in place within the document.", Compound (210, [ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown]))
+      Pause 500
+      Say "We can scroll to the top with Z T."
+      ScrollTop
+      Pause 1000
+      Say "Or to the bottom with Z B."
+      ScrollBottom
+      Say "I often find it handy to scroll the cursor to the middle with Z Z."
+      ScrollMiddle
+      Pause 1000
+      Say "If maintaining the cursor position isn't important..."
+      SayWhile ("...then we can also jump forward with control F", Compound (500, [JumpDown; JumpDown; JumpDown; JumpDown; JumpDown]))
+      Pause 800
+      SayWhile ("And jump backward with control B", Compound (500, [JumpUp; JumpUp; JumpUp; JumpUp; JumpUp]))
+      Say "I find this disorienting though."
+      SayWhile ("Instead I prefer to jump by half screens with control D do go down...", Compound (600, [JumpDownHalf; JumpDownHalf; JumpDownHalf; JumpDownHalf; JumpDownHalf; JumpDownHalf; JumpDownHalf; JumpDownHalf]))
+      SayWhile ("...and control U to go up.", Compound (600, [JumpUpHalf; JumpUpHalf; JumpUpHalf; JumpUpHalf; JumpUpHalf; JumpUpHalf; JumpUpHalf; JumpUpHalf]))
+      Finish ]
 
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
@@ -690,6 +755,8 @@ let quitting = // :q :q! ZQ  :wq :x ZZ  ^z  fg
 //  Search  * # n N / ?
 //  Join  J gJ
 //  Quitting   :q :q! ZQ  :wq :x ZZ  ^z  fg
+//  Reverting  :e!
+//  Scrolling  ^e ^y zt zb zz  ^d ^u ^f ^b
 
 //  Mark  m ' ` '' ``
 //  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
@@ -700,13 +767,11 @@ let quitting = // :q :q! ZQ  :wq :x ZZ  ^z  fg
 //  Insert  i a I A o O ⎋  (thick cursor, before/after)
 //  Delete/Yank/Put  d dd D y yy Y p P
 //  Change/Substitute  c cc C s S
-//  Delete char/Replace  x X r R
+//  Delete char/Replace  x X r R  (replace with <CR> to break lines -- removes trailing space)
 //  Macros  q @ @@
-//  Indenting  < << > >>  :set
+//  Indenting  < <<  >>  :set
 //  Commands  :
 //  Registers  "
-//  Scrolling  ^e ^y zt zb zz
-//  Jumping  ^d ^u ^f ^b
 //  Formatting  = ==
 //  Leader  \
 //  Search & Replace  :s/foo/bar & :%s/foo/bar  also n.n. trick

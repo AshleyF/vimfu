@@ -69,6 +69,7 @@ type Motion =
 
 type Action =
     | Launch
+    | Restart
     | Start of string
     | Finish
     | Setup of string seq
@@ -86,7 +87,9 @@ type Action =
     | Undo
     | OpenBelow
     | OpenAbove
+    | ZoomTop
     | ZoomMiddle
+    | ZoomBottom
     | DeleteLine
     | YankToLastLine
     | Put
@@ -107,6 +110,18 @@ type Action =
     | QuitWithoutSaving
     | SetFileType of string
     | JoinLine
+    | Change of Motion
+    | Delete of Motion
+    | Dot
+    | ScrollDown
+    | ScrollUp
+    | ScrollTop
+    | ScrollMiddle
+    | ScrollBottom
+    | JumpDown
+    | JumpUp
+    | JumpDownHalf
+    | JumpUpHalf
     | Key of string * string * string
     | Move of Motion
 
@@ -128,9 +143,10 @@ let focusHack() =
 let rec edit = function
     //| Launch -> KeyCast.set "Starting" "One moment..."; key "^({ESC}e)"; pause 5000; key "cmd"; pause 5000; key "{enter}"; pause 5000; key "^+{5}"; pause 5000; key "alias vi=nvim{enter}clear{enter}"
     | Launch -> KeyCast.set "Starting" "One moment..."; focusHack(); key "^+{5}"; pause 5000; focusHack(); key "alias vi=nvim{enter}rm -rf {~}/.local/share/nvim/swap/{enter}clear{enter}vi{enter}:file Fu{ENTER}:{ESC}"
+    | Restart -> KeyCast.set "Restarting" "One moment..."; pause 3000
     | Start message -> KeyCast.set "VimFu" message; pause 800
     | Finish -> pause 800; KeyCast.set "Finished" "Cut!"; key "{ESC}:q!{ENTER}"
-    | Setup lines -> key ":set noautoindent{ENTER}"; pause 300; key "{ESC}i"; lines |> Seq.iter (fun line -> key (line.Replace("{", "__LEFT_CURLY__").Replace("}", "__RIGHT_CURLY__").Replace("+", "{+}").Replace("^", "{^}").Replace("%", "{%}").Replace("(", "{(}").Replace(")", "{)}").Replace("__LEFT_CURLY__", "{{}").Replace("__RIGHT_CURLY__", "{}}")); key "{ENTER}"); key "{ESC}"; pause 1000; key "ddgg0:set autoindent{ENTER}:{ESC}"
+    | Setup lines -> key ":set noautoindent{ENTER}"; pause 300; key "{ESC}i"; lines |> Seq.iter (fun line -> key (line.Replace("{", "__LEFT_CURLY__").Replace("}", "__RIGHT_CURLY__").Replace("+", "{+}").Replace("^", "{^}").Replace("%", "{%}").Replace("(", "{(}").Replace(")", "{)}").Replace("__LEFT_CURLY__", "{{}").Replace("__RIGHT_CURLY__", "{}}")); key "{ENTER}"); pause 3000; key "{ESC}"; pause 1000; key "ddgg0:set autoindent{ENTER}:{ESC}"
     | Esc -> KeyCast.set "⎋" "normal mode"; key "{ESC}"
     | Text text -> KeyCast.set "⌨" ""; typing text
     | Normal (text, caption) -> KeyCast.set text caption; typing text
@@ -176,7 +192,9 @@ let rec edit = function
     | Undo -> KeyCast.set "u" "undo"; key "u"
     | OpenBelow -> KeyCast.set "o" "open below"; key "o"
     | OpenAbove -> KeyCast.set "⇧O" "open above"; key "O"
+    | ZoomTop -> KeyCast.set "zt" "zoom top"; key "zt"
     | ZoomMiddle -> KeyCast.set "zz" "zoom middle"; key "zz"
+    | ZoomBottom -> KeyCast.set "zb" "zoom bottom"; key "zb"
     | DeleteLine -> KeyCast.set "dd" "delete line"; key "dd"
     | YankToLastLine -> KeyCast.set "y⇧G" "yank to last line"; key "yG"
     | Put -> KeyCast.set "p" "put"; key "p"
@@ -207,6 +225,24 @@ let rec edit = function
     | Move SearchNext -> KeyCast.set "n" "search next"; key "n"
     | Move SearchPrev -> KeyCast.set "⇧N" "search prev"; key "N"
     | JoinLine -> KeyCast.set "⇧J" "join line"; key "J"
+    | Change m ->
+        match m with
+        | Word -> KeyCast.set "cw" "change word"; key "cw"
+        | _ -> failwith $"Change motion implemented ({m})"
+    | Delete m ->
+        match m with
+        | BottomOfDocument -> KeyCast.set "dG" "delete to bottom of doc"; key "dG"
+        | _ -> failwith $"Delete motion implemented ({m})"
+    | Dot -> KeyCast.set "." "repeat action"; key "."
+    | ScrollDown -> KeyCast.set "⌃y" "scroll down"; key "^y"
+    | ScrollUp -> KeyCast.set "⌃e" "scroll up"; key "^e"
+    | ScrollTop -> KeyCast.set "zt" "scroll top"; key "zt"
+    | ScrollMiddle -> KeyCast.set "zz" "scroll middle"; key "zz"
+    | ScrollBottom -> KeyCast.set "zb" "scroll bottom"; key "zb"
+    | JumpDown -> KeyCast.set "⌃f" "jump forward"; key "^f"
+    | JumpUp -> KeyCast.set "⌃b" "jump back"; key "^b"
+    | JumpDownHalf -> KeyCast.set "⌃d" "jump down"; key "^d"
+    | JumpUpHalf -> KeyCast.set "⌃u" "jump up"; key "^u"
     | Key (cast, desc, k) -> KeyCast.set cast desc; key k
 
 
