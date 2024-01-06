@@ -20,15 +20,19 @@ KeyCast.start ()
 //Lesson.alignText |> go; pause 5000 // 02 JAN 2024
 //Lesson.basicMotions1 |> go; pause 5000 // 03 JAN 2024
 //Lesson.basicMotions2 |> go; pause 5000 // 04 JAN 2024
-//Lesson.basicMotions3 |> go; pause 5000 // 05 JAN 2024
-//Lesson.basicMotions4 |> go; pause 5000 // 06 JAN 2024
-//Lesson.basicMotions5 |> go; pause 5000 // 07 JAN 2024
-//Lesson.basicMotions6 |> go; pause 5000 // 08 JAN 2024
-//Lesson.basicMotions7 |> go; pause 5000 // 09 JAN 2024
-//Lesson.basicMotions8 |> go; pause 5000 // 10 JAN 2024
-//Lesson.matchingPairs |> go; pause 5000 // 11 JAN 2024
+//Lesson.uselessUnderscore |> go; pause 5000 // 05 JAN 2024
 
-Lesson.uselessUnderscore |> go; pause 5000
+//Lesson.basicMotions3 |> go; pause 5000
+//Lesson.basicMotions4 |> go; pause 5000
+//Lesson.basicMotions5 |> go; pause 5000
+//Lesson.basicMotions6 |> go; pause 5000
+//Lesson.basicMotions7 |> go; pause 5000
+//Lesson.basicMotions8 |> go; pause 5000
+//Lesson.matchingPairs |> go; pause 5000
+//Lesson.findCharacter |> go; pause 5000
+//Lesson.search |> go; pause 5000
+
+Lesson.joinLines |> go; pause 5000
 
 (*
 - Run KeyClicker.py

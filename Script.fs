@@ -3,8 +3,8 @@
 open System
 open System.Threading
 open System.Windows.Forms
-open NeuralVoice // or SpeechSynth
-//open SpeechSynth // or NeuralVoice
+//open NeuralVoice // or SpeechSynth
+open SpeechSynth // or NeuralVoice
 
 let both f0 f1 =
     let t0 = new Thread(new ThreadStart(f0))
@@ -55,6 +55,16 @@ type Motion =
     | StartOfNextLine
     | StartOfPreviousLine
     | MatchingBraces
+    | Find of char
+    | Till of char
+    | FindReverse of char
+    | TillReverse of char
+    | NextChar of char
+    | PrevChar of char
+    | SearchStar
+    | SearchHash
+    | SearchNext
+    | SearchPrev
 
 type Action =
     | Launch
@@ -94,8 +104,6 @@ type Action =
     | Compound of int * Action seq
     | QuitWithoutSaving
     | SetFileType of string
-    | Find of char
-    | Till of char
     | JoinLine
     | Key of string * string * string
     | Move of Motion
@@ -171,8 +179,16 @@ let rec edit = function
     | Compound (wait, actions) -> Seq.iter (fun a -> pause wait; edit a) actions
     | QuitWithoutSaving -> KeyCast.set ":q!⏎" "quit without saving"; key ":q!{ENTER}"
     | SetFileType kind -> key $":set filetype={kind}"; key "{ENTER}:{ESC}"; pause 2000
-    | Find c -> KeyCast.set $"f{shift c}" $"find '{c}'"; key $"f{c}"
-    | Till c -> KeyCast.set $"t{shift c}" $"till '{c}'"; key $"f{c}"
+    | Move (Find c) -> KeyCast.set $"f{shift c}" $"find '{c}'"; key $"f{c}"
+    | Move (Till c) -> KeyCast.set $"t{shift c}" $"till '{c}'"; key $"t{c}"
+    | Move (FindReverse c) -> KeyCast.set $"⇧F{shift c}" $"reverse find '{c}'"; key $"F{c}"
+    | Move (TillReverse c) -> KeyCast.set $"⇧T{shift c}" $"reverse till '{c}'"; key $"T{c}"
+    | Move (NextChar c) -> KeyCast.set ";" $"next '{c}'"; key ";"
+    | Move (PrevChar c) -> KeyCast.set "," $"prev '{c}'"; key ","
+    | Move SearchStar -> KeyCast.set "⇧*" "search"; key "*"
+    | Move SearchHash -> KeyCast.set "⇧#" "reverse search"; key "#"
+    | Move SearchNext -> KeyCast.set "n" "search next"; key "n"
+    | Move SearchPrev -> KeyCast.set "⇧N" "search prev"; key "N"
     | JoinLine -> KeyCast.set "⇧J" "join line"; key "J"
     | Key (cast, desc, k) -> KeyCast.set cast desc; key k
 

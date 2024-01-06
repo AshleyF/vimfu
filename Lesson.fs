@@ -149,7 +149,7 @@ let alignText = // aligning text with `:norm` commands
       Start "Align Text"
       Pause 2000
       Say "The property names here are nicely aligned on the left, but the values aren't."
-      SayWhile ("It looks like the height is furthest over.", Compound (150, [Move Down; Move Down; Find '1']))
+      SayWhile ("It looks like the height is furthest over.", Compound (150, [Move Down; Move Down; Move (Find '1')]))
       Say "We can see that it's at column eleven."
       Say  "Here's the trick."
       SayWhile ("We select the block.", Compound (150, [SelectBlock; AroundBlock]))
@@ -182,7 +182,7 @@ let basicMotions1 = // h j k l ␣ ⌫
       Pause 10000
       SetFileType "text"
       Start "Basic Motions 1"
-      SayWhile ("In Vim, you can certainly move around with the arrow keys...", Compound (250, [
+      SayWhile ("In Vim, we can certainly move around with the arrow keys...", Compound (250, [
         Key ("↓", "down arrow", "{Down}")
         Key ("↓", "down arrow", "{Down}")
         Key ("↓", "down arrow", "{Down}")
@@ -226,7 +226,7 @@ let basicMotions2 = // w b e ge
       Pause 10000
       SetFileType "text"
       Start "Basic Motions 2"
-      SayWhile ("In Vim, you can move by words with W...", Compound (400, [Move Word; Move Word; Move Word; Move Word; Move Word; Move Word; Move Word; Move Word; Move Word; Move Word]))
+      SayWhile ("In Vim, we can move by words with W...", Compound (400, [Move Word; Move Word; Move Word; Move Word; Move Word; Move Word; Move Word; Move Word; Move Word; Move Word]))
       Pause 1000
       SayWhile ("And with B for back by words.", Compound (400, [Move BackWord; Move BackWord; Move BackWord; Move BackWord; Move BackWord; Move BackWord; Move BackWord; Move BackWord; Move BackWord; Move BackWord]))
       Pause 1000
@@ -239,7 +239,7 @@ let basicMotions2 = // w b e ge
       SayWhile ("With W...", Compound (400, [Move Word; Move Word]))
       SayWhile ("...B...", Move BackWord)
       SayWhile ("...E...", Move WordEnd)
-      SayWhile ("...and G followed by E, you can quickly move by words forward and backward to the start and end of each.", Move BackWordEnd)
+      SayWhile ("...and G followed by E, we can quickly move by words forward and backward to the start and end of each.", Move BackWordEnd)
       Finish ]
 
 let basicMotions3 = // W B E gE
@@ -268,7 +268,7 @@ let basicMotions3 = // W B E gE
       SayWhile ("Shift-B...", Move BackBigWord)
       SayWhile ("Shift-E...", Move BigWordEnd)
       SayWhile("...and G followed by Shift-E...", Move BackBigWordEnd)
-      Say "...you can very quickly move by big words."
+      Say "...we can very quickly move by big words."
       Finish ]
 
 let basicMotions4 = // $ ^ 0
@@ -316,7 +316,7 @@ let basicMotions5 = // H L M gg G
       Pause 1000
       SayWhile ("Or to the middle line with Shift-M", Move MiddleLine)
       Pause 1000
-      SayWhile ("Notice that, if your cursor is somewhere within a line, the column is maintained.", Move WordEnd)
+      SayWhile ("Notice that, if our cursor is somewhere within a line, the column is maintained.", Move WordEnd)
       Pause 800
       SayWhile ("Highest", Move HighestLine)
       Pause 500
@@ -340,9 +340,9 @@ let basicMotions5 = // H L M gg G
       Pause 800
       SayWhile ("...and Shift-L for the lowest visible line.", Move LowestLine)
       Pause 800
-      SayWhile ("GG takes you to the top of the document...", Move TopOfDocument)
+      SayWhile ("GG takes us to the top of the document...", Move TopOfDocument)
       Pause 800
-      SayWhile ("... and Shift-G takes you to the bottom of the document...", Move BottomOfDocument)
+      SayWhile ("... and Shift-G takes us to the bottom of the document...", Move BottomOfDocument)
       Pause 800
       Finish ]
 
@@ -511,6 +511,128 @@ let uselessUnderscore = // _
       Say "Much more useful now!"
       Finish ]
 
+let findCharacter = // f t F T ; ,
+    [ Launch
+      Setup [""; ""; "def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"; ""; "def fib(n):"; "  if n <= 1:"; "    return n"; "  return fib(n-1) +"; "    fib(n-2)"; ""; "print(fib(7))"]
+      Pause 10000
+      SetFileType "python"
+      Move Paragraph; Move Up
+      Start "Find Character"
+      Say "A quick way to move around a line is to find characters."
+      Pause 400
+      Say "To jump to the n variable, we can press F, for 'find', followed by N"
+      SayWhile ("...and it finds the first N.", Move (Find 'n'))
+      Pause 400
+      Say "Oops, that's not the N we wanted."
+      Pause 200
+      Say "Pressing semicolon finds the next one."
+      Move (NextChar 'n')
+      Pause 600
+      SayWhile ("And again to the next.", Move (NextChar 'n'))
+      Pause 600
+      Say "To go back, press comma."
+      Move (PrevChar 'n')
+      Pause 600
+      Say "Another way is to jump to just before a character, with T, for 'find till'."
+      SayWhile ("From the start of the line...", Move FirstColumn)
+      Pause 300
+      Say "Press T followed by star..."
+      Move (Till '*')
+      Pause 300
+      Say "Taking us to just before the star, which is directly to the N we want."
+      Pause 400
+      Say "We can also find in the reverse direction with shift F."
+      Pause 600
+      SayWhile ("From the end of the line...", Move EndOfLine)
+      Pause 600
+      Say "We can find the previous N with shift F followed by N."
+      Move (FindReverse 'n')
+      Pause 600
+      SayWhile ("And the one before that with semicolon.", Move (NextChar 'n'))
+      Say "Semicolon and comma work relative to the original direction."
+      Pause 600
+      Say "Like shift F, shift T also works in the reverse direction."
+      Say "This is a slick way to move around!"
+      Finish ]
+
+let search = // * # n N / ?
+    [ Launch
+      Setup [""; ""; "def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"; ""; "def fib(n):"; "  if n <= 1:"; "    return n"; "  return fib(n-1) +"; "    fib(n-2)"; ""; "print(fib(7))"]
+      Move TopOfDocument
+      Move Down
+      Move Down
+      Move Word
+      SetFileType "python"
+      Text ":set nohls"; Enter; Text ":"; Esc
+      Start "Search"
+      Say "When we want to find the word under the cursor, we can simply press star."
+      Move SearchStar
+      Say "We can move to the next one by pressing N."
+      Move SearchNext
+      Say "Or we can move back with shift N."
+      Move SearchPrev
+      Pause 800
+      Move SearchPrev
+      Pause 800
+      Say "Let's try from the bottom of the document."
+      Move BottomOfDocument
+      Move Word; Move Word
+      Say "We can search in reverse for the word under the cursor by pressing the hash key."
+      Move SearchHash
+      Pause 800
+      Say "And again, pressing N takes us to the next ones."
+      Move SearchNext
+      Pause 800
+      Move SearchNext
+      Say "And shift N to traverse them in reverse."
+      Move SearchPrev
+      Pause 400
+      Move SearchPrev
+      Pause 400
+      Move SearchPrev
+      Say "That's quite useful!"
+      Pause 1000
+      Say "Back to the top of the document."
+      Move TopOfDocument
+      Say "We can also search for anything we like by pressing slash."
+      Key ("/", "search", "/")
+      Say "And entering a search term"
+      Text "fib"
+      Say "Pressing enter takes us there."
+      Enter
+      SayWhile ("Pressing N and shift N cycles through the matches.", Compound (500, [Move SearchNext; Move SearchNext; Move SearchNext; Move SearchPrev; Move SearchPrev; Move SearchPrev]) )
+      Pause 1000
+      Say "Finally, we can search in reverse by pressing question mark"
+      Key ("⇧?", "search", "?")
+      Pause 100
+      Text "fact"
+      Pause 1000
+      Enter
+      Pause 1000
+      SayWhile ("Searching with star and hash, or with slash and question mark, and navigating the results with N and shift N is a powerful way to find our way around!", Compound(800, [Move SearchNext; Move SearchNext; Move SearchNext; Move SearchPrev; Move SearchPrev; Move SearchPrev]))
+      Finish ]
+
+let joinLines = // J gJ
+    [ Launch
+      Setup [""; ""; "fruits = ["; "  'lime',"; "  'fig',"; "  'kiwi',"; "  'pear'"; "]";]
+      SetFileType "python"
+      Move Down; Move Down; Move Down; 
+      Start "Join Lines"
+      Say "Joining lines is pretty useful. Pressing shift J will join the current line with the one below."
+      JoinLine
+      Pause 1000
+      Say "Notice that it leave a single space under the cursor."
+      Pause 1000
+      Move Down
+      JoinLine
+      Pause 500
+      Say "To bring up the final closing bracket, perhaps we don't want a space. For that we can press G followed by shift J"
+      Key ("g⇧J", "join line no space", "gJ")
+      Pause 1000
+      SayWhile ("It's surprising how often the J key comes in handy!", JoinLine)
+      Finish ]
+
+
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
 //  Basic Motions 3  W B E gE
@@ -520,15 +642,15 @@ let uselessUnderscore = // _
 //  Basic Motions 7  ]] [[ ][ []
 //  Basic Motions 8  + -
 //  Matching  %
-
-//  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
 //  Underscore  _  (Just like carrot except with count)
-//  Mark  m ' ` '' ``
 //  Find  f F t T ; ,
 //  Search  * # n N / ?
+//  Join  J gJ
+
+//  Mark  m ' ` '' ``
+//  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
 //  Visual  v V ^v o gv '< '>  (bad habit possibly)
 //  Case  ~ g~ gu gU  (combined with visual or motion)
-//  Join  J
 //  Undo  u U ^r
 //  Dot  .
 //  Insert  i a I A o O ⎋  (thick cursor, before/after)
@@ -544,7 +666,7 @@ let uselessUnderscore = // _
 //  Quitting  ZZ ZQ
 //  Formatting  = ==
 //  Leader  \
-//  Search & Replace  :s/foo/bar & :%s/foo/bar
+//  Search & Replace  :s/foo/bar & :%s/foo/bar  also n.n. trick
 //  Advanced 1  !
 //  Advanced 3  K
 //  Advanced 4  Q
