@@ -85,6 +85,12 @@ type Action =
     | AfterLine
     | Repeat
     | Undo
+    | UndoLine
+    | ToggleCase
+    | ToggelCaseMotion of Motion
+    | UpperCase
+    | LowerCase
+    | Visual
     | OpenBelow
     | OpenAbove
     | ZoomTop
@@ -190,6 +196,15 @@ let rec edit = function
     | Move MatchingBraces -> KeyCast.set "%" "matching"; key "{%}"
     | Repeat -> KeyCast.set "." "repeat"; key ".";
     | Undo -> KeyCast.set "u" "undo"; key "u"
+    | UndoLine -> KeyCast.set "⇧U" "undo line"; key "U"
+    | ToggleCase -> KeyCast.set "⇧~" "toggle case"; key "{~}"
+    | ToggelCaseMotion m ->
+        match m with
+        | Word -> KeyCast.set "g⇧~w" "toggle case of word"; key "g{~}w"
+        | _ -> failwith $"Not implemented toggle case motion ({m})."
+    | UpperCase -> KeyCast.set "g⇧U" "uppercase"; key "gU"
+    | LowerCase -> KeyCast.set "g⇧u" "uppercase"; key "gu"
+    | Visual -> KeyCast.set "v" "visual mode"; key "v"
     | OpenBelow -> KeyCast.set "o" "open below"; key "o"
     | OpenAbove -> KeyCast.set "⇧O" "open above"; key "O"
     | ZoomTop -> KeyCast.set "zt" "zoom top"; key "zt"

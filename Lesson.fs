@@ -432,35 +432,35 @@ let basicMotions8 = // + -
       Finish ]
 
 let matchingPairs = // %
-    [ Launch
+    [ 
+      //Launch // launch opens nvim via Ubuntu and matching is broken for some reason (manually launch nvim directly instead)
+      Pause 10000
       Setup ["{ x = true"; "  y = [1; 2; 3]"; "  z = ((4, 2),"; "       \"life\")"; "} |> test"; ""; ""; ""]
       Pause 10000
       SetFileType "ocaml"
       Start "Matching Pairs"
       Say "It can be quite handy to quickly jump between matching pairs of braces and brackets."
-      Pause 800
-      SayWhile ("We can jump between these curly braces by pressing percent.", Compound(800, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces]))
-      Pause 800
+      Pause 300
+      SayWhile ("We can jump between these curly braces by pressing percent.", Compound(500, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces]))
+      Pause 500
       SayWhile ("It works with square brackets too.", Move Down)
-      Pause 800
       Say "Notice that we don't have to be on the first bracket for it to work."
-      Pause 800
+      Pause 200
       Say "Pressing percent from here at the first column..."
-      Pause 800
       SayWhile ("...finds the first bracket and jumps to it's pair at the end of the line.", Move MatchingBraces)
-      Pause 800
+      Pause 200
       SayWhile ("The same is true when the cursor is inside the brackets.", Compound (0, [Move Left; Move Left; Move Left; Move Left]))
-      Pause 800
+      Pause 200
       SayWhile ("Pressing percent finds the closing bracket.", Move MatchingBraces);
-      Pause 800
-      SayWhile ("From there, pressing percent jumps between the pairs.", Compound (800, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces]))
-      Pause 800
+      Pause 200
+      SayWhile ("From there, pressing percent jumps between the pairs.", Compound (500, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces]))
+      Pause 200
       SayWhile ("Of course, it works with parenthesis as well.", Move Down)
-      Pause 800
-      Compound(800, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces])
-      Pause 800
+      Pause 200
+      Compound(500, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces])
+      Pause 200
       SayWhile ("And works with nesting.", Move Right)
-      Compound(800, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces])
+      Compound(500, [Move MatchingBraces; Move MatchingBraces; Move MatchingBraces; Move MatchingBraces])
       Say "Pretty handy!"
       Finish ]
 
@@ -722,7 +722,7 @@ let scrolling = // ^e ^y zt zb zz ^f ^b ^d ^u
       Restart
       Start "Scrolling and Jumping"
       Say "Sometimes we want to scroll the viewport without moving the cursor, and most importantly without reaching for the track pad or scroll wheel."
-      SayWhile ("Control Y will scroll down, and control E will scroll up. Notice that the cursor stays in place within the document.", Compound (210, [ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown]))
+      SayWhile ("Control Y will scroll down, and control E will scroll up. Notice that the cursor stays in place within the document.", Compound (210, [ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollUp; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown; ScrollDown]))
       Pause 500
       Say "We can scroll to the top with Z T."
       ScrollTop
@@ -733,13 +733,44 @@ let scrolling = // ^e ^y zt zb zz ^f ^b ^d ^u
       ScrollMiddle
       Pause 1000
       Say "If maintaining the cursor position isn't important..."
-      SayWhile ("...then we can also jump forward with control F", Compound (500, [JumpDown; JumpDown; JumpDown; JumpDown; JumpDown]))
+      SayWhile ("....then we can also jump forward by whole screens with control F", Compound (500, [JumpDown; JumpDown; JumpDown; JumpDown; JumpDown]))
       Pause 800
       SayWhile ("And jump backward with control B", Compound (500, [JumpUp; JumpUp; JumpUp; JumpUp; JumpUp]))
       Say "I find this disorienting though."
       SayWhile ("Instead I prefer to jump by half screens with control D do go down...", Compound (600, [JumpDownHalf; JumpDownHalf; JumpDownHalf; JumpDownHalf; JumpDownHalf; JumpDownHalf; JumpDownHalf; JumpDownHalf]))
       SayWhile ("...and control U to go up.", Compound (600, [JumpUpHalf; JumpUpHalf; JumpUpHalf; JumpUpHalf; JumpUpHalf; JumpUpHalf; JumpUpHalf; JumpUpHalf]))
       Finish ]
+
+let changingCase = // ~ g~ gu gU  (combined with visual or motion)
+   [ Launch
+     Pause 5000
+     Setup ["let add x y ="; "    x + y"; "let plus7 ="; "    add 7"; ""; "(* currying test *)"; "35 |> plus7 |>"; "printf \"Life: %i\""]
+     SetFileType "ocaml"
+     Move Paragraph; Move Down; Move Word
+     Start "Changing Case"
+     Say "We can quickly toggle the case of a character while in Normal mode, by pressing tilde."
+     ToggleCase
+     Say "Notice that it automatically advances the cursor."
+     SayWhile ("So, we can press tilde several times and toggle the whole word.", Compound (300, [ToggleCase; ToggleCase; ToggleCase; ToggleCase; ToggleCase; ToggleCase; ToggleCase]))
+     SayWhile ("But a better way...", Compound (180, [Undo; Undo; Undo; Undo; Undo; Undo; Undo; Undo]))
+     Say "... is to use G followed by tilde, followed by a motion."
+     SayWhile ("Such as G tilde W to toggle the word.", ToggelCaseMotion Word)
+     Pause 1000
+     Undo
+     SayWhile ("Or another approach may be to select the word first with V E..", Compound (300, [Visual; Move WordEnd]))
+     SayWhile ("...and then toggle the case with tilde.", ToggleCase)
+     Say "It's the same number of key strokes."
+     Pause 800
+     Undo
+     SayWhile ("One issue we might have is when the word is mixed case to begin with.", Compound (300, [ToggleCase; Move Left]))
+     SayWhile ("Oops, toggling the case leaves the C lowercase.", ToggelCaseMotion Word)
+     Undo
+     SayWhile ("Instead of toggling, we can select the word again...", Compound (300, [Reselect]))
+     SayWhile ("...and use G follow by Shift U for uppercase.", UpperCase)
+     Pause 800
+     Reselect
+     SayWhile ("Or G followed by lowercase U to make it lowercase.", LowerCase)
+     Finish ]
 
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
@@ -757,11 +788,11 @@ let scrolling = // ^e ^y zt zb zz ^f ^b ^d ^u
 //  Quitting   :q :q! ZQ  :wq :x ZZ  ^z  fg
 //  Reverting  :e!
 //  Scrolling  ^e ^y zt zb zz  ^d ^u ^f ^b
+//  Case  ~ g~ gu gU  (combined with visual or motion)
 
 //  Mark  m ' ` '' ``
 //  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
 //  Visual  v V ^v o gv '< '>  (bad habit possibly)
-//  Case  ~ g~ gu gU  (combined with visual or motion)
 //  Undo  u U ^r
 //  Dot  .
 //  Insert  i a I A o O ⎋  (thick cursor, before/after)
@@ -784,4 +815,5 @@ let scrolling = // ^e ^y zt zb zz ^f ^b ^d ^u
 //  Surround?
 //  :noremap ^ _  :nmap _ i <esc>
 //  Unexpected motions: f{char} /foo
+//  Vertical inserts (includding ragged edge)
 //  Interacting with the shell:  :w !{cmd}  :r !{cmd}  !  !!  ^z

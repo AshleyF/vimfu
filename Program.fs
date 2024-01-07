@@ -22,9 +22,10 @@ KeyCast.start ()
 //Lesson.basicMotions2 |> go; pause 5000 // 04 JAN 2024
 //Lesson.uselessUnderscore |> go; pause 5000 // 05 JAN 2024
 //Lesson.basicMotions3 |> go; pause 5000 // 06 JAN 2024
-//Lesson.matchingPairs |> go; pause 5000
+//Lesson.matchingPairs |> go; pause 5000 // 07 JAN 2024
 
 //Lesson.basicMotions4 |> go; pause 5000
+//Lesson.changingCase |> go; pause 5000
 //Lesson.basicMotions5 |> go; pause 5000
 //Lesson.basicMotions6 |> go; pause 5000
 //Lesson.basicMotions7 |> go; pause 5000
