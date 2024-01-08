@@ -772,6 +772,34 @@ let changingCase = // ~ g~ gu gU  (combined with visual or motion)
      SayWhile ("Or G followed by lowercase U to make it lowercase.", LowerCase)
      Finish ]
 
+let marks = // m ' ` '' `
+   [ Launch
+     Text ":e animal.py"; Enter // from samples/animal
+     Text ":set nowrap"; Enter
+     SetFileType "python"
+     Move Down; Move Down
+     Start "Marks"
+     Say "We're working on a little animal guessing game! We might want to come back to these animal questions..."
+     SayWhile ("...so let's mark them as A for animal with M A.", Mark 'a')
+     Say "Marks can be any letter."
+     Compound (200, [Move Paragraph; Move Down; ZoomTop; Move Word])
+     Pause 800
+     SayWhile ("Let's mark this guess function with G for guess, with M G.", Mark 'g')
+     SayWhile ("We can jump back to the animals with tick A.", Move (GoToMark 'a'))
+     SayWhile ("And back down to the guess line with tick G.", Move (GoToMark 'g'))
+     SayWhile ("If we use backtick G instead it takes us to the exact column.", Move (GoToMarkChar 'g'))
+     SayWhile ("We can jump back and forth easily.", (Compound (1000, [Move (GoToMark 'a'); Move (GoToMark 'g')])))
+     SayWhile ("If we mark this with M Shift G, then the mark is global and works across files!", Mark 'G')
+     SayWhile ("Maybe we want to leave this file...", Compound (300, [Move TopOfDocument; Move Word]))
+     SayWhile ("... to look at the Node class.", GoToFile)
+     Pause 500
+     Say "We can go back to guess in the first file with tick Shift G."
+     Move (GoToMark 'G')
+     Pause 1000
+     Say "Super convenient way to jump around a project!"
+     Pause 30000
+     Finish ]
+
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
 //  Basic Motions 3  W B E gE

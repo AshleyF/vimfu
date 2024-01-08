@@ -62,6 +62,9 @@ type Motion =
     | TillReverse of char
     | NextChar of char
     | PrevChar of char
+    | GoToMark of char
+    | GoToMarkChar of char
+    | JumpBack
     | SearchStar
     | SearchHash
     | SearchNext
@@ -103,6 +106,7 @@ type Action =
     | Record of char
     | StopRecording
     | Macro of char
+    | Mark of char
     | RepeatLastMacro
     | RepeatMacro of char * int
     | SelectBlock
@@ -128,10 +132,13 @@ type Action =
     | JumpUp
     | JumpDownHalf
     | JumpUpHalf
+    | GoToFile
     | Key of string * string * string
     | Move of Motion
 
 let shift c = if Char.IsUpper(c) then $"⇧{c}" else c.ToString()
+
+let glob c = if Char.IsUpper(c) then "global " else ""
 
 [<DllImport("user32.dll", EntryPoint = "SetCursorPos")>]
 extern bool SetCursorPos(int X, int Y)
@@ -217,6 +224,7 @@ let rec edit = function
     | Record register -> KeyCast.set $"q{shift register}" $"record into {register}"; key $"q{register}"
     | StopRecording  -> KeyCast.set $"q" "stop recording"; key "q"
     | Macro register -> KeyCast.set $"⇧@{shift register}" $"play macro {register}"; key $"@{register}"
+    | Mark c -> KeyCast.set $"m{shift c}" $"mark {glob c}'{c}'"; key $"m{c}"
     | RepeatLastMacro -> KeyCast.set "⇧@@" "repeat last macro"; key "@@"
     | RepeatMacro (register, n) -> KeyCast.set $"{n}⇧@{shift register}" $"repeat macro {register} {n} times"; key $"{n}@{register}"
     | SelectBlock -> KeyCast.set "⌃v" "select block"; key "^q" // CTRL-Q because CTRL-V is mapped to paste
@@ -235,6 +243,9 @@ let rec edit = function
     | Move (TillReverse c) -> KeyCast.set $"⇧T{shift c}" $"reverse till '{c}'"; key $"T{c}"
     | Move (NextChar c) -> KeyCast.set ";" $"next '{c}'"; key ";"
     | Move (PrevChar c) -> KeyCast.set "," $"prev '{c}'"; key ","
+    | Move (GoToMark c) -> KeyCast.set $"'{shift c}" $"go to mark '{c}'"; key $"'{c}"
+    | Move (GoToMarkChar c) -> KeyCast.set $"`{shift c}" $"go to mark '{c}'"; key ("{`}" + $"{c}")
+    | Move JumpBack -> KeyCast.set "''" "jump back"; key "''"
     | Move SearchStar -> KeyCast.set "⇧*" "search"; key "*"
     | Move SearchHash -> KeyCast.set "⇧#" "reverse search"; key "#"
     | Move SearchNext -> KeyCast.set "n" "search next"; key "n"
@@ -258,6 +269,7 @@ let rec edit = function
     | JumpUp -> KeyCast.set "⌃b" "jump back"; key "^b"
     | JumpDownHalf -> KeyCast.set "⌃d" "jump down"; key "^d"
     | JumpUpHalf -> KeyCast.set "⌃u" "jump up"; key "^u"
+    | GoToFile -> KeyCast.set "gf" "go to file"; key "gf"
     | Key (cast, desc, k) -> KeyCast.set cast desc; key k
 
 

@@ -36,6 +36,7 @@ KeyCast.start ()
 //Lesson.quitting |> go; pause 5000
 //Lesson.revertFile |> go; pause 5000
 //Lesson.scrolling |> go; pause 5000
+//Lesson.marks |> go; pause 5000
 
 (*
 - Run KeyClicker.py
