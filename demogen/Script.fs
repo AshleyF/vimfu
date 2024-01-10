@@ -53,7 +53,7 @@ type Motion =
     | BackSectionStart
     | SectionEnd
     | BackSectionEnd
-    | StartOfNextLine
+    | StartOfNextLine | StartOfNextLineCR
     | StartOfPreviousLine
     | MatchingBraces
     | Find of char
@@ -64,6 +64,8 @@ type Motion =
     | PrevChar of char
     | GoToMark of char
     | GoToMarkChar of char
+    | GoToLine of int
+    | GoToColumn of int
     | JumpBack
     | SearchStar
     | SearchHash
@@ -199,6 +201,7 @@ let rec edit = function
     | Move SectionEnd -> KeyCast.set "][" "next section end"; key "{]}{[}"
     | Move BackSectionEnd -> KeyCast.set "[]" "prev section end"; key "{[}{]}"
     | Move StartOfNextLine -> KeyCast.set "⇧+" "start of next line"; key "{+}"
+    | Move StartOfNextLineCR -> KeyCast.set "⏎" "start of next line"; key "{+}"
     | Move StartOfPreviousLine -> KeyCast.set "-" "start of prev line"; key "-"
     | Move MatchingBraces -> KeyCast.set "%" "matching"; key "{%}"
     | Repeat -> KeyCast.set "." "repeat"; key ".";
@@ -245,6 +248,8 @@ let rec edit = function
     | Move (PrevChar c) -> KeyCast.set "," $"prev '{c}'"; key ","
     | Move (GoToMark c) -> KeyCast.set $"'{shift c}" $"go to mark '{c}'"; key $"'{c}"
     | Move (GoToMarkChar c) -> KeyCast.set $"`{shift c}" $"go to mark '{c}'"; key ("{`}" + $"{c}")
+    | Move (GoToLine n) -> KeyCast.set $"{n}⇧G" $"go to line {n}"; typing $"{n}G"
+    | Move (GoToColumn n) -> KeyCast.set $"{n}⇧|" $"go to column {n}"; typing $"{n}|"
     | Move JumpBack -> KeyCast.set "''" "jump back"; key "''"
     | Move SearchStar -> KeyCast.set "⇧*" "search"; key "*"
     | Move SearchHash -> KeyCast.set "⇧#" "reverse search"; key "#"

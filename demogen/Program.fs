@@ -23,20 +23,21 @@ KeyCast.start ()
 //Lesson.uselessUnderscore |> go; pause 5000 // 05 JAN 2024
 //Lesson.basicMotions3 |> go; pause 5000 // 06 JAN 2024
 //Lesson.matchingPairs |> go; pause 5000 // 07 JAN 2024
-
-//Lesson.basicMotions4 |> go; pause 5000
-//Lesson.changingCase |> go; pause 5000
+//Lesson.basicMotions4 |> go; pause 5000 // 08 JAN 2024
+//Lesson.search |> go; pause 5000 // 09 JAN 2024
 //Lesson.basicMotions5 |> go; pause 5000
+
+//Lesson.changingCase |> go; pause 5000
 //Lesson.basicMotions6 |> go; pause 5000
 //Lesson.basicMotions7 |> go; pause 5000
-//Lesson.basicMotions8 |> go; pause 5000
 //Lesson.findCharacter |> go; pause 5000
-//Lesson.search |> go; pause 5000
 //Lesson.joinLines |> go; pause 5000
 //Lesson.quitting |> go; pause 5000
 //Lesson.revertFile |> go; pause 5000
 //Lesson.scrolling |> go; pause 5000
 //Lesson.marks |> go; pause 5000
+//Lesson.basicMotions8 |> go; pause 5000
+//Lesson.goToLineColumn |> go; pause 5000
 
 (*
 - Run KeyClicker.py
