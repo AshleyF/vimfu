@@ -31,11 +31,7 @@
     </style>
     <script>
       let shift = false;
-      let caps = false;
       let control = false;
-      let alt = false;
-      let meta = false;
-      let num = false;
       function show(key) {
         function label(key, text) {
           document.getElementById('t' + key).textContent = (control ? '⌃' : '') + text;
@@ -45,83 +41,69 @@
         }
         //alert('Key: ' + key);
         switch (key) {
-          case 117: // num lock
-            num = !num;
-            break;
-          case 300: // caps lock
-            caps = !caps;
-          case 400: // left shift
-          case 411: // right shift
+          case 300: // shift
             shift = !shift;
-            if (!shift) caps = false;
             break;
-          case 500:
+          case 311: // control
             control = !control;
             break;
-          case 501:
-            alt = !alt;
-            break;
         }
-        label(100, shift ? '~' : '`');
-        label(101, shift ? '!' : '1');
-        label(102, shift ? '@' : '2');
-        label(103, shift ? '#' : '3');
-        label(104, shift ? '$' : '4');
-        label(105, shift ? '%' : '5');
-        label(106, shift ? '^' : '6');
-        label(107, shift ? '&' : '7');
-        label(108, shift ? '*' : '8');
-        label(109, shift ? '(' : '9');
-        label(110, shift ? ')' : '0');
-        label(111, shift ? '_' : '-');
-        label(112, shift ? '+' : '=');
-        label(201, shift ? 'Q' : 'q');
-        label(202, shift ? 'W' : 'w');
-        label(203, shift ? 'E' : 'e');
-        label(204, shift ? 'R' : 'r');
-        label(205, shift ? 'T' : 't');
-        label(206, shift ? 'Y' : 'y');
-        label(207, shift ? 'U' : 'u');
-        label(208, shift ? 'I' : 'i');
-        label(209, shift ? 'O' : 'o');
-        label(210, shift ? 'P' : 'p');
-        label(211, shift ? '{' : '[');
-        label(212, shift ? '}' : ']');
-        label(213, shift ? '|' : '\\');
-        label(301, shift ? 'A' : 'a');
-        label(302, shift ? 'S' : 's');
-        label(303, shift ? 'D' : 'd');
-        label(304, shift ? 'F' : 'f');
-        label(305, shift ? 'G' : 'g');
-        label(306, shift ? 'H' : 'h');
-        label(307, shift ? 'J' : 'j');
-        label(308, shift ? 'K' : 'k');
-        label(309, shift ? 'L' : 'l');
-        label(310, shift ? ':' : ';');
-        label(311, shift ? '"' : '\'');
-        label(401, shift ? 'Z' : 'z');
-        label(402, shift ? 'X' : 'x');
-        label(403, shift ? 'C' : 'c');
-        label(404, shift ? 'V' : 'v');
-        label(405, shift ? 'B' : 'b');
-        label(406, shift ? 'N' : 'n');
-        label(407, shift ? 'M' : 'm');
-        label(408, shift ? '<' : ',');
-        label(409, shift ? '>' : '.');
-        label(410, shift ? '?' : '/');
-        hold(117, num);
-        hold(300, caps);
-        hold(400, shift);
-        hold(411, shift);
-        hold(500, control);
-        hold(501, alt);
+        label(  0, shift ? '~' : '`');
+        label(  1, shift ? '!' : '1');
+        label(  2, shift ? '@' : '2');
+        label(  3, shift ? '#' : '3');
+        label(  4, shift ? '$' : '4');
+        label(  5, shift ? '%' : '5');
+        label(  6, shift ? '^' : '6');
+        label(  7, shift ? '&' : '7');
+        label(  8, shift ? '*' : '8');
+        label(  9, shift ? '(' : '9');
+        label( 10, shift ? ')' : '0');
+        label( 11, shift ? '_' : '-');
+        label( 12, shift ? '+' : '=');
+        label(101, shift ? 'Q' : 'q');
+        label(102, shift ? 'W' : 'w');
+        label(103, shift ? 'E' : 'e');
+        label(104, shift ? 'R' : 'r');
+        label(105, shift ? 'T' : 't');
+        label(106, shift ? 'Y' : 'y');
+        label(107, shift ? 'U' : 'u');
+        label(108, shift ? 'I' : 'i');
+        label(109, shift ? 'O' : 'o');
+        label(110, shift ? 'P' : 'p');
+        label(111, shift ? '{' : '[');
+        label(112, shift ? '}' : ']');
+        label(113, shift ? '|' : '\\');
+        label(201, shift ? 'A' : 'a');
+        label(202, shift ? 'S' : 's');
+        label(203, shift ? 'D' : 'd');
+        label(204, shift ? 'F' : 'f');
+        label(205, shift ? 'G' : 'g');
+        label(206, shift ? 'H' : 'h');
+        label(207, shift ? 'J' : 'j');
+        label(208, shift ? 'K' : 'k');
+        label(209, shift ? 'L' : 'l');
+        label(210, shift ? ':' : ';');
+        label(211, shift ? '"' : '\'');
+        label(301, shift ? 'Z' : 'z');
+        label(302, shift ? 'X' : 'x');
+        label(303, shift ? 'C' : 'c');
+        label(304, shift ? 'V' : 'v');
+        label(305, shift ? 'B' : 'b');
+        label(306, shift ? 'N' : 'n');
+        label(307, shift ? 'M' : 'm');
+        label(308, shift ? '<' : ',');
+        label(309, shift ? '>' : '.');
+        label(310, shift ? '?' : '/');
+        hold(300, shift);
+        hold(311, control);
       }
       function load() {
         let x = 20;
         let y = 20;
         let c = 0;
         let r = 0;
-        let svg = '<rect x="0" y="0" width="1600" height="470" rx="15" stroke="white" stroke-width="1" fill="#222" />';
+        let svg = '<rect x="0" y="0" width="1050" height="310" rx="15" stroke="white" stroke-width="1" fill="#222" />';
         function key(label, w, small, h) {
           let id = c + r * 100;
           let cls = small ? 'class="small" ' : '';
@@ -138,56 +120,7 @@
           c = 0;
           r++;
         }
-// <kUp>		keypad cursor-up		*keypad-cursor-up*
-// <kDown>		keypad cursor-down		*keypad-cursor-down*
-// <kLeft>		keypad cursor-left		*keypad-cursor-left*
-// <kRight>	keypad cursor-right		*keypad-cursor-right*
-// <kHome>		keypad home (upper left)	*keypad-home*
-// <kEnd>		keypad end (lower left)		*keypad-end*
-// <kOrigin>	keypad origin (middle)		*keypad-origin*
-// <kPageUp>	keypad page-up (upper right)	*keypad-page-up*
-// <kPageDown>	keypad page-down (lower right)	*keypad-page-down*
-// <kDel>		keypad delete			*keypad-delete*
-// <kPlus>		keypad +			*keypad-plus*
-// <kMinus>	keypad -			*keypad-minus*
-// <kMultiply>	keypad *			*keypad-multiply*
-// <kDivide>	keypad /			*keypad-divide*
-// <kPoint>	keypad .			*keypad-point*
-// <kComma>	keypad ,			*keypad-comma*
-// <kEqual>	keypad =			*keypad-equal*
-// <kEnter>	keypad Enter			*keypad-enter*
-// <k0> - <k9>	keypad 0 to 9			*keypad-0* *keypad-9*
-// <M-…>		alt-key or meta-key		*META* *ALT* *<M-*
-// <A-…>		same as <M-…>			*<A-*
-// <T-…>		meta-key when it's not alt	*<T-*
-// <D-…>		command-key or "super" key	*<D-*
         let gap = 30;
-        key('esc');
-        x += 50;
-        key('F1');
-        key('F2');
-        key('F3');
-        key('F4');
-        x += gap;
-        key('F5');
-        key('F6');
-        key('F7');
-        key('F8');
-        x += gap;
-        key('F9');
-        key('F10');
-        key('F11');
-        key('F12');
-        x += gap;
-        key('F13');
-        key('F14');
-        key('F15');
-        x += gap;
-        key('F16');
-        key('F17');
-        key('F18');
-        key('F19');
-        cr(20);
         key('`');
         key('1');
         key('2');
@@ -201,16 +134,7 @@
         key('0');
         key('-');
         key('=');
-        key('backspace', 100, true);
-        x += gap;
-        key('Help', 60, true);
-        key('Undo', 60, true);
-        key('Pause', 60, true);
-        x += gap;
-        key('Num', 60, true);
-        key('/');
-        key('*');
-        key('-');
+        key('delete', 100);
         cr();
         key('tab', 100);
         key('q');
@@ -226,15 +150,6 @@
         key('[');
         key(']');
         key('\\');
-        x += gap;
-        key('Insert', 60, true);
-        key('Home', 60, true);
-        key('PgUp', 60, true);
-        x += gap;
-        key('7');
-        key('8');
-        key('9');
-        key('+', 60, false);
         cr();
         key('caps lock', 130);
         key('a');
@@ -249,15 +164,6 @@
         key(';');
         key('\'');
         key('return', 100);
-        x += 30;
-        key('Delete', 60, true);
-        key('End', 60, true);
-        key('PgDn', 60, true);
-        x += 30;
-        key('4');
-        key('5');
-        key('6');
-        key('=');
         cr();
         key('shift', 160);
         key('z');
@@ -270,28 +176,7 @@
         key(',');
         key('.');
         key('/');
-        key('shift', 140);
-        x += 100;
-        key('↑');
-        x += 100;
-        key('1');
-        key('2');
-        key('3');
-        key("Enter", 60, true, 130);
-        cr();
-        key('control', 130);
-        key('alt');
-        key('', 530);
-        key('command', 150);
-        key('meta', 100);
-        x += gap;
-        key('←');
-        key('↓');
-        key('→');
-        x += 30;
-        key('0');
-        key('.');
-        key(',');
+        key('control', 140);
         document.getElementById('keyboard').innerHTML = svg;
       }
     </script>
@@ -302,6 +187,6 @@
     <!--
     <iframe width="400" height="400" src="https://youtube.com/embed/DMw4tfAUyX0?controls=0&modestbranding=1&showinfo=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     -->
-    <svg id="keyboard" width="100%" height="30%" viewBox="0 0 1600 470"></svg>
+    <svg id="keyboard" width="100%" height="30%" viewBox="0 0 1050 310"></svg>
   </body>
 </html>
