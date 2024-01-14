@@ -400,35 +400,18 @@ let basicMotions7 = // ]] [[ ][ []
       SayWhile ("Combinations of pairs of brackets make navigation pretty quick.", Compound (200, [Move BackSectionStart; Move BackSectionStart; Move BackSectionStart; Move BackSectionStart; Move SectionEnd; Move SectionEnd; Move SectionEnd; Move SectionEnd; Move BackSectionEnd; Move BackSectionEnd; Move BackSectionEnd; Move BackSectionEnd; Move BackSectionEnd; Move SectionEnd; Move SectionEnd; Move SectionEnd; Move SectionEnd; Move SectionEnd]))
       Finish ]
 
-let basicMotions8 = // + -
+let basicMotions8 = // + - <CR>
     [ Launch
       Setup ["def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"; ""; "def fib(n):"; "  if n <= 1:"; "    return n"; "  return fib(n-1) +"; "    fib(n-2)"; ""; "print(fib(7))"]
       Pause 10000
       SetFileType "python"
       Start "Basic Motions 8"
-      SayWhile ("Let's say we're at the end of the first line and we want to move to the start of the next line.", Move EndOfLine)
+      SayWhile ("From anywhere in a line we can move to the start of the next line with plus.", Move BigWord)
+      SayWhile ("This moves down a line and to the first non-blank character.", Compound (400, [Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; ]))
       Pause 800
-      SayWhile ("We could move down with J...", Move Down)
-      Pause 800
-      SayWhile ("... then to the first non-blank character with carrot.", Move StartOfLine)
-      Pause 800
-      SayWhile ("And again, down...", Move Down)
-      Pause 500
-      SayWhile ("... then start of line.", Move StartOfLine)
-      Pause 500
-      SayWhile ("Down...", Move Down)
-      Pause 500
-      SayWhile ("... start.", Move StartOfLine)
-      Pause 500
-      SayWhile ("And the same idea to move up to the start of each line.", Compound (800, [Move Up; Move StartOfLine; Move Up; Move StartOfLine; Move Up; Move StartOfLine]))
-      Pause 800
-      Say "This is pretty tedious and is common enough that there are single keys for this!"
-      Pause 800
-      Say "Plus and minus do exactly this."
-      Pause 800
-      SayWhile ("Plus to move down.", Compound (400, [Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; Move StartOfNextLine; ]))
-      Pause 800
-      SayWhile ("And minus to move up.", Compound (400, [Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; ]))
+      SayWhile ("Pressing Enter also does this, and without needing to hold shift.", Compound (400, [Move StartOfNextLineCR; Move StartOfNextLineCR; Move StartOfNextLineCR; Move StartOfNextLineCR; ]))
+      SayWhile ("The minus key moves up.", Compound (300, [Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; ]))
+      Say "Easy enough!"
       Finish ]
 
 let matchingPairs = // %
@@ -555,13 +538,15 @@ let findCharacter = // f t F T ; ,
       Say "This is a slick way to move around!"
       Finish ]
 
-let search = // * # n N / ?
+let search = // * # n N / ?  /<cr>  ?<cr>
     [ Launch
       Setup [""; ""; "def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"; ""; "def fib(n):"; "  if n <= 1:"; "    return n"; "  return fib(n-1) +"; "    fib(n-2)"; ""; "print(fib(7))"]
+      Pause 4000
       Move TopOfDocument
       Move Down
       Move Down
       Move Word
+      Pause 1000
       SetFileType "python"
       Text ":set nohls"; Enter; Text ":"; Esc
       Start "Search"
@@ -596,20 +581,23 @@ let search = // * # n N / ?
       Move TopOfDocument
       Say "We can also search for anything we like by pressing slash."
       Key ("/", "search", "/")
-      Say "And entering a search term"
+      Say "And entering a search pattern"
       Text "fib"
       Say "Pressing enter takes us there."
       Enter
       SayWhile ("Pressing N and shift N cycles through the matches.", Compound (500, [Move SearchNext; Move SearchNext; Move SearchNext; Move SearchPrev; Move SearchPrev; Move SearchPrev]) )
       Pause 1000
-      Say "Finally, we can search in reverse by pressing question mark"
+      Say "Finally, we can search in reverse by pressing question mark and a pattern"
       Key ("⇧?", "search", "?")
       Pause 100
       Text "fact"
       Pause 1000
       Enter
       Pause 1000
-      SayWhile ("Searching with star and hash, or with slash and question mark, and navigating the results with N and shift N is a powerful way to find our way around!", Compound(800, [Move SearchNext; Move SearchNext; Move SearchNext; Move SearchPrev; Move SearchPrev; Move SearchPrev]))
+      SayWhile ("Slash enter or question enter, without a search term...", Key ("/", "search", "/"))
+      SayWhile ("...re-executes the last search.", Enter)
+      Pause 1000
+      SayWhile ("This is a powerful way to find our way around!", Compound(800, [Move SearchNext; Move SearchNext; Move SearchNext; Move SearchPrev; Move SearchPrev; Move SearchPrev]))
       Finish ]
 
 let joinLines = // J gJ
@@ -772,6 +760,53 @@ let changingCase = // ~ g~ gu gU  (combined with visual or motion)
      SayWhile ("Or G followed by lowercase U to make it lowercase.", LowerCase)
      Finish ]
 
+let marks = // m ' ` '' `
+   [ Launch
+     Text ":e animal.py"; Enter // from samples/animal
+     Text ":set nowrap"; Enter
+     SetFileType "python"
+     Move Down; Move Down
+     Start "Marks"
+     Say "We're working on a little animal guessing game! We might want to come back to these animal questions..."
+     SayWhile ("...so let's mark them as A for animal with M A.", Mark 'a')
+     Say "Marks can be any letter."
+     Compound (200, [Move Paragraph; Move Down; ZoomTop; Move Word])
+     Pause 800
+     SayWhile ("Let's mark this guess function with G for guess, with M G.", Mark 'g')
+     SayWhile ("We can jump back to the animals with tick A.", Move (GoToMark 'a'))
+     SayWhile ("And back down to the guess line with tick G.", Move (GoToMark 'g'))
+     SayWhile ("If we use backtick G instead it takes us to the exact column.", Move (GoToMarkChar 'g'))
+     SayWhile ("We can jump back and forth easily.", (Compound (1000, [Move (GoToMark 'a'); Move (GoToMark 'g')])))
+     Pause 800
+     SayWhile ("If we mark this with M Shift G, then the mark is global and works across files!", Mark 'G')
+     SayWhile ("Maybe we want to leave this file...", Compound (300, [Move TopOfDocument; Move Word]))
+     SayWhile ("... to look at the Node class.", GoToFile)
+     Pause 500
+     Say "We can go back to guess in the first file with tick Shift G."
+     Move (GoToMark 'G')
+     Pause 1000
+     Say "Super convenient way to jump around a project!"
+     Pause 30000
+     Finish ]
+
+let goToLineColumn = // #G #|
+    [ Launch
+      Pause 5000
+      Setup ["# Grocery List"; ""; "## Fruits"; ""; "- Apples"; "- Bananas"; "- Citrus"; "  - Oranges"; "  - Lemons"; "- Berries"; "  - Strawberries"; "  - Blueberries"; ""; "## Vegetables"; ""; "- Leafy Greens"; "  - Spinach"; "  - Kale"; "- Root Vegetables"; "  - Carrots"; "  - Potatoes"; ""; "### Dairy"; ""; "- Milk"; "- Cheese"; "- Yogurt"; ""; "### Bakery"; ""; "- Bread"; "  - Wheat"; "  - Rye"; "- Pastries"; ""; "## Meat"; ""; "- Chicken"; "- Beef"; "- Pork"]
+      SetFileType "markdown"
+      Start "Go To Line/Column"
+      Say "We can quickly jump to a particular line by entering the line number followed by shift G."
+      SayWhile ("For example, line 12", Move (GoToLine 12))
+      Pause 800
+      SayWhile ("... or, line 18", Move (GoToLine 18))
+      SayWhile ("The same can be done as a command, with colon eighteen, enter", Text ":18")
+      Enter
+      Say "But this is more keystrokes!"
+      Pause 800
+      Say "We can also go to a particular column with a number followed by pipe."
+      Move (GoToColumn 7)
+      Say "This makes it very easy to jump to particular points in a document."
+      Finish ]
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
 //  Basic Motions 3  W B E gE
@@ -779,28 +814,30 @@ let changingCase = // ~ g~ gu gU  (combined with visual or motion)
 //  Basic Motions 5  H L M gg G
 //  Basic Motions 6  ) ( } {
 //  Basic Motions 7  ]] [[ ][ []
-//  Basic Motions 8  + -
+//  Basic Motions 8  + - <CR>
 //  Matching  %
 //  Underscore  _  (Just like carrot except with count)
 //  Find  f F t T ; ,
-//  Search  * # n N / ?
+//  Search  * # n N / ?  /<cr>  ?<cr>
 //  Join  J gJ
 //  Quitting   :q :q! ZQ  :wq :x ZZ  ^z  fg
 //  Reverting  :e!
 //  Scrolling  ^e ^y zt zb zz  ^d ^u ^f ^b
 //  Case  ~ g~ gu gU  (combined with visual or motion)
-
+//  Go to line/column #G #|
 //  Mark  m ' ` '' ``
+
+//  Scroll plus first column z<CR> z. z-
 //  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
 //  Visual  v V ^v o gv '< '>  (bad habit possibly)
 //  Undo  u U ^r
 //  Dot  .
 //  Insert  i a I A o O ⎋  (thick cursor, before/after)
-//  Delete/Yank/Put  d dd D y yy Y p P
+//  Delete/Yank/Put  d dd D y yy Y p P  (line behavior)
 //  Change/Substitute  c cc C s S
 //  Delete char/Replace  x X r R  (replace with <CR> to break lines -- removes trailing space)
 //  Macros  q @ @@
-//  Indenting  < <<  >>  :set
+//  Indenting  < <<  >>  :set  (^t ^d in insert)
 //  Commands  :
 //  Registers  "
 //  Formatting  = ==
@@ -815,5 +852,12 @@ let changingCase = // ~ g~ gu gU  (combined with visual or motion)
 //  Surround?
 //  :noremap ^ _  :nmap _ i <esc>
 //  Unexpected motions: f{char} /foo
-//  Vertical inserts (includding ragged edge)
+//  Vertical inserts (including ragged edge)
 //  Interacting with the shell:  :w !{cmd}  :r !{cmd}  !  !!  ^z
+//  Go to file/address gf gx
+//  Horizontal scroll zL zH
+//  Special marks '< '> '. etc.
+//  Go to last insert gi
+//  Patterns ddp Dp yyp Yp xp etc.
+//  Traverse change list g; g,
+//  Jumps ^o ^i etc.
