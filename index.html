@@ -4,7 +4,7 @@
     <title>VimFu Fun!</title>
     <style>
     body { background: black; text-align: center; }
-    h1, a { font-family: sans-serif; color: white; }
+    h1, h3, h5, a { font-family: sans-serif; color: white; }
     .key {
       stroke: white;
       stroke-width: 0.25px;
@@ -22,45 +22,97 @@
       fill: white;
       cursor: pointer;
       pointer-events: none;
-      content: "foo";
     }
 
     text.small {
       font-size: medium;
     }
     </style>
+    <script src="keys.js"></script>
     <script>
       let shift = false;
       let control = false;
+      let current = -1;
+      let secondary = -1;
       function show(key) {
+        function note(key) {
+          let map = keys.normal[key];
+          if (map) {
+            document.getElementById('note').innerText = map.name ?? 'No mapping';
+            let desc = map.description ?? 'No mapping';
+            let info = map.form ? map.form  : '';
+            if (map.categories) {
+              for (let i in map.categories) {
+                info += ' ' + map.categories[i];
+              }
+            }
+            if (map.synonyms) {
+              for (let i in map.synonyms) {
+                info += ' ' + map.synonyms[i];
+              }
+            }
+            document.getElementById('description').innerText = desc;
+            document.getElementById('info').innerText = info;
+          } else {
+            document.getElementById('note').innerText = 'Not used';
+            document.getElementById('description').innerText = '';
+            document.getElementById('info').innerText = '';
+          }
+          let vid = document.getElementById('video');
+          if (map && map.video) { // TODO
+            vid.style.display = '';
+            vid.src = 'https://youtube.com/embed/' + map.video + '?controls=0&modestbranding=1&showinfo=0';
+          } else {
+            vid.style.display = 'none';
+          }
+        }
         function label(key, text) {
-          document.getElementById('t' + key).textContent = (control ? '⌃' : '') + text;
+          let lbl = (control ? '⌃' : '') + text;
+          if (current == key) note(lbl);
+          document.getElementById('t' + key).textContent = lbl;
         }
         function hold(key, held) {
             document.getElementById('k' + key).style.fill = held ? '#f92672' : '#000';
         }
-        //alert('Key: ' + key);
+        function select() {
+          if (current >= 0) {
+            let k = document.getElementById('k' + current);
+            k.style.fill = '#000';
+            k.style.stroke = '';
+            k.style.strokeWidth = '';
+            document.getElementById('t' + current).style.fill = '#fff';
+          }
+          current = key;
+          let k = document.getElementById('k' + current);
+          k.style.fill = '#a6e22e';
+          k.style.stroke = '#a6e22e';
+          k.style.strokeWidth = '2px';
+          document.getElementById('t' + current).style.fill = '#000';
+        }
         switch (key) {
+          case 200: // control
+            control = !control;
+            break;
           case 300: // shift
             shift = !shift;
             break;
-          case 311: // control
-            control = !control;
+          default:
+            select(key);
             break;
         }
-        label(  0, shift ? '~' : '`');
-        label(  1, shift ? '!' : '1');
-        label(  2, shift ? '@' : '2');
-        label(  3, shift ? '#' : '3');
-        label(  4, shift ? '$' : '4');
-        label(  5, shift ? '%' : '5');
-        label(  6, shift ? '^' : '6');
-        label(  7, shift ? '&' : '7');
-        label(  8, shift ? '*' : '8');
-        label(  9, shift ? '(' : '9');
-        label( 10, shift ? ')' : '0');
-        label( 11, shift ? '_' : '-');
-        label( 12, shift ? '+' : '=');
+        label(  1, shift ? '~' : '`');
+        label(  2, shift ? '!' : '1');
+        label(  3, shift ? '@' : '2');
+        label(  4, shift ? '#' : '3');
+        label(  5, shift ? '$' : '4');
+        label(  6, shift ? '%' : '5');
+        label(  7, shift ? '^' : '6');
+        label(  8, shift ? '&' : '7');
+        label(  9, shift ? '*' : '8');
+        label( 10, shift ? '(' : '9');
+        label( 11, shift ? ')' : '0');
+        label( 12, shift ? '_' : '-');
+        label( 13, shift ? '+' : '=');
         label(101, shift ? 'Q' : 'q');
         label(102, shift ? 'W' : 'w');
         label(103, shift ? 'E' : 'e');
@@ -95,15 +147,15 @@
         label(308, shift ? '<' : ',');
         label(309, shift ? '>' : '.');
         label(310, shift ? '?' : '/');
+        hold(200, control);
         hold(300, shift);
-        hold(311, control);
       }
       function load() {
         let x = 20;
         let y = 20;
         let c = 0;
         let r = 0;
-        let svg = '<rect x="0" y="0" width="1050" height="310" rx="15" stroke="white" stroke-width="1" fill="#222" />';
+        let svg = '<rect x="0" y="0" width="1080" height="310" rx="15" fill="#222" />';
         function key(label, w, small, h) {
           let id = c + r * 100;
           let cls = small ? 'class="small" ' : '';
@@ -121,6 +173,7 @@
           r++;
         }
         let gap = 30;
+        key('esc');
         key('`');
         key('1');
         key('2');
@@ -134,9 +187,9 @@
         key('0');
         key('-');
         key('=');
-        key('delete', 100);
+        key('⌫');
         cr();
-        key('tab', 100);
+        key('tab', 130);
         key('q');
         key('w');
         key('e');
@@ -151,7 +204,7 @@
         key(']');
         key('\\');
         cr();
-        key('caps lock', 130);
+        key('control', 160);
         key('a');
         key('s');
         key('d');
@@ -165,7 +218,7 @@
         key('\'');
         key('return', 100);
         cr();
-        key('shift', 160);
+        key('shift ⇧', 190);
         key('z');
         key('x');
         key('c');
@@ -176,17 +229,31 @@
         key(',');
         key('.');
         key('/');
-        key('control', 140);
+        key('space', 140);
         document.getElementById('keyboard').innerHTML = svg;
       }
     </script>
   </head>
     <body onload="load()">
-    <img src="Monkey.png" width="200" height="200" />
-    <h1>Coming soon...</h1>
-    <!--
-    <iframe width="400" height="400" src="https://youtube.com/embed/DMw4tfAUyX0?controls=0&modestbranding=1&showinfo=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-    -->
-    <svg id="keyboard" width="100%" height="30%" viewBox="0 0 1050 310"></svg>
+    <table width="100%">
+      <tr>
+        <td>
+          <img src="Monkey.png" width="200" height="200" />
+        </td>
+        <td width="100%">
+          <h1 id="note">Coming soon...</h1>
+          <h3 id="description"></h3>
+          <h5 id="info"></h5>
+        </td>
+        <td>
+          <!--iframe id="video" style="display:none" width="400" height="400" src="https://youtube.com/embed/xx2u40RQyqo?controls=0&modestbranding=1&showinfo=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe-->
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <svg id="keyboard" width="100%" height="30%" viewBox="0 0 1080 310"></svg>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>
