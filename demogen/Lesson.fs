@@ -832,15 +832,15 @@ let goToLineColumn = // #G #|
 //  Visual  v V ^v o gv '< '>  (bad habit possibly)
 //  Undo  u U ^r
 //  Dot  .
-//  Insert  i a I A o O ⎋  (thick cursor, before/after)
+//  Insert  i a I A o O gi gI ⎋  (thick cursor, before/after)
 //  Delete/Yank/Put  d dd D y yy Y p P  (line behavior)
 //  Change/Substitute  c cc C s S
 //  Delete char/Replace  x X r R  (replace with <CR> to break lines -- removes trailing space)
 //  Macros  q @ @@
 //  Indenting  < <<  >>  :set  (^t ^d in insert)
+//  Formatting  = ==
 //  Commands  :
 //  Registers  "
-//  Formatting  = ==
 //  Leader  \
 //  Search & Replace  :s/foo/bar & :%s/foo/bar  also n.n. trick
 //  Advanced 1  !
@@ -857,7 +857,7 @@ let goToLineColumn = // #G #|
 //  Go to file/address gf gx
 //  Horizontal scroll zL zH
 //  Special marks '< '> '. etc.
-//  Go to last insert gi
+//  Go to last insert/first column gi gI
 //  Patterns ddp Dp yyp Yp xp etc.
 //  Traverse change list g; g,
 //  Jumps ^o ^i etc.
