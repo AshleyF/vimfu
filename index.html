@@ -35,8 +35,18 @@
       let current = -1;
       let secondary = -1;
       function show(key) {
+        function vimKey(key) {
+          switch (key) {
+            case 'esc': return '<Esc>';
+            case '⌫': return '<BS>';
+            case 'tab': return '<Tab>';
+            case 'return': return '<CR>';
+            case 'space': return '<Space>';
+            default: return key;
+          }
+        }
         function note(key) {
-          let map = keys.normal[key];
+          let map = keys.normal[vimKey(key)];
           if (map) {
             document.getElementById('note').innerText = map.name ?? 'No mapping';
             let desc = map.description ?? 'No mapping';
@@ -55,12 +65,12 @@
             document.getElementById('info').innerText = info;
           } else {
             document.getElementById('note').innerText = 'Not used';
-            document.getElementById('description').innerText = '&nbsp;';
-            document.getElementById('info').innerText = '&nbsp;';
+            document.getElementById('description').innerHTML = '&nbsp;';
+            document.getElementById('info').innerHTML = '&nbsp;';
           }
         }
         function label(key, text) {
-          let lbl = (control ? '⌃' : '') + text;
+          let lbl = (control ? '^' : '') + text;
           if (current == key) note(lbl);
           document.getElementById('t' + key).textContent = lbl;
         }
@@ -93,6 +103,7 @@
             select(key);
             break;
         }
+        label(  0, shift ? 'esc' : 'esc');
         label(  1, shift ? '~' : '`');
         label(  2, shift ? '!' : '1');
         label(  3, shift ? '@' : '2');
@@ -106,6 +117,8 @@
         label( 11, shift ? ')' : '0');
         label( 12, shift ? '_' : '-');
         label( 13, shift ? '+' : '=');
+        label( 14, shift ? '⌫' : '⌫');
+        label(100, shift ? 'tab' : 'tab');
         label(101, shift ? 'Q' : 'q');
         label(102, shift ? 'W' : 'w');
         label(103, shift ? 'E' : 'e');
@@ -130,6 +143,7 @@
         label(209, shift ? 'L' : 'l');
         label(210, shift ? ':' : ';');
         label(211, shift ? '"' : '\'');
+        label(212, shift ? 'return' : 'return');
         label(301, shift ? 'Z' : 'z');
         label(302, shift ? 'X' : 'x');
         label(303, shift ? 'C' : 'c');
@@ -140,6 +154,7 @@
         label(308, shift ? '<' : ',');
         label(309, shift ? '>' : '.');
         label(310, shift ? '?' : '/');
+        label(311, shift ? 'space' : 'space');
         hold(200, control);
         hold(300, shift);
       }

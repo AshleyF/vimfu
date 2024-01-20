@@ -152,52 +152,6 @@ commands in completion mode (see |popupmenu-keys|)
 
 ## Normal Mode
 
-CHAR	 any non-blank character
-WORD	 a sequence of non-blank characters
-N	 a number entered before the command
-{motion} a cursor movement command
-Nmove	 the text that is moved over with a {motion}
-SECTION	 a section that possibly starts with '}' instead of '{'
-
-note: 1 = cursor movement command; 2 = can be undone/redone
-
-		CTRL-@		   not used
-|CTRL-A|	CTRL-A		2  add N to number at/after cursor
-|CTRL-B|	CTRL-B		1  scroll N screens Backwards
-|CTRL-C|	CTRL-C		   interrupt current (search) command
-|CTRL-D|	CTRL-D		   scroll Down N lines (default: half a screen)
-|CTRL-E|	CTRL-E		   scroll N lines upwards (N lines Extra)
-|CTRL-F|	CTRL-F		1  scroll N screens Forward
-|CTRL-G|	CTRL-G		   display current file name and position
-|CTRL-H|	CTRL-H		1  same as "h"
-|CTRL-I|	CTRL-I		1  same as <Tab>
-|CTRL-J|	CTRL-J		1  same as "j"
-		CTRL-K		   not used
-|CTRL-L|	CTRL-L		   redraw screen
-|CTRL-M|	CTRL-M		1  same as <CR>
-|CTRL-N|	CTRL-N		1  same as "j"
-|CTRL-O|	CTRL-O		1  go to N older entry in jump list
-|CTRL-P|	CTRL-P		1  same as "k"
-		CTRL-Q		   not used, or used for terminal control flow
-|CTRL-R|	CTRL-R		2  redo changes which were undone with 'u'
-		CTRL-S		   not used, or used for terminal control flow
-|CTRL-T|	CTRL-T		   jump to N older Tag in tag list
-|CTRL-U|	CTRL-U		   scroll N lines Upwards (default: half a screen)
-|CTRL-V|	CTRL-V		   start blockwise Visual mode
-|CTRL-W|	CTRL-W {char}	   window commands, see |CTRL-W|
-|CTRL-X|	CTRL-X		2  subtract N from number at/after cursor
-|CTRL-Y|	CTRL-Y		   scroll N lines downwards
-|CTRL-Z|	CTRL-Z		   suspend program (or start new shell)
-		CTRL-[ <Esc>	   not used
-|CTRL-\_CTRL-N|	CTRL-\ CTRL-N	   go to Normal mode (no-op)
-|CTRL-\_CTRL-G|	CTRL-\ CTRL-G	   go to Normal mode (no-op)
-		CTRL-\ a - z	   reserved for extensions
-		CTRL-\ others	   not used
-|CTRL-]|	CTRL-]		   :ta to ident under cursor
-|CTRL-^|	CTRL-^		   edit Nth alternate file (equivalent to ":e #N")
-|CTRL-<Tab>|	CTRL-<Tab>	   same as `g<Tab>` : go to last accessed tab page
-		CTRL-_		   not used
-
 |<Left>|	<Left>		1  same as "h"
 |<Down>|	<Down>		1  same as "j"
 |<Up>|		<Up>		1  same as "k"
@@ -360,50 +314,10 @@ note: 1 = cursor movement command; 2 = can be undone/redone
 
 |[_CTRL-D|	[ CTRL-D	   jump to first #define found in current and included files matching the word under the cursor, start searching at beginning of current file
 |[_CTRL-I|	[ CTRL-I	   jump to first line in current and included files that contains the word under the cursor, start searching at beginning of current file
-|[#|		[#		1  cursor to N previous unmatched #if, #else or #ifdef
-|['|		['		1  cursor to previous lowercase mark, on first non-blank
-|[(|		[(		1  cursor N times back to unmatched '('
-|[star|		[*		1  same as "[/"
-|[`|		[`		1  cursor to previous lowercase mark
-|[/|		[/		1  cursor to N previous start of a C comment
-|[D|		[D		   list all defines found in current and included files matching the word under the cursor, start searching at beginning of current file
-|[I|		[I		   list all lines found in current and included files that contain the word under the cursor, start searching at beginning of current file
-|[P|		[P		2  same as "[p"
-|[[|		[[		1  cursor N sections backward
-|[]|		[]		1  cursor N SECTIONS backward
-|[c|		[c		1  cursor N times backwards to start of change
-|[d|		[d		   show first #define found in current and included files matching the word under the cursor, start searching at beginning of current file
-|[f|		[f		   same as "gf"
-|[i|		[i		   show first line found in current and included files that contains the word under the cursor, start searching at beginning of current file
-|[m|		[m		1  cursor N times back to start of member function
-|[p|		[p		2  like "P", but adjust indent to current line
-|[s|		[s		1  move to the previous misspelled word
-|[z|		[z		1  move to start of open fold
-|[{|		[{		1  cursor N times back to unmatched '{'
 |[<MiddleMouse>| [<MiddleMouse>	2  same as "[p"
 
 |]_CTRL-D|	] CTRL-D	   jump to first #define found in current and included files matching the word under the cursor, start searching at cursor position
 |]_CTRL-I|	] CTRL-I	   jump to first line in current and included files that contains the word under the cursor, start searching at cursor position
-|]#|		]#		1  cursor to N next unmatched #endif or #else
-|]'|		]'		1  cursor to next lowercase mark, on first non-blank
-|])|		])		1  cursor N times forward to unmatched ')'
-|]star|		]*		1  same as "]/"
-|]`|		]`		1  cursor to next lowercase mark
-|]/|		]/		1  cursor to N next end of a C comment
-|]D|		]D		   list all #defines found in current and included files matching the word under the cursor, start searching at cursor position
-|]I|		]I		   list all lines found in current and included files that contain the word under the cursor, start searching at cursor position
-|]P|		]P		2  same as "[p"
-|][|		][		1  cursor N SECTIONS forward
-|]]|		]]		1  cursor N sections forward
-|]c|		]c		1  cursor N times forward to start of change
-|]d|		]d		   show first #define found in current and included files matching the word under the cursor, start searching at cursor position
-|]f|		]f		   same as "gf"
-|]i|		]i		   show first line found in current and included files that contains the word under the cursor, start searching at cursor position
-|]m|		]m		1  cursor N times forward to end of member function
-|]p|		]p		2  like "p", but adjust indent to current line
-|]s|		]s		1  move to next misspelled word
-|]z|		]z		1  move to end of open fold
-|]}|		]}		1  cursor N times forward to unmatched '}'
 |]<MiddleMouse>| ]<MiddleMouse>	2  same as "]p"
 
 ## 'g' Commands
