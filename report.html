@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>VimFu Report</title>
+    <style>
+    body { font-family: sans-serif; text-align: center; }
+    </style>
+    <script src="keys.js"></script>
+    <script>
+      function load() {
+        // covered in videos
+        let filter = {};
+        Object.keys(keys.videos).forEach(k => {
+          let vid = keys.videos[k];
+          if (vid.keys) {
+            vid.keys.forEach(k => {
+              filter[k] = true;
+            });
+          }
+        });
+        filter = {};
+        // build table
+        let count = 0;
+        let htm = '<table>';
+        Object.keys(keys.normal).forEach(k => {
+          let key = keys.normal[k];
+          if (!filter[k]) {
+            count++;
+            htm += '<tr>'
+            htm += '<td align="right">' + key.form.replace('<', '&lt;').replace('>', '&gt;') + '</td><td>' + key.name + '</td><td align="left">' + key.description + '</td>';
+            htm += '</tr>'
+          }
+        });
+        document.getElementById('report').innerText = 'All (' + count + ')';
+        document.getElementById('normal').innerHTML = htm;
+      }
+    </script>
+  </head>
+  <body onload="load()">
+    <h1 id="report"></h1>
+    <div id="normal"></div>
+  </body>
+</html>

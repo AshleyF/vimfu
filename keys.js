@@ -6,8 +6,8 @@ let keys = {
     'cc': { form: '["x]cc', name: 'Change line', description: 'Delete N lines [into register x] and start insert.' },
     'd': { form: '["x]d{motion}', name: 'Delete', description: 'Delete Nmove text [into register x].' },
     'dd': { form: '["x]dd', name: 'Delete line', description: 'Delete N lines [into register x].' },
-    'do': { form: 'do', name: 'Diff get', description: 'Modify the current buffer to undo difference with another buffer.', synomyms: [':diffget'] },
-    'dp': { form: 'dp', name: 'Diff put', description: 'Modify another buffer to undo difference with the current buffer.', synonyms: [':diffput'] },
+    'do': { form: 'do', name: 'Diff get', description: 'Modify the current buffer to undo difference with another buffer. Same as `:diffget`.' },
+    'dp': { form: 'dp', name: 'Diff put', description: 'Modify another buffer to undo difference with the current buffer. Same as `:diffput`.' },
     'e': { form: 'e', name: 'End word', description: 'Cursor forward to the end of word N.', categories: ['motion'] },
     'f': { form: 'f{char}', name: 'Find char', description: 'Cursor to Nth occurrence of {char} to the right.', categories: ['motion'] },
     'ga': { form: 'ga', name: 'Char value under cursor', description: 'Print ascii value of character under the cursor.' },
@@ -15,7 +15,7 @@ let keys = {
     'gd': { form: 'gd', name: 'Go to definition', description: 'Go to definition of word under the cursor in current function.', categories: ['motion'] },
     'ge': { form: 'ge', name: 'Go previous end word', description: 'Go backwards to the end of the previous word.', categories: ['motion'] },
     'gf': { form: 'gf', name: 'Go to file', description: 'Start editing the file whose name is under the cursor.' },
-    'gg': { form: 'gg', name: 'Go to line', description: 'Cursor to line N, default first line.' },
+    'gg': { form: 'gg', name: 'Go to line/beginning', description: 'Cursor to line N, default first line.' },
     'gh': { form: 'gh', name: 'Select mode', description: 'Start Select mode (uncommon mode to select with arrows and overtype).' },
     'gi': { form: 'gi', name: 'Insert mode at previous', description: 'Like `i`, but first move to the `\'^` mark.' },
     'gj': { form: 'gj', name: 'Down screen line', description: 'Like `j`, but when `wrap` on go N screen lines down.', categories: ['motion'] },
@@ -73,10 +73,11 @@ let keys = {
     'g_': { form: 'g_', name: 'End of line', description: 'Cursor to the last CHAR N - 1 lines lower.' },
     'g@': { form: 'g@{motion}', name: 'Call operatorfunc', description: 'Call `operatorfunc`.' },
     'g~': { form: 'g~{motion}', name: 'Toggle case', description: 'Swap case for Nmove text.' },
-    'h': { form: 'h', name: 'Left', description: 'Cursor N chars to the left.', synomyms: ['^h'], categories: ['motion'] },
+    'g<Tab>': { form: 'g<Tab>', name: 'Go to tab', description: 'Go to last accessed tab page.' },
+    'h': { form: 'h', name: 'Left', description: 'Cursor N chars to the left.', categories: ['motion'] },
     'i': { form: 'i', name: 'Insert', description: 'Insert text before the cursor N times.' },
-    'j': { form: 'j', name: 'Down', description: 'Cursor N lines downward.', synonyms: ['^j', '^n'], categories: ['motion'] },
-    'k': { form: 'k', name: 'Up', description: 'Cursor N lines upward.', synonyms: ['^p'], categories: ['motion'] },
+    'j': { form: 'j', name: 'Down', description: 'Cursor N lines downward.', categories: ['motion'] },
+    'k': { form: 'k', name: 'Up', description: 'Cursor N lines upward.', categories: ['motion'] },
     'l': { form: 'l', name: 'Right', description: 'Cursor N chars to the right.', categories: ['motion'] },
     'm': { form: 'm{A-Za-z}', name: 'Mark', description: 'Set mark {A-Za-z} at cursor position. Uppercase marks are global.' },
     'n': { form: 'n', name: 'Find next', description: 'Repeat the latest `/` or `?` N times.', categories: ['motion'] },
@@ -148,11 +149,11 @@ let keys = {
     'z^': { form: 'z^', name: 'Scroll line above top', description: 'Cursor on line N (default line above window), otherwise like "z-".' },
     'A': { form: 'A', name: 'Append after line', description: 'Append text after the end of the line N times.' },
     'B': { form: 'B', name: 'Back WORD', description: 'Cursor N WORDS backward.', categories: ['motion'] },
-    'C': { form: '["x]C', name: 'Change line', description: 'Change from the cursor position to the end of the line, and N-1 more lines [into register x]', synonyms: ['c$'] },
-    'D': { form: '["x]D', name: 'Delete line', description: 'Delete the characters under the cursor until the end of the line and N-1 more lines [into register x]', synonyms: ['d$'] },
+    'C': { form: '["x]C', name: 'Change line', description: 'Change from the cursor position to the end of the line, and N-1 more lines [into register x]' },
+    'D': { form: '["x]D', name: 'Delete line', description: 'Delete the characters under the cursor until the end of the line and N-1 more lines [into register x]' },
     'E': { form: 'E', name: 'End WORD', description: 'Cursor forward to the end of WORD N.', categories: ['motion'] },
     'F': { form: 'F{char}', name: 'Find char reverse', description: 'Cursor to the Nth occurrence of {char} to the left.', categories: ['motion'] },
-    'G': { form: 'G', name: 'Go to line', description: 'Cursor to line N, default last line.', categories: ['motion'] },
+    'G': { form: 'G', name: 'Go to line/end', description: 'Cursor to line N, default last line.', categories: ['motion'] },
     'H': { form: 'H', name: 'Highest line', description: 'Cursor to line N from top of screen.', categories: ['motion'] },
     'I': { form: 'I', name: 'Insert before line', description: 'Insert text before the first CHAR on the line N times.' },
     'J': { form: 'J', name: 'Join line', description: 'Join N lines; default is 2.' },
@@ -164,13 +165,13 @@ let keys = {
     'P': { form: '["x]P', name: 'Put before', description: 'Put the text [from register x] before the cursor N times.' },
     'Q': { form: 'Q', name: 'Ex mode', description: 'Switch to Ex mode.' },
     'R': { form: 'R', name: 'Replay overtype', description: 'Enter replace mode: overtype existing characters, repeat the entered text N-1 times.' },
-    'S': { form: '["x]S', name: 'Substitute line', description: 'Delete N lines [into register x] and start insert', synonyms: ['cc'] },
+    'S': { form: '["x]S', name: 'Substitute line', description: 'Delete N lines [into register x] and start insert' },
     'T': { form: 'T{char}', name: 'Find to char reverse', description: 'Cursor till after Nth occurrence of {char} to the left.', categories: ['motion'] },
     'U': { form: 'U', name: 'Undo line', description: 'Undo all latest changes on one line.' },
     'V': { form: 'V', name: 'Visual line mode', description: 'Start linewise Visual mode.' },
     'W': { form: 'W', name: 'WORD', description: 'Cursor N WORDS forward.', categories: ['motion'] },
     'X': { form: '["x]X', name: 'Delete char', description: 'Delete N characters before the cursor [into register x].' },
-    'Y': { form: '["x]Y', name: 'Yank line', description: 'Yank N lines [into register x]; synonym for "yy" Note: Mapped to "y$" by default. |default-mappings|.' },
+    'Y': { form: '["x]Y', name: 'Yank line', description: 'Yank N lines [into register x]. |default-mappings|.' },
     'ZZ': { form: 'ZZ', name: 'Write and close', description: 'Write if buffer changed and close window.' },
     'ZQ': { form: 'ZQ', name: 'Clise without writing', description: 'Close window without writing.' },
     '!': { form: '!{motion}{filter}', name: 'Filter', description: 'Filter Nmove text through the {filter} command.' },
@@ -196,7 +197,7 @@ let keys = {
     "'.": { form: "'.", name: 'To last change line', description: 'To the position where the last change was made.', categories: ['motion'] },
     '(': { form: '(', name: 'Back sentence', description: 'Cursor N sentences backward.', categories: ['motion'] },
     ')': { form: ')', name: 'Sentence', description: 'Cursor N sentences forward.', categories: ['motion'] },
-    '+': { form: '+', name: 'Start of lower line', description: 'Cursor to the first CHAR N lines lower.', synonyms: ['<CR>'], categories: ['motion'] },
+    '+': { form: '+', name: 'Start of lower line', description: 'Cursor to the first CHAR N lines lower.', categories: ['motion'] },
     ',': { form: ',', name: 'Find previous', description: 'Repeat latest f, t, F or T in opposite direction N times.', categories: ['motion'] },
     '-': { form: '-', name: 'Start of higher line', description: 'Cursor to the first CHAR N lines higher.', categories: ['motion'] },
     '.': { form: '.', name: 'Repeat action', description: 'Repeat last change with count replaced with N.' },
@@ -233,18 +234,18 @@ let keys = {
     '](': { form: '](', name: 'Next (', description: 'Cursor N times forward to next unmatched `(`.', categories: ['motion'] },
     '[{': { form: '[{', name: 'Previous {', description: 'Cursor N times back to unmatched `{`.', categories: ['motion'] },
     ']{': { form: ']{', name: 'Next {', description: 'Cursor N times forward to unmatched `}`.', categories: ['motion'] },
-    '[*': { form: '[*', name: 'Previous comment', description: 'Cursor to N previous start of a C comment.', synomyms: ['[/'], categories: ['motion'] },
-    ']*': { form: ']*', name: 'Next comment', description: 'Cursor to N next end of a C comment.', synomyms: [']/'], categories: ['motion'] },
+    '[*': { form: '[*', name: 'Previous comment', description: 'Cursor to N previous start of a C comment.', categories: ['motion'] },
+    ']*': { form: ']*', name: 'Next comment', description: 'Cursor to N next end of a C comment.', categories: ['motion'] },
     '[/': { form: '[/', name: 'Previous comment', description: 'Cursor to N previous start of a C comment.', categories: ['motion'] },
     ']/': { form: ']/', name: 'Next comment', description: 'Cursor to N next end of a C comment.', categories: ['motion'] },
     '[c': { form: '[c', name: 'Start of Change', description: 'Cursor N times backwards to start of change.', categories: ['motion'] },
     ']c': { form: ']c', name: 'End of Change', description: 'Cursor N times forwards to end of change.', categories: ['motion'] },
-    '[d': { form: '[d', name: 'Show #define', description: 'Show first #define found in current and included files matching the word under the cursor, start searching at beginning of current file.', synomyms: [']d'] },
-    ']d': { form: ']d', name: 'Show #define', description: 'Show first #define found in current and included files matching the word under the cursor, start searching at beginning of current file.', synomyms: ['[d'] },
-    '[f': { form: '[f', name: 'Go to file', description: 'Start editing the file whose name is under the cursor.', synomyms: ['gf', ']f'] },
-    ']f': { form: ']f', name: 'Go to file', description: 'Start editing the file whose name is under the cursor.', synomyms: ['gf', '[f'] },
-    '[i': { form: '[i', name: 'Show word', description: 'Show first line found in current and included files that contains the word under the cursor, start searching at beginning of current file.', synomyms: [']i'] },
-    ']i': { form: ']i', name: 'Show word', description: 'Show first line found in current and included files that contains the word under the cursor, start searching at beginning of current file.', synomyms: ['[i'] },
+    '[d': { form: '[d', name: 'Show #define', description: 'Show first #define found in current and included files matching the word under the cursor, start searching at beginning of current file.' },
+    ']d': { form: ']d', name: 'Show #define', description: 'Show first #define found in current and included files matching the word under the cursor, start searching at beginning of current file.' },
+    '[f': { form: '[f', name: 'Go to file', description: 'Start editing the file whose name is under the cursor.' },
+    ']f': { form: ']f', name: 'Go to file', description: 'Start editing the file whose name is under the cursor.' },
+    '[i': { form: '[i', name: 'Show word', description: 'Show first line found in current and included files that contains the word under the cursor, start searching at beginning of current file.' },
+    ']i': { form: ']i', name: 'Show word', description: 'Show first line found in current and included files that contains the word under the cursor, start searching at beginning of current file.' },
     '[m': { form: '[m', name: 'Start of member', description: 'Cursor N times back to start of member function.', categories: ['motion'] },
     ']m': { form: ']m', name: 'End of member', description: 'Cursor N times forward to end of member function.', categories: ['motion'] },
     '[s': { form: '[s', name: 'Previous misspelling', description: 'Move to the previous misspelled word.', categories: ['motion'] },
@@ -255,14 +256,14 @@ let keys = {
     '[]': { form: '[]', name: 'Back SECTION', description: 'Cursor N SECTIONS backward.', categories: ['motion'] },
     ']]': { form: ']]', name: 'Forward section', description: 'Cursor N sections forward.', categories: ['motion'] },
     '][': { form: '][', name: 'Forward SECTION', description: 'Cursor N SECTIONS forward.', categories: ['motion'] },
-    '[p': { form: '[p', name: 'Put and indent', description: 'Like `p`, but adjust indent to current line.', synomyms: [']p'] },
-    ']p': { form: ']p', name: 'Put and indent', description: 'Like `p`, but adjust indent to current line.', synomyms: ['[p'] },
-    '[P': { form: '[P', name: 'Put before and indent', description: 'Like `P`, but adjust indent to current line.', synomyms: [']P'] },
-    ']P': { form: ']P', name: 'Put before and indent', description: 'Like `P`, but adjust indent to current line.', synomyms: ['[P'] },
-    '[D': { form: '[D', name: 'List defines', description: 'List all defines found in current and included files matching the word under the cursor, start searching at beginning of current file.', synomyms: [']D'] },
-    ']D': { form: ']D', name: 'List defines', description: 'List all defines found in current and included files matching the word under the cursor, start searching at beginning of current file.', synomyms: ['[D'] },
-    '[I': { form: '[I', name: 'List includes', description: 'List all lines found in current and included files that contain the word under the cursor, start searching at beginning of current file.', synomyms: [']I'] },
-    ']I': { form: ']I', name: 'List includes', description: 'List all lines found in current and included files that contain the word under the cursor, start searching at beginning of current file.', synomyms: ['[I'] },
+    '[p': { form: '[p', name: 'Put and indent', description: 'Like `p`, but adjust indent to current line.' },
+    ']p': { form: ']p', name: 'Put and indent', description: 'Like `p`, but adjust indent to current line.' },
+    '[P': { form: '[P', name: 'Put before and indent', description: 'Like `P`, but adjust indent to current line.' },
+    ']P': { form: ']P', name: 'Put before and indent', description: 'Like `P`, but adjust indent to current line.' },
+    '[D': { form: '[D', name: 'List defines', description: 'List all defines found in current and included files matching the word under the cursor, start searching at beginning of current file.' },
+    ']D': { form: ']D', name: 'List defines', description: 'List all defines found in current and included files matching the word under the cursor, start searching at beginning of current file.' },
+    '[I': { form: '[I', name: 'List includes', description: 'List all lines found in current and included files that contain the word under the cursor, start searching at beginning of current file.' },
+    ']I': { form: ']I', name: 'List includes', description: 'List all lines found in current and included files that contain the word under the cursor, start searching at beginning of current file.' },
     '^': { form: '^', name: 'Start of line', description: 'Cursor to the first CHAR of the line.', categories: ['motion'] },
     '_': { form: '_', name: 'Start of line', description: 'Cursor to the first CHAR N - 1 lines lower.', categories: ['motion'] },
     '`': { form: '`{a-zA-Z0-9}', name: 'Go to marked char', description: 'Cursor to the mark {a-zA-Z0-9}.', categories: ['motion'] },
@@ -283,11 +284,48 @@ let keys = {
     '}': { form: '}', name: 'Paragraph', description: 'Cursor N paragraphs forward.', categories: ['motion'] },
     '~': { form: '~', name: 'Toggle case', description: 'Switch case of N characters under cursor and move the cursor N characters to the right (`tildeop` may allow taking motion, but so does `g~`).' },
     '\\': { form: '\\', name: 'Leader', description: 'Reserved for user mappings.' },
-    '<Space>': { form: '<Space>', name: 'Right', description: 'Cursor N chars to the right.', synonyms: ['l'], categories: ['motion'] },
-    '<BS>': { form: '<BS>', name: 'Left', description: 'Cursor N chars to the left.', synonyms: ['h'], categories: ['motion'] },
-    '<CR>': { form: '<CR>', name: 'Start of following line', description: 'Cursor to the first CHAR N lines lower.', synonyms: ['+'], categories: ['motion'] },
-    '<Tab>': { form: '<Tab>', name: 'Previous jump', description: 'Go to N newer entry in jump list.', synomyms: ['^i'] },
+    '<Space>': { form: '<Space>', name: 'Right', description: 'Cursor N chars to the right.', categories: ['motion'] },
+    '<BS>': { form: '<BS>', name: 'Left', description: 'Cursor N chars to the left.', categories: ['motion'] },
+    '<CR>': { form: '<CR>', name: 'Start of following line', description: 'Cursor to the first CHAR N lines lower.', categories: ['motion'] },
+    '<Tab>': { form: '<Tab>', name: 'Previous jump', description: 'Go to N newer entry in jump list.' },
     '<Esc>': { form: '<Esc>', name: 'Reset', description: 'Reset state and remain in Normal mode.' },
+    '<Left>': { form: '<Left>', name: 'Left', description: 'Cursor N chars to the left.', categories: ['motion'] },
+    '<Down>': { form: '<Down>', name: 'Down', description: 'Cursor N lines downward.', categories: ['motion'] },
+    '<Up>': { form: '<Up>', name: 'Up', description: 'Cursor N lines upward.', categories: ['motion'] },
+    '<Right>': { form: '<Right>', name: 'Right', description: 'Cursor N chars to the right.', categories: ['motion'] },
+    '<Del>': { form: '["x]<Del>', name: 'Delete char', description: 'Delete N characters under and after the cursor [into register x]. Also, remove the last digit when entering count.' },
+    '<NL>': { form: '<NL>', name: 'Down', description: 'Cursor N lines downward.', categories: ['motion'] },
+    '<End>': { form: '<End>', name: 'End of line', description: 'Cursor to the end of Nth next line.', categories: ['motion'] },
+    '<F1>': { form: '<F1>', name: 'Help', description: 'Open a help window.' },
+    '<Help>': { form: '<Help>', name: 'Help', description: 'Open a help window.' },
+    '<Home>': { form: '<Home>', name: 'First column', description: 'Cursor to the first char of the line.' },
+    '<Insert>': { form: '<Insert>', name: 'Insert', description: 'Insert text before the cursor N times.' },
+    '<PageDown>': { form: '<PageDown>', name: 'Scroll forward screen', description: 'Scroll N screens Forward.' },
+    '<S-Down>': { form: '⇧<Down>', name: 'Scroll forward screen', description: 'Scroll N screens Forward.' },
+    '<PageUp>': { form: '<PageUp>', name: 'Scroll back screen', description: 'Scroll N screens Backwards.' },
+    '<S-Up>': { form: '⇧<Up>', name: 'Scroll back screen', description: 'Scroll N screens Backwards.' },
+    '<Undo>': { form: '<Undo>', name: 'Undo', description: 'Undo changes.' },
+    '<C-End>': { form: '^<End>', name: 'Go to line/end', description: 'Cursor to line N, default last line.', categories: ['motion'] },
+    '<C-Home>': { form: '^<Home>', name: 'Go to line/beginning', description: 'Cursor to line N, default first line.' },
+    '<C-Left>': { form: '^<Left>', name: 'Back word', description: 'Cursor N words backward.', categories: ['motion'] },
+    '<S-Left>': { form: '⇧<Left>', name: 'Back word', description: 'Cursor N words backward.', categories: ['motion'] },
+    '<C-Right>': { form: '^<Right>', name: 'Word', description: 'Cursor N words forward.', categories: ['motion'] },
+    '<S-Right>': { form: '⇧<Right>', name: 'Word', description: 'Cursor N words forward.', categories: ['motion'] },
+    '<C-LeftMouse>': { form: '^<LeftMouse>', name: 'Tag definition', description: '`:ta` to ident at the mouse click.' },
+    '<C-RightMouse>': { form: '^<RightMouse>', name: 'Tag', description: 'Jump to N older Tag in tag list.' },
+    '<LeftMouse>': { form: '<LeftMouse>', name: 'Move cursor', description: 'Move cursor to the mouse click position.' },
+    '<MiddleMouse>': { form: '<MiddleMouse>', name: 'Put before', description: 'Put the text [from register x] before the cursor N times, leave the cursor after it.' },
+    '<RightMouse>': { form: '<RightMouse>', name: 'Visual mode', description: 'Start Visual mode, move cursor to the mouse click position.' },
+    '<S-LeftMouse>': { form: '⇧<LeftMouse>', name: 'Find under cursor', description: 'Search forward for the Nth occurrence of the ident under the mouse.' },
+    '<S-RightMouse>': { form: '⇧<RightMouse>', name: 'Find under cursor reverse', description: 'Search backward for the Nth occurrence of the ident under the mouse.' },
+    '<ScrollWheelDown>': { form: '<ScrollWheelDown>', name: 'Scroll down', description: 'Move window three lines down.' },
+    '<S-ScrollWheelDown>': { form: '<S-ScrollWheelDown>', name: 'Scroll down', description: 'Move window one page down.' },
+    '<ScrollWheelUp>': { form: '<ScrollWheelUp>', name: 'Scroll up', description: 'Move window three lines up.' },
+    '<S-ScrollWheelUp>': { form: '<S-ScrollWheelUp>', name: 'Scroll up', description: 'Move window one page up.' },
+    '<ScrollWheelLeft>': { form: '<ScrollWheelLeft>', name: 'Scroll left', description: 'Move window six columns left.' },
+    '<S-ScrollWheelLeft>': { form: '<S-ScrollWheelLeft>', name: 'Scroll left', description: 'Move window one page left.' },
+    '<ScrollWheelRight>': { form: '<ScrollWheelRight>', name: 'Scroll right', description: 'Move window six columns right.' },
+    '<S-ScrollWheelRight>': { form: '<S-ScrollWheelRight>', name: 'Scroll right', description: 'Move window one page right.' },
     '^a': { form: '^a', name: 'Increment', description: 'Add N to number at/after cursor.' },
     '^b': { form: '^b', name: 'Scroll back screen', description: 'Scroll N screens Backwards.' },
     '^c': { form: '^c', name: 'Cancel command', description: 'Interrupt current (search) command.' },
@@ -295,41 +333,91 @@ let keys = {
     '^e': { form: '^e', name: 'Scroll up line', description: 'Scroll N lines upwards (N lines Extra).' },
     '^f': { form: '^f', name: 'Scroll forward screen', description: 'Scroll N screens Forward.' },
     '^g': { form: '^g', name: 'Display info', description: 'Display current file name and position.' },
-    '^h': { form: '^h', name: 'Left', description: 'Cursor N chars to the left.', synomyms: ['h'], categories: ['motion'] },
-    '^i': { form: '^i', name: 'Previous jump', description: 'Go to N newer entry in jump list.', synomyms: ['<Tab>'] },
-    '^j': { form: '^j', name: 'Down', description: 'Cursor N lines downward.', synomyms: ['j', '^n'], categories: ['motion'] },
+    '^h': { form: '^h', name: 'Left', description: 'Cursor N chars to the left.', categories: ['motion'] },
+    '^i': { form: '^i', name: 'Previous jump', description: 'Go to N newer entry in jump list.' },
+    '^j': { form: '^j', name: 'Down', description: 'Cursor N lines downward.', categories: ['motion'] },
     // ^k
     '^l': { form: '^l', name: 'Redraw', description: 'Redraw screen.' },
-    '^m': { form: '^m', name: 'Start of following line', description: 'Cursor to the first CHAR N lines lower.', synomyms: ['<CR>'], categories: ['motion'] },
-    '^n': { form: '^n', name: 'Down', description: 'Cursor N lines downward.', synomyms: ['j', '^j'], categories: ['motion'] },
+    '^m': { form: '^m', name: 'Start of following line', description: 'Cursor to the first CHAR N lines lower.', categories: ['motion'] },
+    '^n': { form: '^n', name: 'Down', description: 'Cursor N lines downward.', categories: ['motion'] },
     '^o': { form: '^o', name: 'Jump', description: 'Go to N older entry in jump list.', categories: ['motion'] },
-    '^p': { form: '^p', name: 'Up', description: 'Cursor N lines upward.', synomyms: ['k'], categories: ['motion'] },
+    '^p': { form: '^p', name: 'Up', description: 'Cursor N lines upward.', categories: ['motion'] },
     // ^q
-    '^r': { form: '^r', name: '', description: '' },
+    '^r': { form: '^r', name: 'Redo', description: 'Redo changes which were undone with `u`.' },
     // ^s
-    '^t': { form: '^t', name: '', description: '' },
-    '^u': { form: '^u', name: '', description: '' },
-    '^v': { form: '^v', name: '', description: '' },
+    '^t': { form: '^t', name: 'Tag', description: 'Jump to N older Tag in tag list.' },
+    '^u': { form: '^u', name: 'Scroll up half-screen', description: 'Scroll N lines Upwards (default: half a screen).' },
+    '^v': { form: '^v', name: 'Visual block mode', description: 'Start blockwise Visual mode.' },
     // ^w (see window commands)
-    '^x': { form: '^x', name: '', description: '' },
-    '^y': { form: '^y', name: '', description: '' },
-    '^z': { form: '^z', name: '', description: '' },
-    '': { form: '', name: '', description: '' },
-    '': { form: '', name: '', description: '' },
+    '^x': { form: '^x', name: 'Decrement', description: 'Subtract N from number at/after cursor.' },
+    '^y': { form: '^y', name: 'Scroll down line', description: 'Scroll N lines downwards.' },
+    '^z': { form: '^z', name: 'Suspend', description: 'Suspend program (or start new shell).' },
+    '^]': { form: '^]', name: 'Tag definition', description: '`:ta` to ident under cursor.' },
+    '^^': { form: '^^', name: 'Alternate file', description: 'Edit Nth alternate file. Same as `:e #N`.' },
+    '^<Tab>': { form: '^<Tab>', name: 'Go to tab', description: 'Go to last accessed tab page.' },
     '^\\': { form: '^\\', name: 'Leader', description: 'Reserved for user mappings.' },
-/*
-|CTRL-R|	CTRL-R		2  redo changes which were undone with 'u'
-|CTRL-T|	CTRL-T		   jump to N older Tag in tag list
-|CTRL-U|	CTRL-U		   scroll N lines Upwards (default: half a screen)
-|CTRL-V|	CTRL-V		   start blockwise Visual mode
-|CTRL-X|	CTRL-X		2  subtract N from number at/after cursor
-|CTRL-Y|	CTRL-Y		   scroll N lines downwards
-|CTRL-Z|	CTRL-Z		   suspend program (or start new shell)
-|CTRL-\_CTRL-N|	CTRL-\ CTRL-N	   go to Normal mode (no-op)
-|CTRL-\_CTRL-G|	CTRL-\ CTRL-G	   go to Normal mode (no-op)
-|CTRL-]|	CTRL-]		   :ta to ident under cursor
-|CTRL-^|	CTRL-^		   edit Nth alternate file (equivalent to ":e #N")
-|CTRL-<Tab>|	CTRL-<Tab>	   same as `g<Tab>` : go to last accessed tab page
-*/
+  },
+  synonyms: [
+    ['h','^h','<BS>','<Left>'], // Left
+    ['l','<Space>','<Right>'], // Right
+    ['k','^p','<Up>'], // Up
+    ['j','^j','^n','<Down>','<NL>'], // Down
+    ['C','c$'], // Change line
+    ['D','d$'], // Delete line
+    ['S','cc'], // Substitute line 
+    ['Y','yy','y$'] // Yank line
+    ['+','^m','<CR>'], // Start of lower line
+    ['g<Tab>','^<Tab>'], // Go to tab
+    ['[*','[/'], // Previous comment
+    [']*',']/'], // Next comment
+    ['[d',']d'], // Show #define
+    [']f','[f','gf'], // Go to file
+    [']i','[i'], // Show word
+    [']p','[p'], // Put and indent
+    [']P','[P'], // Put before and indent
+    [']D','[D'], // List defines
+    [']I','[I'], // List includes
+    ['<Tab>','^i'], // Previous jump
+    ['x','<Del>'], // Delete char
+    ['$','<End>'], // End of line
+    ['<F1>','<Help>'], // Help
+    ['0','<Home>'], // First column
+    ['i','<Insert>'], // Insert
+    ['^f','<PageDown>','<S-Down>'], // Scroll forward screen
+    ['^b','<PageUp>','<S-Up>'], // Scroll back screen
+    ['u','<Undo>'], // Undo
+    ['G','<C-End>'], // Go to line/end
+    ['gg','<C-Home>'], // Got to line/beginning
+    ['b','<C-Left>','<S-Left>'], // Back word
+    ['w','<C-Right>','<S-Right>'], // Word
+    ['^]','<C-LeftMouse>'], // Tag definition
+    ['^t','<RightMouse>'], // Tag
+    ['gP','<MiddleMouse>'] // Put before and move after
+    ['v','<RightMouse>'], // Visual mode
+    ['*','<S-LeftMouse>'], // Find under cursor/mouse
+    ['#','<S-RightMouse>'], // Find under cursor/mouse reverse
+  ],
+  videos: {
+    'align_text': { name: 'Align Text', description: 'Align text with `:\'<,\'>norm` commands.', commands: [':norm'] },
+    'numbering_lists': { name: 'Numbering Lists', description: 'Numbering lists with `^a`.', keys: ['^a'] },
+    'useless_underscore': { name: 'Useless Underscore', description: 'The underscore key is useless, remap it!', keys: ['_'] },
+    'basic_motions_1': { name: 'Basic Motions 1', description: 'Moving around with `h` `j` `k` `l`.', keys: ['h','j','k','l','<Left>','<Right>','<Up>','<Down>','<Space>','<BS>'] },
+    'basic_motions_2': { name: 'Basic Motions 2', description: 'Moving by words with `w` `b` `e` `ge`.', keys: ['w','b','e','ge'] },
+    'basic_motions_3': { name: 'Basic Motions 3', description: 'Moving by big WORDS with `W` `B` `E` `gE`.', keys: ['W','B','E','gE'] },
+    'basic_motions_4': { name: 'Basic Motions 4', description: 'Moving horizontally with `$` `^` `0`.', keys: ['$','^','0'] },
+    'basic_motions_5': { name: 'Basic Motions 5', description: 'Moving vertically with `L` `H` `M` `gg` `G`.', keys: ['L','H','M','gg','G'] },
+    'basic_motions_6': { name: 'Basic Motions 6', description: 'Moving by sentences and paragraphs with `(` `)` `{` `}`.', keys: ['(',')','{','}'] },
+    'basic_motions_7': { name: 'Basic Motions 7', description: 'Moving by sections with `]]` `[[` `][` `[]`.', keys: [']]','[[','][','[]'] },
+    'basic_motions_8': { name: 'Basic Motions 8', description: 'Moving by lines with `+` `-` `<CR>`.', keys: ['+','-','<CR>'] },
+    'find_character': { name: 'Find Character', description: 'Finding characters with `f` `F` `t` `T` `,` `;`.', keys: ['f','F','t','T',',',';'] },
+    'join_lines': { name: 'Join Lines', description: 'Joining lines with `J` `gJ`.', keys: ['J','gJ'] },
+    'quitting': { name: 'Quitting', description: 'Quitting with `ZZ` `:x` `:wq` `ZQ` `:q!` `:q` `^Z`.', keys: ['ZZ','ZQ','^Z'], commands: [':x',':wq',':q!',':q'] },
+    'reverting': { name: 'Reverting', description: 'Reverting with `:e!`.', commands: [':e!'] },
+    'scrolling_and_jumping': { name: 'Scrolling and Jumping', description: 'Scrolling and jumping with `^y` `^e` `zt` `zb` `zz` `^f` `^b` `^d` `^u`.', keys: ['^y','^e','zt','zb','zz','^f','^b','^d','^u'] },
+    'matching_pairs': { name: 'Matching Pairs', description: 'Moving between matching pairs with `%`.', keys: ['%'] },
+    'changing_case': { name: 'Changing Case', description: 'Changing case with `~` `g~` `gu` `gU`.', keys: ['~','g~','gu','gU'] },
+    'marks': { name: 'Marks', descrition: 'Marking with `m` and navigating with `\'` ```.', keys: ['m',"'",'`'] },
+    'search': { name: 'Search', description: 'Searching with `*` `#` `n` `N` `/` `?`.', keys: ['*','#','n','N','/','?'] },
+    'line_column': { name: 'Go To Line/Column', description: 'Navigating to lines and columns with `G` `|` `:{num}`.', keys: ['G','|'], commands: [':{num}'] },
   }
 }
