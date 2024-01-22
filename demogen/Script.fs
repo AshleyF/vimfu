@@ -67,10 +67,14 @@ type Motion =
     | GoToLine of int
     | GoToColumn of int
     | JumpBack
+    | JumpBackChar
+    | JumpPrevious
+    | JumpNext
     | SearchStar
     | SearchHash
     | SearchNext
     | SearchPrev
+    | VisualSelection // not really a motion, but used in place of motions
 
 type Action =
     | Launch
@@ -91,11 +95,17 @@ type Action =
     | Repeat
     | Undo
     | UndoLine
+    | Redo
     | ToggleCase
     | ToggelCaseMotion of Motion
     | UpperCase
     | LowerCase
     | Visual
+    | VisualLine
+    | VisualBlock
+    | VisualCursorPosition
+    | JumpSelectionStart
+    | JumpSelectionEnd
     | OpenBelow
     | OpenAbove
     | ZoomTop
@@ -135,6 +145,14 @@ type Action =
     | JumpDownHalf
     | JumpUpHalf
     | GoToFile
+    | IndentLine
+    | UnindentLine
+    | Indent of Motion
+    | Unindent of Motion
+    | AutoIndentLine
+    | AutoIndent of Motion
+    | DeleteChar
+    | DeletePrevChar
     | Key of string * string * string
     | Move of Motion
 
@@ -207,14 +225,20 @@ let rec edit = function
     | Repeat -> KeyCast.set "." "repeat"; key ".";
     | Undo -> KeyCast.set "u" "undo"; key "u"
     | UndoLine -> KeyCast.set "⇧U" "undo line"; key "U"
+    | Redo -> KeyCast.set "⌃r" "redo"; key "^r"
     | ToggleCase -> KeyCast.set "⇧~" "toggle case"; key "{~}"
     | ToggelCaseMotion m ->
         match m with
         | Word -> KeyCast.set "g⇧~w" "toggle case of word"; key "g{~}w"
-        | _ -> failwith $"Not implemented toggle case motion ({m})."
+        | _ -> failwith $"Toggle case motion not implemented ({m})."
     | UpperCase -> KeyCast.set "g⇧U" "uppercase"; key "gU"
-    | LowerCase -> KeyCast.set "g⇧u" "uppercase"; key "gu"
+    | LowerCase -> KeyCast.set "gu" "uppercase"; key "gu"
     | Visual -> KeyCast.set "v" "visual mode"; key "v"
+    | VisualLine -> KeyCast.set "⇧V" "visual line mode"; key "V"
+    | VisualBlock -> KeyCast.set "⌃v" "visual block mode"; key "^q" // CTRL-Q because terminal intercepts
+    | VisualCursorPosition -> KeyCast.set "o" "cursor position"; key "o"
+    | JumpSelectionStart -> KeyCast.set "`⇧<" "jump selection start"; key "`<"
+    | JumpSelectionEnd -> KeyCast.set "`⇧>" "jump selection end"; key "`>"
     | OpenBelow -> KeyCast.set "o" "open below"; key "o"
     | OpenAbove -> KeyCast.set "⇧O" "open above"; key "O"
     | ZoomTop -> KeyCast.set "zt" "zoom top"; key "zt"
@@ -251,6 +275,9 @@ let rec edit = function
     | Move (GoToLine n) -> KeyCast.set $"{n}⇧G" $"go to line {n}"; typing $"{n}G"
     | Move (GoToColumn n) -> KeyCast.set $"{n}⇧|" $"go to column {n}"; typing $"{n}|"
     | Move JumpBack -> KeyCast.set "''" "jump back"; key "''"
+    | Move JumpBackChar -> KeyCast.set "``" "jump back char"; key "``"
+    | Move JumpPrevious -> KeyCast.set "⌃o" "jump previous"; key "^o"
+    | Move JumpNext -> KeyCast.set "⌃i" "jump next"; key "^i"
     | Move SearchStar -> KeyCast.set "⇧*" "search"; key "*"
     | Move SearchHash -> KeyCast.set "⇧#" "reverse search"; key "#"
     | Move SearchNext -> KeyCast.set "n" "search next"; key "n"
@@ -259,11 +286,13 @@ let rec edit = function
     | Change m ->
         match m with
         | Word -> KeyCast.set "cw" "change word"; key "cw"
-        | _ -> failwith $"Change motion implemented ({m})"
+        | _ -> failwith $"Change motion not implemented ({m})"
     | Delete m ->
         match m with
+        | Word -> KeyCast.set "dw" "delete word"; key "dw"
         | BottomOfDocument -> KeyCast.set "dG" "delete to bottom of doc"; key "dG"
-        | _ -> failwith $"Delete motion implemented ({m})"
+        | VisualSelection -> KeyCast.set "x" "delete selection"; key "x"
+        | _ -> failwith $"Delete motion not implemented ({m})"
     | Dot -> KeyCast.set "." "repeat action"; key "."
     | ScrollDown -> KeyCast.set "⌃y" "scroll down"; key "^y"
     | ScrollUp -> KeyCast.set "⌃e" "scroll up"; key "^e"
@@ -275,7 +304,26 @@ let rec edit = function
     | JumpDownHalf -> KeyCast.set "⌃d" "jump down"; key "^d"
     | JumpUpHalf -> KeyCast.set "⌃u" "jump up"; key "^u"
     | GoToFile -> KeyCast.set "gf" "go to file"; key "gf"
+    | IndentLine -> KeyCast.set "⇧>>" "indent"; key ">>"
+    | UnindentLine -> KeyCast.set "⇧<<" "unindent"; key "<<"
+    | Indent m ->
+        match m with
+        | Paragraph -> KeyCast.set "⇧>}" "indent paragraph"; key ">{}}"
+        | _ -> failwith $"Indent motion not implemented ({m})"
+    | Unindent m ->
+        match m with
+        | Paragraph -> KeyCast.set "⇧<}" "unindent paragraph"; key "<{}}"
+        | _ -> failwith $"Unindent motion not implemented ({m})"
+    | AutoIndentLine -> KeyCast.set "==" "autoindent"; key "=="
+    | AutoIndent m ->
+        match m with
+        | Paragraph -> KeyCast.set "=⇧}" "autoindent paragraph"; key "={}}"
+        | VisualSelection -> KeyCast.set "=" "autoindent selection"; key "="
+        | _ -> failwith $"Autoindent motion not implemented ({m})"
+    | DeleteChar -> KeyCast.set "x" "delete char"; key "x"
+    | DeletePrevChar -> KeyCast.set "⇧X" "delete prev char"; key "X"
     | Key (cast, desc, k) -> KeyCast.set cast desc; key k
+    | _ -> failwith "Unknown action"
 
 
 let rec go = function

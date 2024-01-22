@@ -807,6 +807,184 @@ let goToLineColumn = // #G #|
       Move (GoToColumn 7)
       Say "This makes it very easy to jump to particular points in a document."
       Finish ]
+
+let indenting = // <{motion} >{motion} << >>  ={motion} == (
+    [Launch
+     Text ":e fallout.fs"; Enter // from samples/fallout
+     Text ":set nowrap"; Enter
+     Text ":set shiftwidth=2"; Enter
+     Move Paragraph; Move Paragraph; Move Down; Move Down; Move Down; Move Down
+     UnindentLine
+     Move Down; IndentLine; IndentLine
+     Move Down; IndentLine
+     Move Down; Move Down; IndentLine
+     Move TopOfDocument
+     SetFileType "javascript" // not ocaml because of indenting rules
+     Pause 5000
+     Start "Indenting"
+     SayWhile ("Looking at the list of unknown words in this Fallout solver, we notice that the indenting is crazy.", Compound (200, [Move Paragraph; Move Paragraph; Move Down; Move Down; ZoomTop]))
+     SayWhile ("We can fix this by going to each line...", Compound (200, [Move Down; Move Down]))
+     SayWhile ("And using double-right-angle-brackets to indent.", IndentLine)
+     SayWhile ("Or double-left-angle-brackets to unindent.", Compound (200, [Move Down; UnindentLine; UnindentLine; Move Down; UnindentLine; Move Down; Move Down; UnindentLine]))
+     Pause 1000
+     SayWhile ("Undoing this, another way is to use double-equals to automatically adjust the indents.", Compound (150, [Undo; Undo; Undo; Undo]))
+     AutoIndentLine
+     Pause 500
+     Compound (200, [Move Down; AutoIndentLine; Move Down; Move Down; AutoIndentLine])
+     Pause 1000
+     SayWhile ("Even better, we can do this in one shot with equals combined with a motion.", Compound (200, [Undo; Undo; Undo]))
+     SayWhile ("Such as equals-right-curly-brace to apply to the end of the paragraph.", AutoIndent Paragraph)
+     SayWhile ("Or we could have done it by first selecting in visual mode.", Compound (500, [Undo; Visual; Move Paragraph]))
+     SayWhile ("And then pressing equals.", AutoIndent VisualSelection)
+     Pause 500
+     SayWhile ("We can also combine motions or visual selections with left and right angle brackets.", Compound (200, [Move Up; Move Up]))
+     SayWhile ("Such as left-angle-bracket right-curly-brace to unindent the paragraph.", Unindent Paragraph)
+     Pause 500
+     SayWhile ("Or right-angle-bracket right-curly-brace to reindent it.", Indent Paragraph)
+     Finish ]
+
+let jumps = // '' ^o ^i
+    [Launch
+     Text ":e fallout.fs"; Enter // from samples/fallout
+     Text ":set nowrap"; Enter
+     Text ":set nohls"; Enter
+     SetFileType "ocaml"
+     Pause 5000
+     Start "Jumps"
+     Say "As we navigate around, a jump list is maintained."
+     Key ("/", "search", "/")
+     SayWhile ("Let's go to the known function.", Text "known")
+     Compound (300, [Enter; Move Down; ZoomTop])
+     Pause 800
+     Key ("/", "search", "/")
+     SayWhile ("Then to the unknown function.", Text "unknown")
+     Compound (300, [Enter; Move Down; ZoomTop])
+     Pause 500
+     Say "These two points are now in the jump list. Only large scale jumps are included."
+     SayWhile ("Moving around by words or a few lines is not a jump.", Compound (300, [Move Word; Move Word; Move Word; Move BackWord; Move BackWord; Move BackWord; Move Down; Move Down; Move Down; Move Down; Move Up; Move Up; Move Up; Move Up]))
+     Say "We can quickly pop back to the line from which we came with double-tick or to the exact character with double-backtick."
+     Move JumpBackChar
+     Say "And return with double-tick or double-backtick again."
+     Move JumpBack
+     Pause 800
+     SayWhile ("Bouncing between these two points all we like.", Compound (400, [Move JumpBack; Move JumpBack; Move JumpBack; Move JumpBack; Move JumpBack; Move JumpBack]))
+     Say "Let's continue jumping around. Maybe to the bottom of the code."
+     Move BottomOfDocument
+     Say "We can retrace our steps with control-O."
+     SayWhile ("Back to unknown.", Move JumpPrevious)
+     SayWhile ("Back to known.", Move JumpPrevious)
+     SayWhile ("And back to the start.", Move JumpPrevious)
+     Say "We can traverse forward again with control-I."
+     SayWhile ("To known again.", Move JumpNext)
+     SayWhile ("To unknown.", Move JumpNext)
+     SayWhile ("And to the end.", Move JumpNext)
+     Finish ]
+
+let deleteChar = // x X
+    [Launch
+     Text ":e fallout.fs"; Enter // from samples/fallout
+     Text ":set nowrap"; Enter
+     Text ":set nohls"; Enter
+     SetFileType "ocaml"
+     Pause 5000
+     Start "Delete Character"
+     SayWhile ("We can delete the character under the cursor with X.", Compound (200, [Move StartOfNextLine; Move Right]))
+     DeleteChar
+     Pause 500
+     Compound (200, [DeleteChar; DeleteChar; DeleteChar; DeleteChar; DeleteChar; DeleteChar; DeleteChar])
+     SayWhile ("And we can delete the character before the cursor with shift-X.", Move WordEnd)
+     Compound (200, [DeletePrevChar; DeletePrevChar])
+     Say "Pretty simple!"
+     Finish ]
+
+let undo = // u U ^r
+    [Launch
+     Text ":e fallout.fs"; Enter // from samples/fallout
+     Text ":set nowrap"; Enter
+     Text ":set nohls"; Enter
+     SetFileType "ocaml"
+     Pause 5000
+     Start "Undo"
+     SayWhile ("Let's make a few changes to this code.", Compound (300, [Move Down; Move Down; Move Down; Move Down; Move Down]))
+     SayWhile ("Maybe delete a couple of lines", Compound (300, [DeleteLine; DeleteLine]))
+     Pause 500
+     SayWhile ("And change this string.", Compound (150, [Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move StartOfPreviousLine; Move Right]))
+     Pause 500
+     SayWhile ("Deleting the word Fallout.", Delete Word)
+     Pause 500
+     SayWhile ("And removing the newline.", Compound (300, [Move EndOfLine; DeletePrevChar; DeletePrevChar]))
+     Pause 500
+     Say "Now we can undo all the changes to this line with shift-U."
+     UndoLine
+     Pause 1000
+     SayWhile ("Or we can undo just some of the changes with U.", Compound (400, [Undo; Undo; Undo]))
+     Pause 500
+     SayWhile ("Or continue pressing U to undo more.", Compound (400, [Undo; Undo; Undo]))
+     Pause 500
+     SayWhile ("Finally, we can redo these changes with Control-R.", Compound (400, [Redo; Redo; Redo; Redo; Redo]))
+     Finish ]
+
+let visual = // v V ^v
+    [Launch
+     Text ":e fallout.fs"; Enter // from samples/fallout
+     Text ":set nowrap"; Enter
+     Text ":set nohls"; Enter
+     Key ("/", "search", "/")
+     Text "PILE"
+     Enter
+     SetFileType "ocaml"
+     Pause 5000
+     Start "Visual Modes"
+     Say "To select text, we can enter visual mode with V."
+     Visual
+     SayWhile ("Then as we move around, a selection is made from where we started to the cursor.", Compound (400, [Move Up; Move Up; Move Down; Move Down; Move Down; Move Down; Move Up; Move Up; Move WordEnd; Move WordEnd; Move Left; Move Left; Move Left; Move Left]))
+     Pause 1000
+     SayWhile ("To select by whole lines, we can use shift-V.", VisualLine)
+     SayWhile ("And entire lines are selected as we move.", Compound (400, [Move Up; Move Up; Move Down; Move Down; Move Down; Move Down; Move Up; Move Up]))
+     Pause 1000
+     Say "Pressing escape returns to Normal mode."
+     Esc
+     Pause 500
+     SayWhile ("We can also select arbitrary blocks of text with control-V.", VisualBlock)
+     SayWhile ("In visual block mode we can select columns of text.", Compound (400, [Move Down; Move Down]))
+     Say "Some terminals intercept control-V. You may use control-Q instead."
+     SayWhile ("Any rectangular areas can be selected.", Compound (400, [Move Left; Move Left; Move Left]))
+     Pause 500
+     Say "Operations can then be performed on selected text, such as deleting with X."
+     Delete VisualSelection
+     Finish ]
+
+let visualAdvanced = // o gv '< '>
+    [Launch
+     Text ":e fallout.fs"; Enter // from samples/fallout
+     Text ":set nowrap"; Enter
+     Text ":set nohls"; Enter
+     Key ("/", "search", "/")
+     Text "PILE"
+     Enter
+     SetFileType "ocaml"
+     Pause 5000
+     Start "Advanced Selection"
+     SayWhile ("Notice that, in visual mode, we still have a cursor in addition to the selection.", Compound (400, [Visual; Move Right; Move Right; Move Right]))
+     SayWhile ("We can move the cursor between the ends of the selection with O.", Compound (400, [VisualCursorPosition; VisualCursorPosition; VisualCursorPosition; VisualCursorPosition; VisualCursorPosition; VisualCursorPosition; VisualCursorPosition]))
+     SayWhile ("We can extend the selection to the left.", Move Left)
+     SayWhile ("And we can then toggle the cursor to the other end...", VisualCursorPosition)
+     SayWhile ("...And extend to the right.", Move Right)
+     Pause 1000
+     SayWhile ("Once back in Normal mode...", Esc)
+     SayWhile ("We can get our previous selection back with G follow by V.", Reselect)
+     Pause 500
+     SayWhile ("Another trick back in Normal mode.", Esc)
+     Say "Is that we can jump to the start of the previous selection with backtick left-angle-bracket."
+     JumpSelectionStart
+     Pause 1000
+     Say "Or we can jump to the end of the previous selection with backtick right-angle-bracket."
+     JumpSelectionEnd
+     Say "Left and right angle brackets are special marks."
+     SayWhile ("You may have noticed that when you have a selection.", Reselect)
+     SayWhile ("Entering a command with colon, automatically uses the selection as a range between the angle bracket marks", Text ":")
+     Finish ]
+
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
 //  Basic Motions 3  W B E gE
@@ -826,16 +1004,26 @@ let goToLineColumn = // #G #|
 //  Case  ~ g~ gu gU  (combined with visual or motion)
 //  Go to line/column #G #|
 //  Mark  m ' ` '' ``
+//  Indenting  <{motion} >{motion} << >>  ={motion} == (:set shiftwidth not covered)
+//  Jumps ^o ^i etc.
+//  Delete char  x X
+//  Undo  u U ^r
+//  Visual  v V ^v
+//  Advanced visual  o gv '< '>  (bad habit possibly)
 
+//  Vertical inserts (including ragged edge)
+//  Text objects
+//  Line Wrap  :set nowrap  :set number  gh gj gk gl g$ g^ (display vs. real lines)
+//  Horizontal scroll zL zH
+//  Replace r R  (replace with <CR> to break lines -- removes trailing space)
+//  Insert  i a I A o O gi gI ⎋  (thick cursor, before/after)
+//  Go to last insert gi
+//  Auto indent  [p [P ]p ]P
 //  Scroll plus first column z<CR> z. z-
 //  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
-//  Visual  v V ^v o gv '< '>  (bad habit possibly)
-//  Undo  u U ^r
 //  Dot  .
-//  Insert  i a I A o O gi gI ⎋  (thick cursor, before/after)
 //  Delete/Yank/Put  d dd D y yy Y p P  (line behavior)
 //  Change/Substitute  c cc C s S
-//  Delete char/Replace  x X r R  (replace with <CR> to break lines -- removes trailing space)
 //  Macros  q @ @@
 //  Indenting  < <<  >>  :set  (^t ^d in insert)
 //  Formatting  = ==
@@ -846,18 +1034,24 @@ let goToLineColumn = // #G #|
 //  Advanced 1  !
 //  Advanced 3  K
 //  Advanced 4  Q
-//  Line Wrap  :set nowrap  :set number  gh gj gk gl g$ g^ (display vs. real lines)
 //  Pattern * cw foo <esc> n . n . n .
-//  Text objects
 //  Surround?
 //  :noremap ^ _  :nmap _ i <esc>
 //  Unexpected motions: f{char} /foo
-//  Vertical inserts (including ragged edge)
 //  Interacting with the shell:  :w !{cmd}  :r !{cmd}  !  !!  ^z
 //  Go to file/address gf gx
-//  Horizontal scroll zL zH
 //  Special marks '< '> '. etc.
 //  Go to last insert/first column gi gI
 //  Patterns ddp Dp yyp Yp xp etc.
 //  Traverse change list g; g,
-//  Jumps ^o ^i etc.
+//  Indenting in insert mode ^t ^d
+
+(*
+def hanoi(n, from_pole, to_pole, with_pole):
+  if n == 1:
+    print("Move disk 1 from", from_pole, "to", to_pole)
+    return
+  hanoi(n-1, from_pole, with_pole, to_pole)
+  print("Move disk", n, "from", from_pole, "to", to_pole)
+  hanoi(n-1, with_pole, to_pole, from_pole)
+  *)
