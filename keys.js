@@ -74,6 +74,17 @@ let keys = {
     'g@': { form: 'g@{motion}', name: 'Call operatorfunc', description: 'Call `operatorfunc`.' },
     'g~': { form: 'g~{motion}', name: 'Toggle case', description: 'Swap case for Nmove text.' },
     'g<Tab>': { form: 'g<Tab>', name: 'Go to tab', description: 'Go to last accessed tab page.' },
+    'g<Down>': { form: 'g<Down>', name: 'Down screen line', description: 'Like `j`, but when `wrap` on go N screen lines down.', categories: ['motion'] },
+    'g<Up>': { form: 'g<Up>', name: 'Up screen line', description: 'Like `k`, but when `wrap` on go N screen lines up.', categories: ['motion'] },
+    'g<End>': { form: 'g<End>', name: 'End of screen line', description: 'When `wrap` off go to rightmost character of the current line that is on the screen; when `wrap` on go to the rightmost character of the current screen line.', categories: ['motion'] },
+    'g<Home>': { form: 'g<Home>', name: 'Leftmost screen character', description: 'When `wrap` off go to leftmost character of the current line that is on the screen; when `wrap` on go to the leftmost character of the current screen line.', categories: ['motion'] },
+    'g<LeftMouse>': { form: 'g<LeftMouse>', name: 'Tag definition', description: '`:ta` to ident at the mouse click.' },
+    'g<MiddleMouse>': { form: 'g<MiddleMouse>', name: 'Put', description: 'Put at mouse position.' },
+    'g<RightMouse>': { form: 'g<RightMouse>', name: 'Tag', description: 'Jump to N older Tag in tag list.' },
+    'g^a': { form: 'g^a', name: 'Increment ordinal', description: 'Increment numbers as ordinals.' },
+    'g^g': { form: 'g^g', name: 'Show info', description: 'Show information about current cursor position.' },
+    'g^h': { form: 'g^h', name: 'Select block mode', description: 'Start Select block mode.' },
+    'g^j': { form: 'g^j', name: 'Jump tag', description: '`:tjump` to the tag under the cursor.' },
     'h': { form: 'h', name: 'Left', description: 'Cursor N chars to the left.', categories: ['motion'] },
     'i': { form: 'i', name: 'Insert', description: 'Insert text before the cursor N times.' },
     'j': { form: 'j', name: 'Down', description: 'Cursor N lines downward.', categories: ['motion'] },
@@ -147,6 +158,10 @@ let keys = {
     'zuW': { form: 'zuW', name: 'Undo mark incorrect', description: 'Undo |zW|.' },
     'zX': { form: 'zX', name: 'Reapply fold level', description: 'Re-apply `foldlevel`.' },
     'z^': { form: 'z^', name: 'Scroll line above top', description: 'Cursor on line N (default line above window), otherwise like "z-".' },
+    'z<CR>': { form: 'z<CR>', name: 'Scroll top', description: 'Redraw, cursor line to top of window, cursor on first non-blank.' },
+    'z{height}<CR>': { form: 'z{height}<CR>', name: 'Window height', description: 'Redraw, make window {height} lines high.' },
+    'z<Left>': { form: 'z<Left>', name: 'Scroll right', description: 'When `wrap` off scroll screen N characters to the right.' },
+    'z<Right>': { form: 'z<Right>', name: 'Scroll left', description: 'When `wrap` off scroll screen N characters to the left.' },
     'A': { form: 'A', name: 'Append after line', description: 'Append text after the end of the line N times.' },
     'B': { form: 'B', name: 'Back WORD', description: 'Cursor N WORDS backward.', categories: ['motion'] },
     'C': { form: '["x]C', name: 'Change line', description: 'Change from the cursor position to the end of the line, and N-1 more lines [into register x]' },
@@ -256,7 +271,7 @@ let keys = {
     '[]': { form: '[]', name: 'Back SECTION', description: 'Cursor N SECTIONS backward.', categories: ['motion'] },
     ']]': { form: ']]', name: 'Forward section', description: 'Cursor N sections forward.', categories: ['motion'] },
     '][': { form: '][', name: 'Forward SECTION', description: 'Cursor N SECTIONS forward.', categories: ['motion'] },
-    '[p': { form: '[p', name: 'Put and indent', description: 'Like `p`, but adjust indent to current line.' },
+    '[p': { form: '[p', name: 'Put before and indent', description: 'Like `p`, but adjust indent to current line.' },
     ']p': { form: ']p', name: 'Put and indent', description: 'Like `p`, but adjust indent to current line.' },
     '[P': { form: '[P', name: 'Put before and indent', description: 'Like `P`, but adjust indent to current line.' },
     ']P': { form: ']P', name: 'Put before and indent', description: 'Like `P`, but adjust indent to current line.' },
@@ -264,6 +279,9 @@ let keys = {
     ']D': { form: ']D', name: 'List defines', description: 'List all defines found in current and included files matching the word under the cursor, start searching at beginning of current file.' },
     '[I': { form: '[I', name: 'List includes', description: 'List all lines found in current and included files that contain the word under the cursor, start searching at beginning of current file.' },
     ']I': { form: ']I', name: 'List includes', description: 'List all lines found in current and included files that contain the word under the cursor, start searching at beginning of current file.' },
+    ']^i': { form: ']^d', name: 'Find #define', description: 'Jump to first #define found in current and included files matching the word under the cursor, start searching at cursor position.' },
+    ']^d': { form: ']^i', name: 'Find under cursor', description: 'Jump to first line in current and included files that contains the word under the cursor, start searching at cursor position.' },
+    ']<MiddleMouse>': { form: ']<MiddleMouse>', name: 'Put and indent', description: 'Like `p`, but adjust indent to current line.' },
     '^': { form: '^', name: 'Start of line', description: 'Cursor to the first CHAR of the line.', categories: ['motion'] },
     '_': { form: '_', name: 'Start of line', description: 'Cursor to the first CHAR N - 1 lines lower.', categories: ['motion'] },
     '`': { form: '`{a-zA-Z0-9}', name: 'Go to marked char', description: 'Cursor to the mark {a-zA-Z0-9}.', categories: ['motion'] },
@@ -312,6 +330,7 @@ let keys = {
     '<C-Right>': { form: '^<Right>', name: 'Word', description: 'Cursor N words forward.', categories: ['motion'] },
     '<S-Right>': { form: '⇧<Right>', name: 'Word', description: 'Cursor N words forward.', categories: ['motion'] },
     '<C-LeftMouse>': { form: '^<LeftMouse>', name: 'Tag definition', description: '`:ta` to ident at the mouse click.' },
+    '<C-MiddleMouse>': { form: '^<MiddleMouse>', name: 'Put', description: 'Put at mouse position.' },
     '<C-RightMouse>': { form: '^<RightMouse>', name: 'Tag', description: 'Jump to N older Tag in tag list.' },
     '<LeftMouse>': { form: '<LeftMouse>', name: 'Move cursor', description: 'Move cursor to the mouse click position.' },
     '<MiddleMouse>': { form: '<MiddleMouse>', name: 'Put before', description: 'Put the text [from register x] before the cursor N times, leave the cursor after it.' },
@@ -348,14 +367,81 @@ let keys = {
     '^t': { form: '^t', name: 'Tag', description: 'Jump to N older Tag in tag list.' },
     '^u': { form: '^u', name: 'Scroll up half-screen', description: 'Scroll N lines Upwards (default: half a screen).' },
     '^v': { form: '^v', name: 'Visual block mode', description: 'Start blockwise Visual mode.' },
-    // ^w (see window commands)
+    // window commands (note ^wx == ^w^x)
+    '^w+': { form: '^w+', name: 'Increase height', description: 'Increase current window height N lines.' },
+    '^w-': { form: '^w-', name: 'Decrease height', description: 'Decrease current window height N lines.' },
+    '^w<': { form: '^w<', name: 'Decrease width', description: 'Decrease current window width N columns.' },
+    '^w>': { form: '^w>', name: 'Increase width', description: 'Increase current window width N columns.' },
+    '^w=': { form: '^w=', name: 'Equalize windows', description: 'Make all windows the same height & width.' },
+    '^wH': { form: '^wH', name: 'Window left', description: 'Move current window to the far left.' },
+    '^wJ': { form: '^wJ', name: 'Window bottom', description: 'Move current window to the very bottom.' },
+    '^wK': { form: '^wK', name: 'Window top', description: 'Move current window to the very top.' },
+    '^wL': { form: '^wL', name: 'Window right', description: 'Move current window to the far right.' },
+    '^wP': { form: '^wP', name: 'Preview window', description: 'Go to preview window.' },
+    '^wT': { form: '^wT', name: 'Window to tab', description: 'Move current window to a new tab page.' },
+    '^wb': { form: '^wb', name: 'Bottom window', description: 'Go to bottom window.' },
+    '^wc': { form: '^wc', name: 'Close window', description: 'Close current window (like |:close|).' },
+    '^wd': { form: '^wd', name: 'Split and jump to definition', description: 'Split window and jump to definition under the cursor.' },
+    '^wf': { form: '^wf', name: 'Split and edit file', description: 'Split window and edit file name under the cursor.' },
+    '^wF': { form: '^wF', name: 'Split and edit file at line', description: 'Split window and edit file name under the cursor and jump to the line number following the file name..' },
+    '^wh': { form: '^wh', name: 'Go to window', description: 'Go to Nth left window (stop at first window).' },
+    '^wi': { form: '^wi', name: 'Split and jump to declaration', description: 'Split window and jump to declaration of identifier under the cursor.' },
+    '^wj': { form: '^wj', name: 'Down window', description: 'Go N windows down (stop at last window).' },
+    '^wk': { form: '^wk', name: 'Up window', description: 'Go N windows up (stop at first window).' },
+    '^wl': { form: '^wl', name: 'Right window', description: 'Go to Nth right window (stop at last window).' },
+    '^wn': { form: '^wn', name: 'New window', description: 'Open new window, N lines high.' },
+    '^wo': { form: '^wo', name: 'Only window', description: 'Close all but current window (like `:only`).' },
+    '^wp': { form: '^wp', name: 'Previous window', description: 'Go to previous (last accessed) window.' },
+    '^wq': { form: '^wq', name: 'Quit window', description: 'Quit current window (like `:quit`).' },
+    '^wr': { form: '^wr', name: 'Rotate windows down', description: 'Rotate windows downwards N times.' },
+    '^wR': { form: '^wR', name: 'Rotate windows up', description: 'Rotate windows upwards N times.' },
+    '^ws': { form: '^ws', name: 'Split window', description: 'Split current window in two parts, new window N lines high.' },
+    '^wS': { form: '^wS', name: 'Split window', description: 'Split current window in two parts, new window N lines high.' },
+    '^wt': { form: '^wt', name: 'Top window', description: 'Go to top window.' },
+    '^wv': { form: '^wv', name: 'Split vertically', description: 'Split current window vertically, new window N columns wide.' },
+    '^ww': { form: '^ww', name: 'Next window', description: 'Go to N next window (wrap around).' },
+    '^wW': { form: '^wW', name: 'Previous window', description: 'Go to N previous window (wrap around).' },
+    '^wx': { form: '^wx', name: 'Exchange window', description: 'Exchange current window with window N (default: next window).' },
+    '^wz': { form: '^wz', name: 'Close preview window', description: 'Close preview window.' },
+    '^wgf': { form: '^wgf', name: 'Edit file in new tab', description: 'Edit file name under the cursor in a new tab page.' },
+    '^wgF': { form: '^wgF', name: 'Edit file in new tab at line', description: 'Edit file name under the cursor in a new tab page and jump to the line number following the file name..' },
+    '^wgt': { form: '^wgt', name: 'Next tab', description: 'Go to the next tab page.' },
+    '^wgT': { form: '^wgT', name: 'Previous tab', description: 'Go to the previous tab page.' },
+    '^wg]': { form: '^wg]', name: 'Split window and select tag', description: 'Split window and do |:tselect| for tag under cursor.' },
+    '^wg}': { form: '^wg}', name: 'Jump to tag', description: 'Do a `:ptjump` to the tag under the cursor.' },
+    '^wg<Tab>': { form: '^wg<Tab>', name: 'Go to tab', description: 'Go to last accessed tab page.' },
+    '^wg^]': { form: '^wg^]', name: 'Split window and jump to tag', description: 'Split window and do `:tjump` to tag under cursor.' },
+    '^w]': { form: '^w]', name: 'Split window and jump to tag', description: 'Split window and jump to tag under cursor.' },
+    '^w^': { form: '^w^', name: 'Split window and etid alternate', description: 'Split current window and edit alternate file N.' },
+    '^w_': { form: '^w_', name: 'Set window height', description: 'Set current window height to N (default: very high). Similar to `z{height}<CR>`.' },
+    '^w|': { form: '^w|', name: 'Set window width', description: 'Set window width to N columns.' },
+    '^w}': { form: '^w}', name: 'Show tag', description: 'Show tag under cursor in preview window.' },
+    '^w<Down>': { form: '^w<Down>', name: 'Down window', description: 'Go N windows down (stop at last window).' },
+    '^w<Up>': { form: '^w<Up>', name: 'Up window', description: 'Go N windows up (stop at first window).' },
+    '^w<Left>': { form: '^w<Left>', name: 'Go to window', description: 'Go to Nth left window (stop at first window).' },
+    '^w<Right>': { form: '^w<Right>', name: 'Right window', description: 'Go to Nth right window (stop at last window).' },
     '^x': { form: '^x', name: 'Decrement', description: 'Subtract N from number at/after cursor.' },
     '^y': { form: '^y', name: 'Scroll down line', description: 'Scroll N lines downwards.' },
     '^z': { form: '^z', name: 'Suspend', description: 'Suspend program (or start new shell).' },
     '^]': { form: '^]', name: 'Tag definition', description: '`:ta` to ident under cursor.' },
+    '^[': { form: '^[', name: 'Reset', description: 'Reset state and remain in Normal mode. Alternative to <Esc>.' },
     '^^': { form: '^^', name: 'Alternate file', description: 'Edit Nth alternate file. Same as `:e #N`.' },
     '^<Tab>': { form: '^<Tab>', name: 'Go to tab', description: 'Go to last accessed tab page.' },
     '^\\': { form: '^\\', name: 'Leader', description: 'Reserved for user mappings.' },
+  },
+  textObjects: {
+    'quotes': { forms: ['"'], name: "Quotes", description: 'Double quoted string.' },
+    'tick': { forms: ["'"], name: "Tick", description: 'Single quoted string.' },
+    'backticks': { forms: ['`'], name: "Backticks", description: 'Backtick string `...`.' },
+    'angle_brackets': { forms: ['<','>'], name: "Angle Brackets", description: 'Angle brackets <...>.' },
+    'brackets': { forms: ['[',']'], name: "Brackets", description: 'Square brackets [...].' },
+    'block': { forms: ['(',')','b'], name: "Block", description: 'Parenthesis (...).' },
+    'big_block': { forms: ['{','}','B'], name: "BLOCK", description: 'Curly braces {...}.' },
+    'word': { forms: ['w'], name: "Word", description: 'Word (with white space).' },
+    'big_word': { forms: ['W'], name: "WORD", description: 'WORD (with white space).' },
+    'paragraph': { forms: ['p'], name: "Paragraph", description: 'Paragraph (with white space).' },
+    'sentence': { forms: ['s'], name: "Sentence", description: 'Sentence (with white space).' },
+    'tag': { forms: ['t'], name: "Tag", description: 'Tag block (with white space).' },
   },
   synonyms: [
     ['h','^h','<BS>','<Left>'], // Left
@@ -396,6 +482,25 @@ let keys = {
     ['v','<RightMouse>'], // Visual mode
     ['*','<S-LeftMouse>'], // Find under cursor/mouse
     ['#','<S-RightMouse>'], // Find under cursor/mouse reverse
+    ['zh','z<Left>'], // Scroll right
+    ['zl','z<Right>'], // Scroll left
+    ['gj','g<Down>'], // Down screen line
+    ['gk','g<Up>'], // Up screen line
+    ['g$','g<End>'], // End screen line
+    ['g0','g<Home>'], // Leftmost screen character
+    ['<C-LeftMouse>','g<LeftMouse>'], // Tag definition
+    ['<C-MiddleMouse>','g<MiddleMouse>'], // Put
+    ['<C-RightMouse>','g<RightMouse>'], // Tag
+    [']p',']<MiddleMouse>'], // Put and indent
+    ['^ws','^wS'], // Split window
+    ['gt','^wgt'], // Next tab
+    ['gT','^wgT'], // Previous tab
+    ['g<Tab>','^wg<Tab>'], // Go to tab
+    ['^wj','^w<Down>'], // Window down
+    ['^wk','^w<Up>'], // Window up
+    ['^wh','^w<Left>'], // Window left
+    ['^wl','^w<Right>'], // Window right
+    ['<Esc>','^['], // Escape
   ],
   videos: {
     'align_text': { name: 'Align Text', description: 'Align text with `:\'<,\'>norm` commands.', commands: [':norm'] },
@@ -419,5 +524,12 @@ let keys = {
     'marks': { name: 'Marks', descrition: 'Marking with `m` and navigating with `\'` ```.', keys: ['m',"'",'`'] },
     'search': { name: 'Search', description: 'Searching with `*` `#` `n` `N` `/` `?`.', keys: ['*','#','n','N','/','?'] },
     'line_column': { name: 'Go To Line/Column', description: 'Navigating to lines and columns with `G` `|` `:{num}`.', keys: ['G','|'], commands: [':{num}'] },
+    'advanced_selection': { name: 'Advanced Selection', description: "Extending selection with `o` and motions. Reselecting with `gv`. And navigating to the start and end of previous selections with `'<` `'>` ``<` ``>`.", keys: ['v_o' /* visual mode o */,'gv',"'<","'>",'`<','`>'] },
+    'visual_modes': { name: 'Visual Modes', description: 'Visual mode with `v`, visual line mode with `V`, and visual block mode with `^v` or `^q`.', keys: ['v','V','^v','^q'] },
+    'undo': { name: 'Undo', description: 'Undoing changes with `u` and `U`. Redoing them with `^r`.', keys: ['u','U','^r'] },
+    'delete_char': { name: 'Delete Character', description: 'Deleting characters with `x` and `X`.', keys: ['x','X'] },
+    'indenting': { name: 'Indenting', description: 'Indenting, unindenting and autoindenting with `<{motion}` `<<` `>{motion}` `>>` `={motion}` `==`.', keys: ['<<','<','>>','>','==','='] },
+    'jumps': { name: 'Jumps', description: "Navigating jumps with `''` ```` `^o` `^i`.", keys: ["''",'``','^o','^i'] },
+    'replace': { name: 'Replace', description: "Replacing characters with `r` and `R`.", keys: [`r`,`R`] },
   }
 }
