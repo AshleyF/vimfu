@@ -37,12 +37,22 @@ KeyCast.start ()
 //Lesson.scrolling |> go; pause 5000 // 19 JAN 2024
 //Lesson.revertFile |> go; pause 5000 // 20 JAN 2024
 //Lesson.quitting |> go; pause 5000 // 21 JAN 2024
-//Lesson.indenting |> go; pause 5000
-//Lesson.jumps |> go; pause 5000
-//Lesson.deleteChar |> go; pause 5000
-//Lesson.undo |> go; pause 5000
-//Lesson.visual |> go; pause 5000
-//Lesson.visualAdvanced |> go; pause 5000
+//Lesson.indenting |> go; pause 5000 // 22 JAN 2024
+//Lesson.jumps |> go; pause 5000 // 23 JAN 2024
+//Lesson.deleteChar |> go; pause 5000 // 24 JAN 2024
+//Lesson.undo |> go; pause 5000 // 25 JAN 2024
+//Lesson.visual |> go; pause 5000 // 26 JAN 2024
+//Lesson.visualAdvanced |> go; pause 5000 // 27 JAN 2024
+Lesson.replace |> go; pause 5000 // 28 JAN 2024
+
+//Lesson.delete |> go; pause 5000
+//Lesson.put |> go; pause 5000
+//Lesson.yank |> go; pause 5000
+//Lesson.patterns |> go; pause 5000
+//Lesson.textObjects1 |> go; pause 5000
+//Lesson.textObjects2 |> go; pause 5000
+//Lesson.textObjects3 |> go; pause 5000
+//Lesson.textObjects4 |> go; pause 5000
 
 (*
 - Run KeyClicker.py

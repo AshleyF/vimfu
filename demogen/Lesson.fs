@@ -152,7 +152,7 @@ let alignText = // aligning text with `:norm` commands
       SayWhile ("It looks like the height is furthest over.", Compound (150, [Move Down; Move Down; Move (Find '1')]))
       Say "We can see that it's at column eleven."
       Say  "Here's the trick."
-      SayWhile ("We select the block.", Compound (150, [SelectBlock; AroundBlock]))
+      SayWhile ("We select the block.", Compound (150, [SelectBlock; Move (Span AroundBlock)]))
       SayWhile ("And enter a normal mode command with colon-norm.", Text ":norm ")
       Say "This will apply normal mode command to every selected line."
       SayWhile ("We'll find the colon...", Text "f:")
@@ -951,7 +951,7 @@ let visual = // v V ^v
      SayWhile ("Any rectangular areas can be selected.", Compound (400, [Move Left; Move Left; Move Left]))
      Pause 500
      Say "Operations can then be performed on selected text, such as deleting with X."
-     Delete VisualSelection
+     DeleteWithX VisualSelection
      Finish ]
 
 let visualAdvanced = // o gv '< '>
@@ -985,6 +985,285 @@ let visualAdvanced = // o gv '< '>
      SayWhile ("Entering a command with colon, automatically uses the selection as a range between the angle bracket marks", Text ":")
      Finish ]
 
+let replace = // r R
+    [Launch
+     Setup ["# ----------------"; ""; ""; "def fact(n):"; "  if n != 0: return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"]
+     Pause 5000
+     SetFileType "python"
+     Text ":set shiftwidth=2"; Enter
+     Pause 300
+     Text ":set nowrap"; Enter
+     Pause 300
+     Move Down; Move Down; Move Down; Move Down
+     SetFileType "python"
+     Start "Replace"
+     Say "Ah, there's a bug! That's supposed to be equals rather than not-equals."
+     SayWhile ("We can go to the bang.", Move (Find '!'))
+     Say "And replace it by pressing R, for replace, followed by equals."
+     Replace '='
+     Pause 500
+     Say "We can move the return statement to the next line this way too..."
+     SayWhile ("Go to the space before it.", Move (Till 'r'))
+     Say "Then press R followed by Enter to replace it with a carriage return."
+     Key ("r⏎", "replace with '⏎'", "r~")
+     Pause 500
+     Say "There's also a Replace mode that allows for continual over typing."
+     SayWhile ("To illustrate Replace Mode, let's add a header comment.", Compound (200, [Move TopOfDocument; Move Word]))
+     SayWhile ("To add a label..", Compound (200, [Move Right; Move Right]))
+     SayWhile ("We can press shift-R to enter replace mode", ReplaceMode)
+     SayWhile ("And type over some of the dashes without disturbing the rest of the line.", Compound (120, [Text " "; Text "F"; Text "A"; Text "C"; Text "T"; Text "O"; Text "R"; Text "I"; Text "A"; Text "L"; Text " "]))
+     Say "Then Escape back to Normal mode."
+     Esc
+     Pause 1000
+     Finish ]
+
+let delete = // dd d D vd
+    [Launch
+     Setup [""; ""; ""; "def fact(n):"; "  if n != 0: return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"]
+     Pause 5000
+     SetFileType "python"
+     Text ":set shiftwidth=2"; Enter
+     Pause 300
+     Text ":set nowrap"; Enter
+     Pause 300
+     Move Down; Move Down; Move Down; Move Down
+     SetFileType "python"
+     Start "Delete"
+     Say "We can delete a line by pressing D D."
+     DeleteLine
+     Pause 1000
+     SayWhile ("Or delete to the end of a line with shift-D.", Compound (200, [Move Word; Move Right]))
+     Delete EndOfLine
+     Pause 1000
+     SayWhile ("We can combine delete with any motion or text object. For example delete word with D W.", Compound (200, [Move Down; Move Down; Move StartOfLine]))
+     Delete Word
+     Pause 1000
+     SayWhile ("Or delete around parenthesis with D A parenthesis.", Move (Find '7'))
+     Delete (Span AroundBlock)
+     Pause 1000
+     Delete (Span AroundBlock)
+     SayWhile ("We can also first visually select things...", Compound (200, [Move BackParagraph; Move Down; Visual; Move WordEnd; Move WordEnd]))
+     Say "And delete them with D."
+     Delete VisualSelection
+     Pause 2000
+     VisualLine; Pause 200; Move Down
+     Pause 500
+     Delete VisualSelection
+     Pause 1000
+     Finish ]
+
+let put = // p P (line behavior)
+    [Launch
+     Setup [""; ""; ""; "def fact(n):"; "  return n*fact(n-1)"; "  if n =! 0: return 1"; ""; "fact(print(7))"]
+     Pause 5000
+     SetFileType "python"
+     Text ":set shiftwidth=2"; Enter
+     Pause 300
+     Text ":set nowrap"; Enter
+     Pause 300
+     Move Down; Move Down; Move Down; Move Down; Move Down; Move (Find '=')
+     SetFileType "python"
+     Start "Put"
+     Say "When we delete a character with X..."
+     DeleteChar
+     Say "It's stored in a register similar to the clipboard in other editors."
+     Say "We can put it back after the cursor with P."
+     Put
+     Say "In fact, we can think of X followed by P as a swap characters operator."
+     SayWhile ("If instead we delete the bang...", Compound (200, [Undo; Undo; Move Right]))
+     DeleteChar
+     Pause 1000
+     Say "Then we can put it to the left of the cursor with Shift-P.";
+     Move Left; Pause 300; PutBefore
+     Pause 1000
+     SayWhile ("The same works with any spans of deleted text.", Compound (200, [Move Down; Move Down; Move BackWord]))
+     SayWhile ("Deleting a word with D W.", Delete Word)
+     SayWhile ("And putting it before the cursor with Shift-P", Compound (300, [Move StartOfLine; PutBefore]))
+     SayWhile ("Or again deleting a word with D W.", Compound (200, [Move Right; Delete Word]))
+     SayWhile ("And putting it after the cursor with P.", Put)
+     Pause 1000
+     SayWhile ("When we delete whole lines with D D...", Compound (200, [Move Up; Move Up; Move Up]))
+     DeleteLine
+     Say "The put behavior then works with lines."
+     SayWhile ("Shift-P puts it back before the line the cursor is on.", PutBefore);
+     Pause 1000
+     SayWhile ("Or instead...", Compound (200, [DeleteLine; Move Word]))
+     SayWhile ("P puts below the current line.", Put)
+     Pause 1000
+     Finish ]
+
+let yank = // y yy Y vy  :map Y y$
+    [Launch
+     Setup [""; ""; ""; "def fact(n):"; "  if n != 0: return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"]
+     Pause 5000
+     SetFileType "python"
+     Text ":set shiftwidth=2"; Enter
+     Pause 300
+     Text ":set nowrap"; Enter
+     Pause 300
+     Move Down; Move Down; Move Down; Move Down
+     SetFileType "python"
+     Start "Yank"
+     Say "What other editors call copying, we call yanking. We can yank a line with Y Y or Shift-Y."
+     YankLine
+     Pause 1000
+     SayWhile ("Notice that Shift-Y yanks the whole line, unlike Shift-D which deletes from the cursor to the end of the line.", Compound (200, [Move Word; Move Right; Yank EndOfLine]))
+     Pause 1000
+     SayWhile ("Personally, I find this inconsistent behavior, so I map Shift-Y to Y dollar.", Text ":map Y y$")
+     Pause 1000
+     SayWhile ("We can combine yanking with any motion or text object. For example yank a word with Y W.", Compound (200, [Esc; Move Down; Move Down; Move Down; Move StartOfLine; Yank Word]))
+     Pause 1000
+     SayWhile ("Or yank around parenthesis with Y A parenthesis.", Compound (200, [Move (Find '7'); Yank (Span AroundBlock)]))
+     Pause 1000
+     SayWhile ("We can also first visually select things...", Compound (200, [Move BackParagraph; Move Down; Visual; Move WordEnd; Move WordEnd]))
+     Say "And yank them with Y."
+     Yank VisualSelection
+     Pause 1000
+     Finish ]
+
+let patterns = // ddp Dp yyp Yp xp dwwP etc.
+    [Launch
+     Setup ["# Teh Grocery List"; ""; "## Fruits"; ""; "- Apples"; "- Bananas"; "- Citrus"; "  - Oranges"; "  - Lemons"; "- Berries"; "  - Strawberries"; "  - Blueberries"; ""; "## Vegetables"; ""; "- Leafy Greens"; "  - Spinach"; "  - Kale"; "- Root Vegetables"; "  - Carrots"; "  - Potatoes"; ""; "### Dairy"; ""; "- Milk"; "- Cheese"; "- Yogurt"; ""; "### Bakery"; ""; "- Bread"; "  - Wheat"; "  - Rye"; "- Pastries"; ""; "## Meat"; ""; "- Chicken"; "- Beef"; "- Pork"]
+     Pause 5000
+     Text ":set shiftwidth=2"; Enter
+     Pause 300
+     Text ":set nowrap"; Enter
+     Pause 300
+     SetFileType "markdown"
+     Start "Patterns"
+     SayWhile ("Some patterns of usage with delete, yank and put are very common.", Move (Find 'e'))
+     Say "For example, swapping characters with X P."
+     Compound (500, [DeleteChar; Put])
+     Pause 1000
+     Move Right
+     SayWhile ("Or swap words with D E E P.", Compound (800, [Delete WordEnd; Move WordEnd; Put]))
+     Pause 1000
+     SayWhile ("Another is to swap lines with D D P or Shift-D P.", Compound (200, [Move Paragraph; Move Paragraph; Move Down]))
+     Compound (500, [DeleteLine; Put; DeleteLine; Put])
+     Pause 1000
+     SayWhile ("Or duplicate a line with Y Y P.", Compound (500, [YankLine; Put]))
+     Say "So common that they can be thought of as operators of their own."
+     Pause 1000
+     Finish ]
+
+let htmlSample = ["<html>"; "  <head>"; "    <title>Demo</title>"; "  </head>"; "  <body class=\"foo\">"; "    <h1>Demo</h1>"; "  </body>"; "  <script>"; "  function load() {"; "    foo[12] = \"bar\";"; "    alert('loaded');"; "  }"; "  </script>"; "</html>"; "<!--"; "We call ``load()``"; "upon document load."; "This is a sentence."; "And so is this."; "-->"]
+
+let textObjects1 = // i/a " ' `
+    [Launch
+     Setup htmlSample
+     Pause 5000
+     Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Up; Move Up
+     Text ":set nowrap"; Enter
+     SetFileType "html"
+     Start "Text Objects 1"
+     Say "In addition to motions, we can use text objects to describe spans of text. For example inner quotes with I-quote."
+     Visual; Move (Span InnerQuotes)
+     Say "Notice that it moves to the first quote on the line and selects within."
+     Pause 1000
+     Say "Or we can include the quotes and white space by pressing A-quote."
+     Move (Span AroundQuotes)
+     Pause 1200
+     SayWhile ("This also works with single quotes...", Compound (200, [Esc; Move Down; Move BackWord; Move BackWord]))
+     SayWhile ("By pressing I-tick", Compound (200, [Visual; Move (Span InnerTicks)]))
+     Pause 1000
+     Say "Or again including the single quotes by pressing A-tick."
+     Move (Span AroundTicks)
+     Pause 1000
+     Say "Besides visual selection, these text objects may be combined with operators that take motions. For example, delete inner single-quotes with D-I-Tick."
+     Esc; Pause 200; Delete (Span InnerTicks)
+     Pause 1300
+     SayWhile ("Another kind of quote-like character, common in markdown, is the back-tick.", Compound (200, [Move Down; Move Down; Move Down; Move Down; Move Down; Pause 300]))
+     SayWhile ("Inner back ticks and around back ticks work as well.", Compound (200, [Visual; Move (Span InnerBackticks)]))
+     Pause 1000
+     Move (Span AroundBackticks)
+     Pause 1000
+     Finish ]
+
+let textObjects2 = // i/a <> [] ()b {}B
+    [Launch
+     Setup htmlSample
+     Pause 5000
+     Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Up; Move Up; Move (Find '1')
+     Text ":set nowrap"; Enter
+     SetFileType "html"
+     Start "Text Objects 2"
+     SayWhile ("We can select inner square brackets with V-I-Square-bracket.", Compound (400, [Visual; Move (Span InnerBrackets)]))
+     Say "Either left or right square bracket works."
+     SayWhile ("Or around the brackets by pressing A-Square-bracket", Move (Span AroundBrackets))
+     Pause 500
+     Esc; Pause 200; Move Down
+     SayWhile ("The same works for inner parenthesis with I-Parenthesis.", Compound (400, [Visual; Move (Span InnerBlock)]))
+     Say "Again, either left or right parenthesis works and also B for block works, as in I-B for inner block."
+     SayWhile ("And press A-parenthesis for around.", Move (Span AroundBlock))
+     Pause 500
+     Say "We can expand to inner curly brace with I-Curly-brace."
+     Move (Span InnerBigBlock)
+     Pause 500
+     VisualCursorPosition
+     Say "Or including the braces by pressing A-Curly-brace."
+     Move (Span AroundBigBlock)
+     Say "Shift-B works as well, as in I or A followed by Shift-B."
+     Pause 800
+     Esc; Pause 200
+     Say "Combine these with operators such as D A-Curly-brace to delete the block."
+     Delete (Span AroundBigBlock)
+     Pause 1000
+     Compound (200, [VisualCursorPosition; Esc; Move Up; Move BackWord; Visual])
+     SayWhile ("Finally, inner angle brackets with I followed by left or right Angle-bracket", Move (Span InnerAngleBrackets))
+     Pause 500
+     SayWhile ("Or around by pressing A-angle-bracket.", Move (Span AroundAngleBrackets))
+     Pause 1000
+     Finish]
+
+let textObjects3 = // i/a w W p s
+    [Launch
+     Setup htmlSample
+     Pause 5000
+     Move BottomOfDocument; Move Up; Move Up; ZoomBottom; Move Up; Move Up; Move Word; Move Word; Move Right; Move Right; Move Right
+     Text ":set nowrap"; Enter
+     SetFileType "html"
+     Start "Text Objects 3"
+     Say "To select a word from anywhere within it, we can press I-W for inner word."
+     Visual; Pause 200; Move (Span InnerWord)
+     Pause 800
+     Say "Or we can specify big words with I-Shift-W"
+     Esc; Pause 200; Visual; Pause 200; Move (Span InnerBigWord)
+     Pause 800
+     SayWhile ("To include surrounding white space we can press A-W or A-Shift-W.", Compound (200, [Esc; Move Down]))
+     Visual; Pause 200; Move (Span AroundWord)
+     Pause 1000
+     Say "We can select sentences with I or A followed by S."
+     Esc; Pause 200; Move Down; Visual; Pause 200; Move (Span InnerSentence)
+     Pause 1000
+     Say "Or paragraphs with I or A followed by P."
+     Esc; Pause 200; Visual; Pause 200; Move (Span InnerParagraph)
+     Pause 1000
+     Finish ]
+
+let textObjects4 = // i/a t
+    [Launch
+     Setup htmlSample
+     Pause 5000
+     Move Down; Move Down; Move Down; Move Down; Move Down
+     Text ":set nowrap"; Enter
+     SetFileType "html"
+     Start "Text Objects 4"
+     Say "We can select within HTML or XML tags with I-T, for inner tag."
+     Visual; Pause 200; Move (Span InnerTag)
+     Pause 1000
+     Say "Or around them by pressing A-T, for around tag."
+     Move (Span AroundTag)
+     Pause 1000
+     Say "Notice that this is different to angle bracket text objects."
+     VisualCursorPosition; Esc; Pause 200; Move Right; Visual; Pause 200; Move (Span InnerAngleBrackets)
+     Pause 1200
+     Move (Span AroundAngleBrackets)
+     Pause 500
+     Say "It includes attributes and child elements and text."
+     Esc; Pause 200; Move Up; Visual; Pause 200; Move (Span AroundTag)
+     Pause 1000
+     Finish ]
+
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
 //  Basic Motions 3  W B E gE
@@ -1010,23 +1289,29 @@ let visualAdvanced = // o gv '< '>
 //  Undo  u U ^r
 //  Visual  v V ^v
 //  Advanced visual  o gv '< '>  (bad habit possibly)
+//  Replace r R  (replace with <CR> to break lines -- removes trailing space)
+//  Delete  d dd D vd
+//  Put  p P  (line behavior)
+//  Yank  y yy Y vy  :map Y y$
+//  Patterns ddp Dp yyp Yp xp dwwP etc.
 
+//  Text Objects 1  i/a " ' `
+//  Text Objects 2  i/a <> [] ()b {}B
+//  Text Objects 3  i/a w W p s
+//  Text Objects 4  i/a t
+
+//  Insert  i a I A o O gi gI ⎋  (thick cursor, before/after)
+//  Change/Substitute  c cc C s S
 //  Vertical inserts (including ragged edge)
-//  Text objects
 //  Line Wrap  :set nowrap  :set number  gh gj gk gl g$ g^ (display vs. real lines)
 //  Horizontal scroll zL zH
-//  Replace r R  (replace with <CR> to break lines -- removes trailing space)
-//  Insert  i a I A o O gi gI ⎋  (thick cursor, before/after)
 //  Go to last insert gi
 //  Auto indent  [p [P ]p ]P
 //  Scroll plus first column z<CR> z. z-
 //  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
 //  Dot  .
-//  Delete/Yank/Put  d dd D y yy Y p P  (line behavior)
-//  Change/Substitute  c cc C s S
 //  Macros  q @ @@
-//  Indenting  < <<  >>  :set  (^t ^d in insert)
-//  Formatting  = ==
+//  Indenting in Insert  ^t ^d
 //  Commands  :
 //  Registers  "
 //  Leader  \
@@ -1042,7 +1327,6 @@ let visualAdvanced = // o gv '< '>
 //  Go to file/address gf gx
 //  Special marks '< '> '. etc.
 //  Go to last insert/first column gi gI
-//  Patterns ddp Dp yyp Yp xp etc.
 //  Traverse change list g; g,
 //  Indenting in insert mode ^t ^d
 

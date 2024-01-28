@@ -4,8 +4,8 @@ open System
 open System.Threading
 open System.Windows.Forms
 open System.Runtime.InteropServices
-open NeuralVoice // or SpeechSynth
-//open SpeechSynth // or NeuralVoice
+//open NeuralVoice // or SpeechSynth
+open SpeechSynth // or NeuralVoice
 
 let both f0 f1 =
     let t0 = new Thread(new ThreadStart(f0))
@@ -23,6 +23,32 @@ let typing text =
     for k in text do
         string k |> key
         pause 50
+
+type TextObject =
+    | InnerQuotes
+    | InnerTicks
+    | InnerBackticks
+    | InnerAngleBrackets
+    | InnerBrackets
+    | InnerBlock
+    | InnerBigBlock
+    | InnerWord
+    | InnerBigWord
+    | InnerParagraph
+    | InnerSentence
+    | InnerTag
+    | AroundQuotes
+    | AroundTicks
+    | AroundBackticks
+    | AroundAngleBrackets
+    | AroundBrackets
+    | AroundBlock
+    | AroundBigBlock
+    | AroundWord
+    | AroundBigWord
+    | AroundParagraph
+    | AroundSentence
+    | AroundTag
 
 type Motion =
     | Up
@@ -75,6 +101,7 @@ type Motion =
     | SearchNext
     | SearchPrev
     | VisualSelection // not really a motion, but used in place of motions
+    | Span of TextObject
 
 type Action =
     | Launch
@@ -112,6 +139,7 @@ type Action =
     | ZoomMiddle
     | ZoomBottom
     | DeleteLine
+    | YankLine
     | YankToLastLine
     | Put
     | PutBefore
@@ -122,7 +150,6 @@ type Action =
     | RepeatLastMacro
     | RepeatMacro of char * int
     | SelectBlock
-    | AroundBlock // text object
     | Reselect
     | Increment
     | IncrementOrdinals
@@ -134,6 +161,8 @@ type Action =
     | JoinLine
     | Change of Motion
     | Delete of Motion
+    | Yank of Motion
+    | DeleteWithX of Motion
     | Dot
     | ScrollDown
     | ScrollUp
@@ -153,6 +182,8 @@ type Action =
     | AutoIndent of Motion
     | DeleteChar
     | DeletePrevChar
+    | Replace of char
+    | ReplaceMode
     | Key of string * string * string
     | Move of Motion
 
@@ -179,7 +210,7 @@ let rec edit = function
     | Restart -> KeyCast.set "Restarting" "One moment..."; pause 3000
     | Start message -> KeyCast.set "VimFu" message; pause 800
     | Finish -> pause 800; KeyCast.set "Finished" "Cut!"; key "{ESC}:q!{ENTER}"
-    | Setup lines -> key ":set noautoindent{ENTER}"; pause 300; key "{ESC}i"; lines |> Seq.iter (fun line -> key (line.Replace("{", "__LEFT_CURLY__").Replace("}", "__RIGHT_CURLY__").Replace("+", "{+}").Replace("^", "{^}").Replace("%", "{%}").Replace("(", "{(}").Replace(")", "{)}").Replace("__LEFT_CURLY__", "{{}").Replace("__RIGHT_CURLY__", "{}}")); key "{ENTER}"); pause 3000; key "{ESC}"; pause 1000; key "ddgg0:set autoindent{ENTER}:{ESC}"
+    | Setup lines -> key ":set noautoindent{ENTER}"; pause 300; key "{ESC}i"; lines |> Seq.iter (fun line -> key (line.Replace("{", "__LEFT_CURLY__").Replace("}", "__RIGHT_CURLY__").Replace("+", "{+}").Replace("^", "{^}").Replace("%", "{%}").Replace("(", "{(}").Replace(")", "{)}").Replace("`", "{`}").Replace("__LEFT_CURLY__", "{{}").Replace("__RIGHT_CURLY__", "{}}")); key "{ENTER}"); pause 3000; key "{ESC}"; pause 1000; key "ddgg0:set autoindent{ENTER}:{ESC}"
     | Esc -> KeyCast.set "⎋" "normal mode"; key "{ESC}"
     | Text text -> KeyCast.set "⌨" ""; typing text
     | Normal (text, caption) -> KeyCast.set text caption; typing text
@@ -245,6 +276,7 @@ let rec edit = function
     | ZoomMiddle -> KeyCast.set "zz" "zoom middle"; key "zz"
     | ZoomBottom -> KeyCast.set "zb" "zoom bottom"; key "zb"
     | DeleteLine -> KeyCast.set "dd" "delete line"; key "dd"
+    | YankLine -> KeyCast.set "yy" "yank line"; key "yy"
     | YankToLastLine -> KeyCast.set "y⇧G" "yank to last line"; key "yG"
     | Put -> KeyCast.set "p" "put"; key "p"
     | PutBefore -> KeyCast.set "⇧P" "put before"; key "P"
@@ -255,7 +287,6 @@ let rec edit = function
     | RepeatLastMacro -> KeyCast.set "⇧@@" "repeat last macro"; key "@@"
     | RepeatMacro (register, n) -> KeyCast.set $"{n}⇧@{shift register}" $"repeat macro {register} {n} times"; key $"{n}@{register}"
     | SelectBlock -> KeyCast.set "⌃v" "select block"; key "^q" // CTRL-Q because CTRL-V is mapped to paste
-    | AroundBlock -> KeyCast.set "a⇧B" "around block"; key "aB"
     | Reselect -> KeyCast.set "gv" "reselect visual"; key "gv"
     | Increment -> KeyCast.set "⌃A" "increment"; key "^a"
     | IncrementOrdinals -> KeyCast.set "g⌃a" "increment ordinals"; key "g^a"
@@ -275,13 +306,37 @@ let rec edit = function
     | Move (GoToLine n) -> KeyCast.set $"{n}⇧G" $"go to line {n}"; typing $"{n}G"
     | Move (GoToColumn n) -> KeyCast.set $"{n}⇧|" $"go to column {n}"; typing $"{n}|"
     | Move JumpBack -> KeyCast.set "''" "jump back"; key "''"
-    | Move JumpBackChar -> KeyCast.set "``" "jump back char"; key "``"
+    | Move JumpBackChar -> KeyCast.set "``" "jump back char"; key "{`}{`}"
     | Move JumpPrevious -> KeyCast.set "⌃o" "jump previous"; key "^o"
     | Move JumpNext -> KeyCast.set "⌃i" "jump next"; key "^i"
     | Move SearchStar -> KeyCast.set "⇧*" "search"; key "*"
     | Move SearchHash -> KeyCast.set "⇧#" "reverse search"; key "#"
     | Move SearchNext -> KeyCast.set "n" "search next"; key "n"
     | Move SearchPrev -> KeyCast.set "⇧N" "search prev"; key "N"
+    | Move (Span InnerQuotes) -> KeyCast.set "i⇧\"" "inner \"...\""; key "i\""
+    | Move (Span InnerTicks) -> KeyCast.set "i'" "inner '...'"; key "i'"
+    | Move (Span InnerBackticks) -> KeyCast.set "i`" "inner `...`"; key "\\i" // :map \i i`  because of sendkey insanity
+    | Move (Span InnerBrackets) -> KeyCast.set "i[" "inner [...]"; key "i["
+    | Move (Span InnerAngleBrackets) -> KeyCast.set "i⇧<" "inner <...>"; key "i<"
+    | Move (Span InnerBlock) -> KeyCast.set "i⇧(" "inner (...)"; key "i{(}"
+    | Move (Span InnerBigBlock) -> KeyCast.set "i⇧{" "inner {...}"; key "i{{}"
+    | Move (Span InnerWord) -> KeyCast.set "iw" "inner word"; key "iw"
+    | Move (Span InnerBigWord) -> KeyCast.set "i⇧W" "inner WORD"; key "iW"
+    | Move (Span InnerParagraph) -> KeyCast.set "ip" "inner paragraph"; key "ip"
+    | Move (Span InnerSentence) -> KeyCast.set "is" "inner sentence"; key "is"
+    | Move (Span InnerTag) -> KeyCast.set "it" "inner tag"; key "it"
+    | Move (Span AroundQuotes) -> KeyCast.set "a⇧\"" "around \"...\""; key "a\""
+    | Move (Span AroundTicks) -> KeyCast.set "a'" "around '...'"; key "a'"
+    | Move (Span AroundBackticks) -> KeyCast.set "a`" "around `...`"; key "\\a" // :map \a a`  because of sendkey insanity
+    | Move (Span AroundBrackets) -> KeyCast.set "a[" "around [...]"; key "a["
+    | Move (Span AroundAngleBrackets) -> KeyCast.set "a⇧<" "around <...>"; key "a<"
+    | Move (Span AroundBlock) -> KeyCast.set "a⇧(" "around (...)"; key "a{(}"
+    | Move (Span AroundBigBlock) -> KeyCast.set "a⇧{" "around {...}"; key "a{{}"
+    | Move (Span AroundWord) -> KeyCast.set "aw" "around word"; key "aw"
+    | Move (Span AroundBigWord) -> KeyCast.set "a⇧W" "around WORD"; key "aW"
+    | Move (Span AroundParagraph) -> KeyCast.set "ap" "around paragraph"; key "ap"
+    | Move (Span AroundSentence) -> KeyCast.set "as" "around sentence"; key "as"
+    | Move (Span AroundTag) -> KeyCast.set "at" "around tag"; key "at"
     | JoinLine -> KeyCast.set "⇧J" "join line"; key "J"
     | Change m ->
         match m with
@@ -290,9 +345,28 @@ let rec edit = function
     | Delete m ->
         match m with
         | Word -> KeyCast.set "dw" "delete word"; key "dw"
+        | WordEnd -> KeyCast.set "de" "delete to end of word"; key "de"
+        | BigWord -> KeyCast.set "dW" "delete WORD"; key "dW"
         | BottomOfDocument -> KeyCast.set "dG" "delete to bottom of doc"; key "dG"
-        | VisualSelection -> KeyCast.set "x" "delete selection"; key "x"
+        | EndOfLine -> KeyCast.set "⇧D" "delete to end of line"; key "D"
+        | VisualSelection -> KeyCast.set "d" "delete selection"; key "d"
+        | Span AroundBlock -> KeyCast.set "da⇧(" "delete around block"; key "da{(}"
+        | Span InnerTicks -> KeyCast.set "di'" "delete inner ticks"; key "di'"
+        | Span AroundBigBlock -> KeyCast.set "da⇧{" "delete around BLOCK"; key "daB"
         | _ -> failwith $"Delete motion not implemented ({m})"
+    | Yank m ->
+        match m with
+        | Word -> KeyCast.set "yw" "yank word"; key "yw"
+        | BigWord -> KeyCast.set "yW" "yank WORD"; key "yW"
+        | BottomOfDocument -> KeyCast.set "yG" "yank to bottom of doc"; key "yG"
+        | EndOfLine -> KeyCast.set "⇧Y" "yank line"; key "Y"
+        | VisualSelection -> KeyCast.set "y" "yank selection"; key "y"
+        | Span AroundBlock -> KeyCast.set "ya⇧(" "yank around block"; key "ya{(}"
+        | _ -> failwith $"Yank motion not implemented ({m})"
+    | DeleteWithX m ->
+        match m with
+        | VisualSelection -> KeyCast.set "x" "delete selection"; key "x"
+        | _ -> failwith $"Delete with X motion not implemented ({m})"
     | Dot -> KeyCast.set "." "repeat action"; key "."
     | ScrollDown -> KeyCast.set "⌃y" "scroll down"; key "^y"
     | ScrollUp -> KeyCast.set "⌃e" "scroll up"; key "^e"
@@ -322,6 +396,8 @@ let rec edit = function
         | _ -> failwith $"Autoindent motion not implemented ({m})"
     | DeleteChar -> KeyCast.set "x" "delete char"; key "x"
     | DeletePrevChar -> KeyCast.set "⇧X" "delete prev char"; key "X"
+    | Replace c -> KeyCast.set $"r{shift c}" $"replace with '{c}'"; key $"r{c}"
+    | ReplaceMode -> KeyCast.set "⇧R" "replace mode"; key "R"
     | Key (cast, desc, k) -> KeyCast.set cast desc; key k
     | _ -> failwith "Unknown action"
 
