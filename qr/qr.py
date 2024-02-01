@@ -7,8 +7,10 @@ qr = qrcode.QRCode(
     border=4,
 )
 
-qr.add_data("http://vimfu.fun/qr#align_text")
+def makeQR(id):
+    qr.add_data(f"http://vimfu.fun/qr#{id}")
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    img.save(f"qr_{id}.png")
 
-qr.make(fit=True)
-img = qr.make_image(fill_color="black", back_color="white")
-img.save("qrcode_example.png")
+makeQR("align_text")
