@@ -503,7 +503,7 @@ let keys = {
     ['<Esc>','^['], // Escape
   ],
   videos: {
-    'align_text': { name: 'Align Text', description: 'Align text with `:\'<,\'>norm` commands.', commands: [':norm'] },
+    'align_text': { name: 'Align Text', description: 'Align text with `:\'<,\'>norm` commands.', commands: [':norm'], link: "https://youtube.com/shorts/GlnyZDs0aaY" },
     'numbering_lists': { name: 'Numbering Lists', description: 'Numbering lists with `^a`.', keys: ['^a'] },
     'useless_underscore': { name: 'Useless Underscore', description: 'The underscore key is useless, remap it!', keys: ['_'] },
     'basic_motions_1': { name: 'Basic Motions 1', description: 'Moving around with `h` `j` `k` `l`.', keys: ['h','j','k','l','<Left>','<Right>','<Up>','<Down>','<Space>','<BS>'] },
@@ -530,6 +530,14 @@ let keys = {
     'delete_char': { name: 'Delete Character', description: 'Deleting characters with `x` and `X`.', keys: ['x','X'] },
     'indenting': { name: 'Indenting', description: 'Indenting, unindenting and autoindenting with `<{motion}` `<<` `>{motion}` `>>` `={motion}` `==`.', keys: ['<<','<','>>','>','==','='] },
     'jumps': { name: 'Jumps', description: "Navigating jumps with `''` ```` `^o` `^i`.", keys: ["''",'``','^o','^i'] },
-    'replace': { name: 'Replace', description: "Replacing characters with `r` and `R`.", keys: [`r`,`R`] },
+    'replace': { name: 'Replace', description: "Replacing characters with `r` and `R`.", keys: ['r','R'] },
+    'delete': { name: 'Delete', description: "Deleting with `d{motion}`, `dd`, `D` and `d` in Visual mode.", keys: ['dd','d','D','vd'] },
+    'put': { name: 'Put', description: "Put with `p` and `P` and about line behavior.", keys: ['p','P'] },
+    'yank': { name: 'Yank', description: "Yank with `y{motion}` `yy` `Y` and in `y` in Visual mode. Also `:map Y y `yy` `Y` and in `y` in Visual mode. Also `:map Y y$`.", keys: ['y','yy','Y','v_y'], commands: [`:map Y y$`] },
+    'patterns': { name: 'Patterns', description: "Common patterns of usage: `xp` `deep` `ddp` `ddP` `yyp`." },
+    'text_obj_1': { name: 'Text Objects 1', description: "Specifying inner/around quotes, single-quotes and back ticks.", textobj: ['i"','a"',"i'","a'",'i`','a`'] },
+    'text_obj_2': { name: 'Text Objects 2', description: "Specifying inner/around square brackets, parenthesis, curly braces and angle brackets.", textobj: ['i[','i]','a[','a]','i(','i)','ib','a(','a)','ab','i{','i}','iB','a{','a}','aB','i<','i>','a<','a>'] },
+    'text_obj_3': { name: 'Text Objects 3', description: "Specifying inner/around words, WORDS, sentences and paragraphs.", textobj: ['iw','aw','iW','aW','ip','ap','is','as'] },
+    'text_obj_4': { name: 'Text Objects 4', description: "Specifying inner/around HTML and XML tags..", textobj: ['it','at'] },
   }
 }
