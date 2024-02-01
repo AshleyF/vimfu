@@ -10,22 +10,24 @@
     <script src="../keys.js"></script>
     <script>
       function load() {
-        var redirect = "http://vimfu.fun"
+        var redirect = "http://vimfu.fun";
+        var name = "";
         var hash = window.location.hash;
         if (hash.length > 1) {
           var vid = keys.videos[hash.substr(1)];
           if (vid && vid.link) {
             redirect = vid.link;
+            name = vid.name;
           }
         }
         window.location.replace(redirect);
-        document.getElementById("link").innerHTML = '<a href="' + redirect + '">' + redirect + '</a>';
+        document.getElementById("link").innerHTML = '<a href="' + redirect + '">' + name + '</a>';
       }
     </script>
   </head>
   <body onload="load()">
     <img src="../Monkey.png" width="200" height="200" />
-    <h1>Redirecting...</h1>
+    <h1>Redirecting to video...</h1>
     <h3 id="link"></h3>
   </body>
 </html>
