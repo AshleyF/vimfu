@@ -138,7 +138,7 @@ let keys = {
     'zw': { form: 'zw', name: 'Mark incorrect', description: 'Permanently mark word as incorrectly spelled.' },
     'zuw': { form: 'zuw', name: 'Undo mark incorrect', description: 'Undo `zw`.' },
     'zx': { form: 'zx', name: 'Reapply fold level', description: 'Re-apply `foldlevel` and do `zv`.' },
-    'zy': { form: 'Yank without space', name: '', description: 'Yank without trailing spaces.' },
+    'zy': { form: 'zy', name: 'Yank without space', description: 'Yank without trailing spaces.' },
     'zz': { form: 'zz', name: 'Scroll center', description: 'Redraw, cursor line at center of window.' },
     'zA': { form: 'zA', name: 'Toggle folds recursive', description: 'Open a closed fold or close an open fold recursively.' },
     'zC': { form: 'zC', name: 'Close folds recursive', description: 'Close folds recursively.' },
@@ -528,7 +528,7 @@ let keys = {
     'visual_modes': { name: 'Visual Modes', description: 'Visual mode with `v`, visual line mode with `V`, and visual block mode with `^v` or `^q`.', keys: ['v','V','^v','^q'] },
     'undo': { name: 'Undo', description: 'Undoing changes with `u` and `U`. Redoing them with `^r`.', keys: ['u','U','^r'] },
     'delete_char': { name: 'Delete Character', description: 'Deleting characters with `x` and `X`.', keys: ['x','X'] },
-    'indenting': { name: 'Indenting', description: 'Indenting, unindenting and autoindenting with `<{motion}` `<<` `>{motion}` `>>` `={motion}` `==`.', keys: ['<<','<','>>','>','==','='] },
+    'indenting': { name: 'Indenting', description: 'Indenting, unindenting and autoindenting with `<{motion}` `<<` `>{motion}` `>>` `={motion}` `==`.', keys: ['<<','<','>>','>','==','=','v_=','v_<','v_>'] },
     'jumps': { name: 'Jumps', description: "Navigating jumps with `''` ```` `^o` `^i`.", keys: ["''",'``','^o','^i'] },
     'replace': { name: 'Replace', description: "Replacing characters with `r` and `R`.", keys: ['r','R'] },
     'delete': { name: 'Delete', description: "Deleting with `d{motion}`, `dd`, `D` and `d` in Visual mode.", keys: ['dd','d','D','vd'] },
@@ -539,5 +539,10 @@ let keys = {
     'text_obj_2': { name: 'Text Objects 2', description: "Specifying inner/around square brackets, parenthesis, curly braces and angle brackets.", textobj: ['i[','i]','a[','a]','i(','i)','ib','a(','a)','ab','i{','i}','iB','a{','a}','aB','i<','i>','a<','a>'] },
     'text_obj_3': { name: 'Text Objects 3', description: "Specifying inner/around words, WORDS, sentences and paragraphs.", textobj: ['iw','aw','iW','aW','ip','ap','is','as'] },
     'text_obj_4': { name: 'Text Objects 4', description: "Specifying inner/around HTML and XML tags..", textobj: ['it','at'] },
+    'insert': { name: 'Insert', description: "Insert mode with `i`, `a`, `I`, and `A`.", keys: ['i','I','a','A'] },
+    'insert_adv': { name: 'Advanced Insert', description: "Advanced insert mode with `gi` and `gI`.", keys: ['gi','gI'] },
+    'open_line': { name: 'Open Line', description: "Open lines with `o` and `O`.", keys: ['o','O'] },
+    'change': { name: 'Change', description: "Change with `cc`, `C`, and `c{motion}`.", keys: ['cc','C','c'] },
+    'substitute': { name: 'Substitute', description: "Substitute with `S` and `s{motion}.", keys: ['S','s'] },
   }
 }
