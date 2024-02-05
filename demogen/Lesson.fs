@@ -1264,6 +1264,149 @@ let textObjects4 = // i/a t
      Pause 1000
      Finish ]
 
+let rpn = ["open System"; ""; "let execute ="; "  Seq.fold (|>)"; ""; "let bin f = function"; "  | _::a::b::t ->"; "    f b a :: t"; ""; "let add = bin ( + )"; "let sub = bin ( - )"; "let mul = bin ( * )"; "let div = bin ( / )"; ""; "let dig v = function"; "  | x :: t ->"; "    10 * x + v :: t"; ""; "let ent s = 0 :: s"; ""; "let inst ="; "  Map.ofList ["; "    '0', dig 0"; "    '1', dig 1"; "    '2', dig 2"; "    '3', dig 3"; "    '4', dig 4"; "    '5', dig 5"; "    '6', dig 6"; "    '7', dig 7"; "    '8', dig 8"; "    '9', dig 9"; "    '+', add"; "    '-', sub"; "    '*', mul"; "    '/', div"; "    ' ', ent]"; ""; "let flip f a b ="; "  f b a"; ""; "let compile ="; "  flip Map.find inst"; "  |> Seq.map"; ""; "let eval ="; "  compile >>"; "  execute [0] >>"; "  Seq.head"; ""; "let rec repl () ="; "  Console.ReadLine()"; "  |> eval"; "  |> printf \"%i\\n>\""; "  |> repl"; ""; "printf \"TinyRPN\n>\""; "repl ()"]
+
+let insert = // i a I A
+    [Launch
+     Setup rpn
+     Pause 5000
+     Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Up 
+     Delete Word; Delete Word; Delete Word; Move Right; Delete EndOfLine
+     Pause 2000
+     Text ":set nowrap"; Enter
+     SetFileType "javascript"
+     Start "Insert"
+     Say "Normal mode is home. It's wonderful to have the entire keyboard at our disposal for commands. But sometimes we need to insert text by pressing I."
+     Insert
+     SayWhile ("This begins inserting before the cursor and we can type what we need.", Compound (100, [Text "e"; Text "n"; Text "t"; Text " "; Text "s"; Text " "]))
+     SayWhile ("Pressing Escape returns to Normal mode.", Esc)
+     Pause 1000
+     SayWhile ("We can also insert after the cursor by pressing A.", Move Right)
+     After
+     Pause 1000
+     SayWhile ("And type what we need; again pressing Escape when we're done.", Compound (100, [Text " "; Text "0"]))
+     Esc
+     Say "We can insert before the line, at the first non-whitespace, by pressing Shift-I."
+     InsertBefore
+     Pause 1000
+     Compound (100, [Text "l"; Text "e"; Text "t"; Text " "])
+     Say "Then Escape to Normal mode as usual."
+     Esc
+     Say "Finally, we can insert after the line with Shift-A"
+     AfterLine
+     Pause 1000
+     Compound (100, [Text " "; Text ":"; Text ":"; Text " "; Text "s"])
+     SayWhile ("And always escaping back to Normal mode as our home mode.", Esc)
+     Pause 1000
+     Finish ]
+
+let insertAdvanced = // gI gi
+    [Launch
+     Setup rpn
+     Pause 5000
+     Move Paragraph; Move Paragraph; Move Paragraph; Move Up; Move EndOfLine; Move BackWord
+     Pause 2000
+     Text ":set nowrap"; Enter
+     SetFileType "javascript"
+     Start "Advanced Insert"
+     Say "When we insert at the start of a line by pressing Shift-I, it starts before the first non-whitespace."
+     InsertBefore
+     Pause 1000
+     SayWhile ("If instead we want to insert at the first column we can press G followed by Shift-I.", Esc)
+     InsertFirstColumn
+     Pause 2000
+     SayWhile ("Of course we're now in insert mode and can type what we need.", Compound (100, [Text "/"; Text "/"]))
+     Pause 800
+     Esc
+     Pause 200
+     SayWhile ("Now, let's say we explore the code a bit; moving down to the bottom. We can return to inserting where we left off by pressing G followed by I.", Compound (150, [Move Paragraph; Move Paragraph; Move Paragraph; Move Paragraph; Move Paragraph; Move Paragraph; Move Paragraph; Move Paragraph; Move Paragraph]))
+     InsertAtLast
+     Pause 2000
+     Compound (100, [Text " "; Text "f"; Text "o"; Text "o"; Esc])
+     Pause 1000
+     Finish ]
+
+let openLine = // o O
+    [Launch
+     Setup rpn
+     Pause 5000
+     Move Paragraph; Move Paragraph; Move Paragraph
+     DeleteLine; Move Down; DeleteLine
+     ScrollUp; ScrollUp; Move Up
+     Pause 2000
+     Text ":set nowrap"; Enter
+     SetFileType "javascript"
+     Start "Open Line"
+     Say "We can open a line below the cursor by pressing O."
+     OpenBelow
+     Say "This also takes us to insert mode and we can now type a line of code."
+     Compound (100, [Text "l"; Text "e"; Text "t"; Text " "; Text "s"; Text "u"; Text "b"; Text " "; Text "="; Text " "; Text "b"; Text "i"; Text "n"; Text " "; Key ("⌨", "", "{(}"); Text " "; Text "-"; Text " "; Key ("⌨", "", "{)}")])
+     Say "As usual, we press Escape to return to Normal mode."
+     Esc
+     Pause 1000
+     SayWhile ("We can open a line above the cursor with Shift-O.", Move Up)
+     OpenAbove
+     Pause 1000
+     Say "Again, we're now in insert mode an can type a comment."
+     Compound (100, [Text "/"; Text "/"; Text " "; Text "b"; Text "i"; Text "n"; Text "a"; Text "r"; Text "y"; Text " "; Text "o"; Text "p"; Text "s"])
+     Say "Escape to Normal mode."
+     Esc
+     Pause 1000
+     SayWhile ("And maybe open another line above for extra space with Shift-O again.", OpenAbove)
+     Esc; Pause 200; Delete BackWord; DeleteChar
+     Pause 1000
+     Finish ]
+
+let change = // cc C c
+    [Launch
+     Setup (["";""] @ rpn)
+     Pause 6000
+     Text ":set nowrap"; Enter
+     SetFileType "javascript"
+     Start "Change"
+     SayWhile ("It's very common to delete something and immediately insert something in its place. For that we can use Change commands.", Compound (100, [Move Down; Move Down; Move Down; Move Down; Move Word]))
+     SayWhile ("Pressing C C, changes the whole line; deleting it an leaving us in Insert mode.", ChangeLine)
+     Compound (100, [Text "l"; Text "e"; Text "t"; Text " "; Text "e"; Text "x"; Text "e"; Text "c"; Text " "; Text "="; Esc])
+     Pause 300
+     Move BackWord
+     Pause 1000
+     Say "Rather than retype the whole thing, we could change to the end of the line with Shift-C"
+     ChangeToEnd
+     Pause 1500
+     Compound (100, [Text "r"; Text "u"; Text "n"; Text " "; Text "="; Esc])
+     Pause 300
+     Move BackWord
+     Say "Better yet, we can used C combined with a motion to, for example, change a word with C W."
+     Change Word
+     Pause 1500
+     Compound (100, [Text "g"; Text "o"; Esc])
+     Pause 1000
+     SayWhile ("Or we can use C combined with a text object such as C A B to change around a block.", Compound (100, [Move Down; Move (Find '|')]))
+     Change (Span AroundBlock)
+     Pause 1500
+     Compound (100, [Text "f"; Text "o"; Text "o"; Esc])
+     Pause 1000
+     Finish ]
+
+let substitute = // S s
+    [Launch
+     Setup (["";""] @ rpn)
+     Pause 6000
+     Text ":set nowrap"; Enter
+     SetFileType "javascript"
+     Start "Substitute"
+     SayWhile ("Substituting is very similar to changing.", Compound (100, [Move Down; Move Down; Move Down; Move Down; Move Word]))
+     SayWhile ("In fact Shift-S to substitute a line is a synonym for C C to change a line.", SubstituteLine)
+     Compound (100, [Text "l"; Text "e"; Text "t"; Text " "; Text "g"; Text "o"; Text " "; Text "="; Esc])
+     Pause 300
+     Move BackWord
+     Say "Pressing lowercase S substitutes a single character; deleting it an leaving us in Insert mode."
+     Substitute
+     Say "I find it useful when prepending to a camel cased name."
+     Compound (100, [Text "a"; Text "p"; Text "p"; Text "l"; Text "y"; Text "A"; Text "n"; Text "d"; Text "G"; Esc])
+     Pause 1000
+     Finish ]
+
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
 //  Basic Motions 3  W B E gE
@@ -1294,14 +1437,17 @@ let textObjects4 = // i/a t
 //  Put  p P  (line behavior)
 //  Yank  y yy Y vy  :map Y y$
 //  Patterns ddp Dp yyp Yp xp dwwP etc.
-
 //  Text Objects 1  i/a " ' `
 //  Text Objects 2  i/a <> [] ()b {}B
 //  Text Objects 3  i/a w W p s
 //  Text Objects 4  i/a t
 
-//  Insert  i a I A o O gi gI ⎋  (thick cursor, before/after)
-//  Change/Substitute  c cc C s S
+//  Insert  i a I A
+//  Advanced Insert  gi gI
+//  Open Line  o O
+//  Change  cc C c
+//  Substitute  s S
+
 //  Vertical inserts (including ragged edge)
 //  Line Wrap  :set nowrap  :set number  gh gj gk gl g$ g^ (display vs. real lines)
 //  Horizontal scroll zL zH

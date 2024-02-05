@@ -45,16 +45,22 @@ KeyCast.start ()
 //Lesson.visualAdvanced |> go; pause 5000 // 27 JAN 2024
 //Lesson.replace |> go; pause 5000 // 28 JAN 2024
 //Lesson.delete |> go; pause 5000 // 29 JAN 2024
-//Lesson.put |> go; pause 5000
-//Lesson.yank |> go; pause 5000
-//Lesson.patterns |> go; pause 5000
-//Lesson.textObjects1 |> go; pause 5000
-//Lesson.textObjects2 |> go; pause 5000
-//Lesson.textObjects3 |> go; pause 5000
+//Lesson.put |> go; pause 5000 // 30 JAN 2024
+//Lesson.yank |> go; pause 5000 // 31 JAN 2024
+//Lesson.patterns |> go; pause 5000 // 01 FEB 2024
+//Lesson.textObjects1 |> go; pause 5000 // 02 FEB 2024
+//Lesson.textObjects2 |> go; pause 5000 // 03 FEB 2024
+//Lesson.textObjects3 |> go; pause 5000 // 04 FEB 2024
 //Lesson.textObjects4 |> go; pause 5000
+//Lesson.insert |> go; pause 5000
+//Lesson.insertAdvanced |> go; pause 5000
+//Lesson.openLine |> go; pause 5000
+//Lesson.change |> go; pause 5000
+//Lesson.substitute |> go; pause 5000
 
 (*
 - Run KeyClicker.py
 - Capture: 30fps, 50000kbps, 100% quality, no mouse capture, audio speakers only, 1860x1860
 - Encode: MP4 50000kbps 1080x1080
+- Suspend voice!
 *)

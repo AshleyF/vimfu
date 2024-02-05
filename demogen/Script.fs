@@ -4,8 +4,8 @@ open System
 open System.Threading
 open System.Windows.Forms
 open System.Runtime.InteropServices
-//open NeuralVoice // or SpeechSynth
-open SpeechSynth // or NeuralVoice
+open NeuralVoice // or SpeechSynth
+//open SpeechSynth // or NeuralVoice
 
 let both f0 f1 =
     let t0 = new Thread(new ThreadStart(f0))
@@ -115,6 +115,8 @@ type Action =
     | Pause of int
     | Insert
     | InsertBefore
+    | InsertFirstColumn
+    | InsertAtLast
     | Enter
     | Tab
     | After
@@ -159,6 +161,10 @@ type Action =
     | QuitWithoutSaving
     | SetFileType of string
     | JoinLine
+    | SubstituteLine
+    | Substitute
+    | ChangeLine
+    | ChangeToEnd
     | Change of Motion
     | Delete of Motion
     | Yank of Motion
@@ -217,10 +223,12 @@ let rec edit = function
     | Pause ms -> pause ms
     | Insert -> KeyCast.set "i" "insert"; key "i"
     | InsertBefore -> KeyCast.set "⇧I" "insert before line"; key "I"
-    | Enter -> KeyCast.set "⌨" ""; key "{ENTER}"
-    | Tab -> KeyCast.set "⌨" ""; key "{TAB}"
+    | InsertFirstColumn -> KeyCast.set "g⇧I" "insert first column"; key "gI"
+    | InsertAtLast -> KeyCast.set "gi" "insert at last"; key "gi"
     | After -> KeyCast.set "a" "after"; key "a"
     | AfterLine -> KeyCast.set "⇧A" "after line"; key "A"
+    | Enter -> KeyCast.set "⌨" ""; key "{ENTER}"
+    | Tab -> KeyCast.set "⌨" ""; key "{TAB}"
     | Move Up -> KeyCast.set "k" "up"; key "k"
     | Move Down -> KeyCast.set "j" "down"; key "j"
     | Move Right -> KeyCast.set "l" "right"; key "l"
@@ -338,14 +346,20 @@ let rec edit = function
     | Move (Span AroundSentence) -> KeyCast.set "as" "around sentence"; key "as"
     | Move (Span AroundTag) -> KeyCast.set "at" "around tag"; key "at"
     | JoinLine -> KeyCast.set "⇧J" "join line"; key "J"
+    | SubstituteLine -> KeyCast.set "⇧S" "substitute line"; key "S"
+    | Substitute -> KeyCast.set "s" "substitute"; key "s"
+    | ChangeLine -> KeyCast.set "cc" "change line"; key "cc"
+    | ChangeToEnd -> KeyCast.set "⇧C" "change to end of line"; key "C"
     | Change m ->
         match m with
         | Word -> KeyCast.set "cw" "change word"; key "cw"
+        | Span AroundBlock -> KeyCast.set "cab" "change around block"; key "cab"
         | _ -> failwith $"Change motion not implemented ({m})"
     | Delete m ->
         match m with
         | Word -> KeyCast.set "dw" "delete word"; key "dw"
         | WordEnd -> KeyCast.set "de" "delete to end of word"; key "de"
+        | BackWord -> KeyCast.set "db" "delete back word"; key "db"
         | BigWord -> KeyCast.set "dW" "delete WORD"; key "dW"
         | BottomOfDocument -> KeyCast.set "dG" "delete to bottom of doc"; key "dG"
         | EndOfLine -> KeyCast.set "⇧D" "delete to end of line"; key "D"
