@@ -43,9 +43,8 @@ KeyCast.start ()
 //Lesson.undo |> go; pause 5000 // 25 JAN 2024
 //Lesson.visual |> go; pause 5000 // 26 JAN 2024
 //Lesson.visualAdvanced |> go; pause 5000 // 27 JAN 2024
-Lesson.replace |> go; pause 5000 // 28 JAN 2024
-
-//Lesson.delete |> go; pause 5000
+//Lesson.replace |> go; pause 5000 // 28 JAN 2024
+//Lesson.delete |> go; pause 5000 // 29 JAN 2024
 //Lesson.put |> go; pause 5000
 //Lesson.yank |> go; pause 5000
 //Lesson.patterns |> go; pause 5000

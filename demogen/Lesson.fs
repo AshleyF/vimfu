@@ -1121,7 +1121,7 @@ let yank = // y yy Y vy  :map Y y$
      Pause 1000
      Finish ]
 
-let patterns = // ddp Dp yyp Yp xp dwwP etc.
+let patterns = // xp deep ddp ddP yyp
     [Launch
      Setup ["# Teh Grocery List"; ""; "## Fruits"; ""; "- Apples"; "- Bananas"; "- Citrus"; "  - Oranges"; "  - Lemons"; "- Berries"; "  - Strawberries"; "  - Blueberries"; ""; "## Vegetables"; ""; "- Leafy Greens"; "  - Spinach"; "  - Kale"; "- Root Vegetables"; "  - Carrots"; "  - Potatoes"; ""; "### Dairy"; ""; "- Milk"; "- Cheese"; "- Yogurt"; ""; "### Bakery"; ""; "- Bread"; "  - Wheat"; "  - Rye"; "- Pastries"; ""; "## Meat"; ""; "- Chicken"; "- Beef"; "- Pork"]
      Pause 5000
