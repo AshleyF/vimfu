@@ -1448,6 +1448,10 @@ let substitute = // S s
 //  Change  cc C c
 //  Substitute  s S
 
+//  Jump Percent  {count}%
+//  Counted Insert  #i #a #I #A #o #O
+//  Counted High/Low  #H #L
+//  Counted Text Objects  3ya(
 //  Vertical inserts (including ragged edge)
 //  Line Wrap  :set nowrap  :set number  gh gj gk gl g$ g^ (display vs. real lines)
 //  Horizontal scroll zL zH
@@ -1455,7 +1459,7 @@ let substitute = // S s
 //  Auto indent  [p [P ]p ]P
 //  Scroll plus first column z<CR> z. z-
 //  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
-//  Dot  .
+//  Dot  .  #.
 //  Macros  q @ @@
 //  Indenting in Insert  ^t ^d
 //  Commands  :
