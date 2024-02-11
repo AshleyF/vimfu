@@ -51,12 +51,17 @@ KeyCast.start ()
 //Lesson.textObjects1 |> go; pause 5000 // 02 FEB 2024
 //Lesson.textObjects2 |> go; pause 5000 // 03 FEB 2024
 //Lesson.textObjects3 |> go; pause 5000 // 04 FEB 2024
-//Lesson.textObjects4 |> go; pause 5000
-//Lesson.insert |> go; pause 5000
-//Lesson.insertAdvanced |> go; pause 5000
-//Lesson.openLine |> go; pause 5000
-//Lesson.change |> go; pause 5000
-//Lesson.substitute |> go; pause 5000
+//Lesson.textObjects4 |> go; pause 5000 // 05 FEB 2024
+//Lesson.insert |> go; pause 5000 // 06 FEB 2024
+//Lesson.insertAdvanced |> go; pause 5000 // 07 FEB 2024
+//Lesson.openLine |> go; pause 5000 // 08 FEB 2024
+//Lesson.change |> go; pause 5000 // 09 FEB 2024
+//Lesson.substitute |> go; pause 5000 // 10 FEB 2024
+//Lesson.numberedLines |> go; pause 5000
+//Lesson.jumpPercent |> go; pause 5000
+//Lesson.countedInsert |> go; pause 5000
+//Lesson.insertModeDelete |> go; pause 5000
+//Lesson.verticalInsert |> go; pause 5000
 
 (*
 - Run KeyClicker.py

@@ -52,7 +52,9 @@ type TextObject =
 
 type Motion =
     | Up
+    | UpNum of int
     | Down
+    | DownNum of int
     | Right
     | Left
     | Word
@@ -71,6 +73,7 @@ type Motion =
     | MiddleLine
     | TopOfDocument
     | BottomOfDocument
+    | PercentageOfDocument of int
     | Sentence
     | BackSentence
     | Paragraph
@@ -111,16 +114,25 @@ type Action =
     | Setup of string seq
     | Esc
     | Text of string
+    | Type of int * string
     | Normal of string * string
     | Pause of int
     | Insert
     | InsertBefore
+    | CountedInsert of int
+    | CountedInsertBefore of int
     | InsertFirstColumn
     | InsertAtLast
     | Enter
     | Tab
+    | Backspace
+    | BackspaceCtrlH
+    | DeleteWordCtrlW
+    | DeleteLineCtrlU
     | After
     | AfterLine
+    | CountedAfter of int
+    | CountedAfterLine of int
     | Repeat
     | Undo
     | UndoLine
@@ -137,6 +149,8 @@ type Action =
     | JumpSelectionEnd
     | OpenBelow
     | OpenAbove
+    | CountedOpenBelow of int
+    | CountedOpenAbove of int
     | ZoomTop
     | ZoomMiddle
     | ZoomBottom
@@ -206,7 +220,7 @@ extern void MouseEvent(uint dwFlags, uint dx, uint dy, uint dwData, int dwExtraI
 let focusHack() =
     let MOUSEEVENTF_LEFTDOWN = 0x0002u
     let MOUSEEVENTF_LEFTUP = 0x0004u
-    SetCursorPos(100, 1000) |> ignore
+    SetCursorPos(10, 1000) |> ignore
     MouseEvent(MOUSEEVENTF_LEFTDOWN, 0u, 0u, 0u, 0)
     MouseEvent(MOUSEEVENTF_LEFTUP, 0u, 0u, 0u, 0)
 
@@ -219,18 +233,29 @@ let rec edit = function
     | Setup lines -> key ":set noautoindent{ENTER}"; pause 300; key "{ESC}i"; lines |> Seq.iter (fun line -> key (line.Replace("{", "__LEFT_CURLY__").Replace("}", "__RIGHT_CURLY__").Replace("+", "{+}").Replace("^", "{^}").Replace("%", "{%}").Replace("(", "{(}").Replace(")", "{)}").Replace("`", "{`}").Replace("__LEFT_CURLY__", "{{}").Replace("__RIGHT_CURLY__", "{}}")); key "{ENTER}"); pause 3000; key "{ESC}"; pause 1000; key "ddgg0:set autoindent{ENTER}:{ESC}"
     | Esc -> KeyCast.set "⎋" "normal mode"; key "{ESC}"
     | Text text -> KeyCast.set "⌨" ""; typing text
+    | Type (delay, text) -> KeyCast.set "⌨" ""; text |> Seq.iter (fun k -> typing $"{k}"; pause delay)
     | Normal (text, caption) -> KeyCast.set text caption; typing text
     | Pause ms -> pause ms
     | Insert -> KeyCast.set "i" "insert"; key "i"
     | InsertBefore -> KeyCast.set "⇧I" "insert before line"; key "I"
+    | CountedInsert n -> KeyCast.set $"{n}i" $"insert {n}"; key $"{n}i"
+    | CountedInsertBefore n -> KeyCast.set $"{n}⇧I" $"insert {n} before line"; key $"{n}I"
     | InsertFirstColumn -> KeyCast.set "g⇧I" "insert first column"; key "gI"
     | InsertAtLast -> KeyCast.set "gi" "insert at last"; key "gi"
     | After -> KeyCast.set "a" "after"; key "a"
     | AfterLine -> KeyCast.set "⇧A" "after line"; key "A"
+    | CountedAfter n -> KeyCast.set $"{n}a" $"{n} after"; key $"{n}a"
+    | CountedAfterLine n -> KeyCast.set $"{n}⇧A" $"{n} after line"; key $"{n}A"
     | Enter -> KeyCast.set "⌨" ""; key "{ENTER}"
     | Tab -> KeyCast.set "⌨" ""; key "{TAB}"
+    | Backspace -> KeyCast.set "⌫" "backspace"; key "\b"
+    | BackspaceCtrlH -> KeyCast.set "⌃h" "backspace"; key "^h"
+    | DeleteWordCtrlW -> KeyCast.set "⌃w" "delete word"; key "^w"
+    | DeleteLineCtrlU -> KeyCast.set "⌃u" "delete line"; key "^u"
     | Move Up -> KeyCast.set "k" "up"; key "k"
+    | Move (UpNum n) -> KeyCast.set $"{n}k" $"up {n}"; key $"{n}k"
     | Move Down -> KeyCast.set "j" "down"; key "j"
+    | Move (DownNum n) -> KeyCast.set $"{n}j" $"down {n}"; key $"{n}j"
     | Move Right -> KeyCast.set "l" "right"; key "l"
     | Move Left -> KeyCast.set "h" "left"; key "h"
     | Move Word -> KeyCast.set "w" "forward word"; key "w"
@@ -249,6 +274,7 @@ let rec edit = function
     | Move MiddleLine -> KeyCast.set "⇧M" "middle line"; key "M"
     | Move TopOfDocument -> KeyCast.set "gg" "go top"; key "gg"
     | Move BottomOfDocument -> KeyCast.set "⇧G" "go bottom"; key "G"
+    | Move (PercentageOfDocument n) -> KeyCast.set $"{n}⇧%%" $"go {n}%%"; key $"{n}"; key "{%}"
     | Move Sentence -> KeyCast.set "⇧)" "next sentence"; key "{)}"
     | Move BackSentence -> KeyCast.set "⇧(" "prev sentence"; key "{(}"
     | Move Paragraph -> KeyCast.set "⇧}" "next paragraph"; key "{}}"
@@ -280,6 +306,8 @@ let rec edit = function
     | JumpSelectionEnd -> KeyCast.set "`⇧>" "jump selection end"; key "`>"
     | OpenBelow -> KeyCast.set "o" "open below"; key "o"
     | OpenAbove -> KeyCast.set "⇧O" "open above"; key "O"
+    | CountedOpenBelow n -> KeyCast.set $"{n}o" $"open {n} below"; key $"{n}o"
+    | CountedOpenAbove n -> KeyCast.set $"{n}⇧O" $"open {n} above"; key $"{n}O"
     | ZoomTop -> KeyCast.set "zt" "zoom top"; key "zt"
     | ZoomMiddle -> KeyCast.set "zz" "zoom middle"; key "zz"
     | ZoomBottom -> KeyCast.set "zb" "zoom bottom"; key "zb"
