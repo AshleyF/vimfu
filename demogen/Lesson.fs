@@ -1278,7 +1278,8 @@ let insert = // i a I A
      Start "Insert"
      Say "Normal mode is home. It's wonderful to have the entire keyboard at our disposal for commands. But sometimes we need to insert text by pressing I."
      Insert
-     SayWhile ("This begins inserting before the cursor and we can type what we need.", Compound (100, [Text "e"; Text "n"; Text "t"; Text " "; Text "s"; Text " "]))
+     Say "This begins inserting before the cursor and we can type what we need."
+     Compound (100, [Text "e"; Text "n"; Text "t"; Text " "; Text "s"; Text " "])
      SayWhile ("Pressing Escape returns to Normal mode.", Esc)
      Pause 1000
      SayWhile ("We can also insert after the cursor by pressing A.", Move Right)
@@ -1407,6 +1408,144 @@ let substitute = // S s
      Pause 1000
      Finish ]
 
+let numberedLines = // :set nu  :set rnu  #G  #j  #k
+    [Launch
+     Setup rpn
+     Pause 6000
+     Text ":set nowrap"; Enter
+     SetFileType "javascript"
+     Start "Numbered Lines"
+     SayWhile ("Set number turns on line numbering.", Type (60, ":set number"))
+     SayWhile ("Or N U for short.", Type (60, "\b\b\b\b"))
+     Enter
+     Say "A count followed by G jumps to a line."
+     SayWhile ("6 G.", Move (GoToLine 6))
+     Say "Pressing colon number works too."
+     SayWhile ("Colon-51 enter.", Type (60, ":51"))
+     Enter
+     Say "But using G saves a key stroke."
+     SayWhile ("57 G.", Move (GoToLine 57))
+     Say "Now back to the top."
+     Move TopOfDocument
+     SayWhile ("Set N U bang toggles numbering.", Type (60, ":set nu!"))
+     SayWhile ("Or No N U to turn off.", Type (60, "\b\b\bnonu"))
+     Enter
+     SayWhile ("Set relative number shows numbers relative to the cursor.", Type (60, ":set relativenumber"))
+     SayWhile ("Or R N U for short.", Type (20, "\b\b\b\b\b\b\b\b\b\b\b\b\bnu"))
+     Enter
+     SayWhile ("We can see this as we move.", Compound (150, [Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Up; Move Up; Move Up; Move Up; Move Up; Move Up; Move Up; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Up; Move Up; Move Up; Move Up; Move Up; Move Up; Move Up]))
+     SayWhile ("Turning on absolute numbering...", Type (60, ":set nu"))
+     Enter
+     SayWhile ("...shows the absolute cursor line.", Compound (150, [Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Up; Move Up; Move Up; Move Up; Move Up; Move Up; Move Up; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Down; Move Up; Move Up; Move Up; Move Up; Move Up; Move Up; Move Up]))
+     Say "A count followed by K or J moves relative amounts."
+     SayWhile ("2 J.", Move (DownNum 2))
+     SayWhile ("3 J.", Move (DownNum 3))
+     SayWhile ("5 K.", Move (UpNum 5))
+     SayWhile ("50 J.", Move (DownNum 50))
+     Pause 1000
+     Finish ]
+
+let jumpPercent = // {count}%
+    [ Launch
+      Pause 5000
+      Setup ["# Grocery List"; ""; "## Fruits"; ""; "- Apples"; "- Bananas"; "- Citrus"; "  - Oranges"; "  - Lemons"; "- Berries"; "  - Strawberries"; "  - Blueberries"; ""; "## Vegetables"; ""; "- Leafy Greens"; "  - Spinach"; "  - Kale"; "- Root Vegetables"; "  - Carrots"; "  - Potatoes"; ""; "### Dairy"; ""; "- Milk"; "- Cheese"; "- Yogurt"; ""; "### Bakery"; ""; "- Bread"; "  - Wheat"; "  - Rye"; "- Pastries"; ""; "## Meat"; ""; "- Chicken"; "- Beef"; "- Pork"]
+      SetFileType "markdown"
+      Start "Jump Percent"
+      Say "Normally, pressing percent jumps between matching braces and brackets."
+      Say "But a number followed by percent has completely different behavior."
+      Say "Instead, it jumps to a percentage of the document length."
+      SayWhile ("For example, 50 percent jumps to the middle.", Move (PercentageOfDocument 50))
+      SayWhile ("Or 10 percent jumps to near the top.", Move (PercentageOfDocument 10))
+      SayWhile ("Or 90 percent jumps to near the bottom.", Move (PercentageOfDocument 90))
+      SayWhile ("Of course 100 percent or more jumps to the bottom and is equivalent to Shift-G.", Move (PercentageOfDocument 100))
+      Move BottomOfDocument
+      Pause 1000
+      Finish ]
+
+let countedInsert = // {count}i/a/I/A/o/O
+    [ Launch
+      Pause 5000
+      SetFileType "text"
+      Start "Counted Insert"
+      Say "Entering a number before an insert command causes the insert to be repeated."
+      SayWhile ("For example, 4 I", CountedInsert 4)
+      SayWhile ("And then typing hi space.", Type (50, "hi "))
+      SayWhile ("Causes hi to be repeated four times once we press escape.", Esc)
+      Pause 800
+      SayWhile ("It works for inserting before a line with 4 Shift-I.", CountedInsertBefore 4)
+      SayWhile ("Typing a single dash.", Text "-")
+      SayWhile ("Inserts four dashes.", Esc)
+      Pause 800
+      SayWhile ("Or 4 Shift-A inserts after the line.", CountedAfterLine 4)
+      SayWhile ("One dash.", Text "-")
+      SayWhile ("Makes four.", Esc)
+      Pause 800
+      Move BackWordEnd
+      Say "Oddly enough, it works to repeat backspaces."
+      SayWhile ("3 A", CountedAfter 3)
+      SayWhile ("Followed by deleting one Hi.", Type (50, "\b\b\b"))
+      SayWhile ("Deletes three of them.", Esc)
+      Pause 800
+      Say "It works with opening lines."
+      SayWhile ("3 O", CountedOpenBelow 3)
+      SayWhile ("Enter a line of text.", Type (50, "repeat"))
+      SayWhile ("Repeats the line.", Esc)
+      Pause 800
+      SayWhile ("Or 3 Shift-O.", CountedOpenAbove 3)
+      SayWhile ("Repeats above.", Type (50, "above"))
+      Esc
+      Pause 1000
+      Finish ]
+
+let verticalInsert = // visual block (^V/^Q) I/A (including ragged edge)
+    [ Launch
+      Pause 5000
+      Setup ["Apples"; "Bananas"; "Oranges"; "Lemons"; "Strawberries"; "Blueberries"]
+      SetFileType "markdown"
+      Start "Vertical Insert"
+      Say "Multi-line inserts are possible by first selecting blocks."
+      SayWhile ("Press Control-V or Control-Q to enter visual block mode.", VisualBlock)
+      SayWhile ("Then select a column.", Move (DownNum 6))
+      SayWhile ("And press Shift-I to insert before each line.", InsertBefore)
+      SayWhile ("It may appear that we're inserting on a single line.", Type (50, "- "))
+      SayWhile ("But pressing Escape then applies our insert to all of them.", Esc)
+      Pause 1000
+      Move Word
+      SayWhile ("The column may be anywhere in the lines.", Compound (100, [VisualBlock; Move (DownNum 6)]))
+      SayWhile ("Let's make these bold.", InsertBefore)
+      Type (50, "**")
+      Esc
+      Pause 1000
+      SayWhile ("You may find it surprising that...", Reselect)
+      SayWhile ("...if we extend the selection to the end of the lines with dollar.", Move EndOfLine)
+      SayWhile ("We can insert after each line with Shift-A", AfterLine)
+      Pause 200
+      Type (50, "**")
+      Pause 800
+      Esc
+      Pause 1000
+      Finish]
+
+let insertModeDelete = // <BS> ^h ^w ^u
+    [ Launch
+      Pause 5000
+      SetFileType "text"
+      Start "Delete in Insert Mode"
+      Insert
+      SayWhile ("When typing in insert mode, we can press backspace of course to correct mistakes.", Type (30, "\n\n\n\nWhen typing\nin insert moed"))
+      Pause 800
+      Backspace
+      Say "Or we can press Control-H to do the same thing."
+      BackspaceCtrlH
+      Pause 1200
+      Type (50, "de")
+      Say "We can also delete whole words with Control-W without leaving Insert mode."
+      DeleteWordCtrlW
+      Say "Or delete to the start of the line with Control-U."
+      DeleteLineCtrlU
+      Pause 1000
+      Finish ]
+
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
 //  Basic Motions 3  W B E gE
@@ -1441,24 +1580,26 @@ let substitute = // S s
 //  Text Objects 2  i/a <> [] ()b {}B
 //  Text Objects 3  i/a w W p s
 //  Text Objects 4  i/a t
-
 //  Insert  i a I A
 //  Advanced Insert  gi gI
 //  Open Line  o O
 //  Change  cc C c
 //  Substitute  s S
-
+//  Numbered Lines  :set nu  :set rnu  :set nu! #j  #k
 //  Jump Percent  {count}%
 //  Counted Insert  #i #a #I #A #o #O
+//  Vertical Inserts (including ragged edge)
+
+//  Insert mode  ^h  ^w  ^u
+
 //  Counted High/Low  #H #L
 //  Counted Text Objects  3ya(
-//  Vertical inserts (including ragged edge)
+
+//  Insert mode single normal command
 //  Line Wrap  :set nowrap  :set number  gh gj gk gl g$ g^ (display vs. real lines)
 //  Horizontal scroll zL zH
-//  Go to last insert gi
 //  Auto indent  [p [P ]p ]P
 //  Scroll plus first column z<CR> z. z-
-//  Counts  :set nu  :set rnu  #j  #k  #w  #G  #H  #L  ...
 //  Dot  .  #.
 //  Macros  q @ @@
 //  Indenting in Insert  ^t ^d
@@ -1476,7 +1617,6 @@ let substitute = // S s
 //  Interacting with the shell:  :w !{cmd}  :r !{cmd}  !  !!  ^z
 //  Go to file/address gf gx
 //  Special marks '< '> '. etc.
-//  Go to last insert/first column gi gI
 //  Traverse change list g; g,
 //  Indenting in insert mode ^t ^d
 
