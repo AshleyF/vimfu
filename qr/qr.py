@@ -1,16 +1,61 @@
 import qrcode
 
-qr = qrcode.QRCode(
-    version=1,
-    error_correction=qrcode.constants.ERROR_CORRECT_L,
-    box_size=10,
-    border=4,
-)
-
 def makeQR(id):
+    print(f'QR {id}')
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4)
     qr.add_data(f"http://vimfu.fun/qr#{id}")
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
     img.save(f"qr_{id}.png")
 
 makeQR("align_text")
+makeQR('align_text')
+makeQR('numbering_lists')
+makeQR('useless_underscore')
+makeQR('basic_motions_1')
+makeQR('basic_motions_2')
+makeQR('basic_motions_3')
+makeQR('basic_motions_4')
+makeQR('basic_motions_5')
+makeQR('basic_motions_6')
+makeQR('basic_motions_7')
+makeQR('basic_motions_8')
+makeQR('find_character')
+makeQR('join_lines')
+makeQR('quitting')
+makeQR('reverting')
+makeQR('scrolling_and_jumping')
+makeQR('matching_pairs')
+makeQR('changing_case')
+makeQR('marks')
+makeQR('search')
+makeQR('line_column')
+makeQR('advanced_selection')
+makeQR('visual_modes')
+makeQR('undo')
+makeQR('delete_char')
+makeQR('jumps')
+makeQR('indenting')
+makeQR('replace')
+makeQR('delete')
+makeQR('put')
+makeQR('yank')
+makeQR('patterns')
+makeQR('text_obj_1')
+makeQR('text_obj_2')
+makeQR('text_obj_3')
+makeQR('text_obj_4')
+makeQR('insert')
+makeQR('insert_adv')
+makeQR('open_line')
+makeQR('change')
+makeQR('substitute')
+makeQR('numbered_lines')
+makeQR('delete_in_insert')
+makeQR('vertical_insert')
+makeQR('counted_insert')
+makeQR('jump_percent')
