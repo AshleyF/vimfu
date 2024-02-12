@@ -1636,6 +1636,11 @@ let insertModeDelete = // <BS> ^h ^w ^u
 //  Counted High/Low  #H #L
 //  Counted Text Objects  3ya(
 
+//  Scrolling++  z,  z.  z<cr>  z-  (vs. zt zz zb)
+//  Customize Search :set hls  :set ignorecase
+//  Ruler  :set ruler
+//  System Clipboard  "*d  "*y  "*p
+//  Increment/Decrement ^a ^x g^a
 //  Insert mode single normal command
 //  Line Wrap  :set nowrap  :set number  gh gj gk gl g$ g^ (display vs. real lines)
 //  Horizontal scroll zL zH

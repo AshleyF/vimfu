@@ -631,7 +631,7 @@ commands in CTRL-X submode				*i_CTRL-X_index*
     'basic_motions_8': { name: 'Basic Motions 8', description: 'Moving by lines with `+` `-` `<CR>`.', keys: ['+','-','<CR>'], link: 'https://youtube.com/shorts/NVCsB_SzuAY' },
     'find_character': { name: 'Find Character', description: 'Finding characters with `f` `F` `t` `T` `,` `;`.', keys: ['f','F','t','T',',',';'], link: 'https://youtube.com/shorts/xx2u40RQyqo' },
     'join_lines': { name: 'Join Lines', description: 'Joining lines with `J` `gJ`.', keys: ['J','gJ'], link: 'https://youtube.com/shorts/ICo2u7DY_R0' },
-    'quitting': { name: 'Quitting', description: 'Quitting with `ZZ` `:x` `:wq` `ZQ` `:q!` `:q` `^Z`.', keys: ['ZZ','ZQ','^Z'], commands: [':x',':wq',':q!',':q'], link: 'https://youtube.com/shorts/7aV3jahBsvU' },
+    'quitting': { name: 'Quitting', description: 'Quitting with `ZZ` `:x` `:wq` `ZQ` `:q!` `:q` `^z`.', keys: ['ZZ','ZQ','^z'], commands: [':x',':wq',':q!',':q'], link: 'https://youtube.com/shorts/7aV3jahBsvU' },
     'reverting': { name: 'Reverting', description: 'Reverting with `:e!`.', commands: [':e!'], link: 'https://youtube.com/shorts/Osdsrl-DAUQ' },
     'scrolling_and_jumping': { name: 'Scrolling and Jumping', description: 'Scrolling and jumping with `^y` `^e` `zt` `zb` `zz` `^f` `^b` `^d` `^u`.', keys: ['^y','^e','zt','zb','zz','^f','^b','^d','^u'], link: 'https://youtube.com/shorts/bcp-IiijIPk' },
     'matching_pairs': { name: 'Matching Pairs', description: 'Moving between matching pairs with `%`.', keys: ['%'], link: 'https://youtube.com/shorts/DMw4tfAUyX0' },
@@ -659,10 +659,11 @@ commands in CTRL-X submode				*i_CTRL-X_index*
     'open_line': { name: 'Open Line', description: "Open lines with `o` and `O`.", keys: ['o','O'], link: 'https://youtube.com/shorts/sls5g2ZLzRQ' },
     'change': { name: 'Change', description: "Change with `cc`, `C`, and `c{motion}`.", keys: ['cc','C','c'], link: 'https://youtube.com/shorts/a3fwkqRhAu4' },
     'substitute': { name: 'Substitute', description: "Substitute with `S` and `s{motion}.", keys: ['S','s'], link: 'https://youtube.com/shorts/wxYkpUCTUJc' },
-    'numbered_lines': { name: 'Numbered Lines', description: "Number lines with `:set nu` and/or `:set rnu`.", keys: ['{count}G'], commands: [':{line}',':set nu',':set rnu',':set nu!',':set nonu'] },
+    'jump_percent': { name: 'Jump Percent', description: "Jump to percentage of document with `{count}%`.", keys: ['{count}%','1','2','3','4','5','6','7','8','9'], link: 'https://youtube.com/shorts/v1DPTUE5pts' },
+    'counted_motions': { name: 'Counted Motions', description: "Counts followed by motions such as `{count}l` `{count}j` `{count}h` `{count}k` `{count}w` `{count}b` `{count}/` `{count}f` etc.", keys: [`{count}l`,`{count}j`,`{count}h`,`{count}k`,`{count}w`,`{count}b`,`{count}/`,`{count}f`] },
+    'numbered_lines': { name: 'Numbered Lines', description: "Number lines with `:set nu` and/or `:set rnu`.", keys: ['{count}G','1','2','3','4','5','6','7','8','9'], commands: [':{line}',':set nu',':set rnu',':set nu!',':set nonu'] },
     'delete_in_insert': { name: 'Delete in Insert Mode', description: "Delete in Insert mode with `^h` `^w` `^u`.", keys: ['i_^h','i_^w','i_^u'] },
     'vertical_insert': { name: 'Vertical Insert', description: "Vertical insert with `I` and `A` in Visual Block mode.", keys: ['vb_I','vb_A'] },
-    'counted_insert': { name: 'Counted Insert', description: "Counted inserts with {count} followed by `i` `a` `I` `A` `o` `O`.", keys: ['{count}i','{count}a','{count}I','{count}A','{count}o','{count}O'] },
-    'jump_percent': { name: 'Jump Percent', description: "Jump to percentage of document with `{count}%`.", keys: ['{count}%'] },
+    'counted_insert': { name: 'Counted Insert', description: "Counted inserts with {count} followed by `i` `a` `I` `A` `o` `O`.", keys: ['{count}i','{count}a','{count}I','{count}A','{count}o','{count}O','1','2','3','4','5','6','7','8','9'] },
   }
 }
