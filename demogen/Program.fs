@@ -57,8 +57,9 @@ KeyCast.start ()
 //Lesson.openLine |> go; pause 5000 // 08 FEB 2024
 //Lesson.change |> go; pause 5000 // 09 FEB 2024
 //Lesson.substitute |> go; pause 5000 // 10 FEB 2024
-//Lesson.numberedLines |> go; pause 5000
 //Lesson.jumpPercent |> go; pause 5000
+Lesson.countedMotions |> go; pause 5000
+//Lesson.numberedLines |> go; pause 5000
 //Lesson.countedInsert |> go; pause 5000
 //Lesson.insertModeDelete |> go; pause 5000
 //Lesson.verticalInsert |> go; pause 5000

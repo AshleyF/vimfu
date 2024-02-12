@@ -56,10 +56,14 @@ type Motion =
     | Down
     | DownNum of int
     | Right
+    | RightNum of int
     | Left
+    | LeftNum of int
     | Word
+    | WordNum of int
     | BigWord
     | BackWord
+    | BackWordNum of int
     | BackBigWord
     | WordEnd
     | BigWordEnd
@@ -86,6 +90,7 @@ type Motion =
     | StartOfPreviousLine
     | MatchingBraces
     | Find of char
+    | FindNum of int * char
     | Till of char
     | FindReverse of char
     | TillReverse of char
@@ -211,6 +216,13 @@ let shift c = if Char.IsUpper(c) then $"⇧{c}" else c.ToString()
 
 let glob c = if Char.IsUpper(c) then "global " else ""
 
+let num n =
+    match n with
+    | x when x % 10 = 1 -> $"{n}st"
+    | x when x % 10 = 2 -> $"{n}nd"
+    | x when x % 10 = 3 -> $"{n}rd"
+    | _ -> $"{n}th"
+
 [<DllImport("user32.dll", EntryPoint = "SetCursorPos")>]
 extern bool SetCursorPos(int X, int Y)
 
@@ -257,10 +269,14 @@ let rec edit = function
     | Move Down -> KeyCast.set "j" "down"; key "j"
     | Move (DownNum n) -> KeyCast.set $"{n}j" $"down {n}"; key $"{n}j"
     | Move Right -> KeyCast.set "l" "right"; key "l"
+    | Move (RightNum n) -> KeyCast.set $"{n}l" $"right {n}"; key $"{n}l"
     | Move Left -> KeyCast.set "h" "left"; key "h"
+    | Move (LeftNum n) -> KeyCast.set $"{n}h" $"left {n}"; key $"{n}h"
     | Move Word -> KeyCast.set "w" "forward word"; key "w"
+    | Move (WordNum n) -> KeyCast.set $"{n}w" $"forward {n} words"; key $"{n}w"
     | Move BigWord -> KeyCast.set "⇧W" "forward WORD"; key "W"
     | Move BackWord -> KeyCast.set "b" "back word"; key "b"
+    | Move (BackWordNum n) -> KeyCast.set $"{n}b" $"back {n} words"; key $"{n}b"
     | Move BackBigWord -> KeyCast.set "⇧B" "back WORD"; key "B"
     | Move WordEnd -> KeyCast.set "e" "end of word"; key "e"
     | Move BigWordEnd -> KeyCast.set "⇧E" "end of WORD"; key "E"
@@ -332,6 +348,7 @@ let rec edit = function
     | QuitWithoutSaving -> KeyCast.set ":q!⏎" "quit without saving"; key ":q!{ENTER}"
     | SetFileType kind -> key $":set filetype={kind}"; pause 300; key "{ENTER}"; pause 200; key ":{ESC}"; pause 2000
     | Move (Find c) -> KeyCast.set $"f{shift c}" $"find '{c}'"; key $"f{c}"
+    | Move (FindNum (n, c)) -> KeyCast.set $"{n}f{shift c}" $"find {num(n)} '{c}'"; key $"{n}f{c}"
     | Move (Till c) -> KeyCast.set $"t{shift c}" $"till '{c}'"; key $"t{c}"
     | Move (FindReverse c) -> KeyCast.set $"⇧F{shift c}" $"reverse find '{c}'"; key $"F{c}"
     | Move (TillReverse c) -> KeyCast.set $"⇧T{shift c}" $"reverse till '{c}'"; key $"T{c}"

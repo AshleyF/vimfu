@@ -1408,6 +1408,64 @@ let substitute = // S s
      Pause 1000
      Finish ]
 
+let jumpPercent = // {count}%
+    [ Launch
+      Pause 5000
+      Setup ["# Grocery List"; ""; "## Fruits"; ""; "- Apples"; "- Bananas"; "- Citrus"; "  - Oranges"; "  - Lemons"; "- Berries"; "  - Strawberries"; "  - Blueberries"; ""; "## Vegetables"; ""; "- Leafy Greens"; "  - Spinach"; "  - Kale"; "- Root Vegetables"; "  - Carrots"; "  - Potatoes"; ""; "### Dairy"; ""; "- Milk"; "- Cheese"; "- Yogurt"; ""; "### Bakery"; ""; "- Bread"; "  - Wheat"; "  - Rye"; "- Pastries"; ""; "## Meat"; ""; "- Chicken"; "- Beef"; "- Pork"]
+      SetFileType "markdown"
+      Start "Jump Percent"
+      Say "Normally, pressing percent jumps between matching braces and brackets."
+      Say "But a number followed by percent has completely different behavior."
+      Say "Instead, it jumps to a percentage of the document length."
+      SayWhile ("For example, 50 percent jumps to the middle.", Move (PercentageOfDocument 50))
+      SayWhile ("Or 10 percent jumps to near the top.", Move (PercentageOfDocument 10))
+      SayWhile ("Or 90 percent jumps to near the bottom.", Move (PercentageOfDocument 90))
+      SayWhile ("Of course 100 percent or more jumps to the bottom and is equivalent to Shift-G.", Move (PercentageOfDocument 100))
+      Move BottomOfDocument
+      Pause 1000
+      Finish ]
+
+let countedMotions = // #h #j #k #l #w #b #e #ge #W #B #E #gE #) #( #} #{
+    [ Launch
+      Setup [""; ""; "def fact(n):"; "  if n == 0:"; "    return 1"; "  return n*fact(n-1)"; ""; "print(fact(7))"]
+      Pause 5000
+      Move Down; Move Down
+      Text ":set nohls"; Enter; Text ":"; Esc
+      Pause 1000
+      SetFileType "python"
+      Start "Counted Motions"
+      Say "All of the motions can be preceeded by a count. For example, 5 L to move right five."
+      Move (RightNum 5)
+      Pause 500
+      Say "Or down five with 5 J."
+      Move (DownNum 5)
+      Pause 500
+      Say "5 H, left."
+      Move (LeftNum 5)
+      Pause 500
+      Say "5 K, up."
+      Move (UpNum 5)
+      Pause 500
+      Say "We can move two words with 2 W."
+      Move (WordNum 2)
+      Pause 500
+      Say "Or back two words with 2 B."
+      Move (BackWordNum 2)
+      Pause 500
+      Say "This works with any motion. Searching is also a motion. Three slash to find the 3rd match.."
+      Key ("3/", "search 3rd", "3/")
+      Pause 500
+      Type (50, "fac")
+      Pause 500
+      Enter
+      Pause 500
+      Move (UpNum 2)
+      Say "Or 3 F N to find the 3rd N on the line."
+      Move (FindNum (3, 'n'))
+      Pause 500
+      Say "This is just a sample of the motions that accept a count."
+      Finish]
+
 let numberedLines = // :set nu  :set rnu  #G  #j  #k
     [Launch
      Setup rpn
@@ -1444,23 +1502,6 @@ let numberedLines = // :set nu  :set rnu  #G  #j  #k
      SayWhile ("50 J.", Move (DownNum 50))
      Pause 1000
      Finish ]
-
-let jumpPercent = // {count}%
-    [ Launch
-      Pause 5000
-      Setup ["# Grocery List"; ""; "## Fruits"; ""; "- Apples"; "- Bananas"; "- Citrus"; "  - Oranges"; "  - Lemons"; "- Berries"; "  - Strawberries"; "  - Blueberries"; ""; "## Vegetables"; ""; "- Leafy Greens"; "  - Spinach"; "  - Kale"; "- Root Vegetables"; "  - Carrots"; "  - Potatoes"; ""; "### Dairy"; ""; "- Milk"; "- Cheese"; "- Yogurt"; ""; "### Bakery"; ""; "- Bread"; "  - Wheat"; "  - Rye"; "- Pastries"; ""; "## Meat"; ""; "- Chicken"; "- Beef"; "- Pork"]
-      SetFileType "markdown"
-      Start "Jump Percent"
-      Say "Normally, pressing percent jumps between matching braces and brackets."
-      Say "But a number followed by percent has completely different behavior."
-      Say "Instead, it jumps to a percentage of the document length."
-      SayWhile ("For example, 50 percent jumps to the middle.", Move (PercentageOfDocument 50))
-      SayWhile ("Or 10 percent jumps to near the top.", Move (PercentageOfDocument 10))
-      SayWhile ("Or 90 percent jumps to near the bottom.", Move (PercentageOfDocument 90))
-      SayWhile ("Of course 100 percent or more jumps to the bottom and is equivalent to Shift-G.", Move (PercentageOfDocument 100))
-      Move BottomOfDocument
-      Pause 1000
-      Finish ]
 
 let countedInsert = // {count}i/a/I/A/o/O
     [ Launch
