@@ -27,6 +27,7 @@ let say text =
             printfn $"Speech synthesized for text [{text}], and the audio was saved"
             File.WriteAllText(Path.ChangeExtension(file, "txt"), text)
         elif result.Reason = ResultReason.Canceled then
+            File.Delete(file)
             let cancellation = SpeechSynthesisCancellationDetails.FromResult(result)
             printfn $"CANCELED: Reason={cancellation.Reason}"
             if cancellation.Reason = CancellationReason.Error then

@@ -4,8 +4,8 @@ open System
 open System.Threading
 open System.Windows.Forms
 open System.Runtime.InteropServices
-open NeuralVoice // or SpeechSynth
-//open SpeechSynth // or NeuralVoice
+//open NeuralVoice // or SpeechSynth
+open SpeechSynth // or NeuralVoice
 
 let both f0 f1 =
     let t0 = new Thread(new ThreadStart(f0))
@@ -21,7 +21,12 @@ let key k = SendKeys.SendWait(k)
 
 let typing text =
     for k in text do
-        string k |> key
+        match k with
+        | '(' -> key "{(}"
+        | ')' -> key "{)}"
+        | '{' -> key "{{}"
+        | '}' -> key "{}}"
+        | _ -> string k |> key
         pause 50
 
 type TextObject =
@@ -169,6 +174,7 @@ type Action =
     | Macro of char
     | Mark of char
     | RepeatLastMacro
+    | RepeatLastMacroNum of int
     | RepeatMacro of char * int
     | SelectBlock
     | Reselect
@@ -188,7 +194,6 @@ type Action =
     | Delete of Motion
     | Yank of Motion
     | DeleteWithX of Motion
-    | Dot
     | ScrollDown
     | ScrollUp
     | ScrollTop
@@ -209,6 +214,8 @@ type Action =
     | DeletePrevChar
     | Replace of char
     | ReplaceMode
+    | Dot
+    | CountedDot of int
     | Key of string * string * string
     | Move of Motion
 
@@ -238,7 +245,7 @@ let focusHack() =
 
 let rec edit = function
     //| Launch -> KeyCast.set "Starting" "One moment..."; key "^({ESC}e)"; pause 5000; key "cmd"; pause 5000; key "{enter}"; pause 5000; key "^+{5}"; pause 5000; key "alias vi=nvim{enter}clear{enter}"
-    | Launch -> KeyCast.set "Starting" "One moment..."; focusHack(); key "^+{5}"; pause 5000; focusHack(); key "alias vi=nvim{enter}rm -rf {~}/.local/share/nvim/swap/{enter}clear{enter}vi{enter}:file Fu{ENTER}:{ESC}"
+    | Launch -> KeyCast.set "Starting" "One moment..."; focusHack(); key "^+{3}"; pause 5000; focusHack(); key "alias vi=nvim{enter}rm -rf {~}/.local/share/nvim/swap/{enter}clear{enter}vi{enter}:file Fu{ENTER}:{ESC}"
     | Restart -> KeyCast.set "Restarting" "One moment..."; pause 3000
     | Start message -> KeyCast.set "VimFu" message; pause 800
     | Finish -> pause 800; KeyCast.set "Finished" "Cut!"; key "{ESC}:q!{ENTER}"
@@ -337,6 +344,7 @@ let rec edit = function
     | Macro register -> KeyCast.set $"⇧@{shift register}" $"play macro {register}"; key $"@{register}"
     | Mark c -> KeyCast.set $"m{shift c}" $"mark {glob c}'{c}'"; key $"m{c}"
     | RepeatLastMacro -> KeyCast.set "⇧@@" "repeat last macro"; key "@@"
+    | RepeatLastMacroNum n -> KeyCast.set $"{n}⇧@@" $"repeat last macro {n} times"; key $"{n}@@"
     | RepeatMacro (register, n) -> KeyCast.set $"{n}⇧@{shift register}" $"repeat macro {register} {n} times"; key $"{n}@{register}"
     | SelectBlock -> KeyCast.set "⌃v" "select block"; key "^q" // CTRL-Q because CTRL-V is mapped to paste
     | Reselect -> KeyCast.set "gv" "reselect visual"; key "gv"
@@ -412,6 +420,7 @@ let rec edit = function
         | Span AroundBlock -> KeyCast.set "da⇧(" "delete around block"; key "da{(}"
         | Span InnerTicks -> KeyCast.set "di'" "delete inner ticks"; key "di'"
         | Span AroundBigBlock -> KeyCast.set "da⇧{" "delete around BLOCK"; key "daB"
+        | Find c -> KeyCast.set $"df{c}" $"delete find '{c}'"; key $"df{c}"
         | _ -> failwith $"Delete motion not implemented ({m})"
     | Yank m ->
         match m with
@@ -421,12 +430,14 @@ let rec edit = function
         | EndOfLine -> KeyCast.set "⇧Y" "yank line"; key "Y"
         | VisualSelection -> KeyCast.set "y" "yank selection"; key "y"
         | Span AroundBlock -> KeyCast.set "ya⇧(" "yank around block"; key "ya{(}"
+        | Till c -> KeyCast.set $"yt{c}" $"yank till '{c}'"; key $"yt{c}"
         | _ -> failwith $"Yank motion not implemented ({m})"
     | DeleteWithX m ->
         match m with
         | VisualSelection -> KeyCast.set "x" "delete selection"; key "x"
         | _ -> failwith $"Delete with X motion not implemented ({m})"
     | Dot -> KeyCast.set "." "repeat action"; key "."
+    | CountedDot n -> KeyCast.set $"{n}." $"repeat {n} times"; key $"{n}."
     | ScrollDown -> KeyCast.set "⌃y" "scroll down"; key "^y"
     | ScrollUp -> KeyCast.set "⌃e" "scroll up"; key "^e"
     | ScrollTop -> KeyCast.set "zt" "scroll top"; key "zt"

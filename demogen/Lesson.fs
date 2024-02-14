@@ -1587,6 +1587,87 @@ let insertModeDelete = // <BS> ^h ^w ^u
       Pause 1000
       Finish ]
 
+let dot = // .
+    [ Launch
+      Setup [""; ""; "def bar(n)"; "  if n == 0"; "    return 1"; "  return n*bar(n-1)"; ""; "print(bar(7))"]
+      Pause 5000
+      Move Down; Move Down
+      Pause 500
+      SetFileType "python"
+      Text ":set shiftwidth=2"; Pause 300; Enter; Pause 300
+      Pause 500
+      Text ":set nohls"; Pause 300; Enter; Text ":"; Esc
+      Start "Dot"
+      Say "The dot, or period, is my favorite key. It repeats our last action."
+      Say "We can insert after the line with Shift-A."
+      AfterLine
+      Say "Then add the missing colon."
+      Type (50, ":")
+      Pause 300
+      Esc
+      Say "This is considered a single action and can be repeated with dot."
+      SayWhile ("From anywhere on the next line...", Compound (100, [Move Down; Move (BackWordNum 2)]))
+      Say "...pressing dot inserts a colon at the end."
+      SayWhile ("Dot.", Dot)
+      Pause 800
+      SayWhile ("Or we can find bar.", Type (50, "/bar"))
+      Pause 600
+      Enter
+      Say "And change it with C W."
+      Change Word
+      Pause 400
+      SayWhile ("Updating the name.", Type (50, "fact"))
+      Esc
+      Say "And find the next one with N."
+      Move SearchNext
+      Say "And press dot to change it."
+      SayWhile ("Dot.", Dot)
+      SayWhile ("Next", Move SearchNext)
+      SayWhile ("Dot.", Dot)
+      Say "As another example, we can delete a line."
+      DeleteLine
+      Say "And another with our favorite command."
+      SayWhile ("Dot.", Dot)
+      SayWhile ("Dot.", Dot)
+      Say "Or we can enter a count followed by dot."
+      SayWhile ("Three Dot.", (CountedDot 3))
+      Say "Similar to 3 D D, but in general repeating actions with dot is a really big time saver."
+      Finish]
+
+let macros = // q @ @@
+    [ Launch
+      Setup [""; ""; ""; ""; "black-000"; "blue-001"; "green-010"; "cyan-011"; "red-100"; "magenta-101"; "yellow-110"; "white-111"]
+      Pause 5000
+      Move Down; Move Down; Move Down; Move Down
+      Pause 500
+      SetFileType "markdown"
+      Text ":set noshowmode"; Pause 300; Enter; Pause 300
+      Start "Macros"
+      Say "Macros are the most powerful feature. They allow recording a sequence of commands to be replayed."
+      Say "To format this list as bulleted links we'll repeat actions for each line."
+      SayWhile ("We can begin recording a macro with Q followed by X, or any other lowercase letter to name it. Often I use Q as the name, so simply Q-Q to record.", Record 'x')
+      SayWhile ("We begin formatting...", Compound (300, [Insert; Type (50, "* []("); Esc]))
+      Pause 400
+      SayWhile ("We'll yank the name up to the dash.", Compound (200, [Move Right; Yank (Till '-')]))
+      SayWhile ("And put it here.", Compound (200, [Move BackWord; Put]))
+      SayWhile ("Then capitalize it", Compound (200, [Move BackWord; ToggleCase]))
+      SayWhile ("Perhaps we want to keep only the first two letters of the ID.", Compound (200, [Move (WordNum 2); Move (RightNum 2); Delete (Find '-')]))
+      Pause 400
+      Compound (200, [AfterLine; Type (50, ")"); Esc])
+      Pause 400
+      SayWhile ("We'll end by moving to the start of the next line to be ready to repeat.", Move StartOfNextLine)
+      SayWhile ("And finally, stop recording by pressing Q.", StopRecording)
+      ScrollUp
+      SayWhile ("We can play the macro by pressing AT-X.", Macro 'x')
+      ScrollUp
+      SayWhile ("And we can repeat it by pressing AT-AT.", RepeatLastMacro)
+      Compound (100, [ScrollUp; ScrollUp])
+      Say "Or repeat it five times by pressing 5-AT-AT."
+      RepeatLastMacroNum 5
+      Say "And, boom, we're done!"
+      Pause 1000
+      Finish]
+
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
 //  Basic Motions 3  W B E gE
@@ -1630,8 +1711,9 @@ let insertModeDelete = // <BS> ^h ^w ^u
 //  Jump Percent  {count}%
 //  Counted Insert  #i #a #I #A #o #O
 //  Vertical Inserts (including ragged edge)
-
 //  Insert mode  ^h  ^w  ^u
+//  Dot  .  #.
+//  Macros  q @ @@
 
 //  Counted High/Low  #H #L
 //  Counted Text Objects  3ya(
@@ -1646,8 +1728,6 @@ let insertModeDelete = // <BS> ^h ^w ^u
 //  Horizontal scroll zL zH
 //  Auto indent  [p [P ]p ]P
 //  Scroll plus first column z<CR> z. z-
-//  Dot  .  #.
-//  Macros  q @ @@
 //  Indenting in Insert  ^t ^d
 //  Commands  :
 //  Registers  "
