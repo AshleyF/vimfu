@@ -126,7 +126,7 @@ let keys = {
     'zk': { form: 'zk', name: 'Previous fold', description: 'Move to the end of the previous fold.', categories: ['motion'] },
     'zl': { form: 'zl', name: 'Scroll left', description: 'When `wrap` off scroll screen N characters to the left.' },
     'zm': { form: 'zm', name: 'Decrement fold level', description: 'Subtract one from `foldlevel`.' },
-    'zn': { form: 'zn', name: 'Reset folding', description: 'Reset `foldenable`.' },
+    'zn': { form: 'zn', name: 'Disable folding', description: 'Reset `foldenable`.' },
     'zo': { form: 'zo', name: 'Open fold', description: 'Open fold.' },
     'zp': { form: 'zp', name: 'Put block-mode without space', description: 'Put in block-mode without trailing spaces.' },
     // zq
@@ -373,10 +373,10 @@ let keys = {
     '^w<': { form: '^w<', name: 'Decrease width', description: 'Decrease current window width N columns.' },
     '^w>': { form: '^w>', name: 'Increase width', description: 'Increase current window width N columns.' },
     '^w=': { form: '^w=', name: 'Equalize windows', description: 'Make all windows the same height & width.' },
-    '^wH': { form: '^wH', name: 'Window left', description: 'Move current window to the far left.' },
-    '^wJ': { form: '^wJ', name: 'Window bottom', description: 'Move current window to the very bottom.' },
-    '^wK': { form: '^wK', name: 'Window top', description: 'Move current window to the very top.' },
-    '^wL': { form: '^wL', name: 'Window right', description: 'Move current window to the far right.' },
+    '^wH': { form: '^wH', name: 'Window move left', description: 'Move current window to the far left.' },
+    '^wJ': { form: '^wJ', name: 'Window move bottom', description: 'Move current window to the very bottom.' },
+    '^wK': { form: '^wK', name: 'Window move top', description: 'Move current window to the very top.' },
+    '^wL': { form: '^wL', name: 'Window move right', description: 'Move current window to the far right.' },
     '^wP': { form: '^wP', name: 'Preview window', description: 'Go to preview window.' },
     '^wT': { form: '^wT', name: 'Window to tab', description: 'Move current window to a new tab page.' },
     '^wb': { form: '^wb', name: 'Bottom window', description: 'Go to bottom window.' },
@@ -477,20 +477,21 @@ let keys = {
     'i_^u': { form: '^u', name: 'Undo Line', description: 'Delete all entered characters in the current line.' },
     'i_^v': { form: '^v{char}', name: 'Literal', description: 'Insert next non-digit literally or insert three digit decimal number as a single byte.' },
     'i_^V': { form: '^V{char/number}', name: 'Literal', description: 'Insert next non-digit literally or insert three digit decimal number as a single byte.. Like CTRL-V unless `tui-modifyOtherKeys` is active.' },
+    'i_^w': { form: '^w', name: 'Delete Word', description: 'Delete word before the cursor.' },
+    // i_^x
+    'i_^y': { form: '^y', name: 'Copy Above', description: 'Insert the character which is above the cursor.' },
+    'i_<Esc>': { form: '<Esc>', name: 'End Insert Mode', description: 'End insert mode.' },
+    'i_^[': { form: '^[', name: 'End Insert Mode', description: 'End insert mode. Same as <Esc>.' },
+    'i_^\\^n': { form: '^\\^n', name: 'Normal Mode', description: 'Go to Normal mode.' },
+    'i_^\\^g': { form: '^\\^g', name: 'Normal Mode', description: 'Go to Normal mode.' },
+    'i_^\\': { form: '^\\', name: 'Leader', description: 'Reserved for user mappings.' },
+    'i_^]': { form: '^]', name: 'Abbreviation', description: 'Trigger abbreviation.' },
+    'i_^^': { form: '^^', name: 'Toggle LMap', description: 'Toggle use of language (`:lmap`) mappings.' },
+    'i_^_': { form: '^_', name: 'Change Language', description: 'When `allowrevins` set: change language (Hebrew).' },
+    'i_': { form: '', name: '', description: '' },
+    'i_': { form: '', name: '', description: '' },
     'i_': { form: '', name: '', description: '' },
     /*
-|i_CTRL-W|	CTRL-W		delete word before the cursor
-|i_CTRL-X|	CTRL-X {mode}	enter CTRL-X sub mode, see |i_CTRL-X_index|
-|i_CTRL-Y|	CTRL-Y		insert the character which is above the cursor
-|i_<Esc>|	<Esc>		end insert mode
-|i_CTRL-[|	CTRL-[		same as <Esc>
-|i_CTRL-\_CTRL-N| CTRL-\ CTRL-N	go to Normal mode
-|i_CTRL-\_CTRL-G| CTRL-\ CTRL-G	go to Normal mode
-		CTRL-\ a - z	reserved for extensions
-		CTRL-\ others	not used
-|i_CTRL-]|	CTRL-]		trigger abbreviation
-|i_CTRL-^|	CTRL-^		toggle use of |:lmap| mappings
-|i_CTRL-_|	CTRL-_		When 'allowrevins' set: change language (Hebrew)
 
 |i_CTRL-G_k|	CTRL-G <Up>	line up, to column where inserting started
 |i_digraph|	{char1}<BS>{char2} enter digraph (only when 'digraph' option set)
@@ -535,6 +536,7 @@ let keys = {
 
 commands in CTRL-X submode				*i_CTRL-X_index*
 
+|i_CTRL-X|	CTRL-X {mode}	enter CTRL-X sub mode, see |i_CTRL-X_index|
 |i_CTRL-X_CTRL-D|	CTRL-X CTRL-D	complete defined identifiers
 |i_CTRL-X_CTRL-E|	CTRL-X CTRL-E	scroll up
 |i_CTRL-X_CTRL-F|	CTRL-X CTRL-F	complete file names
@@ -607,15 +609,16 @@ commands in CTRL-X submode				*i_CTRL-X_index*
     ['gt','^wgt'], // Next tab
     ['gT','^wgT'], // Previous tab
     ['g<Tab>','^wg<Tab>'], // Go to tab
-    ['^wj','^w<Down>'], // Window down
-    ['^wk','^w<Up>'], // Window up
-    ['^wh','^w<Left>'], // Window left
-    ['^wl','^w<Right>'], // Window right
+    ['^wj','^w<Down>'], // Window move down
+    ['^wk','^w<Up>'], // Window move up
+    ['^wh','^w<Left>'], // Window move left
+    ['^wl','^w<Right>'], // Window move right
     ['<Esc>','^['], // Escape
     ['i_<BS>','i_^h'], // backspace
     ['i_<NL>','i_<CR>','i_^j','i_^m'], // new line
     ['i_<Tab>','i_^i'], // tab
     ['i_^q','i_^Q','i_^v','i_^V'], // literal
+    ['i_^[','i_<Esc>'], // end insert
   ],
   videos: {
     'align_text': { name: 'Align Text', description: 'Align text with `:\'<,\'>norm` commands.', commands: [':norm'], link: "https://youtube.com/shorts/GlnyZDs0aaY" },
@@ -662,8 +665,92 @@ commands in CTRL-X submode				*i_CTRL-X_index*
     'jump_percent': { name: 'Jump Percent', description: "Jump to percentage of document with `{count}%`.", keys: ['{count}%','1','2','3','4','5','6','7','8','9'], link: 'https://youtube.com/shorts/v1DPTUE5pts' },
     'counted_motions': { name: 'Counted Motions', description: "Counts followed by motions such as `{count}l` `{count}j` `{count}h` `{count}k` `{count}w` `{count}b` `{count}/` `{count}f` etc.", keys: [`{count}l`,`{count}j`,`{count}h`,`{count}k`,`{count}w`,`{count}b`,`{count}/`,`{count}f`] },
     'numbered_lines': { name: 'Numbered Lines', description: "Number lines with `:set nu` and/or `:set rnu`.", keys: ['{count}G','1','2','3','4','5','6','7','8','9'], commands: [':{line}',':set nu',':set rnu',':set nu!',':set nonu'] },
+    'counted_insert': { name: 'Counted Insert', description: "Counted inserts with {count} followed by `i` `a` `I` `A` `o` `O`.", keys: ['{count}i','{count}a','{count}I','{count}A','{count}o','{count}O','1','2','3','4','5','6','7','8','9'] },
     'delete_in_insert': { name: 'Delete in Insert Mode', description: "Delete in Insert mode with `^h` `^w` `^u`.", keys: ['i_^h','i_^w','i_^u'] },
     'vertical_insert': { name: 'Vertical Insert', description: "Vertical insert with `I` and `A` in Visual Block mode.", keys: ['vb_I','vb_A'] },
-    'counted_insert': { name: 'Counted Insert', description: "Counted inserts with {count} followed by `i` `a` `I` `A` `o` `O`.", keys: ['{count}i','{count}a','{count}I','{count}A','{count}o','{count}O','1','2','3','4','5','6','7','8','9'] },
+    'dot': { name: 'Dot', description: "Repeating actions with dot `.`.", keys: ['.'] },
+    'macros': { name: 'Macros', description: "Repeating sequences of keys with macros `q{char}` `q` `@{char}` `@@`.", keys: ['q','@','@@'] },
   }
 }
+
+//  Go to ...  gd gD gf gF ]f [f gx
+//  Find Partial  g* g#
+//  Next Select  gn gN
+//  Screen Lines  gj gk g$ g^ g0 g<Down> g<Up> g<End> g<Home> :nowrap
+//  Horizontal Scroll  zh zl zs ze zH zL z<Left> z<Right>
+//  Rot13  g? g?? (g?g?)
+//  Folds
+//    zf{motion} - Create
+//    zF - Create fold for N lines
+//    zo - Open fold
+//    zO - Open folds recursively
+//    zc - Close fold
+//    zC - Close folds recursively
+//    za - Toggle fold
+//    zA - Toggle fold recursively
+//    zd - Delete fold
+//    zD - Delete folds recursively
+//    zi - Toggle folding
+//    zn - Disable folding
+//    zN - Enable folding
+//    zj - Next fold
+//    zk - Previous fold
+//    zm - Decrement fold level
+//    zr - Add fold level
+//    zR - Set fold level deepest
+//    zv - Open folds to view cursor
+//    zx - Re-apply fold level (and `zv`)
+//    zX - Re-apply fold level
+//    zE - Eliminate folds
+//    zM - Fold level zero
+//    [z - Move to start of open fold
+//    ]z - Move to end of open fold
+// Windowing
+//
+//    z{height}<CR>	- Set window height
+//    ^w+ - Increase height
+//    ^w- - Decrease height
+//    ^w< - Decrease width
+//    ^w> - Increase width
+//    ^w= - Equalize windows
+//    ^wH - Window move left
+//    ^wJ - Window move bottom
+//    ^wK - Window move top
+//    ^wL - Window move right
+//    ^wP - Preview window
+//    ^wT - Window to tab
+//    ^wb - Bottom window
+//    ^wc - Close window	Close current window (like |:close|).
+//    ^wd - Split and jump to definition	Split window and jump to definition under the cursor.
+//    ^wf - Split and edit file	Split window and edit file name under the cursor.
+//    ^wF - Split and edit file at line	Split window and edit file name under the cursor and jump to the line number following the file name..
+//    ^wh - Go to window	Go to Nth left window (stop at first window).
+//    ^wi - Split and jump to declaration	Split window and jump to declaration of identifier under the cursor.
+//    ^wj - Down window	Go N windows down (stop at last window).
+//    ^wk - Up window	Go N windows up (stop at first window).
+//    ^wl - Right window	Go to Nth right window (stop at last window).
+//    ^wn - New window	Open new window, N lines high.
+//    ^wo - Only window	Close all but current window (like `:only`).
+//    ^wp - Previous window	Go to previous (last accessed) window.
+//    ^wq - Quit window	Quit current window (like `:quit`).
+//    ^wr - Rotate windows down	Rotate windows downwards N times.
+//    ^wR - Rotate windows up	Rotate windows upwards N times.
+//    ^ws - Split window	Split current window in two parts, new window N lines high.
+//    ^wS - Split window	Split current window in two parts, new window N lines high.
+//    ^wt - Top window	Go to top window.
+//    ^wv - Split vertically	Split current window vertically, new window N columns wide.
+//    ^ww - Next window	Go to N next window (wrap around).
+//    ^wW - Previous window	Go to N previous window (wrap around).
+//    ^wx - Exchange window	Exchange current window with window N (default: next window).
+//    ^wz - Close preview window	Close preview window.
+//    ^wg] - Split window and select tag	Split window and do |:tselect| for tag under cursor.
+//    ^wg^] - Split window and jump to tag	Split window and do `:tjump` to tag under cursor.
+//    ^w] - Split window and jump to tag	Split window and jump to tag under cursor.
+//    ^w^ - Split window and etid alternate	Split current window and edit alternate file N.
+//    ^w_ - Set window height	Set current window height to N (default: very high). Similar to `z{height}`.
+//    ^w| - Set window width	Set window width to N columns.
+//    ^w} - Show tag	Show tag under cursor in preview window.
+//    ^w<Down> - Down window	Go N windows down (stop at last window).
+//    ^w<Up> - Up window	Go N windows up (stop at first window).
+//    ^w<Left> - Go to window	Go to Nth left window (stop at first window).
+//    ^w<Right> - Right window	Go to Nth right window (stop at last window).
