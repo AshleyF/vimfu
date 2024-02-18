@@ -1,5 +1,27 @@
 # VimFu Fun Curriculum
 
+## Folds
+
+Folding allows us to hide hierarchical sections.
+This may be language specific or can set the foldmethod, or fdm for short, to indent, where each level of indenting becomes a fold.
+
+//  Folds 1  zo zO zc zC za zA zv
+
+We can collapse folds with zc.
+We can open folds again with zo.
+Or we can toggle folds with za.
+
+If we collapse folds repeatedly (zc zc) it works up the heirarchy.
+There are recursive versions of zc zo and za.
+We can use zC to collapse folds recursively to the root.
+Or zO to open folds recursively.
+Or zA to toggle folds recursively.
+
+Finally, notice that when we collapse our cursor position is remembered.
+We can open open to view the cursor with zv.
+
+## Miscellaneous
+
 Normal Mode
 
 a        After
