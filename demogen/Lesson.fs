@@ -1668,6 +1668,45 @@ let macros = // q @ @@
       Pause 1000
       Finish]
 
+let hierarchy =  ["# Plants"; ""; "- Trees"; "  - Oak"; "    - White"; "    - Red"; "    - Black"; "  - Maple"; "    - Sugar"; "    - Red"; "    - Japanese"; "- Flowers"; "  - Rose"; "    - Tea"; "    - Wild"; "  - Lily"; "    - Tiger"; "    - Calla"; ""; "# Animals"; ""; "- Mammals"; "  - Cats"; "    - Lion"; "    - Tiger"; "  - Dogs"; "    - Wolf"; "    - Fox"; "- Birds"; "  - Eagle"; "    - Bald"; "    - Golden"; "  - Owl"; "    - Barn"; "    - Snowy"; ""; "# Insects"; ""; "- Beetles"; "  - Ladybug"; "  - Firefly"; "- Butterflies"; "  - Monarch"; "  - Swallowtail"]
+
+let fold1 = // zo zO zc zC za zA zv
+    [ Launch
+      Pause 5000
+      Setup hierarchy
+      SetFileType "markdown"
+      Text ":set shiftwidth=2"; Pause 300; Enter; Pause 1000
+      Text ":set foldmethod=indent"; Pause 300; Enter; Pause 1000
+      ScrollUp; ScrollUp; Move Down; Move Down; Move Down
+      Start "Folds 1"
+      SayWhile ("Folds allow us to hierarchically collapse sections. We can open sections with Z followed by O.", Compound (100, [Pause 3000; FoldOpen; Pause 1000; Move Down; FoldOpen; Pause 1000; Move Up; Move Up; Move Up; FoldOpen; Pause 1000; Move Down; Move Down; Move Down; FoldOpen; Pause 1000; Move Up; Move Up; FoldOpen]))
+      Pause 800
+      SayWhile ("We can close them with Z C.", Compound (100, [Pause 2000; FoldClose; Pause 1000; Move Down; Move Down; FoldClose; Pause 1000; Move Up; Move Up]))
+      Pause 800
+      SayWhile ("Or we can toggle folds with Z A.", Compound (1000, [FoldToggle; FoldToggle; FoldToggle]))
+      Pause 800
+      Say "Notice that if we close a section with Z C..."
+      FoldClose
+      Pause 800
+      Say "...and then close again..."
+      FoldClose
+      Say "...then the parent section is closed."
+      Pause 800
+      Say "There are also recursive flavors of Z C, Z O and Z A."
+      SayWhile ("Z Shift-O recursively opens the hierarchy.", FoldOpenRecursive)
+      SayWhile ("Z Shift-C recursively closes it.", FoldCloseRecursive)
+      SayWhile ("And Z Shift-A recursively toggles.", Compound (1000, [FoldToggleRecursive; FoldToggleRecursive; FoldToggleRecursive]))
+      Pause 800
+      Compound (100, [Move Down; Move Down; Move Down; Move Down; FoldClose; Move Up; Move Up; Move Word; Move Word])
+      Say "Notice that our cursor is on the B in Black before closing this section."
+      Pause 400
+      FoldCloseRecursive
+      Pause 800
+      Say "We can reopen to the cursor with Z V."
+      FoldOpenToCursor
+      Pause 1000
+      Finish ]
+
 //  Basic Motions 1  h j k l ␣ ⌫
 //  Basic Motions 2  w b e ge
 //  Basic Motions 3  W B E gE
@@ -1715,9 +1754,19 @@ let macros = // q @ @@
 //  Dot  .  #.
 //  Macros  q @ @@
 
+//  BIG  --------------------------------------------------
+
+//  Surround?
+//  Registers  "
+
+//  SIMPLE  -----------------------------------------------
+
+//  Bash Vi Mode  set -o vi
+
+//  MISC  -------------------------------------------------
+
 //  Counted High/Low  #H #L
 //  Counted Text Objects  3ya(
-
 //  Scrolling++  z,  z.  z<cr>  z-  (vs. zt zz zb)
 //  Customize Search :set hls  :set ignorecase
 //  Ruler  :set ruler
@@ -1730,14 +1779,12 @@ let macros = // q @ @@
 //  Scroll plus first column z<CR> z. z-
 //  Indenting in Insert  ^t ^d
 //  Commands  :
-//  Registers  "
 //  Leader  \
 //  Search & Replace  :s/foo/bar & :%s/foo/bar  also n.n. trick
 //  Advanced 1  !
 //  Advanced 3  K
 //  Advanced 4  Q
 //  Pattern * cw foo <esc> n . n . n .
-//  Surround?
 //  :noremap ^ _  :nmap _ i <esc>
 //  Unexpected motions: f{char} /foo
 //  Interacting with the shell:  :w !{cmd}  :r !{cmd}  !  !!  ^z
@@ -1746,6 +1793,87 @@ let macros = // q @ @@
 //  Traverse change list g; g,
 //  Indenting in insert mode ^t ^d
 
+//  Go to ...  gd gD gf gF ]f [f gx
+//  Find Partial  g* g#
+//  Next Select  gn gN
+//  Screen Lines  gj gk g$ g^ g0 g<Down> g<Up> g<End> g<Home> :nowrap
+//  Horizontal Scroll  zh zl zs ze zH zL z<Left> z<Right>
+//  Rot13  g? g?? (g?g?)
+//  Folds 1  zo zO zc zC za zA zv
+//  Folds 2  zr zR zm zM zx zX
+//  Folds 3  zn zN zi
+//  Folds 4  zj zk [z ]z
+//  Folds 5  zf{motion} zF zd zD zE :set fdm=indent|syntax|manual|marker|expr
+//    :set fdm=indent|syntax|manual|marker|expr (set foldexpr)
+//    zr - Add fold level
+//    zm - Decrement fold level
+//    zM - Fold level zero
+//    zR - Set fold level deepest
+//    zx - Re-apply fold level (and `zv`)
+//    zX - Re-apply fold level
+//    zn - Disable folding
+//    zN - Enable folding
+//    zi - Toggle folding
+//    zj - Next fold
+//    zk - Previous fold
+//    [z - Move to start of open fold
+//    ]z - Move to end of open fold
+//    Manual
+//    zf{motion} - Create
+//    zF - Create fold for N lines (on in Visual modes)
+//    zd - Delete fold
+//    zD - Delete folds recursively
+//    zE - Eliminate folds
+// Windowing
+//
+//    z{height}<CR>	- Set window height
+//    ^w+ - Increase height
+//    ^w- - Decrease height
+//    ^w< - Decrease width
+//    ^w> - Increase width
+//    ^w= - Equalize windows
+//    ^wH - Window move left
+//    ^wJ - Window move bottom
+//    ^wK - Window move top
+//    ^wL - Window move right
+//    ^wP - Preview window
+//    ^wT - Window to tab
+//    ^wb - Bottom window
+//    ^wc - Close window	Close current window (like |:close|).
+//    ^wd - Split and jump to definition	Split window and jump to definition under the cursor.
+//    ^wf - Split and edit file	Split window and edit file name under the cursor.
+//    ^wF - Split and edit file at line	Split window and edit file name under the cursor and jump to the line number following the file name..
+//    ^wh - Go to window	Go to Nth left window (stop at first window).
+//    ^wi - Split and jump to declaration	Split window and jump to declaration of identifier under the cursor.
+//    ^wj - Down window	Go N windows down (stop at last window).
+//    ^wk - Up window	Go N windows up (stop at first window).
+//    ^wl - Right window	Go to Nth right window (stop at last window).
+//    ^wn - New window	Open new window, N lines high.
+//    ^wo - Only window	Close all but current window (like `:only`).
+//    ^wp - Previous window	Go to previous (last accessed) window.
+//    ^wq - Quit window	Quit current window (like `:quit`).
+//    ^wr - Rotate windows down	Rotate windows downwards N times.
+//    ^wR - Rotate windows up	Rotate windows upwards N times.
+//    ^ws - Split window	Split current window in two parts, new window N lines high.
+//    ^wS - Split window	Split current window in two parts, new window N lines high.
+//    ^wt - Top window	Go to top window.
+//    ^wv - Split vertically	Split current window vertically, new window N columns wide.
+//    ^ww - Next window	Go to N next window (wrap around).
+//    ^wW - Previous window	Go to N previous window (wrap around).
+//    ^wx - Exchange window	Exchange current window with window N (default: next window).
+//    ^wz - Close preview window	Close preview window.
+//    ^wg] - Split window and select tag	Split window and do |:tselect| for tag under cursor.
+//    ^wg^] - Split window and jump to tag	Split window and do `:tjump` to tag under cursor.
+//    ^w] - Split window and jump to tag	Split window and jump to tag under cursor.
+//    ^w^ - Split window and etid alternate	Split current window and edit alternate file N.
+//    ^w_ - Set window height	Set current window height to N (default: very high). Similar to `z{height}`.
+//    ^w| - Set window width	Set window width to N columns.
+//    ^w} - Show tag	Show tag under cursor in preview window.
+//    ^w<Down> - Down window	Go N windows down (stop at last window).
+//    ^w<Up> - Up window	Go N windows up (stop at first window).
+//    ^w<Left> - Go to window	Go to Nth left window (stop at first window).
+//    ^w<Right> - Right window	Go to Nth right window (stop at last window).
+//  Views  :mkview  :loadview
 (*
 def hanoi(n, from_pole, to_pole, with_pole):
   if n == 1:

@@ -61,10 +61,12 @@ KeyCast.start ()
 //Lesson.countedMotions |> go; pause 5000 // 12 FEB 2024
 //Lesson.numberedLines |> go; pause 5000 // 13 FEB 2024
 //Lesson.countedInsert |> go; pause 5000 // 14 FEB 2024
-//Lesson.insertModeDelete |> go; pause 5000
-//Lesson.verticalInsert |> go; pause 5000
+//Lesson.insertModeDelete |> go; pause 5000 // 15 FEB 2024
+//Lesson.verticalInsert |> go; pause 5000 // 16 FEB 2024
 //Lesson.dot |> go; pause 5000
 //Lesson.macros |> go; pause 5000
+
+Lesson.fold1 |> go; pause 5000
 
 (*
 - Run KeyClicker.py

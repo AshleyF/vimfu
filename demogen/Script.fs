@@ -216,6 +216,13 @@ type Action =
     | ReplaceMode
     | Dot
     | CountedDot of int
+    | FoldClose
+    | FoldOpen
+    | FoldToggle
+    | FoldCloseRecursive
+    | FoldOpenRecursive
+    | FoldToggleRecursive
+    | FoldOpenToCursor
     | Key of string * string * string
     | Move of Motion
 
@@ -438,6 +445,13 @@ let rec edit = function
         | _ -> failwith $"Delete with X motion not implemented ({m})"
     | Dot -> KeyCast.set "." "repeat action"; key "."
     | CountedDot n -> KeyCast.set $"{n}." $"repeat {n} times"; key $"{n}."
+    | FoldClose -> KeyCast.set "zc" "close fold"; key "zc"
+    | FoldOpen -> KeyCast.set "zo" "open fold"; key "zo"
+    | FoldToggle -> KeyCast.set "za" "toggle fold"; key "za"
+    | FoldCloseRecursive -> KeyCast.set "z⇧C" "close fold recursive"; key "zC"
+    | FoldOpenRecursive -> KeyCast.set "z⇧O" "open fold recursive"; key "zO"
+    | FoldToggleRecursive -> KeyCast.set "z⇧A" "toggle fold recursive"; key "zA"
+    | FoldOpenToCursor -> KeyCast.set "zv" "open fold to cursor"; key "zv"
     | ScrollDown -> KeyCast.set "⌃y" "scroll down"; key "^y"
     | ScrollUp -> KeyCast.set "⌃e" "scroll up"; key "^e"
     | ScrollTop -> KeyCast.set "zt" "scroll top"; key "zt"
