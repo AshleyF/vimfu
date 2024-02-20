@@ -609,10 +609,10 @@ commands in CTRL-X submode				*i_CTRL-X_index*
     ['gt','^wgt'], // Next tab
     ['gT','^wgT'], // Previous tab
     ['g<Tab>','^wg<Tab>'], // Go to tab
-    ['^wj','^w<Down>'], // Window move down
-    ['^wk','^w<Up>'], // Window move up
-    ['^wh','^w<Left>'], // Window move left
-    ['^wl','^w<Right>'], // Window move right
+    ['^wj','^w<Down>'], // Window down
+    ['^wk','^w<Up>'], // Window up
+    ['^wh','^w<Left>'], // Window left
+    ['^wl','^w<Right>'], // Window right
     ['<Esc>','^['], // Escape
     ['i_<BS>','i_^h'], // backspace
     ['i_<NL>','i_<CR>','i_^j','i_^m'], // new line
@@ -670,6 +670,12 @@ commands in CTRL-X submode				*i_CTRL-X_index*
     'vertical_insert': { name: 'Vertical Insert', description: "Vertical insert with `I` and `A` in Visual Block mode.", keys: ['vb_I','vb_A'] },
     'dot': { name: 'Dot', description: "Repeating actions with dot `.`.", keys: ['.'] },
     'macros': { name: 'Macros', description: "Repeating sequences of keys with macros `q{char}` `q` `@{char}` `@@`.", keys: ['q','@','@@'] },
+    'folds1': { name: 'Folds 1', description: "Opening and closing folds with `zo` `zO` `zc` `zC` `zv` and toggling with `za` `zA`.", keys: ['zo','zO','zc','zC','zv','za','zA'] },
+    'folds2': { name: 'Folds 2', description: "Changing fold level with `zr` `zR` `zm` `zM` `zx` `zX`.", keys: ['zr','zR','zm','zM','zx','zX'] },
+    'folds3': { name: 'Folds 3', description: "Enabling/disabling folding with `zn` `zN` `zi`.", keys: ['zn','zN','zi'] },
+    'folds4': { name: 'Folds 4', description: "Navigating folds with `zj` `zk` `[z` `]z`.", keys: ['zj','zk','[z',']z'] },
+    'folds5': { name: 'Folds 5', description: "Manual folds with `zf{motion}` `{count}zF` `zd` `zD` `zE`.", keys: ['zf','zF','zd','zD','zE'], commands: ['set fdm','set foldmethod'] },
+    'rot13': { name: 'Rot13', description: "Simple ROT13 cypher text with `g?{motion}` `g??`.", keys: ['g?','g??'] },
   }
 }
 
@@ -706,7 +712,6 @@ commands in CTRL-X submode				*i_CTRL-X_index*
 //    [z - Move to start of open fold
 //    ]z - Move to end of open fold
 // Windowing
-//
 //    z{height}<CR>	- Set window height
 //    ^w+ - Increase height
 //    ^w- - Decrease height
@@ -720,37 +725,37 @@ commands in CTRL-X submode				*i_CTRL-X_index*
 //    ^wP - Preview window
 //    ^wT - Window to tab
 //    ^wb - Bottom window
-//    ^wc - Close window	Close current window (like |:close|).
-//    ^wd - Split and jump to definition	Split window and jump to definition under the cursor.
-//    ^wf - Split and edit file	Split window and edit file name under the cursor.
-//    ^wF - Split and edit file at line	Split window and edit file name under the cursor and jump to the line number following the file name..
-//    ^wh - Go to window	Go to Nth left window (stop at first window).
-//    ^wi - Split and jump to declaration	Split window and jump to declaration of identifier under the cursor.
-//    ^wj - Down window	Go N windows down (stop at last window).
-//    ^wk - Up window	Go N windows up (stop at first window).
-//    ^wl - Right window	Go to Nth right window (stop at last window).
-//    ^wn - New window	Open new window, N lines high.
-//    ^wo - Only window	Close all but current window (like `:only`).
-//    ^wp - Previous window	Go to previous (last accessed) window.
-//    ^wq - Quit window	Quit current window (like `:quit`).
-//    ^wr - Rotate windows down	Rotate windows downwards N times.
-//    ^wR - Rotate windows up	Rotate windows upwards N times.
-//    ^ws - Split window	Split current window in two parts, new window N lines high.
-//    ^wS - Split window	Split current window in two parts, new window N lines high.
-//    ^wt - Top window	Go to top window.
-//    ^wv - Split vertically	Split current window vertically, new window N columns wide.
-//    ^ww - Next window	Go to N next window (wrap around).
-//    ^wW - Previous window	Go to N previous window (wrap around).
-//    ^wx - Exchange window	Exchange current window with window N (default: next window).
-//    ^wz - Close preview window	Close preview window.
-//    ^wg] - Split window and select tag	Split window and do |:tselect| for tag under cursor.
-//    ^wg^] - Split window and jump to tag	Split window and do `:tjump` to tag under cursor.
-//    ^w] - Split window and jump to tag	Split window and jump to tag under cursor.
-//    ^w^ - Split window and etid alternate	Split current window and edit alternate file N.
-//    ^w_ - Set window height	Set current window height to N (default: very high). Similar to `z{height}`.
-//    ^w| - Set window width	Set window width to N columns.
-//    ^w} - Show tag	Show tag under cursor in preview window.
-//    ^w<Down> - Down window	Go N windows down (stop at last window).
-//    ^w<Up> - Up window	Go N windows up (stop at first window).
-//    ^w<Left> - Go to window	Go to Nth left window (stop at first window).
-//    ^w<Right> - Right window	Go to Nth right window (stop at last window).
+//    ^wc - Close window
+//    ^wd - Split and jump to definition
+//    ^wf - Split and edit file
+//    ^wF - Split and edit file at line
+//    ^wh - Go to window
+//    ^wi - Split and jump to declaration
+//    ^wj - Down window
+//    ^wk - Up window
+//    ^wl - Right window
+//    ^wn - New window
+//    ^wo - Only window
+//    ^wp - Previous window
+//    ^wq - Quit window
+//    ^wr - Rotate windows down
+//    ^wR - Rotate windows up
+//    ^ws - Split window
+//    ^wS - Split window
+//    ^wt - Top window
+//    ^wv - Split vertically
+//    ^ww - Next window
+//    ^wW - Previous window
+//    ^wx - Exchange window
+//    ^wz - Close preview window
+//    ^wg] - Split window and select tag
+//    ^wg^] - Split window and jump to tag
+//    ^w] - Split window and jump to tag
+//    ^w^ - Split window and etid alternate
+//    ^w_ - Set window height
+//    ^w| - Set window width
+//    ^w} - Show tag
+//    ^w<Down> - Down window
+//    ^w<Up> - Up window
+//    ^w<Left> - Go to window
+//    ^w<Right> - Right window
