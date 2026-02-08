@@ -72,9 +72,10 @@ class Keys:
 class Line:
     """Send a command line (typed char by char with Enter)."""
     command: str
+    delay: float = None
     
     def execute(self, demo):
-        demo.send_line(self.command)
+        demo.send_line(self.command, delay=self.delay)
 
 
 @dataclass

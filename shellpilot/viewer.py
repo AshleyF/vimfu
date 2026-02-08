@@ -152,7 +152,7 @@ class TerminalViewer:
         # Display settings
         self.font_family = "Consolas" if __import__('sys').platform == 'win32' else "Monaco"
         self.font_size = 14
-        self.bg_color = "#1e1e1e"  # Dark background
+        self.bg_color = "#000000"  # Pure black background
         self.fg_color = "#d4d4d4"  # Light text
         self.cursor_color = "#ffffff"
         self.key_bg_color = "#5a1a1a"  # Semi-transparent deep red (simulated)

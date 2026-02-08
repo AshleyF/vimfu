@@ -52,7 +52,7 @@ lesson = Demo(
         # --- Open Neovim ---
         Say("Vim is a modal text editor."),
         Say("It has two main modes. Normal mode, and insert mode.", wait=False),
-        Line("nvim hello.py"),
+        Line("nvim hello.py", delay=0.05),
         WaitForScreen("import sys", timeout=10.0),
         IfScreen("swap file", "d"),
 
@@ -111,16 +111,14 @@ lesson = Demo(
         Say("That's the whole idea. Normal mode: keys are commands."),
         Say("Insert mode: keys type text. Escape to switch back."),
 
-        # --- Save and quit ---
-        Comment("Save and quit"),
-        Type(":wq"),
-        Enter(),
-        Wait(0.3),
-
         Say("That's Vim. A modal editor."),
     ],
 
     teardown=[
+        Comment("Quit nvim without saving"),
+        Escape(),
+        Type(":q!"),
+        Enter(),
         Comment("Cleaning up..."),
         Line("rm -f hello.py"),
     ],

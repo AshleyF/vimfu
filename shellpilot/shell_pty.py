@@ -13,12 +13,153 @@ This gives us:
 - Ability to send any keystrokes including control sequences
 """
 
+import re
 import sys
 import threading
 import time
 from typing import Optional
 
 import pyte
+
+
+class _TerminalFilter:
+    """Stateful pre-processor that strips escape sequences pyte can't handle.
+
+    Handles two classes of problem:
+
+    1. **String sequences** — DCS (ESC P … ST), APC (ESC _ … ST), and
+       PM (ESC ^ … ST).  pyte lets the body leak through as plain text.
+       We consume the entire sequence (even across chunk boundaries).
+
+    2. **Colon sub-parameters** in CSI sequences (ISO 8613-6), e.g.
+       ``ESC[4:3m`` (curly underline).  pyte's CSI parser breaks on the
+       colon and lets the trailing ``3m`` through as text.  We replace
+       colons with semicolons so pyte sees ``ESC[4;3m`` instead.
+    """
+
+    # Introducer bytes that start a "string" sequence terminated by ST
+    _STRING_INTROS = frozenset("P_^")   # DCS, APC, PM
+
+    # Matches a CSI sequence whose parameter string contains a colon.
+    # Group 1 = introducer (ESC[ or C1 CSI), group 2 = params, group 3 = final byte.
+    _CSI_COLON_RE = re.compile(
+        r'(\x1b\[|\x9b)'           # CSI introducer
+        r'([0-9;:?>=! ]*:[0-9;:?>=! ]*)' # params containing at least one colon
+        r'([A-Za-z~@`])'             # final byte
+    )
+
+    @staticmethod
+    def _normalize_csi(m: re.Match) -> str:
+        return m.group(1) + m.group(2).replace(':', ';') + m.group(3)
+
+    def __init__(self):
+        self._in_string_seq = False   # True while inside DCS/APC/PM body
+        self._prev_was_esc = False    # True if last char of previous chunk was ESC
+
+    def filter(self, data: str) -> str:
+        """Return *data* with unsupported sequences removed."""
+        out: list[str] = []
+        i = 0
+        n = len(data)
+
+        while i < n:
+            ch = data[i]
+
+            # --- inside a DCS / APC / PM body: consume until ST ---
+            if self._in_string_seq:
+                # Handle carry-over: previous chunk ended with ESC
+                if self._prev_was_esc:
+                    self._prev_was_esc = False
+                    if ch == '\\':
+                        # ESC \ (ST) — end of string sequence
+                        self._in_string_seq = False
+                        i += 1
+                        continue
+                    # Not ST — keep consuming body
+                    i += 1
+                    continue
+
+                if ch == '\x1b':
+                    # Might be ESC \ (ST) — peek ahead
+                    if i + 1 < n:
+                        if data[i + 1] == '\\':
+                            # ST found — end of string sequence
+                            self._in_string_seq = False
+                            i += 2
+                            continue
+                        else:
+                            # ESC but not ST — consume and stay in seq
+                            i += 1
+                            continue
+                    else:
+                        # ESC at end of chunk — hold state
+                        self._prev_was_esc = True
+                        i += 1
+                        continue
+                elif ch == '\x9c':
+                    # C1 ST — also terminates
+                    self._in_string_seq = False
+                    i += 1
+                    continue
+                else:
+                    # Consume body byte
+                    i += 1
+                    continue
+
+            # --- carry-over: previous chunk ended with ESC (not in string seq) ---
+            if self._prev_was_esc:
+                self._prev_was_esc = False
+                if ch in self._STRING_INTROS:
+                    self._in_string_seq = True
+                    i += 1
+                    continue
+                # Not a string sequence — emit the ESC we held back
+                out.append('\x1b')
+                # Fall through to handle ch normally
+
+            # --- normal scanning ---
+            if ch == '\x1b':
+                if i + 1 < n:
+                    nxt = data[i + 1]
+                    if nxt in self._STRING_INTROS:
+                        # Start of DCS / APC / PM — enter string mode
+                        self._in_string_seq = True
+                        i += 2
+                        continue
+                    else:
+                        # Normal ESC sequence — let pyte handle it
+                        out.append(ch)
+                        i += 1
+                        continue
+                else:
+                    # ESC at end of chunk — hold it
+                    self._prev_was_esc = True
+                    i += 1
+                    continue
+            elif ch == '\x90':
+                # C1 DCS
+                self._in_string_seq = True
+                i += 1
+                continue
+            elif ch == '\x9f':
+                # C1 APC
+                self._in_string_seq = True
+                i += 1
+                continue
+            elif ch == '\x9e':
+                # C1 PM
+                self._in_string_seq = True
+                i += 1
+                continue
+            else:
+                out.append(ch)
+                i += 1
+
+        result = "".join(out)
+        # Normalize colon sub-parameters in CSI sequences
+        if ':' in result:
+            result = self._CSI_COLON_RE.sub(self._normalize_csi, result)
+        return result
 
 # Platform-specific
 WINDOWS = sys.platform == 'win32'
@@ -48,6 +189,7 @@ class ShellPilot:
         # pyte screen and stream for terminal emulation
         self.screen = pyte.Screen(cols, rows)
         self.stream = pyte.Stream(self.screen)
+        self._filter = _TerminalFilter()
         
         # Platform-specific process handle
         self._process = None  # Windows
@@ -115,11 +257,11 @@ class ShellPilot:
         """Read output on Windows using non-blocking reads."""
         while self._running and self._process and self._process.isalive():
             try:
-                # Read in smaller chunks - pywinpty read can block
-                # We do short blocking reads and accumulate
-                data = self._process.read(1024)
+                data = self._process.read(4096)
                 if data:
-                    self.stream.feed(data)
+                    cleaned = self._filter.filter(data)
+                    if cleaned:
+                        self.stream.feed(cleaned)
             except EOFError:
                 break
             except Exception:
@@ -136,7 +278,10 @@ class ShellPilot:
                 if r:
                     data = os.read(self._master_fd, 4096)
                     if data:
-                        self.stream.feed(data.decode("utf-8", errors="replace"))
+                        text = data.decode("utf-8", errors="replace")
+                        cleaned = self._filter.filter(text)
+                        if cleaned:
+                            self.stream.feed(cleaned)
             except (OSError, IOError):
                 break
     
