@@ -58,58 +58,60 @@ lesson = Demo(
 
         # --- Demonstrate normal mode ---
         Say("Right now we're in normal mode."),
-        Say("In normal mode, every key on your keyboard is a command."),
-        Say("Your whole keyboard, no modifier keys needed.", wait=False),
+        Say("In normal mode, every key on your keyboard is a command.", wait=False),
+        Wait(1.5),
 
-        Say("For example, h j k l move the cursor.", wait=False),
-        Comment("Move through the Python code to show hjkl"),
-        Keys("l"),         # col 2 on 'import sys'
-        Wait(0.3),
-        Keys("l"),         # col 3
-        Wait(0.3),
-        Keys("l"),         # col 4
-        Wait(0.3),
-        Keys("l"),         # col 5
-        Wait(0.3),
-        Keys("j"),         # line 2 (blank) — cursor snaps back
-        Wait(0.4),
-        Keys("j"),         # line 3: def greet(name):
-        Wait(0.4),
-        Keys("l"),         # col 2
-        Wait(0.3),
-        Keys("l"),         # col 3
-        Wait(0.3),
-        Keys("j"),         # line 4: print(...)
-        Wait(0.4),
-        Keys("j"),         # line 5: return True
-        Wait(0.4),
-        Keys("k"),         # line 4
-        Wait(0.3),
-        Keys("k"),         # line 3
-        Wait(0.3),
-        Keys("h"),         # col 2
-        Wait(0.3),
-        Keys("h"),         # col 1
-        Wait(0.3),
-        Keys("k"),         # line 2 (blank — cursor lands here for insert)
-        Wait(0.4),
+        # --- hjkl demo: narrate each key while pressing it ---
+        # Cursor starts at (0, 0) on "import sys"
 
-        Say("Arrow keys work too, but these are right on the home row."),
+        Say("For example, L moves right.", wait=False),
+        Keys("l"),         # (0,1)
+        Wait(0.35),
+        Keys("l"),         # (0,2)
+        Wait(0.35),
+        Keys("l"),         # (0,3)
+        Wait(0.35),
+        Keys("l"),         # (0,4)
+        Wait(0.5),
 
-        # --- Switch to insert mode (cursor is on blank line 2 — safe to type) ---
-        Say("Press i to enter insert mode. Now keys type text.", wait=False),
+        Say("J moves down.", wait=False),
+        Keys("j"),         # (1,0) blank line — cursor snaps to col 0
+        Wait(0.4),
+        Keys("j"),         # (2,4) def greet — restores col 4
+        Wait(0.4),
+        Keys("j"),         # (3,4)     print(...)
+        Wait(0.5),
+
+        Say("And H moves left.", wait=False),
+        Keys("h"),         # (3,3)
+        Wait(0.35),
+        Keys("h"),         # (3,2)
+        Wait(0.35),
+        Keys("h"),         # (3,1)
+        Wait(0.5),
+
+        Say("K moves up.", wait=False),
+        Keys("k"),         # (2,1) def greet
+        Wait(0.4),
+        Keys("k"),         # (1,0) blank line
+        Wait(0.5),
+
+        Say("No arrow keys needed. H J K L, right on the home row."),
+
+        # --- Switch to insert mode on blank line 1 (won't clobber code) ---
+        Say("Press I to enter insert mode. Now keys type text.", wait=False),
         Keys("i"),
-        Wait(0.3),
+        Wait(0.4),
 
         Type("# Vim is modal!"),
+        Wait(0.3),
 
         # --- Back to normal mode ---
         Say("Press escape to return to normal mode.", wait=False),
         Escape(),
-        Wait(0.3),
+        Wait(0.5),
 
-        Say("That's the whole idea. Normal mode: keys are commands."),
-        Say("Insert mode: keys type text. Escape to switch back."),
+        Say("That's the whole idea. Normal mode: keys are commands. Insert mode: keys type text."),
 
         Say("That's Vim. A modal editor."),
     ],

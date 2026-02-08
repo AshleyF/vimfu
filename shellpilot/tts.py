@@ -67,7 +67,7 @@ def generate_speech(
     # Call OpenAI TTS API
     try:
         from openai import OpenAI
-        client = OpenAI(api_key=api_key)
+        client = OpenAI(api_key=api_key, timeout=30.0)
         
         response = client.audio.speech.create(
             model=model,
@@ -190,6 +190,7 @@ class TextToSpeech:
         """
         Pre-generate audio for a list of texts (useful for demos).
         This caches all the audio upfront so playback is instant.
+        Retries failed clips up to 2 times each.
         """
         if not self.enabled or not self.api_key:
             return
@@ -198,15 +199,24 @@ class TextToSpeech:
             cache_path = get_cache_path(text, self.voice, self.model)
             if not cache_path.exists():
                 print(f"[TTS] Generating: {text[:50]}...")
-                try:
-                    generate_speech(
-                        text=text,
-                        voice=self.voice,
-                        model=self.model,
-                        api_key=self.api_key,
-                    )
-                except Exception as e:
-                    print(f"[TTS] Error generating '{text[:30]}...': {e}")
+                for attempt in range(3):
+                    try:
+                        generate_speech(
+                            text=text,
+                            voice=self.voice,
+                            model=self.model,
+                            api_key=self.api_key,
+                        )
+                        break
+                    except KeyboardInterrupt:
+                        raise  # Let Ctrl+C through
+                    except Exception as e:
+                        if attempt < 2:
+                            import time
+                            print(f"[TTS] Retry {attempt+1} for '{text[:30]}...': {e}")
+                            time.sleep(2)
+                        else:
+                            print(f"[TTS] Failed '{text[:30]}...': {e}")
     
     def clear_cache(self) -> None:
         """Clear all cached audio files."""

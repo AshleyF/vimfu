@@ -225,6 +225,8 @@ class Demo:
         record_video: Whether to record demo to MP4 video
         video_fps: Video recording frames per second
         borderless: Whether to use borderless window (clean for recording)
+        description: Video description for YouTube metadata
+        tags: List of tags/keywords for YouTube metadata
     """
     title: str = "Demo"
     steps: list[Step] = field(default_factory=list)
@@ -243,6 +245,8 @@ class Demo:
     record_video: bool = True
     video_fps: int = 30
     borderless: bool = True
+    description: str = ""
+    tags: list[str] = field(default_factory=list)
     
     def run(self, show_viewer: bool = True) -> None:
         """Execute the demo."""
@@ -287,9 +291,64 @@ class Demo:
             # Stop recording before teardown
             if self.record_video and show_viewer:
                 demo.stop_recording()
+                
+                # Generate thumbnail and metadata alongside the video
+                self._generate_extras(demo, title)
             
             # Run teardown steps (not recorded) — fast, silent, no throttling
             self._run_fast(demo, self.teardown)
+    
+    def _generate_extras(self, demo, title: str) -> None:
+        """Generate thumbnail PNG and metadata JSON after recording."""
+        recorder = demo.recorder
+        if not recorder:
+            return
+        
+        # Find the Overlay caption from the first Overlay step (the title card)
+        overlay_caption = ""
+        for step in self.steps:
+            if isinstance(step, Overlay):
+                overlay_caption = step.caption
+                break
+        
+        # Build a human-readable title from the overlay caption or demo title
+        human_title = overlay_caption if overlay_caption else self.title
+        video_title = f"VimFu — {human_title}" if human_title else "VimFu"
+        
+        # Generate thumbnail
+        try:
+            recorder.save_thumbnail(
+                overlay_title="VimFu",
+                overlay_caption=overlay_caption,
+            )
+        except Exception as e:
+            print(f"[THUMB] Error generating thumbnail: {e}")
+        
+        # Build description
+        description = self.description
+        if not description:
+            # Auto-generate from Say steps
+            say_texts = [s.text for s in self.steps if isinstance(s, Say)]
+            if say_texts:
+                description = " ".join(say_texts)
+        
+        # Build tags
+        tags = list(self.tags) if self.tags else []
+        default_tags = ["vim", "neovim", "nvim", "vimfu", "tutorial",
+                        "terminal", "editor", "coding", "programming"]
+        for tag in default_tags:
+            if tag not in tags:
+                tags.append(tag)
+        
+        # Generate metadata JSON
+        try:
+            recorder.save_metadata(
+                title=video_title,
+                description=description,
+                tags=tags,
+            )
+        except Exception as e:
+            print(f"[META] Error generating metadata: {e}")
     
     @staticmethod
     def _run_fast(demo, steps: list) -> None:
@@ -357,8 +416,19 @@ class Demo:
             return
         
         print(f"[TTS] Pre-caching {len(uncached)} of {len(all_texts)} audio clips...")
-        tts.pregenerate(uncached)
-        print(f"[TTS] Pre-caching complete.")
+        try:
+            tts.pregenerate(uncached)
+        except KeyboardInterrupt:
+            raise
+        except Exception as e:
+            print(f"[TTS] Pre-caching error (continuing anyway): {e}")
+        
+        # Report any still-missing clips
+        still_missing = [t for t in uncached if not get_cache_path(t, tts.voice, tts.model).exists()]
+        if still_missing:
+            print(f"[TTS] Warning: {len(still_missing)} clips could not be generated")
+        else:
+            print(f"[TTS] Pre-caching complete.")
     
     def to_dict(self) -> dict:
         """Convert to a dictionary for serialization."""

@@ -880,6 +880,7 @@ class ScriptedDemo:
         """Start video recording (call after setup steps)."""
         if self.recorder and self.viewer and self.viewer.root:
             if not self.recorder._recording:  # Only start if not already recording
+                self.recorder._viewer = self.viewer  # For overlay-aware thumbnail capture
                 self.recorder.start(self.viewer.root)
                 set_active_recorder(self.recorder)
     
