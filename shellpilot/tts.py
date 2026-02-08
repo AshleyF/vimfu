@@ -100,6 +100,12 @@ def play_audio(audio_path: Path, wait: bool = True) -> None:
         if not pygame.mixer.get_init():
             pygame.mixer.init(frequency=44100, size=-16, channels=2)
         
+        # Always wait for any previously playing sound to finish
+        # before starting a new one — prevents overlapping speech
+        while pygame.mixer.get_busy():
+            import time
+            time.sleep(0.05)
+        
         sound = pygame.mixer.Sound(str(audio_path))
         sound.play()
         

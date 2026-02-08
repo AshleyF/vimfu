@@ -160,8 +160,43 @@ class Overlay:
         demo.show_overlay(self.text, self.caption, self.duration)
 
 
+@dataclass
+class WriteFile:
+    """Write content to a file. Useful in setup to create sample files.
+    
+    Example:
+        WriteFile("hello.c", '''
+            #include <stdio.h>
+            
+            int main() {
+                printf("Hello!");
+                return 0;
+            }
+        ''')
+    
+    Content is automatically dedented (leading common whitespace removed)
+    so you can indent naturally in your Python source.
+    """
+    path: str
+    content: str
+    
+    def execute(self, demo):
+        import textwrap
+        # Dedent and strip leading/trailing blank lines
+        clean = textwrap.dedent(self.content).strip()
+        # Write via heredoc — handles quotes, special chars, multi-line
+        # Use a unique delimiter to avoid conflicts with content
+        demo.send_keys(f"cat << 'VIMFU_EOF' > {self.path}\n")
+        demo.wait(0.1)
+        for line in clean.split('\n'):
+            demo.send_keys(line + '\n')
+            demo.wait(0.05)
+        demo.send_keys('VIMFU_EOF\n')
+        demo.wait(0.3)
+
+
 # Type alias for any step
-Step = Union[Comment, Say, Type, Keys, Line, Wait, Escape, Enter, Backspace, Ctrl, Pause, IfScreen, WaitForScreen]
+Step = Union[Comment, Say, Type, Keys, Line, Wait, Escape, Enter, Backspace, Ctrl, Pause, IfScreen, WaitForScreen, WriteFile]
 
 
 # === Demo Definition ===
@@ -190,7 +225,7 @@ class Demo:
         video_fps: Video recording frames per second
         borderless: Whether to use borderless window (clean for recording)
     """
-    title: str
+    title: str = "Demo"
     steps: list[Step] = field(default_factory=list)
     setup: list[Step] = field(default_factory=list)
     teardown: list[Step] = field(default_factory=list)
@@ -210,7 +245,14 @@ class Demo:
     
     def run(self, show_viewer: bool = True) -> None:
         """Execute the demo."""
+        import sys
         from viewer import ScriptedDemo
+        
+        # Pre-cache all TTS audio before launching the demo
+        self._precache_tts()
+        
+        # Derive title from script name (e.g., 0001_what_is_vim.py -> 0001_what_is_vim)
+        title = Path(sys.argv[0]).stem if sys.argv[0] else self.title
         
         with ScriptedDemo(
             rows=self.rows,
@@ -226,13 +268,12 @@ class Demo:
             tts_voice=self.tts_voice,
             record_video=self.record_video and show_viewer,  # Create recorder but don't auto-start
             video_fps=self.video_fps,
-            title=self.title,
+            title=title,
             borderless=self.borderless,
             auto_start_recording=False,  # Don't start recording immediately
         ) as demo:
-            # Run setup steps (not recorded)
-            for step in self.setup:
-                step.execute(demo)
+            # Run setup steps (not recorded) — fast, silent, no throttling
+            self._run_fast(demo, self.setup)
             
             # Start recording for main steps
             if self.record_video and show_viewer:
@@ -242,9 +283,81 @@ class Demo:
             for step in self.steps:
                 step.execute(demo)
             
-            # Run teardown steps (not recorded)
-            for step in self.teardown:
+            # Stop recording before teardown
+            if self.record_video and show_viewer:
+                demo.stop_recording()
+            
+            # Run teardown steps (not recorded) — fast, silent, no throttling
+            self._run_fast(demo, self.teardown)
+    
+    @staticmethod
+    def _run_fast(demo, steps: list) -> None:
+        """Run steps with maximum speed, no clicks, no humanization.
+        
+        After Line/WriteFile steps, gives the shell a moment to complete.
+        Comment and other non-shell steps execute instantly.
+        """
+        if not steps:
+            return
+        import time
+        
+        # Save original settings
+        orig_speed = demo.speed
+        orig_char_delay = demo.char_delay
+        orig_base_delay = demo.base_delay
+        orig_humanize = demo.humanize
+        orig_mistakes = demo.mistakes
+        orig_clicks = demo.clicker.enabled
+        
+        # Crank everything to fast & silent
+        demo.speed = 100.0
+        demo.char_delay = 0.001
+        demo.base_delay = 0.001
+        demo.humanize = 0.0
+        demo.mistakes = 0.0
+        demo.clicker.enabled = False
+        
+        try:
+            for step in steps:
                 step.execute(demo)
+                # Only wait after steps that actually send commands to the shell
+                if isinstance(step, (Line, WriteFile)):
+                    time.sleep(0.5)
+        finally:
+            # Restore original settings
+            demo.speed = orig_speed
+            demo.char_delay = orig_char_delay
+            demo.base_delay = orig_base_delay
+            demo.humanize = orig_humanize
+            demo.mistakes = orig_mistakes
+            demo.clicker.enabled = orig_clicks
+    
+    def _precache_tts(self) -> None:
+        """Pre-generate all TTS audio so playback is instant during the demo."""
+        if not self.tts_enabled:
+            return
+        
+        # Collect all Say texts from setup, steps, and teardown
+        all_texts = []
+        for step in self.setup + self.steps + self.teardown:
+            if isinstance(step, Say):
+                all_texts.append(step.text)
+        
+        if not all_texts:
+            return
+        
+        from tts import TextToSpeech, get_cache_path
+        
+        # Check which ones still need generating
+        tts = TextToSpeech(voice=self.tts_voice, enabled=True)
+        uncached = [t for t in all_texts if not get_cache_path(t, tts.voice, tts.model).exists()]
+        
+        if not uncached:
+            return
+        
+        print(f"[TTS] Pre-caching {len(uncached)} of {len(all_texts)} audio clips...")
+        tts.pregenerate(uncached)
+        print(f"[TTS] Pre-caching complete.")
     
     def to_dict(self) -> dict:
         """Convert to a dictionary for serialization."""

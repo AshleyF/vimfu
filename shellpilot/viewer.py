@@ -545,26 +545,37 @@ class TerminalViewer:
         if color == 'default':
             return self.fg_color if is_fg else self.bg_color
         
-        # Handle 256-color codes (numeric strings)
-        if isinstance(color, str) and color.isdigit():
-            return self._color_256_to_hex(int(color))
-        
-        # Handle named colors
-        color_lower = color.lower() if isinstance(color, str) else 'default'
-        
-        # Bright variant for bold foreground text
-        if bold and is_fg and not color_lower.startswith('bright'):
-            bright_key = 'bright' + color_lower
-            if bright_key in self._ansi_colors:
-                return self._ansi_colors[bright_key]
-        
-        if color_lower in self._ansi_colors:
-            result = self._ansi_colors[color_lower]
-            return result if result else (self.fg_color if is_fg else self.bg_color)
-        
-        # If it looks like a hex color, use it directly
-        if isinstance(color, str) and color.startswith('#'):
-            return color
+        if isinstance(color, str):
+            # Handle 256-color codes (numeric strings 0-255)
+            if color.isdigit() and len(color) <= 3:
+                return self._color_256_to_hex(int(color))
+            
+            # Handle hex color strings (with or without #)
+            hex_str = color.lstrip('#')
+            if hex_str and all(c in '0123456789abcdefABCDEF' for c in hex_str):
+                if len(hex_str) == 6:
+                    return f'#{hex_str}'
+                elif len(hex_str) == 3:
+                    return f'#{hex_str[0]*2}{hex_str[1]*2}{hex_str[2]*2}'
+                elif len(hex_str) == 12:
+                    # 48-bit X11 color #RRRRGGGGBBBB → take high byte of each channel
+                    return f'#{hex_str[0:2]}{hex_str[4:6]}{hex_str[8:10]}'
+                elif len(hex_str) > 6:
+                    # Repeated pattern (e.g. 18-digit = color×3) → take first 6
+                    return f'#{hex_str[:6]}'
+            
+            # Handle named ANSI colors
+            color_lower = color.lower()
+            
+            # Bright variant for bold foreground text
+            if bold and is_fg and not color_lower.startswith('bright'):
+                bright_key = 'bright' + color_lower
+                if bright_key in self._ansi_colors:
+                    return self._ansi_colors[bright_key]
+            
+            if color_lower in self._ansi_colors:
+                result = self._ansi_colors[color_lower]
+                return result if result else (self.fg_color if is_fg else self.bg_color)
         
         return self.fg_color if is_fg else self.bg_color
     
@@ -815,7 +826,7 @@ class ScriptedDemo:
             tts_voice: OpenAI TTS voice (alloy, echo, fable, onyx, nova, shimmer)
             record_video: Whether to record demo to MP4 video file
             video_fps: Video recording frames per second
-            title: Window title (also used for video filename)
+            title: Title (used for video filename)
             borderless: Whether to use borderless window (clean for recording)
         """
         # Set random seed for reproducible behavior
@@ -871,6 +882,12 @@ class ScriptedDemo:
             if not self.recorder._recording:  # Only start if not already recording
                 self.recorder.start(self.viewer.root)
                 set_active_recorder(self.recorder)
+    
+    def stop_recording(self) -> None:
+        """Stop video recording (call before teardown steps)."""
+        if self.recorder and self.recorder._recording:
+            self.recorder.stop()
+            set_active_recorder(None)
     
     def stop(self) -> None:
         """Stop recording, viewer, and shell."""
