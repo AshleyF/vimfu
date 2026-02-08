@@ -175,6 +175,7 @@ class Demo:
         title: Window title
         setup: List of setup steps (run before recording starts)
         steps: List of main demo steps (recorded)
+        teardown: List of teardown steps (run after recording stops)
         speed: Speed multiplier (0.5 = slower, 2.0 = faster)
         rows: Terminal rows
         cols: Terminal columns
@@ -192,6 +193,7 @@ class Demo:
     title: str
     steps: list[Step] = field(default_factory=list)
     setup: list[Step] = field(default_factory=list)
+    teardown: list[Step] = field(default_factory=list)
     speed: float = 1.0
     rows: int = 24
     cols: int = 80
@@ -238,6 +240,10 @@ class Demo:
             
             # Run main demo steps (recorded)
             for step in self.steps:
+                step.execute(demo)
+            
+            # Run teardown steps (not recorded)
+            for step in self.teardown:
                 step.execute(demo)
     
     def to_dict(self) -> dict:

@@ -626,8 +626,15 @@ class TerminalViewer:
         if key in self.KEY_DISPLAY:
             display_key = self.KEY_DISPLAY[key]
         elif len(key) == 1:
-            # Single character - show uppercase (the physical key)
-            display_key = key.upper()
+            # Single character - detect shifted vs unshifted
+            if key.isupper() or (not key.isalpha() and key in '~!@#$%^&*()_+{}|:"<>?'):
+                # Shifted character: show ⇧ prefix and uppercase
+                if '⇧' not in parts and self.MODIFIER_SYMBOLS.get('shift', '⇧') not in parts:
+                    parts.insert(0, '⇧')
+                display_key = key.upper()
+            else:
+                # Unshifted character: show as lowercase
+                display_key = key
         else:
             # Named key - show as is
             display_key = key.upper()
@@ -643,18 +650,15 @@ class TerminalViewer:
         if caption:
             self._current_caption = caption
         else:
-            # Try to find caption in vim commands
-            # First try the full display text (for things like ⌃R)
-            if display_text in self._vim_commands:
-                self._current_caption = self._vim_commands[display_text]
-            # Then try the raw key
-            elif key in self._vim_commands:
+            # Try to find caption in vim commands using the original key first
+            if key in self._vim_commands:
                 self._current_caption = self._vim_commands[key]
-            # For single chars, try both cases
+            # Then try the full display text (for things like ⌃R)
+            elif display_text in self._vim_commands:
+                self._current_caption = self._vim_commands[display_text]
+            # For single chars, try the other case as fallback
             elif len(key) == 1:
-                if key in self._vim_commands:
-                    self._current_caption = self._vim_commands[key]
-                elif key.lower() in self._vim_commands:
+                if key.lower() in self._vim_commands:
                     self._current_caption = self._vim_commands[key.lower()]
                 else:
                     self._current_caption = ''
@@ -697,7 +701,7 @@ class TerminalViewer:
             text_height = self._key_font.metrics()["linespace"]
             
             # Caption font (smaller)
-            caption_font = (self.font_family, 14)
+            caption_font = (self.font_family, 20)
             
             # Calculate caption size if present
             caption_height = 0
@@ -705,7 +709,7 @@ class TerminalViewer:
             if self._current_caption:
                 # Use a temporary font object to measure
                 import tkinter.font as tkfont
-                temp_font = tkfont.Font(family=self.font_family, size=14)
+                temp_font = tkfont.Font(family=self.font_family, size=20)
                 caption_width = temp_font.measure(self._current_caption)
                 caption_height = temp_font.metrics()["linespace"] + 8  # Extra spacing
             
@@ -1082,6 +1086,10 @@ class ScriptedDemo:
         """
         Show a custom overlay with text and optional caption.
         
+        Non-blocking: sets the overlay and returns immediately.
+        The overlay will automatically fade after `duration` seconds,
+        or be replaced when new keys are pressed.
+        
         Args:
             text: Main text to display (like a key)
             caption: Optional caption below the text
@@ -1094,10 +1102,6 @@ class ScriptedDemo:
             self.viewer._key_display_time = __import__('time').time()
             # Set fade duration to match the requested duration
             self.viewer._key_fade_duration = duration
-        self.wait(duration)
-        # Restore default fade duration after overlay
-        if self.viewer:
-            self.viewer._key_fade_duration = 5.0
         return self
     
     def __enter__(self):

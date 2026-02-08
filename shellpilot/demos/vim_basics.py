@@ -23,7 +23,7 @@ from dsl import Demo, Comment, Say, Line, Type, Keys, Wait, Escape, Enter, IfScr
 
 vim_demo = Demo(
     title="Neovim Demo - ShellPilot",
-    speed=1.0,  # 2x faster typing
+    speed=0.55,  # ~130 WPM typing speed
     rows=12,  # Compact for YouTube
     cols=40,  # Compact for YouTube
     humanize=0.7,  # Natural typing variation
@@ -88,12 +88,16 @@ vim_demo = Demo(
         Line("cat hello.txt"),
         Wait(1.0),
         
-        Comment("Cleaning up..."),
-        Line("rm hello.txt"),
-        
         Say("And that's the basics of Neovim!"),
         Comment("Demo complete! Window will close in 2 seconds..."),
         Wait(2.0),
+    ],
+    
+    # Teardown steps (run after recording stops)
+    teardown=[
+        Comment("Cleaning up..."),
+        Line("rm -f hello.txt"),
+        Wait(0.3),
     ]
 )
 
