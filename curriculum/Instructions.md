@@ -21,7 +21,9 @@ Every video goes through a generate → inspect → fix cycle:
    - The right characters were deleted/changed/inserted.
    - Navigation was efficient (see below).
    - Narration matches what's actually happening on screen.
-4. **Fix and regenerate** if anything is off. Repeat until the log is clean.
+   - **No extraneous keystrokes** — every key press should serve the demo. If you see navigation that could be shorter (e.g., `0` then `w w w` when `3w` or `f<char>` would do), redesign the file content or pick a better motion.
+   - **The demo is compelling** — the log should read like a clean, purposeful walkthrough. If a section feels clunky or repetitive, restructure it. Better motions make for better demos.
+4. **Fix and regenerate** if anything is off. This isn't just about fixing errors — it's about **improving the demo**. A log that works but feels inefficient or cluttered is not done yet. Repeat until the log reads like a crisp, polished tutorial.
 
 ---
 
@@ -89,6 +91,14 @@ The best way to have efficient navigation is to **design the demo file so the cu
 - **Narration must match the screen.** If you say "the main function" while navigating to a line, that line had better contain a main function. If you say "dollar sign next", the next lesson had better actually be about `$`.
 - **Don't tease future lessons unless you're certain of the order.** Prefer a strong closing statement about the current command instead.
 - **Keep it tight.** These are sub-60-second Shorts. Every sentence should earn its place.
+
+---
+
+## Sample Content
+
+The demo files should be **funny, entertaining, and imaginative** — mostly programming-themed since the audience is developers. Don't use bland `foo`/`bar` variables or generic placeholder text. Instead, write little code snippets that tell a story: a game inventory system, a robot personality module, a spell-casting class, a pizza-ordering API, a cat behavior simulator. The content should make viewers smile and want to watch the next one.
+
+Also, **fill the ~60-second YouTube Shorts window** as much as needed to produce a thorough demo. Don't rush through a single example and leave 30 seconds on the table. If the core concept is simple, show it in multiple contexts, add a count-prefix variation, or demonstrate an undo. The goal is a polished, complete demo — not a speed run.
 
 ---
 
