@@ -810,6 +810,90 @@ class TerminalViewer:
             self._current_caption = ''
 
 
+class ScriptLog:
+    """
+    Logs a screenplay-style transcript of a scripted demo.
+    
+    Each action (narration, keystrokes, typing) is logged with a text
+    snapshot of the terminal screen showing cursor position. This lets
+    an LLM review the video content without watching it.
+    """
+    
+    def __init__(self, shell, rows: int, cols: int):
+        self.shell = shell
+        self.rows = rows
+        self.cols = cols
+        self.lines: list[str] = []
+        self._enabled = False  # Only log during recorded steps
+    
+    def enable(self):
+        self._enabled = True
+    
+    def disable(self):
+        self._enabled = False
+    
+    def action(self, label: str, detail: str = ""):
+        """Log an action (e.g., 'SAY', 'KEYS', 'TYPE', 'ESCAPE')."""
+        if not self._enabled:
+            return
+        entry = f"[{label}]"
+        if detail:
+            entry += f" {detail}"
+        self.lines.append(entry)
+    
+    def screen_snapshot(self):
+        """Capture and log the current terminal screen with cursor."""
+        if not self._enabled:
+            return
+        try:
+            screen_lines = self.shell.get_screen()
+            cursor_row, cursor_col = self.shell.get_cursor_position()
+        except Exception:
+            return
+        
+        # Build column ruler
+        tens = "".join(str((i // 10) % 10) if i % 10 == 0 and i > 0 else " "
+                       for i in range(self.cols))
+        ones = "".join(str(i % 10) for i in range(self.cols))
+        
+        self.lines.append("")
+        self.lines.append(f"    {tens}")
+        self.lines.append(f"    {ones}")
+        self.lines.append(f"    {'─' * self.cols}")
+        
+        # Find last non-empty row to trim output
+        last_nonempty = 0
+        for i in range(self.rows):
+            line = screen_lines[i] if i < len(screen_lines) else ""
+            if line.rstrip():
+                last_nonempty = i
+        
+        for i in range(last_nonempty + 1):
+            line = screen_lines[i] if i < len(screen_lines) else ""
+            # Pad to full width for cursor display
+            padded = line.ljust(self.cols)
+            row_num = f"{i:2d}"
+            
+            if i == cursor_row:
+                # Mark cursor row with indicator
+                marker = f" ◂ cursor ({cursor_row},{cursor_col})"
+                self.lines.append(f"{row_num} │{padded}│{marker}")
+            else:
+                self.lines.append(f"{row_num} │{padded}│")
+        
+        self.lines.append(f"    {'─' * self.cols}")
+        self.lines.append("")
+    
+    def save(self, path):
+        """Write the log to a file."""
+        if not self.lines:
+            return
+        from pathlib import Path
+        p = Path(path)
+        p.write_text("\n".join(self.lines), encoding="utf-8")
+        print(f"[LOG] Script log saved: {p}")
+
+
 class ScriptedDemo:
     """
     Run scripted shell demos with visual display and speed control.
@@ -892,10 +976,14 @@ class ScriptedDemo:
         # Base delays (will be divided by speed)
         self.base_delay = 0.3  # Default delay after actions
         self.char_delay = 0.05  # Delay between characters when typing
+        
+        # Script log for feedback loop
+        self.log = ScriptLog(None, rows, cols)  # shell set in start()
     
     def start(self) -> None:
         """Start the shell and viewer."""
         self.shell.start()
+        self.log.shell = self.shell
         
         if self.show_viewer:
             self.viewer = TerminalViewer(self.shell, title=self.title, borderless=self.borderless)
@@ -911,6 +999,7 @@ class ScriptedDemo:
     
     def start_recording(self) -> None:
         """Start video recording (call after setup steps)."""
+        self.log.enable()
         if self.recorder and self.viewer and self.viewer.root:
             if not self.recorder._recording:  # Only start if not already recording
                 self.recorder._viewer = self.viewer  # For overlay-aware thumbnail capture
@@ -919,9 +1008,15 @@ class ScriptedDemo:
     
     def stop_recording(self) -> None:
         """Stop video recording (call before teardown steps)."""
+        self.log.disable()
         if self.recorder and self.recorder._recording:
             self.recorder.stop()
             set_active_recorder(None)
+        # Save script log alongside video
+        if self.recorder and self.log.lines:
+            from recorder import sanitize_filename
+            log_path = self.recorder._video_subdir / (sanitize_filename(self.recorder.title) + ".log")
+            self.log.save(log_path)
     
     def stop(self) -> None:
         """Stop recording, viewer, and shell."""
@@ -948,11 +1043,13 @@ class ScriptedDemo:
     
     def send_keys(self, keys: str, delay: float = None) -> 'ScriptedDemo':
         """Send keystrokes (with click sounds and key display)."""
+        self.log.action('KEYS', repr(keys))
         for char in keys:
             self.clicker.click_key(char)
             self._show_key(char)
         self.shell.send_keys(keys)
         self.wait(delay if delay is not None else self.base_delay)
+        self.log.screen_snapshot()
         return self
     
     def send_line(self, command: str, delay: float = None) -> 'ScriptedDemo':
@@ -985,6 +1082,8 @@ class ScriptedDemo:
         self._show_key('ENTER')
         self.shell.send_keys('\r')
         self.wait(delay if delay is not None else self.base_delay * 2)
+        self.log.action('LINE', repr(command))
+        self.log.screen_snapshot()
         return self
     
     def type_text(self, text: str, char_delay: float = None) -> 'ScriptedDemo':
@@ -1030,39 +1129,49 @@ class ScriptedDemo:
             delay = humanize_delay(base_delay, self.humanize, char, prev_char)
             self.wait(delay)
             prev_char = char
+        self.log.action('TYPE', repr(text))
+        self.log.screen_snapshot()
         return self
     
     def send_ctrl(self, char: str, delay: float = None) -> 'ScriptedDemo':
         """Send a control character with key display."""
+        self.log.action('CTRL', char)
         self._show_key(char, ['ctrl'])
         self.shell.send_ctrl(char)
         self.wait(delay if delay is not None else self.base_delay)
+        self.log.screen_snapshot()
         return self
     
     def send_escape(self, delay: float = None) -> 'ScriptedDemo':
         """Send Escape key."""
+        self.log.action('ESCAPE')
         self._show_key('ESCAPE')
         self.clicker.click_key('ESCAPE')
         self.shell.send_keys("\x1b")
         self.wait(delay if delay is not None else self.base_delay)
+        self.log.screen_snapshot()
         return self
     
     def send_enter(self, delay: float = None) -> 'ScriptedDemo':
         """Send Enter key."""
+        self.log.action('ENTER')
         self._show_key('ENTER')
         self.clicker.click_key('ENTER')
         self.shell.send_keys("\r")
         self.wait(delay if delay is not None else self.base_delay)
+        self.log.screen_snapshot()
         return self
     
     def send_backspace(self, count: int = 1, delay: float = None) -> 'ScriptedDemo':
         """Send Backspace key(s) with click sound and key display."""
+        self.log.action('BACKSPACE', str(count))
         char_delay = delay if delay is not None else self.char_delay
         for _ in range(count):
             self.clicker.click_key('BACKSPACE')
             self._show_key('BACKSPACE')
             self.shell.send_keys("\x7f")  # DEL character (backspace)
             self.wait(char_delay)
+        self.log.screen_snapshot()
         return self
     
     def wait_for(self, pattern: str, timeout: float = 5.0) -> bool:
@@ -1086,6 +1195,7 @@ class ScriptedDemo:
             wait: If True, wait for speech to complete before continuing
         """
         print(f"[SAY] {text}")
+        self.log.action('SAY', text)
         self.tts.say(text, wait=wait)
         return self
     
@@ -1146,6 +1256,7 @@ class ScriptedDemo:
             caption: Optional caption below the text
             duration: How long to show the overlay (in seconds)
         """
+        self.log.action('OVERLAY', f'{text} — {caption}' if caption else text)
         if self.viewer:
             # Set the overlay text and caption directly
             self.viewer._current_keys = [text]
