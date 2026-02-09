@@ -23,6 +23,45 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 CACHE_DIR = Path(__file__).parent / ".tts_cache"
 
 
+# ---------------------------------------------------------------------------
+# TTS text normalization — make Vim commands pronounceable
+# ---------------------------------------------------------------------------
+
+_TTS_REPLACEMENTS = [
+    # Brand / product names — help TTS pronounce clearly
+    ("VimFu", "Vim-Fu"),
+    ("Neovim", "Neo-vim"),
+    # Vim commands with colon — spell out for clarity
+    (":wq", "colon W Q"),
+    (":q!", "colon Q bang"),
+    (":w!", "colon W bang"),
+    (":q",  "colon Q"),
+    (":w",  "colon W"),
+    (":x",  "colon X"),
+    (":set ", "colon set "),
+    (":e ",  "colon E "),
+    # Keyboard shortcuts & keys
+    ("Ctrl-R", "control R"),
+    ("Ctrl-",  "control "),
+    ("ZZ", "shift Z shift Z"),
+    ("ZQ", "shift Z shift Q"),
+    ("Esc", "escape"),
+]
+
+
+def normalize_for_tts(text: str) -> str:
+    """Rewrite Vim jargon so OpenAI TTS pronounces it clearly.
+
+    Applied automatically before sending text to the API.
+    Does NOT affect the cache key — the cache is keyed on the
+    *original* text so scripts stay readable.
+    """
+    out = text
+    for old, new in _TTS_REPLACEMENTS:
+        out = out.replace(old, new)
+    return out
+
+
 def get_cache_path(text: str, voice: str, model: str) -> Path:
     """Generate a cache file path based on text and voice settings."""
     # Create hash of text + settings for unique filename
@@ -72,7 +111,7 @@ def generate_speech(
         response = client.audio.speech.create(
             model=model,
             voice=voice,
-            input=text,
+            input=normalize_for_tts(text),
         )
         
         # Save to cache

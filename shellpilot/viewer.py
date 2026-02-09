@@ -190,6 +190,7 @@ class TerminalViewer:
             'H': 'screen top',
             'M': 'screen middle',
             'L': 'screen bottom',
+            'K': 'keyword lookup',
             'n': 'next match',
             'N': 'prev match',
             '*': 'find word',
@@ -206,7 +207,7 @@ class TerminalViewer:
             'O': 'open above',
             'v': 'visual',
             'V': 'visual line',
-            '⌃V': 'visual block',
+            '⌃v': 'visual block',
             'R': 'replace mode',
             's': 'substitute',
             'S': 'substitute line',
@@ -226,7 +227,8 @@ class TerminalViewer:
             'p': 'paste after',
             'P': 'paste before',
             'u': 'undo',
-            '⌃R': 'redo',
+            'U': 'undo line',
+            '⌃r': 'redo',
             '.': 'repeat',
             'r': 'replace char',
             '~': 'toggle case',
@@ -261,12 +263,12 @@ class TerminalViewer:
             'at': 'around tag',
             
             # Scrolling
-            '⌃F': 'page down',
-            '⌃B': 'page up',
-            '⌃D': 'half page down',
-            '⌃U': 'half page up',
-            '⌃E': 'scroll down',
-            '⌃Y': 'scroll up',
+            '⌃f': 'page down',
+            '⌃b': 'page up',
+            '⌃d': 'half page down',
+            '⌃u': 'half page up',
+            '⌃e': 'scroll down',
+            '⌃y': 'scroll up',
             'zz': 'center cursor',
             'zt': 'cursor to top',
             'zb': 'cursor to bottom',
@@ -275,6 +277,9 @@ class TerminalViewer:
             '/': 'search',
             '?': 'search back',
             
+            # Command mode
+            ':': 'command mode',
+            
             # Marks
             'm': 'set mark',
             "'": 'go to mark',
@@ -282,6 +287,7 @@ class TerminalViewer:
             
             # Macros
             'q': 'record macro',
+            'Q': 'ex mode',
             '@': 'play macro',
             '@@': 'repeat macro',
             
@@ -303,6 +309,15 @@ class TerminalViewer:
         
         # Current caption for key display
         self._current_caption: str = ''
+        
+        # Multi-character sequence tracking (e.g., ZZ, ZQ, gg, dd)
+        self._pending_key: str = ''
+        self._sequence_prefixes: set[str] = set()
+        for _cmd in self._vim_commands:
+            if len(_cmd) == 2 and not _cmd.startswith(':') and all(ord(c) < 0x2000 for c in _cmd):
+                self._sequence_prefixes.add(_cmd[0])
+        # Exclude 'i' and 'a' — they are mode commands that also prefix text objects
+        self._sequence_prefixes -= {'i', 'a'}
         
         # ANSI 16-color palette (standard terminal colors)
         self._ansi_colors = {
@@ -359,8 +374,8 @@ class TerminalViewer:
         if self.borderless:
             self.root.overrideredirect(True)
         
-        # Target window size - large for YouTube HD (1920x1080)
-        target_width = 1920
+        # Target window size - square for YouTube Shorts (1080x1080)
+        target_width = 1080
         target_height = 1080
         padding = 60  # Padding on each side
         
@@ -633,15 +648,21 @@ class TerminalViewer:
             if mod.lower() in self.MODIFIER_SYMBOLS:
                 parts.append(self.MODIFIER_SYMBOLS[mod.lower()])
         
+        # Check if non-shift modifiers (ctrl, alt, meta) are present
+        has_non_shift_mod = any(
+            mod.lower() in ('ctrl', 'alt', 'meta') for mod in modifiers
+        )
+        
         # Convert key to display form
         if key in self.KEY_DISPLAY:
             display_key = self.KEY_DISPLAY[key]
         elif len(key) == 1:
             # Single character - detect shifted vs unshifted
             if key.isupper() or (not key.isalpha() and key in '~!@#$%^&*()_+{}|:"<>?'):
-                # Shifted character: show ⇧ prefix and uppercase
-                if '⇧' not in parts and self.MODIFIER_SYMBOLS.get('shift', '⇧') not in parts:
-                    parts.insert(0, '⇧')
+                # Only add ⇧ if there are no other modifiers (ctrl+R is not shift+ctrl+r)
+                if not has_non_shift_mod:
+                    if '⇧' not in parts and self.MODIFIER_SYMBOLS.get('shift', '⇧') not in parts:
+                        parts.insert(0, '⇧')
                 display_key = key.upper()
             else:
                 # Unshifted character: show as lowercase
@@ -660,21 +681,33 @@ class TerminalViewer:
         # Look up caption from vim commands or use provided one
         if caption:
             self._current_caption = caption
+            self._pending_key = ''
         else:
-            # Try to find caption in vim commands using the original key first
-            if key in self._vim_commands:
-                self._current_caption = self._vim_commands[key]
-            # Then try the full display text (for things like ⌃R)
+            # Check for multi-character sequence (e.g., ZZ, ZQ, gg, dd)
+            combined = self._pending_key + key
+            self._pending_key = ''
+            
+            if len(combined) >= 2 and combined in self._vim_commands:
+                self._current_caption = self._vim_commands[combined]
+            # For modifier combos, check display_text first (e.g., ⌃R → 'redo')
             elif display_text in self._vim_commands:
                 self._current_caption = self._vim_commands[display_text]
-            # For single chars, try the other case as fallback
-            elif len(key) == 1:
-                if key.lower() in self._vim_commands:
-                    self._current_caption = self._vim_commands[key.lower()]
+            else:
+                # Try to find caption using the original key
+                if key in self._vim_commands:
+                    self._current_caption = self._vim_commands[key]
+                # For single chars, try the other case as fallback
+                elif len(key) == 1:
+                    if key.lower() in self._vim_commands:
+                        self._current_caption = self._vim_commands[key.lower()]
+                    else:
+                        self._current_caption = ''
                 else:
                     self._current_caption = ''
-            else:
-                self._current_caption = ''
+            
+            # Track prefix keys for multi-character sequences
+            if key in self._sequence_prefixes:
+                self._pending_key = key
     
     def _draw_rounded_rect(self, canvas, x1, y1, x2, y2, radius, **kwargs):
         """Draw a rounded rectangle on a canvas."""
@@ -732,9 +765,9 @@ class TerminalViewer:
             canvas_width = total_width + padding_x * 2
             canvas_height = text_height + caption_height + padding_y * 2
             
-            # Configure and show canvas in upper right corner (inset by terminal padding)
+            # Configure and show canvas at right edge, vertically centered
             self.key_canvas.config(width=canvas_width, height=canvas_height)
-            self.key_canvas.place(relx=1.0, rely=0, anchor='ne', x=-60, y=60)
+            self.key_canvas.place(relx=1.0, rely=0.5, anchor='e', x=-60)
             
             # Clear and redraw
             self.key_canvas.delete("all")
@@ -1001,7 +1034,7 @@ class ScriptedDemo:
     
     def send_ctrl(self, char: str, delay: float = None) -> 'ScriptedDemo':
         """Send a control character with key display."""
-        self._show_key(char.upper(), ['ctrl'])
+        self._show_key(char, ['ctrl'])
         self.shell.send_ctrl(char)
         self.wait(delay if delay is not None else self.base_delay)
         return self

@@ -16,14 +16,18 @@ from dsl import Demo, Comment, Say, Line, Type, Keys, Wait, Escape, Enter, Ctrl,
 
 
 lesson = Demo(
+    title="VimFu — Opening a File",
+    description="How to open a file in Neovim. Type nvim followed by a filename. "
+                "If the file exists you see its contents; if not, you get an empty buffer.",
     speed=0.55,
-    rows=12,
+    rows=20,
     cols=40,
     humanize=0.7,
     mistakes=0.0,
     seed=43,
     tts_voice="echo",
     borderless=True,
+    playlist="VimFu",
 
     setup=[
         Comment("Set TERM for proper color support in Neovim"),
@@ -51,15 +55,16 @@ lesson = Demo(
     steps=[
         # --- Title card ---
         Overlay("VimFu", caption="Opening a File", duration=4.0),
+        Wait(0.7),
 
         # --- Open a new (empty) file ---
-        Say("To open a file, type Vee Eye.", wait=False),
+        Say("To open a file, type vee eye.", wait=False),
         Type("vi"),
         Wait(1.0),
-        Say("Or vim.", wait=False),
+        Say("Or, vim.", wait=False),
         Type("m"),
         Wait(1.0),
-        Say("Or In-vim.", wait=False),
+        Say("Or, en-vim.", wait=False),
         Ctrl("a"),
         Wait(0.2),
         Type("n"),
@@ -79,6 +84,7 @@ lesson = Demo(
         Wait(0.5),
         Type("Hello, Vim!"),
         Wait(0.5),
+        Say("Escape back to normal mode.", wait=False),
         Escape(),
 
         # --- Quit with a quick intro to quitting ---
@@ -107,7 +113,7 @@ lesson = Demo(
         Wait(1.5),
 
         # --- Wrap up ---
-        Say("That's it. vi, vim, or nvim, then the filename."),
+        Say("That's it. Vee eye, vim, or en-vim, then the filename."),
         Say("If the file exists, you see its contents. If not, you get an empty buffer."),
     ],
 

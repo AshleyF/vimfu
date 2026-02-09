@@ -16,14 +16,19 @@ from dsl import Demo, Comment, Say, Line, Type, Keys, Wait, Escape, Enter, IfScr
 
 
 lesson = Demo(
+    title="VimFu — What Is Vim?",
+    description="Vim is a modal text editor. Normal mode: keys are commands. "
+                "Insert mode: keys type text. That's the big idea — and it's "
+                "what makes Vim so powerful.",
     speed=0.55,
-    rows=12,
+    rows=20,
     cols=40,
     humanize=0.7,
     mistakes=0.0,   # No typos for this lesson — keep it clean
     seed=42,
     tts_voice="echo",
     borderless=True,
+    playlist="VimFu",
 
     setup=[
         Comment("Set TERM for proper color support in Neovim"),
@@ -48,6 +53,7 @@ lesson = Demo(
     steps=[
         # --- Title card ---
         Overlay("VimFu", caption="What Is Vim?", duration=4.0),
+        Wait(0.7),
 
         # --- Open Neovim ---
         Say("Vim is a modal text editor."),

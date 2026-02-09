@@ -189,32 +189,36 @@ class VideoRecorder:
         self.output_dir.mkdir(parents=True, exist_ok=True)
     
     @property
+    def _video_subdir(self) -> Path:
+        """Per-video subdirectory inside the output directory."""
+        d = self.output_dir / sanitize_filename(self.title)
+        d.mkdir(parents=True, exist_ok=True)
+        return d
+
+    @property
     def output_path(self) -> Path:
         """Get the output video file path."""
-        filename = sanitize_filename(self.title) + ".mp4"
-        return self.output_dir / filename
+        return self._video_subdir / (sanitize_filename(self.title) + ".mp4")
     
     @property
     def _temp_video_path(self) -> Path:
         """Temporary video file (without audio)."""
-        return self.output_dir / f"_temp_{sanitize_filename(self.title)}.mp4"
+        return self._video_subdir / f"_temp_{sanitize_filename(self.title)}.mp4"
     
     @property
     def _temp_audio_path(self) -> Path:
         """Temporary audio file."""
-        return self.output_dir / f"_temp_{sanitize_filename(self.title)}.wav"
+        return self._video_subdir / f"_temp_{sanitize_filename(self.title)}.wav"
     
     @property
     def thumbnail_path(self) -> Path:
         """Get the output thumbnail file path."""
-        filename = sanitize_filename(self.title) + ".png"
-        return self.output_dir / filename
+        return self._video_subdir / (sanitize_filename(self.title) + ".png")
     
     @property
     def metadata_path(self) -> Path:
         """Get the output metadata JSON file path."""
-        filename = sanitize_filename(self.title) + ".json"
-        return self.output_dir / filename
+        return self._video_subdir / (sanitize_filename(self.title) + ".json")
     
     def add_audio(self, audio_data: np.ndarray, sample_rate: int = 44100) -> None:
         """Add audio data to the recording at the current timestamp."""
@@ -465,7 +469,7 @@ class VideoRecorder:
         
         Picks the most interesting frame captured during recording,
         composites the VimFu title card overlay on top, and saves
-        as a 1920x1080 PNG.
+        as a 1080x1080 square PNG.
         
         Args:
             overlay_title: Main overlay text (default: "VimFu")
@@ -474,19 +478,54 @@ class VideoRecorder:
         Returns:
             Path to the saved thumbnail, or None if no frames available
         """
-        frame = self._pick_best_frame()
+        # Hide the key overlay so it doesn't appear in the thumbnail
+        viewer = self._viewer
+        key_hidden = False
+        if viewer and viewer.key_canvas:
+            try:
+                viewer.key_canvas.place_forget()
+                viewer.key_canvas.update_idletasks()
+                key_hidden = True
+            except Exception:
+                pass
+        
+        # Grab a fresh clean frame (no key overlay baked in)
+        clean_frame = self._capture_frame()
+        
+        # Restore the key overlay
+        if key_hidden and viewer and viewer.key_canvas:
+            try:
+                viewer._update_key_display()
+            except Exception:
+                pass
+        
+        # Use the clean frame if we got one, otherwise fall back to best candidate
+        frame = clean_frame if clean_frame is not None else self._pick_best_frame()
         if frame is None:
             print("[THUMB] No candidate frames available")
             return None
         
         # Convert numpy array to PIL Image
-        img = Image.fromarray(frame)
+        src = Image.fromarray(frame)
         
-        # Resize to 1920x1080 (YouTube thumbnail size)
-        img = img.resize((1920, 1080), Image.LANCZOS)
+        # Target: 1080x1080 square
+        tw, th = 1080, 1080
+        canvas = Image.new('RGB', (tw, th), (0, 0, 0))
+        
+        # Scale source to fill canvas, center and crop if needed
+        sw, sh = src.size
+        scale = max(tw / sw, th / sh)
+        new_w = int(sw * scale)
+        new_h = int(sh * scale)
+        resized = src.resize((new_w, new_h), Image.LANCZOS)
+        
+        # Center-crop to 1080x1080
+        x_off = (new_w - tw) // 2
+        y_off = (new_h - th) // 2
+        canvas.paste(resized.crop((x_off, y_off, x_off + tw, y_off + th)), (0, 0))
         
         # Composite the VimFu overlay
-        img = _render_overlay(img, overlay_title, overlay_caption)
+        img = _render_overlay(canvas, overlay_title, overlay_caption)
         
         # Save
         img.save(str(self.thumbnail_path), "PNG")
@@ -494,7 +533,8 @@ class VideoRecorder:
         return self.thumbnail_path
     
     def save_metadata(self, title: str, description: str = "",
-                      tags: Optional[List[str]] = None) -> Path:
+                      tags: Optional[List[str]] = None,
+                      playlist: str = "") -> Path:
         """
         Generate a YouTube metadata JSON file alongside the video.
         
@@ -502,6 +542,7 @@ class VideoRecorder:
             title: Video title
             description: Video description
             tags: List of tags/keywords
+            playlist: YouTube playlist title to add the video to
             
         Returns:
             Path to the saved JSON file
@@ -511,12 +552,14 @@ class VideoRecorder:
             "description": description,
             "tags": tags or [],
             "categoryId": "27",         # Education
-            "privacyStatus": "public",
+            "privacyStatus": "private",
             "madeForKids": False,
             "language": "en",
             "videoFilename": self.output_path.name,
             "thumbnailFilename": self.thumbnail_path.name,
         }
+        if playlist:
+            metadata["playlist"] = playlist
         
         with open(self.metadata_path, 'w', encoding='utf-8') as f:
             json.dump(metadata, f, indent=2, ensure_ascii=False)
@@ -571,7 +614,7 @@ def _render_overlay(img: Image.Image, title: str, caption: str = "") -> Image.Im
     upper-right corner with bold title text and optional caption.
     
     Args:
-        img: Base image (1920x1080)
+        img: Base image (1080x1080 square)
         title: Main overlay text (e.g. "VimFu")
         caption: Optional caption text (e.g. lesson title)
         
@@ -582,9 +625,9 @@ def _render_overlay(img: Image.Image, title: str, caption: str = "") -> Image.Im
     overlay = Image.new('RGBA', img.size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
     
-    # Load fonts — 2x size for a big, punchy thumbnail overlay
-    title_font = _load_font(270, bold=True)
-    caption_font = _load_font(100, bold=False)
+    # Load fonts — sized for 1280-wide YouTube thumbnail
+    title_font = _load_font(150, bold=True)
+    caption_font = _load_font(56, bold=False)
     
     # Measure text
     title_bbox = draw.textbbox((0, 0), title, font=title_font)
@@ -596,16 +639,16 @@ def _render_overlay(img: Image.Image, title: str, caption: str = "") -> Image.Im
     if caption:
         caption_bbox = draw.textbbox((0, 0), caption, font=caption_font)
         caption_w = caption_bbox[2] - caption_bbox[0]
-        caption_h = caption_bbox[3] - caption_bbox[1] + 24  # spacing
+        caption_h = caption_bbox[3] - caption_bbox[1] + 20  # spacing
     
-    # Padding and sizing — generous for the big overlay
-    pad_x, pad_y = 108, 72
-    radius = 68
+    # Padding and sizing
+    pad_x, pad_y = 60, 40
+    radius = 36
     box_w = max(title_w, caption_w) + pad_x * 2
     box_h = title_h + caption_h + pad_y * 2
     
     # Position: upper-right corner, inset
-    margin = 60
+    margin = 40
     x1 = img.width - box_w - margin
     y1 = margin
     x2 = x1 + box_w
@@ -624,7 +667,7 @@ def _render_overlay(img: Image.Image, title: str, caption: str = "") -> Image.Im
     # Draw caption (centered, below title)
     if caption:
         cap_x = x1 + (box_w - caption_w) // 2
-        cap_y = title_y + title_h + 24
+        cap_y = title_y + title_h + 20
         draw.text((cap_x, cap_y), caption, font=caption_font, fill=(255, 255, 255, 230))
     
     # Composite overlay onto original image

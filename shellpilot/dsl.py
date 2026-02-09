@@ -208,7 +208,7 @@ class Demo:
     A complete demo definition.
     
     Attributes:
-        title: Window title
+        title: YouTube video title (also used as window title)
         setup: List of setup steps (run before recording starts)
         steps: List of main demo steps (recorded)
         teardown: List of teardown steps (run after recording stops)
@@ -227,6 +227,7 @@ class Demo:
         borderless: Whether to use borderless window (clean for recording)
         description: Video description for YouTube metadata
         tags: List of tags/keywords for YouTube metadata
+        playlist: YouTube playlist title to add the video to
     """
     title: str = "Demo"
     steps: list[Step] = field(default_factory=list)
@@ -247,6 +248,7 @@ class Demo:
     borderless: bool = True
     description: str = ""
     tags: list[str] = field(default_factory=list)
+    playlist: str = ""
     
     def run(self, show_viewer: bool = True) -> None:
         """Execute the demo."""
@@ -304,16 +306,15 @@ class Demo:
         if not recorder:
             return
         
-        # Find the Overlay caption from the first Overlay step (the title card)
+        # Find the Overlay caption from the first Overlay step (for thumbnail)
         overlay_caption = ""
         for step in self.steps:
             if isinstance(step, Overlay):
                 overlay_caption = step.caption
                 break
         
-        # Build a human-readable title from the overlay caption or demo title
-        human_title = overlay_caption if overlay_caption else self.title
-        video_title = f"VimFu — {human_title}" if human_title else "VimFu"
+        # Video title comes directly from Demo.title
+        video_title = self.title
         
         # Generate thumbnail
         try:
@@ -324,13 +325,8 @@ class Demo:
         except Exception as e:
             print(f"[THUMB] Error generating thumbnail: {e}")
         
-        # Build description
+        # Description comes directly from Demo.description
         description = self.description
-        if not description:
-            # Auto-generate from Say steps
-            say_texts = [s.text for s in self.steps if isinstance(s, Say)]
-            if say_texts:
-                description = " ".join(say_texts)
         
         # Build tags
         tags = list(self.tags) if self.tags else []
@@ -346,6 +342,7 @@ class Demo:
                 title=video_title,
                 description=description,
                 tags=tags,
+                playlist=self.playlist,
             )
         except Exception as e:
             print(f"[META] Error generating metadata: {e}")
