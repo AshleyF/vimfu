@@ -848,6 +848,7 @@ class ScriptLog:
         try:
             screen_lines = self.shell.get_screen()
             cursor_row, cursor_col = self.shell.get_cursor_position()
+            buffer = self.shell.get_screen_buffer()
         except Exception:
             return
         
@@ -882,7 +883,105 @@ class ScriptLog:
                 self.lines.append(f"{row_num} │{padded}│")
         
         self.lines.append(f"    {'─' * self.cols}")
+        
+        # Detect highlighted regions (search matches, visual selections, etc.)
+        highlights = self._detect_highlights(buffer, last_nonempty + 1, cursor_row, cursor_col)
+        if highlights:
+            for hl in highlights:
+                self.lines.append(hl)
+        
         self.lines.append("")
+    
+    def _detect_highlights(self, buffer, num_rows, cursor_row, cursor_col):
+        """Scan the pyte buffer for highlighted cells (search matches, visual selections).
+        
+        Returns a list of strings like:
+            [HIGHLIGHT] row 2, cols 0-3: "mode"
+        
+        Strategy: compute the *effective* visual background for every cell
+        on the entire screen (accounting for the ``reverse`` attribute).
+        The most common effective-bg across ALL cells is the "normal"
+        background.  Any contiguous run whose effective-bg differs from
+        normal is reported as a highlight.
+        
+        Using the whole-screen majority is robust because even a full-file
+        visual selection (``ggVG``) leaves ``~`` tilde rows and the status
+        bar with the normal bg, so the normal color still dominates.
+        
+        The cursor cell is excluded (it has its own log marker).
+        """
+        from collections import Counter
+        
+        default_char = self.shell.screen.default_char
+        
+        # --- Pass 1: compute effective bg for every cell, find screen-wide dominant ---
+        # effective bg = bg normally, but if reverse is set, fg becomes the visual bg
+        cell_ebg = {}   # (row, col) → effective bg key
+        ebg_counts = Counter()
+        
+        for row in range(self.rows):
+            line_buf = buffer.get(row, {})
+            for col in range(self.cols):
+                char = line_buf.get(col, default_char)
+                if char.reverse:
+                    raw = char.fg
+                else:
+                    raw = char.bg
+                key = raw if raw != 'default' else None
+                cell_ebg[(row, col)] = key
+                ebg_counts[key] += 1
+        
+        normal_bg = ebg_counts.most_common(1)[0][0] if ebg_counts else None
+        
+        # --- Pass 2: find contiguous highlighted runs ---
+        # Skip the last two rows (nvim status bar + command line) — they
+        # always have their own distinct bg and are not meaningful highlights.
+        content_rows = max(num_rows - 2, 0)
+        result = []
+        
+        for row in range(content_rows):
+            line_buf = buffer.get(row, {})
+            col = 0
+            while col < self.cols:
+                ebg = cell_ebg.get((row, col), normal_bg)
+                
+                # Skip the cursor cell — it has its own marker
+                if row == cursor_row and col == cursor_col:
+                    col += 1
+                    continue
+                
+                if ebg != normal_bg:
+                    # Start of a highlighted run
+                    run_start = col
+                    run_bg = ebg
+                    run_chars = []
+                    while col < self.cols:
+                        # Skip cursor cell within a run
+                        if row == cursor_row and col == cursor_col:
+                            col += 1
+                            continue
+                        this_ebg = cell_ebg.get((row, col), normal_bg)
+                        if this_ebg != run_bg:
+                            break
+                        char = line_buf.get(col, default_char)
+                        run_chars.append(char.data if char.data else ' ')
+                        col += 1
+                    
+                    run_end = col - 1
+                    text = "".join(run_chars).rstrip()
+                    if text:  # Only log non-empty highlights
+                        if run_start == run_end:
+                            result.append(
+                                f"[HIGHLIGHT] row {row}, col {run_start}: \"{text}\""
+                            )
+                        else:
+                            result.append(
+                                f"[HIGHLIGHT] row {row}, cols {run_start}-{run_end}: \"{text}\""
+                            )
+                else:
+                    col += 1
+        
+        return result
     
     def save(self, path):
         """Write the log to a file."""
