@@ -1093,7 +1093,9 @@ class ScriptedDemo:
         self.auto_start_recording = auto_start_recording
         self.recorder: Optional[VideoRecorder] = None
         if self.record_video:
-            self.recorder = VideoRecorder(title=title, fps=video_fps)
+            self.recorder = VideoRecorder(title=title, fps=video_fps,
+                                          target_width=target_width,
+                                          target_height=target_height)
         
         self.viewer: Optional[TerminalViewer] = None
         

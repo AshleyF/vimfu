@@ -155,6 +155,8 @@ class VideoRecorder:
         title: str,
         fps: int = 30,
         output_dir: Path = None,
+        target_width: int = 1080,
+        target_height: int = 1080,
     ):
         """
         Initialize the video recorder.
@@ -163,10 +165,14 @@ class VideoRecorder:
             title: Video title (used for filename)
             fps: Frames per second
             output_dir: Directory to save videos (default: videos/)
+            target_width: Target thumbnail width in pixels
+            target_height: Target thumbnail height in pixels
         """
         self.title = title
         self.fps = fps
         self.output_dir = output_dir or VIDEOS_DIR
+        self.target_width = target_width
+        self.target_height = target_height
         
         self._widget = None  # The widget to capture (not the root window)
         self._writer = None
@@ -469,7 +475,7 @@ class VideoRecorder:
         
         Picks the most interesting frame captured during recording,
         composites the VimFu title card overlay on top, and saves
-        as a 1080x1080 square PNG.
+        as a PNG matching the demo's target dimensions.
         
         Args:
             overlay_title: Main overlay text (default: "VimFu")
@@ -508,8 +514,8 @@ class VideoRecorder:
         # Convert numpy array to PIL Image
         src = Image.fromarray(frame)
         
-        # Target: 1080x1080 square
-        tw, th = 1080, 1080
+        # Target: match the demo's configured dimensions
+        tw, th = self.target_width, self.target_height
         canvas = Image.new('RGB', (tw, th), (0, 0, 0))
         
         # Scale source to fill canvas, center and crop if needed
@@ -519,7 +525,7 @@ class VideoRecorder:
         new_h = int(sh * scale)
         resized = src.resize((new_w, new_h), Image.LANCZOS)
         
-        # Center-crop to 1080x1080
+        # Center-crop to target dimensions
         x_off = (new_w - tw) // 2
         y_off = (new_h - th) // 2
         canvas.paste(resized.crop((x_off, y_off, x_off + tw, y_off + th)), (0, 0))
@@ -614,7 +620,7 @@ def _render_overlay(img: Image.Image, title: str, caption: str = "") -> Image.Im
     upper-right corner with bold title text and optional caption.
     
     Args:
-        img: Base image (1080x1080 square)
+        img: Base image (any size — fonts scale proportionally)
         title: Main overlay text (e.g. "VimFu")
         caption: Optional caption text (e.g. lesson title)
         
@@ -625,9 +631,10 @@ def _render_overlay(img: Image.Image, title: str, caption: str = "") -> Image.Im
     overlay = Image.new('RGBA', img.size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
     
-    # Load fonts — sized for 1280-wide YouTube thumbnail
-    title_font = _load_font(150, bold=True)
-    caption_font = _load_font(56, bold=False)
+    # Scale fonts proportionally (base sizes tuned for 1080px width)
+    scale = img.width / 1080
+    title_font = _load_font(int(150 * scale), bold=True)
+    caption_font = _load_font(int(56 * scale), bold=False)
     
     # Measure text
     title_bbox = draw.textbbox((0, 0), title, font=title_font)
@@ -641,14 +648,15 @@ def _render_overlay(img: Image.Image, title: str, caption: str = "") -> Image.Im
         caption_w = caption_bbox[2] - caption_bbox[0]
         caption_h = caption_bbox[3] - caption_bbox[1] + 20  # spacing
     
-    # Padding and sizing
-    pad_x, pad_y = 60, 40
-    radius = 36
+    # Padding and sizing (scale proportionally)
+    scale_f = img.width / 1080
+    pad_x, pad_y = int(60 * scale_f), int(40 * scale_f)
+    radius = int(36 * scale_f)
     box_w = max(title_w, caption_w) + pad_x * 2
     box_h = title_h + caption_h + pad_y * 2
     
     # Position: upper-right corner, inset
-    margin = 40
+    margin = int(40 * scale_f)
     x1 = img.width - box_w - margin
     y1 = margin
     x2 = x1 + box_w
