@@ -61,11 +61,22 @@ class Type:
 
 @dataclass
 class Keys:
-    """Send raw keystrokes."""
+    """Send raw keystrokes.
+    
+    Args:
+        keys: One or more characters to send (e.g. "q", "qa", "gg").
+              Multi-character strings are sent as one action and shown
+              as a single overlay.
+        overlay: Override the key-overlay caption. Use this when the
+                 default Vim-command lookup would be wrong (e.g. the
+                 letter after 'q' names a register, not a Vim command).
+                 Pass "" to suppress the caption entirely.
+    """
     keys: str
+    overlay: str = None
     
     def execute(self, demo):
-        demo.send_keys(self.keys)
+        demo.send_keys(self.keys, overlay=self.overlay)
 
 
 @dataclass
@@ -246,6 +257,8 @@ class Demo:
     record_video: bool = True
     video_fps: int = 30
     borderless: bool = True
+    target_width: int = 1080
+    target_height: int = 1080
     description: str = ""
     tags: list[str] = field(default_factory=list)
     playlist: str = ""
@@ -278,6 +291,8 @@ class Demo:
             title=title,
             borderless=self.borderless,
             auto_start_recording=False,  # Don't start recording immediately
+            target_width=self.target_width,
+            target_height=self.target_height,
         ) as demo:
             # Run setup steps (not recorded) — fast, silent, no throttling
             self._run_fast(demo, self.setup)

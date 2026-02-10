@@ -128,12 +128,22 @@ class TerminalViewer:
         'PAGEDOWN': '⇟',
         'DELETE': '⌦',
         'INSERT': '⎀',
+        # Control characters (Ctrl+letter) — display as ⌃ + letter
+        '\x01': '⌃a', '\x02': '⌃b', '\x03': '⌃c', '\x04': '⌃d',
+        '\x05': '⌃e', '\x06': '⌃f', '\x07': '⌃g',
+        '\x0e': '⌃n', '\x0f': '⌃o', '\x10': '⌃p',
+        '\x12': '⌃r', '\x13': '⌃s', '\x14': '⌃t',
+        '\x15': '⌃u', '\x16': '⌃v', '\x17': '⌃w',
+        '\x18': '⌃x', '\x19': '⌃y', '\x1a': '⌃z',
     }
     
-    def __init__(self, shell: ShellPilot, title: str = "ShellPilot Viewer", borderless: bool = True):
+    def __init__(self, shell: ShellPilot, title: str = "ShellPilot Viewer", borderless: bool = True,
+                 target_width: int = 1080, target_height: int = 1080):
         self.shell = shell
         self.title = title
         self.borderless = borderless
+        self.target_width = target_width
+        self.target_height = target_height
         
         self.root: Optional[tk.Tk] = None
         self.canvas: Optional[tk.Canvas] = None
@@ -374,9 +384,9 @@ class TerminalViewer:
         if self.borderless:
             self.root.overrideredirect(True)
         
-        # Target window size - square for YouTube Shorts (1080x1080)
-        target_width = 1080
-        target_height = 1080
+        # Target window size - configurable (default 1080x1080 for YouTube Shorts)
+        target_width = self.target_width
+        target_height = self.target_height
         padding = 60  # Padding on each side
         
         # Available space for terminal content
@@ -636,9 +646,11 @@ class TerminalViewer:
         Show a key press in the overlay.
         
         Args:
-            key: The key being pressed (character or name like 'ENTER')
+            key: The key being pressed (single character, or multi-char
+                 string when Keys() is called with multiple chars at once)
             modifiers: List of modifier keys ('ctrl', 'shift', 'alt', 'meta')
-            caption: Optional caption to display (overrides auto-lookup)
+            caption: Optional caption to display (overrides auto-lookup).
+                     Pass "" (empty string) to suppress the caption.
         """
         modifiers = modifiers or []
         
@@ -668,8 +680,16 @@ class TerminalViewer:
                 # Unshifted character: show as lowercase
                 display_key = key
         else:
-            # Named key - show as is
-            display_key = key.upper()
+            # Multi-character key — build display from each char
+            display_chars = []
+            for ch in key:
+                if ch in self.KEY_DISPLAY:
+                    display_chars.append(self.KEY_DISPLAY[ch])
+                elif ch.isupper():
+                    display_chars.append(ch)
+                else:
+                    display_chars.append(ch)
+            display_key = ''.join(display_chars)
         
         parts.append(display_key)
         display_text = ''.join(parts)
@@ -679,7 +699,8 @@ class TerminalViewer:
         self._key_display_time = time.time()
         
         # Look up caption from vim commands or use provided one
-        if caption:
+        if caption is not None:
+            # Explicit caption (even "" to suppress)
             self._current_caption = caption
             self._pending_key = ''
         else:
@@ -706,7 +727,7 @@ class TerminalViewer:
                     self._current_caption = ''
             
             # Track prefix keys for multi-character sequences
-            if key in self._sequence_prefixes:
+            if len(key) == 1 and key in self._sequence_prefixes:
                 self._pending_key = key
     
     def _draw_rounded_rect(self, canvas, x1, y1, x2, y2, radius, **kwargs):
@@ -1023,6 +1044,8 @@ class ScriptedDemo:
         title: str = "ShellPilot Demo",
         borderless: bool = True,
         auto_start_recording: bool = True,
+        target_width: int = 1080,
+        target_height: int = 1080,
     ):
         """
         Initialize a scripted demo.
@@ -1056,6 +1079,8 @@ class ScriptedDemo:
         self.humanize = humanize
         self.mistakes = mistakes
         self.borderless = borderless
+        self.target_width = target_width
+        self.target_height = target_height
         
         # Key clicker for sound effects
         self.clicker = KeyClicker(volume=click_volume, enabled=click_keys)
@@ -1085,7 +1110,8 @@ class ScriptedDemo:
         self.log.shell = self.shell
         
         if self.show_viewer:
-            self.viewer = TerminalViewer(self.shell, title=self.title, borderless=self.borderless)
+            self.viewer = TerminalViewer(self.shell, title=self.title, borderless=self.borderless,
+                                        target_width=self.target_width, target_height=self.target_height)
             self.viewer.start()
             
             # Start recording if enabled and auto-start is on
@@ -1135,17 +1161,38 @@ class ScriptedDemo:
         time.sleep(seconds / self.speed)
         return self
     
-    def _show_key(self, key: str, modifiers: list[str] = None) -> None:
+    def _show_key(self, key: str, modifiers: list[str] = None, caption: str = None) -> None:
         """Show a key in the viewer overlay if available."""
         if self.viewer:
-            self.viewer.show_key(key, modifiers)
+            self.viewer.show_key(key, modifiers, caption=caption)
     
-    def send_keys(self, keys: str, delay: float = None) -> 'ScriptedDemo':
-        """Send keystrokes (with click sounds and key display)."""
+    def send_keys(self, keys: str, delay: float = None, overlay: str = None) -> 'ScriptedDemo':
+        """Send keystrokes (with click sounds and key display).
+        
+        Args:
+            keys: One or more characters to send.
+            delay: Override the post-action delay.
+            overlay: Override the overlay caption. Use when the default
+                     Vim-command lookup would be wrong (e.g. register
+                     names after 'q' or '@'). Pass "" to suppress.
+        """
         self.log.action('KEYS', repr(keys))
-        for char in keys:
-            self.clicker.click_key(char)
-            self._show_key(char)
+        if len(keys) == 1:
+            # Single character — normal path
+            self.clicker.click_key(keys)
+            self._show_key(keys, caption=overlay)
+        else:
+            # Multi-character — play click for each char, but show
+            # them all as a single overlay group
+            for char in keys:
+                self.clicker.click_key(char)
+            # Show all chars together so the overlay displays e.g. "qa"
+            self._show_key(keys, caption=overlay)
+        # Log what the overlay actually showed
+        if self.viewer and self.log._enabled:
+            displayed = self.viewer._current_keys[0] if self.viewer._current_keys else ''
+            caption_text = self.viewer._current_caption or ''
+            self.log.action('OVERLAY', f'{displayed}  {caption_text}' if caption_text else displayed)
         self.shell.send_keys(keys)
         self.wait(delay if delay is not None else self.base_delay)
         self.log.screen_snapshot()

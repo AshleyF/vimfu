@@ -21,6 +21,11 @@ Every video goes through a generate → inspect → fix cycle:
    - The right characters were deleted/changed/inserted.
    - Navigation was efficient (see below).
    - Narration matches what's actually happening on screen.
+   - **Key overlays are accurate** — look at every `[OVERLAY]` line in the log. The caption next to each key should match what the key *means in that context*. Watch for cases where a key has multiple meanings depending on mode or sequence:
+     - `a` after `q` or `@` means *register a*, not *append*.
+     - `0` after `Ctrl-R` (in insert mode) means *register 0*, not *line start*.
+     - `Ctrl-R` in insert mode means *paste from register*, not *redo*.
+     - If an overlay is wrong, add `overlay="correct caption"` to the `Keys()` call. Pass `overlay=""` to suppress a caption entirely.
    - **No extraneous keystrokes** — every key press should serve the demo. If you see navigation that could be shorter (e.g., `0` then `w w w` when `3w` or `f<char>` would do), redesign the file content or pick a better motion.
    - **The demo is compelling** — the log should read like a clean, purposeful walkthrough. If a section feels clunky or repetitive, restructure it. Better motions make for better demos.
 4. **Fix and regenerate** if anything is off. This isn't just about fixing errors — it's about **improving the demo**. A log that works but feels inefficient or cluttered is not done yet. Repeat until the log reads like a crisp, polished tutorial.
@@ -89,6 +94,10 @@ The best way to have efficient navigation is to **design the demo file so the cu
 
 - **Spell out key names** in narration for TTS clarity: say "D W" not "dw", "capital X" not "shift-x".
 - **Narration must match the screen.** If you say "the main function" while navigating to a line, that line had better contain a main function. If you say "dollar sign next", the next lesson had better actually be about `$`.
+- **Narration must match screen position.** Don't say "let me scroll to the top" when the file just opened and you're already at the top. Don't say "let me scroll down" when the content is already visible. Check cursor position and line numbers in the log before writing positional narration.
+- **Don't self-correct in narration.** Never say "capital W — wait, I mean lowercase W." Just say the correct thing. A scripted tutorial should sound confident and rehearsed, not improvised.
+- **Explain every key the first time you use it.** Don't press a key the viewer hasn't seen before without at least a one-sentence explanation. For example, don't silently press `Ctrl-F` to page down — say "Control F scrolls down one screen" as you use it.
+- **Don't include unnecessary keystrokes.** If a command works regardless of cursor position (e.g., `o` opens below no matter where you are on the line), don't press `$` first just "to be safe." Extra keystrokes confuse beginners who think every keystroke is intentional and meaningful.
 - **Don't tease future lessons unless you're certain of the order.** Prefer a strong closing statement about the current command instead.
 - **Keep it tight.** These are sub-60-second Shorts. Every sentence should earn its place.
 
@@ -196,6 +205,26 @@ teardown=[
     Comment("Clean up"),
     Line("rm -f <filename>.py"),
 ],
+```
+
+### Key Overlay Overrides
+
+When a key's default overlay caption is wrong for the context, override it:
+
+```python
+# Register names after q or @ — 'a' normally shows "append"
+Keys("q"),                                  # shows "record macro" (correct)
+Keys("a", overlay="register a"),            # override "append" → "register a"
+
+# Insert-mode Ctrl-R pastes from register — not "redo"
+Keys("\x12", overlay="paste register"),     # Ctrl-R in insert mode
+Keys("0", overlay="register 0"),            # "0" register, not "line start"
+
+# Multi-char keys show as a single overlay
+Keys("qa", overlay="record into a"),        # alternative: send both at once
+
+# Suppress a caption entirely
+Keys("x", overlay=""),                      # shows the key but no caption
 ```
 
 ### Wait Timing Conventions
