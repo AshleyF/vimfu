@@ -193,18 +193,19 @@ class WriteFile:
     content: str
     
     def execute(self, demo):
-        import textwrap
+        import textwrap, time
         # Dedent and strip leading/trailing blank lines
         clean = textwrap.dedent(self.content).strip()
-        # Write via heredoc — handles quotes, special chars, multi-line
-        # Use a unique delimiter to avoid conflicts with content
+        # Write via heredoc — handles quotes, special chars, multi-line.
+        # Use absolute sleeps (not speed-adjusted) to prevent ConPTY
+        # buffer deadlock when running in fast mode.
         demo.send_keys(f"cat << 'VIMFU_EOF' > {self.path}\n")
-        demo.wait(0.1)
+        time.sleep(0.1)
         for line in clean.split('\n'):
             demo.send_keys(line + '\n')
-            demo.wait(0.05)
+            time.sleep(0.05)
         demo.send_keys('VIMFU_EOF\n')
-        demo.wait(0.3)
+        time.sleep(0.3)
 
 
 # Type alias for any step
@@ -296,6 +297,13 @@ class Demo:
         ) as demo:
             # Run setup steps (not recorded) — fast, silent, no throttling
             self._run_fast(demo, self.setup)
+            
+            # Flush delay: give pyte time to finish processing all output
+            # from setup commands (heredoc, clear, nvim launch + render).
+            # Without this, the reader thread may still be feeding data
+            # to pyte when recording starts, leading to blank screens.
+            import time as _time
+            _time.sleep(3.0)
             
             # Start recording for main steps
             if self.record_video and show_viewer:
@@ -392,9 +400,15 @@ class Demo:
         try:
             for step in steps:
                 step.execute(demo)
-                # Only wait after steps that actually send commands to the shell
-                if isinstance(step, (Line, WriteFile)):
+                # Wait after steps that send commands to the shell
+                if isinstance(step, WriteFile):
+                    time.sleep(2.0)  # Extra time for heredoc to fully process
+                elif isinstance(step, Line):
                     time.sleep(0.5)
+                # Let the terminal settle after WaitForScreen so pyte
+                # has time to process the full render from nvim
+                elif isinstance(step, WaitForScreen):
+                    time.sleep(1.0)
         finally:
             # Restore original settings
             demo.speed = orig_speed

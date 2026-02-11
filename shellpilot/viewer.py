@@ -1132,6 +1132,12 @@ class ScriptedDemo:
                 self.recorder._viewer = self.viewer  # For overlay-aware thumbnail capture
                 self.recorder.start(self.viewer.root)
                 set_active_recorder(self.recorder)
+        # Give the reader thread a moment to finish processing any
+        # remaining output from setup commands before we start logging.
+        time.sleep(0.3)
+        # Log initial screen state so we can verify content is visible
+        self.log.action('RECORDING_START', 'Screen state at recording start:')
+        self.log.screen_snapshot()
     
     def stop_recording(self) -> None:
         """Stop video recording (call before teardown steps)."""
@@ -1374,9 +1380,14 @@ class ScriptedDemo:
         import time
         start = time.time()
         while time.time() - start < timeout:
-            if text in self.shell.get_screen_text():
+            screen = self.shell.get_screen_text()
+            if text in screen:
+                elapsed = time.time() - start
+                print(f"[WAIT] Found after {elapsed:.1f}s")
                 return True
             time.sleep(0.1)
+        print(f"[WAIT] TIMEOUT after {time.time() - start:.1f}s")
+        return False
         return False
     
     def if_screen_contains(self, text: str, then_keys: str) -> 'ScriptedDemo':

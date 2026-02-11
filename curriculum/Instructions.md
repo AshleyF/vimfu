@@ -15,8 +15,9 @@ The source of truth for what each lesson covers is **Curriculum.md** (in this sa
 Every video goes through a generate → inspect → fix cycle:
 
 1. **Generate** the video by running the script.
-2. **Inspect the log** (`Select-String` on the `.log` file for `[KEYS]`, `[SAY]`, `[OVERLAY]`, and `cursor` lines).
+2. **Inspect the log** (`Select-String` on the `.log` file for `[KEYS]`, `[SAY]`, `[OVERLAY]`, `[RECORDING_START]`, and `cursor` lines).
 3. **Critique the log** — check that:
+   - **The `[RECORDING_START]` screen snapshot shows file content.** If it's blank (just `cursor (0,0)`), the setup timing is broken — fix the `WaitForScreen` text (see below).
    - Cursor positions are where you expect.
    - The right characters were deleted/changed/inserted.
    - Navigation was efficient (see below).
@@ -36,6 +37,28 @@ Every video goes through a generate → inspect → fix cycle:
 
 Unless the lesson is specifically about opening a file or launching Vim, **nvim must launch in the `setup=[]` block**, not in `steps=[]`. The recording should start with the file already open. No one wants to watch a blank terminal while nvim loads.
 
+### WaitForScreen Must Match the Nvim Status Bar
+
+The `WaitForScreen` text must be something that **only appears after nvim has fully rendered**, NOT in the heredoc output or shell commands. File content words are NOT safe because the `WriteFile` heredoc echoes them to the terminal before nvim even starts. If `WaitForScreen` matches the heredoc text, it returns immediately, then `clear` + nvim launch, nvim switches to the alternate screen (initially blank), and the recording starts with a blank screen.
+
+**Bad:** `WaitForScreen("quest log")` — matches heredoc echo of `# quest log`  
+**Bad:** `WaitForScreen("tower")` — matches command echo `nvim tower.py`  
+**Good:** `WaitForScreen("All")` — nvim status bar indicator (only appears when nvim renders)
+
+**Always use `WaitForScreen("All", timeout=30.0)`** — the `All` text appears in nvim's status bar when all file content fits on screen (true for all our small demo files). This is the only reliable indicator that nvim has fully loaded and rendered. The 30-second timeout handles slow ConPTY startup (nvim can take 10-15 seconds to render via ConPTY on Windows).
+
+### Verify Screen at Recording Start
+
+The log now includes a `[RECORDING_START]` screen snapshot at the very beginning of recording. **Always check this** — if it shows a blank screen (just `cursor (0,0)`), the setup timing is broken and the video will start with nothing visible. The file content must be fully rendered before steps begin.
+
+### Line Numbers for Line-Navigation Lessons
+
+When the lesson teaches line-based navigation (`G` with count, `%`, `:<number>`, etc.), **turn on line numbers** so the viewer can see which line they're jumping to:
+
+```python
+Line("nvim -c 'set number' demo.py"),
+```
+
 Standard setup pattern:
 ```python
 setup=[
@@ -52,7 +75,7 @@ setup=[
     Line("clear"),
     Comment("Launch nvim before recording"),
     Line("nvim demo.py"),
-    WaitForScreen("some visible text", timeout=10.0),
+    WaitForScreen("some text from the file content", timeout=10.0),
     IfScreen("swap file", "d"),
 ],
 ```
@@ -95,6 +118,7 @@ The best way to have efficient navigation is to **design the demo file so the cu
 - **Spell out key names** in narration for TTS clarity: say "D W" not "dw", "capital X" not "shift-x".
 - **Narration must match the screen.** If you say "the main function" while navigating to a line, that line had better contain a main function. If you say "dollar sign next", the next lesson had better actually be about `$`.
 - **Narration must match screen position.** Don't say "let me scroll to the top" when the file just opened and you're already at the top. Don't say "let me scroll down" when the content is already visible. Check cursor position and line numbers in the log before writing positional narration.
+- **Narration must match direction of movement.** If you say "select down and right", verify in the log that the cursor column actually increases. Cursor column often carries over between demos — after Demo 2 leaves the cursor at column 10, Demo 3's `gg` + `j` will inherit that column. Add `Keys("0")` or similar to reset before starting a new selection if needed.
 - **Don't self-correct in narration.** Never say "capital W — wait, I mean lowercase W." Just say the correct thing. A scripted tutorial should sound confident and rehearsed, not improvised.
 - **Explain every key the first time you use it.** Don't press a key the viewer hasn't seen before without at least a one-sentence explanation. For example, don't silently press `Ctrl-F` to page down — say "Control F scrolls down one screen" as you use it.
 - **Don't include unnecessary keystrokes.** If a command works regardless of cursor position (e.g., `o` opens below no matter where you are on the line), don't press `$` first just "to be safe." Extra keystrokes confuse beginners who think every keystroke is intentional and meaningful.
@@ -257,7 +281,10 @@ Always short, lowercase `.py` files relevant to the lesson context: `typo.py`, `
 
 ## Checklist Before Moving On
 
+- [ ] `[RECORDING_START]` screen snapshot shows file content (not blank — must see `~` lines and status bar)
+- [ ] `[WAIT] Found after X.Xs` in stdout — confirm timing is reasonable (>3s means nvim loaded; <1s means it matched heredoc)
 - [ ] Log inspected — cursor positions correct
 - [ ] Log inspected — navigation is efficient (no unnecessary `0`, `f`, `^` unless teaching those)
 - [ ] Narration matches what's on screen
 - [ ] No nvim launch visible in the recording (unless that's the lesson)
+- [ ] `WaitForScreen("All")` used (nvim status bar, never file content or command text)
