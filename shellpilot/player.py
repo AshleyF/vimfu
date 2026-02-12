@@ -7,7 +7,7 @@ and orchestrates the demo (setup, recording, steps, teardown).
 
 Usage:
     python player.py path/to/lesson.json
-    python player.py ../curriculum/0001_what_is_vim.json
+    python player.py ../curriculum/shorts/0001_what_is_vim.json
 """
 
 import json

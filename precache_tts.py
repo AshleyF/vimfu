@@ -1,7 +1,7 @@
 """Pre-cache TTS audio clips for a lesson.
 
-Usage: python precache_tts.py curriculum/0042_example.json
-       python precache_tts.py curriculum/0042_example.py   (resolves .json)
+Usage: python precache_tts.py curriculum/shorts/0042_example.json
+       python precache_tts.py curriculum/shorts/0042_example.py   (resolves .json)
 
 Runs the TTS generation in isolation, retrying failed clips.
 Once cached, the lesson script will start instantly.

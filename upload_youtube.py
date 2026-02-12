@@ -2,16 +2,16 @@
 Upload a VimFu video to YouTube using the curriculum JSON file.
 
 Usage:
-    python upload_youtube.py curriculum/0001_what_is_vim.json
-    python upload_youtube.py --schedule 2025-07-20T12:00:00Z curriculum/*.json
-    python upload_youtube.py --public curriculum/*.json
+    python upload_youtube.py curriculum/shorts/0001_what_is_vim.json
+    python upload_youtube.py --schedule 2025-07-20T12:00:00Z curriculum/shorts/*.json
+    python upload_youtube.py --public curriculum/shorts/*.json
 
-The curriculum JSON contains both the lesson definition and a "youtube"
+The lesson JSON contains both the lesson definition and a "youtube"
 section with upload settings.  Video and thumbnail files are located
 automatically at  shellpilot/videos/{stem}/{stem}.mp4 / .png.
 
 After upload the youtube.videoId and youtube.url fields are written
-back into the curriculum JSON.
+back into the lesson JSON.
 
 Privacy logic (highest priority first):
     --schedule <future>     private + publishAt (YouTube auto-publishes at the scheduled time)
@@ -280,7 +280,7 @@ def main():
     )
     parser.add_argument(
         "lessons", nargs="+", type=Path,
-        help="One or more curriculum JSON files (e.g. curriculum/*.json)."
+        help="One or more lesson JSON files (e.g. curriculum/shorts/*.json)."
     )
     parser.add_argument(
         "--schedule", "-s", dest="schedule", default=None,

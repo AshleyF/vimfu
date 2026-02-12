@@ -183,36 +183,17 @@ lesson = Demo(
 
 ### Lesson Format
 
-Every lesson is a **JSON file** (`curriculum/NNNN_topic.json`) paired with a
-thin Python wrapper (`curriculum/NNNN_topic.py`) that just calls the player:
-
-```python
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent / "shellpilot"))
-from player import play
-play(Path(__file__).with_suffix(".json"))
-```
+Every lesson is a **JSON file** in `curriculum/shorts/` (`curriculum/shorts/NNNN_topic.json`).
+Longer demos (over 60 seconds) go in `curriculum/longs/` (`curriculum/longs/long_NNNN_topic.json`).
 
 All lesson logic lives in the JSON file. Do not import step classes directly.
 
-### Docstring
-
-```python
-"""
-Lesson NNN: <Topic Name>
-
-Sub-60-second lesson: <one-line pitch>.
-<Optional second line>.
-"""
-```
-
 ### Running a Lesson
 
-Run via the wrapper or directly via the player:
+Run directly via the player:
 ```
-python curriculum/0042_example.py
-python shellpilot/player.py curriculum/0042_example.json
+python shellpilot/player.py curriculum/shorts/0042_example.json
+python shellpilot/player.py curriculum/longs/long_0001_macro_demo.json
 ```
 
 ### Title Card (always the first two steps)
