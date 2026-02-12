@@ -1,0 +1,208 @@
+{
+  "title": "VimFu — Back to End of Word",
+  "description": "Press ge to jump backward to the end of the previous word. The reverse of e — a two-key motion.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 95,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "jIF0J2XXSqA",
+    "url": "https://youtube.com/watch?v=jIF0J2XXSqA",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f words.py .words.py.swp .words.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*words.py*"
+    },
+    {
+      "comment": "Create a file with some code"
+    },
+    {
+      "writeFile": "words.py",
+      "content": "name = \"vim master\"\nlevel = 42\nprint(name, level)"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Back to End of Word",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "E goes forward to the end of a word."
+    },
+    {
+      "line": "nvim words.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "vim master",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G E goes backward to the end of the previous word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Each G E hops backward to a word ending."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "It wraps to the previous line too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "B lands on the start. G E lands on the end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now you have all four. W, B, E, G E."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f words.py"
+    }
+  ]
+}

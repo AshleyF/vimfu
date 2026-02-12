@@ -1,15 +1,22 @@
 """
-Upload a VimFu video to YouTube using metadata from the JSON sidecar.
+Upload a VimFu video to YouTube using the curriculum JSON file.
 
 Usage:
-    python upload_youtube.py shellpilot/videos/0001_what_is_vim.json
-    python upload_youtube.py --schedule 2025-07-20T12:00:00Z shellpilot/videos/*.json
-    python upload_youtube.py --public shellpilot/videos/*.json
+    python upload_youtube.py curriculum/0001_what_is_vim.json
+    python upload_youtube.py --schedule 2025-07-20T12:00:00Z curriculum/*.json
+    python upload_youtube.py --public curriculum/*.json
+
+The curriculum JSON contains both the lesson definition and a "youtube"
+section with upload settings.  Video and thumbnail files are located
+automatically at  shellpilot/videos/{stem}/{stem}.mp4 / .png.
+
+After upload the youtube.videoId and youtube.url fields are written
+back into the curriculum JSON.
 
 Privacy logic (highest priority first):
     --schedule <future>     private + publishAt (YouTube auto-publishes at the scheduled time)
     --public / --private    explicit override
-    (default)               private (from JSON sidecar)
+    (default)               private (from youtube.privacyStatus)
 First-time setup:
     1. Go to https://console.cloud.google.com/
     2. Create a project (or use existing)
@@ -86,41 +93,39 @@ def get_authenticated_service():
     return build("youtube", "v3", http=http)
 
 
-def upload_video(metadata_path: Path, schedule_dt: datetime = None,
+def upload_video(lesson_path: Path, schedule_dt: datetime = None,
                  privacy_override: str = None):
-    """Upload video + thumbnail using the JSON metadata sidecar.
+    """Upload video + thumbnail using the curriculum JSON file.
 
     Args:
-        metadata_path:    Path to the JSON sidecar file.
+        lesson_path:      Path to the curriculum JSON file.
         schedule_dt:      If a future datetime, publish as public + scheduled.
         privacy_override: "public" or "private" — overrides all other logic.
     """
-    meta = json.loads(metadata_path.read_text(encoding="utf-8"))
-    videos_dir = metadata_path.parent
+    meta = json.loads(lesson_path.read_text(encoding="utf-8"))
+    yt = meta.get("youtube", {})
+    stem = lesson_path.stem
 
-    video_path = videos_dir / meta["videoFilename"]
-    thumb_path = videos_dir / meta["thumbnailFilename"]
+    # Derive video/thumbnail paths from the standard output directory
+    videos_dir = REPO_ROOT / "shellpilot" / "videos" / stem
+    video_path = videos_dir / f"{stem}.mp4"
+    thumb_path = videos_dir / f"{stem}.png"
 
     if not video_path.exists():
         print(f"ERROR: Video not found: {video_path}")
         sys.exit(1)
 
     # Determine privacy / scheduling
-    #   YouTube requires privacyStatus="private" for scheduled videos;
-    #   it automatically publishes them at the scheduled time.
-    #   1. Explicit --public / --private wins (but scheduled forces private)
-    #   2. --schedule with a future time  → private + publishAt
-    #   3. Fall back to JSON privacyStatus (default: private)
     scheduled = (
         schedule_dt is not None
         and schedule_dt > datetime.now(timezone.utc)
     )
     if scheduled:
-        privacy = "private"  # YouTube requires private for scheduled publishing
+        privacy = "private"
     elif privacy_override:
         privacy = privacy_override
     else:
-        privacy = meta.get("privacyStatus", "private")
+        privacy = yt.get("privacyStatus", "private")
 
     print(f"Title:     {meta['title']}")
     print(f"Video:     {video_path.name}")
@@ -140,17 +145,16 @@ def upload_video(metadata_path: Path, schedule_dt: datetime = None,
             "title": meta["title"],
             "description": meta.get("description", ""),
             "tags": meta.get("tags", []),
-            "categoryId": meta.get("categoryId", "27"),
-            "defaultLanguage": meta.get("language", "en"),
+            "categoryId": yt.get("categoryId", "27"),
+            "defaultLanguage": yt.get("language", "en"),
         },
         "status": {
             "privacyStatus": privacy,
-            "madeForKids": meta.get("madeForKids", False),
-            "selfDeclaredMadeForKids": meta.get("madeForKids", False),
+            "madeForKids": yt.get("madeForKids", False),
+            "selfDeclaredMadeForKids": yt.get("madeForKids", False),
         },
     }
 
-    # Scheduled publishing
     if scheduled:
         body["status"]["publishAt"] = schedule_dt.isoformat()
 
@@ -225,13 +229,14 @@ def upload_video(metadata_path: Path, schedule_dt: datetime = None,
         except Exception as e:
             print(f"Warning: Could not add to playlist: {e}")
 
-    # --- Save video ID back into metadata ---
-    meta["youtubeVideoId"] = video_id
-    meta["youtubeUrl"] = f"https://youtube.com/watch?v={video_id}"
-    metadata_path.write_text(
-        json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8"
+    # --- Save video ID back into curriculum JSON ---
+    yt["videoId"] = video_id
+    yt["url"] = f"https://youtube.com/watch?v={video_id}"
+    meta["youtube"] = yt
+    lesson_path.write_text(
+        json.dumps(meta, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
-    print(f"Metadata updated with video ID.")
+    print(f"Curriculum JSON updated with video ID.")
 
     return video_id
 
@@ -271,11 +276,11 @@ def _find_or_create_playlist(youtube, title: str) -> str:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Upload VimFu videos to YouTube from JSON metadata."
+        description="Upload VimFu videos to YouTube from curriculum JSON files."
     )
     parser.add_argument(
-        "metadata", nargs="+", type=Path,
-        help="One or more metadata JSON files."
+        "lessons", nargs="+", type=Path,
+        help="One or more curriculum JSON files (e.g. curriculum/*.json)."
     )
     parser.add_argument(
         "--schedule", "-s", dest="schedule", default=None,
@@ -304,9 +309,14 @@ def main():
         except ValueError:
             parser.error(f"Invalid datetime: {args.schedule}")
 
-    for path in args.metadata:
+    for path in args.lessons:
         if not path.exists():
             print(f"ERROR: {path} not found, skipping.")
+            continue
+        # Skip lessons that are already uploaded
+        data = json.loads(path.read_text(encoding='utf-8'))
+        if data.get('youtube', {}).get('videoId'):
+            print(f"SKIP: {path.name} (already uploaded: {data['youtube']['videoId']})")
             continue
         print(f"{'=' * 60}")
         print(f"Processing: {path.name}")

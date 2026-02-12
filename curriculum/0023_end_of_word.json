@@ -1,0 +1,263 @@
+{
+  "title": "VimFu — End of Word",
+  "description": "Press e to jump to the end of the current or next word. Like w but lands on the last character.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 84,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "GKA2eTFglGg",
+    "url": "https://youtube.com/watch?v=GKA2eTFglGg",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f words.py .words.py.swp .words.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*words.py*"
+    },
+    {
+      "comment": "Create a file with some code"
+    },
+    {
+      "writeFile": "words.py",
+      "content": "name = \"vim master\"\nlevel = 42\nprint(name, level)"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "End of Word",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "W jumps to the start of the next word."
+    },
+    {
+      "line": "nvim words.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "vim master",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "E jumps to the end instead.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Each E lands on the last letter of a word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "W lands on the first letter. E lands on the last.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "It wraps across lines, just like W."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Watch the cursor hop to each word ending.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "E for end of word. Pair it with W and B."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f words.py"
+    }
+  ]
+}

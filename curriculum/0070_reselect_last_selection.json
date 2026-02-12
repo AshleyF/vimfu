@@ -1,0 +1,265 @@
+{
+  "title": "VimFu — Reselect Last Selection",
+  "description": "gv re-highlights the previous visual selection. Handy for acting on the same region again.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 211,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "deKacqjKDIM",
+    "url": "https://youtube.com/watch?v=deKacqjKDIM",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f menu.py .menu.py.swp .menu.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*menu.py*"
+    },
+    {
+      "comment": "Create demo file — pizza menu"
+    },
+    {
+      "writeFile": "menu.py",
+      "content": "# pizza menu\ncheese = 8\npepperoni = 10\nveggie = 9\nsupreme = 12\nhawaiian = 11"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim menu.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Reselect Last Selection",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "G V re-highlights your last visual selection. Same region, instantly."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select the middle three pizzas. Capital V, then J J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Greater than to indent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Indented, but now I want to delete those same lines. G V to reselect.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same three lines, re-highlighted. D to delete.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gone. G V let me do a second, different action on the same region."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo twice to bring them back.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Works for character selections too. V E to select cheese.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Escape. Move somewhere else.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G V. Right back on cheese, no matter where the cursor was."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "wait": 0.6
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G V. Reselect to apply a different action, or jump back to where you were."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f menu.py"
+    }
+  ]
+}

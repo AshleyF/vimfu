@@ -1,0 +1,291 @@
+{
+  "title": "VimFu — Other Corner",
+  "description": "In visual mode, press o to jump the cursor to the other end of the selection. O moves to the other corner in block mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 210,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "qLRtfHfbVqc",
+    "url": "https://youtube.com/watch?v=qLRtfHfbVqc",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f farm.py .farm.py.swp .farm.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*farm.py*"
+    },
+    {
+      "comment": "Create demo file — farm inventory"
+    },
+    {
+      "writeFile": "farm.py",
+      "content": "# farm inventory\nwheat = 100\ncorn  = 200\nrice  = 300\noats  = 400\nhay   = 500"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim farm.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Other Corner",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "In visual mode, O jumps the cursor to the other end of the selection."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Start on the wheat line. V then dollar sign to select to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Cursor is at the end. Press O.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Cursor jumped to the start of the selection. Notice that the cursor and the selection are separate. The cursor moves inside the selection without changing it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press O again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back at the end. Toggle freely."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital V on corn, then J J to select three lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Cursor is on the oats line. Press O to flip to the corn line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now extend the selection upward with K.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "That is the trick. Flip ends, then extend in the other direction."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control V for a block. Select down and right.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "\u0016"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital O flips to the other corner on the same row.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "O"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Lowercase O flips vertically. Capital O flips horizontally in block mode."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "O in visual mode. Flip the cursor, then adjust the selection from either end."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f farm.py"
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "title": "VimFu — Block Visual Mode",
+  "description": "Ctrl-V selects a rectangular block of text. Move the cursor and a box gets highlighted.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 207,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "N5KRukVbfC8",
+    "url": "https://youtube.com/watch?v=N5KRukVbfC8",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f grid.py .grid.py.swp .grid.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*grid.py*"
+    },
+    {
+      "comment": "Create demo file — aligned data grid"
+    },
+    {
+      "writeFile": "grid.py",
+      "content": "# score board\nalice  = 100\nbob    = 200\ncarol  = 300\ndave   = 400\neve    = 500"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim grid.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Block Visual Mode",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Control V starts block visual mode. It selects a rectangle, not lines or characters."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Go to the alice line. Control V to start the block.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0016"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now J four times to extend down through all the names.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A thin column selected. Now E to widen it across the names.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A perfect rectangle. Five names in a block. No other mode can do this."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now select just the numbers. Go to the first score.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control V, then J four times.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0016"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Just the last digit of each score. A column selection."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "D to delete the column.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Only that column is gone. The rest of the lines stay intact."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control V. Block visual mode. Select rectangles, edit columns."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f grid.py"
+    }
+  ]
+}

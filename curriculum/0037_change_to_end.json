@@ -1,0 +1,232 @@
+{
+  "title": "VimFu — Change to End of Line",
+  "description": "Press C to delete from the cursor to the end of the line and enter insert mode. Same as c$ — change + end-of-line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 178,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "L3YSNw0dKMU",
+    "url": "https://youtube.com/watch?v=L3YSNw0dKMU",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f urls.py .urls.py.swp .urls.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*urls.py*"
+    },
+    {
+      "comment": "Create a file with values to replace"
+    },
+    {
+      "writeFile": "urls.py",
+      "content": "host = \"http://old-server\"\nport = \"9999\"\npath = \"/api/v1/old\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim urls.py"
+    },
+    {
+      "waitForScreen": "host",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Change to End of Line",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Capital C deletes to the end and puts you in insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's replace this whole URL.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "h"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "C"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "https://new-server\""
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Everything after the cursor was replaced."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Change the port too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "9"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "C"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "8080\""
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "C is D plus insert mode. Delete to end, then type."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "C"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/api/v2/new\""
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital C. Change to the end of the line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f urls.py"
+    }
+  ]
+}

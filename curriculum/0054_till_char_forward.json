@@ -1,0 +1,253 @@
+{
+  "title": "VimFu — Till Character Forward",
+  "description": "Press t followed by a character to jump to just before the next occurrence on the current line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 195,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "iSISCMRhMvE",
+    "url": "https://youtube.com/watch?v=iSISCMRhMvE",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f fight.py .fight.py.swp .fight.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*fight.py*"
+    },
+    {
+      "comment": "Create demo file — boss battles"
+    },
+    {
+      "writeFile": "fight.py",
+      "content": "hero = fight(\"dragon\", 50)\nsage = fight(\"goblin\", 10)\nking = fight(\"troll\", 30)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim fight.py"
+    },
+    {
+      "waitForScreen": "hero",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Till Character Forward",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "T followed by a character stops just before it. Think till. Almost there, but not quite."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "First, F open-paren for comparison.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "("
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "F lands right on the paren."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Back to the start. Now T open-paren.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "t"
+    },
+    {
+      "keys": "("
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "T stopped one short. On the T of fight, right before the paren."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Down to the next line. T comma.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "t"
+    },
+    {
+      "keys": ","
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Stopped right before the comma. T always leaves the target untouched."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Here's why T matters. Go to the last line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "D T close-paren.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "t"
+    },
+    {
+      "keys": ")"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Deleted everything up to the paren. The paren stays."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "T sets up surgical precision. F lands on it. T stops just before."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "T. The 'almost there' motion. Perfect for delete-to and change-to combos."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f fight.py"
+    }
+  ]
+}

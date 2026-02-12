@@ -1,0 +1,273 @@
+{
+  "title": "VimFu — Counted Deletes",
+  "description": "Put a count before delete to multiply it. 3dd deletes 3 lines, 2dw deletes 2 words.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 200,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "shbW8MFJzAM",
+    "url": "https://youtube.com/watch?v=shbW8MFJzAM",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f robot.py .robot.py.swp .robot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*robot.py*"
+    },
+    {
+      "comment": "Create demo file — robot config with junk"
+    },
+    {
+      "writeFile": "robot.py",
+      "content": "# robot config\npower = 100\nbug = \"glitch\"\nbug = \"crash\"\nbug = \"lag\"\nspeed = 50\njunk = None\njunk = None\narmor = 75"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim robot.py"
+    },
+    {
+      "waitForScreen": "robot",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Counted Deletes",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Put a count before delete to multiply it. Clean up code in bulk."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Three bug lines need to go. Move to the first one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three D D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All three bug lines gone in one move."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Two junk lines below. Move down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Two D D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both junk lines deleted. The file is clean."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo twice to bring it all back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Good as new."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Counts work with D W too. Go to the power line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Two D W deletes two words.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two words gone. Just the value left."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Count plus delete. Three D D, two D W. Surgical bulk removal."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f robot.py"
+    }
+  ]
+}

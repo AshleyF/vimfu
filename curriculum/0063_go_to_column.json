@@ -1,0 +1,221 @@
+{
+  "title": "VimFu — Go to Column",
+  "description": "20| jumps to column 20 on the current line. A number then pipe goes straight to that column.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 204,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "PgAK3HRzbTw",
+    "url": "https://youtube.com/watch?v=PgAK3HRzbTw",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f pixel.py .pixel.py.swp .pixel.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*pixel.py*"
+    },
+    {
+      "comment": "Create demo file — pixel art coordinates"
+    },
+    {
+      "writeFile": "pixel.py",
+      "content": "# pixel art colors\nrow = \"..##..##..##..##..\"\nsky = \"bbbbbbbbbbbbbbbbbb\"\ngnd = \"gggggggggggggggggg\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim pixel.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Go to Column",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "A number then pipe jumps to that column on the current line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Go to the row line. Ten pipe.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "|"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Column ten. Right on the opening quote."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One pipe goes to column one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1"
+    },
+    {
+      "keys": "|"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back at the start of the line. Same as zero."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Down to the sky line. Twenty pipe.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "|"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Column twenty. Lands right in the middle of the pixel data."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Thirty pipe.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "|"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Column thirty. Precise horizontal positioning."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Number pipe. Jump to any column on the current line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f pixel.py"
+    }
+  ]
+}

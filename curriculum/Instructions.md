@@ -181,14 +181,20 @@ lesson = Demo(
 )
 ```
 
-### Imports (always the same)
+### Lesson Format
+
+Every lesson is a **JSON file** (`curriculum/NNNN_topic.json`) paired with a
+thin Python wrapper (`curriculum/NNNN_topic.py`) that just calls the player:
 
 ```python
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "shellpilot"))
-from dsl import Demo, Comment, Say, Line, Type, Keys, Wait, Escape, Enter, IfScreen, WaitForScreen, Overlay, WriteFile
+from player import play
+play(Path(__file__).with_suffix(".json"))
 ```
+
+All lesson logic lives in the JSON file. Do not import step classes directly.
 
 ### Docstring
 
@@ -201,12 +207,12 @@ Sub-60-second lesson: <one-line pitch>.
 """
 ```
 
-### Variable & Entry Point
+### Running a Lesson
 
-Always `lesson = Demo(...)` and:
-```python
-if __name__ == "__main__":
-    lesson.run()
+Run via the wrapper or directly via the player:
+```
+python curriculum/0042_example.py
+python shellpilot/player.py curriculum/0042_example.json
 ```
 
 ### Title Card (always the first two steps)

@@ -1,0 +1,239 @@
+{
+  "title": "VimFu — Line Visual Mode",
+  "description": "Capital V selects whole lines at a time. Move up or down and entire lines get highlighted.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 206,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "y2YdcTXFf24",
+    "url": "https://youtube.com/watch?v=y2YdcTXFf24",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f crew.py .crew.py.swp .crew.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*crew.py*"
+    },
+    {
+      "comment": "Create demo file — spaceship crew roster"
+    },
+    {
+      "writeFile": "crew.py",
+      "content": "# crew roster\npilot = \"Nova\"\nmedic = \"Patch\"\nhacker = \"Glitch\"\ngunner = \"Boom\"\ncook = \"Pepper\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim crew.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Line Visual Mode",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Capital V selects whole lines. Not characters, entire lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "On the pilot line. Capital V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The whole line is highlighted. Even if the cursor is in the middle."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital V again, then J J to extend down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three whole lines selected. Perfect for deleting or moving a block of code."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "D to delete them all.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines gone in one shot."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Go to the cook line. Capital V then K K to select upward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines selected going up. Direction doesn't matter."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital V for line visual mode. Select whole lines, then act."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f crew.py"
+    }
+  ]
+}

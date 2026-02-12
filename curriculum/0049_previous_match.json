@@ -1,0 +1,185 @@
+{
+  "title": "VimFu — Previous Match",
+  "description": "After a search, press capital N to jump to the previous match. It goes the opposite direction of n.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 190,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "WKXbQ3jEl2A",
+    "url": "https://youtube.com/watch?v=WKXbQ3jEl2A",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f words.py .words.py.swp .words.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*words.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "words.py",
+      "content": "cat = \"meow\"\ndog = \"woof\"\ncat = \"purr\"\ndog = \"bark\"\ncat = \"hiss\"\ndog = \"howl\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim words.py"
+    },
+    {
+      "waitForScreen": "cat",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Previous Match",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Capital N goes to the previous match. The opposite of lowercase N."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's search for dog and go forward with N.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "type": "dog"
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "We're on the last dog. Now let's go backward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital N. Previous match.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "N"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jumped back one match."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital N again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "N"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the first dog. Capital N reverses the search direction."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Lowercase N goes forward. Capital N goes backward. Easy."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f words.py"
+    }
+  ]
+}

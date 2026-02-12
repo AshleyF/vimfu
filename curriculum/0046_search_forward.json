@@ -1,0 +1,181 @@
+{
+  "title": "VimFu — Search Forward",
+  "description": "Type /pattern and press Enter to search forward for text. The cursor jumps to the first match.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 187,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "iwTAYjulO6E",
+    "url": "https://youtube.com/watch?v=iwTAYjulO6E",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*config.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "host = \"local\"\nport = 8080\nmode = \"debug\"\nflag = True\nhost = \"cloud\"\nport = 9090\nmode = \"live\"\nflag = False"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim config.py"
+    },
+    {
+      "waitForScreen": "host",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Search Forward",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Slash searches forward. Type a pattern and press Enter."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's find mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "type": "mode"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Slash mode Enter. Cursor jumped right to it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now let's search for flag.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "type": "flag"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to flag on the next line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now search for local. It's above us, but slash wraps around.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "type": "local"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Wrapped back to line one. Search always loops around the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Slash, type your pattern, Enter. The fastest way to jump anywhere."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ]
+}

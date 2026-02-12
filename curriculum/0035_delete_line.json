@@ -1,0 +1,217 @@
+{
+  "title": "VimFu — Delete Entire Line",
+  "description": "Press dd to delete the entire current line. The most common delete command in Vim.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 176,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "WQBb6IRUpzE",
+    "url": "https://youtube.com/watch?v=WQBb6IRUpzE",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f app.py .app.py.swp .app.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*app.py*"
+    },
+    {
+      "comment": "Create a file with lines to delete"
+    },
+    {
+      "writeFile": "app.py",
+      "content": "import os\nimport sys\nimport debug  # remove\nimport log  # remove\n\ndef main():\n    run()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim app.py"
+    },
+    {
+      "waitForScreen": "import os",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Delete Entire Line",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "D D deletes the entire line. The whole thing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "These two debug imports need to go.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The whole line is gone. Everything shifted up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The next line moved up. Delete it too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two lines removed. Two D D commands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can also use a count. Three D D deletes three lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines in one shot."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "D D. Delete the line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f app.py"
+    }
+  ]
+}

@@ -1,0 +1,278 @@
+{
+  "title": "VimFu — Moving: h j k l",
+  "description": "Move the cursor with h j k l. Left, down, up, right. Your hands never leave the home row.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 54,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "127qYVCOkh4",
+    "url": "https://youtube.com/watch?v=127qYVCOkh4",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f moves.py .moves.py.swp .moves.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*moves.py*"
+    },
+    {
+      "comment": "Create a file with several lines"
+    },
+    {
+      "writeFile": "moves.py",
+      "content": "apples = 10\nbananas = 20\ncherries = 30\ndates = 40\nelderberries = 50"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Moving: h j k l",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "In normal mode, you move the cursor with four keys.",
+      "wait": false
+    },
+    {
+      "line": "nvim moves.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "apples",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "J moves down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "K moves up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "L moves right.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "H moves left.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "h"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "h"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "h"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "H, J, K, L. All on the home row, right under your fingers."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "No reaching for arrow keys. Just tap and go.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "h"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "H J K L. It'll feel weird for a day. Then it'll feel fast."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f moves.py"
+    }
+  ]
+}

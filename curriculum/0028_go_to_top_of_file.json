@@ -1,0 +1,179 @@
+{
+  "title": "VimFu — Go to Top of File",
+  "description": "Press gg to jump to line 1. Instant teleport to the top of any file.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 139,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "7JIvpNZOO3M",
+    "url": "https://youtube.com/watch?v=7JIvpNZOO3M",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f app.py .app.py.swp .app.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*app.py*"
+    },
+    {
+      "comment": "Create a longer file"
+    },
+    {
+      "writeFile": "app.py",
+      "content": "import os\nimport sys\n\ndef setup():\n    path = os.getcwd()\n    return path\n\ndef main():\n    base = setup()\n    name = \"vimfu\"\n    print(f\"Running {name}\")\n    print(f\"Path: {base}\")\n    return 0\n\nif __name__ == \"__main__\":\n    sys.exit(main())"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Go to Top",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Big files mean lots of scrolling."
+    },
+    {
+      "line": "nvim app.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "import",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Let's go to the bottom first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now we're at the end of the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press G G to teleport to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Instant. Line one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "No matter where you are. G G. Top of file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "You'll use this all the time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G G for the top. Capital G for the bottom. That's next."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f app.py"
+    }
+  ]
+}

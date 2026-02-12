@@ -1,0 +1,222 @@
+{
+  "title": "VimFu — Find Character Forward",
+  "description": "Press f followed by a character to jump to the next occurrence of that character on the current line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 193,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "OSHhkPf1jDk",
+    "url": "https://youtube.com/watch?v=OSHhkPf1jDk",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spawn.py .spawn.py.swp .spawn.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spawn.py*"
+    },
+    {
+      "comment": "Create demo file — game summoning system"
+    },
+    {
+      "writeFile": "spawn.py",
+      "content": "cat = summon(\"whiskers\", 9)\ndog = summon(\"barkley\", 3)\nbug = summon(\"glitch\", -1)\nnpc = summon(\"bob\", 99)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spawn.py"
+    },
+    {
+      "waitForScreen": "cat",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Find Character Forward",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "F followed by a character jumps to it on the current line. Precision horizontal movement."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is at the start. Press F W to jump to the W in whiskers.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Landed right on the W. One motion, no scrolling."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press F nine to jump to the number.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "9"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Found the nine. F works with any character, letters, numbers, punctuation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Down to the next line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "F B to find barkley.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "b"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "There's barkley. F only searches the current line, never crosses to another."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Down to the bug line. F minus.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "-"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Found the minus sign. F works with letters, numbers, symbols, anything."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "F plus a character. The sniper rifle of horizontal movement."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spawn.py"
+    }
+  ]
+}

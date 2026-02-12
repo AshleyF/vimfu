@@ -1,0 +1,194 @@
+{
+  "title": "VimFu — Why Not Arrow Keys?",
+  "description": "Arrow keys work in Vim, but they pull your hands off the home row. Train yourself to use h j k l instead.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 55,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "740km_QY3wk",
+    "url": "https://youtube.com/watch?v=740km_QY3wk",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f moves.py .moves.py.swp .moves.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*moves.py*"
+    },
+    {
+      "comment": "Create a file with several lines"
+    },
+    {
+      "writeFile": "moves.py",
+      "content": "apples = 10\nbananas = 20\ncherries = 30\ndates = 40"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Why Not Arrow Keys?",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Arrow keys work in Vim. Let's prove it.",
+      "wait": false
+    },
+    {
+      "line": "nvim moves.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "apples",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Down, down, right, right, up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[B"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[B"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[C"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[C"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[A"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "They work fine. So why not use them?"
+    },
+    {
+      "say": "Because your right hand has to leave the home row. Every time you reach for an arrow key, you lose your position."
+    },
+    {
+      "say": "With H J K L, your fingers never move.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Same moves. Faster. No reaching."
+    },
+    {
+      "say": "Arrow keys are a crutch. H J K L is a habit. Start building it now."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f moves.py"
+    }
+  ]
+}

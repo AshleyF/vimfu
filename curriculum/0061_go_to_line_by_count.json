@@ -1,0 +1,204 @@
+{
+  "title": "VimFu — Go to Line by Count",
+  "description": "42G jumps to line 42. Same as :42 Enter. A count before G goes straight to that line number.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 202,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "-Zh3seIOJr0",
+    "url": "https://youtube.com/watch?v=-Zh3seIOJr0",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tower.py .tower.py.swp .tower.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*tower.py*"
+    },
+    {
+      "comment": "Create demo file — tower defense config with many lines"
+    },
+    {
+      "writeFile": "tower.py",
+      "content": "# tower defense config\nwave_1 = \"goblins\"\nwave_2 = \"orcs\"\nwave_3 = \"trolls\"\nwave_4 = \"dragons\"\nwave_5 = \"demons\"\ngold = 500\ntower_a = \"archer\"\ntower_b = \"mage\"\ntower_c = \"cannon\"\ntower_d = \"frost\"\nboss = \"lich king\"\nhp = 9999\nloot = \"legendary sword\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers — essential for a line-navigation lesson"
+    },
+    {
+      "line": "nvim -c 'set number' tower.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Go to Line by Count",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "A number before capital G jumps straight to that line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Seven capital G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "7"
+    },
+    {
+      "keys": "G",
+      "overlay": "go to line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line seven. The gold line. Instant jump."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Twelve capital G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1"
+    },
+    {
+      "keys": "2"
+    },
+    {
+      "keys": "G",
+      "overlay": "go to line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line twelve. The boss. No scrolling, no counting lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can also type colon five Enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":5"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same result, different syntax. Both take you to line five."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One capital G goes to line one. Same as G G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1"
+    },
+    {
+      "keys": "G",
+      "overlay": "go to line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back at the top."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Number capital G. Jump to any line in the file instantly."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f tower.py"
+    }
+  ]
+}

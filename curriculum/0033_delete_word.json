@@ -1,0 +1,217 @@
+{
+  "title": "VimFu — Delete Word",
+  "description": "Press dw to delete from the cursor to the start of the next word. The d operator combined with the w motion.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 174,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "Jv_7WgIgetg",
+    "url": "https://youtube.com/watch?v=Jv_7WgIgetg",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*config.py*"
+    },
+    {
+      "comment": "Create a file with extra words to delete"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "color = \"dark blue\"\nshape = \"very large\"\ntitle = \"old legacy\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim config.py"
+    },
+    {
+      "waitForScreen": "color",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Delete Word",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "D W deletes from the cursor to the next word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "This should say blue, not dark blue.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gone. D is the delete operator. W is the word motion."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Same idea on line two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "D W again. The word and the space after it are gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three words deleted. Same two keys every time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "D W. Delete a word."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ]
+}

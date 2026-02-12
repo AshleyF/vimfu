@@ -1,0 +1,249 @@
+{
+  "title": "VimFu — Counted Inserts",
+  "description": "A count before insert mode repeats your text. 5i- then Escape gives five dashes. 3o adds three lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 201,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "AEx0hUMoQ8Y",
+    "url": "https://youtube.com/watch?v=AEx0hUMoQ8Y",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f ship.py .ship.py.swp .ship.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*ship.py*"
+    },
+    {
+      "comment": "Create demo file — spaceship parts"
+    },
+    {
+      "writeFile": "ship.py",
+      "content": "# spaceship parts\n\nengine = 1\nshield = 1\nlaser = 1"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim ship.py"
+    },
+    {
+      "waitForScreen": "spaceship",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Counted Inserts",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "A count before I repeats your insert. The multiplier for insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "This blank line needs a separator. Twenty I dash Escape.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "keys": "-"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Twenty dashes. One keystroke, twenty characters. Vim repeated the dash twenty times."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now three O. It opens three new lines and enters insert mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3"
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "type": "fuel = 0"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three identical lines. Type once, Vim copies it three times."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "One more. Five I star Escape.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5"
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "keys": "*"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Five stars. Works with any character, any count."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Count, I, type, Escape. Build patterns instantly."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f ship.py"
+    }
+  ]
+}

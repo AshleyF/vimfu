@@ -1,0 +1,173 @@
+{
+  "title": "VimFu — Next Match",
+  "description": "After a search, press n to jump to the next match in the same direction.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 189,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "Rn6a0DCHMRc",
+    "url": "https://youtube.com/watch?v=Rn6a0DCHMRc",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f words.py .words.py.swp .words.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*words.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "words.py",
+      "content": "cat = \"meow\"\ndog = \"woof\"\ncat = \"purr\"\ndog = \"bark\"\ncat = \"hiss\"\ndog = \"howl\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim words.py"
+    },
+    {
+      "waitForScreen": "cat",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Next Match",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "After a search, N jumps to the next match. No need to type the pattern again."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's search for cat.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "type": "cat"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Found a cat. There are three in this file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press N to jump to the next one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "There's the next cat."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "N again. Watch it wrap back to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Wrapped around. N cycles through every match in the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Search once with slash. Then N, N, N to hop through every match."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f words.py"
+    }
+  ]
+}

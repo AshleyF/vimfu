@@ -1,0 +1,225 @@
+{
+  "title": "VimFu — Counted Motions",
+  "description": "Prefix any motion with a number to repeat it. 5j moves down 5 lines, 3w jumps 3 words.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 199,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "D_UPqcU-4kU",
+    "url": "https://youtube.com/watch?v=D_UPqcU-4kU",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create demo file — dungeon map"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "# dungeon: rooms, traps, loot\nroom = \"entry\"\ntrap = False\nloot = \"key\"\nboss = None\nroom = \"vault\"\ntrap = True\nloot = \"gold\"\nboss = \"dragon\"\nroom = \"exit\"\ntrap = False\nloot = \"gem\"\nboss = None"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim dungeon.py"
+    },
+    {
+      "waitForScreen": "dungeon",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Counted Motions",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Put a number before any motion to repeat it. Counts turn one step into a leap."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is on the first line. Ten L to jump right.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Ten characters right in one move."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now four J to jump down four lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Four lines down. The count multiplies the motion."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Three W to jump three words forward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3"
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three words in one motion."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Six J to skip ahead.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Six lines. Way faster than pressing J six times."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Eight K to fly back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "8"
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Eight lines up. Counts work with J, K, W, B, L, any motion."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Number plus motion. One of the biggest multipliers in Vim."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ]
+}

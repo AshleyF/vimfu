@@ -1,0 +1,234 @@
+{
+  "title": "VimFu — Character Visual Mode",
+  "description": "Press v to start selecting character by character. Move the cursor and the selection grows.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 205,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "j6qyLG1xc9I",
+    "url": "https://youtube.com/watch?v=j6qyLG1xc9I",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spell.py .spell.py.swp .spell.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spell.py*"
+    },
+    {
+      "comment": "Create demo file — spell book"
+    },
+    {
+      "writeFile": "spell.py",
+      "content": "# spell book\nfire = \"fireball\"\nice = \"blizzard\"\nheal = \"restoration\"\ndark = \"shadow bolt\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spell.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Character Visual Mode",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Press V to start selecting text character by character. This is visual mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Go to the fire line. Press V to start selecting.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "See the highlight? Now every motion extends the selection. E to select to end of word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The word fire is selected. I could delete it with D, yank it with Y, or change it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Escape to cancel.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Try again on the ice line. V to start, then W W to extend across words.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two words selected. The highlight follows the cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "On the heal line. V then dollar sign selects to the end of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The entire line contents selected. Any motion works inside visual mode."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Lowercase V. Select text, then act on it. The visual feedback makes it safe to experiment."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spell.py"
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "title": "VimFu — Search Word Under Cursor",
+  "description": "Press * to search forward for the exact word under the cursor. No typing needed — just one key.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 191,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "3-vX4PHDjJA",
+    "url": "https://youtube.com/watch?v=3-vX4PHDjJA",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f trace.py .trace.py.swp .trace.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*trace.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "trace.py",
+      "content": "name = \"vim\"\nkind = \"tool\"\nname = \"nano\"\nkind = \"tool\"\nname = \"code\"\nkind = \"app\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim trace.py"
+    },
+    {
+      "waitForScreen": "name",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Search Word Under Cursor",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Star searches for the word under your cursor. One key, no typing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is on name. Press star.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "*"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the next name. Star found every match instantly."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Star again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "*"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Third name. Star works just like slash, but you don't type anything."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now move to kind and try star.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "*"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Found kind. Star picks up whatever word the cursor is on."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Star. The fastest search in Vim. Land on a word and go."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f trace.py"
+    }
+  ]
+}

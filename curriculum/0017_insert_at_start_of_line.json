@@ -1,0 +1,251 @@
+{
+  "title": "VimFu — Insert at Start of Line",
+  "description": "Press shift-I to jump to the start of the line and enter insert mode. Perfect for adding comments or prefixes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 58,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "QMnr363YtpM",
+    "url": "https://youtube.com/watch?v=QMnr363YtpM",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*config.py*"
+    },
+    {
+      "comment": "Create a file with indented lines"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "host = \"localhost\"\nport = 8080\ndebug = True\nname = \"app\""
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Insert at Start of Line",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Lowercase eye inserts where the cursor is.",
+      "wait": false
+    },
+    {
+      "line": "nvim config.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "host",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "But what if you want to type at the beginning of the line?",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Shift eye. It jumps to the start and enters insert mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": "# "
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Escape to go back to normal mode.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "We just commented out that line. From anywhere on it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's do another. Move down a couple lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is at the end. Shift eye.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "# "
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "And Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Straight to the start. No matter where you were."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "# "
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Shift eye. Jump to the beginning, start typing. The opposite of shift A, which we'll see next."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ]
+}

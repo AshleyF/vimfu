@@ -1,0 +1,223 @@
+{
+  "title": "VimFu — Find Character Backward",
+  "description": "Press capital F followed by a character to jump backward to the previous occurrence of that character on the current line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 194,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "xRqCNzE5l74",
+    "url": "https://youtube.com/watch?v=xRqCNzE5l74",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f brew.py .brew.py.swp .brew.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*brew.py*"
+    },
+    {
+      "comment": "Create demo file — potion brewing"
+    },
+    {
+      "writeFile": "brew.py",
+      "content": "heal = mix(\"ruby\", \"moss\", 3)\nburn = mix(\"lava\", \"coal\", 7)\ncure = mix(\"sage\", \"mint\", 2)\nzap  = mix(\"bolt\", \"dust\", 5)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim brew.py"
+    },
+    {
+      "waitForScreen": "heal",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Find Character Backward",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Capital F searches backward on the current line. The reverse of lowercase F."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's go to the end of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital F M.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "F"
+    },
+    {
+      "keys": "m"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped backward to moss. Capital F finds the previous match."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital F R.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "F"
+    },
+    {
+      "keys": "r"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Further back to ruby. Same line, keeps going backward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Next line. Go to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital F L.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "F"
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Found the L in coal. Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "F"
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to lava. Capital F hops backward through every match on the line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Lowercase F goes forward, capital F goes backward. Same line, opposite direction."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f brew.py"
+    }
+  ]
+}

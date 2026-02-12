@@ -1,0 +1,293 @@
+{
+  "title": "VimFu — Actions on Selection",
+  "description": "In visual mode, press d to delete, c to change, y to yank, angle bracket to indent or unindent.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 209,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "diNNU1HIjas",
+    "url": "https://youtube.com/watch?v=diNNU1HIjas",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f loot.py .loot.py.swp .loot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*loot.py*"
+    },
+    {
+      "comment": "Create demo file — loot table"
+    },
+    {
+      "writeFile": "loot.py",
+      "content": "# loot table\nsword = 10\nshield = 5\npotion = 20\nscroll = 8\ngem = 50"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim loot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Actions on Selection",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Once you have a visual selection, one key acts on it. D deletes, Y yanks, greater than indents."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select the sword and shield lines with capital V then J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "D to delete.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both lines gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Select three lines. Capital V, then J J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Greater than to indent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All three lines shifted right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Select a word with V E on the sword line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Y to yank it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "y"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Go to the end of the file and paste.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "type": "best = "
+    },
+    "escape",
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Yanked from visual mode, pasted right where we needed it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select, then act. D, C, Y, greater than, less than. Visual mode makes it obvious what you are editing."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f loot.py"
+    }
+  ]
+}

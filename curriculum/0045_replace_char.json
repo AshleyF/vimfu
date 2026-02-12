@@ -1,0 +1,205 @@
+{
+  "title": "VimFu — Replace a Character",
+  "description": "Press r followed by a character to replace the character under the cursor without entering insert mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 186,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "PzgmxSXOlTk",
+    "url": "https://youtube.com/watch?v=PzgmxSXOlTk",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f typo.py .typo.py.swp .typo.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*typo.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "typo.py",
+      "content": "tag = \"dork\"\ncount = 9090\nflag = Trua"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim typo.py"
+    },
+    {
+      "waitForScreen": "mode",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Replace a Character",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "R replaces one character. You stay in normal mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "This says dork. Should be dark.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "keys": "r"
+    },
+    {
+      "keys": "a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "R A. One key to replace, one key for the new character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now the count. Nine zero nine zero should be eight zero eight zero.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "r"
+    },
+    {
+      "keys": "8"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "keys": "r"
+    },
+    {
+      "keys": "8"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two quick fixes. Still in normal mode the whole time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One more. Trua should be True.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "r"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "R E. Fixed. No insert mode needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "R plus any character. Quick single-character fix."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f typo.py"
+    }
+  ]
+}

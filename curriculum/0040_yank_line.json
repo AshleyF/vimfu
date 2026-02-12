@@ -1,0 +1,221 @@
+{
+  "title": "VimFu — Yank a Line",
+  "description": "Press yy to copy (yank) the current line. Then p to paste. In Vim, copy is called yank.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 181,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "RoicAQxvHnU",
+    "url": "https://youtube.com/watch?v=RoicAQxvHnU",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f items.py .items.py.swp .items.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*items.py*"
+    },
+    {
+      "comment": "Create a short file"
+    },
+    {
+      "writeFile": "items.py",
+      "content": "name = \"vim\"\nversion = 2"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim items.py"
+    },
+    {
+      "waitForScreen": "name",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Yank a Line",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "In Vim, copy is called yank. Y Y yanks the current line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's copy this first line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "y"
+    },
+    {
+      "keys": "y"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It looks like nothing happened. But the line is copied."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press P to paste it below.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "There it is. A copy of line one, pasted below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press P again. It pastes again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Yank once, paste as many times as you want."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's yank line two instead.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "y"
+    },
+    {
+      "keys": "y"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Copied and pasted. Y Y to yank. P to put."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Y Y. Yank a line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f items.py"
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "title": "VimFu — Append at End of Line",
+  "description": "Press shift-A to jump to the end of the line and enter insert mode. Add comments, finish lines, or tack on whatever you need.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 59,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "RunTX1I9p7E",
+    "url": "https://youtube.com/watch?v=RunTX1I9p7E",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f items.py .items.py.swp .items.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*items.py*"
+    },
+    {
+      "comment": "Create a file with short lines"
+    },
+    {
+      "writeFile": "items.py",
+      "content": "x = 1\ny = 2\nz = 3\ntotal = x + y"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Append at End of Line",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Sometimes you need to add something at the end of a line."
+    },
+    {
+      "line": "nvim items.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "x = 1",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "No matter where your cursor is, shift A takes you to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "  # width"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Straight to the end. One key."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor's at the start this time.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Doesn't matter. Shift A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "  # height"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Middle of the line. Same thing.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "  # depth"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Let's fix this last line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": " + z"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Shift A. End of line, insert mode. The perfect pair with shift eye."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f items.py"
+    }
+  ]
+}

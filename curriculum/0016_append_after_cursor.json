@@ -1,0 +1,245 @@
+{
+  "title": "VimFu — Append After Cursor",
+  "description": "Press a to insert text after the cursor. You know i inserts before — a is its mirror.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 57,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "uIhwrE6MBS0",
+    "url": "https://youtube.com/watch?v=uIhwrE6MBS0",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f greet.py .greet.py.swp .greet.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*greet.py*"
+    },
+    {
+      "comment": "Create a simple file"
+    },
+    {
+      "writeFile": "greet.py",
+      "content": "msg = \"hell\"\nprint(msg)"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Append After Cursor",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "You know I inserts before the cursor."
+    },
+    {
+      "line": "nvim greet.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "hell",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "But what if you want to add text after it?",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Watch what I does here.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "o"
+    },
+    {
+      "wait": 0.4
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "That inserted before the cursor. Not what we wanted.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Press A instead. Lowercase A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "a"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now we're inserting after the cursor.",
+      "wait": false
+    },
+    {
+      "type": "o"
+    },
+    {
+      "wait": 0.4
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Hello. That's what we wanted."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "A is perfect for adding to the end of words.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "2"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "I inserts before. A appends after. Two sides of the same coin."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f greet.py"
+    }
+  ]
+}

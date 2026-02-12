@@ -1,0 +1,234 @@
+{
+  "title": "VimFu — What Is Vim?",
+  "description": "Vim is a modal text editor. Normal mode: keys are commands. Insert mode: keys type text. That's the big idea — and it's what makes Vim so powerful.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 42,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Cleaning up any previous files..."
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hello.py .hello.py.swp .hello.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*hello.py*"
+    },
+    {
+      "comment": "Creating a sample file with some code..."
+    },
+    {
+      "writeFile": "hello.py",
+      "content": "import sys\n\ndef greet(name):\n    print(f\"Hello, {name}!\")\n    return True\n\ngreet(\"world\")"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "What Is Vim?",
+      "duration": 4.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Vim is a modal text editor."
+    },
+    {
+      "say": "It has two main modes. Normal mode, and insert mode.",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "import sys",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "say": "Right now we're in normal mode."
+    },
+    {
+      "say": "In normal mode, every key on your keyboard is a command.",
+      "wait": false
+    },
+    {
+      "wait": 1.5
+    },
+    {
+      "say": "For example, L moves right.",
+      "wait": false
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.35
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.35
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.35
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "J moves down.",
+      "wait": false
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "And H moves left.",
+      "wait": false
+    },
+    {
+      "keys": "h"
+    },
+    {
+      "wait": 0.35
+    },
+    {
+      "keys": "h"
+    },
+    {
+      "wait": 0.35
+    },
+    {
+      "keys": "h"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "K moves up.",
+      "wait": false
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "No arrow keys needed. H J K L, right on the home row."
+    },
+    {
+      "say": "Press I to enter insert mode. Now keys type text.",
+      "wait": false
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "# Vim is modal!"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press escape to return to normal mode.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "That's the whole idea. Normal mode: keys are commands. Insert mode: keys type text."
+    },
+    {
+      "say": "That's Vim. A modal editor."
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Cleaning up..."
+    },
+    {
+      "line": "rm -f hello.py"
+    }
+  ]
+}

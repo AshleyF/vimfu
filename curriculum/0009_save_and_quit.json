@@ -1,0 +1,242 @@
+{
+  "title": "VimFu — Save and Quit",
+  "description": "Three ways to save and quit: :wq, :x, and ZZ. Pick your favorite — they all work.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 50,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "v0fnS243mLw",
+    "url": "https://youtube.com/watch?v=v0fnS243mLw",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hello.py .hello.py.swp .hello.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*hello.py*"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Save and Quit",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "You know colon W saves. And colon Q quits.",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "~",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "print(\"hello\")"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Combine them. Colon W Q.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":wq"
+    },
+    {
+      "wait": 0.8
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Saved and quit in one command."
+    },
+    {
+      "say": "There's a shorter way.",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "hello",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "type": "print(\"world\")"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon X. Same thing — save and quit.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":x"
+    },
+    {
+      "wait": 0.8
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Even faster."
+    },
+    {
+      "say": "One more. No colon needed this time.",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "world",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "print(\"done\")"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Shift Z, Shift Z. Two capital Z's from normal mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Z"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Z"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Three ways. Colon W Q. Colon X. Or Z Z. Pick whichever feels right."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f hello.py"
+    }
+  ]
+}

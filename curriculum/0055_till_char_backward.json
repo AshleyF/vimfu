@@ -1,0 +1,244 @@
+{
+  "title": "VimFu — Till Character Backward",
+  "description": "Press capital T followed by a character to jump backward to just after that character on the current line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 196,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "SUNHng5zYvw",
+    "url": "https://youtube.com/watch?v=SUNHng5zYvw",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f shop.py .shop.py.swp .shop.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*shop.py*"
+    },
+    {
+      "comment": "Create demo file — magic item shop"
+    },
+    {
+      "writeFile": "shop.py",
+      "content": "buy = shop(\"wand\", 50, \"rare\")\nbuy = shop(\"cape\", 30, \"epic\")\nbuy = shop(\"ring\", 99, \"myth\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim shop.py"
+    },
+    {
+      "waitForScreen": "buy",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Till Character Backward",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Capital T searches backward but stops one short. The reverse of lowercase T."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Jump to the end of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital F open-paren for comparison.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "F"
+    },
+    {
+      "keys": "("
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Capital F lands right on the paren."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Back to the end. Now capital T open-paren.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "T"
+    },
+    {
+      "keys": "("
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Stopped one past the paren. Capital T doesn't quite reach it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Next line. Jump to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital T comma.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "T"
+    },
+    {
+      "keys": ","
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Stopped right after the comma. T always leaves one gap."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Last line. End of line. Capital T open-paren.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "T"
+    },
+    {
+      "keys": "("
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same idea. One past the paren every time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Lowercase F and T go forward. Capital F and T go backward. Lowercase stops before, capital stops after. Four precision tools."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f shop.py"
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "title": "VimFu — The dd-p Swap Trick",
+  "description": "ddp swaps two lines by deleting and pasting below. xp swaps two adjacent characters.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 185,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "y4gtoZsay8o",
+    "url": "https://youtube.com/watch?v=y4gtoZsay8o",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f order.py .order.py.swp .order.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*order.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "order.py",
+      "content": "beta = 2\nalpha = 1\ndelta = 3\ntset = 4"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim order.py"
+    },
+    {
+      "waitForScreen": "beta",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "The dd-p Swap Trick",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "D D P is the line swap trick. Delete a line, then put it back below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Beta is on line one. Let's move it down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Alpha is first now. D D then P swapped the lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital P would put it above instead. Same idea, opposite direction."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "X P swaps two characters. Great for fixing typos.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "keys": "x"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "T S E T is now test. X deletes a character, P puts it right back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "D D P to swap lines. X P to swap characters. Two handy combos."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f order.py"
+    }
+  ]
+}

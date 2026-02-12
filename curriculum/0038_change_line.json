@@ -1,0 +1,211 @@
+{
+  "title": "VimFu — Change Entire Line",
+  "description": "Press cc or S to delete the entire line's contents and enter insert mode. Like dd, but you stay on the line to type.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 179,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "yOoWC6_5dho",
+    "url": "https://youtube.com/watch?v=yOoWC6_5dho",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f task.py .task.py.swp .task.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*task.py*"
+    },
+    {
+      "comment": "Create a file with lines to rewrite"
+    },
+    {
+      "writeFile": "task.py",
+      "content": "x = 1\ny = 2\nz = 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim task.py"
+    },
+    {
+      "waitForScreen": "x = 1",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Change Entire Line",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "C C clears the whole line and drops you in insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's rewrite line one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "name = \"vim\""
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The old line is gone. The new one is in its place."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Line two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "version = 2"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "C C wipes the content but keeps the line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital S does the same thing. One key instead of two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "S"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "active = True"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "S or C C. Same result. Replace the entire line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "C C. Change the whole line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f task.py"
+    }
+  ]
+}

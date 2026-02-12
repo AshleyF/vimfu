@@ -1,0 +1,263 @@
+{
+  "title": "VimFu — Word Forward",
+  "description": "Press w to jump to the start of the next word. Move through code quickly without holding arrow keys.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 62,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "vLt1k3WkawQ",
+    "url": "https://youtube.com/watch?v=vLt1k3WkawQ",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f words.py .words.py.swp .words.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*words.py*"
+    },
+    {
+      "comment": "Create a file with some code"
+    },
+    {
+      "writeFile": "words.py",
+      "content": "name = \"vim master\"\nlevel = 42\nprint(name, level)"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Word Forward",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Moving one character at a time is slow."
+    },
+    {
+      "line": "nvim words.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "vim master",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Press W to jump to the next word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Each W hops to the start of the next word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "It wraps to the next line too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Word by word. Way faster than H L L L L."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Watch how fast you can move.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "W for word forward. Your first speed boost."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f words.py"
+    }
+  ]
+}

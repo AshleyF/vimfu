@@ -1,0 +1,226 @@
+{
+  "title": "VimFu — Delete to End of Line",
+  "description": "Press D to delete from the cursor to the end of the line. Same as d$ — delete operator plus the end-of-line motion.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 175,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "DViSbv2MfSc",
+    "url": "https://youtube.com/watch?v=DViSbv2MfSc",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f notes.py .notes.py.swp .notes.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*notes.py*"
+    },
+    {
+      "comment": "Create a file with trailing comments to delete"
+    },
+    {
+      "writeFile": "notes.py",
+      "content": "name = \"vim\"  # TODO fix\nport = 8080  # remove this\nhost = \"local\"  # old note"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim notes.py"
+    },
+    {
+      "waitForScreen": "name",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Delete to End of Line",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Capital D deletes everything from the cursor to the end of the line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "These trailing comments need to go.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "#"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "D"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything from the hash to the end. Gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Same on line two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "#"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "D"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One key. Everything after the cursor is deleted."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "#"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "D"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "D is the same as d dollar sign. Delete to end of line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital D. Delete to the end of the line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f notes.py"
+    }
+  ]
+}

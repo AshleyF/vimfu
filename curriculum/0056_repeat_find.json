@@ -1,0 +1,279 @@
+{
+  "title": "VimFu — Repeat Find",
+  "description": "Press semicolon to repeat the last f/F/t/T motion in the same direction.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 197,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "KEmMKdFPRtw",
+    "url": "https://youtube.com/watch?v=KEmMKdFPRtw",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f loot.py .loot.py.swp .loot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*loot.py*"
+    },
+    {
+      "comment": "Create demo file — game inventory"
+    },
+    {
+      "writeFile": "loot.py",
+      "content": "items = \"axe, bow, cup, gem, orb\"\nstats = \"hp:5, mp:3, xp:0, gp:9\"\nspells = \"fire, ice, bolt, heal\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim loot.py"
+    },
+    {
+      "waitForScreen": "items",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Repeat Find",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Semicolon repeats your last F or T motion. No need to type the character again."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "F comma to find the first comma.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": ","
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now semicolon.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "And again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Four commas, one F, three semicolons. Hop hop hop."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Down to the stats line. F colon.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": ":"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Semicolon picks up the new target.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Hopped through every colon. Semicolon always repeats the last find."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Works with T too. Down one more. T comma.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "t"
+    },
+    {
+      "keys": ","
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Semicolon.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Semicolon repeats whatever the last motion was. F, T, capital F, capital T."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Semicolon. Find once, repeat forever."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f loot.py"
+    }
+  ]
+}

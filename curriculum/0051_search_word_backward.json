@@ -1,0 +1,227 @@
+{
+  "title": "VimFu — Search Word Backward",
+  "description": "Press # to search backward for the exact word under the cursor. The reverse of *.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 192,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "kvh9hJ31mF0",
+    "url": "https://youtube.com/watch?v=kvh9hJ31mF0",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f cats.py .cats.py.swp .cats.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*cats.py*"
+    },
+    {
+      "comment": "Create demo file — cat mood tracker"
+    },
+    {
+      "writeFile": "cats.py",
+      "content": "mood = \"hungry\"\nnaps = 5\nmood = \"playful\"\nnaps = 2\nmood = \"grumpy\"\nnaps = 9\nmood = \"zoomies\"\nnaps = 0\nmood = \"sleepy\"\nnaps = 12"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim cats.py"
+    },
+    {
+      "waitForScreen": "mood",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Search Word Backward",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Hash searches backward for the word under your cursor. The reverse of star."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Here's a cat mood tracker. Let's jump to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Cursor is on naps. Press hash.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "#"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped backward to the previous naps."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Hash again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "#"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Another hop backward. And again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "#"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Every naps in the file, going backward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "#"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "All the way back to line two."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now go up to mood.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press hash on mood.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "#"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Wrapped to the last mood in the file. Hash always goes backward, even past the top."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Hash. One key, backward search. Star forward, hash back."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f cats.py"
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "title": "VimFu — Typing Text",
+  "description": "In insert mode, Vim works like any other editor. Type, press Enter for new lines, Backspace to delete. No tricks — just type.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 46,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "_EFqkfWfj1U",
+    "url": "https://youtube.com/watch?v=_EFqkfWfj1U",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f notes.txt .notes.txt.swp .notes.txt.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*notes.txt*"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Typing Text",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "When you open a file, you're in normal mode.",
+      "wait": false
+    },
+    {
+      "line": "nvim notes.txt",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "~",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press I to enter insert mode.",
+      "wait": false
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now what? Just type. It works like any other editor.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": "Shopping list"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Enter makes a new line.",
+      "wait": false
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "eggs"
+    },
+    "enter",
+    {
+      "type": "milk"
+    },
+    "enter",
+    {
+      "type": "bread"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Backspace deletes backwards.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "backspace": 1
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "backspace": 1
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "backspace": 1
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "backspace": 1
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "utter"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Enter, then Tab indents.",
+      "wait": false
+    },
+    "enter",
+    {
+      "keys": "\t"
+    },
+    {
+      "type": "salted"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "No surprises. In insert mode, your keyboard works normally."
+    },
+    {
+      "say": "When you're done, Escape back to normal mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f notes.txt"
+    }
+  ]
+}

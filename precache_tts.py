@@ -1,58 +1,33 @@
-"""Pre-cache TTS audio clips for a lesson script.
+"""Pre-cache TTS audio clips for a lesson.
 
-Usage: python3.13 precache_tts.py curriculum/0002_opening_a_file.py
+Usage: python precache_tts.py curriculum/0042_example.json
+       python precache_tts.py curriculum/0042_example.py   (resolves .json)
 
 Runs the TTS generation in isolation, retrying failed clips.
 Once cached, the lesson script will start instantly.
 """
 
 import sys
-import importlib.util
 from pathlib import Path
 
 if len(sys.argv) < 2:
-    print("Usage: python precache_tts.py <lesson_script.py>")
+    print("Usage: python precache_tts.py <lesson.json>")
     sys.exit(1)
 
-script = Path(sys.argv[1]).resolve()
-if not script.exists():
-    print(f"File not found: {script}")
+target = Path(sys.argv[1]).resolve()
+# Accept .py and auto-resolve to .json
+if target.suffix == ".py":
+    target = target.with_suffix(".json")
+if not target.exists():
+    print(f"File not found: {target}")
     sys.exit(1)
 
 # Add shellpilot to path
-sys.path.insert(0, str(script.parent.parent / "shellpilot"))
-sys.path.insert(0, str(script.parent))
+sys.path.insert(0, str(target.parent.parent / "shellpilot"))
 
-# Load the module to get the Demo object
-spec = importlib.util.spec_from_file_location("lesson", script)
-mod = importlib.util.module_from_spec(spec)
-# Prevent the lesson from auto-running
-sys.argv = [str(script)]  # Reset argv so Demo.run() path derivation works
+from player import load_lesson, Say
 
-# We need to extract the Demo without running it
-# Import the module source and find the Demo
-import ast
-source = script.read_text()
-tree = ast.parse(source)
-
-# Quick approach: just import the module but monkey-patch Demo.run
-from dsl import Demo, Say
-_original_run = Demo.run
-Demo.run = lambda self, **kw: None  # no-op
-spec.loader.exec_module(mod)
-Demo.run = _original_run
-
-# Find the Demo instance
-demo_obj = None
-for name in dir(mod):
-    obj = getattr(mod, name)
-    if isinstance(obj, Demo):
-        demo_obj = obj
-        break
-
-if not demo_obj:
-    print("No Demo instance found in script")
-    sys.exit(1)
+demo_obj = load_lesson(target)
 
 # Collect Say texts
 texts = []
@@ -60,7 +35,7 @@ for step in demo_obj.setup + demo_obj.steps + demo_obj.teardown:
     if isinstance(step, Say):
         texts.append(step.text)
 
-print(f"Found {len(texts)} TTS clips in {script.name}")
+print(f"Found {len(texts)} TTS clips in {target.name}")
 
 from tts import TextToSpeech, get_cache_path
 

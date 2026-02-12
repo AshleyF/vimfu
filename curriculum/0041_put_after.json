@@ -1,0 +1,211 @@
+{
+  "title": "VimFu — Put After",
+  "description": "Press p to paste after the cursor. For yanked lines, p pastes below the current line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 182,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "nNVPJrMvVTI",
+    "url": "https://youtube.com/watch?v=nNVPJrMvVTI",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tasks.py .tasks.py.swp .tasks.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*tasks.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "tasks.py",
+      "content": "alpha = 1\ngamma = 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim tasks.py"
+    },
+    {
+      "waitForScreen": "alpha",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Put After",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Last time we yanked a line. Now let's paste it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Y Y copies the line. P puts it below.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "y"
+    },
+    {
+      "keys": "y"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A copy of line one appeared below it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "P also works with deleted text. D D cuts a line. P puts it back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "We moved the line down. Delete and put. That's a move."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "It works for characters too. X cuts a character. P pastes it after.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "x"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "P always pastes after. After the cursor, or below the line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "P. Put after."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f tasks.py"
+    }
+  ]
+}

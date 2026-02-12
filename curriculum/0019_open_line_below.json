@@ -1,0 +1,210 @@
+{
+  "title": "VimFu — Open Line Below",
+  "description": "Press o to open a new line below the cursor and enter insert mode. One key to add a line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 60,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "2y3x-DNotAA",
+    "url": "https://youtube.com/watch?v=2y3x-DNotAA",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f steps.py .steps.py.swp .steps.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*steps.py*"
+    },
+    {
+      "comment": "Create a file with numbered steps"
+    },
+    {
+      "writeFile": "steps.py",
+      "content": "step1 = \"wake up\"\nstep3 = \"code\"\nstep4 = \"sleep\""
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Open Line Below",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Here's a file with numbered steps."
+    },
+    {
+      "line": "nvim steps.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "wake up",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "We skipped step two. Let's fix that."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is on step one. Press O to open a new line below.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "A blank line appears, and we're in insert mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "step2 = \"eat breakfast\""
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Done. New line added right where we needed it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's add one more at the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "step5 = \"repeat\""
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "O opens below. Every time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can keep going.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "step6 = \"profit\""
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Lowercase O. New line below, insert mode. One of the most-used keys in Vim."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f steps.py"
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "title": "VimFu — Quit Without Saving",
+  "description": "Discard all changes with :q! or ZQ. The exclamation mark means 'I'm sure.' Everything since the last save is gone.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 51,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "KvSjAt0pHic",
+    "url": "https://youtube.com/watch?v=KvSjAt0pHic",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hello.py .hello.py.swp .hello.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*hello.py*"
+    },
+    {
+      "comment": "Create a starter file so there's something to lose"
+    },
+    {
+      "writeFile": "hello.py",
+      "content": "print(\"hello world\")"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Quit Without Saving",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Sometimes you make a mess and just want out.",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "hello",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Here's a working file. Let's break it."
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "XXXXXXX"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Yikes. We don't want any of that."
+    },
+    {
+      "say": "Colon Q won't work. Vim protects you.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Unsaved changes. Vim won't let you quit."
+    },
+    {
+      "say": "Add an exclamation mark. Colon Q bang.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The bang means I'm sure. Throw it all away.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Gone. Back to the shell. The file is untouched."
+    },
+    {
+      "say": "Let's check.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "line": "cat hello.py"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Still perfect. Our edits were discarded."
+    },
+    {
+      "say": "There's a faster way too.",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "hello",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "OOPS"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Shift Z, Shift Q. Quit without saving, no colon needed.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Z"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Q"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Two ways out. Colon Q bang, or Z Q. Your escape hatch when things go wrong."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f hello.py"
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "title": "VimFu — Redo",
+  "description": "Press Ctrl-R to redo in Vim. Went too far with undo? Ctrl-R brings your changes back.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 53,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "-tkbSu_IdnE",
+    "url": "https://youtube.com/watch?v=-tkbSu_IdnE",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hello.py .hello.py.swp .hello.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*hello.py*"
+    },
+    {
+      "comment": "Create a starter file"
+    },
+    {
+      "writeFile": "hello.py",
+      "content": "print(\"hello\")\nprint(\"world\")"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Redo",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "You know U undoes your last change.",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "hello",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Let's add a line.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "print(\"new line\")"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now undo it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Gone. But what if we wanted that line back?"
+    },
+    {
+      "say": "Control R. Redo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "r"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "It's back. Redo reverses the undo."
+    },
+    {
+      "say": "You can go back and forth.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "r"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Redo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "r"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "U to undo. Control R to redo. Simple."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f hello.py"
+    }
+  ]
+}

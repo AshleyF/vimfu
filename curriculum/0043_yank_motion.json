@@ -1,0 +1,195 @@
+{
+  "title": "VimFu — Yank a Motion",
+  "description": "Use yw to yank a word, y$ to yank to end of line. The y operator works with any motion, just like d and c.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 184,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "pIXQxZkI5-Q",
+    "url": "https://youtube.com/watch?v=pIXQxZkI5-Q",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f notes.py .notes.py.swp .notes.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*notes.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "notes.py",
+      "content": "name = \"vim\"\nkind = \"editor\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim notes.py"
+    },
+    {
+      "waitForScreen": "name",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Yank a Motion",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Y Y yanks a whole line. But you can yank smaller pieces too."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Y W yanks a word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "y"
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "P"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "We yanked the word name and pasted it on line two."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Y dollar sign yanks to the end of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "y"
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Yanked to end of line. There it is, pasted at the end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Y plus any motion. Y W for a word. Y dollar for the rest of the line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f notes.py"
+    }
+  ]
+}

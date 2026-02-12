@@ -1,0 +1,184 @@
+{
+  "title": "VimFu — The Escape Habit",
+  "description": "After every edit, press Escape. Normal mode is home. Build the reflex now and never get stuck.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 56,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "1T7OEvSUh5g",
+    "url": "https://youtube.com/watch?v=1T7OEvSUh5g",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f todo.py .todo.py.swp .todo.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*todo.py*"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "The Escape Habit",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "This is the most important habit in Vim.",
+      "wait": false
+    },
+    {
+      "line": "nvim todo.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "~",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "After every single edit, press Escape."
+    },
+    {
+      "say": "Watch the rhythm.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "# my todo list"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "buy milk"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "walk dog"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "learn vim"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Type. Escape. Type. Escape. Every time."
+    },
+    {
+      "say": "If you're ever lost or confused, just press Escape. You'll always land in normal mode."
+    },
+    {
+      "say": "It's your reset button. Your safe place. Make it a reflex and you'll never get stuck."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f todo.py"
+    }
+  ]
+}

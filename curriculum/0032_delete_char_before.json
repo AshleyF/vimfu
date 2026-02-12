@@ -1,0 +1,241 @@
+{
+  "title": "VimFu — Delete Character Before",
+  "description": "Press X (Shift-x) to delete the character before the cursor. It's like backspace in normal mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 173,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "A-3EIE1SLxo",
+    "url": "https://youtube.com/watch?v=A-3EIE1SLxo",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f typo.py .typo.py.swp .typo.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*typo.py*"
+    },
+    {
+      "comment": "Create a file with double-letter typos"
+    },
+    {
+      "writeFile": "typo.py",
+      "content": "prrint(\"hello\")\ntexxt = \"data\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim typo.py"
+    },
+    {
+      "waitForScreen": "prrint",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Delete Character Before",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Lowercase X deletes under the cursor. Capital X deletes before it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "There's a double R in print. Let's fix it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "r"
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "X"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Capital X removed the R before the cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Same fix on line two. Double X in text.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "x"
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "X"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Fixed. Think of capital X as backspace for normal mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can press it multiple times too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "X"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "X"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "X"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Each one deletes the character before."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital X. Delete the character before the cursor."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f typo.py"
+    }
+  ]
+}

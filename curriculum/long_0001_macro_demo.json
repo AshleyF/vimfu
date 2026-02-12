@@ -1,0 +1,582 @@
+{
+  "title": "VimFu — Recording Macros",
+  "description": "Learn how to record a Vim macro to automate repetitive edits. We add a logging line to six functions by recording once and replaying five times.",
+  "speed": 0.55,
+  "humanize": 0.7,
+  "seed": 400,
+  "ttsVoice": "echo",
+  "targetWidth": 1920,
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "public",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f server.py .server.py.swp .server.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*server.py*"
+    },
+    {
+      "comment": "Create the demo file — a little API server with functions that need logging"
+    },
+    {
+      "writeFile": "server.py",
+      "content": "import logging\n\nlogger = logging.getLogger(__name__)\n\n\ndef get_users(db):\n    users = db.query(\"SELECT * FROM users\")\n    return users\n\n\ndef create_user(db, name, email):\n    db.execute(\"INSERT INTO users VALUES (?, ?)\", (name, email))\n    return {\"status\": \"created\"}\n\n\ndef delete_user(db, user_id):\n    db.execute(\"DELETE FROM users WHERE id = ?\", (user_id,))\n    return {\"status\": \"deleted\"}\n\n\ndef update_email(db, user_id, new_email):\n    db.execute(\"UPDATE users SET email = ? WHERE id = ?\", (new_email, user_id))\n    return {\"status\": \"updated\"}\n\n\ndef list_orders(db, user_id):\n    orders = db.query(\"SELECT * FROM orders WHERE user_id = ?\", (user_id,))\n    return orders\n\n\ndef cancel_order(db, order_id):\n    db.execute(\"UPDATE orders SET status = 'cancelled' WHERE id = ?\", (order_id,))\n    return {\"status\": \"cancelled\"}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim server.py"
+    },
+    {
+      "waitForScreen": "get_users",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Recording Macros",
+      "duration": 4.0
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Today we're learning one of Vim's most powerful features. Macros. A macro lets you record a sequence of keystrokes and replay them instantly. They're perfect for repetitive edits."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Here's the scenario. We've got a Python file with six API functions. The boss wants a logging line added at the top of every function. We could do it by hand six times — or we could be smart about it."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "At the top we've got the logging import, then the first few functions — get users, create user, delete user, update email."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "There are two more below the screen. Control F scrolls down one full page.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0006"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "List orders and cancel order. Six functions total, and every one needs a logging line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G G takes us back to the top of the file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Let me do the first one by hand, so you can see the basic edits. Then we'll record a macro for the rest."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "I'll use slash to search. Slash puts Vim into search mode. Watch the bottom of the screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "I type def get, then press Enter to jump there.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "def get"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The cursor jumped right to the def line. Slash search is one of the fastest ways to move around in Vim."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now I need to create a new line under this def line and start typing. In Vim, lowercase O does exactly that. It opens a new line below and puts you in insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Watch — I press O.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "See? A new blank line appeared and the cursor is there, ready to type. We're in insert mode now — anything I type goes directly into the file."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "I'll type the logging line. Vim already indented for us, so I just type the call.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "logger.info(\"calling get_users\")"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Done. Logger dot info, calling get users. That's exactly what we want."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now I press Escape to leave insert mode and go back to normal mode. In Vim you're always either in normal mode, where keys are commands, or insert mode, where keys type text. Escape switches you back to normal."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "First function — done. But we've got five more to go. Doing this by hand five more times would be tedious. Let's use a macro."
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Here's the idea. I'm going to record every keystroke I make while editing the second function. Then I can replay those exact keystrokes on functions three, four, five, and six."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "First, let me jump to the second function. Slash, def create.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "type": "def create"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Cursor is on the d of def create user. Perfect starting position."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "To start recording a macro, I press Q followed by a letter. The letter is the name of the register where the macro will be stored. I'll use the letter A. So — Q, A."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "q"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Look at the bottom left of the screen. It says recording at A. From this moment on, every single keystroke is being captured."
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now here's the clever part. Instead of typing the function name by hand, I'm going to copy it from the def line. That way this macro will work on any function, not just create user."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The cursor is on the D of def. I press W — lowercase W — to move forward one word. That lands the cursor right on the function name."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now the cursor is on the C of create user. I'll copy this function name. In Vim, copying is called yanking. I press Y W — yank word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "y"
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Notice I didn't have to select anything first. In most editors you'd highlight the text and then copy. In Vim, Y plus a motion yanks directly — no selection step needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Create underscore user is now yanked and sitting in a register, ready to paste."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now O to open a new line below and enter insert mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Vim auto-indented for us. I'll type the full logging line, but leave a gap where the function name goes — then paste it in."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "logger.info(\"calling \")"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Escape to go back to normal mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "The cursor is on the closing parenthesis. I press H to move left.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "h"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now I'm on the closing quote — right where I want to paste."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now capital P — paste before. This inserts the yanked function name right before the quote."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "P"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Look at that — create underscore user was pasted right into the string. We yanked it from the def line and pasted it here — and every keystroke is being recorded into the macro."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "One last thing before we stop recording. I'll search for the next def line. That way the macro includes the navigation — so when we replay it, the cursor is already in position and we can just replay again immediately."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Slash, def, space, Enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "type": "def "
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The cursor is now on delete user — the next function in line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "And now I press Q to stop recording."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "That's it. The macro is saved. It contains: W to jump to the function name, Y W to yank the word, O to open a new line, type the logging template, Escape, H, capital P to paste the function name in, then slash def to jump to the next function. Let's see it in action."
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "To replay a macro, I press at sign followed by the register letter. At, A."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "@"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 1.2
+    },
+    {
+      "say": "Boom. Delete user got its logging line, and the cursor jumped to update email — ready for the next replay. All in an instant."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Here's a shortcut. Instead of at A, I can press at, at — two at signs. That replays whatever macro you ran last."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@"
+    },
+    {
+      "keys": "@"
+    },
+    {
+      "wait": 1.2
+    },
+    {
+      "say": "Update email — done. Cursor's on list orders. Two functions left."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "And here's one more trick. I can put a count in front — two at at runs the macro twice in a row."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2"
+    },
+    {
+      "keys": "@"
+    },
+    {
+      "keys": "@"
+    },
+    {
+      "wait": 1.5
+    },
+    {
+      "say": "List orders and cancel order — both done. All six functions now have logging."
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Notice the search wrapped back to the top of the file — there are no more defs below. So we can already see the first few functions and their new log lines."
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Get users — has its log line. Create user — yep. Delete user — got it."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control F scrolls down one full screen. Let me check the rest.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0006"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Update email, list orders, cancel order — every single one. Each logging line has the correct function name because the macro yanked it from the def line."
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Quick recap. Q followed by a letter starts recording into that register. You do your edit. Q again stops recording. At sign plus the letter replays it. At at replays the last macro. And you can put a count in front to replay multiple times."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The secret to a good macro is making it generic. We didn't hardcode the function name — we yanked it. We didn't count lines — we searched for the next def. That's what made it work on every function automatically."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Macros are one of Vim's real superpowers. Once you see a repetitive pattern, record a macro and let Vim do the heavy lifting. Thanks for watching."
+    },
+    {
+      "wait": 2.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f server.py"
+    }
+  ]
+}

@@ -1,0 +1,225 @@
+{
+  "title": "VimFu — Back to Normal Mode",
+  "description": "Press Escape to leave insert mode. Always. After every edit, hit Escape to return to normal mode. Make it a reflex.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 47,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "pKhYM_Meolk",
+    "url": "https://youtube.com/watch?v=pKhYM_Meolk",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f todo.py .todo.py.swp .todo.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*todo.py*"
+    },
+    {
+      "comment": "Create a starter file"
+    },
+    {
+      "writeFile": "todo.py",
+      "content": "tasks = []\nprint(tasks)"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Back to Normal Mode",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "You know how to enter insert mode with I."
+    },
+    {
+      "line": "nvim todo.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "tasks",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Type something. Then press Escape.",
+      "wait": false
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "# my todo list"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "INSERT is gone. You're back in normal mode."
+    },
+    {
+      "say": "Escape is always safe. Press it twice if you're not sure.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.2
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Nothing bad happens. You just stay in normal mode."
+    },
+    {
+      "say": "There are other ways into insert mode too. Shift A appends at the end of a line.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "  # show tasks"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Same rule. When you're done, Escape."
+    },
+    {
+      "say": "One more. Shift O to open a line above.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "gg"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "O"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "# vim practice"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "That's the habit. After every edit, Escape. Normal mode is home. Always come back."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f todo.py"
+    }
+  ]
+}

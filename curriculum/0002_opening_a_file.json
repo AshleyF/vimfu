@@ -1,0 +1,249 @@
+{
+  "title": "VimFu — Opening a File",
+  "description": "How to open a file in Neovim. Type nvim followed by a filename. If the file exists you see its contents; if not, you get an empty buffer.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 43,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "Nz6Tdf_JWco",
+    "url": "https://youtube.com/watch?v=Nz6Tdf_JWco",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "comment": "Clean up any previous files and swap files"
+    },
+    {
+      "line": "rm -f hello.py .hello.py.swp .hello.py.swo"
+    },
+    {
+      "line": "rm -f notes.txt .notes.txt.swp .notes.txt.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*hello.py*"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*notes.txt*"
+    },
+    {
+      "comment": "Create a sample file to open later"
+    },
+    {
+      "writeFile": "hello.py",
+      "content": "import sys\n\ndef greet(name):\n    print(f\"Hello, {name}!\")\n    return True\n\ngreet(\"world\")"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Opening a File",
+      "duration": 4.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "To open a file, type vee eye.",
+      "wait": false
+    },
+    {
+      "type": "vi"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Or, vim.",
+      "wait": false
+    },
+    {
+      "type": "m"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Or, en-vim.",
+      "wait": false
+    },
+    {
+      "ctrl": "a"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "n"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Let's open a brand new file.",
+      "wait": false
+    },
+    {
+      "ctrl": "e"
+    },
+    {
+      "type": " notes.txt"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "waitForScreen": "notes.txt",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "This is an empty buffer. Let's type something."
+    },
+    {
+      "say": "Press i for insert mode.",
+      "wait": false
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": "Hello, Vim!"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Escape back to normal mode.",
+      "wait": false
+    },
+    "escape",
+    {
+      "say": "To quit, type colon q.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "It won't let us. We have unsaved changes."
+    },
+    {
+      "say": "Colon q bang quits without saving.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "waitForScreen": "$"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now let's open a file that already has content.",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "import sys",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now we can see the code inside the file."
+    },
+    {
+      "say": "At the bottom is the status bar, with the filename and cursor position.",
+      "wait": false
+    },
+    {
+      "wait": 1.5
+    },
+    {
+      "say": "That's it. Vee eye, vim, or en-vim, then the filename."
+    },
+    {
+      "say": "If the file exists, you see its contents. If not, you get an empty buffer."
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Cleaning up..."
+    },
+    {
+      "line": "rm -f hello.py notes.txt"
+    }
+  ]
+}

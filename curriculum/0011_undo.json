@@ -1,0 +1,211 @@
+{
+  "title": "VimFu — Undo",
+  "description": "Press u to undo in Vim. Keep pressing it to undo more. Made a mistake? Just hit u.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 52,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "gNWH_h95dgU",
+    "url": "https://youtube.com/watch?v=gNWH_h95dgU",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hello.py .hello.py.swp .hello.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*hello.py*"
+    },
+    {
+      "comment": "Create a starter file"
+    },
+    {
+      "writeFile": "hello.py",
+      "content": "print(\"hello\")\nprint(\"world\")\nprint(\"done\")"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Undo",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "You're going to make mistakes. That's fine.",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "hello",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Here's a file with three lines. Let's break it."
+    },
+    {
+      "say": "Delete a line with D D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Delete another.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Yikes. Two lines gone."
+    },
+    {
+      "say": "Press U to undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "One line is back."
+    },
+    {
+      "say": "U again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Both lines restored. U just walks backwards through your changes."
+    },
+    {
+      "say": "It works for typing too.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "this is a mistake"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Gone. Press U whenever something goes wrong. You can press it as many times as you need."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f hello.py"
+    }
+  ]
+}

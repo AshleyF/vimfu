@@ -1,0 +1,217 @@
+{
+  "title": "VimFu — Switching Visual Modes",
+  "description": "While in visual mode, press v, V, or Ctrl-V to switch between character, line, and block selection.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 208,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "otUT4ql2ISs",
+    "url": "https://youtube.com/watch?v=otUT4ql2ISs",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f pet.py .pet.py.swp .pet.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*pet.py*"
+    },
+    {
+      "comment": "Create demo file — pet stats"
+    },
+    {
+      "writeFile": "pet.py",
+      "content": "# pet stats\ncat  = 9\ndog  = 7\nfish = 3\nbird = 5"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim pet.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Switching Visual Modes",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "You can switch between visual modes without leaving visual mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Start with lowercase V on the cat line. Select a few characters.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Character selection. Now press capital V to switch to line mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now the whole line is selected. Same starting point, different mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control V to switch to block mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0016"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now it is a block selection. Three modes, same anchor point."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Extend the block down with J J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A rectangle across three lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital V again. Back to line mode, now covering three lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three full lines selected. You can keep switching until the selection is exactly what you want."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "V, capital V, control V. Switch freely between visual modes mid-selection."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f pet.py"
+    }
+  ]
+}

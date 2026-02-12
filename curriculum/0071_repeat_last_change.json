@@ -1,0 +1,322 @@
+{
+  "title": "VimFu — Repeat Last Change",
+  "description": "The dot command repeats your last change. Press dot to do whatever you just did, again. It works with deletes, changes, inserts, and more.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 212,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "scEMHgwbjp0",
+    "url": "https://youtube.com/watch?v=scEMHgwbjp0"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spells.py .spells.py.swp .spells.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spells.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "spells.py",
+      "content": "power 5\nspeed 5\nrange 5\narmor 5\n\ndef cast(name):\n    print(f\"casting {name}\")\n    print(f\"it hits!\")\n    print(f\"nice one\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spells.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Repeat Last Change",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "The dot command is the most powerful key in Vim."
+    },
+    {
+      "say": "Press dot to repeat your last change.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 1: dd then dot to delete lines ---"
+    },
+    {
+      "say": "Here we have a spells file with four stats, all set to five.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Let's delete the first line with D D.",
+      "wait": false
+    },
+    {
+      "keys": "dd"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now press dot to delete the next line too.",
+      "wait": false
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Dot again.",
+      "wait": false
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three lines gone. D D once, then dot handles the rest.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Let's undo all of that.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: cw then dot to change words ---"
+    },
+    {
+      "say": "Dot works with changes too. Let's change that five to ninety-nine.",
+      "wait": false
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "cw",
+      "overlay": "change word"
+    },
+    {
+      "type": "99"
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jump down and dot.",
+      "wait": false
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Same change, instantly. Again.",
+      "wait": false
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 3: A then dot to append ---"
+    },
+    {
+      "say": "Dot even works with insert mode. Let's add exclamation marks.",
+      "wait": false
+    },
+    {
+      "keys": "6G",
+      "overlay": "go to line 6"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append at end"
+    },
+    {
+      "type": "!"
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jump down and dot.",
+      "wait": false
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Dot repeats your last change. Deletes, changes, inserts, all of it."
+    },
+    {
+      "say": "One key, infinite power. That's the dot command.",
+      "wait": false
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spells.py"
+    }
+  ]
+}

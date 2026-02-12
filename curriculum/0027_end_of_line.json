@@ -1,0 +1,209 @@
+{
+  "title": "VimFu — End of Line",
+  "description": "Press $ to jump to the last character on the line. The opposite of 0 — instant jump to the end.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 128,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "n4rfbnb9UI4",
+    "url": "https://youtube.com/watch?v=n4rfbnb9UI4",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f greet.py .greet.py.swp .greet.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*greet.py*"
+    },
+    {
+      "comment": "Create a file with some code"
+    },
+    {
+      "writeFile": "greet.py",
+      "content": "def greet(name):\n    msg = f\"Hello {name}\"\n    print(msg)"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "End of Line",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Zero goes to the start of the line."
+    },
+    {
+      "line": "nvim greet.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "greet",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Dollar sign goes to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Instant jump to the last character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Works on every line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "No matter how long the line is."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Zero and dollar. Start and end. Like bookends.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "g"
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Dollar sign for end of line. Pair it with zero."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f greet.py"
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "title": "VimFu — Quitting Vim",
+  "description": "Type :q and press Enter to quit Vim. The most famous question in programming — solved in five seconds.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 49,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "GVORF1_A188",
+    "url": "https://youtube.com/watch?v=GVORF1_A188",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hello.py .hello.py.swp .hello.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*hello.py*"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Quitting Vim",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "How do you quit Vim? The most famous question in programming."
+    },
+    {
+      "say": "Let's open a file.",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "~",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "To quit, type colon Q.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Colon opens the command line. Q means quit.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Press Enter.",
+      "wait": false
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "You're back at the shell. That's it."
+    },
+    {
+      "say": "But what if you made changes?",
+      "wait": false
+    },
+    {
+      "line": "nvim hello.py",
+      "delay": 0.05
+    },
+    {
+      "waitForScreen": "~",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "hello"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now try colon Q.",
+      "wait": false
+    },
+    {
+      "type": ":q"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Vim warns you. There are unsaved changes."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "We'll cover how to handle that next. For now, colon Q quits when there's nothing to lose."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Force quit nvim"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f hello.py"
+    }
+  ]
+}

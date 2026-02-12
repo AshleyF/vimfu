@@ -1,0 +1,241 @@
+{
+  "title": "VimFu — Repeat Find Reverse",
+  "description": "Press comma to repeat the last f/F/t/T in the opposite direction. Semicolon goes forward, comma goes back.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 198,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "youtube": {
+    "videoId": "4b8qI9boyvw",
+    "url": "https://youtube.com/watch?v=4b8qI9boyvw",
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f paths.py .paths.py.swp .paths.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*paths.py*"
+    },
+    {
+      "comment": "Create demo file — Unix paths"
+    },
+    {
+      "writeFile": "paths.py",
+      "content": "path = \"/usr/bin/vim/share/doc\"\nhome = \"/home/user/.config/nvim\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim paths.py"
+    },
+    {
+      "waitForScreen": "path",
+      "timeout": 10.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Repeat Find Reverse",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Comma reverses the last find. If semicolon goes forward, comma brings you back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "F slash to find the first slash.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Semicolon to hop forward through the slashes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three hops forward. Now comma to reverse.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ","
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Back one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ","
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Back again. Comma walks backward through the same matches."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Next line. F slash, then semicolon, semicolon.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f"
+    },
+    {
+      "keys": "/"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Too far. Comma.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ","
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Right where we wanted. Comma is the undo for semicolon."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Semicolon forward, comma backward. Find once, navigate forever."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f paths.py"
+    }
+  ]
+}
