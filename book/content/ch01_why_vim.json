@@ -1,0 +1,102 @@
+{
+  "format": "vimfu-book-page",
+  "version": 1,
+  "title": "Why Vim?",
+  "subtitle": "The case for learning a 50-year-old text editor",
+  "lessons": [1, 3, 15],
+  "content": [
+    { "type": "heading", "level": 1, "text": "Chapter 1 — Why Vim?" },
+
+    { "type": "heading", "level": 2, "text": "1.1 The Case for Modal Editing" },
+    { "type": "prose", "text": "You spend more time reading, navigating, and restructuring code than typing new code from scratch. Think about your last hour of editing. How much of it was actually inserting new characters? Maybe twenty percent. The rest was scrolling, searching, selecting, deleting, copying, moving, and rearranging." },
+    { "type": "prose", "text": "Most editors give you a full keyboard for that twenty percent — the typing part — and then make you reach for the mouse, or hold down modifier keys, or navigate menus for everything else. Vim flips this. It gives you a full keyboard for the eighty percent." },
+    { "type": "prose", "text": "That's what \"modal\" means. In normal mode, every key on your keyboard is a command. {key:j} moves down. {key:w} jumps forward by a word. {key:d}{key:w} deletes a word. {key:c}{key:i}{key:\"} changes the text inside quotes. No mouse. No Ctrl-Shift-Arrow. Just keystrokes." },
+    { "type": "prose", "text": "When you need to type, press {key:i} to enter insert mode. Type what you need. Press {key:Esc} to come back. Normal mode is your resting state — the mode you spend most of your time in." },
+
+    { "type": "keys", "sequence": ["i"], "label": "Enter insert mode" },
+    { "type": "keys", "sequence": ["Esc"], "label": "Return to normal mode" },
+
+    { "type": "prose", "text": "This feels backwards at first. Every other editor starts in \"insert mode\" — keys type text. Vim starts in \"command mode\" — keys do things. The learning curve is real. But once you internalize the grammar, you stop thinking about keystrokes and start thinking in edits: \"delete this word,\" \"change inside these quotes,\" \"yank this paragraph.\" Your hands just execute." },
+
+    { "type": "tip", "text": "The productivity payoff isn't about speed — it's about fluency. You stop translating between what you want to do and how to do it. The editing language becomes invisible, like touch typing." },
+
+    { "type": "demo", "lesson": 1, "caption": "What Is Vim — a 60-second tour" },
+
+    { "type": "qr", "url": "https://youtube.com/shorts/uOrfphZBjew", "caption": "Watch: What Is Vim? (60s)" },
+
+    { "type": "divider" },
+
+    { "type": "heading", "level": 2, "text": "1.2 You Don't Need Vim" },
+    { "type": "prose", "text": "The demos in this book use Neovim — a modern, community-driven fork of Vim — because it's clean, fast, and has great defaults. But here's the secret: you don't have to use Neovim. You don't even have to use Vim." },
+    { "type": "prose", "text": "Vim keybindings are available in almost every editor and IDE:" },
+    { "type": "table", "headers": ["Editor", "Vim Mode"],
+      "rows": [
+        ["VS Code", "Vim extension (vscodevim)"],
+        ["JetBrains IDEs", "IdeaVim plugin"],
+        ["Visual Studio", "VsVim extension"],
+        ["Sublime Text", "Vintage mode (built-in)"],
+        ["Emacs", "Evil mode"],
+        ["Xcode", "Xvim2 plugin"],
+        ["Chrome / Firefox", "Vimium extension"]
+      ]
+    },
+    { "type": "prose", "text": "This book teaches the keybindings and the editing language, not any specific editor. {key:d}{key:i}{key:w} deletes a word in Vim, Neovim, VS Code with the Vim extension, IntelliJ with IdeaVim, and everywhere else that supports Vim keybindings. The grammar is universal." },
+    { "type": "prose", "text": "Use whatever editor you like. Just turn on Vim mode. Everything in this book will work." },
+
+    { "type": "tip", "text": "If you're already productive in VS Code or a JetBrains IDE and don't want to switch, don't. Install the Vim keybinding extension and learn the editing language inside the tool you already know. You get the best of both worlds." },
+
+    { "type": "divider" },
+
+    { "type": "heading", "level": 2, "text": "1.3 Vi, Vim, Neovim — A Brief History" },
+    { "type": "prose", "text": "The lineage is short and worth knowing:" },
+    { "type": "table", "headers": ["Year", "Editor", "Creator", "Key Contribution"],
+      "rows": [
+        ["1976", "vi", "Bill Joy", "Modal editing on the ADM-3A terminal"],
+        ["1991", "Vim", "Bram Moolenaar", "Visual mode, undo, scripting, plugins"],
+        ["2014", "Neovim", "Community fork", "Lua config, async, LSP, modern defaults"]
+      ]
+    },
+    { "type": "prose", "text": "Vi was born on the ADM-3A terminal at UC Berkeley. Bill Joy wrote it as the visual interface to the ex line editor. The ADM-3A's keyboard didn't have dedicated arrow keys — instead, the {key:h}, {key:j}, {key:k}, {key:l} keys had arrows printed on them. That's why those four keys move the cursor in Vim today." },
+    { "type": "prose", "text": "Bram Moolenaar created Vim (Vi IMproved) in 1991, adding visual mode, multi-level undo, a plugin system, syntax highlighting, and hundreds of features that made vi practical for modern editing. Bram maintained Vim for over 30 years until his passing in 2023." },
+    { "type": "prose", "text": "Neovim forked Vim in 2014 to modernize the codebase: Lua-based configuration, asynchronous processing, built-in LSP support, and better defaults out of the box. For the keybindings covered in this book, Vi, Vim, and Neovim are identical. The differences matter for configuration and plugins, not for {key:d}{key:a}{key:w} or {key:c}{key:i}{key:\"}." },
+
+    { "type": "divider" },
+
+    { "type": "heading", "level": 2, "text": "1.4 The Modal Philosophy" },
+    { "type": "prose", "text": "Vim has several modes, but two dominate daily editing:" },
+    { "type": "table", "headers": ["Mode", "Purpose", "Enter With", "Leave With"],
+      "rows": [
+        ["Normal", "Navigate, edit, command — your resting state", "Launch vim, or press {key:Esc}", "Press a mode-entry key"],
+        ["Insert", "Type text — a brief excursion", "{key:i}, {key:a}, {key:o}, {key:c}, etc.", "{key:Esc}"],
+        ["Visual", "Select text, then act on it", "{key:v}, {key:V}, {key:Ctrl-V}", "Operator or {key:Esc}"],
+        ["Command-line", "Ex commands (:w, :q, :s)", "{key::}, {key:/}, {key:?}", "{key:Enter} or {key:Esc}"]
+      ]
+    },
+    { "type": "prose", "text": "The key insight: normal mode is called \"normal\" because it's where you should normally be. Not insert mode. Not visual mode. Normal mode. After every edit — every line you type, every change you make — press {key:Esc} and return to normal mode. Make this a reflex." },
+
+    { "type": "keys", "sequence": ["Esc"], "label": "Always come back to normal mode" },
+
+    { "type": "prose", "text": "In normal mode, every single key on the keyboard has a function. Lowercase letters, uppercase letters, numbers, symbols, Ctrl combinations — they're all commands. That's over 100 commands accessible with a single keystroke, no modifier keys needed. You get this because you have a dedicated mode for commands." },
+    { "type": "prose", "text": "This feels restrictive at first — \"I have to press {key:i} before I can type?\" — but it's actually liberating. In a non-modal editor, the letter {key:d} can only ever type the character 'd'. In Vim, {key:d} is the delete operator. {key:d}{key:w} deletes a word. {key:d}{key:d} deletes a line. {key:d}{key:i}{key:(} deletes everything inside parentheses. One key, dozens of uses. That's only possible because of modes." },
+
+    { "type": "tip", "text": "The two most important things to remember right now: {key:i} gets you into insert mode. {key:Esc} gets you out. If you ever feel lost, press {key:Esc} a few times — you'll land in normal mode, and everything will be fine." },
+
+    { "type": "demo", "lesson": 3, "caption": "Normal mode — every key is a command" },
+
+    { "type": "qr", "url": "https://youtube.com/watch?v=axyczdX5g0I", "caption": "Watch: Normal Mode (60s)" },
+    { "type": "qr", "url": "https://youtube.com/watch?v=1T7OEvSUh5g", "caption": "Watch: The Escape Habit (60s)" },
+
+    { "type": "divider" },
+
+    { "type": "heading", "level": 2, "text": "Quick Reference" },
+    { "type": "table", "headers": ["Key", "Action"],
+      "rows": [
+        ["{key:i}", "Enter insert mode (keys type text)"],
+        ["{key:Esc}", "Return to normal mode (keys are commands)"],
+        ["{key:h} {key:j} {key:k} {key:l}", "Move left, down, up, right"],
+        ["{key:d}{key:w}", "Delete a word (operator + motion)"],
+        ["{key:c}{key:i}{key:\"}", "Change inside quotes (operator + text object)"]
+      ]
+    }
+  ]
+}
