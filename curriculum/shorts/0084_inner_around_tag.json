@@ -1,0 +1,268 @@
+{
+  "title": "VimFu — Inner/Around Tag",
+  "description": "cit changes text inside an HTML/XML tag pair. dat deletes the entire element including tags.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 225,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "hcWShKzeVSE",
+    "url": "https://youtube.com/watch?v=hcWShKzeVSE"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f page.html .page.html.swp .page.html.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*page.html*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "page.html",
+      "content": "<div class=\"card\">\n  <h2>Dragon Loot</h2>\n  <p>A pile of gold coins.</p>\n  <span>rare drop</span>\n</div>"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim page.html"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Inner/Around Tag",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Tag text objects work on HTML and XML elements. T for tag."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: vit to select inside a tag ---"
+    },
+    {
+      "say": "On the H 2 line. V I T to select the tag's contents.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "vit"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Just 'Dragon Loot'. Tags untouched. Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: cit to change the heading ---"
+    },
+    {
+      "say": "C I T to rewrite the heading.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "cit",
+      "overlay": "change inner tag"
+    },
+    {
+      "type": "Wyvern Hoard"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "New text, tags preserved.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 3: cit on the p tag ---"
+    },
+    {
+      "say": "Down to the paragraph tag. C I T again.",
+      "wait": false
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "cit",
+      "overlay": "change inner tag"
+    },
+    {
+      "type": "Gems and ancient scrolls."
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Works on any tag. Vim matches the opening and closing pair.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 4: dat to delete the whole element ---"
+    },
+    {
+      "say": "D A T to delete the entire element — tags and all.",
+      "wait": false
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dat",
+      "overlay": "delete around tag"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The span element is gone. Opening tag, closing tag, content. All of it.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "I T for the content inside tags. A T for the entire element. Essential for editing HTML."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f page.html"
+    }
+  ]
+}

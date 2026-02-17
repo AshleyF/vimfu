@@ -1,0 +1,280 @@
+{
+  "title": "VimFu — Inner/Around Angle Brackets",
+  "description": "Angle bracket text objects let you change, delete, or yank inside angle brackets. Useful for generics, templates, and HTML attributes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 222,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "poM8mr-ecbw",
+    "url": "https://youtube.com/watch?v=poM8mr-ecbw"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f types.ts .types.ts.swp .types.ts.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*types.ts*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "types.ts",
+      "content": "let bag: Array<string> = []\nlet hp: Map<string, number> = {}\nlet cb: Promise<boolean> = ok()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim types.ts"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Inner/Around Angle Brackets",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Angle bracket text objects work on less-than greater-than pairs. Great for generics and templates."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: vi< to select the type parameter ---"
+    },
+    {
+      "say": "V I angle bracket to select the type parameter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f<"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "vi<"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Just 'string' selected. Angle brackets untouched. Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ci< to change the type ---"
+    },
+    {
+      "say": "C I angle bracket to change the type.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ci<",
+      "overlay": "change inner <"
+    },
+    {
+      "type": "number"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Type swapped. Angle brackets preserved.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 3: ci< on the Map line ---"
+    },
+    {
+      "say": "Line two has a Map with two type parameters. C I angle bracket.",
+      "wait": false
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "f<"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ci<",
+      "overlay": "change inner <"
+    },
+    {
+      "type": "number, string"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both parameters replaced in one stroke.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 4: da< to delete around ---"
+    },
+    {
+      "say": "D A angle bracket to delete the angle brackets too.",
+      "wait": false
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "f<"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "da<",
+      "overlay": "delete around <"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Type annotation, gone.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Angle brackets complete the bracket family. Parens, braces, brackets, angles. Same I and A pattern for all of them."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f types.ts"
+    }
+  ]
+}

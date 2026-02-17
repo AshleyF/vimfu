@@ -164,7 +164,8 @@ class TerminalViewer:
         self.font_size = 14
         self.bg_color = "#000000"  # Pure black background
         self.fg_color = "#d4d4d4"  # Light text
-        self.cursor_color = "#ffffff"
+        self.cursor_color = "#800000"  # Dark red cursor (matches nvim monokai config)
+        self.cursor_fg = "#ffffff"  # White text on cursor
         self.key_bg_color = "#5a1a1a"  # Semi-transparent deep red (simulated)
         self.key_fg_color = "#ffffff"  # White key overlay text
         
@@ -344,6 +345,7 @@ class TerminalViewer:
             'brightblack': '#7f7f7f',
             'brightred': '#ff0000',
             'brightgreen': '#00ff00',
+            'brightbrown': '#ffff00',  # pyte's name for bright yellow
             'brightyellow': '#ffff00',
             'brightblue': '#5c5cff',
             'brightmagenta': '#ff00ff',
@@ -537,7 +539,7 @@ class TerminalViewer:
                             fill=self.cursor_color, outline=""
                         )
                         # Cursor text is inverted
-                        fg = self.bg_color
+                        fg = self.cursor_fg
                     
                     # Draw character
                     if char_data != ' ':

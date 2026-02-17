@@ -22,6 +22,10 @@ Every video goes through a generate → inspect → fix cycle:
    - The right characters were deleted/changed/inserted.
    - Navigation was efficient (see below).
    - Narration matches what's actually happening on screen.
+   - **CRITICAL: Trace every `[SAY]` against the surrounding `[KEYS]` and cursor lines.** If narration says "change this to level", the log MUST show the text actually changing to "level" in the screen state lines that follow. If the narration says "skip this one", the cursor MUST actually move past that match without a `.` (dot). Don't trust the script — trust the log. The log is what the viewer sees. Common failures:
+     - Saying "change X to Y" but `cw` + type lands on the wrong word due to cursor column carry-over from a previous demo.
+     - Saying "skip" but `n` wraps around to the same match (not enough matches in the file).
+     - Saying "delete three lines" but `3.` doesn't visibly remove content (e.g., repeating `ciw` on the same position instead of across lines).
    - **Key overlays are accurate** — look at every `[OVERLAY]` line in the log. The caption next to each key should match what the key *means in that context*. Watch for cases where a key has multiple meanings depending on mode or sequence:
      - `a` after `q` or `@` means *register a*, not *append*.
      - `0` after `Ctrl-R` (in insert mode) means *register 0*, not *line start*.
@@ -237,6 +241,27 @@ Keys("qa", overlay="record into a"),        # alternative: send both at once
 # Suppress a caption entirely
 Keys("x", overlay=""),                      # shows the key but no caption
 ```
+
+### Key Overlay Grouping: Phrases vs. Sequences
+
+Not every multi-key sequence belongs in a single `keys` step. The rule: **group keys that form a Vim "phrase" — a single semantic action. Split keys that are independent navigational steps.**
+
+**Good as a single step (Vim phrases):**
+- `diw` — "delete inner word" is one mental action
+- `ci{` — "change inner braces" is one command
+- `da<` — "delete around angle brackets" is one operation
+- `vi"` — "select inner quotes" is one text object
+- `3dd` — "delete 3 lines" is one counted command
+- `f<` — "find the angle bracket" is one motion
+
+**Bad as a single step (independent navigations jammed together):**
+- `j0f<` — this is three separate actions: go down, go to start of line, find character. Each should be its own step so the viewer sees each motion individually with its own overlay.
+- `gg0` — go to top of file, then go to column 0. Two separate motions.
+- `jjj` — use `3j` instead, or split into individual `j` steps if you want the viewer to see each move.
+
+**Why this matters:** The key overlay shows each step as a caption (e.g., `j  down`, `0  start of line`, `f<  find <`). If you cram `j0f<` into one step, the viewer sees one flash of `j0f<` with no explanation of what each part does. Beginners won't be able to parse it. Split them so each key gets its own moment on screen.
+
+**Rule of thumb:** If you would explain the keys with "and then" between them, they should be separate steps. "Go down *and then* go to the start of the line *and then* find the angle bracket" = three steps. "Delete inner word" = one step.
 
 ### Wait Timing Conventions
 

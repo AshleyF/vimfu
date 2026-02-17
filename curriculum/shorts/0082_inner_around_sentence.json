@@ -1,0 +1,227 @@
+{
+  "title": "VimFu — Inner/Around Sentence",
+  "description": "cis changes a sentence. das deletes a sentence plus trailing space. Sentences end at . ! or ? followed by whitespace.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 223,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "4txuEYv_x4E",
+    "url": "https://youtube.com/watch?v=4txuEYv_x4E"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f lore.txt .lore.txt.swp .lore.txt.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*lore.txt*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "lore.txt",
+      "content": "The dragon sleeps in the cave.  It\nguards a pile of gold.  No hero has\nsurvived the attempt.\n\nLegend says a silver sword can slay\nit.  The sword was lost long ago."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim lore.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Inner/Around Sentence",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Sentence text objects act on a full sentence. Vim knows where sentences end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: vis to select a sentence ---"
+    },
+    {
+      "say": "V I S to select the first sentence.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "vis"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The whole sentence is highlighted. Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: das to delete a sentence ---"
+    },
+    {
+      "say": "Move into the second sentence. D A S to delete it cleanly.",
+      "wait": false
+    },
+    {
+      "keys": ")"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "das",
+      "overlay": "delete a sentence"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The sentence and its trailing space are gone. Text reflows naturally.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 3: cis to rewrite a sentence ---"
+    },
+    {
+      "say": "C I S to rewrite the first sentence.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg0"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "cis",
+      "overlay": "change inner sentence"
+    },
+    {
+      "type": "A wyvern nests on the peak."
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One sentence replaced, the rest untouched.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "I S for just the sentence. A S for the sentence plus spacing. Vim splits on period, exclamation, or question mark followed by space."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f lore.txt"
+    }
+  ]
+}

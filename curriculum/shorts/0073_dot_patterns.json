@@ -1,0 +1,338 @@
+{
+  "title": "VimFu — Dot Patterns",
+  "description": "The classic Vim workflow: change a word, search for the next one, then press n-dot to repeat. This is search-and-replace without the command.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 214,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "goblin = 10\nhero = quest(\"goblin\", 5)\nloot = defeat(\"goblin\")\nprint(f\"the goblin drops gold\")\nprint(f\"no more goblin\")\n\ndef spawn(kind, level):\n    mob = {\"kind\": kind, \"hp\": 10}\n    mob[\"kind\"] = kind.upper()\n    print(f\"{kind} spawned\")\n    return mob"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Dot Patterns",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "The dot command really shines when you combine it with search."
+    },
+    {
+      "say": "This is the classic N dot pattern.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 1: /word then cw then n. n. n. ---"
+    },
+    {
+      "say": "This file mentions goblin five times. Let's rename them all to dragon.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "First, search for goblin.",
+      "wait": false
+    },
+    {
+      "keys": "/",
+      "overlay": "search"
+    },
+    {
+      "type": "goblin"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now change this word.",
+      "wait": false
+    },
+    {
+      "keys": "cw",
+      "overlay": "change word"
+    },
+    {
+      "type": "dragon"
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Press N to jump to the next match.",
+      "wait": false
+    },
+    {
+      "keys": "n",
+      "overlay": "next match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "And dot to repeat the change.",
+      "wait": false
+    },
+    {
+      "keys": ".",
+      "overlay": "repeat"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "N dot. N dot. N dot.",
+      "wait": false
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "All five goblins are now dragons. No regex needed.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: star then cw then n./n skip (selective) ---"
+    },
+    {
+      "say": "Let's undo all of that and try it with star.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Down in the spawn function, the word kind appears four times. Let's rename some of them.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Search for kind.",
+      "wait": false
+    },
+    {
+      "keys": "/",
+      "overlay": "search"
+    },
+    {
+      "type": "kind"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Change this one to name.",
+      "wait": false
+    },
+    {
+      "keys": "cw",
+      "overlay": "change word"
+    },
+    {
+      "type": "name"
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "N to jump. Dot to change.",
+      "wait": false
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "But what if we don't want to change every one? Just press N to skip.",
+      "wait": false
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Skipped. Now dot to change this last one.",
+      "wait": false
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Search, change, then N dot to repeat. Skip with N, apply with dot. Interactive search and replace.",
+      "wait": false
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "wuiniomACrk",
+    "url": "https://youtube.com/watch?v=wuiniomACrk"
+  }
+}

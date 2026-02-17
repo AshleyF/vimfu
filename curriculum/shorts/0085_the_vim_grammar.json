@@ -1,0 +1,307 @@
+{
+  "title": "VimFu — The Vim Grammar",
+  "description": "Operators × text objects = composable editing. Learn a new verb, it works with every noun. Learn a new noun, every verb works with it.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 226,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "kH-tncv1g4w",
+    "url": "https://youtube.com/watch?v=kH-tncv1g4w"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "hero = quest(\"dragon\", 99)\nloot = chest[\"gold\"] + 50\nmsg  = f\"Level {hero.xp}\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The Vim Grammar",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Vim is a language. Every command is a verb plus a noun. Operator plus text object."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You already know the verbs. D deletes. C changes. Y yanks. Greater-than indents.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "And you know the nouns. I W, a word. I quote, a string. I paren, a block.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 1: ci\" — change inner quotes ---"
+    },
+    {
+      "say": "C I quote. Change the string.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ci\"",
+      "overlay": "change inner \""
+    },
+    {
+      "type": "wyvern"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Verb: change. Noun: inner quotes.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 2: di[ — delete inner brackets ---"
+    },
+    {
+      "say": "D I bracket. Delete the array subscript.",
+      "wait": false
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "f["
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "di[",
+      "overlay": "delete inner ["
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Verb: delete. Noun: inner brackets.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 3: yi( — yank inner parens ---"
+    },
+    {
+      "say": "Y I paren. Yank the function arguments.",
+      "wait": false
+    },
+    {
+      "keys": "gg"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "f("
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "yi(",
+      "overlay": "yank inner ("
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Copied. Let's paste it at the end of the file.",
+      "wait": false
+    },
+    {
+      "keys": "Go"
+    },
+    {
+      "type": "# args: "
+    },
+    "escape",
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Verb: yank. Noun: inner parens.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 4: >iw — indent the word? No — >ip indent a paragraph ---"
+    },
+    {
+      "say": "Even indent is a verb. Greater-than I P. Indent the paragraph.",
+      "wait": false
+    },
+    {
+      "keys": "gg"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">ip",
+      "overlay": "indent paragraph"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every verb works with every noun. That's the power of the Vim grammar.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Learn one new verb — it works with every text object. Learn one new noun — every operator works with it. The combinations multiply."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ]
+}

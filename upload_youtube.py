@@ -33,7 +33,7 @@ a token is cached in youtube_token.json for reuse.
 import argparse
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import socket
 
@@ -287,6 +287,11 @@ def main():
         help="ISO 8601 datetime to schedule publish (e.g. 2025-07-20T12:00:00Z). "
              "If in the future, videos are set to public + scheduled."
     )
+    parser.add_argument(
+        "--schedule-daily", dest="schedule_daily", action="store_true",
+        help="When used with --schedule, increment the date by one day per video. "
+             "First video gets the --schedule date, second gets +1 day, etc."
+    )
     privacy_group = parser.add_mutually_exclusive_group()
     privacy_group.add_argument(
         "--public", dest="privacy", action="store_const", const="public",
@@ -309,7 +314,7 @@ def main():
         except ValueError:
             parser.error(f"Invalid datetime: {args.schedule}")
 
-    for path in args.lessons:
+    for idx, path in enumerate(sorted(args.lessons)):
         if not path.exists():
             print(f"ERROR: {path} not found, skipping.")
             continue
@@ -318,10 +323,17 @@ def main():
         if data.get('youtube', {}).get('videoId'):
             print(f"SKIP: {path.name} (already uploaded: {data['youtube']['videoId']})")
             continue
+        # Compute per-video schedule datetime
+        video_schedule = None
+        if schedule_dt:
+            if args.schedule_daily:
+                video_schedule = schedule_dt + timedelta(days=idx)
+            else:
+                video_schedule = schedule_dt
         print(f"{'=' * 60}")
         print(f"Processing: {path.name}")
         print(f"{'=' * 60}")
-        upload_video(path, schedule_dt=schedule_dt, privacy_override=args.privacy)
+        upload_video(path, schedule_dt=video_schedule, privacy_override=args.privacy)
         print()
 
 

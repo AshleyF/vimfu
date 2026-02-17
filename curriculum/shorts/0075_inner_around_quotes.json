@@ -1,0 +1,262 @@
+{
+  "title": "VimFu — Inner/Around Quotes",
+  "description": "ci\" changes text inside double quotes. di\" deletes it. yi\" yanks it. The cursor just needs to be somewhere inside the string.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 216,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "AVTzj4MI0Uw",
+    "url": "https://youtube.com/watch?v=AVTzj4MI0Uw"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spells.py .spells.py.swp .spells.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spells.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "spells.py",
+      "content": "fire = cast(\"fireball\", 50)\nice  = cast(\"blizzard\", 30)\nbolt = cast(\"lightning\", 70)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spells.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Inner/Around Quotes",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Quote text objects let you act on the contents of a string, without touching the quotes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: vi\" to see inner quotes ---"
+    },
+    {
+      "say": "Cursor is on line one. Let's select inside the double quotes. V I quote.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "vi\""
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Just 'fireball', quotes untouched. Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ci\" to change the string ---"
+    },
+    {
+      "say": "C I quote to change it. Let's rename this spell.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ci\"",
+      "overlay": "change inner \""
+    },
+    {
+      "type": "inferno"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The string replaced, quotes still there. Clean.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 3: on line 2, cursor doesn't need to be on the quote ---"
+    },
+    {
+      "say": "Your cursor doesn't even need to be on the quote. Just anywhere on the line.",
+      "wait": false
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ci\"",
+      "overlay": "change inner \""
+    },
+    {
+      "type": "frostbite"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Vim finds the nearest quotes automatically.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 4: da\" to delete around quotes ---"
+    },
+    {
+      "say": "D A quote deletes the quotes too.",
+      "wait": false
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "da\"",
+      "overlay": "delete around \""
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gone, including the quote marks.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "I quote for the contents. A quote for contents plus quotes. Works with single quotes and backticks too."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spells.py"
+    }
+  ]
+}

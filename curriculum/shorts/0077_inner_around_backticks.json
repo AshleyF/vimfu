@@ -1,0 +1,224 @@
+{
+  "title": "VimFu — Inner/Around Backticks",
+  "description": "ci` changes text inside backtick strings. Same pattern as quotes — just use the backtick character.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 218,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "VbE0JOMAnFM",
+    "url": "https://youtube.com/watch?v=VbE0JOMAnFM"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f query.sh .query.sh.swp .query.sh.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*query.sh*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "query.sh",
+      "content": "host=`hostname`\ndate=`date +%Y`\nuser=`whoami`\necho \"$host: $user ($date)\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim query.sh"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Inner/Around Backticks",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Backtick text objects complete the set. Same pattern as quotes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: vi` to see inner backticks ---"
+    },
+    {
+      "say": "Here's a shell script with backtick command substitutions. V I backtick.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f`"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "vi`"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Just 'hostname' selected. Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ci` to change ---"
+    },
+    {
+      "say": "C I backtick to swap the command.",
+      "wait": false
+    },
+    {
+      "keys": "ci`",
+      "overlay": "change inner `"
+    },
+    {
+      "type": "uname -n"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "New command, backticks preserved.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 3: da` on line 2 ---"
+    },
+    {
+      "say": "D A backtick on line two to delete the whole substitution.",
+      "wait": false
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "da`",
+      "overlay": "delete around `"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Backticks and contents, gone.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Double quotes, single quotes, backticks. I for inside, A for around. Three delimiters, one pattern."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f query.sh"
+    }
+  ]
+}

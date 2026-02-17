@@ -1,0 +1,264 @@
+{
+  "title": "VimFu — Inner/Around Braces",
+  "description": "ci{ changes text inside curly braces. The alias iB works too — B for Big block.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 220,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "5M5UrcKK8zY",
+    "url": "https://youtube.com/watch?v=5M5UrcKK8zY"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.json .config.json.swp .config.json.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*config.json*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "config.json",
+      "content": "{\n    \"name\": \"VimFu\",\n    \"version\": 42,\n    \"debug\": true\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim -c 'set noai nosi indentexpr=' config.json"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Inner/Around Braces",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Brace text objects act on everything inside curly braces. Perfect for JSON, functions, code blocks."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: vi{ to select the JSON body ---"
+    },
+    {
+      "say": "V I brace to select the body of this JSON object.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "vi{"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All three properties selected. Braces untouched. Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ci{ to replace the body ---"
+    },
+    {
+      "say": "C I brace to rewrite the whole body.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ci{",
+      "overlay": "change inner {"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "    \"app\": \"VimFu\",\n    \"level\": 99"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Brand new contents, braces preserved.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 3: diB — the B synonym ---"
+    },
+    {
+      "say": "Capital I B does the same thing. B for Big block.",
+      "wait": false
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "diB",
+      "overlay": "delete inner Big block"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Contents gone, braces remain.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 4: da{ to delete everything ---"
+    },
+    {
+      "say": "D A brace to delete the braces too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "da{",
+      "overlay": "delete around {"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The whole object, gone.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "I brace or I capital B for the inside. A brace or A capital B for the whole thing. Essential for editing code blocks."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.json"
+    }
+  ]
+}

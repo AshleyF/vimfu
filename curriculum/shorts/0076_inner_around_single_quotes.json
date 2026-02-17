@@ -1,0 +1,259 @@
+{
+  "title": "VimFu — Inner/Around Single Quotes",
+  "description": "ci' changes text inside single quotes. Same pattern as double quotes — just a different delimiter.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 217,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "PC_lYiEgKGM",
+    "url": "https://youtube.com/watch?v=PC_lYiEgKGM"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f potions.py .potions.py.swp .potions.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*potions.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "potions.py",
+      "content": "red = brew('healing', 25)\nblu = brew('mana', 40)\ngrn = brew('speed', 60)\ngld = brew('luck', 99)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim potions.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Inner/Around Single Quotes",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Single-quote text objects work exactly like double quotes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: vi' to see inner single quotes ---"
+    },
+    {
+      "say": "V I single quote selects the text inside single quotes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "vi'"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Just 'healing', quotes untouched. Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ci' to change ---"
+    },
+    {
+      "say": "C I single quote to change the potion name.",
+      "wait": false
+    },
+    {
+      "keys": "ci'",
+      "overlay": "change inner '"
+    },
+    {
+      "type": "regeneration"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "New potion, quotes preserved.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 3: ci' on another line ---"
+    },
+    {
+      "say": "Line two. C I single quote again.",
+      "wait": false
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ci'",
+      "overlay": "change inner '"
+    },
+    {
+      "type": "arcane"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Works anywhere on the line. Vim finds the quotes.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 4: da' to delete around ---"
+    },
+    {
+      "say": "D A single quote deletes the quotes too.",
+      "wait": false
+    },
+    {
+      "keys": "jj0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "da'",
+      "overlay": "delete around '"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "String and quotes, gone.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Single quotes, double quotes, backticks. Same pattern, different delimiter. I for inside, A for around."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f potions.py"
+    }
+  ]
+}

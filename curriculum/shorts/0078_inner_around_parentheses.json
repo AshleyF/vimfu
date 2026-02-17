@@ -1,0 +1,264 @@
+{
+  "title": "VimFu — Inner/Around Parentheses",
+  "description": "ci( changes text inside parentheses. The alias ib works too — b for block.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 219,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "LI7I-Yn4oIU",
+    "url": "https://youtube.com/watch?v=LI7I-Yn4oIU"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spells.py .spells.py.swp .spells.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spells.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "spells.py",
+      "content": "fire = cast(\"fireball\", 50)\nice  = cast(\"blizzard\", 30)\nbolt = cast(\"lightning\", 70)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spells.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Inner/Around Parentheses",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Parentheses text objects act on everything inside a paren pair."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: vi( to select inside parens ---"
+    },
+    {
+      "say": "V I open paren selects the function arguments.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f("
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "vi("
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both arguments selected, parens untouched. Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ci( to change args ---"
+    },
+    {
+      "say": "C I paren to replace the arguments.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ci(",
+      "overlay": "change inner ("
+    },
+    {
+      "type": "\"inferno\", 99"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "New arguments, parens intact.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 3: di( on another line ---"
+    },
+    {
+      "say": "D I paren on line two deletes the arguments.",
+      "wait": false
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "di(",
+      "overlay": "delete inner ("
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Empty parens remain. Ready for new arguments.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 4: dib — b is a synonym ---"
+    },
+    {
+      "say": "The shortcut I B does the same thing. B for block.",
+      "wait": false
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dib",
+      "overlay": "delete inner block"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same result. I B and I paren are identical.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "I paren for the inside. A paren for the whole thing. Or use I B and A B. Perfect for function arguments."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spells.py"
+    }
+  ]
+}

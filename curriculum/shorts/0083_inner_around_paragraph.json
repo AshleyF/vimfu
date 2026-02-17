@@ -1,0 +1,263 @@
+{
+  "title": "VimFu — Inner/Around Paragraph",
+  "description": "cip changes a paragraph. dap deletes a paragraph plus the trailing blank line. Paragraphs are blocks separated by blank lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 224,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "eDrhY71SiFs",
+    "url": "https://youtube.com/watch?v=eDrhY71SiFs"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f lore.txt .lore.txt.swp .lore.txt.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*lore.txt*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "lore.txt",
+      "content": "The dragon sleeps in the cave.\nIt guards a pile of gold.\nNo hero has survived.\n\nLegend says a silver sword\ncan slay it.  The sword\nwas lost long ago.\n\nA new hero has arrived.\nThe quest begins at dawn."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim lore.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Inner/Around Paragraph",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Paragraph text objects act on blocks of text separated by blank lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: vip to select a paragraph ---"
+    },
+    {
+      "say": "V I P to select the first paragraph.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "vip"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines selected — everything up to the blank line. Escape.",
+      "wait": false
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: dap to delete a paragraph ---"
+    },
+    {
+      "say": "D A P to delete the whole paragraph plus the blank line after it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dap",
+      "overlay": "delete a paragraph"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "First paragraph gone. The remaining text moves up cleanly.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 3: dap on the second paragraph ---"
+    },
+    {
+      "say": "Jump to the second paragraph and delete it.",
+      "wait": false
+    },
+    {
+      "keys": "}j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dap",
+      "overlay": "delete a paragraph"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Middle paragraph removed. First and third are now neighbors.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 4: yip + p to duplicate ---"
+    },
+    {
+      "say": "Y I P yanks the paragraph. Move down and paste.",
+      "wait": false
+    },
+    {
+      "keys": "gg"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "yip",
+      "overlay": "yank inner paragraph"
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Paragraph duplicated at the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "I P for the lines. A P for the lines plus the blank line. Perfect for rearranging prose or code blocks."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f lore.txt"
+    }
+  ]
+}

@@ -1,0 +1,224 @@
+{
+  "title": "VimFu — Dot with Counts",
+  "description": "Add a count before dot to repeat your last change multiple times. Press 3 dot to do it three times at once.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 213,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f stats.py .stats.py.swp .stats.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*stats.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "stats.py",
+      "content": "hp = 10\nmp = 10\nxp = 10\natk = 10\ndef_ = 10\nspd = 10\nluck = 10\n\ndef level_up(hero):\n    hero.hp += 5\n    hero.mp += 5\n    hero.xp += 5\n    hero.atk += 5"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim stats.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Dot with Counts",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "You already know dot repeats your last change."
+    },
+    {
+      "say": "But you can put a count in front of it.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 1: dd then 3. to delete three more lines ---"
+    },
+    {
+      "say": "Here are seven stats, all set to ten. Let's delete the first line with D D.",
+      "wait": false
+    },
+    {
+      "keys": "dd"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now press three dot to repeat that delete three more times.",
+      "wait": false
+    },
+    {
+      "keys": "3.",
+      "overlay": "repeat × 3"
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Four lines gone. One D D, then three dot wiped out three more.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Let's undo all of that.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: J then 3. to join lines ---"
+    },
+    {
+      "say": "It works with any change. Let's join some lines together.",
+      "wait": false
+    },
+    {
+      "keys": "gg",
+      "overlay": "file start"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital J joins this line with the next.",
+      "wait": false
+    },
+    {
+      "keys": "J",
+      "overlay": "join lines"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three dot to join three more.",
+      "wait": false
+    },
+    {
+      "keys": "3.",
+      "overlay": "repeat × 3"
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Four joins. All the stats are on one line now.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Any count works. Two dot, ten dot, fifty dot. Dot is the repeat, the count is the multiplier.",
+      "wait": false
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f stats.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "i2qTfhA9tf4",
+    "url": "https://youtube.com/watch?v=i2qTfhA9tf4"
+  }
+}

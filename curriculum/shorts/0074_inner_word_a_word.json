@@ -1,0 +1,263 @@
+{
+  "title": "VimFu — Inner Word / A Word",
+  "description": "Act on a word with text objects. Inner word (iw) selects just the word. A word (aw) includes surrounding space.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 215,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "text objects"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "iR6w6yq0--8",
+    "url": "https://youtube.com/watch?v=iR6w6yq0--8"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f greet.py .greet.py.swp .greet.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*greet.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "greet.py",
+      "content": "def greet(name, loud=False):\n    msg = \"Hello, \" + name\n    if loud:\n        msg = msg.upper()\n    return msg"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim greet.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Inner Word / A Word",
+      "duration": 3.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Text objects let you act on a whole word at once. No counting, no selecting."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: viw to see inner word ---"
+    },
+    {
+      "say": "Cursor is on 'def'. Let's visually select the inner word with V I W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "viw"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Just the word. No surrounding space. Escape.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ciw to change a word ---"
+    },
+    {
+      "say": "Move to line two. Let's change that word 'msg' with C I W.",
+      "wait": false
+    },
+    {
+      "keys": "jw"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ciw",
+      "overlay": "change inner word"
+    },
+    {
+      "type": "greeting"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "C I W deletes the word and drops into insert mode. One move.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Undo that.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 3: daw to delete a word cleanly ---"
+    },
+    {
+      "say": "Now the A version. D A W deletes a word and the space around it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jw"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "daw",
+      "overlay": "delete a word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Clean. No leftover gap. That's the difference.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 4: yiw to yank a word ---"
+    },
+    {
+      "say": "Y I W yanks a word. Let's copy 'loud' and paste it.",
+      "wait": false
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "yiw",
+      "overlay": "yank inner word"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "type": " # "
+    },
+    "escape",
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "I W for the word itself. A W for the word plus its space. Use I W to change, A W to delete."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f greet.py"
+    }
+  ]
+}
