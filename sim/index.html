@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>VimFu Simulator</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a2e;
+    color: #d4d4d4;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    color: #82aaff;
+  }
+
+  .mode-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-family: 'Cascadia Mono', Consolas, monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    transition: background 0.15s, color 0.15s;
+  }
+  .mode-badge.normal  { background: #82aaff; color: #000; }
+  .mode-badge.insert  { background: #c3e88d; color: #000; }
+  .mode-badge.shell   { background: #89ddff; color: #000; }
+
+  #terminal {
+    border: 2px solid #333;
+    border-radius: 6px;
+    cursor: text;
+    outline: none;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+
+  .help {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: #888;
+    text-align: center;
+    line-height: 1.7;
+  }
+  .help kbd {
+    display: inline-block;
+    background: #333;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: 'Cascadia Mono', Consolas, monospace;
+    font-size: 0.8rem;
+  }
+  .mode-badge.visual, .mode-badge.visual_line { background: #c792ea; color: #000; }
+  .mode-badge.replace { background: #f78c6c; color: #000; }
+  .mode-badge.command { background: #3c3c3c; color: #d4d4d4; }
+</style>
+</head>
+<body>
+
+<h1>VimFu Simulator</h1>
+<div id="mode-badge" class="mode-badge normal">NORMAL</div>
+<canvas id="terminal" tabindex="0"></canvas>
+<div class="help">
+  <strong>Movement:</strong>
+  <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd> &nbsp;
+  <kbd>w</kbd><kbd>b</kbd><kbd>e</kbd> word &nbsp;
+  <kbd>0</kbd><kbd>^</kbd><kbd>$</kbd> line &nbsp;
+  <kbd>gg</kbd><kbd>G</kbd> file &nbsp;
+  <kbd>f</kbd><kbd>t</kbd> find &nbsp;
+  <kbd>{</kbd><kbd>}</kbd> paragraph &nbsp;
+  <kbd>%</kbd> match bracket
+  <br>
+  <strong>Editing:</strong>
+  <kbd>i</kbd><kbd>I</kbd><kbd>a</kbd><kbd>A</kbd><kbd>o</kbd><kbd>O</kbd> insert &nbsp;
+  <kbd>x</kbd><kbd>s</kbd><kbd>r</kbd> char ops &nbsp;
+  <kbd>d</kbd><kbd>c</kbd><kbd>y</kbd> + motion &nbsp;
+  <kbd>dd</kbd><kbd>cc</kbd><kbd>yy</kbd> line ops &nbsp;
+  <kbd>p</kbd><kbd>P</kbd> paste &nbsp;
+  <kbd>.</kbd> repeat &nbsp;
+  <kbd>u</kbd> undo &nbsp;
+  <kbd>Ctrl-R</kbd> redo
+  <br>
+  <strong>Modes:</strong>
+  <kbd>v</kbd><kbd>V</kbd> visual &nbsp;
+  <kbd>R</kbd> replace &nbsp;
+  <kbd>/</kbd><kbd>?</kbd> search &nbsp;
+  <kbd>:</kbd> command &nbsp;
+  <kbd>Esc</kbd> normal
+</div>
+
+<script type="module">
+import { SessionManager }    from './src/session.js';
+import { SessionController } from './src/session_controller.js';
+import { Renderer }          from './src/renderer.js';
+import { SAMPLE_PYTHON }     from './src/samples.js';
+
+const ROWS = 20;
+const COLS = 40;
+const FONT_SIZE = 18;
+
+const session = new SessionManager({
+  rows: ROWS,
+  cols: COLS,
+  themeName: 'monokai',
+  persist: true,
+});
+
+// Seed filesystem with sample files on first visit
+if (session.fs.fileCount === 0) {
+  session.fs.write('welcome.txt', [
+    'Welcome to VimFu!',
+    '',
+    'A comprehensive Vim simulator with:',
+    '  - Full motion support (w/b/e/f/t/%/{})',
+    '  - Operators: d, c, y, >, <',
+    '  - Text objects: iw, aw, i", a", i(, etc.',
+    '  - Visual mode (v, V)',
+    '  - Search (/, ?, n, N, *, #)',
+    '  - Undo/Redo (u, Ctrl-R)',
+    '  - Dot repeat (.)',
+    "  - Marks (m, ', `)",
+    '  - Replace mode (R)',
+    '  - Command mode (:w :q :42)',
+    '',
+    'Try editing this text!',
+  ].join('\n'));
+}
+// Always ensure demo.py exists (even for returning users)
+if (!session.fs.exists(SAMPLE_PYTHON.filename)) {
+  session.fs.write(SAMPLE_PYTHON.filename, SAMPLE_PYTHON.content);
+}
+
+const canvas     = document.getElementById('terminal');
+const rendererInst = new Renderer(canvas, { fontSize: FONT_SIZE });
+const modeBadge  = document.getElementById('mode-badge');
+
+const MODE_COLORS = {
+  SHELL:         'shell',
+  NORMAL:        'normal',
+  INSERT:        'insert',
+  VISUAL:        'visual',
+  'VISUAL LINE': 'visual_line',
+  REPLACE:       'replace',
+  COMMAND:       'command',
+};
+
+function onUpdate(frame) {
+  rendererInst.draw(frame);
+  const label = session.getModeLabel();
+  modeBadge.textContent = label;
+  modeBadge.className = 'mode-badge ' + (MODE_COLORS[label] || 'shell');
+}
+
+const ctrl = new SessionController(session, onUpdate);
+ctrl.attach(canvas);
+
+onUpdate(session.renderFrame());
+canvas.focus();
+</script>
+
+</body>
+</html>
