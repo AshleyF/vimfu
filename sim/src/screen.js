@@ -37,8 +37,10 @@ const THEMES = {
     cmdBg: '14161b',
     // Recording indicator
     recordingFg: 'b3f6c0',
+    // Mode indicator (-- INSERT --, -- VISUAL --, etc.)
+    modeMsgFg: 'b3f6c0',
     // Visual selection (bg-only; fg keeps its current colour)
-    visualBg: '264f78',
+    visualBg: '4f5258',
     // Search highlights
     searchFg: 'eef1f8',
     searchBg: '6b5300',
@@ -47,6 +49,9 @@ const THEMES = {
     // Error and prompt colors
     errorFg: 'ffc0b9',
     promptFg: '8cf8f7',
+    // Line numbers
+    lineNrFg: '4f5258',       // LineNr (dark grey)
+    cursorLineNrFg: 'e0e2ea', // CursorLineNr (bright white)
     // Syntax highlighting – verified against nvim -u NONE + syntax on + termguicolors
     syntax: {
       comment: '9b9ea4',        // Comment           (NvimDarkGrey4)
@@ -70,6 +75,7 @@ const THEMES = {
     cmdFg: 'd4d4d4',
     cmdBg: '000000',
     recordingFg: '00ff00',
+    modeMsgFg: '00ff00',
     visualBg: '333842',
     searchFg: '26292c',
     searchBg: 'e6db74',
@@ -77,6 +83,9 @@ const THEMES = {
     curSearchBg: 'fd971f',
     errorFg: 'ff6188',
     promptFg: '78dce8',
+    // Line numbers
+    lineNrFg: '90908a',       // LineNr (gray)
+    cursorLineNrFg: 'd4d4d4', // CursorLineNr (foreground white)
     // Syntax highlighting – Monokai palette
     syntax: {
       comment: '88846f',         // gray/olive
@@ -149,13 +158,42 @@ export class Screen {
           visSR = vc.row; visSC = vc.col;
           visER = vs.row; visEC = vs.col;
         }
+        // Exclusive visual motions: the cursor char is NOT highlighted
+        if (engine._visualExclusive) {
+          const cursorAtEnd = (vc.row === visER && vc.col === visEC);
+          const cursorAtStart = (vc.row === visSR && vc.col === visSC);
+          if (cursorAtEnd && visEC > visSC) {
+            visEC--;
+          } else if (cursorAtStart && visSC < visEC) {
+            visSC++;
+          }
+        }
+      }
+    } else if (mode === 'command' && engine._visualCmdRange) {
+      // Keep visual highlight visible while typing :'<,'> commands
+      const vcr = engine._visualCmdRange;
+      if (vcr.visMode === 'visual_line') {
+        visMode = 'line';
+        visSR = vcr.start;
+        visER = vcr.end;
+      } else {
+        visMode = 'char';
+        const vs = vcr.visStart;
+        const vc = vcr.visEnd;
+        if (vs.row < vc.row || (vs.row === vc.row && vs.col <= vc.col)) {
+          visSR = vs.row; visSC = vs.col;
+          visER = vc.row; visEC = vc.col;
+        } else {
+          visSR = vc.row; visSC = vc.col;
+          visER = vs.row; visEC = vs.col;
+        }
       }
     }
 
     // ── Compute search matches on visible lines ──
     let searchRegex = null;
-    if (engine._searchPattern) {
-      try { searchRegex = new RegExp(engine._searchPattern, 'gi'); } catch (e) { /* bad regex */ }
+    if (engine._searchPattern && engine._hlsearchActive) {
+      try { searchRegex = new RegExp(engine._searchPattern, 'g'); } catch (e) { /* bad regex */ }
     }
 
     // ── Syntax highlighting setup ──
@@ -163,75 +201,136 @@ export class Screen {
     const grammar = grammarForFile(engine.filename);
     if (grammar && t.syntax) {
       const hl = new SyntaxHighlighter(grammar);
-      // Tokenize all lines from 0 through last visible line so multi-line
+      // Tokenize all lines through the end of the buffer so multi-line
       // state is propagated correctly.
-      const lastVisible = Math.min(scrollTop + textRows, buf.lineCount);
-      const allLines = buf.lines.slice(0, lastVisible);
+      const allLines = buf.lines.slice(0, buf.lineCount);
       const result = hl.tokenizeLines(allLines);
       syntaxTokens = result.tokens;
     }
 
-    // ── Text area ──
-    for (let r = 0; r < textRows; r++) {
-      const bufRow = scrollTop + r;
-      if (bufRow < buf.lineCount) {
-        const raw = buf.lines[bufRow];
-        // Expand tabs to spaces (tabstop=8, matching nvim default)
-        let expanded = '';
-        // Build a mapping from buffer col → screen col
-        const bufToScreen = [];
-        for (let i = 0; i < raw.length; i++) {
-          bufToScreen[i] = expanded.length;
-          if (raw[i] === '\t') {
-            const spaces = 8 - (expanded.length % 8);
-            expanded += ' '.repeat(spaces);
-          } else {
-            expanded += raw[i];
-          }
+    // ── Line number gutter computation ──
+    const showNumber = engine._settings?.number ?? false;
+    const showRelNumber = engine._settings?.relativenumber ?? false;
+    const showGutter = showNumber || showRelNumber;
+    // Gutter width: match nvim — default numberwidth=4, expands for large files
+    let gutterWidth = 0;
+    if (showGutter) {
+      const maxLineNum = buf.lineCount;
+      const numDigits = String(maxLineNum).length;
+      gutterWidth = Math.max(4, numDigits + 1); // nvim default numberwidth=4
+    }
+    const textCols = this.cols - gutterWidth; // available columns for text
+
+    // ── Helper: expand a raw buffer line into screen text and mappings ──
+    const expandLine = (raw) => {
+      let expanded = '';
+      const bufToScreen = [];
+      for (let i = 0; i < raw.length; i++) {
+        bufToScreen[i] = expanded.length;
+        if (raw[i] === '\t') {
+          const spaces = 8 - (expanded.length % 8);
+          expanded += ' '.repeat(spaces);
+        } else {
+          expanded += raw[i];
         }
-        bufToScreen[raw.length] = expanded.length; // sentinel
+      }
+      bufToScreen[raw.length] = expanded.length; // sentinel
+      return { expanded, bufToScreen };
+    };
 
-        // Pad or truncate to cols
-        const text = expanded.length >= this.cols
-          ? expanded.slice(0, this.cols)
-          : expanded + ' '.repeat(this.cols - expanded.length);
+    // ── Helper: how many screen rows does a buffer line consume? ──
+    const wrapRows = (expanded) => expanded.length === 0 ? 1 : Math.ceil(expanded.length / textCols);
 
-        // Build per-column colour array then compress into runs
-        const colFg = new Array(this.cols).fill(t.normalFg);
-        const colBg = new Array(this.cols).fill(t.normalBg);
+    // ── Adjust scrollTop so cursor is on-screen (accounting for wrapping) ──
+    // scrollTop is in buffer rows. We need to ensure the cursor's wrapped
+    // screen row falls within the visible textRows.
+    let scrollTopAdj = scrollTop;
+    {
+      // First ensure the cursor's buffer row is at or below scrollTop
+      if (cursor.row < scrollTopAdj) scrollTopAdj = cursor.row;
 
-        // Apply syntax highlighting (base layer, before visual/search)
+      // Compute screen rows consumed from scrollTop to the cursor's row
+      // and check if the cursor's wrapped position fits within textRows.
+      let usedRows = 0;
+      for (let br = scrollTopAdj; br < cursor.row && br < buf.lineCount; br++) {
+        const { expanded } = expandLine(buf.lines[br]);
+        usedRows += wrapRows(expanded);
+      }
+      // Add the cursor's own row offset within its wrapped line
+      if (cursor.row < buf.lineCount) {
+        const { expanded, bufToScreen } = expandLine(buf.lines[cursor.row]);
+        const cursorVirtCol = bufToScreen[Math.min(cursor.col, buf.lines[cursor.row].length)] ?? 0;
+        const cursorWrapRow = Math.floor(cursorVirtCol / textCols);
+        usedRows += cursorWrapRow;
+
+        // If cursor row is past the visible area, scroll down
+        while (usedRows >= textRows && scrollTopAdj < cursor.row) {
+          const { expanded: topExpanded } = expandLine(buf.lines[scrollTopAdj]);
+          usedRows -= wrapRows(topExpanded);
+          scrollTopAdj++;
+        }
+        // Edge case: cursor's own wrapped line is taller than the screen
+        // (scrollTopAdj === cursor.row but cursorWrapRow >= textRows).
+        // In this case nvim would show the portion that contains the cursor.
+        // We handle this in rendering by starting from the right wrap offset.
+      }
+    }
+    // Update the engine's scrollTop so it stays in sync
+    engine.scrollTop = scrollTopAdj;
+
+    // ── Text area (with wrapping) ──
+    let screenRow = 0;       // current screen row being filled
+    let bufRow = scrollTopAdj;
+    let cursorScreenRow = -1;
+    let cursorScreenCol = -1;
+
+    while (screenRow < textRows && bufRow < buf.lineCount) {
+      const raw = buf.lines[bufRow];
+      const { expanded, bufToScreen } = expandLine(raw);
+      const numWraps = wrapRows(expanded);
+
+      for (let wrapIdx = 0; wrapIdx < numWraps && screenRow < textRows; wrapIdx++) {
+        const sliceStart = wrapIdx * textCols;
+        const sliceEnd = Math.min(sliceStart + textCols, expanded.length);
+        const sliceText = expanded.slice(sliceStart, sliceEnd);
+        const bodyText = sliceText.length >= textCols
+          ? sliceText
+          : sliceText + ' '.repeat(textCols - sliceText.length);
+
+        // Build per-column colour arrays for this screen row
+        const colFg = new Array(textCols).fill(t.normalFg);
+        const colBg = new Array(textCols).fill(t.normalBg);
+
+        // Apply syntax highlighting (base layer)
         if (syntaxTokens && syntaxTokens[bufRow]) {
           for (const tok of syntaxTokens[bufRow]) {
             const color = scopeToColor(tok.scope, t.syntax);
             if (!color) continue;
-            // Map buffer columns to screen columns
             const scrStart = bufToScreen[tok.start] ?? tok.start;
             const scrEnd = (bufToScreen[tok.end] ?? tok.end) - 1;
-            for (let c = scrStart; c <= Math.min(scrEnd, this.cols - 1); c++) {
-              colFg[c] = color;
+            // Map to this wrap slice
+            for (let sc = Math.max(scrStart, sliceStart); sc <= Math.min(scrEnd, sliceEnd - 1); sc++) {
+              colFg[sc - sliceStart] = color;
             }
           }
         }
 
         // Apply visual highlight
         if (visMode) {
-          let hlStart = -1, hlEnd = -1; // screen columns (inclusive)
+          let hlStart = -1, hlEnd = -1; // in expanded-string coords (absolute)
           if (visMode === 'line') {
             if (bufRow >= visSR && bufRow <= visER) {
-              hlStart = 0;
-              hlEnd = this.cols - 1;
+              hlStart = sliceStart;
+              hlEnd = sliceStart + textCols - 1;
             }
           } else { // char
             if (bufRow >= visSR && bufRow <= visER) {
               if (visSR === visER) {
-                // Single-line selection
                 hlStart = bufToScreen[visSC] ?? 0;
                 hlEnd = (visSC <= visEC && visEC < raw.length)
                   ? (bufToScreen[visEC + 1] ?? expanded.length) - 1
                   : (bufToScreen[visEC] ?? expanded.length - 1);
                 if (visEC >= raw.length) hlEnd = expanded.length - 1;
-                // For inclusive end, we want the end screen col of visEC char
                 hlEnd = Math.max(hlStart, hlEnd);
               } else if (bufRow === visSR) {
                 hlStart = bufToScreen[visSC] ?? 0;
@@ -243,7 +342,6 @@ export class Screen {
                   : expanded.length - 1;
                 hlEnd = Math.max(0, hlEnd);
               } else {
-                // Middle line – fully selected
                 hlStart = 0;
                 hlEnd = Math.max(expanded.length - 1, 0);
               }
@@ -251,15 +349,16 @@ export class Screen {
           }
 
           if (hlStart >= 0 && hlEnd >= hlStart) {
-            const end = Math.min(hlEnd, this.cols - 1);
-            for (let c = hlStart; c <= end; c++) {
-              // Only change bg; fg keeps its original colour
+            // Clamp to this wrap slice
+            const cStart = Math.max(hlStart, sliceStart) - sliceStart;
+            const cEnd = Math.min(hlEnd, sliceStart + textCols - 1) - sliceStart;
+            for (let c = cStart; c <= cEnd; c++) {
               colBg[c] = t.visualBg;
             }
           }
         }
 
-        // Apply search highlights (on top of visual, so they show through)
+        // Apply search highlights
         if (searchRegex) {
           searchRegex.lastIndex = 0;
           let m;
@@ -267,41 +366,93 @@ export class Screen {
             if (m[0].length === 0) { searchRegex.lastIndex++; continue; }
             const matchStart = bufToScreen[m.index] ?? 0;
             const matchEnd = (bufToScreen[m.index + m[0].length] ?? expanded.length) - 1;
-            // CurSearch: match at the tracked search position (last search jump)
             const csp = engine._curSearchPos;
             const isCursorMatch = engine._showCurSearch && csp
               && bufRow === csp.row
               && m.index === csp.col;
             const sFg = isCursorMatch ? t.curSearchFg : t.searchFg;
             const sBg = isCursorMatch ? t.curSearchBg : t.searchBg;
-            for (let c = matchStart; c <= Math.min(matchEnd, this.cols - 1); c++) {
-              colFg[c] = sFg;
-              colBg[c] = sBg;
+            for (let sc = Math.max(matchStart, sliceStart); sc <= Math.min(matchEnd, sliceEnd - 1); sc++) {
+              colFg[sc - sliceStart] = sFg;
+              colBg[sc - sliceStart] = sBg;
             }
           }
         }
 
-        // Compress per-column arrays into runs
-        const runs = [];
+        // Build gutter
+        let gutterText = '';
+        const gutterRuns = [];
+        if (showGutter) {
+          if (wrapIdx === 0) {
+            // First wrapped row gets the line number
+            const isCursorLine = (bufRow === cursor.row);
+            let numStr;
+            if (showNumber && showRelNumber) {
+              if (isCursorLine) {
+                numStr = String(bufRow + 1);
+                gutterText = numStr + ' '.repeat(gutterWidth - numStr.length);
+              } else {
+                numStr = String(Math.abs(bufRow - cursor.row));
+                gutterText = numStr.padStart(gutterWidth - 1) + ' ';
+              }
+            } else if (showRelNumber) {
+              numStr = isCursorLine ? '0' : String(Math.abs(bufRow - cursor.row));
+              gutterText = numStr.padStart(gutterWidth - 1) + ' ';
+            } else {
+              numStr = String(bufRow + 1);
+              gutterText = numStr.padStart(gutterWidth - 1) + ' ';
+            }
+          } else {
+            // Continuation wrapped rows: blank gutter
+            gutterText = ' '.repeat(gutterWidth);
+          }
+          const nrFg = t.lineNrFg || t.normalFg;
+          gutterRuns.push({ n: gutterWidth, fg: nrFg, bg: t.normalBg });
+        }
+
+        // Compress colour arrays into runs
+        const textRuns = [];
         let runStart = 0;
-        for (let c = 1; c <= this.cols; c++) {
-          if (c === this.cols || colFg[c] !== colFg[runStart] || colBg[c] !== colBg[runStart]) {
-            runs.push({ n: c - runStart, fg: colFg[runStart], bg: colBg[runStart] });
+        for (let c = 1; c <= textCols; c++) {
+          if (c === textCols || colFg[c] !== colFg[runStart] || colBg[c] !== colBg[runStart]) {
+            textRuns.push({ n: c - runStart, fg: colFg[runStart], bg: colBg[runStart] });
             runStart = c;
           }
         }
 
+        const text = gutterText + bodyText;
+        const runs = [...gutterRuns, ...textRuns];
         lines.push({ text, runs });
-      } else {
-        // Tilde lines (past end of buffer)
-        const text = '~' + ' '.repeat(this.cols - 1);
-        lines.push({
-          text,
-          runs: [
-            { n: this.cols, fg: t.tildeFg, bg: t.tildeBg },
-          ],
-        });
+
+        // Track cursor screen position
+        if (bufRow === cursor.row) {
+          const cursorVirtCol = bufToScreen[Math.min(cursor.col, raw.length)] ?? 0;
+          // When cursor is ON a tab character, nvim renders at the LAST
+          // visual column of that tab (not the first).
+          let adjustedVirtCol = cursorVirtCol;
+          if (cursor.col < raw.length && raw[cursor.col] === '\t') {
+            adjustedVirtCol += 8 - (cursorVirtCol % 8) - 1;
+          }
+          const cursorWrapRow = Math.floor(adjustedVirtCol / textCols);
+          if (wrapIdx === cursorWrapRow) {
+            cursorScreenRow = screenRow;
+            cursorScreenCol = (adjustedVirtCol % textCols) + gutterWidth;
+          }
+        }
+
+        screenRow++;
       }
+      bufRow++;
+    }
+
+    // Fill remaining screen rows with tilde lines
+    while (screenRow < textRows) {
+      const tildeText = '~' + ' '.repeat(this.cols - 1);
+      lines.push({
+        text: tildeText,
+        runs: [{ n: this.cols, fg: t.tildeFg, bg: t.tildeBg }],
+      });
+      screenRow++;
     }
 
     // ── Status line (row rows-2) ──
@@ -330,13 +481,23 @@ export class Screen {
           { n: this.cols - recLen, fg: t.cmdFg, bg: t.cmdBg },
         ],
       });
-    } else if ((engine.commandLine ?? '').startsWith('E486:')) {
+    } else if (/^E\d{3}:/.test(engine.commandLine ?? '')) {
       // Error message in command line (red colored)
       const errLen = Math.min((engine.commandLine || '').length, this.cols);
       const errRuns = [];
       if (errLen > 0) errRuns.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg });
       if (errLen < this.cols) errRuns.push({ n: this.cols - errLen, fg: t.cmdFg, bg: t.cmdBg });
       lines.push({ text: cmdText, runs: errRuns });
+    } else if (t.modeMsgFg && /^-- (INSERT|VISUAL|VISUAL LINE|REPLACE) --$/.test((engine.commandLine ?? '').trim())) {
+      // Mode indicator (ModeMsg) in green
+      const modeLen = (engine.commandLine ?? '').replace(/\s+$/, '').length;
+      lines.push({
+        text: cmdText,
+        runs: [
+          { n: modeLen, fg: t.modeMsgFg, bg: t.cmdBg },
+          { n: this.cols - modeLen, fg: t.cmdFg, bg: t.cmdBg },
+        ],
+      });
     } else {
       lines.push({
         text: cmdText,
@@ -412,33 +573,13 @@ export class Screen {
       };
     }
 
-    // Map buffer cursor col to screen col (expand tabs)
-    let screenCol = cursor.col;
-    const cursorBufRow = cursor.row;
-    if (cursorBufRow >= 0 && cursorBufRow < buf.lineCount) {
-      const rawLine = buf.lines[cursorBufRow];
-      let sc = 0;
-      for (let i = 0; i < cursor.col && i < rawLine.length; i++) {
-        if (rawLine[i] === '\t') {
-          sc += 8 - (sc % 8);
-        } else {
-          sc++;
-        }
-      }
-      // When cursor is ON a tab character, nvim renders at the LAST
-      // visual column of that tab (not the first).
-      if (cursor.col < rawLine.length && rawLine[cursor.col] === '\t') {
-        sc += 8 - (sc % 8) - 1;
-      }
-      screenCol = sc;
-    }
-
+    // Cursor position was computed during rendering (accounting for wrapping).
     return {
       rows: this.rows,
       cols: this.cols,
       cursor: {
-        row: cursor.row - scrollTop,
-        col: screenCol,
+        row: cursorScreenRow >= 0 ? cursorScreenRow : 0,
+        col: cursorScreenCol >= 0 ? cursorScreenCol : gutterWidth,
         visible: true,
       },
       defaultFg: t.normalFg,

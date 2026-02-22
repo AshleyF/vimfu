@@ -81,8 +81,8 @@ def run_case(name: str, case: dict) -> dict:
 
         # Wait for nvim to render
         first_line = initial.split('\n')[0] if initial else ''
-        # Tabs render as spaces in nvim, so strip tabs for the wait check
-        wait_text = first_line.replace('\t', ' ')[:10].strip()
+        # Tabs render as 8 spaces in nvim (default tabstop), so expand for the wait check
+        wait_text = first_line.replace('\t', '        ')[:10].strip()
         wait_for = wait_text if wait_text else '~'
 
         deadline = time.time() + 10.0
@@ -101,9 +101,24 @@ def run_case(name: str, case: dict) -> dict:
             )
         time.sleep(0.15)
 
-        # Feed keys one at a time
-        for ch in keys:
+        # Feed keys — send escape sequences as atomic units so nvim
+        # interprets them correctly (e.g. \x1b[3~ = Delete key)
+        i = 0
+        while i < len(keys):
+            ch = keys[i]
+            if ch == '\x1b' and i + 2 < len(keys) and keys[i + 1] == '[':
+                # CSI escape sequence: find the terminator
+                j = i + 2
+                while j < len(keys) and keys[j] not in 'ABCDHFPQRSTfm~':
+                    j += 1
+                if j < len(keys):
+                    j += 1  # include the terminator
+                    shell.send_keys(keys[i:j])
+                    i = j
+                    time.sleep(0.04)
+                    continue
             shell.send_keys(ch)
+            i += 1
             time.sleep(0.04)
 
         time.sleep(0.3)  # settle
@@ -150,6 +165,10 @@ def run_suite(suite_name: str, cases: dict, case_filter: str | None = None) -> d
     total = len(cases)
     for i, (name, case) in enumerate(cases.items(), 1):
         print(f"  [{i}/{total}] {name} ...", end=" ", flush=True)
+        if case.get("skip"):
+            print(f"SKIP ({case['skip']})")
+            results[name] = {"skip": case["skip"]}
+            continue
         try:
             result = run_case(name, case)
             results[name] = result

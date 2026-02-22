@@ -17,9 +17,9 @@
  *   rm <file>      – remove a file
  *   touch <file>   – create empty file
  *   echo <text>    – print text (supports > redirect)
+ *   sort <file>    – sort lines of a file (or stdin-like piped input)
  *   pwd            – print working directory
  *   clear          – clear screen
- *   exit / quit    – (no-op in browser, could signal parent)
  *   help           – show available commands
  */
 
@@ -308,6 +308,9 @@ export class ShellSim {
       case 'echo':
         this._cmdEcho(rest, raw);
         break;
+      case 'sort':
+        this._cmdSort(rest);
+        break;
       case 'pwd':
         this._appendOutput(this.cwd);
         break;
@@ -317,10 +320,6 @@ export class ShellSim {
         break;
       case 'help':
         this._cmdHelp();
-        break;
-      case 'exit':
-      case 'quit':
-        this._appendOutput('logout');
         break;
       default:
         this._appendOutput(`zsh: command not found: ${cmd}`);
@@ -403,6 +402,62 @@ export class ShellSim {
   }
 
   /** @private */
+  _cmdSort(args) {
+    // Flags
+    let reverse = false;
+    let numeric = false;
+    let unique = false;
+    const files = [];
+    for (const arg of args) {
+      if (arg === '-r' || arg === '--reverse') reverse = true;
+      else if (arg === '-n' || arg === '--numeric-sort') numeric = true;
+      else if (arg === '-u' || arg === '--unique') unique = true;
+      else if (arg.startsWith('-') && arg.length > 1) {
+        // Combined flags like -rn
+        for (const ch of arg.slice(1)) {
+          if (ch === 'r') reverse = true;
+          else if (ch === 'n') numeric = true;
+          else if (ch === 'u') unique = true;
+          else {
+            this._appendOutput(`sort: invalid option -- '${ch}'`);
+            return;
+          }
+        }
+      } else {
+        files.push(arg);
+      }
+    }
+    if (files.length === 0) {
+      this._appendOutput('sort: missing file operand');
+      return;
+    }
+    for (const name of files) {
+      const contents = this.fs.read(name);
+      if (contents === null) {
+        this._appendOutput(`sort: cannot read: ${name}: No such file or directory`);
+        continue;
+      }
+      let lines = contents.split('\n');
+      // Remove trailing empty line from final newline
+      if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
+      if (numeric) {
+        lines.sort((a, b) => {
+          const na = parseFloat(a) || 0;
+          const nb = parseFloat(b) || 0;
+          return na - nb;
+        });
+      } else {
+        lines.sort();
+      }
+      if (reverse) lines.reverse();
+      if (unique) lines = [...new Set(lines)];
+      for (const line of lines) {
+        this._appendOutput(line);
+      }
+    }
+  }
+
+  /** @private */
   _cmdHelp() {
     const cmds = [
       'Available commands:',
@@ -413,6 +468,7 @@ export class ShellSim {
       '  rm <file>     Remove a file',
       '  touch <file>  Create empty file',
       '  echo <text>   Print text (supports > redirect)',
+      '  sort <file>   Sort lines of a file (-r -n -u)',
       '  pwd           Print working directory',
       '  clear         Clear screen',
       '  help          Show this help',

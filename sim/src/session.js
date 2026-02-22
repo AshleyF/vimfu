@@ -181,8 +181,8 @@ export class SessionManager {
     // Parse ex command
     const trimmed = cmd.trim();
 
-    // :w [filename] – write
-    if (/^w(\s|$)/.test(trimmed)) {
+    // :w[rite] [filename] – write
+    if (/^w(r(i(te?)?)?)?(\s|$)/.test(trimmed)) {
       const parts = trimmed.split(/\s+/);
       const filename = parts[1] || this._vimFilename;
       if (filename) {
@@ -204,8 +204,8 @@ export class SessionManager {
       return;
     }
 
-    // :wq [filename] or :x – write and quit
-    if (/^(wq|x)(\s|$)/.test(trimmed)) {
+    // :wq [filename] or :x[it] – write and quit
+    if (/^(wq|x(it?)?)(\s|$)/.test(trimmed)) {
       const parts = trimmed.split(/\s+/);
       const filename = parts[1] || this._vimFilename;
       if (filename) {
@@ -215,8 +215,8 @@ export class SessionManager {
       return;
     }
 
-    // :q – quit (fail if dirty)
-    if (trimmed === 'q') {
+    // :q[uit] – quit (fail if dirty)
+    if (/^q(u(it?)?)?$/.test(trimmed)) {
       if (this._isDirty()) {
         // Real nvim shows a multi-line "Press ENTER" prompt with E37 + E162
         const fname = this._vimFilename || '[No Name]';
@@ -229,14 +229,14 @@ export class SessionManager {
       return;
     }
 
-    // :q! – force quit
-    if (trimmed === 'q!') {
+    // :q[uit]! – force quit
+    if (/^q(u(it?)?)?!$/.test(trimmed)) {
       this._exitVim();
       return;
     }
 
-    // :e [filename] – edit file
-    if (/^e(\s|$)/.test(trimmed)) {
+    // :e[dit] [filename] – edit file
+    if (/^e(d(it?)?)?(\s|$)/.test(trimmed)) {
       const parts = trimmed.split(/\s+/);
       const filename = parts[1];
       if (filename) {
@@ -252,7 +252,53 @@ export class SessionManager {
       }
       return;
     }
+    // :r[ead]! command — insert shell command output below cursor
+    if (/^r(e(ad?)?)?!/.test(trimmed)) {
+      const shellCmd = trimmed.replace(/^r(e(ad?)?)?!\s*/, '').trim();
+      const lines = this._execShellForOutput(shellCmd);
+      if (lines.length > 0) {
+        this.engine._saveSnapshot();
+        this.engine._redoStack = [];
+        const row = this.engine.cursor.row;
+        this.engine.buffer.lines.splice(row + 1, 0, ...lines);
+        this.engine.cursor.row = row + lines.length;
+        this.engine.cursor.col = 0;
+        this.engine._updateDesiredCol();
+        const n = lines.length;
+        this.engine.commandLine = `${n} line${n !== 1 ? 's' : ''} added`;
+        this.engine._stickyCommandLine = true;
+      }
+      return;
+    }
 
+    // :r[ead] file — insert file contents below cursor
+    if (/^r(e(ad?)?)?(\s|$)/.test(trimmed)) {
+      const parts = trimmed.split(/\s+/);
+      const filename = parts[1];
+      if (filename) {
+        const contents = this.fs.read(filename);
+        if (contents === null) {
+          this.engine.commandLine = `E484: Can't open file ${filename}`;
+          this.engine._stickyCommandLine = true;
+        } else {
+          this.engine._saveSnapshot();
+          this.engine._redoStack = [];
+          const lines = contents.split('\n');
+          const row = this.engine.cursor.row;
+          this.engine.buffer.lines.splice(row + 1, 0, ...lines);
+          this.engine.cursor.row = row + lines.length;
+          this.engine.cursor.col = 0;
+          this.engine._updateDesiredCol();
+          const n = lines.length;
+          this.engine.commandLine = `${n} line${n !== 1 ? 's' : ''} added`;
+          this.engine._stickyCommandLine = true;
+        }
+      } else {
+        this.engine.commandLine = 'E32: No file name';
+        this.engine._stickyCommandLine = true;
+      }
+      return;
+    }
     // :! command – shell command
     if (trimmed.startsWith('!')) {
       const shellCmd = trimmed.slice(1).trim();
@@ -290,12 +336,11 @@ export class SessionManager {
 
   // ── :! shell command support ──
 
-  /** @private */
-  _runShellCommand(cmd) {
+  /** @private – execute a shell command and return output lines */
+  _execShellForOutput(cmd) {
     const lines = [];
-    // Create a temporary shell to execute the command
     const args = this._tokenize(cmd);
-    if (args.length === 0) return;
+    if (args.length === 0) return lines;
 
     const command = args[0];
     const rest = args.slice(1);
@@ -331,11 +376,49 @@ export class SessionManager {
         }
         break;
       }
+      case 'sort': {
+        if (rest.length === 0) {
+          lines.push('sort: missing file operand');
+        } else {
+          let reverse = false, numeric = false, unique = false;
+          const files = [];
+          for (const arg of rest) {
+            if (arg.startsWith('-')) {
+              for (const ch of arg.slice(1)) {
+                if (ch === 'r') reverse = true;
+                else if (ch === 'n') numeric = true;
+                else if (ch === 'u') unique = true;
+              }
+            } else files.push(arg);
+          }
+          for (const name of files) {
+            const contents = this.fs.read(name);
+            if (contents === null) {
+              lines.push(`sort: cannot read: ${name}: No such file or directory`);
+            } else {
+              let sorted = contents.split('\n');
+              if (sorted.length > 0 && sorted[sorted.length - 1] === '') sorted.pop();
+              if (numeric) sorted.sort((a, b) => (parseFloat(a) || 0) - (parseFloat(b) || 0));
+              else sorted.sort();
+              if (reverse) sorted.reverse();
+              if (unique) sorted = [...new Set(sorted)];
+              lines.push(...sorted);
+            }
+          }
+        }
+        break;
+      }
       default:
         lines.push(`zsh: command not found: ${command}`);
         break;
     }
 
+    return lines;
+  }
+
+  /** @private */
+  _runShellCommand(cmd) {
+    const lines = this._execShellForOutput(cmd);
     // Show output + "Press ENTER" prompt
     this._shellMsgLines = lines;
     this.mode = 'shell_msg';

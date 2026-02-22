@@ -113,7 +113,16 @@ And always check for regressions across ALL suites:
 node test/compare_test_v2.js
 ```
 
-### 7. Run All Unit Test Suites
+### 7. Update Reference.md
+
+Whenever you add or change a feature, update `Reference.md` to document it.
+This keeps the command reference in sync with the implementation. Add:
+
+- New commands to the appropriate section table
+- Short forms / aliases alongside the canonical form
+- Behavioral notes where needed (e.g. edge cases, interactions)
+
+### 8. Run All Unit Test Suites
 
 ```bash
 node test/test_syntax_screen.js    # 46 tests – syntax color integration
@@ -128,7 +137,7 @@ If you changed syntax/theme, also run the nvim color comparison:
 python test/compare_nvim_syntax.py  # must show 0 mismatches
 ```
 
-### 8. Final Verification
+### 9. Final Verification
 
 Before considering a feature complete:
 

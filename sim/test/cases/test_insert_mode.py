@@ -526,4 +526,56 @@ CASES = {
         "keys": "0AEND\x1b",
         "initial": "hello",
     },
+
+    # ==========================================
+    # gi - insert at last insert position
+    # ==========================================
+    "gi_basic": {
+        "keys": "iHello\x1bgggi World\x1b",
+        "initial": "line one\nline two",
+    },
+    "gi_after_append": {
+        "keys": "AEND\x1bjjgi MORE\x1b",
+        "initial": "first\nsecond\nthird",
+    },
+    "gi_after_o_open_below": {
+        "keys": "onew line\x1bgggi extra\x1b",
+        "initial": "first\nlast",
+    },
+    "gi_no_previous_insert": {
+        "keys": "gi",
+        "initial": "hello",
+    },
+    "gi_after_insert_middle": {
+        "keys": "lliMID\x1bgggiADD\x1b",
+        "initial": "abcde",
+    },
+    "gi_after_cw": {
+        "keys": "cwNEW\x1bgggiMORE\x1b",
+        "initial": "old text here",
+    },
+    "gi_after_s_substitute": {
+        "keys": "llsX\x1bgggiY\x1b",
+        "initial": "abcde",
+    },
+    "gi_preserves_col_past_eol": {
+        "keys": "ALONG\x1bjgiX\x1b",
+        "initial": "aaa\nb",
+    },
+
+    # ==========================================
+    # gI - insert at column 0
+    # ==========================================
+    "gI_basic": {
+        "keys": "gISTART\x1b",
+        "initial": "    indented",
+    },
+    "gI_on_empty_line": {
+        "keys": "gItext\x1b",
+        "initial": "",
+    },
+    "gI_multiline": {
+        "keys": "jgIFRONT\x1b",
+        "initial": "line one\n    line two",
+    },
 }

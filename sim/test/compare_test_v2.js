@@ -61,19 +61,41 @@ function loadSuites() {
 
 // ── Helpers ──
 function feedKeys(engine, keys) {
-  for (const ch of keys) {
+  let i = 0;
+  while (i < keys.length) {
+    const ch = keys[i];
     let key = ch;
-    if (ch === '\x1b') key = 'Escape';
+    if (ch === '\x1b') {
+      // Check for escape sequences (arrow keys, Delete, etc.)
+      if (i + 2 < keys.length && keys[i + 1] === '[') {
+        const code = keys[i + 2];
+        if (code === 'A') { engine.feedKey('ArrowUp'); i += 3; continue; }
+        if (code === 'B') { engine.feedKey('ArrowDown'); i += 3; continue; }
+        if (code === 'C') { engine.feedKey('ArrowRight'); i += 3; continue; }
+        if (code === 'D') { engine.feedKey('ArrowLeft'); i += 3; continue; }
+        if (code === '3' && i + 3 < keys.length && keys[i + 3] === '~') {
+          engine.feedKey('Delete'); i += 4; continue;
+        }
+      }
+      key = 'Escape';
+    }
     else if (ch === '\r' || ch === '\n') key = 'Enter';
     else if (ch === '\x08' || ch === '\x7f') key = 'Backspace';
-    else if (ch === '\x04') key = 'Ctrl-D';
-    else if (ch === '\x15') key = 'Ctrl-U';
-    else if (ch === '\x06') key = 'Ctrl-F';
+    else if (ch === '\x01') key = 'Ctrl-A';
     else if (ch === '\x02') key = 'Ctrl-B';
-    else if (ch === '\x12') key = 'Ctrl-R';
+    else if (ch === '\x04') key = 'Ctrl-D';
     else if (ch === '\x05') key = 'Ctrl-E';
+    else if (ch === '\x06') key = 'Ctrl-F';
+    else if (ch === '\x07') key = 'Ctrl-G';
+    else if (ch === '\x09') key = 'Tab';
+    else if (ch === '\x0f') key = 'Ctrl-O';
+    else if (ch === '\x12') key = 'Ctrl-R';
+    else if (ch === '\x15') key = 'Ctrl-U';
+    else if (ch === '\x17') key = 'Ctrl-W';
+    else if (ch === '\x18') key = 'Ctrl-X';
     else if (ch === '\x19') key = 'Ctrl-Y';
     engine.feedKey(key);
+    i++;
   }
 }
 
@@ -155,6 +177,12 @@ for (const [suiteName, cases] of Object.entries(suites)) {
 
     if (gt.error) {
       console.log(`  SKIP  ${name} (ground truth error)`);
+      suiteSkipped++;
+      continue;
+    }
+
+    if (gt.skip) {
+      console.log(`  SKIP  ${name} (${gt.skip})`);
       suiteSkipped++;
       continue;
     }
