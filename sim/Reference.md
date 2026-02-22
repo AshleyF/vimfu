@@ -8,7 +8,7 @@ Exhaustive reference of every key, command, and feature supported.
 
 | Mode | Entry | Status line |
 |---|---|---|
-| Normal | `Escape` from any mode | *(empty)* or `recording @x` |
+| Normal | `Escape` / `Ctrl-[` from any mode | *(empty)* or `recording @x` |
 | Insert | `i`, `I`, `a`, `A`, `o`, `O`, `s`, `S`, `c…`, `gi`, `gI` | `-- INSERT --` |
 | Replace | `R` | `-- REPLACE --` |
 | Visual | `v` | `-- VISUAL --` |
@@ -44,10 +44,10 @@ Exhaustive reference of every key, command, and feature supported.
 | `$` | ✅ | End of line (`2$` = end of next line) |
 | `_` | ✅ | First non-blank, count−1 lines down |
 | `g_` | ✅ | Last non-blank on line |
-| `f{char}` | ✅ | Find char forward (inclusive) |
-| `F{char}` | ✅ | Find char backward (inclusive) |
-| `t{char}` | ✅ | Till char forward (exclusive) |
-| `T{char}` | ✅ | Till char backward (exclusive) |
+| `f{char}` | ✅ | Find char forward (inclusive; `Tab` = literal tab) |
+| `F{char}` | ✅ | Find char backward (inclusive; `Tab` = literal tab) |
+| `t{char}` | ✅ | Till char forward (exclusive; `Tab` = literal tab) |
+| `T{char}` | ✅ | Till char backward (exclusive; `Tab` = literal tab) |
 | `;` | ✅ | Repeat last `f`/`F`/`t`/`T` |
 | `,` | ✅ | Repeat last find, reversed |
 | `%` | — | Match bracket `(){}[]` |
@@ -84,9 +84,9 @@ Exhaustive reference of every key, command, and feature supported.
 | `~` | ✅ | Toggle case, advance cursor |
 | `J` | ✅ | Join N lines (smart spacing) |
 | `gJ` | ✅ | Join N lines (no spacing) |
-| `D` | — | Delete to end of line (`d$`) |
+| `D` | ✅ | Delete to end of line (`d$`); `2D` deletes to EOL + next line |
 | `C` | — | Change to end of line (`c$`) |
-| `Y` | ✅ | Yank to end of line (`y$`) |
+| `Y` | — | Yank to end of line (`y$`) |
 | `u` | ✅ | Undo |
 | `Ctrl-R` | ✅ | Redo |
 | `.` | ✅ | Repeat last change (count overrides) |
@@ -113,7 +113,7 @@ Operators combine with any motion or text object: `{op}[count]{motion}`.
 
 Examples: `d3w`, `ciw`, `>}`, `gUap`, `yy`, `5dd`, `<<`, `dG`, `c/foo↵`
 
-Special: `cw` on a word behaves like `ce` (doesn't include trailing space). `dw` at EOL doesn't cross lines.
+Special: `cw` on a word behaves like `ce` (doesn't include trailing space). `dw` at EOL doesn't cross lines. `cc` / `S` preserve leading indent.
 
 ### Put (Paste)
 
@@ -166,7 +166,7 @@ Works with operators: `d'a` (linewise), `` d`a `` (charwise).
 | `Ctrl-O` | Jump to older position in jump list |
 | `Ctrl-I` | Jump to newer position in jump list |
 
-Jump entries added by: `G`, `gg`, `n`, `N`, `*`, `#`, `gd`.
+Jump entries added by: `G`, `gg`, `/`, `?`, `n`, `N`, `*`, `#`, `gd`.
 
 ### Change List
 
@@ -184,10 +184,12 @@ Change positions recorded on every buffer modification.
 | `q{a-z}` | Start recording into register |
 | `q` (while recording) | Stop recording |
 | `@{a-z}` | Play macro (supports count) |
-| `@@` | Replay last macro (supports count) |
-| `Q` | Replay last macro (supports count) |
+| `@@` | Replay last *played* macro (supports count) |
+| `@:` | Repeat last ex command (supports count) |
+| `Q` | Replay last *recorded* macro (supports count) |
 
 Entire macro is a single undo unit. Aborts on failed motion.
+`@@` and `Q` can differ: if you record `qa…q` then play `@b`, then `@@` replays `@b` while `Q` replays `@a`.
 
 ### Registers
 
@@ -196,6 +198,8 @@ Entire macro is a single undo unit. Aborts on failed motion.
 | `"{a-z}` | Select register for next `d`/`c`/`y`/`p` |
 
 Unnamed register always updated. Named registers `a-z` only when explicitly selected. Each stores content + type (line or char).
+In visual mode, `"` also accepts uppercase `A-Z` and digit `0-9` registers.
+`Ctrl-R` in insert mode accepts `a-z`, `0-9`, and `"` (unnamed).
 
 ### Search
 
@@ -271,7 +275,7 @@ All normal-mode motions work in visual mode to extend the selection.
 
 | Key | Description |
 |---|---|
-| `d` / `x` | Delete selection |
+| `d` / `x` / `Delete` | Delete selection |
 | `c` / `s` | Change selection (delete + insert) |
 | `y` | Yank selection |
 | `>` | Indent selected lines |
@@ -283,6 +287,7 @@ All normal-mode motions work in visual mode to extend the selection.
 | `p` | Replace selection with register |
 | `r{char}` | Replace every char with {char} |
 | `"{a-z}` | Select register for next action |
+| `:` | Enter command line with `'<,'>` range pre-filled |
 
 ### Text Objects in Visual
 
@@ -325,6 +330,7 @@ of the full command name is valid (e.g. `:wri` → `:write`, `:qui` → `:quit`)
 | `:q[uit]` | Quit (fails with E37 if dirty) |
 | `:q[uit]!` | Force quit (discard changes) |
 | `:e[dit] file` | Edit a different file |
+| `:e[dit]!` | Force re-edit current file (discard changes) |
 | `:{number}` | Go to line number |
 | `:$` | Go to last line |
 | `:noh[lsearch]` | Clear search highlighting (pattern kept for `n`/`N`) |
@@ -365,6 +371,17 @@ for files with more than 999 lines.
 | `:!pwd` | Print working directory |
 | `:!echo text` | Print text |
 | `:!rm file` | Remove file from VFS |
+| `:!touch file` | Create empty file |
+| `:!cp src dst` | Copy file |
+| `:!mv src dst` | Move/rename file |
+| `:!wc file` | Count lines, words, bytes (`-l` `-w` `-c`) |
+| `:!head file` | Show first N lines (`-n N`, default 10) |
+| `:!tail file` | Show last N lines (`-n N`, default 10) |
+| `:!grep pat file` | Search for pattern (`-i` `-n` `-c`) |
+| `:!sort file` | Sort lines (`-r` `-n` `-u`) |
+| `:!date` | Print date and time |
+| `:!whoami` | Print username |
+| `:!which cmd` | Show command path |
 | `:!anything_else` | Shows "command not found" |
 
 Output shown in a "Press ENTER" prompt overlay.
@@ -391,14 +408,24 @@ Output shown in a "Press ENTER" prompt overlay.
 | `cat file…` | Print file contents |
 | `touch file…` | Create empty file(s) |
 | `rm file…` | Delete file(s) |
-| `echo text` | Print text (supports `> file` redirect) |
+| `cp src dst` | Copy file |
+| `mv src dst` | Move/rename file |
+| `echo text` | Print text (`> file` overwrite, `>> file` append) |
+| `wc file…` | Count lines, words, bytes (`-l` lines, `-w` words, `-c` bytes) |
+| `head file…` | Show first N lines (`-n N`, default 10) |
+| `tail file…` | Show last N lines (`-n N`, default 10) |
+| `grep pat file…` | Search for regex pattern (`-i` case-insensitive, `-n` line numbers, `-c` count only) |
 | `sort file` | Sort lines of a file (`-r` reverse, `-n` numeric, `-u` unique) |
+| `history` | Show numbered command history |
 | `set -o vi` | Enable vi-mode line editing |
 | `set -o emacs` | Disable vi-mode (default) |
 | `set` | Show current editing mode |
 | `date` | Print current date and time |
 | `pwd` | Print working directory (`~/vimfu`) |
+| `whoami` | Print current username |
+| `which cmd…` | Show command location (`/usr/bin/cmd`) |
 | `clear` | Clear screen |
+| `exit` | Exit shell (stops accepting input) |
 | `help` | Show command list |
 | *anything else* | "command not found" |
 
@@ -417,7 +444,7 @@ Output shown in a "Press ENTER" prompt overlay.
 | `Ctrl-U` | Delete to start of line |
 | `Ctrl-K` | Delete to end of line |
 | `Ctrl-W` | Delete word backward |
-| `Tab` | Filename tab completion |
+| `Tab` | Tab completion (commands on first word, filenames otherwise) |
 
 ### Prompt
 

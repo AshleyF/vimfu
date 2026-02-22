@@ -1126,6 +1126,276 @@ addCase('shell_vi_tilde_count', () => {
   };
 });
 
+// ───────────────────────────────────────────────────────────
+// New shell commands
+// ───────────────────────────────────────────────────────────
+
+addCase('shell_wc', () => {
+  const s = newSession();
+  s.fs.write('data.txt', 'hello world\nfoo bar baz\nend');
+  feedString(s, 'wc data.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'wc shows line, word, byte counts',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_wc_l_flag', () => {
+  const s = newSession();
+  s.fs.write('data.txt', 'line1\nline2\nline3');
+  feedString(s, 'wc -l data.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'wc -l shows only line count',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_head', () => {
+  const s = newSession();
+  const lines = [];
+  for (let i = 1; i <= 15; i++) lines.push(`line ${i}`);
+  s.fs.write('big.txt', lines.join('\n'));
+  feedString(s, 'head big.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'head shows first 10 lines by default',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_head_n3', () => {
+  const s = newSession();
+  s.fs.write('data.txt', 'alpha\nbeta\ngamma\ndelta');
+  feedString(s, 'head -n 3 data.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'head -n 3 shows first 3 lines',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_tail', () => {
+  const s = newSession();
+  const lines = [];
+  for (let i = 1; i <= 15; i++) lines.push(`line ${i}`);
+  s.fs.write('big.txt', lines.join('\n'));
+  feedString(s, 'tail -n 5 big.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'tail -n 5 shows last 5 lines',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_grep', () => {
+  const s = newSession();
+  s.fs.write('poem.txt', 'roses are red\nviolets are blue\nsugar is sweet\nand so are you');
+  feedString(s, 'grep are poem.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'grep shows matching lines',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_grep_n_flag', () => {
+  const s = newSession();
+  s.fs.write('poem.txt', 'roses are red\nviolets are blue\nsugar is sweet\nand so are you');
+  feedString(s, 'grep -n are poem.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'grep -n shows line numbers with matches',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_grep_c_flag', () => {
+  const s = newSession();
+  s.fs.write('poem.txt', 'roses are red\nviolets are blue\nsugar is sweet\nand so are you');
+  feedString(s, 'grep -c are poem.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'grep -c shows count of matching lines',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_grep_i_flag', () => {
+  const s = newSession();
+  s.fs.write('names.txt', 'Alice\nalice\nBob\nALICE');
+  feedString(s, 'grep -i alice names.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'grep -i case-insensitive match',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_cp', () => {
+  const s = newSession();
+  s.fs.write('src.txt', 'original content');
+  feedString(s, 'cp src.txt dst.txt');
+  s.feedKey('Enter');
+  feedString(s, 'cat dst.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'cp copies file, cat shows the copy',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_mv', () => {
+  const s = newSession();
+  s.fs.write('old.txt', 'moved content');
+  feedString(s, 'mv old.txt new.txt');
+  s.feedKey('Enter');
+  feedString(s, 'cat new.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'mv moves file, cat shows moved content',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_history', () => {
+  const s = newSession();
+  feedString(s, 'echo one');
+  s.feedKey('Enter');
+  feedString(s, 'echo two');
+  s.feedKey('Enter');
+  feedString(s, 'history');
+  s.feedKey('Enter');
+  return {
+    description: 'history shows numbered command list',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_whoami', () => {
+  const s = newSession();
+  feedString(s, 'whoami');
+  s.feedKey('Enter');
+  return {
+    description: 'whoami prints current username',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_which', () => {
+  const s = newSession();
+  feedString(s, 'which cat ls');
+  s.feedKey('Enter');
+  return {
+    description: 'which shows command paths',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_which_unknown', () => {
+  const s = newSession();
+  feedString(s, 'which fakecmd');
+  s.feedKey('Enter');
+  return {
+    description: 'which shows "not found" for unknown commands',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_echo_append_redirect', () => {
+  const s = newSession();
+  feedString(s, 'echo hello > test.txt');
+  s.feedKey('Enter');
+  feedString(s, 'echo world >> test.txt');
+  s.feedKey('Enter');
+  feedString(s, 'cat test.txt');
+  s.feedKey('Enter');
+  return {
+    description: 'echo >> appends to file',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_exit', () => {
+  const s = newSession();
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  feedString(s, 'echo should not appear');
+  s.feedKey('Enter');
+  return {
+    description: 'exit stops accepting input',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_tab_complete_command', () => {
+  const s = newSession();
+  feedString(s, 'hel');
+  s.feedKey('Tab');
+  return {
+    description: 'Tab completes command name "hel" → "help "',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_tab_complete_file', () => {
+  const s = newSession();
+  s.fs.write('readme.txt', 'hello');
+  feedString(s, 'cat rea');
+  s.feedKey('Tab');
+  return {
+    description: 'Tab completes filename "rea" → "readme.txt"',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// :! commands from vim
+// ───────────────────────────────────────────────────────────
+
+addCase('vim_bang_wc', () => {
+  const s = newSession();
+  s.fs.write('data.txt', 'one two three\nfour five');
+  feedString(s, 'vim data.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, '!wc data.txt');
+  s.feedKey('Enter');
+  return {
+    description: ':!wc shows word count output in vim',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_bang_grep', () => {
+  const s = newSession();
+  s.fs.write('data.txt', 'apple\nbanana\napricot');
+  feedString(s, 'vim data.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, '!grep ap data.txt');
+  s.feedKey('Enter');
+  return {
+    description: ':!grep shows matching lines in vim',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_bang_cp', () => {
+  const s = newSession();
+  s.fs.write('src.txt', 'content');
+  feedString(s, 'vim src.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, '!cp src.txt copy.txt');
+  s.feedKey('Enter');
+  return {
+    description: ':!cp copies file while in vim',
+    frame: snap(s),
+  };
+});
+
 // ── Write output ──
 writeFileSync(OUT_PATH, JSON.stringify(groundTruth, null, 2));
 console.log(`Generated ${Object.keys(groundTruth).length} session ground truth cases`);

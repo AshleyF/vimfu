@@ -192,6 +192,9 @@ export class VimEngine {
   }
 
   feedKey(key) {
+    // Ctrl-[ is the terminal equivalent of Escape
+    if (key === 'Ctrl-[') key = 'Escape';
+
     // If in message prompt mode, any key dismisses it
     if (this._messagePrompt) {
       this._messagePrompt = null;
@@ -366,6 +369,20 @@ export class VimEngine {
     // Pending @ (waiting for register letter to play macro)
     if (this._pendingAt) {
       this._pendingAt = false;
+      // @: — repeat last ex command
+      if (key === ':') {
+        if (this._lastExCommand) {
+          const count = this._getCount();
+          for (let i = 0; i < count; i++) {
+            // Simulate :<cmd><Enter> by feeding keys
+            this.feedKey(':');
+            for (const ch of this._lastExCommand) this.feedKey(ch);
+            this.feedKey('Enter');
+          }
+        }
+        this._pendingCount = '';
+        return;
+      }
       let reg = null;
       if (key === '@') {
         // @@ = replay last macro
@@ -1121,10 +1138,20 @@ export class VimEngine {
       case 'D': {
         this._saveSnapshot();
         this._startRecording(); this._saveForDot('D');
+        const count = this._getCount();
         const line = this.buffer.lines[this.cursor.row];
-        this._setReg(line.slice(this.cursor.col), 'char');
-        this.buffer.lines[this.cursor.row] = line.slice(0, this.cursor.col);
-        // Clamp cursor to last char of remaining text
+        if (count > 1) {
+          // 2D = delete to EOL on current line + (count-1) subsequent full lines
+          const lastRow = Math.min(this.cursor.row + count - 1, this.buffer.lineCount - 1);
+          let y = line.slice(this.cursor.col);
+          for (let r = this.cursor.row + 1; r <= lastRow; r++) y += '\n' + this.buffer.lines[r];
+          this._setReg(y, 'char');
+          this.buffer.lines.splice(this.cursor.row + 1, lastRow - this.cursor.row);
+          this.buffer.lines[this.cursor.row] = line.slice(0, this.cursor.col);
+        } else {
+          this._setReg(line.slice(this.cursor.col), 'char');
+          this.buffer.lines[this.cursor.row] = line.slice(0, this.cursor.col);
+        }
         this.cursor.col = Math.max(0, this.cursor.col - 1);
         this._stopRecording(); this._redoStack = [];
         this._updateDesiredCol();
@@ -1296,12 +1323,12 @@ export class VimEngine {
       case 'N': { this._addJumpEntry(); const c = this._getCount(); for (let i = 0; i < c; i++) this._searchNext(!this._searchForward); this._showCurSearch = true; this._hlsearchActive = true; break; }
       case '*': {
         const w = this._wordUnderCursor();
-        if (w) { this._searchPattern = '\\b' + w + '\\b'; this._searchForward = true; this._searchNext(true); this._showCurSearch = true; this._hlsearchActive = true; }
+        if (w) { this._addJumpEntry(); this._searchPattern = '\\b' + w + '\\b'; this._searchForward = true; this._searchNext(true); this._showCurSearch = true; this._hlsearchActive = true; }
         break;
       }
       case '#': {
         const w = this._wordUnderCursor();
-        if (w) { this._searchPattern = '\\b' + w + '\\b'; this._searchForward = false; this._searchNext(false); this._showCurSearch = true; this._hlsearchActive = true; }
+        if (w) { this._addJumpEntry(); this._searchPattern = '\\b' + w + '\\b'; this._searchForward = false; this._searchNext(false); this._showCurSearch = true; this._hlsearchActive = true; }
         break;
       }
 
@@ -1539,6 +1566,11 @@ export class VimEngine {
         }
         this.cursor.col = this._lastNonBlank(this.cursor.row);
         this._updateDesiredCol();
+        if (this._pendingOp) {
+          this._motionInclusive = true;
+          this._executeOperator(this._opStartPos, { ...this.cursor });
+          this._pendingOp = '';
+        }
         this._pendingCount = '';
         break;
       }
@@ -1833,10 +1865,13 @@ export class VimEngine {
       return;
     }
 
+    // Store every : command for @: replay
+    this._lastExCommand = cmd;
+
     // : commands — file/quit operations (with nvim-style abbreviations)
     // :w[rite], :wq, :x[it], :q[uit], :q[uit]!, :e[dit], :r[ead], :!
     // Set _lastExCommand so SessionManager can intercept; clear commandLine.
-    if (/^(w(r(i(te?)?)?)?|wq|x(it?)?|q(u(it?)?)?!?)(\s|$)/.test(cmd) || /^e(d(it?)?)?(\s|$)/.test(cmd) || /^r(e(ad?)?)?!/.test(cmd) || /^r(e(ad?)?)?(\s|$)/.test(cmd) || cmd.startsWith('!')) {
+    if (/^(w(r(i(te?)?)?)?|wq|x(it?)?|q(u(it?)?)?!?)(\s|$)/.test(cmd) || /^e(d(it?)?)?!?(\s|$)/.test(cmd) || /^r(e(ad?)?)?!/.test(cmd) || /^r(e(ad?)?)?(\s|$)/.test(cmd) || cmd.startsWith('!')) {
       this._lastExCommand = cmd;
       this.commandLine = '';
       return;
@@ -2915,6 +2950,15 @@ export class VimEngine {
         this._motionLinewise = true;
         break;
       }
+      // g_ = last non-blank on line
+      case 'g_': {
+        const c = this._getCount();
+        if (c > 1) this.cursor.row = Math.min(this.cursor.row + c - 1, this.buffer.lineCount - 1);
+        this.cursor.col = this._lastNonBlank(this.cursor.row);
+        this._updateDesiredCol();
+        this._motionInclusive = true;
+        break;
+      }
       // ── Column motion ──
       case '|': {
         const c = this._getCount() - 1;  // virtual column (0-indexed)
@@ -3252,6 +3296,13 @@ export class VimEngine {
         if (startRow === endRow) {
           const l = this.buffer.lines[startRow];
           this.buffer.lines[startRow] = l.slice(0, startCol) + l.slice(startCol, endCol).toLowerCase() + l.slice(endCol);
+        } else {
+          // Multi-line charwise: first line from startCol, middle lines fully, last line to endCol
+          const l0 = this.buffer.lines[startRow];
+          this.buffer.lines[startRow] = l0.slice(0, startCol) + l0.slice(startCol).toLowerCase();
+          for (let r = startRow + 1; r < endRow; r++) this.buffer.lines[r] = this.buffer.lines[r].toLowerCase();
+          const lE = this.buffer.lines[endRow];
+          this.buffer.lines[endRow] = lE.slice(0, endCol).toLowerCase() + lE.slice(endCol);
         }
         this.cursor.row = startRow; this.cursor.col = startCol; this._redoStack = [];
         break;
@@ -3260,6 +3311,12 @@ export class VimEngine {
         if (startRow === endRow) {
           const l = this.buffer.lines[startRow];
           this.buffer.lines[startRow] = l.slice(0, startCol) + l.slice(startCol, endCol).toUpperCase() + l.slice(endCol);
+        } else {
+          const l0 = this.buffer.lines[startRow];
+          this.buffer.lines[startRow] = l0.slice(0, startCol) + l0.slice(startCol).toUpperCase();
+          for (let r = startRow + 1; r < endRow; r++) this.buffer.lines[r] = this.buffer.lines[r].toUpperCase();
+          const lE = this.buffer.lines[endRow];
+          this.buffer.lines[endRow] = lE.slice(0, endCol).toUpperCase() + lE.slice(endCol);
         }
         this.cursor.row = startRow; this.cursor.col = startCol; this._redoStack = [];
         break;
@@ -3269,6 +3326,12 @@ export class VimEngine {
         if (startRow === endRow) {
           const l = this.buffer.lines[startRow];
           this.buffer.lines[startRow] = l.slice(0, startCol) + toggle(l.slice(startCol, endCol)) + l.slice(endCol);
+        } else {
+          const l0 = this.buffer.lines[startRow];
+          this.buffer.lines[startRow] = l0.slice(0, startCol) + toggle(l0.slice(startCol));
+          for (let r = startRow + 1; r < endRow; r++) this.buffer.lines[r] = toggle(this.buffer.lines[r]);
+          const lE = this.buffer.lines[endRow];
+          this.buffer.lines[endRow] = toggle(lE.slice(0, endCol)) + lE.slice(endCol);
         }
         this.cursor.row = startRow; this.cursor.col = startCol; this._redoStack = [];
         break;
@@ -3745,7 +3808,7 @@ export class VimEngine {
         const end = (r === sr && i === 0) ? sc : this.buffer.lines[r].length;
         const sub = this.buffer.lines[r].slice(0, end);
         let last = null, m;
-        const re = new RegExp(this._searchPattern, 'gi');
+        const re = new RegExp(this._searchPattern, 'g');
         while ((m = re.exec(sub)) !== null) last = m;
         if (last) {
           this.cursor.row = r; this.cursor.col = last.index;

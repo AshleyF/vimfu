@@ -235,6 +235,24 @@ export class SessionManager {
       return;
     }
 
+    // :e[dit]! – force re-edit (reload from VFS, discarding changes)
+    if (/^e(d(it?)?)?!(\s|$)/.test(trimmed)) {
+      const parts = trimmed.split(/\s+/);
+      const filename = parts[1] || this._vimFilename;
+      if (filename) {
+        this._vimFilename = filename;
+        this.engine.filename = filename;
+        if (this.fs.exists(filename)) {
+          this.engine.loadFile(this.fs.read(filename));
+        } else {
+          this.engine.loadFile('');
+        }
+        this._savedChangeCount = this.engine._changeCount;
+        this._updateVimStatus();
+      }
+      return;
+    }
+
     // :e[dit] [filename] – edit file
     if (/^e(d(it?)?)?(\s|$)/.test(trimmed)) {
       const parts = trimmed.split(/\s+/);
@@ -383,6 +401,175 @@ export class SessionManager {
           if (!this.fs.rm(name)) {
             lines.push(`rm: cannot remove '${name}': No such file or directory`);
           }
+        }
+        break;
+      }
+      case 'touch': {
+        for (const name of rest) {
+          if (!this.fs.exists(name)) {
+            this.fs.write(name, '');
+          }
+        }
+        break;
+      }
+      case 'cp': {
+        if (rest.length < 2) {
+          lines.push('cp: missing file operand');
+        } else {
+          const contents = this.fs.read(rest[0]);
+          if (contents === null) {
+            lines.push(`cp: cannot stat '${rest[0]}': No such file or directory`);
+          } else {
+            this.fs.write(rest[1], contents);
+          }
+        }
+        break;
+      }
+      case 'mv': {
+        if (rest.length < 2) {
+          lines.push('mv: missing file operand');
+        } else {
+          const contents = this.fs.read(rest[0]);
+          if (contents === null) {
+            lines.push(`mv: cannot stat '${rest[0]}': No such file or directory`);
+          } else {
+            this.fs.write(rest[1], contents);
+            this.fs.rm(rest[0]);
+          }
+        }
+        break;
+      }
+      case 'wc': {
+        const flags = [];
+        const files = [];
+        for (const arg of rest) {
+          if (arg.startsWith('-') && arg.length > 1) {
+            for (const ch of arg.slice(1)) flags.push(ch);
+          } else files.push(arg);
+        }
+        if (files.length === 0) {
+          lines.push('wc: missing file operand');
+        } else {
+          const showAll = flags.length === 0;
+          const showLines = showAll || flags.includes('l');
+          const showWords = showAll || flags.includes('w');
+          const showBytes = showAll || flags.includes('c');
+          for (const name of files) {
+            const contents = this.fs.read(name);
+            if (contents === null) {
+              lines.push(`wc: ${name}: No such file or directory`);
+            } else {
+              const l = contents === '' ? 0 : contents.split('\n').length;
+              const w = contents === '' ? 0 : contents.split(/\s+/).filter(s => s).length;
+              const b = contents.length;
+              const parts = [];
+              if (showLines) parts.push(String(l).padStart(8));
+              if (showWords) parts.push(String(w).padStart(8));
+              if (showBytes) parts.push(String(b).padStart(8));
+              parts.push(` ${name}`);
+              lines.push(parts.join(''));
+            }
+          }
+        }
+        break;
+      }
+      case 'head': {
+        let n = 10;
+        const files = [];
+        for (let i = 0; i < rest.length; i++) {
+          if (rest[i] === '-n' && i + 1 < rest.length) n = parseInt(rest[++i], 10) || 10;
+          else files.push(rest[i]);
+        }
+        if (files.length === 0) {
+          lines.push('head: missing file operand');
+        } else {
+          for (const name of files) {
+            const contents = this.fs.read(name);
+            if (contents === null) {
+              lines.push(`head: ${name}: No such file or directory`);
+            } else {
+              if (files.length > 1) lines.push(`==> ${name} <==`);
+              lines.push(...contents.split('\n').slice(0, n));
+            }
+          }
+        }
+        break;
+      }
+      case 'tail': {
+        let n = 10;
+        const files = [];
+        for (let i = 0; i < rest.length; i++) {
+          if (rest[i] === '-n' && i + 1 < rest.length) n = parseInt(rest[++i], 10) || 10;
+          else files.push(rest[i]);
+        }
+        if (files.length === 0) {
+          lines.push('tail: missing file operand');
+        } else {
+          for (const name of files) {
+            const contents = this.fs.read(name);
+            if (contents === null) {
+              lines.push(`tail: ${name}: No such file or directory`);
+            } else {
+              if (files.length > 1) lines.push(`==> ${name} <==`);
+              lines.push(...contents.split('\n').slice(-n));
+            }
+          }
+        }
+        break;
+      }
+      case 'grep': {
+        let ignoreCase = false, showNums = false, countOnly = false;
+        const positional = [];
+        for (const arg of rest) {
+          if (arg.startsWith('-') && arg.length > 1) {
+            for (const ch of arg.slice(1)) {
+              if (ch === 'i') ignoreCase = true;
+              else if (ch === 'n') showNums = true;
+              else if (ch === 'c') countOnly = true;
+            }
+          } else positional.push(arg);
+        }
+        if (positional.length < 2) {
+          lines.push('Usage: grep [options] pattern file');
+        } else {
+          let re;
+          try { re = new RegExp(positional[0], ignoreCase ? 'i' : ''); }
+          catch (e) { lines.push(`grep: invalid regex: ${positional[0]}`); break; }
+          const gfiles = positional.slice(1);
+          for (const name of gfiles) {
+            const contents = this.fs.read(name);
+            if (contents === null) {
+              lines.push(`grep: ${name}: No such file or directory`);
+            } else {
+              const flines = contents.split('\n');
+              let count = 0;
+              const prefix = gfiles.length > 1 ? `${name}:` : '';
+              for (let i = 0; i < flines.length; i++) {
+                if (re.test(flines[i])) {
+                  count++;
+                  if (!countOnly) {
+                    const ln = showNums ? `${i + 1}:` : '';
+                    lines.push(`${prefix}${ln}${flines[i]}`);
+                  }
+                }
+              }
+              if (countOnly) lines.push(`${prefix}${count}`);
+            }
+          }
+        }
+        break;
+      }
+      case 'whoami':
+        lines.push(this.shell.user);
+        break;
+      case 'which': {
+        const known = new Set([
+          'vim','vi','nvim','ls','cat','rm','touch','cp','mv','echo','wc',
+          'head','tail','grep','sort','set','date','pwd','whoami','which',
+          'clear','exit','help','history',
+        ]);
+        for (const c of rest) {
+          lines.push(known.has(c) ? `/usr/bin/${c}` : `${c} not found`);
         }
         break;
       }

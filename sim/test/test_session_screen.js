@@ -750,6 +750,165 @@ const scenarios = {
     feedString(s, '3');
     s.feedKey('~');
   },
+
+  // ── New shell commands ──
+
+  shell_wc(s) {
+    s.fs.write('data.txt', 'hello world\nfoo bar baz\nend');
+    feedString(s, 'wc data.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_wc_l_flag(s) {
+    s.fs.write('data.txt', 'line1\nline2\nline3');
+    feedString(s, 'wc -l data.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_head(s) {
+    const lines = [];
+    for (let i = 1; i <= 15; i++) lines.push(`line ${i}`);
+    s.fs.write('big.txt', lines.join('\n'));
+    feedString(s, 'head big.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_head_n3(s) {
+    s.fs.write('data.txt', 'alpha\nbeta\ngamma\ndelta');
+    feedString(s, 'head -n 3 data.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_tail(s) {
+    const lines = [];
+    for (let i = 1; i <= 15; i++) lines.push(`line ${i}`);
+    s.fs.write('big.txt', lines.join('\n'));
+    feedString(s, 'tail -n 5 big.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_grep(s) {
+    s.fs.write('poem.txt', 'roses are red\nviolets are blue\nsugar is sweet\nand so are you');
+    feedString(s, 'grep are poem.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_grep_n_flag(s) {
+    s.fs.write('poem.txt', 'roses are red\nviolets are blue\nsugar is sweet\nand so are you');
+    feedString(s, 'grep -n are poem.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_grep_c_flag(s) {
+    s.fs.write('poem.txt', 'roses are red\nviolets are blue\nsugar is sweet\nand so are you');
+    feedString(s, 'grep -c are poem.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_grep_i_flag(s) {
+    s.fs.write('names.txt', 'Alice\nalice\nBob\nALICE');
+    feedString(s, 'grep -i alice names.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_cp(s) {
+    s.fs.write('src.txt', 'original content');
+    feedString(s, 'cp src.txt dst.txt');
+    s.feedKey('Enter');
+    feedString(s, 'cat dst.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_mv(s) {
+    s.fs.write('old.txt', 'moved content');
+    feedString(s, 'mv old.txt new.txt');
+    s.feedKey('Enter');
+    feedString(s, 'cat new.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_history(s) {
+    feedString(s, 'echo one');
+    s.feedKey('Enter');
+    feedString(s, 'echo two');
+    s.feedKey('Enter');
+    feedString(s, 'history');
+    s.feedKey('Enter');
+  },
+
+  shell_whoami(s) {
+    feedString(s, 'whoami');
+    s.feedKey('Enter');
+  },
+
+  shell_which(s) {
+    feedString(s, 'which cat ls');
+    s.feedKey('Enter');
+  },
+
+  shell_which_unknown(s) {
+    feedString(s, 'which fakecmd');
+    s.feedKey('Enter');
+  },
+
+  shell_echo_append_redirect(s) {
+    feedString(s, 'echo hello > test.txt');
+    s.feedKey('Enter');
+    feedString(s, 'echo world >> test.txt');
+    s.feedKey('Enter');
+    feedString(s, 'cat test.txt');
+    s.feedKey('Enter');
+  },
+
+  shell_exit(s) {
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+    // After exit, further input should be ignored
+    feedString(s, 'echo should not appear');
+    s.feedKey('Enter');
+  },
+
+  shell_tab_complete_command(s) {
+    feedString(s, 'hel');
+    s.feedKey('Tab');
+    // Should complete to "help "
+  },
+
+  shell_tab_complete_file(s) {
+    s.fs.write('readme.txt', 'hello');
+    feedString(s, 'cat rea');
+    s.feedKey('Tab');
+    // Should complete to "cat readme.txt"
+  },
+
+  // ── :! commands from vim ──
+
+  vim_bang_wc(s) {
+    s.fs.write('data.txt', 'one two three\nfour five');
+    feedString(s, 'vim data.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, '!wc data.txt');
+    s.feedKey('Enter');
+  },
+
+  vim_bang_grep(s) {
+    s.fs.write('data.txt', 'apple\nbanana\napricot');
+    feedString(s, 'vim data.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, '!grep ap data.txt');
+    s.feedKey('Enter');
+  },
+
+  vim_bang_cp(s) {
+    s.fs.write('src.txt', 'content');
+    feedString(s, 'vim src.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, '!cp src.txt copy.txt');
+    s.feedKey('Enter');
+  },
 };
 
 // ── Run tests ──

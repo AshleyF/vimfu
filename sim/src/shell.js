@@ -118,6 +118,8 @@ export class ShellSim {
    */
   feedKey(key) {
     if (this._exited) return;
+    // Ctrl-[ is the terminal equivalent of Escape
+    if (key === 'Ctrl-[') key = 'Escape';
 
     // ── Vi history search mode (/ or ? prompt) ──
     if (this._viSearchMode) {
@@ -125,7 +127,7 @@ export class ShellSim {
         // Commit the search
         if (this._viSearchBuffer) {
           this._viSearchPattern = this._viSearchBuffer;
-          this._viSearchDir = this._viSearchMode === '/' ? -1 : -1; // both search backward through history
+          this._viSearchDir = this._viSearchMode === '/' ? -1 : 1; // / searches backward, ? searches forward in history
         }
         this._viSearchMode = '';
         this._viSearchBuffer = '';
@@ -1103,6 +1105,36 @@ export class ShellSim {
       case 'sort':
         this._cmdSort(rest);
         break;
+      case 'wc':
+        this._cmdWc(rest);
+        break;
+      case 'head':
+        this._cmdHead(rest);
+        break;
+      case 'tail':
+        this._cmdTail(rest);
+        break;
+      case 'grep':
+        this._cmdGrep(rest);
+        break;
+      case 'cp':
+        this._cmdCp(rest);
+        break;
+      case 'mv':
+        this._cmdMv(rest);
+        break;
+      case 'history':
+        this._cmdHistory();
+        break;
+      case 'whoami':
+        this._appendOutput(this.user);
+        break;
+      case 'which':
+        this._cmdWhich(rest);
+        break;
+      case 'exit':
+        this._exited = true;
+        break;
       case 'pwd':
         this._appendOutput(this.cwd);
         break;
@@ -1183,6 +1215,19 @@ export class ShellSim {
 
   /** @private */
   _cmdEcho(args, raw) {
+    // Check for append redirect: echo text >> file
+    const appendIdx = args.indexOf('>>');
+    if (appendIdx >= 0) {
+      const text = args.slice(0, appendIdx).join(' ');
+      const filename = args[appendIdx + 1];
+      if (filename) {
+        const existing = this.fs.read(filename) || '';
+        this.fs.write(filename, existing + (existing ? '\n' : '') + this._unquote(text));
+      } else {
+        this._appendOutput('zsh: parse error near `\\n\'');
+      }
+      return;
+    }
     // Check for redirect: echo text > file
     const redirectIdx = args.indexOf('>');
     if (redirectIdx >= 0) {
@@ -1256,6 +1301,232 @@ export class ShellSim {
   }
 
   /** @private */
+  _cmdWc(args) {
+    const flags = [];
+    const files = [];
+    for (const arg of args) {
+      if (arg.startsWith('-') && arg.length > 1) {
+        for (const ch of arg.slice(1)) {
+          if ('lwc'.includes(ch)) flags.push(ch);
+          else {
+            this._appendOutput(`wc: invalid option -- '${ch}'`);
+            return;
+          }
+        }
+      } else {
+        files.push(arg);
+      }
+    }
+    if (files.length === 0) {
+      this._appendOutput('wc: missing file operand');
+      return;
+    }
+    const showAll = flags.length === 0;
+    const showLines = showAll || flags.includes('l');
+    const showWords = showAll || flags.includes('w');
+    const showBytes = showAll || flags.includes('c');
+    for (const name of files) {
+      const contents = this.fs.read(name);
+      if (contents === null) {
+        this._appendOutput(`wc: ${name}: No such file or directory`);
+        continue;
+      }
+      const lines = contents === '' ? 0 : contents.split('\n').length;
+      const words = contents === '' ? 0 : contents.split(/\s+/).filter(w => w).length;
+      const bytes = contents.length;
+      const parts = [];
+      if (showLines) parts.push(String(lines).padStart(8));
+      if (showWords) parts.push(String(words).padStart(8));
+      if (showBytes) parts.push(String(bytes).padStart(8));
+      parts.push(` ${name}`);
+      this._appendOutput(parts.join(''));
+    }
+  }
+
+  /** @private */
+  _cmdHead(args) {
+    let n = 10;
+    const files = [];
+    for (let i = 0; i < args.length; i++) {
+      if (args[i] === '-n' && i + 1 < args.length) {
+        n = parseInt(args[++i], 10) || 10;
+      } else if (args[i].startsWith('-') && !isNaN(parseInt(args[i].slice(1), 10))) {
+        n = parseInt(args[i].slice(1), 10);
+      } else {
+        files.push(args[i]);
+      }
+    }
+    if (files.length === 0) {
+      this._appendOutput('head: missing file operand');
+      return;
+    }
+    for (const name of files) {
+      const contents = this.fs.read(name);
+      if (contents === null) {
+        this._appendOutput(`head: ${name}: No such file or directory`);
+        continue;
+      }
+      if (files.length > 1) this._appendOutput(`==> ${name} <==`);
+      const lines = contents.split('\n');
+      const slice = lines.slice(0, n);
+      for (const line of slice) {
+        this._appendOutput(line);
+      }
+    }
+  }
+
+  /** @private */
+  _cmdTail(args) {
+    let n = 10;
+    const files = [];
+    for (let i = 0; i < args.length; i++) {
+      if (args[i] === '-n' && i + 1 < args.length) {
+        n = parseInt(args[++i], 10) || 10;
+      } else if (args[i].startsWith('-') && !isNaN(parseInt(args[i].slice(1), 10))) {
+        n = parseInt(args[i].slice(1), 10);
+      } else {
+        files.push(args[i]);
+      }
+    }
+    if (files.length === 0) {
+      this._appendOutput('tail: missing file operand');
+      return;
+    }
+    for (const name of files) {
+      const contents = this.fs.read(name);
+      if (contents === null) {
+        this._appendOutput(`tail: ${name}: No such file or directory`);
+        continue;
+      }
+      if (files.length > 1) this._appendOutput(`==> ${name} <==`);
+      const lines = contents.split('\n');
+      const slice = lines.slice(-n);
+      for (const line of slice) {
+        this._appendOutput(line);
+      }
+    }
+  }
+
+  /** @private */
+  _cmdGrep(args) {
+    let ignoreCase = false;
+    let showLineNums = false;
+    let countOnly = false;
+    const positional = [];
+    for (const arg of args) {
+      if (arg.startsWith('-') && arg.length > 1 && !/^\d/.test(arg.slice(1))) {
+        for (const ch of arg.slice(1)) {
+          if (ch === 'i') ignoreCase = true;
+          else if (ch === 'n') showLineNums = true;
+          else if (ch === 'c') countOnly = true;
+          else {
+            this._appendOutput(`grep: invalid option -- '${ch}'`);
+            return;
+          }
+        }
+      } else {
+        positional.push(arg);
+      }
+    }
+    if (positional.length < 2) {
+      this._appendOutput('Usage: grep [options] pattern file');
+      return;
+    }
+    const pattern = positional[0];
+    const files = positional.slice(1);
+    let re;
+    try {
+      re = new RegExp(pattern, ignoreCase ? 'i' : '');
+    } catch (e) {
+      this._appendOutput(`grep: invalid regex: ${pattern}`);
+      return;
+    }
+    for (const name of files) {
+      const contents = this.fs.read(name);
+      if (contents === null) {
+        this._appendOutput(`grep: ${name}: No such file or directory`);
+        continue;
+      }
+      const lines = contents.split('\n');
+      let count = 0;
+      const prefix = files.length > 1 ? `${name}:` : '';
+      for (let i = 0; i < lines.length; i++) {
+        if (re.test(lines[i])) {
+          count++;
+          if (!countOnly) {
+            const lineNum = showLineNums ? `${i + 1}:` : '';
+            this._appendOutput(`${prefix}${lineNum}${lines[i]}`);
+          }
+        }
+      }
+      if (countOnly) {
+        this._appendOutput(`${prefix}${count}`);
+      }
+    }
+  }
+
+  /** @private */
+  _cmdCp(args) {
+    if (args.length < 2) {
+      this._appendOutput('cp: missing file operand');
+      return;
+    }
+    const src = args[0];
+    const dst = args[1];
+    const contents = this.fs.read(src);
+    if (contents === null) {
+      this._appendOutput(`cp: cannot stat '${src}': No such file or directory`);
+      return;
+    }
+    this.fs.write(dst, contents);
+  }
+
+  /** @private */
+  _cmdMv(args) {
+    if (args.length < 2) {
+      this._appendOutput('mv: missing file operand');
+      return;
+    }
+    const src = args[0];
+    const dst = args[1];
+    const contents = this.fs.read(src);
+    if (contents === null) {
+      this._appendOutput(`mv: cannot stat '${src}': No such file or directory`);
+      return;
+    }
+    this.fs.write(dst, contents);
+    this.fs.rm(src);
+  }
+
+  /** @private */
+  _cmdHistory() {
+    for (let i = 0; i < this._history.length; i++) {
+      const num = String(i + 1).padStart(5);
+      this._appendOutput(`${num}  ${this._history[i]}`);
+    }
+  }
+
+  /** @private */
+  _cmdWhich(args) {
+    if (args.length === 0) {
+      // no output, like real which with no args
+      return;
+    }
+    const knownCommands = new Set([
+      'vim', 'vi', 'nvim', 'ls', 'cat', 'rm', 'touch', 'cp', 'mv',
+      'echo', 'wc', 'head', 'tail', 'grep', 'sort', 'history',
+      'set', 'date', 'pwd', 'whoami', 'which', 'clear', 'exit', 'help',
+    ]);
+    for (const cmd of args) {
+      if (knownCommands.has(cmd)) {
+        this._appendOutput(`/usr/bin/${cmd}`);
+      } else {
+        this._appendOutput(`${cmd} not found`);
+      }
+    }
+  }
+
+  /** @private */
   _cmdSet(args) {
     if (args.length === 2 && args[0] === '-o' && args[1] === 'vi') {
       this._viMode = true;
@@ -1289,13 +1560,23 @@ export class ShellSim {
       '  cat <file>    Display file contents',
       '  rm <file>     Remove a file',
       '  touch <file>  Create empty file',
-      '  echo <text>   Print text (supports > redirect)',
+      '  cp <s> <d>    Copy a file',
+      '  mv <s> <d>    Move/rename a file',
+      '  echo <text>   Print text (> and >> redirect)',
+      '  wc <file>     Count lines, words, bytes',
+      '  head <file>   Show first N lines (-n N)',
+      '  tail <file>   Show last N lines (-n N)',
+      '  grep <p> <f>  Search for pattern in file',
       '  sort <file>   Sort lines of a file (-r -n -u)',
+      '  history       Show command history',
       '  set -o vi     Enable vi-mode line editing',
       '  set -o emacs  Disable vi-mode (default)',
       '  date          Print current date and time',
       '  pwd           Print working directory',
+      '  whoami        Print current user',
+      '  which <cmd>   Show command location',
       '  clear         Clear screen',
+      '  exit          Exit shell',
       '  help          Show this help',
     ];
     for (const line of cmds) {
@@ -1341,13 +1622,27 @@ export class ShellSim {
 
     if (!partial) return;
 
-    // Complete filenames
-    const matches = this.fs.ls().filter(f => f.startsWith(partial));
+    // If on the first word, complete command names; otherwise complete filenames
+    const isFirstWord = parts.length === 1 || (parts.length === 2 && parts[0] === '');
+    let matches;
+    if (isFirstWord) {
+      const commands = [
+        'vim', 'vi', 'nvim', 'ls', 'cat', 'rm', 'touch', 'cp', 'mv',
+        'echo', 'wc', 'head', 'tail', 'grep', 'sort', 'history',
+        'set', 'date', 'pwd', 'whoami', 'which', 'clear', 'exit', 'help',
+      ];
+      matches = commands.filter(c => c.startsWith(partial));
+    } else {
+      matches = this.fs.ls().filter(f => f.startsWith(partial));
+    }
+
     if (matches.length === 1) {
       const completed = matches[0];
       const rest = completed.slice(partial.length);
-      this._inputLine = before + rest + this._inputLine.slice(this._cursorPos);
-      this._cursorPos += rest.length;
+      // Add trailing space after completed command name
+      const suffix = isFirstWord ? rest + ' ' : rest;
+      this._inputLine = before + suffix + this._inputLine.slice(this._cursorPos);
+      this._cursorPos += suffix.length;
     } else if (matches.length > 1) {
       // Show matches
       this._appendOutput(this.prompt + this._inputLine);
