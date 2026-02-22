@@ -332,6 +332,9 @@ of the full command name is valid (e.g. `:wri` → `:write`, `:qui` → `:quit`)
 | `:se[t] nonumber` / `:se[t] nonu` | Hide line numbers |
 | `:se[t] relativenumber` / `:se[t] rnu` | Show relative line numbers |
 | `:se[t] norelativenumber` / `:se[t] nornu` | Hide relative line numbers |
+| `:r[ead] file` | Read file contents into buffer below cursor |
+| `:r[ead]! command` | Read shell command output into buffer below cursor |
+| `:[range]sort[!] [flags]` | Sort lines (`!` = reverse; flags: `n` numeric, `i` ignore-case, `u` unique) |
 | `:!command` | Run shell command (see below) |
 
 ### `:set` Options
@@ -389,12 +392,17 @@ Output shown in a "Press ENTER" prompt overlay.
 | `touch file…` | Create empty file(s) |
 | `rm file…` | Delete file(s) |
 | `echo text` | Print text (supports `> file` redirect) |
+| `sort file` | Sort lines of a file (`-r` reverse, `-n` numeric, `-u` unique) |
+| `set -o vi` | Enable vi-mode line editing |
+| `set -o emacs` | Disable vi-mode (default) |
+| `set` | Show current editing mode |
+| `date` | Print current date and time |
 | `pwd` | Print working directory (`~/vimfu`) |
 | `clear` | Clear screen |
 | `help` | Show command list |
 | *anything else* | "command not found" |
 
-### Keys
+### Keys (Emacs mode — default)
 
 | Key | Description |
 |---|---|
@@ -418,6 +426,114 @@ Output shown in a "Press ENTER" prompt overlay.
 ```
 
 ZSH oh-my-zsh robbyrussell theme — green arrow, cyan dirname.
+
+### Vi-Mode Line Editing (`set -o vi`)
+
+Enables vim-style editing for the shell input line, matching the behavior
+of bash/zsh `set -o vi`. The shell starts in **insert mode** after enabling;
+press `Escape` to enter **normal mode**.
+
+Cursor shape changes: **beam** (thin bar) in insert mode, **block** in normal
+and replace modes.
+
+#### Normal Mode — Motions
+
+| Key | Count | Description |
+|---|---|---|
+| `h` / `←` | ✅ | Left |
+| `l` / `→` / `Space` | ✅ | Right |
+| `w` | ✅ | Word forward |
+| `W` | ✅ | WORD forward (whitespace-delimited) |
+| `b` | ✅ | Word backward |
+| `B` | ✅ | WORD backward |
+| `e` | ✅ | End of word forward (inclusive) |
+| `E` | ✅ | End of WORD forward |
+| `0` / `Home` | — | Start of line |
+| `$` / `End` | — | End of line (inclusive) |
+| `^` / `_` | — | First non-whitespace character |
+| `f{char}` | — | Find char forward (inclusive) |
+| `F{char}` | — | Find char backward (inclusive) |
+| `t{char}` | — | Till char forward (exclusive — stops one before) |
+| `T{char}` | — | Till char backward (exclusive — stops one after) |
+| `;` | — | Repeat last `f`/`F`/`t`/`T` |
+| `,` | — | Repeat last find, reversed direction |
+
+#### Normal Mode — Operators
+
+Operators combine with motions: `{op}[count]{motion}`.
+
+| Key | Line form | Description |
+|---|---|---|
+| `d` | `dd` | Delete |
+| `c` | `cc` | Change (delete + enter insert) |
+| `y` | `yy` | Yank (copy) |
+
+Examples: `dw`, `d2w`, `cw` (acts like `ce`), `yy`, `df{c}`, `dt{c}`,
+`cf{c}`, `ct{c}`, `yf{c}`.
+
+Special: `cw` on a word behaves like `ce` (doesn't include trailing space),
+matching vim behavior.
+
+#### Normal Mode — Editing
+
+| Key | Count | Description |
+|---|---|---|
+| `x` | ✅ | Delete char under cursor |
+| `X` | ✅ | Delete char before cursor |
+| `s` | ✅ | Substitute N chars (delete + insert mode) |
+| `S` | — | Substitute entire line |
+| `r{char}` | ✅ | Replace N chars with {char} |
+| `R` | — | Enter replace (overtype) mode |
+| `~` | ✅ | Toggle case, advance cursor |
+| `D` | — | Delete to end of line |
+| `C` | — | Change to end of line |
+| `p` | ✅ | Put yanked text after cursor (N times) |
+| `P` | ✅ | Put yanked text before cursor (N times) |
+| `u` | — | Undo last change |
+| `.` | — | Repeat last change (dot-repeat) |
+| `#` | — | Comment out line (prepend `#`) and execute |
+
+#### Normal Mode — Mode Switching
+
+| Key | Description |
+|---|---|
+| `i` | Insert before cursor |
+| `I` | Insert at start of line |
+| `a` | Append after cursor |
+| `A` | Append at end of line |
+| `R` | Enter replace (overtype) mode |
+
+#### Normal Mode — History
+
+| Key | Description |
+|---|---|
+| `k` / `↑` | Previous history entry |
+| `j` / `↓` | Next history entry |
+| `G` | Jump to oldest history entry (or entry N with count) |
+| `/pattern↵` | Search history backward for pattern (regex) |
+| `?pattern↵` | Search history backward for pattern |
+| `n` | Repeat last history search |
+| `N` | Repeat last history search (opposite direction) |
+
+#### Normal Mode — Numeric Counts
+
+Prefix most commands with digits 1–9 to repeat: `3w`, `2dw`, `5x`,
+`3rX`, `2p`, `3~`, `3l`, etc.
+
+#### Insert Mode (vi)
+
+Same as emacs-mode editing (typing inserts characters), plus:
+- `Escape` returns to normal mode (cursor moves left by 1)
+- All standard emacs keys (`Ctrl-A`, `Ctrl-E`, etc.) still work
+
+#### Replace Mode (vi)
+
+Entered with `R` from normal mode:
+- Typing overtypes existing characters (does not insert)
+- `Backspace` restores the original character
+- Cannot backspace before the position where `R` was pressed
+- `Escape` returns to normal mode
+- Cursor displays as block
 
 ---
 
@@ -460,4 +576,5 @@ Canvas-based HTML renderer:
 - Monospace font (Cascadia Mono / Consolas)
 - Per-run foreground + background drawing
 - Bold support
-- Block cursor (dark red `#800000`)
+- Block cursor (dark red `#800000`) for vim and shell vi-normal/replace modes
+- Beam cursor (thin 2px vertical bar, `#cccccc`) for shell insert/emacs modes

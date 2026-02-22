@@ -284,6 +284,472 @@ const scenarios = {
     s.feedKey('Enter');
     s.feedKey('Enter');  // dismiss
   },
+
+  // ── Shell vi-mode ──
+
+  shell_set_o_vi(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+  },
+
+  shell_vi_type_and_escape(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world');
+    s.feedKey('Escape');
+  },
+
+  shell_vi_motion_0_dollar(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world foo');
+    s.feedKey('Escape');
+    s.feedKey('0');
+  },
+
+  shell_vi_motion_w(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world foo');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('w');
+  },
+
+  shell_vi_motion_b(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world foo');
+    s.feedKey('Escape');
+    s.feedKey('b');
+  },
+
+  shell_vi_x_delete(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abc');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('x');
+  },
+
+  shell_vi_dw(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world foo');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('d');
+    s.feedKey('w');
+  },
+
+  shell_vi_cw(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('c');
+    s.feedKey('w');
+    feedString(s, 'Hi');
+    s.feedKey('Escape');
+  },
+
+  shell_vi_dd(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'delete me');
+    s.feedKey('Escape');
+    s.feedKey('d');
+    s.feedKey('d');
+  },
+
+  shell_vi_f_motion(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'find the char');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('f');
+    s.feedKey('t');
+  },
+
+  shell_vi_f_semicolon_repeat(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'find the things there');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('f');
+    s.feedKey('t');
+    s.feedKey(';');
+  },
+
+  shell_vi_r_replace(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abc');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('r');
+    s.feedKey('X');
+  },
+
+  shell_vi_p_paste(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abc');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('x');
+    s.feedKey('p');
+  },
+
+  shell_vi_I_insert_start(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'world');
+    s.feedKey('Escape');
+    s.feedKey('I');
+    feedString(s, 'hello ');
+    s.feedKey('Escape');
+  },
+
+  shell_vi_A_append_end(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello');
+    s.feedKey('Escape');
+    s.feedKey('A');
+    feedString(s, ' world');
+    s.feedKey('Escape');
+  },
+
+  shell_vi_tilde_swap_case(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('~');
+    s.feedKey('~');
+    s.feedKey('~');
+  },
+
+  shell_vi_C_change_to_end(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('w');
+    s.feedKey('C');
+    feedString(s, 'vim');
+    s.feedKey('Escape');
+  },
+
+  shell_vi_D_delete_to_end(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world foo');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('w');
+    s.feedKey('D');
+  },
+
+  shell_vi_cursor_shape_normal(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'test');
+    s.feedKey('Escape');
+  },
+
+  shell_vi_cursor_shape_insert(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'test');
+    s.feedKey('Escape');
+    s.feedKey('i');
+  },
+
+  shell_vi_set_o_emacs(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'set -o emacs');
+    s.feedKey('Enter');
+    feedString(s, 'test');
+  },
+
+  shell_vi_enter_executes_from_normal(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'echo hello');
+    s.feedKey('Escape');
+    s.feedKey('Enter');
+  },
+
+  shell_vi_df_motion(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abcdef');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('d');
+    s.feedKey('f');
+    s.feedKey('d');
+  },
+
+  shell_vi_s_substitute(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'xyz');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('s');
+    feedString(s, 'AB');
+    s.feedKey('Escape');
+  },
+
+  // ── numeric counts ──
+
+  shell_vi_2w_count(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world foo');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    feedString(s, '2');
+    s.feedKey('w');
+  },
+
+  shell_vi_3x_count(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abcdef');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    feedString(s, '3');
+    s.feedKey('x');
+  },
+
+  shell_vi_2dw_count(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'aaa bbb ccc ddd');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    feedString(s, '2');
+    s.feedKey('d');
+    s.feedKey('w');
+  },
+
+  shell_vi_3l_count(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abcdef');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    feedString(s, '3');
+    s.feedKey('l');
+  },
+
+  shell_vi_2p_count(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abc');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('x');
+    feedString(s, '2');
+    s.feedKey('p');
+  },
+
+  // ── undo ──
+
+  shell_vi_undo(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('x');
+    s.feedKey('u');
+  },
+
+  shell_vi_undo_multiple(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abc');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('x');
+    s.feedKey('x');
+    s.feedKey('u');
+    s.feedKey('u');
+  },
+
+  // ── dot repeat ──
+
+  shell_vi_dot_repeat_cw(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'aaa bbb ccc');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('c');
+    s.feedKey('w');
+    feedString(s, 'XXX');
+    s.feedKey('Escape');
+    s.feedKey('w');
+    s.feedKey('.');
+  },
+
+  shell_vi_dot_repeat_x(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abcd');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('x');
+    s.feedKey('.');
+    s.feedKey('.');
+  },
+
+  // ── t/T motions ──
+
+  shell_vi_t_motion(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('t');
+    s.feedKey('o');
+  },
+
+  shell_vi_T_motion(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello world');
+    s.feedKey('Escape');
+    s.feedKey('T');
+    s.feedKey(' ');
+  },
+
+  shell_vi_dt_motion(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abcdef');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('d');
+    s.feedKey('t');
+    s.feedKey('d');
+  },
+
+  shell_vi_ct_motion(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abcdef');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('c');
+    s.feedKey('t');
+    s.feedKey('d');
+    feedString(s, 'XY');
+    s.feedKey('Escape');
+  },
+
+  // ── R replace mode ──
+
+  shell_vi_R_replace_mode(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abcdef');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('R');
+    feedString(s, 'XY');
+    s.feedKey('Escape');
+  },
+
+  shell_vi_R_backspace_restores(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abcdef');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    s.feedKey('R');
+    feedString(s, 'XY');
+    s.feedKey('Backspace');
+    s.feedKey('Escape');
+  },
+
+  // ── G history ──
+
+  shell_vi_G_oldest_history(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'echo first');
+    s.feedKey('Enter');
+    feedString(s, 'echo second');
+    s.feedKey('Enter');
+    feedString(s, 'echo third');
+    s.feedKey('Enter');
+    s.feedKey('Escape');
+    s.feedKey('G');
+  },
+
+  // ── # comment ──
+
+  shell_vi_hash_comment(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'echo hello');
+    s.feedKey('Escape');
+    s.feedKey('#');
+  },
+
+  // ── history search ──
+
+  shell_vi_search_history(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'echo alpha');
+    s.feedKey('Enter');
+    feedString(s, 'echo beta');
+    s.feedKey('Enter');
+    feedString(s, 'echo gamma');
+    s.feedKey('Enter');
+    s.feedKey('Escape');
+    s.feedKey('/');
+    feedString(s, 'alpha');
+    s.feedKey('Enter');
+  },
+
+  // ── count with r and ~ ──
+
+  shell_vi_r_count(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'abcdef');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    feedString(s, '3');
+    s.feedKey('r');
+    s.feedKey('X');
+  },
+
+  shell_vi_tilde_count(s) {
+    feedString(s, 'set -o vi');
+    s.feedKey('Enter');
+    feedString(s, 'hello');
+    s.feedKey('Escape');
+    s.feedKey('0');
+    feedString(s, '3');
+    s.feedKey('~');
+  },
 };
 
 // ── Run tests ──
@@ -314,11 +780,16 @@ for (const [name, gt] of Object.entries(groundTruth)) {
   const simTextLines = frame.lines.map(l => l.text);
   const textDiffs = diffLines(gtTextLines, simTextLines);
 
-  // Compare cursor
+  // Compare cursor position
   const cursorMatch = (
     gt.cursor.row === frame.cursor.row &&
     gt.cursor.col === frame.cursor.col
   );
+
+  // Compare cursor shape (if ground truth includes it)
+  const gtShape = gt.cursor.shape || undefined;
+  const simShape = frame.cursor.shape || undefined;
+  const shapeMatch = (gtShape === simShape);
 
   // Compare colors
   let colorDiffs = [];
@@ -326,12 +797,15 @@ for (const [name, gt] of Object.entries(groundTruth)) {
     colorDiffs = diffRuns(gt.frame, frame);
   }
 
-  if (textDiffs.length === 0 && cursorMatch && colorDiffs.length === 0) {
+  if (textDiffs.length === 0 && cursorMatch && shapeMatch && colorDiffs.length === 0) {
     passed++;
   } else {
     console.log(`  FAIL  ${name}`);
     if (!cursorMatch) {
       console.log(`        cursor: expected (${gt.cursor.row},${gt.cursor.col}) got (${frame.cursor.row},${frame.cursor.col})`);
+    }
+    if (!shapeMatch) {
+      console.log(`        cursor shape: expected ${gtShape} got ${simShape}`);
     }
     if (textDiffs.length > 0) {
       for (const d of textDiffs.slice(0, 3)) {

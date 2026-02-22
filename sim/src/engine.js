@@ -1836,7 +1836,7 @@ export class VimEngine {
     // : commands — file/quit operations (with nvim-style abbreviations)
     // :w[rite], :wq, :x[it], :q[uit], :q[uit]!, :e[dit], :r[ead], :!
     // Set _lastExCommand so SessionManager can intercept; clear commandLine.
-    if (/^(w(r(i(te?)?)?)?|wq|x(it?)?|q(u(it?)?)?!?)(\s|$)/.test(cmd) || /^e(d(it?)?)?(\s|$)/.test(cmd) || /^r(e(ad?)?)?!?(\s|$)/.test(cmd) || cmd.startsWith('!')) {
+    if (/^(w(r(i(te?)?)?)?|wq|x(it?)?|q(u(it?)?)?!?)(\s|$)/.test(cmd) || /^e(d(it?)?)?(\s|$)/.test(cmd) || /^r(e(ad?)?)?!/.test(cmd) || /^r(e(ad?)?)?(\s|$)/.test(cmd) || cmd.startsWith('!')) {
       this._lastExCommand = cmd;
       this.commandLine = '';
       return;

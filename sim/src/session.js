@@ -368,6 +368,16 @@ export class SessionManager {
       case 'echo':
         lines.push(rest.join(' '));
         break;
+      case 'date': {
+        const d = new Date();
+        const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        const mons = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const tzM = d.toString().match(/\(([^)]+)\)/);
+        let tz = '';
+        if (tzM) tz = tzM[1].includes(' ') ? tzM[1].split(' ').map(w => w[0]).join('') : tzM[1];
+        lines.push(`${days[d.getDay()]} ${mons[d.getMonth()]} ${String(d.getDate()).padStart(2,' ')} ${d.toTimeString().split(' ')[0]} ${tz} ${d.getFullYear()}`);
+        break;
+      }
       case 'rm': {
         for (const name of rest) {
           if (!this.fs.rm(name)) {

@@ -61,6 +61,26 @@ export class ShellSim {
     // Scroll state
     this.scrollTop = 0;
 
+    // Vi-mode line editing (set -o vi)
+    this._viMode = false;    // true when vi-mode is active
+    this._viNormal = false;  // true = normal mode, false = insert mode
+    this._viOperator = '';   // pending operator: 'd', 'c', 'y'
+    this._viPendingChar = ''; // pending char-consumer: 'r', 'f', 'F', 't', 'T'
+    this._viYank = '';       // yank buffer for d/c/x/y
+    this._viLastF = null;    // last f/F/t/T target: { ch, forward, till }
+    this._viCount = '';      // numeric count accumulator (string of digits)
+    this._viUndoStack = [];  // undo stack: array of { line, cursorPos }
+    this._viLastChange = null; // dot-repeat: { keys: [...], count } — last change
+    this._viRecording = [];  // keys being recorded for current change
+    this._viInChange = false; // true while a change is in progress
+    this._viReplaceMode = false; // R replace (overtype) mode
+    this._viReplaceStart = 0;    // cursor position where R was pressed
+    this._viReplaceOriginal = ''; // original text for Backspace in replace mode
+    this._viSearchMode = '';     // '' | '/' | '?' — history search input
+    this._viSearchBuffer = '';   // partial search pattern being typed
+    this._viSearchPattern = '';  // last committed search pattern
+    this._viSearchDir = 1;       // 1 = forward (/) , -1 = backward (?)
+
     // Status
     this._exited = false;
   }
@@ -99,9 +119,98 @@ export class ShellSim {
   feedKey(key) {
     if (this._exited) return;
 
+    // ── Vi history search mode (/ or ? prompt) ──
+    if (this._viSearchMode) {
+      if (key === 'Enter') {
+        // Commit the search
+        if (this._viSearchBuffer) {
+          this._viSearchPattern = this._viSearchBuffer;
+          this._viSearchDir = this._viSearchMode === '/' ? -1 : -1; // both search backward through history
+        }
+        this._viSearchMode = '';
+        this._viSearchBuffer = '';
+        // Perform the search
+        if (this._viSearchPattern) {
+          this._viHistorySearch(this._viSearchPattern, -1);
+        }
+        return;
+      }
+      if (key === 'Escape') {
+        this._viSearchMode = '';
+        this._viSearchBuffer = '';
+        return;
+      }
+      if (key === 'Backspace') {
+        if (this._viSearchBuffer.length > 0) {
+          this._viSearchBuffer = this._viSearchBuffer.slice(0, -1);
+        } else {
+          this._viSearchMode = '';
+        }
+        return;
+      }
+      if (key.length === 1) {
+        this._viSearchBuffer += key;
+        return;
+      }
+      return;
+    }
+
+    // Enter always executes, regardless of vi-mode state
     if (key === 'Enter') {
+      this._viNormal = false;
+      this._viReplaceMode = false;
+      this._viOperator = '';
+      this._viCount = '';
+      this._viEndChange();
       this._execute();
-    } else if (key === 'Backspace') {
+      return;
+    }
+
+    // Vi-mode: dispatch to normal mode handler
+    if (this._viMode && this._viNormal) {
+      this._feedKeyViNormal(key);
+      return;
+    }
+
+    // Vi replace mode (R): overtype characters
+    if (this._viMode && this._viReplaceMode) {
+      if (key === 'Escape') {
+        this._viReplaceMode = false;
+        this._viNormal = true;
+        this._viEndChange();
+        if (this._cursorPos > 0) this._cursorPos--;
+        return;
+      }
+      if (key === 'Backspace') {
+        // Restore original character if we haven't gone past replaceStart
+        if (this._cursorPos > this._viReplaceStart) {
+          this._cursorPos--;
+          const origIdx = this._cursorPos - this._viReplaceStart;
+          if (origIdx < this._viReplaceOriginal.length) {
+            const origCh = this._viReplaceOriginal[origIdx];
+            this._inputLine = this._inputLine.slice(0, this._cursorPos) + origCh + this._inputLine.slice(this._cursorPos + 1);
+          }
+        }
+        if (this._viInChange) this._viRecording.push(key);
+        return;
+      }
+      if (key.length === 1) {
+        if (this._cursorPos < this._inputLine.length) {
+          // Overwrite existing character
+          this._inputLine = this._inputLine.slice(0, this._cursorPos) + key + this._inputLine.slice(this._cursorPos + 1);
+        } else {
+          // Append past end
+          this._inputLine += key;
+        }
+        this._cursorPos++;
+        if (this._viInChange) this._viRecording.push(key);
+        return;
+      }
+      return;
+    }
+
+    // Insert mode (default emacs-style, or vi-insert)
+    if (key === 'Backspace') {
       if (this._cursorPos > 0) {
         this._inputLine = this._inputLine.slice(0, this._cursorPos - 1) + this._inputLine.slice(this._cursorPos);
         this._cursorPos--;
@@ -124,6 +233,10 @@ export class ShellSim {
       this._inputLine = '';
       this._cursorPos = 0;
       this._historyIdx = -1;
+      this._viNormal = false;
+      this._viReplaceMode = false;
+      this._viOperator = '';
+      this._viCount = '';
     } else if (key === 'Ctrl-L') {
       // Clear screen
       this._outputLines = [];
@@ -146,11 +259,678 @@ export class ShellSim {
     } else if (key === 'Tab') {
       this._tabComplete();
     } else if (key === 'Escape') {
-      // Ignore in shell
+      if (this._viMode) {
+        // Enter vi normal mode — cursor moves left by 1 (vim behavior)
+        this._viNormal = true;
+        this._viOperator = '';
+        this._viPendingChar = '';
+        this._viCount = '';
+        this._viEndChange();
+        if (this._cursorPos > 0) {
+          this._cursorPos--;
+        }
+      }
     } else if (key.length === 1) {
       // Regular character
       this._inputLine = this._inputLine.slice(0, this._cursorPos) + key + this._inputLine.slice(this._cursorPos);
       this._cursorPos++;
+      // Record for dot-repeat if in a vi change
+      if (this._viInChange) this._viRecording.push(key);
+    }
+  }
+
+  // ── Vi normal mode ──
+
+  /**
+   * Handle a key in vi normal mode.
+   * Supports motions, operators (d/c/y), and mode-switching keys.
+   * @private
+   */
+  _feedKeyViNormal(key) {
+    const line = this._inputLine;
+    const pos = this._cursorPos;
+    const maxPos = Math.max(0, line.length - 1);
+    const op = this._viOperator;
+    const pending = this._viPendingChar;
+
+    // ── Pending single-char consumers (must be checked FIRST) ──
+
+    if (pending === 'r') {
+      if (key.length === 1 && line.length > 0) {
+        const cnt = Math.min(this._viGetCount(), line.length - pos);
+        this._viSaveUndo();
+        this._inputLine = line.slice(0, pos) + key.repeat(cnt) + line.slice(pos + cnt);
+        this._cursorPos = pos + cnt - 1;
+        this._viEndChange();
+      }
+      this._viPendingChar = '';
+      this._viCount = '';
+      return;
+    }
+
+    if (pending === 'f' || pending === 'F' || pending === 't' || pending === 'T') {
+      if (key.length === 1) {
+        const forward = (pending === 'f' || pending === 't');
+        const till = (pending === 't' || pending === 'T');
+        this._viLastF = { ch: key, forward, till };
+        let target = null;
+        if (forward) {
+          const idx = line.indexOf(key, pos + 1);
+          if (idx !== -1) target = till ? idx - 1 : idx;
+        } else {
+          const idx = line.lastIndexOf(key, pos - 1);
+          if (idx !== -1) target = till ? idx + 1 : idx;
+        }
+        if (target !== null && target >= 0 && target < line.length) {
+          if (op) {
+            // operator + f/F/t/T motion
+            const from = Math.min(pos, target);
+            const to = Math.max(pos, target) + 1; // f/t motions are inclusive with operators
+            this._viSaveUndo();
+            this._viYank = line.slice(from, to);
+            if (op === 'd' || op === 'c') {
+              this._inputLine = line.slice(0, from) + line.slice(to);
+              this._cursorPos = from;
+            }
+            this._viOperator = '';
+            if (op === 'c') { this._viNormal = false; this._viBeginChange(['c', pending, key]); }
+            else { this._clampViCursor(); this._viEndChange(); }
+          } else {
+            this._cursorPos = target;
+          }
+        }
+      }
+      this._viPendingChar = '';
+      this._viCount = '';
+      return;
+    }
+
+    // ── Escape cancels pending operator ──
+    if (key === 'Escape') {
+      this._viOperator = '';
+      this._viPendingChar = '';
+      this._viCount = '';
+      return;
+    }
+
+    // ── Numeric count accumulation ──
+    if (/[1-9]/.test(key) || (key === '0' && this._viCount !== '')) {
+      // '0' alone is a motion (start of line), so only accumulate if already have digits
+      this._viCount += key;
+      return;
+    }
+
+    // ── Mode-switch keys (only without pending operator) ──
+    if (!op) {
+      if (key === 'i') {
+        this._viNormal = false;
+        this._viCount = '';
+        this._viBeginChange(['i']);
+        return;
+      }
+      if (key === 'I') {
+        this._viNormal = false;
+        this._cursorPos = 0;
+        this._viCount = '';
+        this._viBeginChange(['I']);
+        return;
+      }
+      if (key === 'a') {
+        this._viNormal = false;
+        this._cursorPos = Math.min(pos + 1, line.length);
+        this._viCount = '';
+        this._viBeginChange(['a']);
+        return;
+      }
+      if (key === 'A') {
+        this._viNormal = false;
+        this._cursorPos = line.length;
+        this._viCount = '';
+        this._viBeginChange(['A']);
+        return;
+      }
+      if (key === 's') {
+        // substitute: delete count chars under cursor, enter insert
+        const cnt = Math.min(this._viGetCount(), line.length - pos);
+        this._viSaveUndo();
+        if (line.length > 0) {
+          this._viYank = line.slice(pos, pos + cnt);
+          this._inputLine = line.slice(0, pos) + line.slice(pos + cnt);
+        }
+        this._viNormal = false;
+        this._viCount = '';
+        this._viBeginChange(['s']);
+        return;
+      }
+      if (key === 'S') {
+        // substitute whole line
+        this._viSaveUndo();
+        this._viYank = line;
+        this._inputLine = '';
+        this._cursorPos = 0;
+        this._viNormal = false;
+        this._viCount = '';
+        this._viBeginChange(['S']);
+        return;
+      }
+      if (key === 'C') {
+        // change to end of line
+        this._viSaveUndo();
+        this._viYank = line.slice(pos);
+        this._inputLine = line.slice(0, pos);
+        this._viNormal = false;
+        this._viCount = '';
+        this._viBeginChange(['C']);
+        return;
+      }
+      if (key === 'D') {
+        // delete to end of line
+        this._viSaveUndo();
+        this._viYank = line.slice(pos);
+        this._inputLine = line.slice(0, pos);
+        this._clampViCursor();
+        this._viCount = '';
+        return;
+      }
+      if (key === 'R') {
+        // Enter replace (overtype) mode
+        this._viSaveUndo();
+        this._viNormal = false;
+        this._viReplaceMode = true;
+        this._viReplaceStart = pos;
+        this._viReplaceOriginal = line.slice(pos);
+        this._viCount = '';
+        this._viBeginChange(['R']);
+        return;
+      }
+      if (key === 'u') {
+        // Undo
+        this._viUndo();
+        this._viCount = '';
+        return;
+      }
+      if (key === '.') {
+        // Dot repeat — replay last change
+        this._viDotRepeat();
+        this._viCount = '';
+        return;
+      }
+      if (key === '#') {
+        // Comment out line and execute (bash vi-mode)
+        this._viSaveUndo();
+        this._inputLine = '#' + line;
+        this._cursorPos = 0;
+        this._viNormal = false;
+        this._viCount = '';
+        // Execute immediately
+        this._viEndChange();
+        this._execute();
+        return;
+      }
+    }
+
+    // ── Operator keys ──
+    if (key === 'd' || key === 'c' || key === 'y') {
+      if (op === key) {
+        // dd / cc / yy — operate on entire line
+        this._viSaveUndo();
+        this._viYank = line;
+        if (key === 'd' || key === 'c') {
+          this._inputLine = '';
+          this._cursorPos = 0;
+        }
+        this._viOperator = '';
+        this._viCount = '';
+        if (key === 'c') { this._viNormal = false; this._viBeginChange([key, key]); }
+        return;
+      }
+      this._viOperator = key;
+      return;
+    }
+
+    // ── f/F/t/T/r: set up pending char consumer ──
+    if (key === 'f' || key === 'F' || key === 't' || key === 'T') {
+      this._viPendingChar = key;
+      return;
+    }
+    if (!op && key === 'r') {
+      this._viPendingChar = 'r';
+      return;
+    }
+
+    // ── History search: / and ? ──
+    if (!op && (key === '/' || key === '?')) {
+      this._viSearchMode = key;
+      this._viSearchBuffer = '';
+      this._viCount = '';
+      return;
+    }
+
+    // ── G: jump to specific history entry ──
+    if (!op && key === 'G') {
+      const cnt = this._viCount;
+      this._viCount = '';
+      if (cnt === '') {
+        // G without count = oldest history entry (like real bash)
+        if (this._history.length > 0) {
+          this._historyIdx = 0;
+          this._inputLine = this._history[0];
+          this._cursorPos = this._inputLine.length;
+          this._clampViCursor();
+        }
+      } else {
+        const n = parseInt(cnt, 10);
+        if (n >= 1 && n <= this._history.length) {
+          this._historyIdx = n - 1;
+          this._inputLine = this._history[n - 1];
+          this._cursorPos = this._inputLine.length;
+          this._clampViCursor();
+        }
+      }
+      return;
+    }
+
+    // ── Resolve motion ──
+    const count = this._viGetCount();
+    const motion = this._viResolveMotion(key, pos, line);
+    if (motion !== null) {
+      // Apply count to motions by repeating
+      let target = motion.target;
+      let inclusive = motion.inclusive;
+      if (count > 1 && !op) {
+        // For pure motions, repeat the motion count times
+        let p = pos;
+        for (let i = 0; i < count; i++) {
+          const m = this._viResolveMotion(key, p, line);
+          if (!m || m.target === p) break;
+          p = m.target;
+          inclusive = m.inclusive;
+        }
+        target = p;
+      } else if (count > 1 && op) {
+        // For operator+motion, repeat motion count times
+        let p = pos;
+        for (let i = 0; i < count; i++) {
+          const m = this._viResolveMotion(key, p, this._inputLine);
+          if (!m || m.target === p) break;
+          p = m.target;
+          inclusive = m.inclusive;
+        }
+        target = p;
+      }
+
+      if (op) {
+        // Vim quirk: cw/cW acts like ce/cE (don't eat trailing whitespace)
+        let from = Math.min(pos, target);
+        let to = Math.max(pos, target);
+        if (op === 'c' && (key === 'w' || key === 'W')) {
+          // Change-word: only delete to end of current word, not trailing space
+          let p = pos;
+          for (let i = 0; i < count; i++) {
+            const eMotion = this._viResolveMotion(key === 'w' ? 'e' : 'E', p, this._inputLine);
+            if (!eMotion || eMotion.target === p) break;
+            p = eMotion.target;
+          }
+          to = p;
+          inclusive = true;
+        }
+        if (inclusive) to++;
+        else if (from === to) to++; // at least 1 char
+        this._viSaveUndo();
+        const deleted = line.slice(from, to);
+        this._viYank = deleted;
+        if (op === 'd' || op === 'c') {
+          this._inputLine = line.slice(0, from) + line.slice(to);
+          this._cursorPos = from;
+        } else if (op === 'y') {
+          // yank only — don't delete
+        }
+        this._viOperator = '';
+        this._viCount = '';
+        if (op === 'c') {
+          this._viNormal = false;
+          this._viBeginChange([op, ...(count > 1 ? [String(count)] : []), key]);
+        } else {
+          this._clampViCursor();
+        }
+      } else {
+        // Pure motion — just move
+        this._cursorPos = Math.min(target, maxPos);
+        this._viCount = '';
+      }
+      return;
+    }
+
+    // ── Non-motion action keys (only without pending operator) ──
+    if (!op) {
+      if (key === 'x') {
+        const cnt = Math.min(this._viGetCount(), line.length - pos);
+        if (line.length > 0 && pos < line.length) {
+          this._viSaveUndo();
+          this._viYank = line.slice(pos, pos + cnt);
+          this._inputLine = line.slice(0, pos) + line.slice(pos + cnt);
+          this._clampViCursor();
+        }
+        this._viCount = '';
+        return;
+      }
+      if (key === 'X') {
+        const cnt = Math.min(this._viGetCount(), pos);
+        if (pos > 0) {
+          this._viSaveUndo();
+          this._viYank = line.slice(pos - cnt, pos);
+          this._inputLine = line.slice(0, pos - cnt) + line.slice(pos);
+          this._cursorPos = pos - cnt;
+        }
+        this._viCount = '';
+        return;
+      }
+      if (key === 'p') {
+        if (this._viYank) {
+          this._viSaveUndo();
+          const cnt = this._viGetCount();
+          const text = this._viYank.repeat(cnt);
+          const after = pos + 1;
+          this._inputLine = line.slice(0, after) + text + line.slice(after);
+          this._cursorPos = after + text.length - 1;
+        }
+        this._viCount = '';
+        return;
+      }
+      if (key === 'P') {
+        if (this._viYank) {
+          this._viSaveUndo();
+          const cnt = this._viGetCount();
+          const text = this._viYank.repeat(cnt);
+          this._inputLine = line.slice(0, pos) + text + line.slice(pos);
+          this._cursorPos = pos + text.length - 1;
+        }
+        this._viCount = '';
+        return;
+      }
+      if (key === '~') {
+        const cnt = Math.min(this._viGetCount(), line.length - pos);
+        if (line.length > 0 && pos < line.length) {
+          this._viSaveUndo();
+          let segment = '';
+          for (let i = 0; i < cnt; i++) {
+            const ch = line[pos + i];
+            segment += ch === ch.toLowerCase() ? ch.toUpperCase() : ch.toLowerCase();
+          }
+          this._inputLine = line.slice(0, pos) + segment + line.slice(pos + cnt);
+          this._cursorPos = Math.min(pos + cnt, this._inputLine.length - 1);
+        }
+        this._viCount = '';
+        return;
+      }
+      // ArrowUp / ArrowDown for history even in normal mode
+      if (key === 'ArrowUp' || key === 'k') {
+        this._historyUp();
+        this._clampViCursor();
+        this._viCount = '';
+        return;
+      }
+      if (key === 'ArrowDown' || key === 'j') {
+        this._historyDown();
+        this._clampViCursor();
+        this._viCount = '';
+        return;
+      }
+      // n / N — repeat history search
+      if (key === 'n') {
+        if (this._viSearchPattern) {
+          this._viHistorySearch(this._viSearchPattern, -1);
+        }
+        this._viCount = '';
+        return;
+      }
+      if (key === 'N') {
+        if (this._viSearchPattern) {
+          this._viHistorySearch(this._viSearchPattern, 1);
+        }
+        this._viCount = '';
+        return;
+      }
+      // ; and , repeat last f/F/t/T
+      if (key === ';' || key === ',') {
+        if (this._viLastF) {
+          const forward = key === ';' ? this._viLastF.forward : !this._viLastF.forward;
+          const till = this._viLastF.till;
+          const ch = this._viLastF.ch;
+          let target = null;
+          if (forward) {
+            const idx = line.indexOf(ch, pos + 1);
+            if (idx !== -1) target = till ? idx - 1 : idx;
+          } else {
+            const idx = line.lastIndexOf(ch, pos - 1);
+            if (idx !== -1) target = till ? idx + 1 : idx;
+          }
+          if (target !== null && target >= 0 && target < line.length) {
+            this._cursorPos = target;
+          }
+        }
+        this._viCount = '';
+        return;
+      }
+    }
+
+    // Unknown key in normal mode — ignore
+    this._viOperator = '';
+    this._viPendingChar = '';
+    this._viCount = '';
+  }
+
+  /**
+   * Resolve a vi motion key to a target position.
+   * Returns { target, inclusive } or null if not a motion.
+   * @private
+   */
+  _viResolveMotion(key, pos, line) {
+    const len = line.length;
+    if (key === 'h' || key === 'ArrowLeft') {
+      return { target: Math.max(0, pos - 1), inclusive: false };
+    }
+    if (key === 'l' || key === 'ArrowRight' || key === ' ') {
+      return { target: Math.min(pos + 1, Math.max(0, len - 1)), inclusive: false };
+    }
+    if (key === '0' || key === 'Home') {
+      return { target: 0, inclusive: false };
+    }
+    if (key === '$' || key === 'End') {
+      return { target: Math.max(0, len - 1), inclusive: true };
+    }
+    if (key === '^' || key === '_') {
+      // First non-whitespace
+      const m = line.match(/\S/);
+      return { target: m ? m.index : 0, inclusive: false };
+    }
+    if (key === 'w') {
+      // Next word start
+      let i = pos;
+      // Skip current word chars
+      if (i < len && /\w/.test(line[i])) {
+        while (i < len && /\w/.test(line[i])) i++;
+      } else if (i < len && /[^\w\s]/.test(line[i])) {
+        while (i < len && /[^\w\s]/.test(line[i])) i++;
+      } else {
+        i++;
+      }
+      // Skip whitespace
+      while (i < len && /\s/.test(line[i])) i++;
+      return { target: i, inclusive: false };
+    }
+    if (key === 'W') {
+      // Next WORD start (whitespace-delimited)
+      let i = pos;
+      while (i < len && !/\s/.test(line[i])) i++;
+      while (i < len && /\s/.test(line[i])) i++;
+      return { target: i, inclusive: false };
+    }
+    if (key === 'b') {
+      // Previous word start
+      let i = pos;
+      if (i > 0) i--;
+      while (i > 0 && /\s/.test(line[i])) i--;
+      if (/\w/.test(line[i])) {
+        while (i > 0 && /\w/.test(line[i - 1])) i--;
+      } else if (/[^\w\s]/.test(line[i])) {
+        while (i > 0 && /[^\w\s]/.test(line[i - 1])) i--;
+      }
+      return { target: i, inclusive: false };
+    }
+    if (key === 'B') {
+      // Previous WORD start
+      let i = pos;
+      if (i > 0) i--;
+      while (i > 0 && /\s/.test(line[i])) i--;
+      while (i > 0 && !/\s/.test(line[i - 1])) i--;
+      return { target: i, inclusive: false };
+    }
+    if (key === 'e') {
+      // End of word
+      let i = pos;
+      if (i < len - 1) i++;
+      while (i < len - 1 && /\s/.test(line[i])) i++;
+      if (/\w/.test(line[i])) {
+        while (i < len - 1 && /\w/.test(line[i + 1])) i++;
+      } else if (/[^\w\s]/.test(line[i])) {
+        while (i < len - 1 && /[^\w\s]/.test(line[i + 1])) i++;
+      }
+      return { target: i, inclusive: true };
+    }
+    if (key === 'E') {
+      // End of WORD
+      let i = pos;
+      if (i < len - 1) i++;
+      while (i < len - 1 && /\s/.test(line[i])) i++;
+      while (i < len - 1 && !/\s/.test(line[i + 1])) i++;
+      return { target: i, inclusive: true };
+    }
+    return null;
+  }
+
+  /**
+   * Clamp cursor to valid vi-normal-mode range (0..len-1).
+   * @private
+   */
+  _clampViCursor() {
+    const maxPos = Math.max(0, this._inputLine.length - 1);
+    if (this._cursorPos > maxPos) this._cursorPos = maxPos;
+    if (this._cursorPos < 0) this._cursorPos = 0;
+  }
+
+  /**
+   * Get the numeric count (default 1) and reset the accumulator.
+   * @private
+   */
+  _viGetCount() {
+    const n = this._viCount ? parseInt(this._viCount, 10) : 1;
+    return Math.max(1, n);
+  }
+
+  /**
+   * Save current line state to undo stack.
+   * @private
+   */
+  _viSaveUndo() {
+    this._viUndoStack.push({ line: this._inputLine, cursorPos: this._cursorPos });
+    // Cap undo stack at 100 entries
+    if (this._viUndoStack.length > 100) this._viUndoStack.shift();
+  }
+
+  /**
+   * Undo: restore last saved state.
+   * @private
+   */
+  _viUndo() {
+    if (this._viUndoStack.length > 0) {
+      const state = this._viUndoStack.pop();
+      this._inputLine = state.line;
+      this._cursorPos = state.cursorPos;
+      this._clampViCursor();
+    }
+  }
+
+  /**
+   * Begin recording keys for a change (for dot-repeat).
+   * @private
+   */
+  _viBeginChange(prefixKeys) {
+    this._viInChange = true;
+    this._viRecording = [...prefixKeys];
+  }
+
+  /**
+   * End the current change recording and save for dot-repeat.
+   * @private
+   */
+  _viEndChange() {
+    if (this._viInChange) {
+      this._viLastChange = { keys: [...this._viRecording] };
+      this._viInChange = false;
+      this._viRecording = [];
+    }
+  }
+
+  /**
+   * Dot-repeat: replay the last recorded change.
+   * @private
+   */
+  _viDotRepeat() {
+    if (!this._viLastChange) return;
+    this._viSaveUndo();
+    const keys = this._viLastChange.keys;
+    // Replay all the keys that made up the last change
+    for (const k of keys) {
+      this.feedKey(k);
+    }
+    // End in normal mode
+    if (!this._viNormal) {
+      this.feedKey('Escape');
+    }
+  }
+
+  /**
+   * Search through command history for a pattern.
+   * dir: -1 = search backward (older), 1 = search forward (newer)
+   * @private
+   */
+  _viHistorySearch(pattern, dir) {
+    if (this._history.length === 0) return;
+    let startIdx;
+    if (this._historyIdx === -1) {
+      this._savedInput = this._inputLine;
+      startIdx = dir < 0 ? this._history.length - 1 : 0;
+    } else {
+      startIdx = this._historyIdx + dir;
+    }
+
+    try {
+      const re = new RegExp(pattern);
+      let idx = startIdx;
+      while (idx >= 0 && idx < this._history.length) {
+        if (re.test(this._history[idx])) {
+          this._historyIdx = idx;
+          this._inputLine = this._history[idx];
+          this._cursorPos = this._inputLine.length;
+          this._clampViCursor();
+          return;
+        }
+        idx += dir;
+      }
+    } catch {
+      // Invalid regex — try plain substring match
+      let idx = startIdx;
+      while (idx >= 0 && idx < this._history.length) {
+        if (this._history[idx].includes(pattern)) {
+          this._historyIdx = idx;
+          this._inputLine = this._history[idx];
+          this._cursorPos = this._inputLine.length;
+          this._clampViCursor();
+          return;
+        }
+        idx += dir;
+      }
     }
   }
 
@@ -182,7 +962,16 @@ export class ShellSim {
       for (let r = totalContent; r < this.rows; r++) {
         lines.push(' '.repeat(this.cols));
       }
-      const cursorCol = Math.min(promptStr.length + this._cursorPos, this.cols - 1);
+      let cursorCol = Math.min(promptStr.length + this._cursorPos, this.cols - 1);
+      // If in search mode, override last row to show search prompt
+      if (this._viSearchMode) {
+        const searchLine = this._viSearchMode + this._viSearchBuffer;
+        // Replace the last used row (or add a new row if blank rows exist)
+        const searchRow = Math.min(promptRow + 1, this.rows - 1);
+        lines[searchRow] = this._pad(searchLine);
+        cursorCol = searchLine.length;
+        return { lines, cursor: { row: searchRow, col: cursorCol } };
+      }
       return { lines, cursor: { row: promptRow, col: cursorCol } };
     } else {
       // ── Content overflows — scroll so prompt is on last row ──
@@ -250,10 +1039,13 @@ export class ShellSim {
       }
     }
 
+    // Cursor shape: block in vi-normal and replace mode, beam in insert/emacs
+    const cursorShape = (this._viMode && (this._viNormal || this._viReplaceMode)) ? 'block' : 'beam';
+
     return {
       rows: this.rows,
       cols: this.cols,
-      cursor: { row: cursor.row, col: cursor.col, visible: true },
+      cursor: { row: cursor.row, col: cursor.col, visible: true, shape: cursorShape },
       defaultFg: t.normalFg || 'e0e2ea',
       defaultBg: t.normalBg || '14161b',
       lines: frameLines,
@@ -313,6 +1105,12 @@ export class ShellSim {
         break;
       case 'pwd':
         this._appendOutput(this.cwd);
+        break;
+      case 'set':
+        this._cmdSet(rest);
+        break;
+      case 'date':
+        this._appendOutput(ShellSim._formatDate(new Date()));
         break;
       case 'clear':
         this._outputLines = [];
@@ -458,6 +1256,30 @@ export class ShellSim {
   }
 
   /** @private */
+  _cmdSet(args) {
+    if (args.length === 2 && args[0] === '-o' && args[1] === 'vi') {
+      this._viMode = true;
+      this._viNormal = false; // start in insert mode
+      this._viReplaceMode = false;
+      this._viUndoStack = [];
+      this._viLastChange = null;
+      this._viCount = '';
+      this._viSearchPattern = '';
+    } else if (args.length === 2 && args[0] === '-o' && args[1] === 'emacs') {
+      this._viMode = false;
+      this._viNormal = false;
+      this._viReplaceMode = false;
+    } else if (args.length >= 2 && args[0] === '-o') {
+      this._appendOutput(`set: no such option: ${args[1]}`);
+    } else if (args.length === 0) {
+      // Show current settings
+      this._appendOutput(`editing-mode ${this._viMode ? 'vi' : 'emacs'}`);
+    } else {
+      this._appendOutput(`set: usage: set -o [vi|emacs]`);
+    }
+  }
+
+  /** @private */
   _cmdHelp() {
     const cmds = [
       'Available commands:',
@@ -469,6 +1291,9 @@ export class ShellSim {
       '  touch <file>  Create empty file',
       '  echo <text>   Print text (supports > redirect)',
       '  sort <file>   Sort lines of a file (-r -n -u)',
+      '  set -o vi     Enable vi-mode line editing',
+      '  set -o emacs  Disable vi-mode (default)',
+      '  date          Print current date and time',
       '  pwd           Print working directory',
       '  clear         Clear screen',
       '  help          Show this help',
@@ -531,6 +1356,30 @@ export class ShellSim {
   }
 
   // ── Helpers ──
+
+  /**
+   * Format a Date like Unix `date` command.
+   * e.g. "Sat Feb 21 21:24:56 PST 2026"
+   */
+  static _formatDate(d) {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const day = days[d.getDay()];
+    const mon = months[d.getMonth()];
+    const dd = String(d.getDate()).padStart(2, ' ');
+    const time = d.toTimeString().split(' ')[0]; // HH:MM:SS
+    // Extract short timezone name from toString(), e.g. "PST"
+    const tzMatch = d.toString().match(/\(([^)]+)\)/);
+    let tz = '';
+    if (tzMatch) {
+      // Abbreviate e.g. "Pacific Standard Time" → "PST"
+      const full = tzMatch[1];
+      tz = full.includes(' ') ? full.split(' ').map(w => w[0]).join('') : full;
+    }
+    const year = d.getFullYear();
+    return `${day} ${mon} ${dd} ${time} ${tz} ${year}`;
+  }
 
   /** @private – pad or truncate a string to this.cols */
   _pad(s) {

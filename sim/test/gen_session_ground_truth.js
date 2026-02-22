@@ -421,6 +421,711 @@ addCase('vim_shell_escape_ls_dismiss', () => {
   };
 });
 
+// ───────────────────────────────────────────────────────────
+// Shell vi-mode (set -o vi)
+// ───────────────────────────────────────────────────────────
+
+addCase('shell_set_o_vi', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  return {
+    description: 'Shell after "set -o vi" enables vi-mode (prompt, insert mode)',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_type_and_escape', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world');
+  s.feedKey('Escape');
+  return {
+    description: 'Vi-mode: typed "hello world" then Escape (cursor moves left, block cursor)',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_motion_0_dollar', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world foo');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  return {
+    description: 'Vi normal: 0 moves to start of line',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_motion_w', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world foo');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('w');
+  return {
+    description: 'Vi normal: w moves to next word',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_motion_b', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world foo');
+  s.feedKey('Escape');
+  s.feedKey('b');
+  return {
+    description: 'Vi normal: b moves to previous word start',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_x_delete', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abc');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('x');
+  return {
+    description: 'Vi normal: x deletes char under cursor',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_dw', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world foo');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('d');
+  s.feedKey('w');
+  return {
+    description: 'Vi normal: dw deletes word + trailing space',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_cw', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('c');
+  s.feedKey('w');
+  feedString(s, 'Hi');
+  s.feedKey('Escape');
+  return {
+    description: 'Vi normal: cw changes word (like ce), replaced "hello" with "Hi"',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_dd', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'delete me');
+  s.feedKey('Escape');
+  s.feedKey('d');
+  s.feedKey('d');
+  return {
+    description: 'Vi normal: dd clears entire line',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_f_motion', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'find the char');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('f');
+  s.feedKey('t');
+  return {
+    description: 'Vi normal: ft finds "t" forward',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_f_semicolon_repeat', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'find the things there');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('f');
+  s.feedKey('t');
+  s.feedKey(';');
+  return {
+    description: 'Vi normal: ft then ; repeats find',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_r_replace', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abc');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('r');
+  s.feedKey('X');
+  return {
+    description: 'Vi normal: rX replaces char under cursor with X',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_p_paste', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abc');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('x');
+  s.feedKey('p');
+  return {
+    description: 'Vi normal: x then p (delete a, paste after cursor)',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_I_insert_start', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'world');
+  s.feedKey('Escape');
+  s.feedKey('I');
+  feedString(s, 'hello ');
+  s.feedKey('Escape');
+  return {
+    description: 'Vi: I inserts at start of line',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_A_append_end', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello');
+  s.feedKey('Escape');
+  s.feedKey('A');
+  feedString(s, ' world');
+  s.feedKey('Escape');
+  return {
+    description: 'Vi: A appends at end of line',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_tilde_swap_case', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('~');
+  s.feedKey('~');
+  s.feedKey('~');
+  return {
+    description: 'Vi normal: ~~~ swaps case of first 3 chars',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_C_change_to_end', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('w');
+  s.feedKey('C');
+  feedString(s, 'vim');
+  s.feedKey('Escape');
+  return {
+    description: 'Vi: C changes from cursor to end of line',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_D_delete_to_end', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world foo');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('w');
+  s.feedKey('D');
+  return {
+    description: 'Vi: D deletes from cursor to end of line',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_cursor_shape_normal', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'test');
+  s.feedKey('Escape');
+  return {
+    description: 'Vi normal mode has block cursor',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_cursor_shape_insert', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'test');
+  s.feedKey('Escape');
+  s.feedKey('i');
+  return {
+    description: 'Vi insert mode has beam cursor',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_set_o_emacs', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'set -o emacs');
+  s.feedKey('Enter');
+  feedString(s, 'test');
+  return {
+    description: 'set -o emacs disables vi-mode, back to normal editing',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_enter_executes_from_normal', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'echo hello');
+  s.feedKey('Escape');
+  s.feedKey('Enter');
+  return {
+    description: 'Enter in vi normal mode executes command',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_df_motion', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abcdef');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('d');
+  s.feedKey('f');
+  s.feedKey('d');
+  return {
+    description: 'Vi normal: dfd deletes from cursor through d (inclusive)',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_s_substitute', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'xyz');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('s');
+  feedString(s, 'AB');
+  s.feedKey('Escape');
+  return {
+    description: 'Vi: s substitutes char and enters insert mode',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Shell vi-mode — numeric counts
+// ───────────────────────────────────────────────────────────
+
+addCase('shell_vi_2w_count', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world foo');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  feedString(s, '2');
+  s.feedKey('w');
+  return {
+    description: 'Vi normal: 2w skips two words',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_3x_count', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abcdef');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  feedString(s, '3');
+  s.feedKey('x');
+  return {
+    description: 'Vi normal: 3x deletes 3 chars',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_2dw_count', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'aaa bbb ccc ddd');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  feedString(s, '2');
+  s.feedKey('d');
+  s.feedKey('w');
+  return {
+    description: 'Vi normal: 2dw deletes 2 words',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_3l_count', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abcdef');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  feedString(s, '3');
+  s.feedKey('l');
+  return {
+    description: 'Vi normal: 3l moves 3 chars right',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_2p_count', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abc');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('x'); // yank 'a'
+  feedString(s, '2');
+  s.feedKey('p'); // paste 'a' twice
+  return {
+    description: 'Vi normal: 2p pastes yanked char twice',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Shell vi-mode — undo
+// ───────────────────────────────────────────────────────────
+
+addCase('shell_vi_undo', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('x'); // delete 'h'
+  s.feedKey('u'); // undo
+  return {
+    description: 'Vi normal: u undoes last delete',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_undo_multiple', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abc');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('x'); // delete 'a' -> 'bc'
+  s.feedKey('x'); // delete 'b' -> 'c'
+  s.feedKey('u'); // undo -> 'bc'
+  s.feedKey('u'); // undo -> 'abc'
+  return {
+    description: 'Vi normal: multiple u undoes multiple changes',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Shell vi-mode — dot repeat
+// ───────────────────────────────────────────────────────────
+
+addCase('shell_vi_dot_repeat_cw', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'aaa bbb ccc');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('c');
+  s.feedKey('w');
+  feedString(s, 'XXX');
+  s.feedKey('Escape');
+  s.feedKey('w');
+  s.feedKey('.');
+  return {
+    description: 'Vi normal: . repeats cw change',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_dot_repeat_x', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abcd');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('x'); // delete 'a'
+  s.feedKey('.'); // delete 'b'
+  s.feedKey('.'); // delete 'c'
+  return {
+    description: 'Vi normal: . repeats x three times',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Shell vi-mode — t/T motions
+// ───────────────────────────────────────────────────────────
+
+addCase('shell_vi_t_motion', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('t');
+  s.feedKey('o');
+  return {
+    description: 'Vi normal: to moves to one before first "o"',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_T_motion', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello world');
+  s.feedKey('Escape');
+  // cursor at end (pos 9, on 'd')... Escape from pos 11 -> pos 10
+  s.feedKey('T');
+  s.feedKey(' ');
+  return {
+    description: 'Vi normal: T space from end moves after last space',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_dt_motion', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abcdef');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('d');
+  s.feedKey('t');
+  s.feedKey('d');
+  return {
+    description: 'Vi normal: dtd deletes up to (not including) d',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_ct_motion', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abcdef');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('c');
+  s.feedKey('t');
+  s.feedKey('d');
+  feedString(s, 'XY');
+  s.feedKey('Escape');
+  return {
+    description: 'Vi normal: ctd changes up to d, type XY',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Shell vi-mode — R replace mode
+// ───────────────────────────────────────────────────────────
+
+addCase('shell_vi_R_replace_mode', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abcdef');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('R');
+  feedString(s, 'XY');
+  s.feedKey('Escape');
+  return {
+    description: 'Vi: R overtypes chars, XY replaces ab',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_R_backspace_restores', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abcdef');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  s.feedKey('R');
+  feedString(s, 'XY');
+  s.feedKey('Backspace');
+  s.feedKey('Escape');
+  return {
+    description: 'Vi: R then Backspace restores original char',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Shell vi-mode — G history jump
+// ───────────────────────────────────────────────────────────
+
+addCase('shell_vi_G_oldest_history', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'echo first');
+  s.feedKey('Enter');
+  feedString(s, 'echo second');
+  s.feedKey('Enter');
+  feedString(s, 'echo third');
+  s.feedKey('Enter');
+  // Now in insert mode on blank line. Escape to normal.
+  s.feedKey('Escape');
+  s.feedKey('G'); // oldest history entry
+  return {
+    description: 'Vi normal: G jumps to oldest history entry',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Shell vi-mode — # comment-out
+// ───────────────────────────────────────────────────────────
+
+addCase('shell_vi_hash_comment', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'echo hello');
+  s.feedKey('Escape');
+  s.feedKey('#');
+  return {
+    description: 'Vi normal: # comments out line and executes',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Shell vi-mode — history search (/ ? n N)
+// ───────────────────────────────────────────────────────────
+
+addCase('shell_vi_search_history', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'echo alpha');
+  s.feedKey('Enter');
+  feedString(s, 'echo beta');
+  s.feedKey('Enter');
+  feedString(s, 'echo gamma');
+  s.feedKey('Enter');
+  // Escape to normal, search for 'alpha'
+  s.feedKey('Escape');
+  s.feedKey('/');
+  feedString(s, 'alpha');
+  s.feedKey('Enter');
+  return {
+    description: 'Vi normal: /alpha searches history for "alpha"',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_r_count', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'abcdef');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  feedString(s, '3');
+  s.feedKey('r');
+  s.feedKey('X');
+  return {
+    description: 'Vi normal: 3rX replaces 3 chars with X',
+    frame: snap(s),
+  };
+});
+
+addCase('shell_vi_tilde_count', () => {
+  const s = newSession();
+  feedString(s, 'set -o vi');
+  s.feedKey('Enter');
+  feedString(s, 'hello');
+  s.feedKey('Escape');
+  s.feedKey('0');
+  feedString(s, '3');
+  s.feedKey('~');
+  return {
+    description: 'Vi normal: 3~ swaps case of 3 chars',
+    frame: snap(s),
+  };
+});
+
 // ── Write output ──
 writeFileSync(OUT_PATH, JSON.stringify(groundTruth, null, 2));
 console.log(`Generated ${Object.keys(groundTruth).length} session ground truth cases`);

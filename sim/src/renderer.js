@@ -96,13 +96,20 @@ export class Renderer {
     if (cursor && cursor.visible) {
       const cx = pad + cursor.col * cw;
       const cy = pad + cursor.row * ch;
-      ctx.fillStyle = '#800000';
-      ctx.fillRect(cx, cy, cw, ch);
-      // Redraw the character under cursor in white
-      if (cursor.row < lines.length) {
-        const charUnder = lines[cursor.row].text[cursor.col] || ' ';
-        ctx.fillStyle = '#ffffff';
-        ctx.fillText(charUnder, cx, cy + 2);
+      if (cursor.shape === 'beam') {
+        // Thin vertical bar (insert/emacs mode)
+        ctx.fillStyle = '#cccccc';
+        ctx.fillRect(cx, cy, 2, ch);
+      } else {
+        // Block cursor (default, vi-normal, vim normal)
+        ctx.fillStyle = '#800000';
+        ctx.fillRect(cx, cy, cw, ch);
+        // Redraw the character under cursor in white
+        if (cursor.row < lines.length) {
+          const charUnder = lines[cursor.row].text[cursor.col] || ' ';
+          ctx.fillStyle = '#ffffff';
+          ctx.fillText(charUnder, cx, cy + 2);
+        }
       }
     }
   }
