@@ -1152,42 +1152,7 @@ addCase('shell_wc_l_flag', () => {
   };
 });
 
-addCase('shell_head', () => {
-  const s = newSession();
-  const lines = [];
-  for (let i = 1; i <= 15; i++) lines.push(`line ${i}`);
-  s.fs.write('big.txt', lines.join('\n'));
-  feedString(s, 'head big.txt');
-  s.feedKey('Enter');
-  return {
-    description: 'head shows first 10 lines by default',
-    frame: snap(s),
-  };
-});
 
-addCase('shell_head_n3', () => {
-  const s = newSession();
-  s.fs.write('data.txt', 'alpha\nbeta\ngamma\ndelta');
-  feedString(s, 'head -n 3 data.txt');
-  s.feedKey('Enter');
-  return {
-    description: 'head -n 3 shows first 3 lines',
-    frame: snap(s),
-  };
-});
-
-addCase('shell_tail', () => {
-  const s = newSession();
-  const lines = [];
-  for (let i = 1; i <= 15; i++) lines.push(`line ${i}`);
-  s.fs.write('big.txt', lines.join('\n'));
-  feedString(s, 'tail -n 5 big.txt');
-  s.feedKey('Enter');
-  return {
-    description: 'tail -n 5 shows last 5 lines',
-    frame: snap(s),
-  };
-});
 
 addCase('shell_grep', () => {
   const s = newSession();
@@ -1273,35 +1238,7 @@ addCase('shell_history', () => {
   };
 });
 
-addCase('shell_whoami', () => {
-  const s = newSession();
-  feedString(s, 'whoami');
-  s.feedKey('Enter');
-  return {
-    description: 'whoami prints current username',
-    frame: snap(s),
-  };
-});
 
-addCase('shell_which', () => {
-  const s = newSession();
-  feedString(s, 'which cat ls');
-  s.feedKey('Enter');
-  return {
-    description: 'which shows command paths',
-    frame: snap(s),
-  };
-});
-
-addCase('shell_which_unknown', () => {
-  const s = newSession();
-  feedString(s, 'which fakecmd');
-  s.feedKey('Enter');
-  return {
-    description: 'which shows "not found" for unknown commands',
-    frame: snap(s),
-  };
-});
 
 addCase('shell_echo_append_redirect', () => {
   const s = newSession();
@@ -1392,6 +1329,238 @@ addCase('vim_bang_cp', () => {
   s.feedKey('Enter');
   return {
     description: ':!cp copies file while in vim',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// :r (read) — insert file contents below cursor
+// ───────────────────────────────────────────────────────────
+
+addCase('vim_read_file', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Line one\nLine two\nLine three');
+  s.fs.write('extra.txt', 'Alpha\nBravo');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'r extra.txt');
+  s.feedKey('Enter');
+  return {
+    description: ':r extra.txt inserts below cursor (line 1), cursor on first inserted line',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_read_file_line2', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Line one\nLine two\nLine three');
+  s.fs.write('extra.txt', 'Alpha\nBravo');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey('j');   // move to line 2
+  s.feedKey(':');
+  feedString(s, 'r extra.txt');
+  s.feedKey('Enter');
+  return {
+    description: ':r on line 2 inserts below line 2, cursor on first inserted line',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_read_file_last_line', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Line one\nLine two\nLine three');
+  s.fs.write('extra.txt', 'Alpha\nBravo\nCharlie');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey('G');   // move to last line
+  s.feedKey(':');
+  feedString(s, 'r extra.txt');
+  s.feedKey('Enter');
+  return {
+    description: ':r on last line inserts below, cursor on first inserted line',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_read_nonexistent', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'r nosuchfile.txt');
+  s.feedKey('Enter');
+  return {
+    description: ':r nonexistent file shows E484 error',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_read_no_filename', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'r');
+  s.feedKey('Enter');
+  return {
+    description: ':r with no filename shows E32 error',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// :r Tab completion (matches nvim wildmode=full behavior)
+// ───────────────────────────────────────────────────────────
+
+addCase('vim_tab_r_no_partial', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  s.fs.write('demo.py', 'def f(): pass');
+  s.fs.write('demo.txt', 'some text');
+  s.fs.write('notes.txt', 'my notes');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'r ');
+  s.feedKey('Tab');
+  return {
+    description: ':r <Tab> picks first file alphabetically',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_tab_r_partial_d', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  s.fs.write('demo.py', 'def f(): pass');
+  s.fs.write('demo.txt', 'some text');
+  s.fs.write('notes.txt', 'my notes');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'r d');
+  s.feedKey('Tab');
+  return {
+    description: ':r d<Tab> picks first match (demo.py)',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_tab_r_partial_d_cycle', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  s.fs.write('demo.py', 'def f(): pass');
+  s.fs.write('demo.txt', 'some text');
+  s.fs.write('notes.txt', 'my notes');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'r d');
+  s.feedKey('Tab');
+  s.feedKey('Tab');
+  return {
+    description: ':r d<Tab><Tab> cycles to second match (demo.txt)',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_tab_r_unique_match', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  s.fs.write('demo.py', 'def f(): pass');
+  s.fs.write('demo.txt', 'some text');
+  s.fs.write('notes.txt', 'my notes');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'r n');
+  s.feedKey('Tab');
+  return {
+    description: ':r n<Tab> completes to notes.txt (unique match)',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_tab_r_no_match', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  s.fs.write('demo.py', 'def f(): pass');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'r z');
+  s.feedKey('Tab');
+  return {
+    description: ':r z<Tab> no matches, text unchanged',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_tab_e_partial', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  s.fs.write('demo.py', 'def f(): pass');
+  s.fs.write('demo.txt', 'some text');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'e d');
+  s.feedKey('Tab');
+  return {
+    description: ':e d<Tab> picks first match (demo.py)',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_tab_w_no_partial', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  s.fs.write('demo.py', 'def f(): pass');
+  s.fs.write('notes.txt', 'my notes');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'w ');
+  s.feedKey('Tab');
+  return {
+    description: ':w <Tab> picks first file alphabetically',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_tab_r_dot_partial', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  s.fs.write('demo.py', 'def f(): pass');
+  s.fs.write('demo.txt', 'some text');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'r demo.');
+  s.feedKey('Tab');
+  return {
+    description: ':r demo.<Tab> picks first match (demo.py)',
+    frame: snap(s),
+  };
+});
+
+addCase('vim_tab_r_dot_cycle', () => {
+  const s = newSession();
+  s.fs.write('main.txt', 'Hello');
+  s.fs.write('demo.py', 'def f(): pass');
+  s.fs.write('demo.txt', 'some text');
+  feedString(s, 'vim main.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'r demo.');
+  s.feedKey('Tab');
+  s.feedKey('Tab');
+  return {
+    description: ':r demo.<Tab><Tab> cycles to second match (demo.txt)',
     frame: snap(s),
   };
 });

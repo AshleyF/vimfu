@@ -43,13 +43,56 @@
   .mode-badge.replace  { background: #f78c6c; color: #000; }
   .mode-badge.command  { background: #3c3c3c; color: #d4d4d4; }
 
-  #terminal {
+  .terminal-wrapper {
+    position: relative;
     border: 2px solid #333;
     border-radius: 6px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    background: #14161b;
+    min-width: 892px;
+    min-height: 532px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    z-index: 1;
+    transition: opacity 0.3s;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+
+  .loading-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid #333;
+    border-top-color: #82aaff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-family: 'Cascadia Mono', Consolas, monospace;
+    font-size: 0.85rem;
+    color: #555;
+  }
+
+  #terminal {
+    border-radius: 4px;
     cursor: text;
     outline: none;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
   }
+  #terminal.ready { opacity: 1; }
 
   .help {
     margin-top: 1.5rem;
@@ -98,7 +141,13 @@
 
 <h1>VimFu Shell + Vim</h1>
 <div id="mode-badge" class="mode-badge shell">SHELL</div>
-<canvas id="terminal" tabindex="0"></canvas>
+<div class="terminal-wrapper">
+  <div class="loading-overlay" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading terminal…</div>
+  </div>
+  <canvas id="terminal" tabindex="0"></canvas>
+</div>
 
 <div class="actions">
   <button id="btn-reset" title="Clear localStorage and reset">Reset FS</button>
@@ -107,14 +156,14 @@
 
 <div class="help">
   <span class="section-title">Shell commands:</span>
-  <kbd>vim</kbd> / <kbd>vim file</kbd> open editor &nbsp;
+  <kbd>nvim</kbd> <kbd>nvim file</kbd> open editor <span style="color:#666">(also vim, vi)</span> &nbsp;
   <kbd>ls</kbd> list files &nbsp;
   <kbd>cat</kbd> show file &nbsp;
   <kbd>touch</kbd> create file &nbsp;
   <kbd>rm</kbd> delete file &nbsp;
   <kbd>echo</kbd> print text &nbsp;
   <kbd>echo text > file</kbd> write to file &nbsp;
-  <kbd>pwd</kbd> working dir &nbsp;
+  <kbd>set -o vi</kbd> vi-mode line editing &nbsp;
   <kbd>clear</kbd> clear screen &nbsp;
   <kbd>help</kbd> command list
   <br>
@@ -129,6 +178,7 @@
   <br>
   <span class="section-title">Shell editing:</span>
   <kbd>Ctrl-C</kbd> cancel &nbsp;
+  <kbd>Ctrl-D</kbd> exit/delete &nbsp;
   <kbd>Ctrl-L</kbd> clear &nbsp;
   <kbd>Ctrl-A</kbd>/<kbd>E</kbd> home/end &nbsp;
   <kbd>Ctrl-U</kbd>/<kbd>K</kbd> kill line &nbsp;
@@ -201,6 +251,8 @@ ctrl.attach(canvas);
 
 // Initial render
 onUpdate(session.renderFrame());
+canvas.classList.add('ready');
+document.getElementById('loading').classList.add('hidden');
 canvas.focus();
 
 // ── Buttons ──

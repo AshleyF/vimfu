@@ -100,6 +100,12 @@ export class SessionController {
       return 'Ctrl-' + e.key.toUpperCase();
     }
 
+    // Ctrl + arrow keys (for tmux resize)
+    if (e.ctrlKey && !e.altKey && !e.metaKey && e.key.startsWith('Arrow')) {
+      const dir = e.key.slice(5); // 'ArrowLeft' → 'Left'
+      return 'Ctrl-' + dir;
+    }
+
     // Special keys
     const specials = {
       'Escape': 'Escape',

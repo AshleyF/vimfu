@@ -19,8 +19,9 @@ import { VimEngine } from './engine.js';
 import { ShellSim } from './shell.js';
 import { VirtualFS } from './vfs.js';
 import { Screen } from './screen.js';
+import { Tmux } from './tmux.js';
 
-/** @typedef {'shell' | 'vim' | 'shell_msg'} SessionMode */
+/** @typedef {'shell' | 'vim' | 'shell_msg' | 'tmux'} SessionMode */
 
 export class SessionManager {
   /**
@@ -47,6 +48,7 @@ export class SessionManager {
       rows,
       cols,
       onLaunchVim: (filename) => this._launchVim(filename),
+      onLaunchTmux: (args) => this._launchTmux(args),
     });
 
     // Vim engine (created on demand when vim is launched)
@@ -55,6 +57,11 @@ export class SessionManager {
 
     // Screen renderer (for vim mode)
     this.screen = new Screen(rows, cols, themeName);
+    this._themeName = themeName;
+
+    // Tmux instance (created on demand when tmux is launched)
+    /** @type {Tmux|null} */
+    this._tmux = null;
 
     // Current filename open in vim
     this._vimFilename = null;
@@ -90,12 +97,31 @@ export class SessionManager {
     if (this.mode === 'shell') {
       this.shell.feedKey(key);
     } else if (this.mode === 'vim') {
-      this.engine.feedKey(key);
-      this._checkVimCommand();
+      if (key === 'Tab' && this._vimCmdTabComplete()) {
+        // Tab completion handled
+      } else {
+        // Clear tab cycle state when leaving command mode
+        if (key === 'Escape' || key === 'Enter') {
+          this._tabCycleState = null;
+        }
+        this.engine.feedKey(key);
+        this._checkVimCommand();
+      }
     } else if (this.mode === 'shell_msg') {
-      // Any key dismisses the shell message and returns to vim
-      if (key === 'Enter' || key === 'Escape' || key.length === 1) {
+      // Only Enter or : dismisses the message (matches nvim "Press ENTER" behavior)
+      if (key === 'Enter' || key === 'Escape') {
         this.mode = 'vim';
+      } else if (key === ':') {
+        // ':' dismisses and enters command mode (nvim behavior)
+        this.mode = 'vim';
+        this.engine.feedKey(':');
+      }
+    } else if (this.mode === 'tmux') {
+      this._tmux.feedKey(key);
+      // Check if tmux detached
+      if (this._tmux.detached) {
+        this.mode = 'shell';
+        this.shell._appendOutput('[detached (from session ' + this._tmux.activeSession?.name + ')]');
       }
     }
 
@@ -115,6 +141,8 @@ export class SessionManager {
       return this.screen.render(this.engine);
     } else if (this.mode === 'shell_msg') {
       return this._renderShellMsg();
+    } else if (this.mode === 'tmux') {
+      return this._tmux.renderFrame();
     }
   }
 
@@ -125,6 +153,7 @@ export class SessionManager {
   getModeLabel() {
     if (this.mode === 'shell') return 'SHELL';
     if (this.mode === 'shell_msg') return 'SHELL';
+    if (this.mode === 'tmux') return 'TMUX';
     if (this.mode === 'vim' && this.engine) {
       const vimMode = this.engine.mode;
       const labels = {
@@ -134,6 +163,60 @@ export class SessionManager {
       return labels[vimMode] || vimMode.toUpperCase();
     }
     return 'SHELL';
+  }
+
+  // ── Tmux lifecycle ──
+
+  /** @private – launch tmux from the shell */
+  _launchTmux(args) {
+    // If tmux is already running and user typed `tmux attach`, reattach
+    if (this._tmux && args.length > 0 && (args[0] === 'attach' || args[0] === 'a')) {
+      this._tmux.detached = false;
+      this.mode = 'tmux';
+      return;
+    }
+
+    // `tmux ls` — list sessions without entering tmux
+    if (args.length > 0 && (args[0] === 'ls' || args[0] === 'list-sessions')) {
+      if (this._tmux) {
+        const lines = this._tmux.sessions.map((s, i) =>
+          `${s.name}: ${s.windows.length} windows${i === this._tmux._activeSessionIndex ? ' (attached)' : ''}`
+        );
+        for (const line of lines) this.shell._appendOutput(line);
+      } else {
+        this.shell._appendOutput('no server running on /tmp/tmux-1000/default');
+      }
+      return;
+    }
+
+    // Create or reuse tmux instance
+    if (!this._tmux) {
+      const fs = this.fs;
+      const themeName = this._themeName;
+      this._tmux = new Tmux({
+        rows: this.rows,
+        cols: this.cols,
+        createPaneSession: (cols, rows) => {
+          const sm = new SessionManager({
+            rows,
+            cols,
+            themeName,
+            persist: false,
+          });
+          // Share the VFS
+          sm.fs = fs;
+          sm.shell.fs = fs;
+          // Mark as inside tmux (prevents nested tmux)
+          sm.shell._insideTmux = true;
+          return sm;
+        },
+      });
+    } else {
+      // Reattach existing tmux
+      this._tmux.detached = false;
+    }
+
+    this.mode = 'tmux';
   }
 
   // ── Vim lifecycle ──
@@ -160,6 +243,46 @@ export class SessionManager {
     this._updateVimStatus();
 
     this.mode = 'vim';
+  }
+
+  /**
+   * @private – tab-complete filenames in vim command-line mode.
+   * Handles :e, :r, :w, :sav commands.
+   * @returns {boolean} true if completion was handled
+   */
+  _vimCmdTabComplete() {
+    if (this.engine.mode !== 'command') return false;
+    if (this.engine.commandLine[0] !== ':') return false;
+
+    const input = this.engine._searchInput;
+    // Match ex commands that take a filename argument
+    const m = input.match(/^(e(?:d(?:it?)?)?|r(?:e(?:ad?)?)?|w(?:r(?:i(?:te?)?)?)?|sav(?:e(?:as?)?)?)(\s+(.*))?$/);
+    if (!m) return false;
+
+    const exCmd = m[1];
+    const partial = m[3] || '';
+
+    // Check if we're continuing a previous Tab cycle
+    const st = this._tabCycleState;
+    if (st && st.exCmd === exCmd && st.matches.includes(partial)) {
+      // We're cycling — advance to next match
+      st.index = (st.index + 1) % st.matches.length;
+      const pick = st.matches[st.index];
+      this.engine._searchInput = exCmd + ' ' + pick;
+      this.engine.commandLine = ':' + exCmd + ' ' + pick;
+      return true;
+    }
+
+    const files = this.fs.ls().sort();
+    const matches = partial ? files.filter(f => f.startsWith(partial)) : files;
+    if (matches.length === 0) { this._tabCycleState = null; return true; }
+
+    // Match nvim wildmode=full: first Tab picks first match, subsequent Tabs cycle
+    this._tabCycleState = { exCmd, matches, index: 0 };
+    const pick = matches[0];
+    this.engine._searchInput = exCmd + ' ' + pick;
+    this.engine.commandLine = ':' + exCmd + ' ' + pick;
+    return true;
   }
 
   /** @private – check if vim executed a command that requires session action */
@@ -207,8 +330,15 @@ export class SessionManager {
     // :wq [filename] or :x[it] – write and quit
     if (/^(wq|x(it?)?)(\s|$)/.test(trimmed)) {
       const parts = trimmed.split(/\s+/);
+      const isX = trimmed.startsWith('x');
       const filename = parts[1] || this._vimFilename;
-      if (filename) {
+      if (!filename) {
+        this.engine.commandLine = 'E32: No file name';
+        this.engine._stickyCommandLine = true;
+        return;
+      }
+      // :x only writes if buffer is dirty; :wq always writes
+      if (!isX || this._isDirty()) {
         this._saveFile(filename);
       }
       this._exitVim();
@@ -256,9 +386,14 @@ export class SessionManager {
     // :e[dit] [filename] – edit file
     if (/^e(d(it?)?)?(\s|$)/.test(trimmed)) {
       const parts = trimmed.split(/\s+/);
-      const filename = parts[1];
+      const filename = parts[1] || this._vimFilename;
       if (filename) {
-        this._vimFilename = filename;
+        if (parts[1] && !this._vimFilename) {
+          // New file — set as current
+          this._vimFilename = filename;
+        } else if (parts[1]) {
+          this._vimFilename = filename;
+        }
         this.engine.filename = filename;  // update for syntax highlighting
         if (this.fs.exists(filename)) {
           this.engine.loadFile(this.fs.read(filename));
@@ -267,6 +402,9 @@ export class SessionManager {
         }
         this._savedChangeCount = this.engine._changeCount;
         this._updateVimStatus();
+      } else {
+        this.engine.commandLine = 'E32: No file name';
+        this.engine._stickyCommandLine = true;
       }
       return;
     }
@@ -279,7 +417,7 @@ export class SessionManager {
         this.engine._redoStack = [];
         const row = this.engine.cursor.row;
         this.engine.buffer.lines.splice(row + 1, 0, ...lines);
-        this.engine.cursor.row = row + lines.length;
+        this.engine.cursor.row = row + 1;
         this.engine.cursor.col = 0;
         this.engine._updateDesiredCol();
         const n = lines.length;
@@ -302,14 +440,22 @@ export class SessionManager {
           this.engine._saveSnapshot();
           this.engine._redoStack = [];
           const lines = contents.split('\n');
+          // Strip trailing empty element from file's final newline
+          if (lines.length > 1 && lines[lines.length - 1] === '') lines.pop();
           const row = this.engine.cursor.row;
           this.engine.buffer.lines.splice(row + 1, 0, ...lines);
-          this.engine.cursor.row = row + lines.length;
+          // Nvim places cursor on first inserted line
+          this.engine.cursor.row = row + 1;
           this.engine.cursor.col = 0;
           this.engine._updateDesiredCol();
           const n = lines.length;
           this.engine.commandLine = `${n} line${n !== 1 ? 's' : ''} added`;
           this.engine._stickyCommandLine = true;
+          // Enable syntax highlighting if buffer has no filename yet
+          if (!this.engine.filename) {
+            this._vimFilename = filename;
+            this.engine.filename = filename;
+          }
         }
       } else {
         this.engine.commandLine = 'E32: No file name';
@@ -321,6 +467,40 @@ export class SessionManager {
     if (trimmed.startsWith('!')) {
       const shellCmd = trimmed.slice(1).trim();
       this._runShellCommand(shellCmd);
+      return;
+    }
+
+    // :sav[eas] filename – save as new filename
+    if (/^sav(e(as?)?)?(\ |$)/.test(trimmed)) {
+      const parts = trimmed.split(/\s+/);
+      const filename = parts[1];
+      if (filename) {
+        this._saveFile(filename);
+        this._vimFilename = filename;
+        this.engine.filename = filename;
+        this._updateVimStatus();
+        const lineCount = this.engine.buffer.lineCount;
+        const byteCount = this.engine.buffer.lines.join('\n').length + 1;
+        let msg = `"${filename}" ${lineCount}L, ${byteCount}B written`;
+        if (msg.length > this.cols) {
+          msg = '<' + msg.slice(msg.length - this.cols + 1);
+        }
+        this.engine.commandLine = msg;
+      } else {
+        this.engine.commandLine = 'E32: No file name';
+        this.engine._stickyCommandLine = true;
+      }
+      return;
+    }
+
+    // :N – jump to line number
+    if (/^\d+$/.test(trimmed)) {
+      const lineNum = parseInt(trimmed, 10);
+      const maxLine = this.engine.buffer.lineCount - 1;
+      this.engine.cursor.row = Math.max(0, Math.min(lineNum - 1, maxLine));
+      this.engine.cursor.col = 0;
+      this.engine._updateDesiredCol();
+      this.engine._ensureCursorVisible();
       return;
     }
   }
@@ -380,9 +560,7 @@ export class SessionManager {
         }
         break;
       }
-      case 'pwd':
-        lines.push(this.shell.cwd);
-        break;
+
       case 'echo':
         lines.push(rest.join(' '));
         break;
@@ -473,50 +651,8 @@ export class SessionManager {
         }
         break;
       }
-      case 'head': {
-        let n = 10;
-        const files = [];
-        for (let i = 0; i < rest.length; i++) {
-          if (rest[i] === '-n' && i + 1 < rest.length) n = parseInt(rest[++i], 10) || 10;
-          else files.push(rest[i]);
-        }
-        if (files.length === 0) {
-          lines.push('head: missing file operand');
-        } else {
-          for (const name of files) {
-            const contents = this.fs.read(name);
-            if (contents === null) {
-              lines.push(`head: ${name}: No such file or directory`);
-            } else {
-              if (files.length > 1) lines.push(`==> ${name} <==`);
-              lines.push(...contents.split('\n').slice(0, n));
-            }
-          }
-        }
-        break;
-      }
-      case 'tail': {
-        let n = 10;
-        const files = [];
-        for (let i = 0; i < rest.length; i++) {
-          if (rest[i] === '-n' && i + 1 < rest.length) n = parseInt(rest[++i], 10) || 10;
-          else files.push(rest[i]);
-        }
-        if (files.length === 0) {
-          lines.push('tail: missing file operand');
-        } else {
-          for (const name of files) {
-            const contents = this.fs.read(name);
-            if (contents === null) {
-              lines.push(`tail: ${name}: No such file or directory`);
-            } else {
-              if (files.length > 1) lines.push(`==> ${name} <==`);
-              lines.push(...contents.split('\n').slice(-n));
-            }
-          }
-        }
-        break;
-      }
+
+
       case 'grep': {
         let ignoreCase = false, showNums = false, countOnly = false;
         const positional = [];
@@ -559,17 +695,11 @@ export class SessionManager {
         }
         break;
       }
-      case 'whoami':
-        lines.push(this.shell.user);
-        break;
-      case 'which': {
-        const known = new Set([
-          'vim','vi','nvim','ls','cat','rm','touch','cp','mv','echo','wc',
-          'head','tail','grep','sort','set','date','pwd','whoami','which',
-          'clear','exit','help','history',
-        ]);
-        for (const c of rest) {
-          lines.push(known.has(c) ? `/usr/bin/${c}` : `${c} not found`);
+
+      case 'history': {
+        const hist = this.shell._history;
+        for (let i = 0; i < hist.length; i++) {
+          lines.push(`${String(i + 1).padStart(5)}  ${hist[i]}`);
         }
         break;
       }

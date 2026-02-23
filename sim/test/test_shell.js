@@ -175,16 +175,6 @@ console.log('============================================================');
 }
 
 {
-  // pwd
-  const fs = new VirtualFS({ persist: false });
-  const sh = new ShellSim({ fs, rows: 20, cols: 40 });
-  feedString(sh, 'pwd');
-  sh.feedKey('Enter');
-  const lines = getOutputLines(sh);
-  assert(lines.some(l => l.includes('~/vimfu')), 'shell: pwd shows cwd');
-}
-
-{
   // unknown command
   const fs = new VirtualFS({ persist: false });
   const sh = new ShellSim({ fs, rows: 20, cols: 40 });
@@ -290,6 +280,49 @@ console.log('============================================================');
   assert(frame.lines.length === 20, 'shell: frame lines count');
   assert(frame.cursor.visible === true, 'shell: frame cursor visible');
   assert(frame.lines[0].runs.length >= 1, 'shell: frame has runs on prompt row');
+}
+
+{
+  // Ctrl-D on empty line exits
+  const fs = new VirtualFS({ persist: false });
+  let exited = false;
+  const sh = new ShellSim({
+    fs, rows: 20, cols: 40,
+    onExit: () => { exited = true; },
+  });
+  sh.feedKey('Ctrl-D');
+  assert(sh._exited === true, 'shell: Ctrl-D exits on empty line');
+}
+
+{
+  // Ctrl-D on non-empty line deletes char forward
+  const fs = new VirtualFS({ persist: false });
+  const sh = new ShellSim({ fs, rows: 20, cols: 40 });
+  feedString(sh, 'abc');
+  // Move cursor to start: use Home or Ctrl-A
+  sh.feedKey('Home');
+  sh.feedKey('Ctrl-D');  // delete 'a'
+  // The input should now be 'bc'
+  assert(sh._inputLine === 'bc', 'shell: Ctrl-D deletes forward char');
+}
+
+{
+  // Delete key deletes char forward
+  const fs = new VirtualFS({ persist: false });
+  const sh = new ShellSim({ fs, rows: 20, cols: 40 });
+  feedString(sh, 'xyz');
+  sh.feedKey('Home');
+  sh.feedKey('Delete');  // delete 'x'
+  assert(sh._inputLine === 'yz', 'shell: Delete key deletes forward char');
+}
+
+{
+  // tmux appears in tab completion
+  const fs = new VirtualFS({ persist: false });
+  const sh = new ShellSim({ fs, rows: 20, cols: 40 });
+  feedString(sh, 'tmu');
+  sh.feedKey('Tab');
+  assert(sh._inputLine === 'tmux ', 'shell: tmux tab completes');
 }
 
 console.log(`  ShellSim: ${passed - shellPassed} passed`);
@@ -578,6 +611,99 @@ console.log('============================================================');
   s.feedKey('Escape');
   s.feedKey(':');
   assert(s.getModeLabel() === 'COMMAND', 'session: label COMMAND');
+}
+
+{
+  // :wq with no filename shows E32
+  const s = new SessionManager({ rows: 20, cols: 40, persist: false });
+  feedString(s, 'vim');
+  s.feedKey('Enter');
+  s.feedKey('i'); feedString(s, 'data'); s.feedKey('Escape');
+  s.feedKey(':'); feedString(s, 'wq'); s.feedKey('Enter');
+  assert(s.getMode() === 'vim', 'session: :wq no filename stays in vim');
+  assert(s.engine.commandLine && s.engine.commandLine.includes('E32'),
+    'session: :wq no filename shows E32');
+}
+
+{
+  // :x on clean buffer exits without writing
+  const s = new SessionManager({ rows: 20, cols: 40, persist: false });
+  s.fs.write('xtest.txt', 'original');
+  feedString(s, 'vim xtest.txt');
+  s.feedKey('Enter');
+  s.feedKey(':'); feedString(s, 'x'); s.feedKey('Enter');
+  assert(s.getMode() === 'shell', 'session: :x clean exits');
+}
+
+{
+  // :x on dirty buffer writes and exits
+  const s = new SessionManager({ rows: 20, cols: 40, persist: false });
+  s.fs.write('xdirty.txt', 'original');
+  feedString(s, 'vim xdirty.txt');
+  s.feedKey('Enter');
+  s.feedKey('i'); feedString(s, 'mod'); s.feedKey('Escape');
+  s.feedKey(':'); feedString(s, 'x'); s.feedKey('Enter');
+  assert(s.getMode() === 'shell', 'session: :x dirty exits');
+  assert(s.fs.read('xdirty.txt') !== 'original', 'session: :x dirty writes');
+}
+
+{
+  // :e with no args reloads current file
+  const s = new SessionManager({ rows: 20, cols: 40, persist: false });
+  s.fs.write('reload.txt', 'initial content');
+  feedString(s, 'vim reload.txt');
+  s.feedKey('Enter');
+  s.feedKey('i'); feedString(s, 'junk'); s.feedKey('Escape');
+  // Externally change file
+  s.fs.write('reload.txt', 'reloaded content');
+  s.feedKey(':'); feedString(s, 'e'); s.feedKey('Enter');
+  assert(s.engine.buffer.lines[0] === 'reloaded content', 'session: :e no args reloads');
+}
+
+{
+  // :e with no filename and no current file shows E32
+  const s = new SessionManager({ rows: 20, cols: 40, persist: false });
+  feedString(s, 'vim');
+  s.feedKey('Enter');
+  s.feedKey(':'); feedString(s, 'e'); s.feedKey('Enter');
+  assert(s.getMode() === 'vim', 'session: :e no file stays in vim');
+  assert(s.engine.commandLine && s.engine.commandLine.includes('E32'),
+    'session: :e no file shows E32');
+}
+
+{
+  // :sav writes to new filename
+  const s = new SessionManager({ rows: 20, cols: 40, persist: false });
+  feedString(s, 'vim orig.txt');
+  s.feedKey('Enter');
+  s.feedKey('i'); feedString(s, 'hello'); s.feedKey('Escape');
+  s.feedKey(':'); feedString(s, 'sav copy.txt'); s.feedKey('Enter');
+  assert(s.fs.exists('copy.txt'), 'session: :sav creates new file');
+  assert(s.fs.read('copy.txt') === 'hello', 'session: :sav content correct');
+}
+
+{
+  // :N line number jump
+  const s = new SessionManager({ rows: 20, cols: 40, persist: false });
+  s.fs.write('lines.txt', 'line1\nline2\nline3\nline4\nline5');
+  feedString(s, 'vim lines.txt');
+  s.feedKey('Enter');
+  s.feedKey(':'); feedString(s, '3'); s.feedKey('Enter');
+  assert(s.engine.cursor.row === 2, 'session: :3 jumps to line 3');
+}
+
+{
+  // shell_msg only dismisses on Enter (not arbitrary keys)
+  const s = new SessionManager({ rows: 20, cols: 40, persist: false });
+  s.fs.write('f.txt', 'data');
+  feedString(s, 'vim test');
+  s.feedKey('Enter');
+  s.feedKey(':'); feedString(s, '!ls'); s.feedKey('Enter');
+  assert(s.getMode() === 'shell_msg', 'session: :! enters shell_msg');
+  s.feedKey('a');  // arbitrary key should NOT dismiss
+  assert(s.getMode() === 'shell_msg', 'session: arbitrary key stays in shell_msg');
+  s.feedKey('Enter');  // Enter dismisses
+  assert(s.getMode() === 'vim', 'session: Enter dismisses shell_msg');
 }
 
 console.log(`  SessionManager: ${passed - sessionPassed} passed`);

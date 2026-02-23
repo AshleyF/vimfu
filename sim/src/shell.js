@@ -18,7 +18,6 @@
  *   touch <file>   – create empty file
  *   echo <text>    – print text (supports > redirect)
  *   sort <file>    – sort lines of a file (or stdin-like piped input)
- *   pwd            – print working directory
  *   clear          – clear screen
  *   help           – show available commands
  */
@@ -33,8 +32,9 @@ export class ShellSim {
    * @param {string} [opts.user='user'] – display username
    * @param {string} [opts.hostname='vimfu'] – display hostname
    * @param {function} [opts.onLaunchVim] – callback(filename|null) when vim is invoked
+   * @param {function} [opts.onLaunchTmux] – callback(args[]) when tmux is invoked
    */
-  constructor({ fs, rows = 20, cols = 40, cwd = '~/vimfu', dirname = 'vimfu', user = 'user', hostname = 'vimfu', onLaunchVim = null } = {}) {
+  constructor({ fs, rows = 20, cols = 40, cwd = '~/vimfu', dirname = 'vimfu', user = 'user', hostname = 'vimfu', onLaunchVim = null, onLaunchTmux = null } = {}) {
     this.fs = fs;
     this.rows = rows;
     this.cols = cols;
@@ -43,6 +43,10 @@ export class ShellSim {
     this.user = user;
     this.hostname = hostname;
     this.onLaunchVim = onLaunchVim;
+    this.onLaunchTmux = onLaunchTmux;
+
+    // Flag: set to true when running inside a tmux pane
+    this._insideTmux = false;
 
     this._textRows = rows - 1; // last row is input line (no status bar in shell)
 
@@ -239,6 +243,20 @@ export class ShellSim {
       this._viReplaceMode = false;
       this._viOperator = '';
       this._viCount = '';
+    } else if (key === 'Ctrl-D') {
+      // On empty line: exit shell. Otherwise: delete char under cursor.
+      if (this._inputLine.length === 0) {
+        this._appendOutput(this.prompt + 'exit');
+        this._exited = true;
+        if (this._onExit) this._onExit();
+      } else if (this._cursorPos < this._inputLine.length) {
+        this._inputLine = this._inputLine.slice(0, this._cursorPos) + this._inputLine.slice(this._cursorPos + 1);
+      }
+    } else if (key === 'Delete') {
+      // Forward-delete: delete char under cursor
+      if (this._cursorPos < this._inputLine.length) {
+        this._inputLine = this._inputLine.slice(0, this._cursorPos) + this._inputLine.slice(this._cursorPos + 1);
+      }
     } else if (key === 'Ctrl-L') {
       // Clear screen
       this._outputLines = [];
@@ -1108,12 +1126,7 @@ export class ShellSim {
       case 'wc':
         this._cmdWc(rest);
         break;
-      case 'head':
-        this._cmdHead(rest);
-        break;
-      case 'tail':
-        this._cmdTail(rest);
-        break;
+
       case 'grep':
         this._cmdGrep(rest);
         break;
@@ -1126,18 +1139,14 @@ export class ShellSim {
       case 'history':
         this._cmdHistory();
         break;
-      case 'whoami':
-        this._appendOutput(this.user);
-        break;
-      case 'which':
-        this._cmdWhich(rest);
-        break;
+
       case 'exit':
         this._exited = true;
         break;
-      case 'pwd':
-        this._appendOutput(this.cwd);
+      case 'tmux':
+        this._cmdTmux(rest);
         break;
+
       case 'set':
         this._cmdSet(rest);
         break;
@@ -1164,6 +1173,19 @@ export class ShellSim {
     const filename = args[0] || null;
     if (this.onLaunchVim) {
       this.onLaunchVim(filename);
+    }
+  }
+
+  /** @private */
+  _cmdTmux(args) {
+    if (this._insideTmux) {
+      this._appendOutput('sessions should be nested with care, unset $TMUX to force');
+      return;
+    }
+    if (this.onLaunchTmux) {
+      this.onLaunchTmux(args);
+    } else {
+      this._appendOutput('zsh: command not found: tmux');
     }
   }
 
@@ -1343,69 +1365,7 @@ export class ShellSim {
     }
   }
 
-  /** @private */
-  _cmdHead(args) {
-    let n = 10;
-    const files = [];
-    for (let i = 0; i < args.length; i++) {
-      if (args[i] === '-n' && i + 1 < args.length) {
-        n = parseInt(args[++i], 10) || 10;
-      } else if (args[i].startsWith('-') && !isNaN(parseInt(args[i].slice(1), 10))) {
-        n = parseInt(args[i].slice(1), 10);
-      } else {
-        files.push(args[i]);
-      }
-    }
-    if (files.length === 0) {
-      this._appendOutput('head: missing file operand');
-      return;
-    }
-    for (const name of files) {
-      const contents = this.fs.read(name);
-      if (contents === null) {
-        this._appendOutput(`head: ${name}: No such file or directory`);
-        continue;
-      }
-      if (files.length > 1) this._appendOutput(`==> ${name} <==`);
-      const lines = contents.split('\n');
-      const slice = lines.slice(0, n);
-      for (const line of slice) {
-        this._appendOutput(line);
-      }
-    }
-  }
 
-  /** @private */
-  _cmdTail(args) {
-    let n = 10;
-    const files = [];
-    for (let i = 0; i < args.length; i++) {
-      if (args[i] === '-n' && i + 1 < args.length) {
-        n = parseInt(args[++i], 10) || 10;
-      } else if (args[i].startsWith('-') && !isNaN(parseInt(args[i].slice(1), 10))) {
-        n = parseInt(args[i].slice(1), 10);
-      } else {
-        files.push(args[i]);
-      }
-    }
-    if (files.length === 0) {
-      this._appendOutput('tail: missing file operand');
-      return;
-    }
-    for (const name of files) {
-      const contents = this.fs.read(name);
-      if (contents === null) {
-        this._appendOutput(`tail: ${name}: No such file or directory`);
-        continue;
-      }
-      if (files.length > 1) this._appendOutput(`==> ${name} <==`);
-      const lines = contents.split('\n');
-      const slice = lines.slice(-n);
-      for (const line of slice) {
-        this._appendOutput(line);
-      }
-    }
-  }
 
   /** @private */
   _cmdGrep(args) {
@@ -1506,25 +1466,7 @@ export class ShellSim {
     }
   }
 
-  /** @private */
-  _cmdWhich(args) {
-    if (args.length === 0) {
-      // no output, like real which with no args
-      return;
-    }
-    const knownCommands = new Set([
-      'vim', 'vi', 'nvim', 'ls', 'cat', 'rm', 'touch', 'cp', 'mv',
-      'echo', 'wc', 'head', 'tail', 'grep', 'sort', 'history',
-      'set', 'date', 'pwd', 'whoami', 'which', 'clear', 'exit', 'help',
-    ]);
-    for (const cmd of args) {
-      if (knownCommands.has(cmd)) {
-        this._appendOutput(`/usr/bin/${cmd}`);
-      } else {
-        this._appendOutput(`${cmd} not found`);
-      }
-    }
-  }
+
 
   /** @private */
   _cmdSet(args) {
@@ -1554,8 +1496,7 @@ export class ShellSim {
   _cmdHelp() {
     const cmds = [
       'Available commands:',
-      '  vim [file]    Open file in Vim',
-      '  nvim [file]   Open file in Vim',
+      '  nvim [file]   Open file in Neovim (also: vim, vi)',
       '  ls            List files',
       '  cat <file>    Display file contents',
       '  rm <file>     Remove a file',
@@ -1564,17 +1505,12 @@ export class ShellSim {
       '  mv <s> <d>    Move/rename a file',
       '  echo <text>   Print text (> and >> redirect)',
       '  wc <file>     Count lines, words, bytes',
-      '  head <file>   Show first N lines (-n N)',
-      '  tail <file>   Show last N lines (-n N)',
       '  grep <p> <f>  Search for pattern in file',
       '  sort <file>   Sort lines of a file (-r -n -u)',
       '  history       Show command history',
-      '  set -o vi     Enable vi-mode line editing',
-      '  set -o emacs  Disable vi-mode (default)',
+      '  tmux          Start terminal multiplexer (attach, ls)',
+      '  set -o vi     Enable vi-mode editing (set -o emacs to disable)',
       '  date          Print current date and time',
-      '  pwd           Print working directory',
-      '  whoami        Print current user',
-      '  which <cmd>   Show command location',
       '  clear         Clear screen',
       '  exit          Exit shell',
       '  help          Show this help',
@@ -1628,8 +1564,8 @@ export class ShellSim {
     if (isFirstWord) {
       const commands = [
         'vim', 'vi', 'nvim', 'ls', 'cat', 'rm', 'touch', 'cp', 'mv',
-        'echo', 'wc', 'head', 'tail', 'grep', 'sort', 'history',
-        'set', 'date', 'pwd', 'whoami', 'which', 'clear', 'exit', 'help',
+        'echo', 'wc', 'grep', 'sort', 'history',
+        'set', 'date', 'clear', 'exit', 'help', 'tmux',
       ];
       matches = commands.filter(c => c.startsWith(partial));
     } else {

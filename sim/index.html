@@ -42,13 +42,57 @@
   .mode-badge.insert  { background: #c3e88d; color: #000; }
   .mode-badge.shell   { background: #89ddff; color: #000; }
 
-  #terminal {
+  .terminal-wrapper {
+    position: relative;
     border: 2px solid #333;
     border-radius: 6px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    background: #14161b;
+    /* approximate: pad*2 + 80*charW  x  pad*2 + 20*charH */
+    min-width: 892px;
+    min-height: 532px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    z-index: 1;
+    transition: opacity 0.3s;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+
+  .loading-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid #333;
+    border-top-color: #82aaff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-family: 'Cascadia Mono', Consolas, monospace;
+    font-size: 0.85rem;
+    color: #555;
+  }
+
+  #terminal {
+    border-radius: 4px;
     cursor: text;
     outline: none;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
   }
+  #terminal.ready { opacity: 1; }
 
   .help {
     margin-top: 1.5rem;
@@ -76,33 +120,15 @@
 
 <h1>VimFu Simulator</h1>
 <div id="mode-badge" class="mode-badge normal">NORMAL</div>
-<canvas id="terminal" tabindex="0"></canvas>
+<div class="terminal-wrapper">
+  <div class="loading-overlay" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading terminal…</div>
+  </div>
+  <canvas id="terminal" tabindex="0"></canvas>
+</div>
 <div class="help">
-  <strong>Movement:</strong>
-  <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd> &nbsp;
-  <kbd>w</kbd><kbd>b</kbd><kbd>e</kbd> word &nbsp;
-  <kbd>0</kbd><kbd>^</kbd><kbd>$</kbd> line &nbsp;
-  <kbd>gg</kbd><kbd>G</kbd> file &nbsp;
-  <kbd>f</kbd><kbd>t</kbd> find &nbsp;
-  <kbd>{</kbd><kbd>}</kbd> paragraph &nbsp;
-  <kbd>%</kbd> match bracket
-  <br>
-  <strong>Editing:</strong>
-  <kbd>i</kbd><kbd>I</kbd><kbd>a</kbd><kbd>A</kbd><kbd>o</kbd><kbd>O</kbd> insert &nbsp;
-  <kbd>x</kbd><kbd>s</kbd><kbd>r</kbd> char ops &nbsp;
-  <kbd>d</kbd><kbd>c</kbd><kbd>y</kbd> + motion &nbsp;
-  <kbd>dd</kbd><kbd>cc</kbd><kbd>yy</kbd> line ops &nbsp;
-  <kbd>p</kbd><kbd>P</kbd> paste &nbsp;
-  <kbd>.</kbd> repeat &nbsp;
-  <kbd>u</kbd> undo &nbsp;
-  <kbd>Ctrl-R</kbd> redo
-  <br>
-  <strong>Modes:</strong>
-  <kbd>v</kbd><kbd>V</kbd> visual &nbsp;
-  <kbd>R</kbd> replace &nbsp;
-  <kbd>/</kbd><kbd>?</kbd> search &nbsp;
-  <kbd>:</kbd> command &nbsp;
-  <kbd>Esc</kbd> normal
+  Type <kbd>help</kbd> at the shell prompt for available commands.
 </div>
 
 <script type="module">
@@ -172,6 +198,8 @@ const ctrl = new SessionController(session, onUpdate);
 ctrl.attach(canvas);
 
 onUpdate(session.renderFrame());
+canvas.classList.add('ready');
+document.getElementById('loading').classList.add('hidden');
 canvas.focus();
 </script>
 

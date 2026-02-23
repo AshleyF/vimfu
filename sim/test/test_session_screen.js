@@ -909,6 +909,164 @@ const scenarios = {
     feedString(s, '!cp src.txt copy.txt');
     s.feedKey('Enter');
   },
+
+  // ── :r (read) ──
+
+  vim_read_file(s) {
+    s.fs.write('main.txt', 'Line one\nLine two\nLine three');
+    s.fs.write('extra.txt', 'Alpha\nBravo');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'r extra.txt');
+    s.feedKey('Enter');
+  },
+
+  vim_read_file_line2(s) {
+    s.fs.write('main.txt', 'Line one\nLine two\nLine three');
+    s.fs.write('extra.txt', 'Alpha\nBravo');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey('j');
+    s.feedKey(':');
+    feedString(s, 'r extra.txt');
+    s.feedKey('Enter');
+  },
+
+  vim_read_file_last_line(s) {
+    s.fs.write('main.txt', 'Line one\nLine two\nLine three');
+    s.fs.write('extra.txt', 'Alpha\nBravo\nCharlie');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey('G');
+    s.feedKey(':');
+    feedString(s, 'r extra.txt');
+    s.feedKey('Enter');
+  },
+
+  vim_read_nonexistent(s) {
+    s.fs.write('main.txt', 'Hello');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'r nosuchfile.txt');
+    s.feedKey('Enter');
+  },
+
+  vim_read_no_filename(s) {
+    s.fs.write('main.txt', 'Hello');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'r');
+    s.feedKey('Enter');
+  },
+
+  // ── :r Tab completion ──
+
+  vim_tab_r_no_partial(s) {
+    s.fs.write('main.txt', 'Hello');
+    s.fs.write('demo.py', 'def f(): pass');
+    s.fs.write('demo.txt', 'some text');
+    s.fs.write('notes.txt', 'my notes');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'r ');
+    s.feedKey('Tab');
+  },
+
+  vim_tab_r_partial_d(s) {
+    s.fs.write('main.txt', 'Hello');
+    s.fs.write('demo.py', 'def f(): pass');
+    s.fs.write('demo.txt', 'some text');
+    s.fs.write('notes.txt', 'my notes');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'r d');
+    s.feedKey('Tab');
+  },
+
+  vim_tab_r_partial_d_cycle(s) {
+    s.fs.write('main.txt', 'Hello');
+    s.fs.write('demo.py', 'def f(): pass');
+    s.fs.write('demo.txt', 'some text');
+    s.fs.write('notes.txt', 'my notes');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'r d');
+    s.feedKey('Tab');
+    s.feedKey('Tab');
+  },
+
+  vim_tab_r_unique_match(s) {
+    s.fs.write('main.txt', 'Hello');
+    s.fs.write('demo.py', 'def f(): pass');
+    s.fs.write('demo.txt', 'some text');
+    s.fs.write('notes.txt', 'my notes');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'r n');
+    s.feedKey('Tab');
+  },
+
+  vim_tab_r_no_match(s) {
+    s.fs.write('main.txt', 'Hello');
+    s.fs.write('demo.py', 'def f(): pass');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'r z');
+    s.feedKey('Tab');
+  },
+
+  vim_tab_e_partial(s) {
+    s.fs.write('main.txt', 'Hello');
+    s.fs.write('demo.py', 'def f(): pass');
+    s.fs.write('demo.txt', 'some text');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'e d');
+    s.feedKey('Tab');
+  },
+
+  vim_tab_w_no_partial(s) {
+    s.fs.write('main.txt', 'Hello');
+    s.fs.write('demo.py', 'def f(): pass');
+    s.fs.write('notes.txt', 'my notes');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'w ');
+    s.feedKey('Tab');
+  },
+
+  vim_tab_r_dot_partial(s) {
+    s.fs.write('main.txt', 'Hello');
+    s.fs.write('demo.py', 'def f(): pass');
+    s.fs.write('demo.txt', 'some text');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'r demo.');
+    s.feedKey('Tab');
+  },
+
+  vim_tab_r_dot_cycle(s) {
+    s.fs.write('main.txt', 'Hello');
+    s.fs.write('demo.py', 'def f(): pass');
+    s.fs.write('demo.txt', 'some text');
+    feedString(s, 'vim main.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'r demo.');
+    s.feedKey('Tab');
+    s.feedKey('Tab');
+  },
 };
 
 // ── Run tests ──

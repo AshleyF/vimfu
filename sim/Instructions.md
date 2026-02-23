@@ -129,12 +129,20 @@ node test/test_syntax_screen.js    # 46 tests – syntax color integration
 node test/test_highlight.js        # 126 tests – tokenizer grammar
 node test/test_shell.js            # 82 tests – VFS, shell, session
 node test/test_session_screen.js   # 22 tests – session frame snapshots
+node test/test_tmux.js             # 75 tests – tmux behavioral assertions
+node test/test_tmux_screen.js      # 40 tests – tmux frame snapshots
 ```
 
 If you changed syntax/theme, also run the nvim color comparison:
 
 ```bash
 python test/compare_nvim_syntax.py  # must show 0 mismatches
+```
+
+If you changed tmux theme/borders/status bar, also run the tmux color comparison:
+
+```bash
+python test/compare_tmux_colors.py  # must show 11/11 passed
 ```
 
 ### 9. Final Verification
@@ -149,10 +157,14 @@ Before considering a feature complete:
    node test/test_highlight.js
    node test/test_shell.js
    node test/test_session_screen.js
+   node test/test_tmux.js
+   node test/test_tmux_screen.js
    ```
 4. If syntax/theme changed: nvim color comparison has 0 mismatches (`python test/compare_nvim_syntax.py`)
-5. If shell/session changed: regenerate session ground truth (`node test/gen_session_ground_truth.js`)
-6. **Browser verification** — serve the sim, Ctrl+Shift+R, and manually test:
+5. If tmux theme/borders changed: tmux color comparison has 11/11 passed (`python test/compare_tmux_colors.py`)
+6. If shell/session changed: regenerate session ground truth (`node test/gen_session_ground_truth.js`)
+7. If tmux changed: regenerate tmux ground truth (`node test/gen_tmux_ground_truth.js`)
+7. **Browser verification** — serve the sim, Ctrl+Shift+R, and manually test:
    - `vim demo.py` → syntax colors (monokai: pink keywords, yellow strings, purple numbers)
    - `:q` → shell prompt flows right after output
    - `vim` then `:e demo.py` → syntax colors also work via `:e`
@@ -244,7 +256,56 @@ node test/test_shell.js
 node test/test_session_screen.js
 ```
 
-### Layer 6: Browser End-to-End Verification
+### Layer 6: Tmux Screen Tests (frame snapshot comparison)
+
+**What it tests:** Tmux integration — pane layout, borders (active vs inactive color), status bar (session name, window list, zoom indicator, clock), overlays (command prompt, rename, confirm, copy mode, help, pane numbers, window list), split/navigate/zoom/detach/reattach lifecycle, and vim-inside-tmux rendering.
+**Ground truth source:** Self-generated snapshots (`test/tmux_ground_truth.json`).
+**Files:** `test/test_tmux_screen.js` (40 tests), `test/gen_tmux_ground_truth.js`, `test/test_tmux.js` (75 behavioral tests)
+
+```bash
+node test/gen_tmux_ground_truth.js     # regenerate after tmux/session changes
+node test/test_tmux_screen.js          # 40 tests – tmux frame snapshots
+node test/test_tmux.js                 # 75 tests – tmux behavioral assertions
+```
+
+**Note:** The tmux status bar includes a live clock. Both the generator and the
+test runner freeze the time (HH:MM → 00:00, date → 01-Jan-26) before comparison
+so that tests are deterministic. The `tmux_four_panes` scenario uses non-default
+dimensions (24×80) to test a 2×2 grid layout.
+
+### Layer 7: Tmux Color Verification (real tmux comparison)
+
+**What it tests:** The sim's tmux theme colors match what real tmux renders — status bar segment colors (session name, separators, active/inactive windows, clock, date), border colors (active vs inactive pane), and command/copy prompt colors.
+**Ground truth source:** Real tmux running under WSL, captured via ShellPilot + pyte.
+**Files:** `test/capture_tmux_colors.py`, `test/compare_tmux_colors.py`, `test/tmux_real_colors.json`
+
+```bash
+cd sim
+# Step 1: Capture what real tmux actually renders (only needed once, or when
+#          the user's tmux config changes)
+C:/source/vimfu/.venv/Scripts/python.exe test/capture_tmux_colors.py
+# Writes test/tmux_real_colors.json (9 scenarios)
+
+# Step 2: Compare sim tmux output against real tmux capture
+C:/source/vimfu/.venv/Scripts/python.exe test/compare_tmux_colors.py
+# Must show: Checks: 11/11 passed
+```
+
+**Scenarios captured:** fresh launch, vertical split, horizontal split, two
+windows, renamed window, vsplit active right/left, command prompt, copy mode.
+
+**Comparison strategy:** The test compares *color sequences* (ordered fg/bg/bold
+transitions) rather than per-column values, since text content differs between
+sim and real (session name "0" vs "test", frozen vs live timestamps). For borders,
+the test compares the *primary* (most frequent) border color, since real tmux uses
+mixed per-row border coloring as an internal rendering optimization.
+
+**CRITICAL:** This is the only test that verifies the sim's tmux looks like the
+user's actual tmux. The Monokai palette (`a6e22e` session green, `49483e` selection,
+`75715e` comment gray, `66d9ef` cyan clock, `272822` status bg) was captured from
+real tmux — not guessed from screenshots.
+
+### Layer 8: Browser End-to-End Verification
 
 **What it tests:** The actual user experience — serving the page, typing keys, seeing the rendered output in the canvas.
 **Ground truth source:** Your eyeballs + the monokai theme that the GIF pipeline uses.
