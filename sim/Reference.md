@@ -227,7 +227,7 @@ Wraps around file. Supports operator + search: `d/foo↵` deletes to match.
 
 | Key | Description |
 |---|---|
-| `Escape` | Return to normal (cursor moves left 1) |
+| `Escape` / `Ctrl-[` | Return to normal (cursor moves left 1) |
 | `Enter` / `Ctrl-J` | Split line at cursor |
 | `Backspace` / `Ctrl-H` | Delete char before cursor (joins lines) |
 | `Delete` | Delete char at cursor (forward delete) |
@@ -246,7 +246,7 @@ Count-insert: `3iHa↵` types `Ha` then repeats 2 more times on Escape → `HaHa
 
 | Key | Description |
 |---|---|
-| `Escape` | Return to normal |
+| `Escape` / `Ctrl-[` | Return to normal |
 | `Enter` / `Ctrl-J` | Split line |
 | `Backspace` / `Ctrl-H` | Restore original character |
 | Any printable | Overwrite char at cursor |
@@ -324,24 +324,27 @@ of the full command name is valid (e.g. `:wri` → `:write`, `:qui` → `:quit`)
 
 | Command | Description |
 |---|---|
-| `:w[rite] [file]` | Save to VFS (shows `"file" NL, NB written`) |
-| `:wq [file]` | Save and quit |
-| `:x[it]` | Save and quit |
+| `:w[rite] [file]` | Save to VFS (shows `"file" NL, NB written`); if buffer has no filename, uses the given name and sets it as current |
+| `:wq [file]` | Save and quit (always writes; shows E32 if no filename available) |
+| `:x[it]` | Save (only if dirty) and quit (shows E32 if no filename available) |
 | `:q[uit]` | Quit (fails with E37 if dirty) |
 | `:q[uit]!` | Force quit (discard changes) |
-| `:e[dit] file` | Edit a different file |
-| `:e[dit]!` | Force re-edit current file (discard changes) |
+| `:e[dit] [file]` | Edit file; with no arg, reloads current file from VFS (shows E32 if no filename set) |
+| `:e[dit]! [file]` | Force re-edit (discard changes); also accepts a filename |
+| `:sav[eas] file` | Save buffer to new file, set it as current filename, update highlighting |
 | `:{number}` | Go to line number |
 | `:$` | Go to last line |
 | `:noh[lsearch]` | Clear search highlighting (pattern kept for `n`/`N`) |
-| `:se[t] number` / `:se[t] nu` | Show absolute line numbers |
-| `:se[t] nonumber` / `:se[t] nonu` | Hide line numbers |
-| `:se[t] relativenumber` / `:se[t] rnu` | Show relative line numbers |
-| `:se[t] norelativenumber` / `:se[t] nornu` | Hide relative line numbers |
-| `:r[ead] file` | Read file contents into buffer below cursor |
-| `:r[ead]! command` | Read shell command output into buffer below cursor |
+| `:se[t] …` | Set options (see below) |
+| `:r[ead] file` | Read file contents below cursor (shows "N line(s) added"; sets filename if none; shows E484 if file not found) |
+| `:r[ead]! command` | Read shell command output below cursor (shows "N line(s) added") |
 | `:[range]sort[!] [flags]` | Sort lines (`!` = reverse; flags: `n` numeric, `i` ignore-case, `u` unique) |
 | `:!command` | Run shell command (see below) |
+
+### `:wq` vs `:x`
+
+`:wq` always writes the file, even if the buffer is clean. `:x` only writes if
+the buffer has been modified (dirty). Both quit after writing.
 
 ### `:set` Options
 
@@ -368,23 +371,21 @@ for files with more than 999 lines.
 |---|---|
 | `:!ls` | List files in VFS |
 | `:!cat file` | Print file contents |
-| `:!pwd` | Print working directory |
 | `:!echo text` | Print text |
 | `:!rm file` | Remove file from VFS |
 | `:!touch file` | Create empty file |
 | `:!cp src dst` | Copy file |
 | `:!mv src dst` | Move/rename file |
 | `:!wc file` | Count lines, words, bytes (`-l` `-w` `-c`) |
-| `:!head file` | Show first N lines (`-n N`, default 10) |
-| `:!tail file` | Show last N lines (`-n N`, default 10) |
 | `:!grep pat file` | Search for pattern (`-i` `-n` `-c`) |
 | `:!sort file` | Sort lines (`-r` `-n` `-u`) |
 | `:!date` | Print date and time |
-| `:!whoami` | Print username |
-| `:!which cmd` | Show command path |
+| `:!history` | Show shell command history |
 | `:!anything_else` | Shows "command not found" |
 
-Output shown in a "Press ENTER" prompt overlay.
+Output shown in a "Press ENTER or type command to continue" prompt.
+Dismissal keys: `Enter` or `Escape` (return to normal mode), or `:` (dismiss
+and enter command mode). All other keys are ignored.
 
 ### Command-Line Keys
 
@@ -393,7 +394,17 @@ Output shown in a "Press ENTER" prompt overlay.
 | `Escape` | Cancel |
 | `Enter` | Execute |
 | `Backspace` | Delete char (or cancel if empty) |
+| `Tab` | Tab-complete filename (for `:e`, `:w`, `:r`, `:sav`); cycles through matches |
 | Any printable | Append to command |
+
+Tab completion matches filenames from the VFS, cycling through matches with
+repeated `Tab` presses (nvim `wildmode=full` behavior). The cycle resets on
+`Escape` or `Enter`.
+
+### Message Truncation
+
+When the `"file" NL, NB written` message exceeds screen width, it is truncated
+with a leading `<` prefix (matching nvim behavior).
 
 ---
 
@@ -403,7 +414,7 @@ Output shown in a "Press ENTER" prompt overlay.
 
 | Command | Description |
 |---|---|
-| `vim [file]` | Open file in vim (`vi` and `nvim` also work) |
+| `vim [file]` / `vi [file]` / `nvim [file]` | Open file in vim |
 | `ls` | List files |
 | `cat file…` | Print file contents |
 | `touch file…` | Create empty file(s) |
@@ -412,18 +423,14 @@ Output shown in a "Press ENTER" prompt overlay.
 | `mv src dst` | Move/rename file |
 | `echo text` | Print text (`> file` overwrite, `>> file` append) |
 | `wc file…` | Count lines, words, bytes (`-l` lines, `-w` words, `-c` bytes) |
-| `head file…` | Show first N lines (`-n N`, default 10) |
-| `tail file…` | Show last N lines (`-n N`, default 10) |
 | `grep pat file…` | Search for regex pattern (`-i` case-insensitive, `-n` line numbers, `-c` count only) |
 | `sort file` | Sort lines of a file (`-r` reverse, `-n` numeric, `-u` unique) |
 | `history` | Show numbered command history |
+| `tmux` | Launch tmux (errors if already inside tmux) |
 | `set -o vi` | Enable vi-mode line editing |
 | `set -o emacs` | Disable vi-mode (default) |
 | `set` | Show current editing mode |
 | `date` | Print current date and time |
-| `pwd` | Print working directory (`~/vimfu`) |
-| `whoami` | Print current username |
-| `which cmd…` | Show command location (`/usr/bin/cmd`) |
 | `clear` | Clear screen |
 | `exit` | Exit shell (stops accepting input) |
 | `help` | Show command list |
@@ -435,11 +442,13 @@ Output shown in a "Press ENTER" prompt overlay.
 |---|---|
 | `Enter` | Execute command |
 | `Backspace` | Delete char before cursor |
+| `Delete` | Delete char at cursor (forward delete) |
 | `←` / `→` | Move cursor |
 | `↑` / `↓` | Command history navigation |
 | `Home` / `Ctrl-A` | Cursor to start |
 | `End` / `Ctrl-E` | Cursor to end |
 | `Ctrl-C` | Cancel current input |
+| `Ctrl-D` | On empty line: exit shell; otherwise: delete char at cursor |
 | `Ctrl-L` | Clear screen |
 | `Ctrl-U` | Delete to start of line |
 | `Ctrl-K` | Delete to end of line |
@@ -561,6 +570,239 @@ Entered with `R` from normal mode:
 - Cannot backspace before the position where `R` was pressed
 - `Escape` returns to normal mode
 - Cursor displays as block
+
+---
+
+## Tmux
+
+The simulator includes a full tmux terminal multiplexer with sessions, windows,
+panes, and the standard prefix-key interface.
+
+### Prefix Key
+
+All tmux commands are triggered by pressing `Ctrl-B` (the prefix key) followed
+by a command key. Pressing `Escape` in prefix mode cancels back to normal mode.
+
+### Pane Management
+
+| Prefix + Key | Description |
+|---|---|
+| `"` | Split pane horizontally (top/bottom); auto-unzooms |
+| `%` | Split pane vertically (left/right); auto-unzooms |
+| `x` | Close active pane (enters confirm mode: `y`/`n`) |
+| `!` | Break pane out to new window; auto-unzooms |
+| `z` | Toggle zoom on active pane |
+| `q` | Display pane numbers (press `0`–`9` to jump to pane) |
+
+### Pane Navigation
+
+All navigation keys auto-unzoom if the window is zoomed.
+
+| Prefix + Key | Description |
+|---|---|
+| `↑` / `k` | Navigate to pane above |
+| `↓` / `j` | Navigate to pane below |
+| `←` / `h` | Navigate to pane left |
+| `→` / `l` | Navigate to pane right |
+| `o` | Cycle to next pane |
+| `;` | Toggle to last-active pane |
+
+### Pane Resize
+
+| Prefix + Key | Description |
+|---|---|
+| `Ctrl-↑` | Resize pane up by 1 cell |
+| `Ctrl-↓` | Resize pane down by 1 cell |
+| `Ctrl-←` | Resize pane left by 1 cell |
+| `Ctrl-→` | Resize pane right by 1 cell |
+
+### Pane Swap
+
+Auto-unzooms before swapping.
+
+| Prefix + Key | Description |
+|---|---|
+| `{` | Swap active pane with previous |
+| `}` | Swap active pane with next |
+
+### Window Management
+
+| Prefix + Key | Description |
+|---|---|
+| `c` | Create new window |
+| `n` | Next window |
+| `p` | Previous window |
+| `L` | Toggle to last-active window |
+| `0`–`9` | Switch to window N |
+| `,` | Rename current window |
+| `&` | Close current window (enters confirm mode: `y`/`n`) |
+| `w` | Interactive window chooser |
+
+### Layout
+
+| Prefix + Key | Description |
+|---|---|
+| `Space` | Cycle through preset layouts |
+
+Layout presets cycle through 4 arrangements: even-horizontal, even-vertical,
+main-horizontal (60/40), main-vertical (60/40).
+
+### Session
+
+| Prefix + Key | Description |
+|---|---|
+| `d` | Detach from tmux |
+
+### Other Prefix Keys
+
+| Prefix + Key | Description |
+|---|---|
+| `[` / `PageUp` | Enter copy mode |
+| `:` | Open command prompt |
+| `t` | Clock mode (ASCII art clock; any key exits) |
+| `?` | Help overlay (scrollable key binding list) |
+| `Ctrl-B` | Send literal `Ctrl-B` to the active pane |
+
+### Copy Mode (vi bindings)
+
+Entered via `Ctrl-B [` or `Ctrl-B PageUp`. Provides a read-only view of the
+pane with vim-style navigation.
+
+| Key | Description |
+|---|---|
+| `q` / `Escape` | Exit copy mode |
+| `j` / `↓` | Cursor down |
+| `k` / `↑` | Cursor up (scrolls viewport when at top) |
+| `h` / `←` | Cursor left |
+| `l` / `→` | Cursor right |
+| `g` | Jump to top (row 0) |
+| `G` | Jump to bottom |
+| `0` | Start of line |
+| `$` | End of line |
+| `w` | Word forward (simplified: +5 columns) |
+| `b` | Word backward (simplified: −5 columns) |
+| `Ctrl-F` | Page down |
+| `Ctrl-B` | Page up |
+| `Ctrl-D` | Half-page down |
+| `Ctrl-U` | Half-page up |
+| `v` | Toggle visual selection |
+
+### Command Prompt
+
+Entered via `Ctrl-B :`. Type a command and press `Enter`.
+
+| Command | Alias | Description |
+|---|---|---|
+| `split-window [-h]` | `splitw` | Split pane (default: top/bottom; `-h`: left/right) |
+| `new-window` | `neww` | Create new window |
+| `rename-window name` | `renamew` | Rename active window |
+| `select-window -t N` | `selectw` | Switch to window N |
+| `select-pane -t N` | `selectp` | Switch to pane N |
+| `resize-pane -U/-D/-L/-R [n]` | `resizep` | Resize active pane in direction by n cells |
+| `kill-pane` | `killp` | Close active pane (detaches if last pane of last window) |
+| `kill-window` | `killw` | Close active window (only if >1 window) |
+| `swap-pane -U/-D` | `swapp` | Swap active pane up or down |
+| `new-session name` | `new` | Create a new session |
+| `switch-client -t name` | `switchc` | Switch to a named session |
+| `list-sessions` | `ls` | List all sessions |
+| `detach-client` | `detach` | Detach from tmux |
+| `next-layout` | `nextl` | Cycle to next layout preset |
+| `display-panes` | `displayp` | Show pane number overlay |
+| `clock-mode` | — | Show ASCII art clock |
+| `list-keys` | `lsk` | Show key bindings help |
+
+Unknown commands display: `unknown command: …`
+
+### Command Prompt Keys
+
+| Key | Description |
+|---|---|
+| Characters | Append to input |
+| `Backspace` | Delete last character (stays in command mode if empty) |
+| `Ctrl-U` | Clear entire input |
+| `Enter` | Execute command |
+| `Escape` | Cancel |
+
+### Confirm Mode
+
+Triggered by prefix `x` (kill pane) or prefix `&` (kill window). Shows a
+confirmation prompt:
+
+- Pane close: `kill-pane N? (y/n)`
+- Window close: `kill-window name? (y/n)`
+
+| Key | Description |
+|---|---|
+| `y` / `Y` | Confirm the kill |
+| Any other key | Cancel, return to normal mode |
+
+If killing the last pane in the last window (or last window), tmux detaches.
+
+### Rename Mode
+
+Entered via prefix `,`. Pre-populates with the current window name.
+
+| Key | Description |
+|---|---|
+| Characters | Append to name |
+| `Backspace` | Delete last character |
+| `Ctrl-U` | Clear entire name |
+| `Enter` | Commit rename |
+| `Escape` | Cancel |
+
+### Window List Mode
+
+Entered via prefix `w`. Shows all windows with `(N) name` per entry.
+
+| Key | Description |
+|---|---|
+| `j` / `↓` | Cursor down |
+| `k` / `↑` | Cursor up |
+| `Enter` | Switch to selected window |
+| `Escape` / `q` | Cancel |
+
+### Pane Numbers Mode
+
+Entered via prefix `q`. Shows pane index numbers overlaid on each pane.
+Active pane number is green, inactive are red.
+
+| Key | Description |
+|---|---|
+| `0`–`9` | Switch to pane N |
+| Any other key | Exit |
+
+### Status Bar
+
+```
+<session> | <window_list>              | HH:MM | DD-Mon-YY
+```
+
+| Segment | Content | Color |
+|---|---|---|
+| Session name | `0:name` | Green, bold |
+| Separator | `\|` | Gray |
+| Active window | `N:name*` (or `N:name*Z` if zoomed) | Green on selection bg, bold |
+| Inactive windows | `N:name` | Gray |
+| Clock | `HH:MM` | Cyan |
+| Date | `DD-Mon-YY` | Gray |
+
+### Pane Borders
+
+- Active pane border: green
+- Inactive pane border: muted/selection color
+- Border characters: `─` (horizontal), `│` (vertical), `┼` (intersection)
+
+### Auto-Unzoom Behavior
+
+When the active pane is zoomed, the following prefix keys automatically unzoom
+before performing their action: `"`, `%`, `↑`/`↓`/`←`/`→`, `h`/`j`/`k`/`l`,
+`o`, `;`, `{`, `}`, `!`.
+
+### Pane Auto-Close
+
+When a pane's shell process exits (via `exit` or `Ctrl-D`), tmux automatically
+closes that pane. If it was the last pane in the window, the window closes. If
+it was the last window in the session, tmux detaches.
 
 ---
 

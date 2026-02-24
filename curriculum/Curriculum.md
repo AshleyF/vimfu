@@ -158,7 +158,7 @@ _Motions, search, visual mode, counts, the dot command, text objects. This is wh
 
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
-| 074 | Inner Word / A Word | `ciw` `diw` `yiw` `daw` | Act on a word. "inner" = just the word. "a" = word + surrounding space. |
+| 074 | Inner Word / A Word | `ciw` `diw` `yiw` `daw` | Act on a word. "inner" = just the word. "a" = word + surrounding space. Also `iW`/`aW` for WORDs. |
 | 075 | Inner/Around Quotes | `ci"` `da"` `yi"` | Act on text inside or around double quotes. |
 | 076 | Inner/Around Single Quotes | `ci'` `da'` | Same but for single quotes. |
 | 077 | Inner/Around Backticks | `` ci` `` `` da` `` | Same but for backtick strings. |
@@ -339,7 +339,7 @@ _Every key on the keyboard does something in normal mode. Learn them one at a ti
 | 175 | The `N` Key | `N` | Previous search match (opposite of `n`). |
 | 176 | The `O` Key | `O` | Open line above and insert. |
 | 177 | The `P` Key | `P` | Put (paste) before cursor. |
-| 178 | The `Q` Key | `Q` | Ex mode (rarely used, consider remapping). |
+| 178 | The `Q` Key | `Q` | Replay last recorded macro (nvim default; Ex mode in classic Vim). |
 | 179 | The `R` Key | `R` | Replace mode: overtype until Escape. |
 | 180 | The `S` Key | `S` | Substitute line (synonym: `cc`). |
 | 181 | The `T` Key | `T{char}` | Till character backward on the line. |
@@ -482,7 +482,7 @@ _The `g` prefix is a second entire keyboard of commands._
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
 | 280 | `g*` / `g#` — Partial Word Search | `g*` `g#` | Like `*`/`#` but without word boundary matching. |
-| 281 | `g$` / `g0` / `g^` — Screen Line Edges | `g$` `g0` `g^` | End / start / first non-blank of screen line. |
+| 281 | `g$` / `g0` / `g^` / `g_` — Line Edges | `g$` `g0` `g^` `g_` | End / start / first non-blank of screen line. `g_` = last non-blank of line. |
 | 282 | `g&` — Repeat Substitution Globally | `g&` | Repeat last `:s` on all lines. |
 | 283 | `g;` / `g,` — Change List | `g;` `g,` | Navigate the change list (older / newer). |
 | 284 | `g?` — ROT13 | `g?{motion}` `g??` | ROT13 encode text. |
@@ -740,6 +740,13 @@ _The colon commands you'll use most often._
 | 421 | `:{range}!{filter}` — Filter | `:%!sort` | Filter lines through an external program. |
 | 422 | `:terminal` — Terminal | `:terminal` | Open a terminal inside Vim. |
 
+### Additional File Commands
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| —   | `:sav {file}` — Save As | `:sav {file}` | Save buffer to a new file and switch to editing it (unlike `:w {file}` which keeps the original). |
+| —   | `:[range]sort` — Sort Lines | `:sort` `:sort!` `:sort n` `:sort u` | Sort lines (`!` = reverse, `n` = numeric, `i` = ignore-case, `u` = unique). |
+
 ### Settings
 
 | #   | Title | Keys | Description |
@@ -855,6 +862,87 @@ _Real-world editing patterns that combine what you've learned._
 
 ---
 
+## Part 19 — Tmux & Shell (Lessons 501–545)
+
+_Tmux is the perfect partner for Vim. Learn to split your terminal, manage windows, and become a keyboard-only powerhouse. The shell is your launchpad._
+
+### Getting Started
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 501 | What Is tmux? | — | Terminal multiplexer: one terminal, many sessions, windows, and panes. |
+| 502 | Starting tmux | `tmux` | Launch tmux from the shell. Notice the green status bar at the bottom. |
+| 503 | The Prefix Key | `Ctrl-B` | All tmux commands start with the prefix key. Press `Ctrl-B`, release, then press the command key. |
+| 504 | tmux Help | `Ctrl-B ?` | Show all key bindings in a scrollable list. The ultimate cheat sheet — always one keystroke away. |
+
+### Panes
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 505 | Split Horizontally | `Ctrl-B "` | Split the current pane into top and bottom. |
+| 506 | Split Vertically | `Ctrl-B %` | Split the current pane into left and right. |
+| 507 | Navigate Panes (Arrows) | `Ctrl-B ↑/↓/←/→` | Move focus to the pane in that direction. |
+| 508 | Navigate Panes (Vim Keys) | `Ctrl-B h/j/k/l` | Same as arrows but vim-style. No hand movement! |
+| 509 | Cycle Panes | `Ctrl-B o` | Move focus to the next pane in order. |
+| 510 | Last Active Pane | `Ctrl-B ;` | Toggle back to the previously active pane. |
+| 511 | Close a Pane | `Ctrl-B x` | Kill the active pane (press `y` to confirm). |
+| 512 | Zoom a Pane | `Ctrl-B z` | Toggle zoom — pane fills the entire window. Press again to unzoom. |
+| 513 | Resize Panes | `Ctrl-B Ctrl-↑/↓/←/→` | Resize the active pane by one cell at a time. |
+| 514 | Swap Panes | `Ctrl-B {` / `Ctrl-B }` | Swap the active pane with the previous or next pane. |
+| 515 | Break Pane to Window | `Ctrl-B !` | Move the current pane into its own new window. |
+| 516 | Pane Numbers | `Ctrl-B q` | Show pane number overlays; press `0`–`9` to jump to that pane. |
+
+### Windows
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 517 | Create a Window | `Ctrl-B c` | Open a new window with a fresh shell. |
+| 518 | Next / Previous Window | `Ctrl-B n` / `Ctrl-B p` | Cycle forward and backward through windows. |
+| 519 | Switch to Window N | `Ctrl-B 0`–`9` | Jump directly to a numbered window. |
+| 520 | Last Active Window | `Ctrl-B L` | Toggle to the most recently active window. |
+| 521 | Rename Window | `Ctrl-B ,` | Give the current window a meaningful name. |
+| 522 | Close a Window | `Ctrl-B &` | Kill the current window and all its panes (press `y` to confirm). |
+| 523 | Window Chooser | `Ctrl-B w` | Interactive list — navigate with `j`/`k` and press `Enter` to select. |
+| 524 | Cycle Layouts | `Ctrl-B Space` | Rearrange panes through preset layout patterns. |
+
+### Sessions & Detach
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 525 | Detach from tmux | `Ctrl-B d` | Detach — tmux keeps running in the background. |
+| 526 | The Command Prompt | `Ctrl-B :` | Type tmux commands directly (e.g. `split-window -h`, `new-session work`). |
+| 527 | Multiple Sessions | `new-session` / `switch-client -t` | Create and switch between named sessions from the command prompt. `list-sessions` (or `ls`) shows them all. |
+
+### Copy Mode & Extras
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 528 | Enter Copy Mode | `Ctrl-B [` | Read-only scrollback view with vim-style navigation. `Ctrl-B PageUp` also works. Press `q` or `Escape` to exit. |
+| 529 | Copy Mode Navigation | `h/j/k/l` `0/$` `w/b` `g/G` | Navigate with all the Vim motions you already know. `Ctrl-F/B/D/U` for page/half-page scrolling. |
+| 530 | Copy Mode Visual Selection | `v` | Toggle visual selection in copy mode — highlight text as you navigate. |
+| 531 | Clock Mode | `Ctrl-B t` | Show a fullscreen ASCII art clock (press any key to exit). |
+| 532 | The Status Bar | — | Reading the tmux status bar: session name, window list (`*` = active), time, date. |
+
+### Shell Essentials
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 533 | The Shell Prompt | — | Your command-line home base. Type a command, press `Enter`. `↑`/`↓` recall command history. |
+| 534 | File Management | `ls` `cat` `touch` `rm` `cp` `mv` | Create, view, copy, move, and delete files from the shell. |
+| 535 | Creating Files with Content | `echo "text" > file` | Write text into a file. Use `>>` to append instead of overwrite. |
+| 536 | Shell Utilities | `wc` `grep` `sort` `history` `date` | Count words, search files, sort lines, view history, check the date. |
+| 537 | Shell Shortcuts | `clear` `help` `exit` | Clear the screen, show available commands, exit the shell. `Ctrl-D` on an empty line also exits. |
+| 538 | Tab Completion | `Tab` | Complete command names and filenames. Saves typing and prevents typos. |
+| 539 | Shell Editing Keys | `Ctrl-A` `Ctrl-E` `Ctrl-K` `Ctrl-U` `Ctrl-W` | Jump to start/end of line, delete to end/start of line, delete word — standard readline keys. |
+| 540 | Cancel & Clear | `Ctrl-C` `Ctrl-L` | Cancel the current input line, or clear the screen (same as `clear`). |
+| 541 | Opening Vim | `nvim file.py` | Launch Vim from the shell. `vim` and `vi` also work. |
+| 542 | Vi-Mode in the Shell | `set -o vi` | Enable vim-style line editing at the shell prompt. Press `Escape` for normal mode. `set -o emacs` to go back. |
+| 543 | Vi-Mode Editing | `Esc` → `h/l/w/b/d/c/y/p` | Full vim motions and operators work on your command line. |
+| 544 | Vi-Mode History Search | `Esc` → `/pattern` | Search command history backward. `n`/`N` to cycle through matches. |
+| 545 | Vim + Tmux Together | — | The ultimate workflow: tmux panes for splits, vim for editing. One keyboard, infinite power. |
+
+---
+
 ## Appendix A — Synonym Reference
 
 Many keys do the same thing. Knowing synonyms helps you recognize them in the wild.
@@ -903,11 +991,12 @@ Any operator × any motion/text-object = a command. This is why Vim scales — l
 1. **Days 1–3**: Part 1 (Survival) — watch all 15, practice each one
 2. **Days 4–10**: Part 2 (Basic Editing) — go "cold turkey" after this
 3. **Days 11–20**: Part 3 (Becoming Productive) — text objects are the big unlock
-4. **Days 21–35**: Part 4 (Intermediate Power) — registers, macros, windows
-5. **Days 36–60**: Parts 5–8 (Walking the Keyboard) — one key per day, daily flash cards
-6. **Days 61–90**: Parts 9–12 (`g`, `z`, `[`, `Ctrl-W`) — one command per day
-7. **Days 91–120**: Parts 13–16 (Insert mode, Ex commands, visual, command-line) — as needed
-8. **Days 121+**: Parts 17–18 (Patterns & Advanced) — ongoing daily tips
+4. **Days 21–30**: Part 4 (Intermediate Power) — registers, macros, marks
+5. **Days 25–35**: Part 19 (Tmux & Shell) — learn alongside Part 4; use panes and windows daily
+6. **Days 36–60**: Parts 5–8 (Walking the Keyboard) — one key per day, daily flash cards
+7. **Days 61–90**: Parts 9–12 (`g`, `z`, `[`, `Ctrl-W`) — one command per day
+8. **Days 91–120**: Parts 13–16 (Insert mode, Ex commands, visual, command-line) — as needed
+9. **Days 121+**: Parts 17–18 (Patterns & Advanced) — ongoing daily tips
 
 ---
 
@@ -915,7 +1004,7 @@ Any operator × any motion/text-object = a command. This is why Vim scales — l
 
 The Surround plugin (`vim-surround` / `nvim-surround`) is arguably the most universally useful
 Vim plugin. It's built into many emulators (VS Code Vim, IdeaVim, etc.) and may deserve its own
-mini-series of lessons. Consider adding these as a **Part 19** or bonus section.
+mini-series of lessons. Consider adding these as a **Part 20** or bonus section.
 
 | Action | Keys | Description |
 |--------|------|-------------|
@@ -1003,3 +1092,62 @@ help / vimrc / completion
 - **Hands off the arrows** → then eventually, less reliance on `hjkl` too
 - **More thinking, less mindless keystrokes** — like the Petrus method for Rubik's cube:
   think ahead, plan your moves, execute efficiently
+
+---
+
+## Appendix F — Simulator Coverage
+
+The VimFu simulator supports a curated subset of Vim, tmux, and shell features — enough to
+practice the entire foundational curriculum (Parts 1–4) and the tmux section (Part 19), plus
+many features from the reference parts. Features not in the simulator can be practiced in
+real Neovim.
+
+### Fully Supported in Simulator
+
+- **Parts 1–3** (Lessons 1–90): All features except `Ctrl-V` block visual mode (Lessons 66–67)
+- **Part 4** (Lessons 91–135): All features except global marks (`m{A-Z}`), special marks
+  (`''`, `` `` ``, `'.`, `'^`), auto-indent (`=`), append registers (`"A-Z`), system clipboard
+  (`"+`, `"*`), small delete register (`"-`), numbered registers (`"0`–`"9`), `:reg`, and nvim
+  window splits (`:sp`, `:vs`, `Ctrl-W`). Use tmux panes instead of nvim splits!
+- **Part 19** (Lessons 501–545): All tmux and shell features fully supported
+
+### Not in Simulator
+
+The following features are taught in the curriculum as standard Vim/Neovim knowledge but are
+not available in the VimFu simulator. Practice these in real Neovim.
+
+| Feature | Lessons | Notes |
+|---------|---------|-------|
+| `Ctrl-V` block visual | 66, 67, 232, 433, 443, 444, 469 | Use `v` and `V` instead |
+| Global marks `m{A-Z}` | 100 | Local marks `m{a-z}` work fine |
+| Special marks `''` `'.` `'^` | 101 | |
+| Auto-indent `=` / `==` | 110, 206 | `>` and `<` indent/dedent work |
+| Append registers `"A-Z` | 120 | Named `"a-z` work |
+| System clipboard `"+` `"*` | 122 | |
+| Small delete register `"-` | 123 | |
+| Numbered registers `"0`–`"9` | 124 | |
+| `:reg` | 125 | |
+| Nvim window splits | 131–135, 334–365 | Use tmux panes instead |
+| `K` keyword lookup | 172 | |
+| `U` undo line | 182 | `u` undo works |
+| `!{motion}{filter}` filter | 196, 421 | `:!cmd` works |
+| `&` repeat `:s` | 200 | |
+| `Ctrl-L` redraw | 231 | |
+| `Ctrl-C` | 233 | Use `Escape` instead |
+| `Ctrl-Z` suspend | 234 | |
+| `Ctrl-]` / `Ctrl-T` tags | 235, 236 | |
+| `Ctrl-^` alternate file | 237 | |
+| `z.` `z+` `z-` `z^` scroll | 245–248, 289 | `zz` `zt` `zb` work |
+| Most `g` commands | 254–265, 271–285 | `ga` `gd` `ge` `gE` `gi` `gI` `gJ` `gu` `gU` `g~` `gv` `g_` work |
+| Folds | 293–307 | |
+| Spelling | 308–314 | |
+| Bracket `[` / `]` commands | 317–333 | |
+| Insert `Ctrl-O` (insert-normal) | 368 | |
+| Insert `Ctrl-T` / `Ctrl-D` indent | 372, 373 | |
+| `:s` substitution | 405–409 | |
+| Buffers / `:ls` / `:b` | 410–414 | |
+| Tabs / `:tabnew` | 415–418 | |
+| `:{range}!{filter}` | 421 | |
+| `:terminal` | 422 | |
+| `q:` / `q/` history windows | 446, 447 | |
+| `:norm` / `:g` / `:v` | 457–459 | |

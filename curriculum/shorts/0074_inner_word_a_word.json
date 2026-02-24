@@ -1,6 +1,6 @@
 {
   "title": "VimFu — Inner Word / A Word",
-  "description": "Act on a word with text objects. Inner word (iw) selects just the word. A word (aw) includes surrounding space.",
+  "description": "Act on a word with text objects. Inner word (iw) selects just the word. A word (aw) includes surrounding space. Capital W versions work on WORDs (whitespace-delimited).",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -25,8 +25,8 @@
     "privacyStatus": "private",
     "madeForKids": false,
     "language": "en",
-    "videoId": "iR6w6yq0--8",
-    "url": "https://youtube.com/watch?v=iR6w6yq0--8"
+    "videoId": "fNSk5_UYOzU",
+    "url": "https://youtube.com/watch?v=fNSk5_UYOzU"
   },
   "setup": [
     {
@@ -42,17 +42,17 @@
       "line": "mkdir -p ~/vimfu && cd ~/vimfu"
     },
     {
-      "line": "rm -f greet.py .greet.py.swp .greet.py.swo"
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
     },
     {
-      "line": "rm -f ~/.local/state/nvim/swap/*greet.py*"
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
     },
     {
       "comment": "Create the demo file"
     },
     {
-      "writeFile": "greet.py",
-      "content": "def greet(name, loud=False):\n    msg = \"Hello, \" + name\n    if loud:\n        msg = msg.upper()\n    return msg"
+      "writeFile": "quest.py",
+      "content": "hero = \"dark-knight\"\nquest = hero + \".save-realm\"\nhp = 100\nweapon = \"flame-sword\"\npath = \"/dungeon/boss-lair\""
     },
     {
       "line": "clear"
@@ -61,7 +61,7 @@
       "comment": "Launch nvim before recording"
     },
     {
-      "line": "nvim greet.py"
+      "line": "nvim quest.py"
     },
     {
       "waitForScreen": "All",
@@ -79,56 +79,26 @@
     {
       "overlay": "VimFu",
       "caption": "Inner Word / A Word",
-      "duration": 3.0
+      "duration": 2.0
     },
     {
-      "wait": 0.7
+      "wait": 0.5
     },
     {
       "comment": "--- Intro ---"
     },
     {
-      "say": "Text objects let you act on a whole word at once. No counting, no selecting."
+      "say": "Text objects let you act on a word at once. No counting."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 1: viw to see inner word ---"
+      "comment": "--- Demo 1: ciw to change inner word ---"
     },
     {
-      "say": "Cursor is on 'def'. Let's visually select the inner word with V I W.",
+      "say": "Cursor is on 'hero'. C I W changes the inner word.",
       "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "viw"
-    },
-    {
-      "wait": 0.6
-    },
-    {
-      "say": "Just the word. No surrounding space. Escape.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    "escape",
-    {
-      "wait": 0.3
-    },
-    {
-      "comment": "--- Demo 2: ciw to change a word ---"
-    },
-    {
-      "say": "Move to line two. Let's change that word 'msg' with C I W.",
-      "wait": false
-    },
-    {
-      "keys": "jw"
     },
     {
       "wait": 0.3
@@ -138,58 +108,18 @@
       "overlay": "change inner word"
     },
     {
-      "type": "greeting"
+      "type": "player"
     },
     "escape",
     {
-      "wait": 0.6
-    },
-    {
-      "say": "C I W deletes the word and drops into insert mode. One move.",
-      "wait": false
-    },
-    {
       "wait": 0.5
     },
     {
-      "say": "Undo that.",
-      "wait": false
-    },
-    {
-      "keys": "u"
-    },
-    {
-      "wait": 0.5
-    },
-    {
-      "comment": "--- Demo 3: daw to delete a word cleanly ---"
-    },
-    {
-      "say": "Now the A version. D A W deletes a word and the space around it.",
+      "say": "Deleted the word and dropped into insert mode.",
       "wait": false
     },
     {
       "wait": 0.3
-    },
-    {
-      "keys": "jw"
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "daw",
-      "overlay": "delete a word"
-    },
-    {
-      "wait": 0.6
-    },
-    {
-      "say": "Clean. No leftover gap. That's the difference.",
-      "wait": false
-    },
-    {
-      "wait": 0.5
     },
     {
       "say": "Undo.",
@@ -199,49 +129,175 @@
       "keys": "u"
     },
     {
-      "wait": 0.5
+      "wait": 0.3
     },
     {
-      "comment": "--- Demo 4: yiw to yank a word ---"
+      "comment": "--- Demo 2: daw to delete a word ---"
     },
     {
-      "say": "Y I W yanks a word. Let's copy 'loud' and paste it.",
+      "say": "D A W deletes the word plus surrounding space.",
       "wait": false
     },
     {
-      "keys": "w"
+      "wait": 0.3
+    },
+    {
+      "keys": "jw",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "daw",
+      "overlay": "delete a word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Clean. No leftover gap. I W versus A W.",
+      "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "yiw",
-      "overlay": "yank inner word"
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "A"
+      "comment": "--- Demo 3: viw on hyphenated string ---"
     },
     {
-      "type": " # "
+      "say": "Lowercase W treats hyphens as word boundaries.",
+      "wait": false
     },
-    "escape",
     {
-      "keys": "p"
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "keys": "f-l"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is on 'knight'. V I W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "viw",
+      "overlay": "visual inner word"
     },
     {
       "wait": 0.6
     },
     {
+      "say": "Just 'knight'. The hyphen split it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: viW to select inner WORD ---"
+    },
+    {
+      "say": "Now capital W. V I capital W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "viW",
+      "overlay": "visual inner WORD"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The whole thing, quotes and all. Capital W means whitespace-delimited.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 5: ciW practical use ---"
+    },
+    {
+      "say": "C I capital W replaces a whole compound expression.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf.",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ciW",
+      "overlay": "change inner WORD"
+    },
+    {
+      "type": "\"begin-quest\""
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "One command. Dots, hyphens, quotes — all replaced.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
       "comment": "--- Wrap up ---"
     },
     {
-      "say": "I W for the word itself. A W for the word plus its space. Use I W to change, A W to delete."
+      "say": "Lowercase W for words. Capital W for WORDs. I for inner, A for around."
     },
     {
-      "wait": 1.5
+      "wait": 1.0
     }
   ],
   "teardown": [
@@ -257,7 +313,7 @@
       "comment": "Clean up"
     },
     {
-      "line": "rm -f greet.py"
+      "line": "rm -f quest.py"
     }
   ]
 }
