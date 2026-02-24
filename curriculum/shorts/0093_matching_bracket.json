@@ -1,0 +1,284 @@
+{
+  "title": "VimFu — Matching Bracket",
+  "description": "% jumps to the matching bracket. It auto-finds the first bracket on the line — no need to position on it first.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 234,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "motions"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "YuB6-fEAEfw",
+    "url": "https://youtube.com/watch?v=YuB6-fEAEfw"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spell.py .spell.py.swp .spell.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spell.py*"
+    },
+    {
+      "comment": "Create the demo file with nested brackets"
+    },
+    {
+      "writeFile": "spell.py",
+      "content": "def cast(spell, power):\n    dmg = calc(roll(2, 6) + power)\n    opts = {\"buffs\": [1, 2, 3]}\n    return (dmg, opts)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spell.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Matching Bracket",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Percent finds the matching bracket. And you don't have to be on the bracket first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: % auto-finds from line start ---"
+    },
+    {
+      "say": "Cursor is on the D of def. Not on any bracket.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "%",
+      "overlay": "%  matching bracket"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Percent scanned right, found the open paren, and jumped to its match.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "%",
+      "overlay": "%  matching bracket"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "And back. It toggles between the pair.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Mixed brackets — auto-find picks first ---"
+    },
+    {
+      "say": "Now a line with nesting. Braces around brackets.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "%",
+      "overlay": "%  matching bracket"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "From line start, it found the brace first. Skipped the brackets inside.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: Starting position determines which bracket ---"
+    },
+    {
+      "say": "Back to the brace.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "%",
+      "overlay": "%  matching bracket"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One step past it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "%",
+      "overlay": "%  matching bracket"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Square bracket this time. Percent always picks the first bracket forward from the cursor.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: d% with auto-find ---"
+    },
+    {
+      "say": "Works with operators too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d%",
+      "overlay": "d%  delete to match"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "D percent. Auto-found the paren and deleted to its match. Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Percent. Finds the next bracket on the line and jumps to its match. No setup needed."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spell.py"
+    }
+  ]
+}

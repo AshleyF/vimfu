@@ -1,0 +1,260 @@
+{
+  "title": "VimFu — Next/Previous Line Start",
+  "description": "+ and Enter jump to the first non-blank of the next line. - jumps to the previous. Quick vertical hops.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 236,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "motions"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "7eAMkzqK6ZI",
+    "url": "https://youtube.com/watch?v=7eAMkzqK6ZI"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f robot.py .robot.py.swp .robot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*robot.py*"
+    },
+    {
+      "comment": "Create the demo file with indented lines"
+    },
+    {
+      "writeFile": "robot.py",
+      "content": "class Robot:\n    name = \"Bolt\"\n    speed = 10\n    battery = 100\n\n    def move(self, dist):\n        self.battery -= dist\n        return self.speed * dist\n\n    def charge(self):\n        self.battery = 100\n        return \"fully charged\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim robot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Next/Previous Line Start",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Plus and Enter jump to the first non-blank character of the next line. Minus goes up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: + to next line start ---"
+    },
+    {
+      "say": "Cursor is on 'class'. Plus.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "+",
+      "overlay": "+  next line start"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the 'n' of name. Not column zero — the first real character.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "+",
+      "overlay": "+  next line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "+",
+      "overlay": "+  next line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three lines down, always landing on the first word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: - to previous line start ---"
+    },
+    {
+      "say": "Minus goes back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "-",
+      "overlay": "-  previous line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "-",
+      "overlay": "-  previous line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back up two lines, landing on the first character each time.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: Enter does the same as + ---"
+    },
+    {
+      "say": "Enter does the same thing as plus. Whichever is easier to reach.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": "Enter  next line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\r",
+      "overlay": "Enter  next line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Same result. Two lines down to the first non-blank.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: with count ---"
+    },
+    {
+      "say": "Add a count. 3 plus jumps three lines.",
+      "wait": false
+    },
+    {
+      "keys": "gg"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3",
+      "overlay": "count"
+    },
+    {
+      "keys": "+",
+      "overlay": "+  next line start"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Landed three lines down on the first character.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Plus or Enter for next line start. Minus for previous. Always lands on the first word."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f robot.py"
+    }
+  ]
+}

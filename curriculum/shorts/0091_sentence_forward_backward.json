@@ -1,0 +1,225 @@
+{
+  "title": "VimFu — Sentence Forward/Backward",
+  "description": "Jump by sentences with ) and (. Faster than w when you need to cover a lot of text.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 232,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "motions"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "cezdeYP9bYA",
+    "url": "https://youtube.com/watch?v=cezdeYP9bYA"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f lore.py .lore.py.swp .lore.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*lore.py*"
+    },
+    {
+      "comment": "Create the demo file with multi-sentence comments"
+    },
+    {
+      "writeFile": "lore.py",
+      "content": "# The dragon guards the gate. No one\n# has passed in a thousand years. Many\n# have tried. All have failed.\n\ndef enter_gate(hero):\n    \"\"\"Attempt to pass the gate. Returns\n    True if the hero survives. The gate\n    tests courage first. Then it tests\n    strength. Finally it tests wisdom.\"\"\"\n    if hero.courage < 50:\n        return False\n    if hero.strength < 30:\n        return False\n    return True"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim lore.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Sentence Forward/Backward",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close parenthesis jumps to the next sentence. Open parenthesis jumps back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: ) forward through sentences ---"
+    },
+    {
+      "say": "Cursor is at the top. Close paren.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ")",
+      "overlay": ")  next sentence"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the next sentence. Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ")",
+      "overlay": ")  next sentence"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "keys": ")",
+      "overlay": ")  next sentence"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three presses, three sentences. Vim defines a sentence as text ending in a period, exclamation, or question mark followed by whitespace.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: ( backward ---"
+    },
+    {
+      "say": "Open paren goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "(",
+      "overlay": "(  previous sentence"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "keys": "(",
+      "overlay": "(  previous sentence"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back where we started.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: d) to delete a sentence ---"
+    },
+    {
+      "say": "It works as a motion too. D close paren deletes to the next sentence.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d)",
+      "overlay": "delete to next sentence"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One sentence gone. Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Close paren forward. Open paren back. Jump by sentences."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f lore.py"
+    }
+  ]
+}

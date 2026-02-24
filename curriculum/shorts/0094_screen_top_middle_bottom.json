@@ -1,0 +1,250 @@
+{
+  "title": "VimFu — Screen Top / Middle / Bottom",
+  "description": "H jumps to the top of the screen. M to the middle. L to the bottom. Add a count to offset from the edge.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 235,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "motions"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "1u6nlYsY71M",
+    "url": "https://youtube.com/watch?v=1u6nlYsY71M"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "# Dungeon Generator\nimport random\n\nROOMS = 25\nMIN_SIZE = 4\nMAX_SIZE = 12\n\ndef roll_dice(n, sides):\n    return sum(random.randint(1, sides) for _ in range(n))\n\ndef gen_room(room_id):\n    w = random.randint(MIN_SIZE, MAX_SIZE)\n    h = random.randint(MIN_SIZE, MAX_SIZE)\n    x = random.randint(0, 80 - w)\n    y = random.randint(0, 50 - h)\n    return {\"id\": room_id, \"x\": x, \"y\": y, \"w\": w, \"h\": h}\n\ndef place_treasure(room):\n    gold = roll_dice(3, 6) * 10\n    gems = roll_dice(1, 4)\n    return {\"gold\": gold, \"gems\": gems}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim dungeon.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Screen Top / Middle / Bottom",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "H, M, L. Three keys to jump anywhere on the visible screen without scrolling."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: L to bottom ---"
+    },
+    {
+      "say": "L jumps to the lowest visible line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "L",
+      "overlay": "L  screen bottom"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Bottom of the screen. The file didn't scroll — just the cursor moved.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: H to top ---"
+    },
+    {
+      "say": "H jumps to the highest line. H for high.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "H",
+      "overlay": "H  screen top"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Top of the screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: M to middle ---"
+    },
+    {
+      "say": "M jumps to the middle.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "M",
+      "overlay": "M  screen middle"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Right in the center of the screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: Count prefix with H ---"
+    },
+    {
+      "say": "Add a count for an offset. 3 H goes to the third line from the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3",
+      "overlay": "3  count"
+    },
+    {
+      "keys": "H",
+      "overlay": "H  screen top"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Third line from the top. Not the first — the third.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 5: Count prefix with L ---"
+    },
+    {
+      "say": "Same trick with L. 4 L goes to the fourth line from the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4",
+      "overlay": "4  count"
+    },
+    {
+      "keys": "L",
+      "overlay": "L  screen bottom"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Fourth from the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "H for high. M for middle. L for low. Add a count to land exactly where you want."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "title": "VimFu — Setting a Mark",
+  "description": "m followed by a lowercase letter sets a mark at the cursor position. Like dropping a pin in your code.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 238,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "marks"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "5Xu7DNS67vg",
+    "url": "https://youtube.com/watch?v=5Xu7DNS67vg"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "hero = \"Kira\"\nhp = 100\nmp = 40\nweapon = \"staff\"\n\ndef attack(target):\n    dmg = roll(2, 8)\n    target.hp -= dmg\n    return dmg\n\ndef heal(ally):\n    amt = roll(1, 6) + 5\n    ally.hp += amt\n    return amt"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Setting a Mark",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "M followed by a letter drops a mark at the cursor. Like a bookmark you can jump back to."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Set mark a on the hero line ---"
+    },
+    {
+      "say": "I'm on the hero line. M A sets mark A here.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "m",
+      "overlay": "set mark"
+    },
+    {
+      "keys": "a",
+      "overlay": "mark a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Done. No visible change, but the mark is set.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Navigate away, then jump back ---"
+    },
+    {
+      "say": "Now let me go somewhere else. Down to the heal function.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "go to last line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Single quote A jumps back to mark A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark"
+    },
+    {
+      "keys": "a",
+      "overlay": "mark a"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Back on the hero line. One jump from anywhere in the file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: Set a second mark ---"
+    },
+    {
+      "say": "You can have twenty six marks, A through Z. Let me set mark B on the attack function.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "m",
+      "overlay": "set mark"
+    },
+    {
+      "keys": "b",
+      "overlay": "mark b"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now I can bounce between hero and attack.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark"
+    },
+    {
+      "keys": "a",
+      "overlay": "mark a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark"
+    },
+    {
+      "keys": "b",
+      "overlay": "mark b"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Instant jumps between marked positions.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "M plus a letter to set a mark. Single quote plus that letter to jump back. Pin your favorite spots."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ]
+}

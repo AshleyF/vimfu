@@ -1,0 +1,245 @@
+{
+  "title": "VimFu — Global Marks",
+  "description": "Uppercase marks (mA through mZ) work across files. Jump between files without searching.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 241,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "marks"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "BH417aIoiG0",
+    "url": "https://youtube.com/watch?v=BH417aIoiG0"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hero.py enemy.py .hero.py.swp .enemy.py.swp"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*hero.py* ~/.local/state/nvim/swap/*enemy.py*"
+    },
+    {
+      "comment": "Create two files to jump between"
+    },
+    {
+      "writeFile": "hero.py",
+      "content": "name = \"Kira\"\nhp = 100\nmp = 40\nweapon = \"staff\"\n\ndef attack(target):\n    dmg = roll(2, 8)\n    target.hp -= dmg\n    return dmg"
+    },
+    {
+      "writeFile": "enemy.py",
+      "content": "name = \"Goblin\"\nhp = 30\natk = 5\nloot = \"gold coin\"\n\ndef take_hit(dmg):\n    global hp\n    hp -= dmg\n    return hp > 0"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with hero.py"
+    },
+    {
+      "line": "nvim hero.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Global Marks",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Lowercase marks only work within one file. Uppercase marks work across files."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Set global mark A in hero.py ---"
+    },
+    {
+      "say": "I'm in hero dot py. M capital A sets a global mark here.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "m",
+      "overlay": "set mark"
+    },
+    {
+      "keys": "A",
+      "overlay": "global mark A"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Mark A is now pinned to this spot in this file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Open enemy.py and set mark B ---"
+    },
+    {
+      "say": "Now let me open the enemy file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":e enemy.py"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Different file. M capital B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "m",
+      "overlay": "set mark"
+    },
+    {
+      "keys": "B",
+      "overlay": "global mark B"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 3: Jump back to hero.py with 'A ---"
+    },
+    {
+      "say": "Now single quote capital A. Watch — it switches files.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark"
+    },
+    {
+      "keys": "A",
+      "overlay": "global mark A"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Back in hero dot py. One keystroke to switch files.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: Jump to enemy.py with 'B ---"
+    },
+    {
+      "say": "Single quote capital B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark"
+    },
+    {
+      "keys": "B",
+      "overlay": "global mark B"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Back in enemy dot py. Bounce between files instantly.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Uppercase marks cross file boundaries. Set them on the spots you keep coming back to."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f hero.py enemy.py"
+    }
+  ]
+}

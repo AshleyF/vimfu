@@ -1,0 +1,235 @@
+{
+  "title": "VimFu — Center / Top / Bottom",
+  "description": "zz centers the cursor line on screen. zt moves it to the top. zb to the bottom. Keep your context visible.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 231,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scrolling"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "8oWZ5IOHW8k",
+    "url": "https://youtube.com/watch?v=8oWZ5IOHW8k"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "# Dungeon Generator\nimport random\n\nROOMS = 25\nMIN_SIZE = 4\nMAX_SIZE = 12\n\ndef roll_dice(n, sides):\n    return sum(random.randint(1, sides) for _ in range(n))\n\ndef gen_room(room_id):\n    w = random.randint(MIN_SIZE, MAX_SIZE)\n    h = random.randint(MIN_SIZE, MAX_SIZE)\n    x = random.randint(0, 80 - w)\n    y = random.randint(0, 50 - h)\n    return {\"id\": room_id, \"x\": x, \"y\": y, \"w\": w, \"h\": h}\n\ndef place_treasure(room):\n    gold = roll_dice(3, 6) * 10\n    gems = roll_dice(1, 4)\n    return {\"gold\": gold, \"gems\": gems}\n\ndef spawn_monster(room, difficulty):\n    hp = roll_dice(difficulty, 8)\n    atk = roll_dice(difficulty, 6)\n    return {\"hp\": hp, \"atk\": atk, \"room\": room[\"id\"]}\n\ndef connect_rooms(a, b):\n    mid_x = (a[\"x\"] + b[\"x\"]) // 2\n    mid_y = (a[\"y\"] + b[\"y\"]) // 2\n    return {\"from\": a[\"id\"], \"to\": b[\"id\"]}\n\ndef generate_dungeon():\n    rooms = [gen_room(i) for i in range(ROOMS)]\n    for room in rooms:\n        place_treasure(room)\n        spawn_monster(room, difficulty=3)\n    return rooms"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim dungeon.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Center / Top / Bottom",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Sometimes the cursor drifts to the edge of the screen. Z commands fix that."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Setup: move cursor to a line near the bottom ---"
+    },
+    {
+      "say": "Let me scroll down to the middle of the file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0004",
+      "overlay": "Ctrl-D  half page down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0004",
+      "overlay": "Ctrl-D  half page down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 1: zz to center ---"
+    },
+    {
+      "say": "Z Z centers the current line on screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zz",
+      "overlay": "center cursor line"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Same line, but now it's in the middle. Much easier to read context above and below.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: zt to top ---"
+    },
+    {
+      "say": "Z T moves the cursor line to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zt",
+      "overlay": "cursor line to top"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now we can see everything below the cursor. Great for reading a function top-down.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 3: zb to bottom ---"
+    },
+    {
+      "say": "Z B moves it to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zb",
+      "overlay": "cursor line to bottom"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now we see everything above. Good for checking what came before.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 4: back to center ---"
+    },
+    {
+      "say": "And back to center. Z Z is the one you'll use most.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zz",
+      "overlay": "center cursor line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z Z to center. Z T for top. Z B for bottom. Keep your cursor where you can see it."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "title": "VimFu — Scroll Up Half Page",
+  "description": "Ctrl-U scrolls up half a screen. The opposite of Ctrl-D. Navigate code without losing your place.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 228,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scrolling"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "n9UCXzRya_g",
+    "url": "https://youtube.com/watch?v=n9UCXzRya_g"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "# Dungeon Generator\nimport random\n\nROOMS = 25\nMIN_SIZE = 4\nMAX_SIZE = 12\n\ndef roll_dice(n, sides):\n    return sum(random.randint(1, sides) for _ in range(n))\n\ndef gen_room(room_id):\n    w = random.randint(MIN_SIZE, MAX_SIZE)\n    h = random.randint(MIN_SIZE, MAX_SIZE)\n    x = random.randint(0, 80 - w)\n    y = random.randint(0, 50 - h)\n    return {\"id\": room_id, \"x\": x, \"y\": y, \"w\": w, \"h\": h}\n\ndef place_treasure(room):\n    gold = roll_dice(3, 6) * 10\n    gems = roll_dice(1, 4)\n    return {\"gold\": gold, \"gems\": gems}\n\ndef spawn_monster(room, difficulty):\n    hp = roll_dice(difficulty, 8)\n    atk = roll_dice(difficulty, 6)\n    return {\"hp\": hp, \"atk\": atk, \"room\": room[\"id\"]}\n\ndef connect_rooms(a, b):\n    mid_x = (a[\"x\"] + b[\"x\"]) // 2\n    mid_y = (a[\"y\"] + b[\"y\"]) // 2\n    return {\"from\": a[\"id\"], \"to\": b[\"id\"]}\n\ndef generate_dungeon():\n    rooms = [gen_room(i) for i in range(ROOMS)]\n    for room in rooms:\n        place_treasure(room)\n        spawn_monster(room, difficulty=3)\n    return rooms"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim and jump to bottom"
+    },
+    {
+      "line": "nvim dungeon.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Scroll Up Half Page",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Last time we scrolled down with Control D. Control U is its partner — half a screen up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Navigate to bottom first ---"
+    },
+    {
+      "say": "Let's go to the bottom of the file first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "go to last line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Demo 1: First Ctrl-U ---"
+    },
+    {
+      "say": "Now Control U.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0015",
+      "overlay": "Ctrl-U  half page up"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Half a screen up. Cursor stays in the same relative position.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Second Ctrl-U ---"
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0015",
+      "overlay": "Ctrl-U  half page up"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Two presses and we're halfway back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: Third Ctrl-U to top ---"
+    },
+    {
+      "say": "One more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0015",
+      "overlay": "Ctrl-U  half page up"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Back at the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: Combo D and U ---"
+    },
+    {
+      "say": "Control D and Control U are a pair. Down and back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0004",
+      "overlay": "Ctrl-D  half page down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u0004",
+      "overlay": "Ctrl-D  half page down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u0015",
+      "overlay": "Ctrl-U  half page up"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u0015",
+      "overlay": "Ctrl-U  half page up"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control U. Half page up. Pair it with Control D to cruise through any file."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ]
+}

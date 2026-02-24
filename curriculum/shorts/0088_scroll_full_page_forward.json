@@ -1,0 +1,221 @@
+{
+  "title": "VimFu — Scroll Full Page Forward",
+  "description": "Ctrl-F scrolls a full screen forward. When half a page isn't fast enough.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 229,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scrolling"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "RXafn_Mvm1o",
+    "url": "https://youtube.com/watch?v=RXafn_Mvm1o"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "# Dungeon Generator\nimport random\n\nROOMS = 25\nMIN_SIZE = 4\nMAX_SIZE = 12\n\ndef roll_dice(n, sides):\n    return sum(random.randint(1, sides) for _ in range(n))\n\ndef gen_room(room_id):\n    w = random.randint(MIN_SIZE, MAX_SIZE)\n    h = random.randint(MIN_SIZE, MAX_SIZE)\n    x = random.randint(0, 80 - w)\n    y = random.randint(0, 50 - h)\n    return {\"id\": room_id, \"x\": x, \"y\": y, \"w\": w, \"h\": h}\n\ndef place_treasure(room):\n    gold = roll_dice(3, 6) * 10\n    gems = roll_dice(1, 4)\n    return {\"gold\": gold, \"gems\": gems}\n\ndef spawn_monster(room, difficulty):\n    hp = roll_dice(difficulty, 8)\n    atk = roll_dice(difficulty, 6)\n    return {\"hp\": hp, \"atk\": atk, \"room\": room[\"id\"]}\n\ndef connect_rooms(a, b):\n    mid_x = (a[\"x\"] + b[\"x\"]) // 2\n    mid_y = (a[\"y\"] + b[\"y\"]) // 2\n    return {\"from\": a[\"id\"], \"to\": b[\"id\"]}\n\ndef generate_dungeon():\n    rooms = [gen_room(i) for i in range(ROOMS)]\n    for room in rooms:\n        place_treasure(room)\n        spawn_monster(room, difficulty=3)\n    return rooms"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim dungeon.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Scroll Full Page Forward",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control D goes half a page. Control F goes a full page forward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Ctrl-F ---"
+    },
+    {
+      "say": "Watch. Control F.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0006",
+      "overlay": "Ctrl-F  full page forward"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "A whole screenful. We jumped past the first two functions.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Second Ctrl-F ---"
+    },
+    {
+      "say": "One more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0006",
+      "overlay": "Ctrl-F  full page forward"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "End of the file in just two presses. Twice as fast as Control D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: Compare with Ctrl-D ---"
+    },
+    {
+      "say": "Let's compare. Back to top.",
+      "wait": false
+    },
+    {
+      "keys": "gg"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control D — half page.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0004",
+      "overlay": "Ctrl-D  half page down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back. Now Control F — full page.",
+      "wait": false
+    },
+    {
+      "keys": "gg"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0006",
+      "overlay": "Ctrl-F  full page forward"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Twice the distance.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control F. Full page forward. Use it when you want to fly through a file."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ]
+}

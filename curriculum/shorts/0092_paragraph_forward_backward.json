@@ -1,0 +1,232 @@
+{
+  "title": "VimFu — Paragraph Forward/Backward",
+  "description": "Jump by paragraphs with } and {. Paragraphs are blocks separated by blank lines — perfect for code.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 233,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "motions"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "g5C-QCdZn2E",
+    "url": "https://youtube.com/watch?v=g5C-QCdZn2E"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f rpg.py .rpg.py.swp .rpg.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*rpg.py*"
+    },
+    {
+      "comment": "Create the demo file with clear paragraph breaks"
+    },
+    {
+      "writeFile": "rpg.py",
+      "content": "name = \"Kira\"\nhp = 100\nmp = 40\n\ndef attack(target):\n    dmg = roll(1, 8) + 3\n    target.hp -= dmg\n    return dmg\n\ndef heal(target):\n    amt = roll(1, 6) + 2\n    target.hp += amt\n    return amt\n\ndef level_up(hero):\n    hero.hp += 10\n    hero.mp += 5\n    hero.atk += 2"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim rpg.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Paragraph Forward/Backward",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close brace jumps to the next blank line. In code, that means the next function."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: } forward ---"
+    },
+    {
+      "say": "Close brace.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "}",
+      "overlay": "}  next paragraph"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped past the variables to the blank line before attack.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "}",
+      "overlay": "}  next paragraph"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "keys": "}",
+      "overlay": "}  next paragraph"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three presses, three functions. This is the fastest way to hop between blocks.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: { backward ---"
+    },
+    {
+      "say": "Open brace goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "{",
+      "overlay": "{  previous paragraph"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "keys": "{",
+      "overlay": "{  previous paragraph"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "keys": "{",
+      "overlay": "{  previous paragraph"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back at the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: d} to delete a paragraph ---"
+    },
+    {
+      "say": "D close brace deletes the whole paragraph.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d}",
+      "overlay": "delete paragraph"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All three variables gone. Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Close brace forward. Open brace back. Jump between code blocks instantly."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f rpg.py"
+    }
+  ]
+}

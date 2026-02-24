@@ -1,0 +1,299 @@
+{
+  "title": "VimFu — WORD Motions",
+  "description": "W, B, E, and gE move by WORDs — whitespace-delimited chunks. Faster than w/b/e when punctuation is everywhere.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 237,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "motions"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "Z8nwWWr58j4",
+    "url": "https://youtube.com/watch?v=Z8nwWWr58j4"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*config.py*"
+    },
+    {
+      "comment": "Create the demo file with punctuation-heavy text"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "base_url = \"https://api.game.io/v2\"\napi_key = \"sk-abc-123-xyz-789\"\nmax_retry = self.config[\"retries\"]\npath = \"/usr/local/bin/launcher\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim config.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "WORD Motions",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Lowercase W stops at every punctuation mark. Capital W skips to the next whitespace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: w vs W on URL ---"
+    },
+    {
+      "say": "Watch lowercase W on this URL.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "w  next word"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "w  next word"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "w  next word"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "w  next word"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Four presses and we're still inside the URL. Now try capital W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "W",
+      "overlay": "W  next WORD"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One press. Jumped past the whole URL to the next line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: B backward WORD ---"
+    },
+    {
+      "say": "Capital B goes back by WORD.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "B",
+      "overlay": "B  previous WORD"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "B",
+      "overlay": "B  previous WORD"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Two jumps from end of line to the equals sign. Lowercase B would have taken six.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: E end of WORD ---"
+    },
+    {
+      "say": "Capital E jumps to the end of the current WORD.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "E",
+      "overlay": "E  end of WORD"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Landed on the last character of the whole chunk.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "E",
+      "overlay": "E  end of WORD"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "E",
+      "overlay": "E  end of WORD"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital W, B, E. Move by WORDs. Treat punctuation as part of the word."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ]
+}

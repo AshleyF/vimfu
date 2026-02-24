@@ -1,0 +1,294 @@
+{
+  "title": "VimFu — Jumping to a Mark (Exact)",
+  "description": "Backtick + letter jumps to the exact row and column of a mark. More precise than single quote.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 240,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "marks"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "n6-7uiZ-MWc",
+    "url": "https://youtube.com/watch?v=n6-7uiZ-MWc"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "hero = \"Kira\"\nhp = 100\nmp = 40\nweapon = \"staff\"\n\ndef attack(target):\n    dmg = roll(2, 8)\n    target.hp -= dmg\n    return dmg\n\ndef heal(ally):\n    amt = roll(1, 6) + 5\n    ally.hp += amt\n    return amt"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Jumping to a Mark (Exact)",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Single quote goes to the mark's line. Backtick goes to the exact row and column."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Setup: Set mark on a specific column ---"
+    },
+    {
+      "say": "Let me set mark A right on the K of Kira.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ma",
+      "overlay": "set mark a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now I'll go to the bottom of the file.",
+      "wait": false
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 1: 'a line jump ---"
+    },
+    {
+      "say": "Single quote A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark line"
+    },
+    {
+      "keys": "a",
+      "overlay": "mark a"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Right line, but cursor is on 'h' — the first non-blank. Not on 'K' where I set the mark.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: `a exact jump ---"
+    },
+    {
+      "say": "Now let me go back to the bottom and try backtick A.",
+      "wait": false
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "`",
+      "overlay": "jump to exact mark"
+    },
+    {
+      "keys": "a",
+      "overlay": "mark a"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Exact position. Cursor is on the 'K' of Kira. Same line, same column.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: set mark on indented line, show difference ---"
+    },
+    {
+      "say": "Let me show another one. Mark B on 'roll' in the attack function.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "fr",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "mb",
+      "overlay": "set mark b"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Backtick B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "`",
+      "overlay": "jump to exact mark"
+    },
+    {
+      "keys": "b",
+      "overlay": "mark b"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Landed right on the 'r' of roll. Exact column preserved.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Backtick for exact position. Single quote for just the line. Use backtick when the column matters."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "title": "VimFu — Jumping to a Mark (Line)",
+  "description": "Single quote + letter jumps to the line of a mark. Lands on the first non-blank character.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 239,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "marks"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "V-GPFP0orLs",
+    "url": "https://youtube.com/watch?v=V-GPFP0orLs"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "hero = \"Kira\"\nhp = 100\nmp = 40\nweapon = \"staff\"\n\ndef attack(target):\n    dmg = roll(2, 8)\n    target.hp -= dmg\n    return dmg\n\ndef heal(ally):\n    amt = roll(1, 6) + 5\n    ally.hp += amt\n    return amt"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Jumping to a Mark (Line)",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Single quote plus a mark letter jumps to the line of that mark."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Setup: Set marks on two spots ---"
+    },
+    {
+      "say": "Let me set two marks. Mark A on this line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ma",
+      "overlay": "set mark a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "And mark B on the return in heal.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "mb",
+      "overlay": "set mark b"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: 'a to jump to line of mark a ---"
+    },
+    {
+      "say": "I'm at the bottom. Single quote A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark line"
+    },
+    {
+      "keys": "a",
+      "overlay": "mark a"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Jumped to line one. But notice — I set the mark on the quote character. The cursor landed on 'h' instead. Single quote always goes to the first non-blank character on the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: 'b to jump to mark b ---"
+    },
+    {
+      "say": "Single quote B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark line"
+    },
+    {
+      "keys": "b",
+      "overlay": "mark b"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Jumped to the last line, cursor on 'r' of return. First non-blank.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: d'a to delete to mark line ---"
+    },
+    {
+      "say": "It works with operators too. D single quote A deletes from here to mark A's line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d'",
+      "overlay": "delete to mark line"
+    },
+    {
+      "keys": "a",
+      "overlay": "mark a"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Everything between the two marks, deleted. Linewise. Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Single quote goes to the mark's line, first non-blank. Next time, backtick for the exact column."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ]
+}

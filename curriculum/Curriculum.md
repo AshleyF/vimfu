@@ -194,7 +194,7 @@ _Registers, macros, marks, windows, replace mode, and more motions. Now Vim feel
 | 091 | Sentence Forward/Backward | `)` `(` | Jump by sentences. |
 | 092 | Paragraph Forward/Backward | `}` `{` | Jump by paragraphs (blank-line separated). |
 | 093 | Matching Bracket | `%` | Jump to matching `(`, `{`, `[`, etc. |
-| 094 | Screen Top / Middle / Bottom | `H` `M` `L` | Jump to highest, middle, or lowest visible line. |
+| 094 | Screen Top / Middle / Bottom | `H` `M` `L` `3H` `5L` | Jump to highest, middle, or lowest visible line. Count offsets from edge. |
 | 095 | Next/Previous Line Start | `+` `-` `Enter` | Jump to first non-blank of next/previous line. |
 | 096 | WORD Motions | `W` `B` `E` `gE` | Like `w`/`b`/`e`/`ge` but by whitespace-delimited WORDs. |
 
