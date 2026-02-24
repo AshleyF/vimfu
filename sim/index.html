@@ -3,9 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <title>VimFu Simulator</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,9 +35,13 @@
     margin-bottom: 1rem;
     transition: background 0.15s, color 0.15s;
   }
-  .mode-badge.normal  { background: #82aaff; color: #000; }
-  .mode-badge.insert  { background: #c3e88d; color: #000; }
   .mode-badge.shell   { background: #89ddff; color: #000; }
+  .mode-badge.normal   { background: #82aaff; color: #000; }
+  .mode-badge.insert   { background: #c3e88d; color: #000; }
+  .mode-badge.visual,
+  .mode-badge.visual_line { background: #c792ea; color: #000; }
+  .mode-badge.replace  { background: #f78c6c; color: #000; }
+  .mode-badge.command  { background: #3c3c3c; color: #d4d4d4; }
 
   .terminal-wrapper {
     position: relative;
@@ -48,7 +49,6 @@
     border-radius: 6px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.5);
     background: #14161b;
-    /* approximate: pad*2 + 80*charW  x  pad*2 + 20*charH */
     min-width: 892px;
     min-height: 532px;
     display: flex;
@@ -100,6 +100,7 @@
     color: #888;
     text-align: center;
     line-height: 1.7;
+    max-width: 900px;
   }
   .help kbd {
     display: inline-block;
@@ -111,15 +112,13 @@
     font-family: 'Cascadia Mono', Consolas, monospace;
     font-size: 0.8rem;
   }
-  .mode-badge.visual, .mode-badge.visual_line { background: #c792ea; color: #000; }
-  .mode-badge.replace { background: #f78c6c; color: #000; }
-  .mode-badge.command { background: #3c3c3c; color: #d4d4d4; }
+
 </style>
 </head>
 <body>
 
 <h1>VimFu Simulator</h1>
-<div id="mode-badge" class="mode-badge normal">NORMAL</div>
+<div id="mode-badge" class="mode-badge shell">SHELL</div>
 <div class="terminal-wrapper">
   <div class="loading-overlay" id="loading">
     <div class="loading-spinner"></div>
@@ -127,6 +126,7 @@
   </div>
   <canvas id="terminal" tabindex="0"></canvas>
 </div>
+
 <div class="help">
   Type <kbd>help</kbd> at the shell prompt for available commands.
 </div>
@@ -150,57 +150,62 @@ const session = new SessionManager({
 
 // Seed filesystem with sample files on first visit
 if (session.fs.fileCount === 0) {
-  session.fs.write('welcome.txt', [
+  session.fs.write('hello.txt', [
     'Welcome to VimFu!',
     '',
-    'A comprehensive Vim simulator with:',
-    '  - Full motion support (w/b/e/f/t/%/{})',
-    '  - Operators: d, c, y, >, <',
-    '  - Text objects: iw, aw, i", a", i(, etc.',
-    '  - Visual mode (v, V)',
-    '  - Search (/, ?, n, N, *, #)',
-    '  - Undo/Redo (u, Ctrl-R)',
-    '  - Dot repeat (.)',
-    "  - Marks (m, ', `)",
-    '  - Replace mode (R)',
-    '  - Command mode (:w :q :42)',
+    'Type :q to return to the shell.',
+    'Type :w to save this file.',
     '',
-    'Try editing this text!',
+    'Try editing this text.',
+  ].join('\n'));
+
+  session.fs.write('notes.txt', [
+    'Shopping list:',
+    '  - milk',
+    '  - eggs',
+    '  - bread',
   ].join('\n'));
 }
+
 // Always ensure demo.py exists (even for returning users)
 if (!session.fs.exists(SAMPLE_PYTHON.filename)) {
   session.fs.write(SAMPLE_PYTHON.filename, SAMPLE_PYTHON.content);
 }
 
-const canvas     = document.getElementById('terminal');
-const rendererInst = new Renderer(canvas, { fontSize: FONT_SIZE });
-const modeBadge  = document.getElementById('mode-badge');
+// ── Renderer ──
+const canvas = document.getElementById('terminal');
+const renderer = new Renderer(canvas, { fontSize: FONT_SIZE });
 
+// ── Mode badge ──
+const modeBadge = document.getElementById('mode-badge');
 const MODE_COLORS = {
-  SHELL:         'shell',
-  NORMAL:        'normal',
-  INSERT:        'insert',
-  VISUAL:        'visual',
+  SHELL:       'shell',
+  NORMAL:      'normal',
+  INSERT:      'insert',
+  VISUAL:      'visual',
   'VISUAL LINE': 'visual_line',
-  REPLACE:       'replace',
-  COMMAND:       'command',
+  REPLACE:     'replace',
+  COMMAND:     'command',
 };
 
 function onUpdate(frame) {
-  rendererInst.draw(frame);
+  renderer.draw(frame);
   const label = session.getModeLabel();
   modeBadge.textContent = label;
   modeBadge.className = 'mode-badge ' + (MODE_COLORS[label] || 'shell');
 }
 
+// ── Controller ──
 const ctrl = new SessionController(session, onUpdate);
 ctrl.attach(canvas);
 
+// Initial render
 onUpdate(session.renderFrame());
 canvas.classList.add('ready');
 document.getElementById('loading').classList.add('hidden');
 canvas.focus();
+
+
 </script>
 
 </body>

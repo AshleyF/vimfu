@@ -28,11 +28,11 @@ export class SessionManager {
    * @param {object} opts
    * @param {number} [opts.rows=20]
    * @param {number} [opts.cols=40]
-   * @param {string} [opts.themeName='nvim_default']
+   * @param {string} [opts.themeName='monokai']
    * @param {boolean} [opts.persist=true] – localStorage persistence
    * @param {function} [opts.onUpdate] – callback(frame) after each key
    */
-  constructor({ rows = 20, cols = 40, themeName = 'nvim_default', persist = true, onUpdate = null } = {}) {
+  constructor({ rows = 20, cols = 40, themeName = 'monokai', persist = true, onUpdate = null } = {}) {
     this.rows = rows;
     this.cols = cols;
 

@@ -55,7 +55,7 @@ def run_scenario(name, main_file, main_content, keys, settle=0.4):
     main_file.write_text(main_content, encoding="utf-8")
 
     shell = ShellPilot(
-        shell=f'nvim -u NONE -n -i NONE {main_file.name}',
+        shell=f'nvim -n -i NONE {main_file.name}',
         rows=ROWS,
         cols=COLS,
     )

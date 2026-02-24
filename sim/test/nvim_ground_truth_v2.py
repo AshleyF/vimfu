@@ -72,7 +72,7 @@ def run_case(name: str, case: dict) -> dict:
     tmp.write_text(initial, encoding="utf-8")
 
     shell = ShellPilot(
-        shell=f'nvim -u NONE -n -i NONE {tmp.name}',
+        shell=f'nvim -n -i NONE {tmp.name}',
         rows=ROWS,
         cols=COLS,
     )

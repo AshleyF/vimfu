@@ -1,0 +1,276 @@
+{
+  "title": "VimFu — Navigate Panes (Vim Keys)",
+  "description": "Control B plus h, j, k, or l navigates panes vim-style. No reaching for arrow keys.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 508,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux before recording"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Set up top pane"
+    },
+    {
+      "line": "clear; echo '[ TOP ]'"
+    },
+    {
+      "comment": "Create horizontal split"
+    },
+    {
+      "line": "tmux split-window"
+    },
+    {
+      "line": "clear; echo '[ LEFT ]'"
+    },
+    {
+      "comment": "Create vertical split in bottom pane"
+    },
+    {
+      "line": "tmux split-window -h"
+    },
+    {
+      "line": "clear; echo '[ RIGHT ]'"
+    },
+    {
+      "comment": "Bind vim-style pane navigation keys"
+    },
+    {
+      "line": "tmux bind h select-pane -L"
+    },
+    {
+      "line": "tmux bind j select-pane -D"
+    },
+    {
+      "line": "tmux bind k select-pane -U"
+    },
+    {
+      "line": "tmux bind l select-pane -R"
+    },
+    {
+      "comment": "Go back to left pane for demo start"
+    },
+    {
+      "line": "tmux select-pane -t 1"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Navigate Panes (Vim Keys)",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Arrow keys work, but vim users have a better option — H J K L."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Add four lines to your tmux config — bind H J K L to select pane left, down, up, and right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Then it's the same pattern. Control B, then a vim motion key."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: l (right) ---"
+    },
+    {
+      "say": "I'm in the bottom left. Control B, L — right.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "l",
+      "overlay": "right"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Right pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: k (up) ---"
+    },
+    {
+      "say": "Control B, K — up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Top pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: j (down) ---"
+    },
+    {
+      "say": "Control B, J — down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back down."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: h (left) ---"
+    },
+    {
+      "say": "Control B, H — left.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "h",
+      "overlay": "left"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Left pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Comparison ---"
+    },
+    {
+      "say": "Same directions you already know from vim. H left, J down, K up, L right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "No reaching for arrow keys. Your hands stay on the home row."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

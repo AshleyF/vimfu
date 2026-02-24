@@ -6,7 +6,7 @@ The VimFu simulator is a pure-JavaScript Vim engine with MVC architecture:
 
 - **Buffer** (`src/buffer.js`) – line-based text storage
 - **VimEngine** (`src/engine.js`) – core Vim command dispatch, mode handling, cursor, undo/redo
-- **Screen** (`src/screen.js`) – produces frame dicts with styled runs (themes: `nvim_default` for tests, `monokai` for browser)
+- **Screen** (`src/screen.js`) – produces frame dicts with styled runs (theme: `monokai`)
 - **Controller** (`src/controller.js`) – maps DOM keyboard events to `feedKey()` calls
 - **Renderer** (`src/renderer.js`) – renders frames to an HTML canvas
 
@@ -74,7 +74,7 @@ Guidelines for test cases:
 
 ### 4. Capture Ground Truth from Neovim
 
-Run the ground truth capture script against Neovim (`nvim -u NONE -n -i NONE`):
+Run the ground truth capture script against Neovim (using the user's WSL config with Monokai colorscheme):
 
 ```bash
 cd sim
@@ -83,10 +83,10 @@ C:/source/vimfu/.venv/Scripts/python.exe test/nvim_ground_truth_v2.py --suite <f
 
 This produces `test/ground_truth_<feature>.json` with the expected screen output for each test case.
 
-Neovim settings (hardcoded in the test harness):
-- `shiftwidth=8`, `tabstop=8`, `noexpandtab`
+Neovim settings:
+- Uses the WSL Neovim config (Monokai colorscheme)
 - Screen: 40 cols × 20 rows
-- No vimrc (`-u NONE`), no swap (`-n`), no shada (`-i NONE`)
+- No swap (`-n`), no shada (`-i NONE`)
 
 ### 5. Run Comparison Tests
 
@@ -183,9 +183,9 @@ All layers must pass before a feature is considered done.
 
 ### Layer 1: Vim Engine Ground Truth (nvim comparison)
 
-**What it tests:** Vim motions, operators, text objects — pure text + cursor behavior.
-**Ground truth source:** Real nvim (`nvim -u NONE -n -i NONE`), captured via ShellPilot + pyte.
-**Theme:** N/A — these compare text lines and cursor position only, not colors.
+**What it tests:** Vim motions, operators, text objects — text, cursor, and colors.
+**Ground truth source:** Real nvim (with user's Monokai config), captured via ShellPilot + pyte.
+**Theme:** `monokai` — tests validate that the sim matches Neovim's actual Monokai rendering.
 
 ```bash
 cd sim
@@ -326,34 +326,14 @@ integration bugs that slip through all the unit/snapshot tests.
 
 ## Lessons Learned: How Bugs Slip Through
 
-### The nvim_default vs monokai theme mismatch (caught Feb 2026)
+### Theme consistency (resolved Feb 2026)
 
-**Bug:** Syntax highlighting looked wrong in the browser — keywords, numbers,
-operators were all plain white with no color differentiation.
+The simulator uses the `monokai` theme everywhere — browser, tests, and ground
+truth capture. Ground truth is generated against Neovim with the user's WSL
+config (which uses Monokai). The compare tests validate colors match exactly.
 
-**Root cause:** The browser (`index.html`) used the `nvim_default` theme, but
-nvim's built-in default barely highlights anything — keywords, numbers, and
-operators are ALL the same `e0e2ea` white. Only comments, strings, and a few
-identifiers get color. Meanwhile, the ShellPilot GIF pipeline uses a Monokai
-colorscheme where keywords are pink, numbers are purple, etc.
-
-**Why tests missed it:**
-1. The nvim color comparison test (`compare_nvim_syntax.py`) compared against
-   `nvim -u NONE` + syntax on — and the sim *correctly matched* that sparse
-   palette. The test passed with 0 mismatches. But 0 mismatches against a
-   nearly-monochrome palette is not a meaningful test of "does highlighting
-   look right."
-2. The monokai theme had only 4 hand-written assertions in
-   `test_syntax_screen.js`. They passed, but nobody looked at the browser.
-3. No test verified that `index.html` used the same theme as the GIF pipeline.
-
-**Fix:** Switched `index.html` to `monokai` theme. Added browser verification
-to the testing checklist (Layer 6 above).
-
-**Lesson:** Unit tests can pass with 100% accuracy and still be testing the
-wrong thing. A "0 mismatches" result is meaningless if the reference data
-itself doesn't represent what the user expects. Always verify the final
-rendered output in the browser.
+**Rule:** Do not use `-u NONE` for Neovim. Do not use `nvim_default` theme.
+Everything uses the user's actual Monokai colorscheme.
 
 ### The `:e` missing filename bug (caught Feb 2026)
 
@@ -397,4 +377,4 @@ self-referential loop. No test compared against what a real terminal does.
 - **`_clampCursor()`** and **`_ensureCursorVisible()`** are called automatically after `feedKey()`.
 - **Exclusive vs inclusive motions** affect operator behavior. See `:help exclusive`.
 - **The `commandLine` property** is what shows on the bottom line of the screen. Neovim shows `recording @a` there during macro recording.
-- **Tab handling**: Neovim with `-u NONE` uses `tabstop=8`, `noexpandtab`. Tabs render as variable-width spaces.
+- **Tab handling**: Neovim uses `tabstop=8`, `noexpandtab` by default. Tabs render as variable-width spaces.

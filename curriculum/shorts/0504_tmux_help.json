@@ -1,0 +1,208 @@
+{
+  "title": "VimFu — tmux Help",
+  "description": "Forgot a shortcut? Control B, question mark shows every tmux key binding in a scrollable list.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 504,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux before recording"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "tmux Help",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Forgot a tmux shortcut? Control B, question mark shows every key binding."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Open help ---"
+    },
+    {
+      "say": "Let's try it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "?",
+      "overlay": "help"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "comment": "--- Explain help screen ---"
+    },
+    {
+      "say": "This is the key bindings list. Every prefix command tmux supports is right here."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Each line shows the key and what it does."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Scroll through ---"
+    },
+    {
+      "say": "Use the arrow keys to scroll through the list.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[B",
+      "overlay": "scroll down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[B",
+      "overlay": "scroll down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[B",
+      "overlay": "scroll down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[B",
+      "overlay": "scroll down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Splits, panes, windows, sessions — it's all listed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Exit help ---"
+    },
+    {
+      "say": "Press Q to close the help screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q",
+      "overlay": "quit help"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to your shell."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Whenever you're stuck, Control B, question mark. Your built-in tmux cheat sheet."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

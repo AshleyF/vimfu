@@ -1,0 +1,179 @@
+{
+  "title": "VimFu — Starting tmux",
+  "description": "Launch tmux from the shell with the tmux command. Notice the green status bar at the bottom.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 502,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 10.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Starting tmux",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Launch tmux ---"
+    },
+    {
+      "say": "To start tmux, type tmux and press enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "tmux"
+    },
+    "enter",
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 10.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Explain status bar ---"
+    },
+    {
+      "say": "Done. Look at the bottom of the screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "That green bar is the tmux status bar. On the left, you see zero in brackets — that's your session name."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Next to it, zero colon zsh star. Window zero, running zsh. The star means it's the active window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "On the right, the current time and date."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Exit tmux ---"
+    },
+    {
+      "say": "To leave, just type exit.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "exit"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Back to your normal shell. The tmux session is gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Re-enter tmux ---"
+    },
+    {
+      "say": "Start a new session anytime.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "tmux"
+    },
+    "enter",
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 10.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "That's it. Type tmux and you're in."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

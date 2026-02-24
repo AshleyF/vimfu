@@ -194,7 +194,7 @@ for (const [suiteName, cases] of Object.entries(suites)) {
     }
     feedKeys(engine, gt.keys);
 
-    const screen = new Screen(ROWS, COLS, 'nvim_default');
+    const screen = new Screen(ROWS, COLS, 'monokai');
     const frame = screen.render(engine);
     const simTextLines = frame.lines.map(l => l.text).slice(0, ROWS - 2);
 

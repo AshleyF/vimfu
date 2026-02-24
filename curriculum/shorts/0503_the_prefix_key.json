@@ -1,0 +1,204 @@
+{
+  "title": "VimFu — The Prefix Key",
+  "description": "All tmux commands start with Control B — the prefix key. Press it, release, then press the command key.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 503,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux before recording"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The Prefix Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Every tmux command starts with the prefix key — Control B."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Without it, your keystrokes go straight to the shell."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: key without prefix ---"
+    },
+    {
+      "say": "Watch. If I press double quote without the prefix...",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Nothing. It just types a character on the command line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "Clear the stray character"
+    },
+    {
+      "keys": "\u0015",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: key with prefix ---"
+    },
+    {
+      "say": "Now — Control B first, then double quote.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\"",
+      "overlay": "split horizontal"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The screen split. That's the prefix key at work."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press Control B, release, then press the command key. Two separate keystrokes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: another prefix command ---"
+    },
+    {
+      "say": "Let me show you another one. Control B, then percent sign.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "%",
+      "overlay": "split vertical"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Vertical split. Same pattern — prefix, then command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B is your gateway to tmux. Every command starts with it. Get comfortable pressing it."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+{
+  "title": "VimFu — Split Horizontally",
+  "description": "Control B, double quote splits the current pane into top and bottom. Each pane runs its own shell.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 505,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux before recording"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Split Horizontally",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, double quote splits your screen into top and bottom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: first split ---"
+    },
+    {
+      "say": "Let's try it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\"",
+      "overlay": "split horizontal"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Two panes. The new one is on the bottom, and it's already active."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Show it's a separate shell ---"
+    },
+    {
+      "say": "This is a separate shell. I can run commands here.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "echo 'bottom pane'"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The top pane is untouched. Two independent terminals."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: second split ---"
+    },
+    {
+      "say": "Split again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\"",
+      "overlay": "split horizontal"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Three panes. Stack as many as you need."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Practical tip ---"
+    },
+    {
+      "say": "Each pane starts in the same directory you split from.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "pwd"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Same directory. Same environment. Just a new shell."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, double quote. Horizontal splits for stacking terminals — code on top, output on the bottom."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

@@ -1,0 +1,253 @@
+{
+  "title": "VimFu — Last Active Pane",
+  "description": "Control B, semicolon toggles back to the previously active pane. Instant bounce between two workspaces.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 510,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux before recording"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Set up top pane"
+    },
+    {
+      "line": "clear; echo '[ TOP ]'"
+    },
+    {
+      "comment": "Create horizontal split"
+    },
+    {
+      "line": "tmux split-window"
+    },
+    {
+      "line": "clear; echo '[ BOTTOM ]'"
+    },
+    {
+      "comment": "Go back to top pane"
+    },
+    {
+      "line": "tmux select-pane -t 0"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Last Active Pane",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, semicolon jumps back to the last pane you were in."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Move to bottom pane ---"
+    },
+    {
+      "say": "I'm in the top pane. Let me move to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "o",
+      "overlay": "next pane"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now I'm in the bottom pane. The top pane was my last active pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: toggle back ---"
+    },
+    {
+      "say": "Control B, semicolon.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ";",
+      "overlay": "last pane"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Right back to the top."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: toggle again ---"
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ";",
+      "overlay": "last pane"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the bottom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: rapid toggle ---"
+    },
+    {
+      "say": "It toggles between the last two active panes. Watch.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ";",
+      "overlay": "last pane"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ";",
+      "overlay": "last pane"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ";",
+      "overlay": "last pane"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Toggle, toggle, toggle."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Perfect for bouncing between your code and your terminal. Control B, semicolon."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "title": "VimFu — Navigate Panes (Arrows)",
+  "description": "Control B and an arrow key moves focus to the pane in that direction. Point and jump.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 507,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux before recording"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Set up top pane"
+    },
+    {
+      "line": "clear; echo '[ TOP ]'"
+    },
+    {
+      "comment": "Create horizontal split"
+    },
+    {
+      "line": "tmux split-window"
+    },
+    {
+      "line": "clear; echo '[ LEFT ]'"
+    },
+    {
+      "comment": "Create vertical split in bottom pane"
+    },
+    {
+      "line": "tmux split-window -h"
+    },
+    {
+      "line": "clear; echo '[ RIGHT ]'"
+    },
+    {
+      "comment": "Go back to left pane for demo start"
+    },
+    {
+      "line": "tmux select-pane -t 1"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Navigate Panes (Arrows)",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B and an arrow key moves focus to the pane in that direction."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: navigate right ---"
+    },
+    {
+      "say": "I'm in the bottom left. Control B, right arrow.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[C",
+      "overlay": "right"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Right pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: navigate up ---"
+    },
+    {
+      "say": "Control B, up arrow.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[A",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Top pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: navigate down ---"
+    },
+    {
+      "say": "Control B, down arrow.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[B",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back down."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: navigate left ---"
+    },
+    {
+      "say": "Control B, left arrow.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[D",
+      "overlay": "left"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Left pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Reinforce ---"
+    },
+    {
+      "say": "Point your arrow at the pane you want. It's directional — the arrow picks the pane based on position."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B plus an arrow key. Fast and precise."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

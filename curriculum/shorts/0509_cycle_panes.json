@@ -1,0 +1,242 @@
+{
+  "title": "VimFu — Cycle Panes",
+  "description": "Control B, O cycles focus to the next pane in order. Wraps around to the first.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 509,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux before recording"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Set up pane A (top)"
+    },
+    {
+      "line": "clear; echo '[ A ]'"
+    },
+    {
+      "comment": "Create horizontal split"
+    },
+    {
+      "line": "tmux split-window"
+    },
+    {
+      "line": "clear; echo '[ B ]'"
+    },
+    {
+      "comment": "Create vertical split in bottom pane"
+    },
+    {
+      "line": "tmux split-window -h"
+    },
+    {
+      "line": "clear; echo '[ C ]'"
+    },
+    {
+      "comment": "Go back to pane A"
+    },
+    {
+      "line": "tmux select-pane -t 0"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Cycle Panes",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, O cycles through panes in order. No need to pick a direction."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: cycle through all 3 ---"
+    },
+    {
+      "say": "I'm in pane A. Watch.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "o",
+      "overlay": "next pane"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Pane B."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "o",
+      "overlay": "next pane"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Pane C."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "o",
+      "overlay": "next pane"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "And we're back to pane A. It wraps around."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Speed demo ---"
+    },
+    {
+      "say": "Let me cycle through again. Fast.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "o",
+      "overlay": "next pane"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "o",
+      "overlay": "next pane"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "o",
+      "overlay": "next pane"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three panes, three taps. Full circle."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, O. One key to hop through all your panes."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

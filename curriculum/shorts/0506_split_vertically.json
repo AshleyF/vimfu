@@ -1,0 +1,178 @@
+{
+  "title": "VimFu — Split Vertically",
+  "description": "Control B, percent sign splits the current pane into left and right. Side-by-side terminals.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 506,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux before recording"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Split Vertically",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, percent sign splits your screen into left and right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: vertical split ---"
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "%",
+      "overlay": "split vertical"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Left pane, right pane. Side by side."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The new pane is on the right, and it's active.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "echo 'right'"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Perfect for keeping your editor on one side and a terminal on the other."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: mix splits ---"
+    },
+    {
+      "say": "You can mix vertical and horizontal splits. Control B, double quote in the right pane.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\"",
+      "overlay": "split horizontal"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Three panes. One on the left, two stacked on the right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Design your layout however you want."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, percent for vertical. Control B, double quote for horizontal. Mix and match."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

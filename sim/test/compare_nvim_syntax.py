@@ -34,7 +34,7 @@ const engine = new VimEngine({ rows: ROWS, cols: COLS });
 engine.filename = SAMPLE_PYTHON.filename;
 engine.loadFile(SAMPLE_PYTHON.content);
 
-const screen = new Screen(ROWS, COLS, 'nvim_default');
+const screen = new Screen(ROWS, COLS, 'monokai');
 
 const results = {};
 const textRows = ROWS - 2;

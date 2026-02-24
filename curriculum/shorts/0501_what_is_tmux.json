@@ -1,0 +1,240 @@
+{
+  "title": "VimFu — What Is tmux?",
+  "description": "tmux is a terminal multiplexer. One terminal window, many sessions, windows, and panes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 501,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "comment": "Create a sample file for the demo"
+    },
+    {
+      "line": "printf 'def greet():\n    print(\"Hello!\")\n\ngreet()\n' > hello.py"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 10.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "What Is tmux?",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "tmux is a terminal multiplexer. One terminal window, many shells inside."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Launch tmux ---"
+    },
+    {
+      "say": "Here's what that looks like.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "tmux"
+    },
+    "enter",
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 10.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Status bar ---"
+    },
+    {
+      "say": "See that green bar at the bottom? That's the tmux status bar. You're inside tmux now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: horizontal split ---"
+    },
+    {
+      "say": "Watch this.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\"",
+      "overlay": "split horizontal"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Two panes. Each with its own shell."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: vertical split ---"
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "%",
+      "overlay": "split vertical"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Three panes. All inside one terminal window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Open nvim in top pane ---"
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[A",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "nvim hello.py"
+    },
+    "enter",
+    {
+      "waitForScreen": "Hello",
+      "timeout": 10.0
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "comment": "--- Run ls in bottom pane ---"
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[B",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "python3 hello.py"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "comment": "--- Benefits ---"
+    },
+    {
+      "say": "Your editor in one pane, a shell right next to it. All in one terminal."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "And the best part — sessions are persistent. Close your terminal, come back later, everything is still running."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Let's learn every tmux command, one by one."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}
