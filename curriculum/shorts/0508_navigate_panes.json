@@ -1,6 +1,6 @@
 {
-  "title": "VimFu — Navigate Panes (Vim Keys)",
-  "description": "Control B plus h, j, k, or l navigates panes vim-style. No reaching for arrow keys.",
+  "title": "VimFu — Navigate Panes",
+  "description": "Control B plus h, j, k, or l navigates panes vim-style. Arrow keys also work, but home row is faster.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -49,6 +49,12 @@
       "line": "clear"
     },
     {
+      "comment": "Add vim-style pane nav to tmux config"
+    },
+    {
+      "line": "printf 'bind h select-pane -L\nbind j select-pane -D\nbind k select-pane -U\nbind l select-pane -R\n' > ~/.tmux.conf"
+    },
+    {
       "comment": "Launch tmux before recording"
     },
     {
@@ -82,21 +88,7 @@
     {
       "line": "clear; echo '[ RIGHT ]'"
     },
-    {
-      "comment": "Bind vim-style pane navigation keys"
-    },
-    {
-      "line": "tmux bind h select-pane -L"
-    },
-    {
-      "line": "tmux bind j select-pane -D"
-    },
-    {
-      "line": "tmux bind k select-pane -U"
-    },
-    {
-      "line": "tmux bind l select-pane -R"
-    },
+
     {
       "comment": "Go back to left pane for demo start"
     },
@@ -110,7 +102,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "Navigate Panes (Vim Keys)",
+      "caption": "Navigate Panes",
       "duration": 2.0
     },
     {
@@ -120,19 +112,13 @@
       "comment": "--- Intro ---"
     },
     {
-      "say": "Arrow keys work, but vim users have a better option — H J K L."
+      "say": "Control B plus a direction key moves focus between panes."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Add four lines to your tmux config — bind H J K L to select pane left, down, up, and right."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "say": "Then it's the same pattern. Control B, then a vim motion key."
+      "say": "Arrow keys work out of the box. But add four lines to your tmux config and you can use H J K L instead."
     },
     {
       "wait": 0.3
@@ -153,7 +139,7 @@
     },
     {
       "keys": "l",
-      "overlay": "right"
+      "overlay": "l →"
     },
     {
       "wait": 0.5
@@ -180,7 +166,7 @@
     },
     {
       "keys": "k",
-      "overlay": "up"
+      "overlay": "k ↑"
     },
     {
       "wait": 0.5
@@ -207,7 +193,7 @@
     },
     {
       "keys": "j",
-      "overlay": "down"
+      "overlay": "j ↓"
     },
     {
       "wait": 0.5
@@ -234,7 +220,7 @@
     },
     {
       "keys": "h",
-      "overlay": "left"
+      "overlay": "h ←"
     },
     {
       "wait": 0.5
@@ -246,19 +232,10 @@
       "wait": 0.3
     },
     {
-      "comment": "--- Comparison ---"
-    },
-    {
-      "say": "Same directions you already know from vim. H left, J down, K up, L right."
-    },
-    {
-      "wait": 0.3
-    },
-    {
       "comment": "--- Wrap up ---"
     },
     {
-      "say": "No reaching for arrow keys. Your hands stay on the home row."
+      "say": "Same directions you already know from vim. H J K L — your hands never leave the home row."
     },
     {
       "wait": 1.0
@@ -271,6 +248,9 @@
     "escape",
     {
       "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/.tmux.conf"
     }
   ]
 }

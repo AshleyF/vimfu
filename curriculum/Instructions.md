@@ -30,7 +30,11 @@ Every video goes through a generate → inspect → fix cycle:
      - `a` after `q` or `@` means *register a*, not *append*.
      - `0` after `Ctrl-R` (in insert mode) means *register 0*, not *line start*.
      - `Ctrl-R` in insert mode means *paste from register*, not *redo*.
+     - `y` at a tmux confirm prompt means *yes*, not *yank*.
+     - `h`/`j`/`k`/`l` after tmux prefix mean *left*/*down*/*up*/*right*, not Vim motions.
+     - Arrow escape sequences (`\u001b[B` etc.) render as `⎋[B` — unreadable. Use letter keys or set explicit overlays.
      - If an overlay is wrong, add `overlay="correct caption"` to the `Keys()` call. Pass `overlay=""` to suppress a caption entirely.
+     - **Every single `[OVERLAY]` line must make sense to a viewer.** If it doesn't, the JSON is wrong.
    - **No extraneous keystrokes** — every key press should serve the demo. If you see navigation that could be shorter (e.g., `0` then `w w w` when `3w` or `f<char>` would do), redesign the file content or pick a better motion.
    - **The demo is compelling** — the log should read like a clean, purposeful walkthrough. If a section feels clunky or repetitive, restructure it. Better motions make for better demos.
 4. **Fix and regenerate** if anything is off. This isn't just about fixing errors — it's about **improving the demo**. A log that works but feels inefficient or cluttered is not done yet. Repeat until the log reads like a crisp, polished tutorial.
@@ -224,7 +228,12 @@ teardown=[
 
 ### Key Overlay Overrides
 
-When a key's default overlay caption is wrong for the context, override it:
+When a key's default overlay caption is wrong for the context, override it. **Every `[OVERLAY]` line in the log must make sense to the viewer.** The default captions assume Vim context, so they will be wrong for:
+
+- **tmux prompts**: `y` defaults to "yank" but means "yes" at a tmux confirm prompt. Override: `overlay="yes"`.
+- **tmux pane navigation**: `h`/`j`/`k`/`l` after prefix mean "left"/"down"/"up"/"right", not Vim motions.
+- **Shell context**: Any key pressed outside of Vim (e.g., at a shell prompt or in a tmux mode) needs its overlay checked.
+- **Arrow keys**: Escape sequences like `\u001b[B` render as `⎋[B` in the overlay — unreadable. Prefer letter keys (`h`/`j`/`k`/`l`) where possible. If you must use arrow escapes, always set an explicit `overlay` (e.g., `"overlay": "↓"`).
 
 ```python
 # Register names after q or @ — 'a' normally shows "append"
@@ -234,6 +243,10 @@ Keys("a", overlay="register a"),            # override "append" → "register a"
 # Insert-mode Ctrl-R pastes from register — not "redo"
 Keys("\x12", overlay="paste register"),     # Ctrl-R in insert mode
 Keys("0", overlay="register 0"),            # "0" register, not "line start"
+
+# tmux confirm prompts — 'y' is "yes", not "yank"
+Keys("y", overlay="yes"),                   # at a tmux kill-pane? prompt
+Keys("n", overlay="no"),                    # decline a tmux prompt
 
 # Multi-char keys show as a single overlay
 Keys("qa", overlay="record into a"),        # alternative: send both at once

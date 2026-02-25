@@ -862,7 +862,7 @@ _Real-world editing patterns that combine what you've learned._
 
 ---
 
-## Part 19 — Tmux & Shell (Lessons 501–545)
+## Part 19 — Tmux & Shell (Lessons 501–544)
 
 _Tmux is the perfect partner for Vim. Learn to split your terminal, manage windows, and become a keyboard-only powerhouse. The shell is your launchpad._
 
@@ -881,65 +881,64 @@ _Tmux is the perfect partner for Vim. Learn to split your terminal, manage windo
 |-----|-------|------|-------------|
 | 505 | Split Horizontally | `Ctrl-B "` | Split the current pane into top and bottom. |
 | 506 | Split Vertically | `Ctrl-B %` | Split the current pane into left and right. |
-| 507 | Navigate Panes (Arrows) | `Ctrl-B ↑/↓/←/→` | Move focus to the pane in that direction. |
-| 508 | Navigate Panes (Vim Keys) | `Ctrl-B h/j/k/l` | Same as arrows but vim-style. No hand movement! |
+| 507 | Close a Pane | `Ctrl-B x` | Kill the active pane (press `y` to confirm). |
+| 508 | Navigate Panes | `Ctrl-B h/j/k/l` | Move focus to the pane in that direction. Arrow keys also work, but home row is faster. |
 | 509 | Cycle Panes | `Ctrl-B o` | Move focus to the next pane in order. |
 | 510 | Last Active Pane | `Ctrl-B ;` | Toggle back to the previously active pane. |
-| 511 | Close a Pane | `Ctrl-B x` | Kill the active pane (press `y` to confirm). |
-| 512 | Zoom a Pane | `Ctrl-B z` | Toggle zoom — pane fills the entire window. Press again to unzoom. |
-| 513 | Resize Panes | `Ctrl-B Ctrl-↑/↓/←/→` | Resize the active pane by one cell at a time. |
-| 514 | Swap Panes | `Ctrl-B {` / `Ctrl-B }` | Swap the active pane with the previous or next pane. |
-| 515 | Break Pane to Window | `Ctrl-B !` | Move the current pane into its own new window. |
-| 516 | Pane Numbers | `Ctrl-B q` | Show pane number overlays; press `0`–`9` to jump to that pane. |
+| 511 | Zoom a Pane | `Ctrl-B z` | Toggle zoom — pane fills the entire window. Press again to unzoom. |
+| 512 | Resize Panes | `Ctrl-B Ctrl-↑/↓/←/→` | Resize the active pane by one cell at a time. |
+| 513 | Swap Panes | `Ctrl-B {` / `Ctrl-B }` | Swap the active pane with the previous or next pane. |
+| 514 | Break Pane to Window | `Ctrl-B !` | Move the current pane into its own new window. |
+| 515 | Pane Numbers | `Ctrl-B q` | Show pane number overlays; press `0`–`9` to jump to that pane. |
 
 ### Windows
 
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
-| 517 | Create a Window | `Ctrl-B c` | Open a new window with a fresh shell. |
-| 518 | Next / Previous Window | `Ctrl-B n` / `Ctrl-B p` | Cycle forward and backward through windows. |
-| 519 | Switch to Window N | `Ctrl-B 0`–`9` | Jump directly to a numbered window. |
-| 520 | Last Active Window | `Ctrl-B L` | Toggle to the most recently active window. |
-| 521 | Rename Window | `Ctrl-B ,` | Give the current window a meaningful name. |
-| 522 | Close a Window | `Ctrl-B &` | Kill the current window and all its panes (press `y` to confirm). |
-| 523 | Window Chooser | `Ctrl-B w` | Interactive list — navigate with `j`/`k` and press `Enter` to select. |
-| 524 | Cycle Layouts | `Ctrl-B Space` | Rearrange panes through preset layout patterns. |
+| 516 | Create a Window | `Ctrl-B c` | Open a new window with a fresh shell. |
+| 517 | Next / Previous Window | `Ctrl-B n` / `Ctrl-B p` | Cycle forward and backward through windows. |
+| 518 | Switch to Window N | `Ctrl-B 0`–`9` | Jump directly to a numbered window. |
+| 519 | Last Active Window | `Ctrl-B L` | Toggle to the most recently active window. |
+| 520 | Rename Window | `Ctrl-B ,` | Give the current window a meaningful name. |
+| 521 | Close a Window | `Ctrl-B &` | Kill the current window and all its panes (press `y` to confirm). |
+| 522 | Window Chooser | `Ctrl-B w` | Interactive list — navigate with `j`/`k` and press `Enter` to select. |
+| 523 | Cycle Layouts | `Ctrl-B Space` | Rearrange panes through preset layout patterns. |
 
 ### Sessions & Detach
 
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
-| 525 | Detach from tmux | `Ctrl-B d` | Detach — tmux keeps running in the background. |
-| 526 | The Command Prompt | `Ctrl-B :` | Type tmux commands directly (e.g. `split-window -h`, `new-session work`). |
-| 527 | Multiple Sessions | `new-session` / `switch-client -t` | Create and switch between named sessions from the command prompt. `list-sessions` (or `ls`) shows them all. |
+| 524 | Detach from tmux | `Ctrl-B d` | Detach — tmux keeps running in the background. |
+| 525 | The Command Prompt | `Ctrl-B :` | Type tmux commands directly (e.g. `split-window -h`, `new-session work`). |
+| 526 | Multiple Sessions | `new-session` / `switch-client -t` | Create and switch between named sessions from the command prompt. `list-sessions` (or `ls`) shows them all. |
 
 ### Copy Mode & Extras
 
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
-| 528 | Enter Copy Mode | `Ctrl-B [` | Read-only scrollback view with vim-style navigation. `Ctrl-B PageUp` also works. Press `q` or `Escape` to exit. |
-| 529 | Copy Mode Navigation | `h/j/k/l` `0/$` `w/b` `g/G` | Navigate with all the Vim motions you already know. `Ctrl-F/B/D/U` for page/half-page scrolling. |
-| 530 | Copy Mode Visual Selection | `v` | Toggle visual selection in copy mode — highlight text as you navigate. |
-| 531 | Clock Mode | `Ctrl-B t` | Show a fullscreen ASCII art clock (press any key to exit). |
-| 532 | The Status Bar | — | Reading the tmux status bar: session name, window list (`*` = active), time, date. |
+| 527 | Enter Copy Mode | `Ctrl-B [` | Read-only scrollback view with vim-style navigation. `Ctrl-B PageUp` also works. Press `q` or `Escape` to exit. |
+| 528 | Copy Mode Navigation | `h/j/k/l` `0/$` `w/b` `g/G` | Navigate with all the Vim motions you already know. `Ctrl-F/B/D/U` for page/half-page scrolling. |
+| 529 | Copy Mode Visual Selection | `v` | Toggle visual selection in copy mode — highlight text as you navigate. |
+| 530 | Clock Mode | `Ctrl-B t` | Show a fullscreen ASCII art clock (press any key to exit). |
+| 531 | The Status Bar | — | Reading the tmux status bar: session name, window list (`*` = active), time, date. |
 
 ### Shell Essentials
 
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
-| 533 | The Shell Prompt | — | Your command-line home base. Type a command, press `Enter`. `↑`/`↓` recall command history. |
-| 534 | File Management | `ls` `cat` `touch` `rm` `cp` `mv` | Create, view, copy, move, and delete files from the shell. |
-| 535 | Creating Files with Content | `echo "text" > file` | Write text into a file. Use `>>` to append instead of overwrite. |
-| 536 | Shell Utilities | `wc` `grep` `sort` `history` `date` | Count words, search files, sort lines, view history, check the date. |
-| 537 | Shell Shortcuts | `clear` `help` `exit` | Clear the screen, show available commands, exit the shell. `Ctrl-D` on an empty line also exits. |
-| 538 | Tab Completion | `Tab` | Complete command names and filenames. Saves typing and prevents typos. |
-| 539 | Shell Editing Keys | `Ctrl-A` `Ctrl-E` `Ctrl-K` `Ctrl-U` `Ctrl-W` | Jump to start/end of line, delete to end/start of line, delete word — standard readline keys. |
-| 540 | Cancel & Clear | `Ctrl-C` `Ctrl-L` | Cancel the current input line, or clear the screen (same as `clear`). |
-| 541 | Opening Vim | `nvim file.py` | Launch Vim from the shell. `vim` and `vi` also work. |
-| 542 | Vi-Mode in the Shell | `set -o vi` | Enable vim-style line editing at the shell prompt. Press `Escape` for normal mode. `set -o emacs` to go back. |
-| 543 | Vi-Mode Editing | `Esc` → `h/l/w/b/d/c/y/p` | Full vim motions and operators work on your command line. |
-| 544 | Vi-Mode History Search | `Esc` → `/pattern` | Search command history backward. `n`/`N` to cycle through matches. |
-| 545 | Vim + Tmux Together | — | The ultimate workflow: tmux panes for splits, vim for editing. One keyboard, infinite power. |
+| 532 | The Shell Prompt | — | Your command-line home base. Type a command, press `Enter`. `↑`/`↓` recall command history. |
+| 533 | File Management | `ls` `cat` `touch` `rm` `cp` `mv` | Create, view, copy, move, and delete files from the shell. |
+| 534 | Creating Files with Content | `echo "text" > file` | Write text into a file. Use `>>` to append instead of overwrite. |
+| 535 | Shell Utilities | `wc` `grep` `sort` `history` `date` | Count words, search files, sort lines, view history, check the date. |
+| 536 | Shell Shortcuts | `clear` `help` `exit` | Clear the screen, show available commands, exit the shell. `Ctrl-D` on an empty line also exits. |
+| 537 | Tab Completion | `Tab` | Complete command names and filenames. Saves typing and prevents typos. |
+| 538 | Shell Editing Keys | `Ctrl-A` `Ctrl-E` `Ctrl-K` `Ctrl-U` `Ctrl-W` | Jump to start/end of line, delete to end/start of line, delete word — standard readline keys. |
+| 539 | Cancel & Clear | `Ctrl-C` `Ctrl-L` | Cancel the current input line, or clear the screen (same as `clear`). |
+| 540 | Opening Vim | `nvim file.py` | Launch Vim from the shell. `vim` and `vi` also work. |
+| 541 | Vi-Mode in the Shell | `set -o vi` | Enable vim-style line editing at the shell prompt. Press `Escape` for normal mode. `set -o emacs` to go back. |
+| 542 | Vi-Mode Editing | `Esc` → `h/l/w/b/d/c/y/p` | Full vim motions and operators work on your command line. |
+| 543 | Vi-Mode History Search | `Esc` → `/pattern` | Search command history backward. `n`/`N` to cycle through matches. |
+| 544 | Vim + Tmux Together | — | The ultimate workflow: tmux panes for splits, vim for editing. One keyboard, infinite power. |
 
 ---
 

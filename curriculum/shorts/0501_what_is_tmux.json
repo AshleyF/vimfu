@@ -34,6 +34,12 @@
       "line": "tmux kill-server 2>/dev/null; true"
     },
     {
+      "comment": "Add vim-style pane nav to tmux config"
+    },
+    {
+      "line": "printf 'bind h select-pane -L\nbind j select-pane -D\nbind k select-pane -U\nbind l select-pane -R\n' > ~/.tmux.conf"
+    },
+    {
       "comment": "Set TERM for proper color support"
     },
     {
@@ -165,8 +171,8 @@
       "overlay": "prefix"
     },
     {
-      "keys": "\u001b[A",
-      "overlay": "up"
+      "keys": "k",
+      "overlay": "k ↑"
     },
     {
       "wait": 0.3
@@ -190,8 +196,8 @@
       "overlay": "prefix"
     },
     {
-      "keys": "\u001b[B",
-      "overlay": "down"
+      "keys": "j",
+      "overlay": "j ↓"
     },
     {
       "wait": 0.3
@@ -235,6 +241,9 @@
     "escape",
     {
       "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/.tmux.conf"
     }
   ]
 }

@@ -66,40 +66,41 @@ const THEMES = {
     },
   },
   monokai: {
+    // Verified against tanvirtin/monokai.nvim with bg override to #000000
     normalFg: 'd4d4d4',
     normalBg: '000000',
-    tildeFg: '5c5cff',
+    tildeFg: '000000',          // EndOfBuffer – hidden (black on black)
     tildeBg: '000000',
     statusFg: 'b1b1b1',
     statusBg: '2e323c',
     cmdFg: 'd4d4d4',
     cmdBg: '000000',
-    recordingFg: '00ff00',
-    modeMsgFg: '00ff00',
+    recordingFg: 'f8f8f0',     // ModeMsg
+    modeMsgFg: 'f8f8f0',       // ModeMsg
     visualBg: '333842',
     searchFg: '26292c',
     searchBg: 'e6db74',
-    curSearchFg: '26292c',
-    curSearchBg: 'fd971f',
-    errorFg: 'ff6188',
-    promptFg: '78dce8',
+    curSearchFg: '07080d',     // CurSearch
+    curSearchBg: 'fce094',     // CurSearch
+    errorFg: 'e95678',         // ErrorMsg
+    promptFg: 'f8f8f0',        // MoreMsg
     // Line numbers
-    lineNrFg: '90908a',       // LineNr (gray)
-    cursorLineNrFg: 'd4d4d4', // CursorLineNr (foreground white)
-    // Syntax highlighting – Monokai palette
+    lineNrFg: 'd4d4d4',          // LineNr (fg=default → terminal default)
+    cursorLineNrFg: 'fd971f',    // CursorLineNr (orange)
+    // Syntax highlighting – tanvirtin/monokai.nvim palette
     syntax: {
-      comment: '88846f',         // gray/olive
-      string: 'e6db74',          // yellow
-      number: 'ae81ff',          // purple
-      constant: 'ae81ff',        // purple
-      keyword: 'f92672',         // pink
-      'keyword.import': 'f92672', // pink
-      decorator: 'e6db74',       // yellow
-      'function.def': 'a6e22e',  // green
-      'class.def': 'a6e22e',     // green
-      builtin: '66d9ef',         // blue
-      operator: 'f92672',        // pink
-      special: 'fd971f',         // orange
+      comment: '9ca0a4',         // Comment
+      string: 'e6db74',          // String (yellow)
+      number: 'ae81ff',          // Number (purple)
+      constant: 'ae81ff',        // Boolean (purple) – True/False/None
+      keyword: 'f92672',         // Keyword (pink)
+      'keyword.import': 'f92672', // Keyword (pink)
+      decorator: 'e6db74',       // String (yellow)
+      'function.def': 'a6e22e',  // Function (green)
+      'class.def': 'a6e22e',     // Function (green)
+      builtin: '66d9ef',         // Type/Constant (blue)
+      operator: 'f92672',        // Operator (pink)
+      special: 'f8f8f0',         // Special (white)
     },
   },
 };

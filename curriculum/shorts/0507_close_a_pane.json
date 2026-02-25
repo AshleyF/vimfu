@@ -1,6 +1,6 @@
 {
-  "title": "VimFu — Navigate Panes (Arrows)",
-  "description": "Control B and an arrow key moves focus to the pane in that direction. Point and jump.",
+  "title": "VimFu — Close a Pane",
+  "description": "Control B x closes the active pane. Tmux asks you to confirm — press y to kill it.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -34,6 +34,12 @@
       "line": "tmux kill-server 2>/dev/null; true"
     },
     {
+      "comment": "Add vim-style pane nav to tmux config"
+    },
+    {
+      "line": "printf 'bind h select-pane -L\nbind j select-pane -D\nbind k select-pane -U\nbind l select-pane -R\n' > ~/.tmux.conf"
+    },
+    {
       "comment": "Set TERM for proper color support"
     },
     {
@@ -59,31 +65,31 @@
       "timeout": 30.0
     },
     {
-      "comment": "Set up top pane"
+      "comment": "Set up main pane"
     },
     {
-      "line": "clear; echo '[ TOP ]'"
+      "line": "clear; echo '[ MAIN ]'"
     },
     {
-      "comment": "Create horizontal split"
+      "comment": "Create a horizontal split"
     },
     {
       "line": "tmux split-window"
     },
     {
-      "line": "clear; echo '[ LEFT ]'"
+      "line": "clear; echo '[ BOTTOM ]'"
     },
     {
-      "comment": "Create vertical split in bottom pane"
+      "comment": "Create a vertical split in bottom"
     },
     {
       "line": "tmux split-window -h"
     },
     {
-      "line": "clear; echo '[ RIGHT ]'"
+      "line": "clear; echo '[ EXTRA ]'"
     },
     {
-      "comment": "Go back to left pane for demo start"
+      "comment": "Go to bottom-left pane for demo start"
     },
     {
       "line": "tmux select-pane -t 1"
@@ -95,7 +101,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "Navigate Panes (Arrows)",
+      "caption": "Close a Pane",
       "duration": 2.0
     },
     {
@@ -105,16 +111,22 @@
       "comment": "--- Intro ---"
     },
     {
-      "say": "Control B and an arrow key moves focus to the pane in that direction."
+      "say": "Control B, X closes the active pane."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo: navigate right ---"
+      "say": "Tmux will ask you to confirm before killing it."
     },
     {
-      "say": "I'm in the bottom left. Control B, right arrow.",
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: close the extra pane ---"
+    },
+    {
+      "say": "I have three panes open. Let me move to the extra pane on the right.",
       "wait": false
     },
     {
@@ -125,23 +137,14 @@
       "overlay": "prefix"
     },
     {
-      "keys": "\u001b[C",
-      "overlay": "right"
+      "keys": "l",
+      "overlay": "l →"
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Right pane."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "comment": "--- Demo: navigate up ---"
-    },
-    {
-      "say": "Control B, up arrow.",
+      "say": "Now Control B, X.",
       "wait": false
     },
     {
@@ -152,23 +155,37 @@
       "overlay": "prefix"
     },
     {
-      "keys": "\u001b[A",
-      "overlay": "up"
+      "keys": "x",
+      "overlay": "x"
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Top pane."
+      "say": "See the prompt at the bottom — kill pane? Press Y to confirm.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "y",
+      "overlay": "yes"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Gone. The remaining panes expand to fill the space."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo: navigate down ---"
+      "comment": "--- Demo: close another ---"
     },
     {
-      "say": "Control B, down arrow.",
+      "say": "Let's close the bottom pane too. Control B, X, then Y.",
       "wait": false
     },
     {
@@ -179,50 +196,30 @@
       "overlay": "prefix"
     },
     {
-      "keys": "\u001b[B",
-      "overlay": "down"
+      "keys": "x",
+      "overlay": "x"
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Back down."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "comment": "--- Demo: navigate left ---"
-    },
-    {
-      "say": "Control B, left arrow.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "\u0002",
-      "overlay": "prefix"
-    },
-    {
-      "keys": "\u001b[D",
-      "overlay": "left"
+      "keys": "y",
+      "overlay": "yes"
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Left pane."
+      "say": "Back to a single pane."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Reinforce ---"
+      "comment": "--- Tip ---"
     },
     {
-      "say": "Point your arrow at the pane you want. It's directional — the arrow picks the pane based on position."
+      "say": "If you change your mind, press N instead of Y and the pane stays."
     },
     {
       "wait": 0.3
@@ -231,7 +228,7 @@
       "comment": "--- Wrap up ---"
     },
     {
-      "say": "Control B plus an arrow key. Fast and precise."
+      "say": "Control B, X. Clean up panes you no longer need."
     },
     {
       "wait": 1.0
@@ -244,6 +241,9 @@
     "escape",
     {
       "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/.tmux.conf"
     }
   ]
 }
