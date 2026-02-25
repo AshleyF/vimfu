@@ -1,0 +1,256 @@
+{
+  "title": "VimFu — Single Replace",
+  "description": "Lowercase r replaces one character under the cursor. No mode switch — you stay in normal mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 247,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "replace"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "yc93Pvgr6-g",
+    "url": "https://youtube.com/watch?v=yc93Pvgr6-g"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f potion.py .potion.py.swp .potion.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*potion.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "potion.py",
+      "content": "shade = \"brue\"\ngems = 3\nhp = 1O0\nmix(\"herbs\") heat(350)\n\ndef brew():\n    return \"potion\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim potion.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Single Replace",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Lowercase R replaces one character. You stay in normal mode. No Escape needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: fix brue → blue ---"
+    },
+    {
+      "say": "This says brue. Should be blue. Just one letter off.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fr",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor on the R. Lowercase R, then L.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "r",
+      "overlay": "replace char"
+    },
+    {
+      "keys": "l",
+      "overlay": "with l"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Blue. One keystroke, still in normal mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: fix 1O0 → 100 ---"
+    },
+    {
+      "say": "Line three. H P equals one-capital-O-zero. That O should be a zero.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "fO",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "r",
+      "overlay": "replace char"
+    },
+    {
+      "keys": "0",
+      "overlay": "with zero"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One hundred. Fixed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: r<Enter> to break a line ---"
+    },
+    {
+      "say": "Here's a useful trick. Two calls crammed on one line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f ",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor on the space. R, then Enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "r",
+      "overlay": "replace char"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The space became a newline. Two separate lines now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "R replaces one character and stays in normal mode. Even Enter works — perfect for breaking lines."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f potion.py"
+    }
+  ]
+}

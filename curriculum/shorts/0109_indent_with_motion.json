@@ -1,0 +1,224 @@
+{
+  "title": "VimFu — Indent with Motion",
+  "description": "Greater-than plus a motion indents multiple lines at once. Indent exactly the lines you need.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 250,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "indent"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "TUw7_Wg0WLc",
+    "url": "https://youtube.com/watch?v=TUw7_Wg0WLc"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f battle.py .battle.py.swp .battle.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*battle.py*"
+    },
+    {
+      "comment": "Create the demo file — three functions, body lines at column 0"
+    },
+    {
+      "writeFile": "battle.py",
+      "content": "def attack(enemy):\ndamage = roll(2, 8)\nreturn \"hit!\"\n\ndef defend(shield):\nblock = shield.power\nprint(\"Blocked!\")\nreturn block\n\ndef flee():\nspeed = roll(1, 20)\nreturn speed > 10"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim -c 'set shiftwidth=4' battle.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Indent with Motion",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Greater than plus a motion. Indent exactly the lines you want."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: >j — indent current + next ---"
+    },
+    {
+      "say": "Three functions. None of the body lines are indented. Greater than J indents this line and the next.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">",
+      "overlay": "indent"
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two lines indented. First function done."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: >2j — indent with counted motion ---"
+    },
+    {
+      "say": "Second function has three body lines. Greater than, 2 J. This line and the next two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">",
+      "overlay": "indent"
+    },
+    {
+      "keys": "2j",
+      "overlay": "down 2"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines, one command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: >G — indent to end ---"
+    },
+    {
+      "say": "Last function. Greater than, capital G. Indent everything from here to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">",
+      "overlay": "indent"
+    },
+    {
+      "keys": "G",
+      "overlay": "to end of file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All three functions fixed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Greater than plus any motion. J for the next line. A counted J for more. Capital G to the end. The motion decides the range."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f battle.py"
+    }
+  ]
+}

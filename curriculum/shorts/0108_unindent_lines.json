@@ -1,0 +1,236 @@
+{
+  "title": "VimFu — Unindent Lines",
+  "description": "Double less-than removes one level of indentation from the current line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 249,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "indent"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "NL9A-ppWy0g",
+    "url": "https://youtube.com/watch?v=NL9A-ppWy0g"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f menu.py .menu.py.swp .menu.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*menu.py*"
+    },
+    {
+      "comment": "Create the demo file — function bodies are over-indented"
+    },
+    {
+      "writeFile": "menu.py",
+      "content": "def show_menu():\n        title = \"Main Menu\"\n        play = \"Start\"\n        quit = \"Exit\"\n        print(title)\n\ndef pick_option(n):\n        item = menu[n]\n        print(item)\n        return item"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim -c 'set shiftwidth=4' menu.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Unindent Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Less than, less than. Removes one level of indentation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: unindent one line ---"
+    },
+    {
+      "say": "These function bodies are indented too far. Eight spaces instead of four.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "<<",
+      "overlay": "unindent line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One level removed. Four spaces now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: unindent another ---"
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "<<",
+      "overlay": "unindent line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: counted unindent ---"
+    },
+    {
+      "say": "Two more. Two less-than less-than.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "2<<",
+      "overlay": "unindent 2 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "First function fixed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: fix second function ---"
+    },
+    {
+      "say": "Three lines in the next function. Three less-than less-than.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3<<",
+      "overlay": "unindent 3 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Done. Both functions at the right indent level."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Less than, less than. The opposite of greater-than greater-than. Add a count for multiple lines."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f menu.py"
+    }
+  ]
+}

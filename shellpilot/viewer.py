@@ -280,6 +280,8 @@ class TerminalViewer:
             '⌃u': 'half page up',
             '⌃e': 'scroll down',
             '⌃y': 'scroll up',
+            '⌃o': 'jump back',
+            '⌃i': 'jump forward',
             'zz': 'center cursor',
             'zt': 'cursor to top',
             'zb': 'cursor to bottom',
@@ -1293,6 +1295,11 @@ class ScriptedDemo:
         """Send a control character with key display."""
         self.log.action('CTRL', char)
         self._show_key(char, ['ctrl'])
+        # Log what the overlay actually showed
+        if self.viewer and self.log._enabled:
+            displayed = self.viewer._current_keys[0] if self.viewer._current_keys else ''
+            caption_text = self.viewer._current_caption or ''
+            self.log.action('OVERLAY', f'{displayed}  {caption_text}' if caption_text else displayed)
         self.shell.send_ctrl(char)
         self.wait(delay if delay is not None else self.base_delay)
         self.log.screen_snapshot()

@@ -1,0 +1,235 @@
+{
+  "title": "VimFu — Auto-Indent",
+  "description": "Double equals (==) auto-indents the current line. Equals plus a motion re-indents a whole block. Vim figures out the right level.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 251,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "indent"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "oKmc1vdGQMs",
+    "url": "https://youtube.com/watch?v=oKmc1vdGQMs"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f magic.c .magic.c.swp .magic.c.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*magic.c*"
+    },
+    {
+      "comment": "Create a C file with messy indentation"
+    },
+    {
+      "writeFile": "magic.c",
+      "content": "void cast_spell() {\nint mana = 50;\n    if (mana > 0) {\nprintf(\"Fireball!\");\n        mana -= 25;\n}\nprintf(\"Done.\");\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with cindent for C auto-indent"
+    },
+    {
+      "line": "nvim -c 'set cindent shiftwidth=4' magic.c"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Auto-Indent",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Equals equals auto-indents the current line. Vim figures out the right level for you."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: == on one line ---"
+    },
+    {
+      "say": "This C file is a mess. Line two should be indented.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "==",
+      "overlay": "auto-indent line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Fixed. Vim knows it's inside a function."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: == on another line ---"
+    },
+    {
+      "say": "Line four. Printf with no indent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "==",
+      "overlay": "auto-indent line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Bumped in to the right level. Inside the if block."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: =G to fix everything ---"
+    },
+    {
+      "say": "But why fix one line at a time? Undo all that.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Go to the top. Equals, capital G. Fix the whole file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "=",
+      "overlay": "auto-indent"
+    },
+    {
+      "keys": "G",
+      "overlay": "to end of file"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Every line snapped to the right indent. One command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Equals equals for one line. Equals G for the whole file. Let Vim do the thinking."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f magic.c"
+    }
+  ]
+}

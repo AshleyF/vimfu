@@ -292,6 +292,11 @@ def main():
         help="When used with --schedule, increment the date by one day per video. "
              "First video gets the --schedule date, second gets +1 day, etc."
     )
+    parser.add_argument(
+        "--no-sort", dest="no_sort", action="store_true",
+        help="Process files in the order given on the command line, "
+             "instead of sorting alphabetically."
+    )
     privacy_group = parser.add_mutually_exclusive_group()
     privacy_group.add_argument(
         "--public", dest="privacy", action="store_const", const="public",
@@ -314,7 +319,8 @@ def main():
         except ValueError:
             parser.error(f"Invalid datetime: {args.schedule}")
 
-    for idx, path in enumerate(sorted(args.lessons)):
+    lessons = args.lessons if args.no_sort else sorted(args.lessons)
+    for idx, path in enumerate(lessons):
         if not path.exists():
             print(f"ERROR: {path} not found, skipping.")
             continue

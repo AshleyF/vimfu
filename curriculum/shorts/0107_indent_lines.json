@@ -1,0 +1,243 @@
+{
+  "title": "VimFu — Indent Lines",
+  "description": "Double greater-than indents the current line one shiftwidth. Use a count to indent multiple lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 248,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "indent"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "3amTSefPdtA",
+    "url": "https://youtube.com/watch?v=3amTSefPdtA"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spell.py .spell.py.swp .spell.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spell.py*"
+    },
+    {
+      "comment": "Create the demo file — function bodies are not indented"
+    },
+    {
+      "writeFile": "spell.py",
+      "content": "def cast_fireball():\ndamage = 50\ntarget = find_enemy()\ntarget.hp -= damage\nreturn \"boom!\"\n\ndef heal_ally(friend):\namount = 30\nfriend.hp += amount\nreturn \"healed!\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim -c 'set shiftwidth=4' spell.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Indent Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Greater than, greater than. Indents the current line one level."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: indent one line ---"
+    },
+    {
+      "say": "This function body has no indentation. Let me fix it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">>",
+      "overlay": "indent line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One line indented."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: indent another ---"
+    },
+    {
+      "say": "Next line.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": ">>",
+      "overlay": "indent line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: counted indent ---"
+    },
+    {
+      "say": "Two lines left. Two greater-than greater-than.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "2>>",
+      "overlay": "indent 2 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both indented. First function is done."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: indent second function body ---"
+    },
+    {
+      "say": "Now the second function. Three lines. Three greater-than greater-than.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3>>",
+      "overlay": "indent 3 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Done. Both functions properly indented."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Greater than, greater than for one line. Add a count for multiple. Clean code in seconds."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spell.py"
+    }
+  ]
+}

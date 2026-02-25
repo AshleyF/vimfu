@@ -1,0 +1,270 @@
+{
+  "title": "VimFu — Replace Mode",
+  "description": "Capital R enters Replace mode. Overtype existing characters one by one until you press Escape.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 246,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "replace"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "1-4yyxoKlFc",
+    "url": "https://youtube.com/watch?v=1-4yyxoKlFc"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f mission.py .mission.py.swp .mission.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*mission.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "mission.py",
+      "content": "hero = \"resuce ops\"\ndest = \"Mras base\"\nmode = \"IDEL\"\n\ndef launch():\n    countdown(3)\n    ignite(\"rockets\")\n    yell(\"To the stars!\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim mission.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Replace Mode",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital R enters replace mode. You type over existing characters, one by one, until you hit Escape."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: fix resuce → rescue ---"
+    },
+    {
+      "say": "This file has some scrambled letters. Resuce should be rescue.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fu",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor on the U. Capital R.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "R",
+      "overlay": "replace mode"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "cu"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Typed C U. It overwrote the U and C in place. Rescue."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: fix Mras → Mars ---"
+    },
+    {
+      "say": "Next line. Mras should be Mars.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "fr",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "R",
+      "overlay": "replace mode"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "ar"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "A R over the R A. Mars."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: fix IDEL → IDLE ---"
+    },
+    {
+      "say": "One more. I-D-E-L should be I-D-L-E.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fE",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "R",
+      "overlay": "replace mode"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "LE"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "L E over the E L. Idle. Replace mode is perfect for fixing scrambled letters."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital R to start overtyping. Escape when you're done. No insert, no delete — just overwrite."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f mission.py"
+    }
+  ]
+}

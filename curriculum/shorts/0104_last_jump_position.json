@@ -1,0 +1,298 @@
+{
+  "title": "VimFu — Last Jump Position",
+  "description": "Two single quotes ('') return you to where you were before the last jump. Backtick-backtick preserves the exact column.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 245,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "jumplist"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "WpyH4xdwC0w",
+    "url": "https://youtube.com/watch?v=WpyH4xdwC0w"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f ship.py .ship.py.swp .ship.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*ship.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "ship.py",
+      "content": "crew = [\"Kira\", \"Bolt\"]\nfuel = 9001\ncourse = \"Mars\"\n\ndef navigate():\n    plot_course()\n    adjust_heading()\n    return \"on course\"\n\ndef alert(msg):\n    flash_lights()\n    play_alarm()\n    broadcast(msg)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim -c 'clearjumps' ship.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Last Jump Position",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Two single quotes. Instantly return to where you were before your last jump."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: '' toggle ---"
+    },
+    {
+      "say": "I'm at the top. Let me search for alert.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/alert"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Found it on line ten. Now two single quotes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark line"
+    },
+    {
+      "keys": "'",
+      "overlay": "last position"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Back at the top. Where I was before the search."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: rapid toggle ---"
+    },
+    {
+      "say": "It toggles. Watch.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark line"
+    },
+    {
+      "keys": "'",
+      "overlay": "last position"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark line"
+    },
+    {
+      "keys": "'",
+      "overlay": "last position"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark line"
+    },
+    {
+      "keys": "'",
+      "overlay": "last position"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Bounces between the last two spots. Like alt-tab for your cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: backtick-backtick for exact column ---"
+    },
+    {
+      "say": "Single quote goes to the line. Backtick backtick goes to the exact column.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f(",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/fuel"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Backtick backtick first.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "`",
+      "overlay": "jump to exact mark"
+    },
+    {
+      "keys": "`",
+      "overlay": "last position"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Exact column. Right on the parenthesis."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now search again, and try single quote.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "/fuel"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark line"
+    },
+    {
+      "keys": "'",
+      "overlay": "last position"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Same line. But first character, not the parenthesis."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Two single quotes for the line. Two backticks for the exact spot. Quick toggle between your last two positions."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f ship.py"
+    }
+  ]
+}

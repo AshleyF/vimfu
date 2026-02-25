@@ -1,0 +1,237 @@
+{
+  "title": "VimFu — Jump Forward",
+  "description": "Ctrl-I (Tab) goes forward in the jump list. After jumping back with Ctrl-O, Ctrl-I retraces your steps.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 244,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "jumplist"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "vfeMP0npIZk",
+    "url": "https://youtube.com/watch?v=vfeMP0npIZk"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "hero = \"Kira\"\nhp = 100\nmp = 40\n\ndef attack(target):\n    dmg = roll(2, 8)\n    target.hp -= dmg\n    return dmg\n\ndef heal(ally):\n    amt = roll(1, 6) + 5\n    ally.hp += amt\n    return amt\n\ndef flee():\n    speed = roll(1, 20)\n    return speed > 10"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim -c 'clearjumps' quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Jump Forward",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control O goes back through your jumps. Control I goes forward. Like back and forward in a browser."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Make jumps ---"
+    },
+    {
+      "say": "Let me jump around first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/heal"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Found heal.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Bottom of the file.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Ctrl-O back ---"
+    },
+    {
+      "say": "Now Control O twice to walk back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "o"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "ctrl": "o"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "I'm back at the heal function."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Ctrl-I forward ---"
+    },
+    {
+      "say": "Control I goes forward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "i"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Bottom of the file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "i"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the top. Forward through the same jumps."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control O back. Control I forward. Navigate your jump history like a browser."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ]
+}

@@ -1,0 +1,278 @@
+{
+  "title": "VimFu — Special Marks",
+  "description": "Vim has built-in marks that track your last change and last insert. They update automatically — no setup needed.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 242,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "marks"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "Qvs31uqjqx0",
+    "url": "https://youtube.com/watch?v=Qvs31uqjqx0"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f robot.py .robot.py.swp .robot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*robot.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "robot.py",
+      "content": "name = \"Bolt\"\nmood = \"happy\"\nspeed = 5\nvolume = 7\n\ndef greet(human):\n    wave()\n    say(\"Hello!\")\n    return smile()\n\ndef recharge():\n    find_outlet()\n    plug_in()\n    nap(hours=2)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim robot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Special Marks",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Vim has special marks that update automatically. They track where you changed text and where you last inserted."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: '. — line of last change ---"
+    },
+    {
+      "say": "Let me change a word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "cw",
+      "overlay": "change word"
+    },
+    {
+      "type": "curious"
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Changed happy to curious. Now jump away.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Single quote dot. Back to the line of my last change.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark line"
+    },
+    {
+      "keys": ".",
+      "overlay": "last change"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Line two. Right where I changed that word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: '^ — line of last insert ---"
+    },
+    {
+      "say": "Now let me insert something else.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A",
+      "overlay": "append at end"
+    },
+    {
+      "type": "  # welcome"
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Added a comment. Now jump to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Single quote caret. Back to where I last stopped inserting.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'",
+      "overlay": "jump to mark line"
+    },
+    {
+      "keys": "^",
+      "overlay": "last insert"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Right back to the greet function."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo that.",
+      "wait": false
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Single quote dot for last change. Single quote caret for last insert. Vim remembers everything."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f robot.py"
+    }
+  ]
+}

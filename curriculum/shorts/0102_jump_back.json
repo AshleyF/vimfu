@@ -1,0 +1,188 @@
+{
+  "title": "VimFu — Jump Back",
+  "description": "Ctrl-O goes to the previous position in the jump list. Every search, G, and mark jump is remembered.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 243,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "jumplist"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "g6-J634AA5Y",
+    "url": "https://youtube.com/watch?v=g6-J634AA5Y"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create the demo file"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "level = 1\nboss = \"Dragon\"\ngems = 12\n\ndef explore(room):\n    if room.dark:\n        light_torch()\n    return room.loot\n\ndef fight(enemy):\n    while enemy.hp > 0:\n        swing(sword)\n    return \"victory\"\n\ndef rest():\n    heal(50)\n    save()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim -c 'clearjumps' dungeon.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Jump Back",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Every time you make a big jump — a search, a G, a mark — Vim remembers where you were. Control O walks you back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Make two jumps ---"
+    },
+    {
+      "say": "Let me jump around. Search for fight.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/fight"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Found it on line ten. Now G to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Walk back with Ctrl-O ---"
+    },
+    {
+      "say": "Two jumps. Now Control O walks back through them.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "ctrl": "o"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Back to the fight function.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "o"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Back to where I started. Two jumps, two Control O's."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control O. Your undo button for navigation."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ]
+}
