@@ -20,6 +20,8 @@ export class SessionController {
     this.session = session;
     this.onUpdate = onUpdate;
     this._boundKeyDown = this._onKeyDown.bind(this);
+    this._boundPaste = this._onPaste.bind(this);
+    this._boundFocus = this._onFocus.bind(this);
   }
 
   /**
@@ -28,6 +30,8 @@ export class SessionController {
    */
   attach(el) {
     el.addEventListener('keydown', this._boundKeyDown);
+    el.addEventListener('paste', this._boundPaste);
+    el.addEventListener('focus', this._boundFocus);
   }
 
   /**
@@ -36,6 +40,8 @@ export class SessionController {
    */
   detach(el) {
     el.removeEventListener('keydown', this._boundKeyDown);
+    el.removeEventListener('paste', this._boundPaste);
+    el.removeEventListener('focus', this._boundFocus);
   }
 
   /**
@@ -64,6 +70,46 @@ export class SessionController {
 
   // ── Private ──
 
+  /**
+   * Get the active VimEngine (if we're in vim mode).
+   * @private
+   * @returns {import('./engine.js').VimEngine|null}
+   */
+  _getEngine() {
+    return this.session.mode === 'vim' ? this.session.engine : null;
+  }
+
+  /**
+   * Wire up the clipboard-write callback on the engine so that
+   * writing to "+ or "* pushes text to the system clipboard.
+   * Called every time a new engine appears (i.e. when vim launches).
+   * @private
+   */
+  _wireClipboard(engine) {
+    if (!engine || engine._clipboardWired) return;
+    engine._onClipboardWrite = (text) => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {});
+      }
+    };
+    engine._clipboardWired = true;
+  }
+
+  /**
+   * Pre-read the system clipboard into the engine's + register
+   * so it's ready for synchronous paste.
+   * @private
+   */
+  _preReadClipboard() {
+    const engine = this._getEngine();
+    if (!engine) return;
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      navigator.clipboard.readText().then((text) => {
+        if (text != null) engine.setClipboardText(text);
+      }).catch(() => {});
+    }
+  }
+
   /** @private */
   _onKeyDown(e) {
     const key = this._translateKey(e);
@@ -80,8 +126,47 @@ export class SessionController {
       ) {
         e.preventDefault();
       }
+
+      // Wire clipboard on engine if not yet done
+      const engine = this._getEngine();
+      if (engine) this._wireClipboard(engine);
+
       this.session.feedKey(key);
+
+      // After setting the + or * register, pre-read the system clipboard
+      // so the data is available when the next key (p, P, etc.) arrives.
+      if (engine) {
+        const pendReg = engine._pendingRegKey;
+        if (pendReg === '+' || pendReg === '*') {
+          this._preReadClipboard();
+        }
+      }
+
       this.onUpdate(this.session.renderFrame());
+    }
+  }
+
+  /**
+   * Handle paste events: update the + register with pasted text.
+   * @private
+   */
+  _onPaste(e) {
+    const text = (e.clipboardData || window.clipboardData)?.getData('text');
+    if (text) {
+      const engine = this._getEngine();
+      if (engine) engine.setClipboardText(text);
+    }
+  }
+
+  /**
+   * On focus, pre-read the system clipboard into the + register.
+   * @private
+   */
+  _onFocus() {
+    const engine = this._getEngine();
+    if (engine) {
+      this._wireClipboard(engine);
+      this._preReadClipboard();
     }
   }
 

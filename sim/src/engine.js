@@ -79,9 +79,11 @@ export class VimEngine {
     // Registers
     this._unnamedReg = '';
     this._regType = 'char'; // 'char' or 'line'
-    this._namedRegs = {};   // {a-z}: { text, type }
+    this._namedRegs = {};   // {a-z, +, *}: { text, type }
     this._pendingRegKey = ''; // pending " register prefix
     this._pendingCtrlR = false; // pending Ctrl-R in insert mode
+    /** @type {((text: string) => void) | null} */
+    this._onClipboardWrite = null; // callback when + or * register is written
 
     // Search
     this._searchPattern = '';
@@ -325,6 +327,10 @@ export class VimEngine {
     if (reg) {
       this._namedRegs[reg] = { text, type };
       this._pendingRegKey = '';
+      // Notify controller when writing to clipboard registers
+      if ((reg === '+' || reg === '*') && this._onClipboardWrite) {
+        this._onClipboardWrite(text);
+      }
     }
   }
 
@@ -337,6 +343,17 @@ export class VimEngine {
       return r ? r : { text: '', type: 'char' };
     }
     return { text: this._unnamedReg, type: this._regType };
+  }
+
+  /**
+   * Set the clipboard ("+) register from external data (e.g. browser clipboard).
+   * Also mirrors into the "* register.
+   * @param {string} text
+   * @param {'char'|'line'} [type='char']
+   */
+  setClipboardText(text, type = 'char') {
+    this._namedRegs['+'] = { text, type };
+    this._namedRegs['*'] = { text, type };
   }
 
   // ── Normal mode ──
@@ -416,7 +433,7 @@ export class VimEngine {
     // Pending " (register selection)
     if (this._pendingDblQuote) {
       this._pendingDblQuote = false;
-      if (key.length === 1 && key >= 'a' && key <= 'z') {
+      if (key.length === 1 && ((key >= 'a' && key <= 'z') || key === '+' || key === '*')) {
         this._pendingRegKey = key;
       }
       // After setting register, fall through to normal processing
@@ -2033,6 +2050,9 @@ export class VimEngine {
         const rk = key.toLowerCase();
         const r = this._namedRegs[rk];
         regText = r ? r.text : '';
+      } else if (key === '+' || key === '*') {
+        const r = this._namedRegs[key];
+        regText = r ? r.text : '';
       } else if (key === '"') {
         regText = this._unnamedReg || '';
       }
@@ -2376,8 +2396,8 @@ export class VimEngine {
     // Pending register selection ("x)
     if (this._pendingDblQuote) {
       this._pendingDblQuote = false;
-      if (/^[a-zA-Z0-9]$/.test(key)) {
-        this._pendingRegKey = key.toLowerCase();
+      if (/^[a-zA-Z0-9]$/.test(key) || key === '+' || key === '*') {
+        this._pendingRegKey = key === '+' || key === '*' ? key : key.toLowerCase();
       }
       return;
     }

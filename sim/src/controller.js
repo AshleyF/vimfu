@@ -23,6 +23,16 @@ export class Controller {
     this.screen = screen;
     this.onUpdate = onUpdate;
     this._boundKeyDown = this._onKeyDown.bind(this);
+    this._boundPaste = this._onPaste.bind(this);
+    this._boundFocus = this._onFocus.bind(this);
+
+    // Wire up clipboard write: when engine writes to "+ or "* register,
+    // push the text to the system clipboard.
+    this.engine._onClipboardWrite = (text) => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {});
+      }
+    };
   }
 
   /**
@@ -31,6 +41,8 @@ export class Controller {
    */
   attach(el) {
     el.addEventListener('keydown', this._boundKeyDown);
+    el.addEventListener('paste', this._boundPaste);
+    el.addEventListener('focus', this._boundFocus);
   }
 
   /**
@@ -39,6 +51,8 @@ export class Controller {
    */
   detach(el) {
     el.removeEventListener('keydown', this._boundKeyDown);
+    el.removeEventListener('paste', this._boundPaste);
+    el.removeEventListener('focus', this._boundFocus);
   }
 
   /**
@@ -80,7 +94,42 @@ export class Controller {
         e.preventDefault();
       }
       this.engine.feedKey(key);
+
+      // After setting the + or * register, pre-read the system clipboard
+      // so the data is available when the next key (p, P, etc.) arrives.
+      const pendReg = this.engine._pendingRegKey;
+      if ((pendReg === '+' || pendReg === '*') && navigator.clipboard && navigator.clipboard.readText) {
+        navigator.clipboard.readText().then((text) => {
+          this.engine.setClipboardText(text);
+        }).catch(() => {});
+      }
+
       this.onUpdate(this.screen.render(this.engine));
+    }
+  }
+
+  /**
+   * Handle paste events: update the + register with pasted text.
+   * This catches browser Ctrl+V / Cmd+V paste events.
+   * @private
+   */
+  _onPaste(e) {
+    const text = (e.clipboardData || window.clipboardData)?.getData('text');
+    if (text) {
+      this.engine.setClipboardText(text);
+    }
+  }
+
+  /**
+   * On focus, pre-read the system clipboard into the + register
+   * so it's ready for "+p without any async delay.
+   * @private
+   */
+  _onFocus() {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      navigator.clipboard.readText().then((text) => {
+        this.engine.setClipboardText(text);
+      }).catch(() => {}); // permission denied is fine
     }
   }
 
