@@ -1,0 +1,215 @@
+{
+  "title": "VimFu — Swap Panes",
+  "description": "Control B open-brace swaps the active pane with the previous one. Control B close-brace swaps with the next. Rearrange your layout without recreating panes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 513,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "d5iUrk3UFDo",
+    "url": "https://youtube.com/watch?v=d5iUrk3UFDo"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Pane 0 (top) — code-like content"
+    },
+    {
+      "line": "clear && printf '\\033[36mdef handle(req):\\033[0m\\n    data = parse(req)\\n    return respond(data)\\n'"
+    },
+    {
+      "comment": "Pane 1 (middle) — server output"
+    },
+    {
+      "line": "tmux split-window"
+    },
+    {
+      "line": "clear && printf '\\033[32m✔ Server ready\\033[0m :8080\\n  GET /api  \\033[33m200\\033[0m  12ms\\n'"
+    },
+    {
+      "comment": "Pane 2 (bottom) — test output"
+    },
+    {
+      "line": "tmux split-window"
+    },
+    {
+      "line": "clear && printf '\\033[32m✓\\033[0m parse_json     \\033[90m3ms\\033[0m\\n\\033[32m✓\\033[0m validate_req   \\033[90m1ms\\033[0m\\n'"
+    },
+    {
+      "comment": "Go to middle pane"
+    },
+    {
+      "line": "tmux select-pane -t 1"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Swap Panes",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B open brace swaps the active pane with the previous one. Close brace swaps with the next."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: swap with previous ---"
+    },
+    {
+      "say": "I'm in the server pane. Control B, open brace. Swap it up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "{",
+      "overlay": "swap up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The server jumped to the top. Code slid down."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: swap with next ---"
+    },
+    {
+      "say": "Now Control B, close brace. Swap with the next pane.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "}",
+      "overlay": "swap down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Moved back down."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: swap again ---"
+    },
+    {
+      "say": "One more. Close brace again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "}",
+      "overlay": "swap down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Server is now at the bottom. Swapped twice."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open brace swaps up, close brace swaps down. Rearrange panes without recreating them."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "title": "VimFu — Lowercase Motion",
+  "description": "G U with a lowercase U plus a motion converts text to lowercase. G U I W lowercases a word, G U dollar lowercases to end of line. The opposite of G U (uppercase).",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 255,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "case"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "FWfjM4TYS5o",
+    "url": "https://youtube.com/watch?v=FWfjM4TYS5o"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f shout.py .shout.py.swp .shout.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*shout.py*"
+    },
+    {
+      "comment": "Create demo file with ALLCAPS that need lowering"
+    },
+    {
+      "writeFile": "shout.py",
+      "content": "NAME = \"WIZARD\"\nTITLE = \"GRAND\"\nPOWER = 9001\nMOOD = \"ANGRY\"\nPET = \"DRAGON\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim shout.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Lowercase Motion",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G U, lowercase U, plus a motion converts text to lowercase."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: guiw — lowercase a word ---"
+    },
+    {
+      "say": "Everything in this file is shouting. Let's quiet it down. G U I W on the first word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "guiw",
+      "overlay": "lowercase word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Name is now lowercase."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: gu$ — lowercase to end of line ---"
+    },
+    {
+      "say": "Next line. G U dollar sign. Lowercase the whole line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gu$",
+      "overlay": "lowercase to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Title line is all lowercase now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: guG — lowercase to end of file ---"
+    },
+    {
+      "say": "Why not finish them all? G U, capital G. Lowercase from here to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gu",
+      "overlay": "lowercase"
+    },
+    {
+      "keys": "G",
+      "overlay": "to end of file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Done. Three lines in one shot."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G U is uppercase, G U lowercase U is lowercase. Same grammar, opposite effect."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f shout.py"
+    }
+  ]
+}

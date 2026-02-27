@@ -1,0 +1,259 @@
+{
+  "title": "VimFu — Append to Register",
+  "description": "Uppercase letter appends to a register instead of replacing it. Quote capital A Y Y adds to register A. Build up content across multiple yanks.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 261,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "registers"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f team.py .team.py.swp .team.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*team.py*"
+    },
+    {
+      "comment": "Create demo file with scattered items to collect"
+    },
+    {
+      "writeFile": "team.py",
+      "content": "warrior = \"Thorin\"\nhealer = \"Elrond\"\nrogue = \"Bilbo\"\nmage = \"Gandalf\"\nranger = \"Strider\"\n\n# Party:\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim team.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Append to Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Uppercase letter appends to a register. Lowercase replaces. Uppercase adds to what's already there."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: \"ayy — start register a ---"
+    },
+    {
+      "say": "Yank the warrior into register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Register A has the warrior."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: \"Ayy — append to register a ---"
+    },
+    {
+      "say": "Skip the healer. Go to the rogue. Quote capital A, Y Y. Capital A means append.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "A",
+      "overlay": "append to a"
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Register A now has warrior and rogue."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: append one more ---"
+    },
+    {
+      "say": "Skip the mage. Grab the ranger too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "A",
+      "overlay": "append to a"
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Demo 4: paste the collected register ---"
+    },
+    {
+      "say": "Go to the party section. Quote A P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines. All collected from different spots in the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Lowercase replaces. Uppercase appends. Build up a register piece by piece."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f team.py"
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "title": "VimFu — Toggle Case Motion",
+  "description": "G tilde plus a motion toggles the case of every character in the range. Uppercase becomes lowercase, lowercase becomes uppercase.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 256,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "case"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "WhG9XILa6vw",
+    "url": "https://youtube.com/watch?v=WhG9XILa6vw"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f flip.py .flip.py.swp .flip.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*flip.py*"
+    },
+    {
+      "comment": "Create demo file with mixed case"
+    },
+    {
+      "writeFile": "flip.py",
+      "content": "hero = \"Knight\"\nfoe = \"GOBLIN\"\nloot = \"gold coin\"\ntrap = \"Spike Pit\"\nquest = \"RESCUE\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim flip.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Toggle Case Motion",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G tilde plus a motion toggles the case of every character in the range."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: g~iw — toggle a word ---"
+    },
+    {
+      "say": "Hero is lowercase. G tilde I W toggles the inner word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g~iw",
+      "overlay": "toggle case word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Hero is now HERO, all caps."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: g~$ — toggle to end ---"
+    },
+    {
+      "say": "Next line. G tilde dollar toggles from here to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g~$",
+      "overlay": "toggle to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The whole foe line flipped. GOBLIN became goblin."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: g~G — toggle to end of file ---"
+    },
+    {
+      "say": "Flip everything left. G tilde, capital G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g~",
+      "overlay": "toggle case"
+    },
+    {
+      "keys": "G",
+      "overlay": "to end of file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every letter swapped. Gold coin became GOLD COIN. Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G tilde is the toggle case operator. I W for a word. Dollar for the line. Capital G for the file."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f flip.py"
+    }
+  ]
+}

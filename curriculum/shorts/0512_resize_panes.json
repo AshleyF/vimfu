@@ -1,0 +1,261 @@
+{
+  "title": "VimFu — Resize Panes",
+  "description": "Control B then Control arrow keys resize the active pane one cell at a time. Fine-tune your layout without leaving the keyboard.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 512,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "fbb_FoGJ7BQ",
+    "url": "https://youtube.com/watch?v=fbb_FoGJ7BQ"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f app.py .app.py.swp .app.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*app.py*"
+    },
+    {
+      "comment": "Create a Python file for the editor pane"
+    },
+    {
+      "writeFile": "app.py",
+      "content": "from flask import Flask\n\napp = Flask(__name__)\n\n@app.route('/')\ndef home():\n    return 'Hello!'\n\napp.run(port=5000)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Open nvim in left pane"
+    },
+    {
+      "line": "nvim app.py"
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "waitForScreen": "Flask",
+      "timeout": 10.0
+    },
+    {
+      "comment": "Split vertically — right pane gets a shell"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "%"
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 5.0
+    },
+    {
+      "comment": "Show fake server output in right pane"
+    },
+    {
+      "line": "clear && printf '\\033[32m * Running on http://127.0.0.1:5000\\033[0m\\n * Debug mode: on\\n'"
+    },
+    {
+      "comment": "Go back to left pane (nvim)"
+    },
+    {
+      "line": "tmux select-pane -t 0"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Resize Panes",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, then Control arrow resizes the active pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: resize left pane wider ---"
+    },
+    {
+      "say": "Code on the left, server on the right. I need more room to edit. Control B, Control right.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[1;5C",
+      "overlay": "Ctrl-→"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[1;5C",
+      "overlay": "Ctrl-→"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[1;5C",
+      "overlay": "Ctrl-→"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three times. The border moved right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: resize back ---"
+    },
+    {
+      "say": "Control B, Control left shrinks it back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[1;5D",
+      "overlay": "Ctrl-←"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[1;5D",
+      "overlay": "Ctrl-←"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "\u001b[1;5D",
+      "overlay": "Ctrl-←"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to even. Code and server share the space."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, Control arrow. Nudge pane borders one cell at a time."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim and clean up tmux"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/app.py"
+    }
+  ]
+}

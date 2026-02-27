@@ -1,0 +1,257 @@
+{
+  "title": "VimFu — Named Registers",
+  "description": "Vim has 26 named registers, A through Z. Quote A Y Y yanks into register A. Quote A P pastes from it. Store text in specific slots.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 260,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "registers"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "aMd89ZtGl6Y",
+    "url": "https://youtube.com/watch?v=aMd89ZtGl6Y"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f loot.py .loot.py.swp .loot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*loot.py*"
+    },
+    {
+      "comment": "Create demo file with items to yank into registers"
+    },
+    {
+      "writeFile": "loot.py",
+      "content": "sword = \"Excalibur\"\nshield = \"Aegis\"\npotion = \"Elixir\"\n\n# Loadout:\nweapon = \"\"\narmor = \"\"\nheal = \"\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim loot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Named Registers",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Vim has 26 named registers, A through Z. Quote, then a letter, then your command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: \"ayy — yank into register a ---"
+    },
+    {
+      "say": "Yank the sword line into register A. Quote A, Y Y.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Stored in register A."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: \"byy — yank into register b ---"
+    },
+    {
+      "say": "Yank shield into register B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "b",
+      "overlay": "register b"
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Register B has the shield."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: paste from registers ---"
+    },
+    {
+      "say": "Now go to the loadout section and paste. Quote A P pastes from register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The sword line from register A."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Quote B P for the shield.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "b",
+      "overlay": "register b"
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both items pasted. Each register kept its own contents."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Named registers. Store multiple yanks without losing them. Quote, letter, command."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f loot.py"
+    }
+  ]
+}

@@ -1,0 +1,270 @@
+{
+  "title": "VimFu — Zoom a Pane",
+  "description": "Control B Z toggles zoom on the active pane. It fills the entire window. Press it again to unzoom and restore the layout.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 511,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "kbxdbxRRYn8",
+    "url": "https://youtube.com/watch?v=kbxdbxRRYn8"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f app.py .app.py.swp .app.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*app.py*"
+    },
+    {
+      "comment": "Create a small Python file for the editor pane"
+    },
+    {
+      "writeFile": "app.py",
+      "content": "def greet(name):\n    msg = f\"Hello, {name}!\"\n    return msg\n\nif __name__ == \"__main__\":\n    print(greet(\"world\"))"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux before recording"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Open nvim first (full screen), then split"
+    },
+    {
+      "line": "nvim app.py"
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "waitForScreen": "greet",
+      "timeout": 10.0
+    },
+    {
+      "comment": "Split horizontally via tmux key binding (works even with nvim in foreground)"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "\""
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Switch focus back to top pane (nvim)"
+    },
+    {
+      "line": "tmux select-pane -t 0"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Zoom a Pane",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, Z zooms the active pane to fill the whole window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: zoom the top pane ---"
+    },
+    {
+      "say": "Vim on top. Terminal on the bottom. I need more room in the editor. Control B, Z.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "z",
+      "overlay": "zoom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The editor fills the screen. The terminal is still there, just hidden."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: unzoom ---"
+    },
+    {
+      "say": "Press it again to unzoom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "z",
+      "overlay": "zoom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the split. Editor and terminal, side by side."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: zoom the bottom pane ---"
+    },
+    {
+      "say": "Switch to the bottom pane and zoom it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "o",
+      "overlay": "next pane"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "z",
+      "overlay": "zoom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now the terminal fills the screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Unzoom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "z",
+      "overlay": "zoom"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, Z. Zoom in, zoom out. Temporary full screen whenever you need it."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim and clean up tmux"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/app.py"
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "title": "VimFu — Toggle Case",
+  "description": "The tilde key toggles the case of the character under the cursor and advances one position. Quick way to fix capitalization one character at a time.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 253,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "case"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "KbzmRKe6OZs",
+    "url": "https://youtube.com/watch?v=KbzmRKe6OZs"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f potion.py .potion.py.swp .potion.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*potion.py*"
+    },
+    {
+      "comment": "Create demo file with case issues"
+    },
+    {
+      "writeFile": "potion.py",
+      "content": "health = \"FULL\"\nmana = \"low\"\nshield = \"active\"\nweapon = \"SWORD\"\narmor = \"leather\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim potion.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Toggle Case",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Tilde toggles the case of the character under the cursor and moves forward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: toggle one char ---"
+    },
+    {
+      "say": "Health starts lowercase. Tilde makes it uppercase.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "~"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "H is now capital. The cursor moved to the next character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: toggle multiple chars ---"
+    },
+    {
+      "say": "Keep pressing tilde to toggle more characters.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "~"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "~"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "~"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "~"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "~"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Health is now capitalized."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: toggle FULL to lower ---"
+    },
+    {
+      "say": "Move to FULL on the right. It's all uppercase.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fF",
+      "overlay": "find F"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Tilde four times.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "~"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "~"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "~"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "~"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Full is now lowercase. Undo to put it back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Tilde. Toggle case one character at a time. Simple and quick."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f potion.py"
+    }
+  ]
+}

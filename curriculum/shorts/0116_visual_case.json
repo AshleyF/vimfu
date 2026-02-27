@@ -1,0 +1,239 @@
+{
+  "title": "VimFu — Visual Case",
+  "description": "In visual mode, U uppercases the selection, U lowercases it, and tilde toggles the case. Select first, then pick your case.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 257,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "case"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "pqKJVDq66Po",
+    "url": "https://youtube.com/watch?v=pqKJVDq66Po"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f crew.py .crew.py.swp .crew.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*crew.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "crew.py",
+      "content": "captain = \"kirk\"\nengineer = \"scotty\"\npilot = \"SULU\"\ndoctor = \"bones\"\nscience = \"SPOCK\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim crew.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Visual Case",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "In visual mode, capital U uppercases, lowercase U lowercases, and tilde toggles the case."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: viw + U — uppercase selection ---"
+    },
+    {
+      "say": "Select kirk with V I W. Then capital U.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fk",
+      "overlay": "find k"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "viw",
+      "overlay": "select word"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "U",
+      "overlay": "uppercase"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Kirk is now KIRK."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: viw + u — lowercase selection ---"
+    },
+    {
+      "say": "Line three. SULU is all caps. Select it and press lowercase U.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "viw",
+      "overlay": "select word"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "lowercase"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Sulu is quiet now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: V + ~ — toggle whole line ---"
+    },
+    {
+      "say": "Select the whole last line with capital V. Then tilde.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "~",
+      "overlay": "toggle case"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every character flipped. Uppercase went down, lowercase went up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Visual mode plus U, U, or tilde. Select the text, then choose your case."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f crew.py"
+    }
+  ]
+}

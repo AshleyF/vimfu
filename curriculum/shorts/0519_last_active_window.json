@@ -1,0 +1,280 @@
+{
+  "title": "VimFu — Last Active Window",
+  "description": "Control B L toggles back to the most recently active window. Bounce between two windows instantly.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 519,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "J5arHLqtmU0",
+    "url": "https://youtube.com/watch?v=J5arHLqtmU0"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f email_send.py .email_send.py.swp .email_send.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*email_send.py*"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "email_send.py",
+      "content": "def send_email(to, body):\n    msg = build_mime(to, body)\n    with smtplib.SMTP(HOST) as s:\n        s.starttls()\n        s.login(USER, PASS)\n        s.send_message(msg)\n    return True\n"
+    },
+    {
+      "writeFile": "terminal.txt",
+      "content": "$ python manage.py migrate\n  Applying auth.0001... OK\n  Applying core.0002... OK\n\n$ python manage.py runserver\n  Starting dev server at :8000\n"
+    },
+    {
+      "writeFile": "docs.txt",
+      "content": "smtplib.SMTP\n\n  .starttls()  — upgrade to TLS\n  .login(u, p) — authenticate\n  .send_message(msg)\n\n  See also: email.mime\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Window 0 — open nvim (real editor)"
+    },
+    {
+      "line": "nvim email_send.py"
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "waitForScreen": "send_email",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Window 1 — terminal output"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "1:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear && cat terminal.txt"
+    },
+    {
+      "comment": "Window 2 — docs"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "2:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear && cat docs.txt"
+    },
+    {
+      "comment": "Go back to window 0 (nvim)"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "waitForScreen": "send_email",
+      "timeout": 5.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Last Active Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, L jumps back to the last window you were in."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: switch to terminal, then toggle ---"
+    },
+    {
+      "say": "I'm in the editor. Let me switch to the terminal. Control B, 1.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "1",
+      "overlay": "window 1"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now Control B, L.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "l",
+      "overlay": "last window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Right back to the editor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: toggle again ---"
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "l",
+      "overlay": "last window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Terminal."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "l",
+      "overlay": "last window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Editor. It bounces between the last two. The docs window is untouched."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, L. The fastest way to bounce between two windows."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim and clean up"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/email_send.py ~/vimfu/terminal.txt ~/vimfu/docs.txt"
+    }
+  ]
+}

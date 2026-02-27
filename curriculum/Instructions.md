@@ -37,6 +37,11 @@ Every video goes through a generate → inspect → fix cycle:
      - **Every single `[OVERLAY]` line must make sense to a viewer.** If it doesn't, the JSON is wrong.
    - **No extraneous keystrokes** — every key press should serve the demo. If you see navigation that could be shorter (e.g., `0` then `w w w` when `3w` or `f<char>` would do), redesign the file content or pick a better motion.
    - **The demo is compelling** — the log should read like a clean, purposeful walkthrough. If a section feels clunky or repetitive, restructure it. Better motions make for better demos.
+   - **CRITICAL: Verify the resulting screen state is semantically correct.** After every editing operation, read the full screen rows in the log and confirm the file content makes sense as real code. Don't just check that keys were sent — check that the *result* is right. Common failures:
+     - Indenting/unindenting includes a line that shouldn't be in the selection (e.g., indenting a `def` line along with its body, producing invalid Python where `def` and body are at the same level).
+     - A visual selection is one line too many or too few because the cursor was on the wrong row after a previous demo.
+     - A delete, change, or paste produces malformed code that a viewer would instantly spot as wrong.
+     - **If a human would look at the resulting screen and say "that's wrong", the video is wrong.** Fix it.
 4. **Fix and regenerate** if anything is off. This isn't just about fixing errors — it's about **improving the demo**. A log that works but feels inefficient or cluttered is not done yet. Repeat until the log reads like a crisp, polished tutorial.
 
 ---
@@ -233,7 +238,7 @@ When a key's default overlay caption is wrong for the context, override it. **Ev
 - **tmux prompts**: `y` defaults to "yank" but means "yes" at a tmux confirm prompt. Override: `overlay="yes"`.
 - **tmux pane navigation**: `h`/`j`/`k`/`l` after prefix mean "left"/"down"/"up"/"right", not Vim motions.
 - **Shell context**: Any key pressed outside of Vim (e.g., at a shell prompt or in a tmux mode) needs its overlay checked.
-- **Arrow keys**: Escape sequences like `\u001b[B` render as `⎋[B` in the overlay — unreadable. Prefer letter keys (`h`/`j`/`k`/`l`) where possible. If you must use arrow escapes, always set an explicit `overlay` (e.g., `"overlay": "↓"`).
+- **Arrow keys**: Escape sequences like `\u001b[B` render as `⎋[B` in the overlay — unreadable. The viewer's `KEY_DISPLAY` dict now maps common arrow sequences to proper symbols (`↑↓←→`, `⌃↑` for Ctrl+Arrow, etc.), so basic arrows should display correctly automatically. If you use an unusual arrow variant not in `KEY_DISPLAY`, always set an explicit `overlay` (e.g., `"overlay": "↓"`). **After generating, grep the log for `⎋[` in `[OVERLAY]` lines to catch any that slipped through.**
 
 ```python
 # Register names after q or @ — 'a' normally shows "append"
@@ -313,3 +318,4 @@ Always short, lowercase `.py` files relevant to the lesson context: `typo.py`, `
 - [ ] Narration matches what's on screen
 - [ ] No nvim launch visible in the recording (unless that's the lesson)
 - [ ] `WaitForScreen("All")` used (nvim status bar, never file content or command text)
+- [ ] **No garbled arrow key overlays** — search the log for `[OVERLAY]` lines containing `⎋[` (e.g., `⎋[1;5C`, `⎋[A`). These are raw escape sequences leaking into the display. The viewer's `KEY_DISPLAY` dict maps common arrow sequences (`\x1b[A`–`D`, `\x1b[1;5A`–`D`, etc.) to proper symbols (`↑`, `⌃→`, etc.), so the key display should show arrows, not escape codes. If you still see `⎋[` in an overlay, either the escape sequence isn't in `KEY_DISPLAY` (add it) or the JSON `keys` field uses a non-standard encoding (fix it).

@@ -1,0 +1,261 @@
+{
+  "title": "VimFu — Visual Indent",
+  "description": "Select lines with visual mode, then press greater-than or less-than to indent or unindent. Precise control over exactly which lines shift.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 252,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "indent"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "ehPhXUqy01Y",
+    "url": "https://youtube.com/watch?v=ehPhXUqy01Y"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f robot.py .robot.py.swp .robot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*robot.py*"
+    },
+    {
+      "comment": "Create demo file — functions with unindented bodies"
+    },
+    {
+      "writeFile": "robot.py",
+      "content": "def wake_up():\nprint(\"Booting...\")\npower = 100\nmood = \"happy\"\n\ndef shutdown():\nprint(\"Goodnight.\")\npower = 0\nmood = \"sleepy\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim -c 'set shiftwidth=4' robot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Visual Indent",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Select lines in visual mode, then press greater-than to indent or less-than to unindent."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: V select + > to indent ---"
+    },
+    {
+      "say": "These function bodies aren't indented. Select with capital V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Three body lines selected. Greater-than.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">",
+      "overlay": "indent"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Indented. Now they're properly nested under the def."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: indent the second method ---"
+    },
+    {
+      "say": "Same for shutdown.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">",
+      "overlay": "indent"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Clean."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: < to unindent ---"
+    },
+    {
+      "say": "Too much? Select and press less-than.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "<",
+      "overlay": "unindent"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Shifts back. Undo that.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Visual select, greater-than to indent, less-than to unindent. You pick the lines."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f robot.py"
+    }
+  ]
+}

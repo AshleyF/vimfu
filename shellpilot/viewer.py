@@ -131,10 +131,23 @@ class TerminalViewer:
         # Control characters (Ctrl+letter) — display as ⌃ + letter
         '\x01': '⌃a', '\x02': '⌃b', '\x03': '⌃c', '\x04': '⌃d',
         '\x05': '⌃e', '\x06': '⌃f', '\x07': '⌃g',
+        '\x08': '⌃h', '\x09': '⌃i', '\x0a': '⌃j',
+        '\x0b': '⌃k', '\x0c': '⌃l', '\x0d': '⌃m',
         '\x0e': '⌃n', '\x0f': '⌃o', '\x10': '⌃p',
-        '\x12': '⌃r', '\x13': '⌃s', '\x14': '⌃t',
+        '\x11': '⌃q', '\x12': '⌃r', '\x13': '⌃s', '\x14': '⌃t',
         '\x15': '⌃u', '\x16': '⌃v', '\x17': '⌃w',
         '\x18': '⌃x', '\x19': '⌃y', '\x1a': '⌃z',
+        # Arrow key escape sequences (prevent garbled ⎋[A display)
+        '\x1b[A': '↑', '\x1b[B': '↓', '\x1b[C': '→', '\x1b[D': '←',
+        # Ctrl+Arrow
+        '\x1b[1;5A': '⌃↑', '\x1b[1;5B': '⌃↓',
+        '\x1b[1;5C': '⌃→', '\x1b[1;5D': '⌃←',
+        # Alt+Arrow
+        '\x1b[1;3A': '⌥↑', '\x1b[1;3B': '⌥↓',
+        '\x1b[1;3C': '⌥→', '\x1b[1;3D': '⌥←',
+        # Shift+Arrow
+        '\x1b[1;2A': '⇧↑', '\x1b[1;2B': '⇧↓',
+        '\x1b[1;2C': '⇧→', '\x1b[1;2D': '⇧←',
     }
     
     def __init__(self, shell: ShellPilot, title: str = "ShellPilot Viewer", borderless: bool = True,

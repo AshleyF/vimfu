@@ -1,0 +1,296 @@
+{
+  "title": "VimFu — Next / Previous Window",
+  "description": "Control B N goes to the next window. Control B P goes to the previous one. Cycle through your windows in order.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 517,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "U8Sh5KT9WAY",
+    "url": "https://youtube.com/watch?v=U8Sh5KT9WAY"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f wizard.py .wizard.py.swp .wizard.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*wizard.py*"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "wizard.py",
+      "content": "class Wizard:\n    def __init__(self, name):\n        self.name = name\n        self.mana = 100\n\n    def cast(self, spell):\n        cost = spell.mana_cost\n        if self.mana >= cost:\n            self.mana -= cost\n            return spell.effect()\n        return \"Not enough mana\"\n"
+    },
+    {
+      "writeFile": "server.txt",
+      "content": "✔ Listening on :8080\n\n  GET  /spells     200  8ms\n  POST /cast       201  23ms\n  GET  /inventory  200  5ms\n  GET  /health     200  2ms\n"
+    },
+    {
+      "writeFile": "deploy.txt",
+      "content": "▸ Building image...     done\n▸ Pushing to registry... done\n▸ Rolling out pods...   2/3\n▸ Health check...       wait\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Window 0 — open nvim (real editor)"
+    },
+    {
+      "line": "nvim wizard.py"
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "waitForScreen": "Wizard",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Window 1 — server output"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "1:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear && cat server.txt"
+    },
+    {
+      "comment": "Window 2 — deploy log"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "2:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear && cat deploy.txt"
+    },
+    {
+      "comment": "Go back to window 0 (nvim)"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "waitForScreen": "Wizard",
+      "timeout": 5.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Next / Previous Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, N goes to the next window. Control B, P goes to the previous one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: next window ---"
+    },
+    {
+      "say": "Three windows. I'm in the editor. Control B, N.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "n",
+      "overlay": "next window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Server window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: next again ---"
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "n",
+      "overlay": "next window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Deploy window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: previous window ---"
+    },
+    {
+      "say": "Now go back. Control B, P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "p",
+      "overlay": "previous window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the server."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "p",
+      "overlay": "previous window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Editor again."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, N for next. Control B, P for previous. Cycle through your windows."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim and clean up"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/wizard.py ~/vimfu/server.txt ~/vimfu/deploy.txt"
+    }
+  ]
+}

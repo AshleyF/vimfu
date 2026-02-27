@@ -1,0 +1,309 @@
+{
+  "title": "VimFu — Switch to Window N",
+  "description": "Control B then a number jumps directly to that window. Control B zero for the first, Control B one for the second, and so on. Instant access to any window.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 518,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "koLuN6hKh7c",
+    "url": "https://youtube.com/watch?v=koLuN6hKh7c"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f fetcher.py .fetcher.py.swp .fetcher.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*fetcher.py*"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "fetcher.py",
+      "content": "import asyncio\n\nasync def fetch(url):\n    reader, writer = await (\n        asyncio.open_connection(\n            url, 443, ssl=True))\n    writer.write(b\"GET / \")\n    data = await reader.read()\n    return data.decode()\n"
+    },
+    {
+      "writeFile": "tests.txt",
+      "content": "PASS test_fetch.py\n  ✓ connects to host    3ms\n  ✓ reads response     2ms\n  ✓ decodes utf8       1ms\n\n3 passed in 0.06s\n"
+    },
+    {
+      "writeFile": "logs.txt",
+      "content": "14:22:01 INFO  worker start\n14:22:02 INFO  fetch begin\n14:22:02 WARN  slow dns 210ms\n14:22:03 INFO  fetch done\n14:22:03 INFO  cache updated\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Window 0 — project overview"
+    },
+    {
+      "line": "clear && ls -la"
+    },
+    {
+      "comment": "Window 1 — code in nvim (real editor)"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "1:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "nvim fetcher.py"
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "waitForScreen": "asyncio",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Window 2 — test results"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "2:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear && cat tests.txt"
+    },
+    {
+      "comment": "Window 3 — log stream"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "3:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear && cat logs.txt"
+    },
+    {
+      "comment": "Go back to window 0"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 5.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Switch to Window N",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B then a number jumps directly to that window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to window 2 ---"
+    },
+    {
+      "say": "Four windows. I'm in window zero. Control B, 2.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "2",
+      "overlay": "window 2"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Straight to the test window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump to window 3 ---"
+    },
+    {
+      "say": "Control B, 3.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "3",
+      "overlay": "window 3"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Logs window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: jump to window 1 ---"
+    },
+    {
+      "say": "Control B, 1.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "1",
+      "overlay": "window 1"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The editor. No cycling needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: back to 0 ---"
+    },
+    {
+      "say": "Control B, zero to go home.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "0",
+      "overlay": "window 0"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B then a number. Direct access to any window, zero through nine."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim and clean up"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/fetcher.py ~/vimfu/tests.txt ~/vimfu/logs.txt"
+    }
+  ]
+}

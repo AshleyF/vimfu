@@ -1,0 +1,250 @@
+{
+  "title": "VimFu — Rename Window",
+  "description": "Control B comma lets you rename the current window. Give your windows meaningful names so the status bar actually tells you what's where.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 520,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "G5IxvRmtIAw",
+    "url": "https://youtube.com/watch?v=G5IxvRmtIAw"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux with two windows"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "clear; echo 'editing code here'"
+    },
+    {
+      "line": "tmux new-window"
+    },
+    {
+      "line": "clear; echo 'running tests here'"
+    },
+    {
+      "comment": "Go back to window 0"
+    },
+    {
+      "line": "tmux select-window -t 0"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Rename Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, comma renames the current window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: rename window 0 ---"
+    },
+    {
+      "say": "The status bar just shows zsh. Not helpful. Control B, comma.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ",",
+      "overlay": "rename window"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The old name is pre-filled. Quick trick. Control A jumps to the start of the line. Control K deletes to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0001",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u000b",
+      "overlay": "kill to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Clean slate. Now type the new name.",
+      "wait": false
+    },
+    {
+      "type": "code"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now the status bar says code. Much better."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: rename window 1 ---"
+    },
+    {
+      "say": "Switch to window one and rename it too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "1",
+      "overlay": "window 1"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ",",
+      "overlay": "rename window"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control A, Control K to clear.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0001",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u000b",
+      "overlay": "kill to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "tests"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Code and tests. Now I know what's what."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, comma. Name your windows so the status bar works for you."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

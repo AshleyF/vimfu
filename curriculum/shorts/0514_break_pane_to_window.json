@@ -1,0 +1,238 @@
+{
+  "title": "VimFu — Break Pane to Window",
+  "description": "Control B exclamation mark moves the current pane into its own new window. Promote a pane when it needs more space.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 514,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "jyF5KfolcBI",
+    "url": "https://youtube.com/watch?v=jyF5KfolcBI"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f server.py .server.py.swp .server.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*server.py*"
+    },
+    {
+      "comment": "Create a Python file for the editor pane"
+    },
+    {
+      "writeFile": "server.py",
+      "content": "from http.server import HTTPServer\n\ndef run(port=8080):\n    srv = HTTPServer(\n        ('', port), Handler\n    )\n    print(f'Listening :{port}')\n    srv.serve_forever()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Open nvim in top pane"
+    },
+    {
+      "line": "nvim server.py"
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "waitForScreen": "HTTPServer",
+      "timeout": 10.0
+    },
+    {
+      "comment": "Split — bottom pane gets log output"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "\""
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 5.0
+    },
+    {
+      "comment": "Show fake log output in bottom pane"
+    },
+    {
+      "line": "clear && printf '\\033[90m10:31:02\\033[0m \\033[32mINFO\\033[0m  startup ok\\n\\033[90m10:31:03\\033[0m \\033[32mINFO\\033[0m  GET / 200\\n\\033[90m10:31:04\\033[0m \\033[33mWARN\\033[0m  slow query 320ms\\n\\033[90m10:31:05\\033[0m \\033[32mINFO\\033[0m  POST /api 201\\n\\033[90m10:31:06\\033[0m \\033[31mERR \\033[0m  conn refused\\n'"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Break Pane to Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, exclamation mark breaks the current pane out into its own window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: break the bottom pane ---"
+    },
+    {
+      "say": "I'm in the logs pane at the bottom. It's cramped. Control B, exclamation.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "!",
+      "overlay": "break pane"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The logs pane is now its own full window. Check the status bar. Two windows."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: switch back to see original ---"
+    },
+    {
+      "say": "Switch back to window zero. Control B, zero.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "0",
+      "overlay": "window 0"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The code expanded to fill the screen. The logs are safe in window one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: back to the logs window ---"
+    },
+    {
+      "say": "Control B, one to see the logs.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "1",
+      "overlay": "window 1"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Full screen logs. Much better."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, exclamation. Promote a pane to its own window when it needs room."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim and clean up"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/server.py"
+    }
+  ]
+}

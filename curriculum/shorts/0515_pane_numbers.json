@@ -1,0 +1,305 @@
+{
+  "title": "VimFu — Pane Numbers",
+  "description": "Control B Q shows pane number overlays. Press a number to jump directly to that pane. Fast navigation when you have many panes open.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 515,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "7YJt6nAlVgI",
+    "url": "https://youtube.com/watch?v=7YJt6nAlVgI"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f robot.py .robot.py.swp .robot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*robot.py*"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "robot.py",
+      "content": "class Robot:\n    def __init__(self):\n        self.battery = 100\n    def speak(self):\n        print(\"Beep!\")\n"
+    },
+    {
+      "writeFile": "status.txt",
+      "content": "● redis   :6379  ready\n● postgres :5432  ready\n● worker  :---   idle\n"
+    },
+    {
+      "writeFile": "tests.txt",
+      "content": "PASS test_robot.py\n  ✓ battery starts full\n  ✓ speak returns beep\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Increase display-panes timeout so numbers stay visible"
+    },
+    {
+      "line": "tmux set display-panes-time 5000"
+    },
+    {
+      "comment": "Open nvim in pane 0 (top)"
+    },
+    {
+      "line": "nvim robot.py"
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "waitForScreen": "Beep",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Split for pane 1 (middle)"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "\""
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 5.0
+    },
+    {
+      "comment": "Split for pane 2 (bottom)"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "\""
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "comment": "Pane 2 (bottom) — test results"
+    },
+    {
+      "line": "clear && cat tests.txt"
+    },
+    {
+      "comment": "Navigate to pane 1 (middle)"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "\u001b[A"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "Pane 1 (middle) — service status"
+    },
+    {
+      "line": "clear && cat status.txt"
+    },
+    {
+      "comment": "Navigate to pane 0 (top — nvim)"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "\u001b[A"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Pane Numbers",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, Q shows pane numbers. Press a number to jump to that pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: show pane numbers ---"
+    },
+    {
+      "say": "Three panes. Control B, Q.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "q",
+      "overlay": "show pane numbers"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Big numbers appear on each pane. Zero, one, two."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump to pane 2 ---"
+    },
+    {
+      "say": "Do it again and press 2 to jump to the tests pane.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "q",
+      "overlay": "show pane numbers"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2",
+      "overlay": "pane 2"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped straight to the tests pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: jump to pane 0 ---"
+    },
+    {
+      "say": "Back to the editor. Control B, Q, zero.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "q",
+      "overlay": "show pane numbers"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0",
+      "overlay": "pane 0"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Right back to the editor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, Q then a number. Jump to any pane instantly."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim and clean up"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/robot.py ~/vimfu/status.txt ~/vimfu/tests.txt"
+    }
+  ]
+}

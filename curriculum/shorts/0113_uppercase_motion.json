@@ -1,0 +1,251 @@
+{
+  "title": "VimFu — Uppercase Motion",
+  "description": "G U plus a motion converts text to uppercase. G U I W uppercases a word, G U G uppercases the whole file. The operator handles the range.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 254,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "case"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "8oFJIkEL670",
+    "url": "https://youtube.com/watch?v=8oFJIkEL670"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spell.py .spell.py.swp .spell.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spell.py*"
+    },
+    {
+      "comment": "Create demo file with lowercase names that should be uppercased"
+    },
+    {
+      "writeFile": "spell.py",
+      "content": "max_mana = 200\nfire_damage = 50\nice_shield = True\ncrit_chance = 0.15\nboss_name = \"dragon\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spell.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Uppercase Motion",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G U plus a motion makes text uppercase. It's an operator, so it works with any motion."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: gUiw — uppercase a word ---"
+    },
+    {
+      "say": "These constants should be uppercase. G U I W uppercases the inner word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gUiw",
+      "overlay": "uppercase word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Max mana is now all caps."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: gUiw on next line ---"
+    },
+    {
+      "say": "Next line. Same command.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gUiw",
+      "overlay": "uppercase word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Fire damage. Done."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: gU$ — uppercase to end of line ---"
+    },
+    {
+      "say": "G U dollar sign. Uppercase from here to the end of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gU$",
+      "overlay": "uppercase to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The whole line went uppercase."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo that.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 4: gUG — uppercase to end of file ---"
+    },
+    {
+      "say": "Go big. G U, capital G. Uppercase everything from here to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gU",
+      "overlay": "uppercase"
+    },
+    {
+      "keys": "G",
+      "overlay": "to end of file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines. All caps. One command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G U is the uppercase operator. Pair it with any motion. I W for a word. Dollar for the line. Capital G for the file."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spell.py"
+    }
+  ]
+}
