@@ -942,6 +942,95 @@ _Tmux is the perfect partner for Vim. Learn to split your terminal, manage windo
 
 ---
 
+## Part 20 — Advanced (Lessons 600+)
+
+_Deep cuts for power users. These lessons assume you're comfortable with everything above._
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 600 | Edit a Macro | `"ap` → edit → `"ayy` | Macros live in normal registers. Paste one with `"ap` to see the keystrokes, edit them as plain text, then yank the line back with `"ayy`. Now `@a` plays your hand-edited macro. |
+
+---
+
+## Part 21 — Surround (Lessons 700–742)
+
+_Tim Pope's surround.vim is one of the most popular Vim plugins ever written. Many editors and emulators (including the VS Code Vim extension) ship surround bindings by default. If you use Vim, you should know surround._
+
+### What Is Surround?
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 700 | What Is Surround? | — | Surround.vim lets you add, change, and delete "surroundings" — parentheses, brackets, quotes, and HTML tags — in pairs. One of the most essential Vim plugins. |
+
+### Deleting Surroundings (`ds`)
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 701 | Delete Surrounding Quotes | `ds"` | Remove the double quotes around the cursor. `ds'` and `` ds` `` work for single quotes and backticks. |
+| 702 | Delete Surrounding Parentheses | `ds)` or `dsb` | Remove the parentheses around the cursor. `b` is an alias for `)`. |
+| 703 | Delete Surrounding Brackets | `ds]` or `dsr` | Remove the square brackets around the cursor. `r` is an alias for `]`. |
+| 704 | Delete Surrounding Braces | `ds}` or `dsB` | Remove the curly braces around the cursor. `B` is an alias for `}`. |
+| 705 | Delete Surrounding Angle Brackets | `ds>` or `dsa` | Remove the angle brackets around the cursor. `a` is an alias for `>`. |
+| 706 | Delete Surrounding Tags | `dst` | Remove the HTML/XML tag pair around the cursor. Handles `<div>`, `<em>`, `<p class="x">`, etc. |
+| 707 | Delete — Opening Mark Trims Space | `ds(` vs `ds)` | Using the opening mark (`ds(`, `ds{`, `ds[`) also removes inner whitespace. `ds)` leaves spaces intact. Compare: `ds(` on `( hello )` → `hello`; `ds)` → ` hello `. |
+| 708 | Delete Arbitrary Surroundings | `ds\|` `ds*` `ds_` | Any punctuation character that isn't a paired bracket works symmetrically. `ds\|` removes pipes, `ds*` removes asterisks. Works with `/`, `_`, `~`, etc. |
+| 709 | Delete C-Style Comments | `ds/` | Specifically removes `/* ... */` comment delimiters. The `/` target is a special case that understands C-style block comments. |
+| 710 | Delete with Count | `2ds)` `2dst` | A count targets the Nth enclosing pair. `2ds)` deletes the second outer set of parentheses. `2dst` deletes the second enclosing tag. |
+
+### Changing Surroundings (`cs`)
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 711 | Change Quotes | `cs"'` | Change double quotes to single quotes. Works with any quote pair as source or destination. |
+| 712 | Change Brackets to Parens | `cs])` | Change square brackets to parentheses. Using a closing mark as replacement gives no extra space. |
+| 713 | Change — Add Inner Space | `cs){` or `cs)[` | Using an opening mark as the *replacement* (`{`, `[`, `(`) adds a space inside: `{ text }`. |
+| 714 | Change — Trim Inner Space | `cs({` | Using an opening mark as the *target* trims existing inner whitespace before applying the new surround. `cs(}` on `( hello )` → `{hello}`. |
+| 715 | Change to HTML Tag | `cs"<em>` | Change quotes to an HTML tag pair. Vim prompts for the tag name — you can include attributes. |
+| 716 | Change Tag to Tag | `cst<div>` | Change the nearest HTML/XML tag to a different tag. Attributes on the old tag are preserved unless you end your input with `>`. |
+| 717 | Change Tag to Quote | `cst"` | Change an HTML tag pair to double quotes. `t` targets the innermost tag. |
+| 718 | Change on Separate Lines | `cS"(` | Like `cs`, but places the surrounded text on its own indented line. |
+| 719 | Change with Word Target | `cswb` `csWB` | The `w`, `W`, and `s` targets act as shortcuts. `cswb` is roughly equivalent to `ysiwb` — it treats the word as the "old surround" and wraps it. |
+
+### Adding Surroundings (`ys`)
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 720 | Surround a Word | `ysiw)` | Wrap the word under the cursor in parentheses. `ys` = "you surround", then a motion or text-object, then the replacement character. |
+| 721 | Surround with Space | `ysiw(` or `ysiw{` or `ysiw[` | Using an opening mark adds a space inside: `( word )`, `{ word }`, `[ word ]`. Use closing marks for no space. |
+| 722 | Surround a WORD | `ysaW}` | Wrap a WORD (whitespace-delimited) in braces. Any text object works: `ysas)` for a sentence, `ysap}` for a paragraph. |
+| 723 | Surround with Motion | `ys$"` `ysf."` `yst,)` | Any Vim motion works as the first argument. `ys$"` wraps to end of line in quotes, `ysf."` wraps up to the next period. |
+| 724 | Surround the Whole Line | `yss)` or `yssb` | Wrap the entire current line in parentheses, ignoring leading whitespace. `yss` is a special double-key shortcut like `dd` or `yy`. |
+| 725 | Surround with Tag | `ysiw<em>` | Wrap a word in an HTML/XML tag. Vim prompts for the tag — you can include attributes like `<div class="x">`. |
+| 726 | Surround with Tag on Separate Lines | `ysiw<C-T>` | Like surrounding with a tag, but `<C-T>` places the opening and closing tags on their own lines with the content indented. |
+| 727 | Surround with Self-Closing Tag | `ysiw<br/>` | End the tag with `/` to produce a self-closing tag like `<br />` with no closing pair. |
+| 728 | Surround with Function Call | `ysiwfprint↵` | Wrap a word in a function call: `print(word)`. `f` prompts for the function name and wraps in `name(...)`. |
+| 729 | Surround with Function — Extra Space | `ysiwFprint↵` | Like `f`, but `F` adds spaces inside the parentheses: `print( word )`. |
+| 730 | Surround — Function Inside Parens | `ysiw<C-f>print↵` | Inverted function style: `(print word)`. The function name goes inside the parentheses. Useful for Lisp-like syntax. |
+| 731 | Surround with Arbitrary Character | `ysiw/` `ysiw\|` | Any undefined, non-alphabetic character wraps symmetrically. `ysiw/` → `/word/`, `ysiw\|` → `\|word\|`. Great for Markdown emphasis, Ruby symbols, etc. |
+| 732 | Surround with Code Block | `ysiw<C-]>` | Wraps in braces on separate lines — `{` and `}` each on their own line with the content indented. Perfect for C-style code blocks. (`<C-]>` is really `<C-}>`.) |
+| 733 | Surround with LaTeX Environment | `ysiwl` or `ysiw\` | Prompts for an environment name and wraps in `\begin{env}...\end{env}`. Both `l` and `\` trigger the LaTeX prompt. |
+| 734 | Surround — Leading Space Only | `ysiws` | The `s` replacement adds a leading space but no trailing space. Useful for: `csbs` removes parentheses from a function call like `func(x)` → `func x`. |
+| 735 | Surround on Separate Lines | `ySiw(` | Like `ys`, but `yS` indents the surrounded text and places it on its own line between the surround characters. |
+| 736 | Surround Entire Line on Separate Lines | `ySS{` | Wrap the current line in braces, each on a new line with proper indentation. Perfect for wrapping a statement in a block. |
+
+### Visual Mode Surround (`S` / `gS`)
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 737 | Visual Surround — Characterwise | `v` → select → `S)` | In characterwise visual mode, `S` then a character wraps just the selection. |
+| 738 | Visual Surround — Linewise | `V` → select → `S<p>` | In linewise visual mode, `S` places the surroundings on separate lines with the content indented. |
+| 739 | Visual Surround — Blockwise | `Ctrl-V` → select → `S"` | In blockwise visual mode, each line of the selection is individually surrounded. |
+| 740 | Visual `gS` | `gS` | In linewise visual mode, `gS` suppresses the automatic indenting that `S` does. In blockwise visual mode, `gS` enables surrounding past the end of the line (with `virtualedit`). |
+
+### Insert Mode Surround
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 741 | Insert Mode Surround | `<C-G>s` or `<C-S>` | In insert mode, press `<C-G>s` (or `<C-S>` if your terminal supports it) then a character. The surroundings are inserted and the cursor is placed between them. |
+| 742 | Insert Mode Surround on Separate Lines | `<C-G>S` | Like `<C-G>s`, but the prefix, cursor, and suffix are placed on three separate lines. Pressing `<C-S>` or `Enter` a second time (before the replacement char) also triggers multi-line mode. |
+
+---
+
 ## Appendix A — Synonym Reference
 
 Many keys do the same thing. Knowing synonyms helps you recognize them in the wild.
