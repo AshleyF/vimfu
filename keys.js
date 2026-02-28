@@ -62,7 +62,7 @@ let keys = {
     'g+': { form: 'g+', name: 'Newer text state', description: 'Go to newer text state N times.', categories: ['motion'] },
     'g-': { form: 'g-', name: 'Older text state', description: 'Go to older text state N times.', categories: ['motion'] },
     'g,': { form: 'g,', name: 'Newer change', description: 'Go to N newer position in change list.', categories: ['motion'] },
-    'g;': { form: 'g;', name: 'Older change', description: 'Go to N older position in change list.' },
+    'g;': { form: 'g;', name: 'Older change', description: 'Go to N older position in change list.', categories: ['motion'] },
     'g0': { form: 'g0', name: 'Leftmost screen character', description: 'When `wrap` off go to leftmost character of the current line that is on the screen; when `wrap` on go to the leftmost character of the current screen line.', categories: ['motion'] },
     'g8': { form: 'g8', name: 'Hex value', description: 'Print hex value of bytes used in UTF-8 character under the cursor.' },
     'g<': { form: 'g<', name: 'Previous output', description: 'Display previous command output.' },
@@ -73,6 +73,7 @@ let keys = {
     'g_': { form: 'g_', name: 'End of line', description: 'Cursor to the last CHAR N - 1 lines lower.' },
     'g@': { form: 'g@{motion}', name: 'Call operatorfunc', description: 'Call `operatorfunc`.' },
     'g~': { form: 'g~{motion}', name: 'Toggle case', description: 'Swap case for Nmove text.' },
+    'g~~': { form: 'g~~', name: 'Toggle case line', description: 'Swap case for current line.' },
     'g<Tab>': { form: 'g<Tab>', name: 'Go to tab', description: 'Go to last accessed tab page.' },
     'g<Down>': { form: 'g<Down>', name: 'Down screen line', description: 'Like `j`, but when `wrap` on go N screen lines down.', categories: ['motion'] },
     'g<Up>': { form: 'g<Up>', name: 'Up screen line', description: 'Like `k`, but when `wrap` on go N screen lines up.', categories: ['motion'] },
@@ -113,7 +114,6 @@ let keys = {
     'zd': { form: 'zd', name: 'Delete fold', description: 'Delete a fold.' },
     'ze': { form: 'ze', name: 'Scroll end of line', description: 'When `wrap` off scroll horizontally to position the cursor at the end (right side) of the screen.' },
     'zf': { form: 'zf{motion}', name: 'Create fold', description: 'Create a fold for Nmove text.' },
-    '': { form: '', name: '', description: '' },
     'z+': { form: 'z+', name: 'Scroll top', description: 'Redraw, cursor line (N if given) to top of window, cursor on first non-blank.' },
     'z-': { form: 'z-', name: 'Scroll bottom', description: 'Redraw, cursor line at bottom of window, cursor on first non-blank.' },
     'z.': { form: 'z.', name: 'Scroll middle', description: 'Redraw, cursor line to center of window, cursor on first non-blank.' },
@@ -188,7 +188,7 @@ let keys = {
     'X': { form: '["x]X', name: 'Delete char', description: 'Delete N characters before the cursor [into register x].', count: true },
     'Y': { form: '["x]Y', name: 'Yank line', description: 'Yank N lines [into register x]. |default-mappings|.', count: true },
     'ZZ': { form: 'ZZ', name: 'Write and close', description: 'Write if buffer changed and close window.' },
-    'ZQ': { form: 'ZQ', name: 'Clise without writing', description: 'Close window without writing.' },
+    'ZQ': { form: 'ZQ', name: 'Close without writing', description: 'Close window without writing.' },
     '!': { form: '!{motion}{filter}', name: 'Filter', description: 'Filter Nmove text through the {filter} command.', count: true },
     '!!': { form: '!!{filter}', name: 'Filter line', description: 'Filter N lines through the {filter} command.', count: true },
     '"': { form: '"{register}', name: 'Register', description: 'Use {register} for next delete, yank or put ({.%#:} only work with put).' },
@@ -246,9 +246,9 @@ let keys = {
     '[`': { form: '[`', name: 'Previous mark', description: 'Cursor to previous lowercase mark.', categories: ['motion'] },
     ']`': { form: ']`', name: 'Next mark', description: 'Cursor to next lowercase mark.', categories: ['motion'] },
     '[(': { form: '[(', name: 'Previous (', description: 'Cursor N times back to unmatched `(`.', categories: ['motion'] },
-    '](': { form: '](', name: 'Next (', description: 'Cursor N times forward to next unmatched `(`.', categories: ['motion'] },
+    '])': { form: '])', name: 'Next )', description: 'Cursor N times forward to unmatched `)`.', categories: ['motion'] },
     '[{': { form: '[{', name: 'Previous {', description: 'Cursor N times back to unmatched `{`.', categories: ['motion'] },
-    ']{': { form: ']{', name: 'Next {', description: 'Cursor N times forward to unmatched `}`.', categories: ['motion'] },
+    ']}': { form: ']}', name: 'Next }', description: 'Cursor N times forward to unmatched `}`.', categories: ['motion'] },
     '[*': { form: '[*', name: 'Previous comment', description: 'Cursor to N previous start of a C comment.', categories: ['motion'] },
     ']*': { form: ']*', name: 'Next comment', description: 'Cursor to N next end of a C comment.', categories: ['motion'] },
     '[/': { form: '[/', name: 'Previous comment', description: 'Cursor to N previous start of a C comment.', categories: ['motion'] },
@@ -279,8 +279,8 @@ let keys = {
     ']D': { form: ']D', name: 'List defines', description: 'List all defines found in current and included files matching the word under the cursor, start searching at beginning of current file.' },
     '[I': { form: '[I', name: 'List includes', description: 'List all lines found in current and included files that contain the word under the cursor, start searching at beginning of current file.' },
     ']I': { form: ']I', name: 'List includes', description: 'List all lines found in current and included files that contain the word under the cursor, start searching at beginning of current file.' },
-    ']^i': { form: ']^d', name: 'Find #define', description: 'Jump to first #define found in current and included files matching the word under the cursor, start searching at cursor position.' },
-    ']^d': { form: ']^i', name: 'Find under cursor', description: 'Jump to first line in current and included files that contains the word under the cursor, start searching at cursor position.' },
+    ']^d': { form: ']^d', name: 'Find #define', description: 'Jump to first #define found in current and included files matching the word under the cursor, start searching at cursor position.' },
+    ']^i': { form: ']^i', name: 'Find under cursor', description: 'Jump to first line in current and included files that contains the word under the cursor, start searching at cursor position.' },
     ']<MiddleMouse>': { form: ']<MiddleMouse>', name: 'Put and indent', description: 'Like `p`, but adjust indent to current line.' },
     '^': { form: '^', name: 'Start of line', description: 'Cursor to the first CHAR of the line.', categories: ['motion'] },
     '_': { form: '_', name: 'Start of line', description: 'Cursor to the first CHAR N - 1 lines lower.', categories: ['motion'], count: true },
@@ -383,7 +383,7 @@ let keys = {
     '^wc': { form: '^wc', name: 'Close window', description: 'Close current window (like |:close|).' },
     '^wd': { form: '^wd', name: 'Split and jump to definition', description: 'Split window and jump to definition under the cursor.' },
     '^wf': { form: '^wf', name: 'Split and edit file', description: 'Split window and edit file name under the cursor.' },
-    '^wF': { form: '^wF', name: 'Split and edit file at line', description: 'Split window and edit file name under the cursor and jump to the line number following the file name..' },
+    '^wF': { form: '^wF', name: 'Split and edit file at line', description: 'Split window and edit file name under the cursor and jump to the line number following the file name.' },
     '^wh': { form: '^wh', name: 'Go to window', description: 'Go to Nth left window (stop at first window).' },
     '^wi': { form: '^wi', name: 'Split and jump to declaration', description: 'Split window and jump to declaration of identifier under the cursor.' },
     '^wj': { form: '^wj', name: 'Down window', description: 'Go N windows down (stop at last window).' },
@@ -404,7 +404,7 @@ let keys = {
     '^wx': { form: '^wx', name: 'Exchange window', description: 'Exchange current window with window N (default: next window).' },
     '^wz': { form: '^wz', name: 'Close preview window', description: 'Close preview window.' },
     '^wgf': { form: '^wgf', name: 'Edit file in new tab', description: 'Edit file name under the cursor in a new tab page.' },
-    '^wgF': { form: '^wgF', name: 'Edit file in new tab at line', description: 'Edit file name under the cursor in a new tab page and jump to the line number following the file name..' },
+    '^wgF': { form: '^wgF', name: 'Edit file in new tab at line', description: 'Edit file name under the cursor in a new tab page and jump to the line number following the file name.' },
     '^wgt': { form: '^wgt', name: 'Next tab', description: 'Go to the next tab page.' },
     '^wgT': { form: '^wgT', name: 'Previous tab', description: 'Go to the previous tab page.' },
     '^wg]': { form: '^wg]', name: 'Split window and select tag', description: 'Split window and do |:tselect| for tag under cursor.' },
@@ -412,7 +412,7 @@ let keys = {
     '^wg<Tab>': { form: '^wg<Tab>', name: 'Go to tab', description: 'Go to last accessed tab page.' },
     '^wg^]': { form: '^wg^]', name: 'Split window and jump to tag', description: 'Split window and do `:tjump` to tag under cursor.' },
     '^w]': { form: '^w]', name: 'Split window and jump to tag', description: 'Split window and jump to tag under cursor.' },
-    '^w^': { form: '^w^', name: 'Split window and etid alternate', description: 'Split current window and edit alternate file N.' },
+    '^w^': { form: '^w^', name: 'Split window and edit alternate', description: 'Split current window and edit alternate file N.' },
     '^w_': { form: '^w_', name: 'Set window height', description: 'Set current window height to N (default: very high). Similar to `z{height}<CR>`.' },
     '^w|': { form: '^w|', name: 'Set window width', description: 'Set window width to N columns.' },
     '^w}': { form: '^w}', name: 'Show tag', description: 'Show tag under cursor in preview window.' },
@@ -469,14 +469,14 @@ let keys = {
     'i_^q': { form: '^q{char}', name: 'Literal', description: 'Insert next non-digit literally or insert three digit decimal number as a single byte. Same as CTRL-V, unless used for terminal control flow.' },
     'i_^Q': { form: '^Q{char}', name: 'Literal', description: 'Insert next non-digit literally or insert three digit decimal number as a single byte. Like CTRL-Q unless `tui-modifyOtherKeys` is active.' },
     'i_^r': { form: '^r{register}', name: 'Insert Register', description: 'CTRL-R {register} insert the contents of a register.' },
-    'i_^rr': { form: '^rr{register}', name: 'Insert Literal Register', description: 'CTRL-R CTRL-R {register} insert the contents of a register literally.' },
-    'i_^rr': { form: '^rr{register}', name: 'Insert Literal Register (No Indent)', description: "CTRL-R CTRL-O {register} insert the contents of a register literally and don't auto-indent." },
-    'i_^rr': { form: '^rr{register}', name: 'Insert Literal Register (Autoindent)', description: 'CTRL-R CTRL-P {register} insert the contents of a register literally and fix indent.' },
+    'i_^r^r': { form: '^r^r{register}', name: 'Insert Literal Register', description: 'CTRL-R CTRL-R {register} insert the contents of a register literally.' },
+    'i_^r^o': { form: '^r^o{register}', name: 'Insert Register (No Indent)', description: "CTRL-R CTRL-O {register} insert the contents of a register literally and don't auto-indent." },
+    'i_^r^p': { form: '^r^p{register}', name: 'Insert Register (Autoindent)', description: 'CTRL-R CTRL-P {register} insert the contents of a register literally and fix indent.' },
     // i_^s
     'i_^t': { form: '^t', name: 'Indent', description: 'Insert one shiftwidth of indent in current line.' },
     'i_^u': { form: '^u', name: 'Undo Line', description: 'Delete all entered characters in the current line.' },
     'i_^v': { form: '^v{char}', name: 'Literal', description: 'Insert next non-digit literally or insert three digit decimal number as a single byte.' },
-    'i_^V': { form: '^V{char/number}', name: 'Literal', description: 'Insert next non-digit literally or insert three digit decimal number as a single byte.. Like CTRL-V unless `tui-modifyOtherKeys` is active.' },
+    'i_^V': { form: '^V{char/number}', name: 'Literal', description: 'Insert next non-digit literally or insert three digit decimal number as a single byte. Like CTRL-V unless `tui-modifyOtherKeys` is active.' },
     'i_^w': { form: '^w', name: 'Delete Word', description: 'Delete word before the cursor.' },
     // i_^x
     'i_^y': { form: '^y', name: 'Copy Above', description: 'Insert the character which is above the cursor.' },
@@ -488,9 +488,6 @@ let keys = {
     'i_^]': { form: '^]', name: 'Abbreviation', description: 'Trigger abbreviation.' },
     'i_^^': { form: '^^', name: 'Toggle LMap', description: 'Toggle use of language (`:lmap`) mappings.' },
     'i_^_': { form: '^_', name: 'Change Language', description: 'When `allowrevins` set: change language (Hebrew).' },
-    'i_': { form: '', name: '', description: '' },
-    'i_': { form: '', name: '', description: '' },
-    'i_': { form: '', name: '', description: '' },
     /*
 
 |i_CTRL-G_k|	CTRL-G <Up>	line up, to column where inserting started
@@ -564,7 +561,7 @@ commands in CTRL-X submode				*i_CTRL-X_index*
     ['C','c$'], // Change line
     ['D','d$'], // Delete line
     ['S','cc'], // Substitute line 
-    ['Y','yy','y$'] // Yank line
+    ['Y','yy'], // Yank line (Neovim maps Y to y$, classic Vim Y = yy)
     ['+','^m','<CR>'], // Start of lower line
     ['g<Tab>','^<Tab>'], // Go to tab
     ['[*','[/'], // Previous comment
@@ -591,7 +588,7 @@ commands in CTRL-X submode				*i_CTRL-X_index*
     ['w','<C-Right>','<S-Right>'], // Word
     ['^]','<C-LeftMouse>'], // Tag definition
     ['^t','<RightMouse>'], // Tag
-    ['gP','<MiddleMouse>'] // Put before and move after
+    ['gP','<MiddleMouse>'], // Put before and move after
     ['v','<RightMouse>'], // Visual mode
     ['*','<S-LeftMouse>'], // Find under cursor/mouse
     ['#','<S-RightMouse>'], // Find under cursor/mouse reverse
@@ -639,7 +636,7 @@ commands in CTRL-X submode				*i_CTRL-X_index*
     'scrolling_and_jumping': { name: 'Scrolling and Jumping', description: 'Scrolling and jumping with `^y` `^e` `zt` `zb` `zz` `^f` `^b` `^d` `^u`.', keys: ['^y','^e','zt','zb','zz','^f','^b','^d','^u'], link: 'https://youtube.com/shorts/bcp-IiijIPk' },
     'matching_pairs': { name: 'Matching Pairs', description: 'Moving between matching pairs with `%`.', keys: ['%'], link: 'https://youtube.com/shorts/DMw4tfAUyX0' },
     'changing_case': { name: 'Changing Case', description: 'Changing case with `~` `g~` `gu` `gU`.', keys: ['~','g~','gu','gU'], link: 'https://youtube.com/shorts/7BCWpZbVEIw' },
-    'marks': { name: 'Marks', descrition: 'Marking with `m` and navigating with `\'` ```.', keys: ['m',"'",'`'], link: 'https://youtube.com/shorts/KdjUu_GQj5k' },
+    'marks': { name: 'Marks', description: 'Marking with `m` and navigating with `\'` ```.', keys: ['m',"'",'`'], link: 'https://youtube.com/shorts/KdjUu_GQj5k' },
     'search': { name: 'Search', description: 'Searching with `*` `#` `n` `N` `/` `?`.', keys: ['*','#','n','N','/','?'], link: 'https://youtube.com/shorts/GO-uO5-VEag' },
     'line_column': { name: 'Go To Line/Column', description: 'Navigating to lines and columns with `G` `|` `:{num}`.', keys: ['G','|'], commands: [':{num}'], link: 'https://youtube.com/shorts/UIhQOP2x-Hc' },
     'advanced_selection': { name: 'Advanced Selection', description: "Extending selection with `o` and motions. Reselecting with `gv`. And navigating to the start and end of previous selections with `'<` `'>` ``<` ``>`.", keys: ['v_o' /* visual mode o */,'gv',"'<","'>",'`<','`>'], link: 'https://youtube.com/shorts/Ug8q6hafgt4' },

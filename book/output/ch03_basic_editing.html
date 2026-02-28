@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Basic Editing — VimFu</title>
+<style>
+/* ── Reset & base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  line-height: 1.7;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  color: #222;
+  background: #fafaf8;
+}
+
+/* ── Headings ───────────────────────────────────────────── */
+h1 {
+  font-size: 2rem;
+  margin: 0 0 0.3rem;
+  color: #1a1a1a;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.4rem;
+}
+h2 {
+  font-size: 1.5rem;
+  margin: 2.2rem 0 0.6rem;
+  color: #2a2a2a;
+}
+h3 {
+  font-size: 1.15rem;
+  margin: 1.6rem 0 0.4rem;
+  color: #333;
+}
+.subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+/* ── Prose ──────────────────────────────────────────────── */
+p { margin: 0.6em 0; }
+
+/* ── Key badges ─────────────────────────────────────────── */
+kbd.key {
+  display: inline-block;
+  padding: 1px 7px;
+  font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: #f4f0ec;
+  border: 1px solid #c8c0b8;
+  border-radius: 4px;
+  box-shadow: 0 2px 0 #d5cec6;
+  color: #333;
+  white-space: nowrap;
+  vertical-align: baseline;
+  line-height: 1.4;
+}
+kbd.key.special {
+  background: #e8e0f0;
+  border-color: #b8a0d0;
+  box-shadow: 0 2px 0 #c0b0d8;
+}
+
+/* ── Key-sequence row ───────────────────────────────────── */
+.key-sequence {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0.8em 0;
+  padding: 0.7em 1em;
+  background: #f5f3f0;
+  border: 1px solid #e0dcd6;
+  border-radius: 6px;
+}
+.key-sequence .then {
+  color: #999;
+  margin: 0 0.3em;
+  font-size: 0.9em;
+}
+.key-sequence .typed {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  color: #b45309;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.key-sequence .seq-label {
+  margin-left: auto;
+  font-style: italic;
+  color: #888;
+  font-size: 0.85em;
+  padding-left: 1em;
+}
+
+/* ── Screenshots ────────────────────────────────────────── */
+figure.screenshot {
+  margin: 1.5em 0;
+  text-align: center;
+}
+figure.screenshot svg {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 560px;
+  border: 2px solid #444;
+  border-radius: 6px;
+}
+figcaption {
+  font-size: 0.85em;
+  color: #777;
+  margin-top: 0.4em;
+  font-style: italic;
+}
+
+/* ── Demo GIFs ──────────────────────────────────────────── */
+figure.demo {
+  margin: 1.5em 0;
+  text-align: center;
+}
+figure.demo img {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 560px;
+  border: 2px solid #444;
+  border-radius: 6px;
+}
+
+/* ── Tip aside ──────────────────────────────────────────── */
+aside.tip {
+  margin: 1em 0;
+  padding: 0.8em 1.2em;
+  background: #f0f6ff;
+  border-left: 4px solid #4a90d9;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.95em;
+}
+aside.tip::before { content: "💡 "; }
+
+/* ── Table ──────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.95em;
+}
+th, td {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+th {
+  background: #f0ede8;
+  font-weight: 600;
+}
+td:first-child {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  white-space: nowrap;
+}
+
+/* ── Divider ────────────────────────────────────────────── */
+hr.divider { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+
+/* ── QR code link ───────────────────────────────────────── */
+.qr-link {
+  margin: 0.6em 0;
+  padding: 0.5em 1em;
+  background: #f8f5ff;
+  border: 1px solid #e0d8f0;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+.qr-link .qr-icon { font-size: 1.1em; }
+.qr-link a {
+  color: #5b3ea5;
+  text-decoration: none;
+  font-weight: 500;
+}
+.qr-link a:hover { text-decoration: underline; }
+
+/* ── Navigation bar ─────────────────────────────────────── */
+nav.book-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8em 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin: 1.5rem 0;
+  font-size: 0.9em;
+}
+nav.book-nav a {
+  color: #5b3ea5;
+  text-decoration: none;
+  font-weight: 500;
+}
+nav.book-nav a:hover { text-decoration: underline; }
+nav.book-nav .nav-prev,
+nav.book-nav .nav-next { flex: 1; }
+nav.book-nav .nav-prev { text-align: left; }
+nav.book-nav .nav-next { text-align: right; }
+nav.book-nav .nav-toc  { text-align: center; }
+nav.book-nav .nav-prev::before { content: "← "; }
+nav.book-nav .nav-next::after  { content: " →"; }
+nav.book-nav .disabled {
+  color: #ccc;
+  pointer-events: none;
+}
+
+/* ── SVG colour theme ─────────────────────────────────── */
+/* Color theme — original terminal colors */
+svg .bg0 { fill: #000000; }
+svg .bg1 { fill: #2e323c; }
+svg .fg0 { fill: #d4d4d4; }
+svg .fg1 { fill: #000000; }
+svg .fg2 { fill: #9ca0a4; }
+svg .fg3 { fill: #a6e22e; }
+svg .fg4 { fill: #ae81ff; }
+svg .fg5 { fill: #b1b1b1; }
+svg .fg6 { fill: #e6db74; }
+svg .fg7 { fill: #f92672; }
+svg .cursor { fill: #800000; }
+svg .cursor-text { fill: #fff; }
+</style>
+</head>
+<body>
+<nav class="book-nav">
+  <span class="nav-prev"><a href="ch02_survival.html">Survival</a></span>
+  <span class="nav-toc"><a href="index.html">Table of Contents</a></span>
+  <span class="nav-next"><span class="disabled">Next</span></span>
+</nav>
+<p class="subtitle">Enough to get real work done — go cold turkey after this chapter</p>
+<h1 id="chapter-3-basic-editing">Chapter 3 — Basic Editing</h1>
+
+<p>Enough to get real work done. After this chapter, you should go cold turkey — use Vim for everything. You&#x27;ll be slow at first, but that&#x27;s how you build muscle memory.</p>
+
+<hr class="divider">
+
+<h2 id="3-1-more-ways-into-insert-mode">3.1 More Ways into Insert Mode</h2>
+
+<p>You know <kbd class="key">i</kbd> enters insert mode at the cursor. But Vim gives you five more entry points, each putting you exactly where you need to be:</p>
+
+<table>
+<thead><tr><th>Key</th><th>Action</th><th>Use When</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">a</kbd></td><td>Append after the cursor</td><td>Adding to the end of a word</td></tr>
+<tr><td><kbd class="key">I</kbd></td><td>Insert at the start of the line</td><td>Adding a comment or prefix</td></tr>
+<tr><td><kbd class="key">A</kbd></td><td>Append at the end of the line</td><td>Adding a semicolon or comment</td></tr>
+<tr><td><kbd class="key">o</kbd></td><td>Open a new line below</td><td>Adding a new statement</td></tr>
+<tr><td><kbd class="key">O</kbd></td><td>Open a new line above</td><td>Adding a header or import</td></tr>
+</tbody>
+</table>
+
+<figure class="demo">
+<img src="images/0016_append_after_cursor.frames.gif" alt="After pressing a at the end of &#x27;greet&#x27; and typing &#x27;_all&#x27; — appended without moving" loading="lazy">
+<figcaption>After pressing a at the end of &#x27;greet&#x27; and typing &#x27;_all&#x27; — appended without moving</figcaption>
+</figure>
+
+<p>Each of these saves you a motion. Instead of pressing <kbd class="key">i</kbd> and then navigating to the end of the line, just press <kbd class="key">A</kbd>. Instead of pressing <kbd class="key">i</kbd>, then <kbd class="key special">Enter</kbd> to make a new line, just press <kbd class="key">o</kbd>. Pick the insert command that puts you where you need to be.</p>
+
+<figure class="demo">
+<img src="images/0019_open_line_below.frames.gif" alt="After pressing o — a new line opened below, cursor in insert mode" loading="lazy">
+<figcaption>After pressing o — a new line opened below, cursor in insert mode</figcaption>
+</figure>
+
+<aside class="tip">A common pattern: move to a line with <kbd class="key">j</kbd>/<kbd class="key">k</kbd>, then press <kbd class="key">A</kbd> to append at the end or <kbd class="key">O</kbd> to add a line above. Fast and precise.</aside>
+
+<figure class="demo">
+<img src="images/0016_append_after_cursor.frames.gif" alt="Appending text after the cursor" loading="lazy">
+<figcaption>Appending text after the cursor</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=uIhwrE6MBS0" target="_blank">Watch: Append After Cursor (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=QMnr363YtpM" target="_blank">Watch: Insert at Start of Line (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=RunTX1I9p7E" target="_blank">Watch: Append at End of Line (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=2y3x-DNotAA" target="_blank">Watch: Open Line Below (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=xEWLCB5Oa18" target="_blank">Watch: Open Line Above (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="3-2-word-motions">3.2 Word Motions</h2>
+
+<p>Moving character-by-character with <kbd class="key">h</kbd> and <kbd class="key">l</kbd> is slow. Word motions jump by words — much faster for navigating code.</p>
+
+<table>
+<thead><tr><th>Key</th><th>Motion</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">w</kbd></td><td>Forward to the start of the next word</td></tr>
+<tr><td><kbd class="key">b</kbd></td><td>Backward to the start of the current/previous word</td></tr>
+<tr><td><kbd class="key">e</kbd></td><td>Forward to the end of the current/next word</td></tr>
+<tr><td><kbd class="key">ge</kbd></td><td>Backward to the end of the previous word</td></tr>
+</tbody>
+</table>
+
+<figure class="demo">
+<img src="images/0021_word_forward.frames.gif" alt="After pressing w four times — cursor jumped word by word" loading="lazy">
+<figcaption>After pressing w four times — cursor jumped word by word</figcaption>
+</figure>
+
+<p>What counts as a &quot;word&quot;? Vim defines a word as a sequence of letters, digits, and underscores — or a sequence of other non-blank characters. So in <kbd class="key">my_var</kbd>, that&#x27;s one word. But in <kbd class="key">my-var</kbd>, that&#x27;s three words (<kbd class="key">my</kbd>, <kbd class="key">-</kbd>, <kbd class="key">var</kbd>) because the hyphen breaks the word boundary.</p>
+
+<p>These four motions will become your bread and butter. You&#x27;ll use <kbd class="key">w</kbd> and <kbd class="key">b</kbd> constantly to navigate within lines.</p>
+
+<figure class="demo">
+<img src="images/0021_word_forward.frames.gif" alt="Jumping forward by word with w" loading="lazy">
+<figcaption>Jumping forward by word with w</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=vLt1k3WkawQ" target="_blank">Watch: Word Forward (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=30xYTWwQt4E" target="_blank">Watch: Word Backward (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=GKA2eTFglGg" target="_blank">Watch: End of Word (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=jIF0J2XXSqA" target="_blank">Watch: Back to End of Word (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="3-3-line-motions">3.3 Line Motions</h2>
+
+<p>Jump to specific positions on the current line:</p>
+
+<table>
+<thead><tr><th>Key</th><th>Motion</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">0</kbd></td><td>Go to column zero (the very start)</td></tr>
+<tr><td><kbd class="key">^</kbd></td><td>Go to the first non-whitespace character</td></tr>
+<tr><td><kbd class="key">$</kbd></td><td>Go to the end of the line</td></tr>
+</tbody>
+</table>
+
+<figure class="demo">
+<img src="images/0026_first_non_blank.frames.gif" alt="After pressing ^ — cursor on the first non-whitespace character, skipping the indentation" loading="lazy">
+<figcaption>After pressing ^ — cursor on the first non-whitespace character, skipping the indentation</figcaption>
+</figure>
+
+<p>The difference between <kbd class="key">0</kbd> and <kbd class="key">^</kbd> matters for indented code. <kbd class="key">0</kbd> takes you to column zero — the leftmost position. <kbd class="key">^</kbd> takes you to the first character that isn&#x27;t a space or tab. In Python or any indented language, <kbd class="key">^</kbd> is what you usually want.</p>
+
+<aside class="tip"><kbd class="key">$</kbd> is especially useful combined with operators: <kbd class="key">d</kbd><kbd class="key">$</kbd> deletes to the end of the line (same as <kbd class="key">D</kbd>), <kbd class="key">c</kbd><kbd class="key">$</kbd> changes to the end of the line (same as <kbd class="key">C</kbd>).</aside>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=YbEJOx2D-wY" target="_blank">Watch: Start of Line (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=mD09hlt0hI8" target="_blank">Watch: First Non-Blank (60s)</a></div>
+
+<figure class="demo">
+<img src="images/0027_end_of_line.frames.gif" alt="Jumping to the end of a line with $" loading="lazy">
+<figcaption>Jumping to the end of a line with $</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=n4rfbnb9UI4" target="_blank">Watch: End of Line (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="3-4-file-motions">3.4 File Motions</h2>
+
+<p>Jump anywhere in the file:</p>
+
+<table>
+<thead><tr><th>Key</th><th>Motion</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">g</kbd><kbd class="key">g</kbd></td><td>Go to the first line of the file</td></tr>
+<tr><td><kbd class="key">G</kbd></td><td>Go to the last line of the file</td></tr>
+<tr><td><kbd class="key">4</kbd><kbd class="key">2</kbd><kbd class="key">G</kbd></td><td>Go to line 42</td></tr>
+<tr><td><kbd class="key">:</kbd><kbd class="key">4</kbd><kbd class="key">2</kbd><kbd class="key special">Enter</kbd></td><td>Go to line 42 (command-line version)</td></tr>
+</tbody>
+</table>
+
+<figure class="demo">
+<img src="images/0029_go_to_bottom_of_file.frames.gif" alt="After pressing G — cursor jumped to the last line of the file" loading="lazy">
+<figcaption>After pressing G — cursor jumped to the last line of the file</figcaption>
+</figure>
+
+<p>These are the motions that make scrolling with <kbd class="key">j</kbd> and <kbd class="key">k</kbd> feel primitive. Need to check the top of a file? <kbd class="key">g</kbd><kbd class="key">g</kbd>. Need the bottom? <kbd class="key">G</kbd>. Got a compiler error on line 42? <kbd class="key">4</kbd><kbd class="key">2</kbd><kbd class="key">G</kbd>. Three keystrokes and you&#x27;re there.</p>
+
+<figure class="demo">
+<img src="images/0028_go_to_top_of_file.frames.gif" alt="Jumping to the top of a file with gg" loading="lazy">
+<figcaption>Jumping to the top of a file with gg</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=7JIvpNZOO3M" target="_blank">Watch: Go to Top of File (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=SWwtzov0TjM" target="_blank">Watch: Go to Bottom of File (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=ZNTuTVyzt5k" target="_blank">Watch: Go to Line N (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="3-5-deleting-text">3.5 Deleting Text</h2>
+
+<p>Now we meet Vim&#x27;s most important concept: the operator + motion pattern. <kbd class="key">d</kbd> is the delete operator. On its own, it waits for a motion to tell it what to delete:</p>
+
+<table>
+<thead><tr><th>Command</th><th>Deletes</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">x</kbd></td><td>The character under the cursor</td></tr>
+<tr><td><kbd class="key">X</kbd></td><td>The character before the cursor (like Backspace)</td></tr>
+<tr><td><kbd class="key">d</kbd><kbd class="key">w</kbd></td><td>From the cursor to the start of the next word</td></tr>
+<tr><td><kbd class="key">d</kbd><kbd class="key">$</kbd> or <kbd class="key">D</kbd></td><td>From the cursor to the end of the line</td></tr>
+<tr><td><kbd class="key">d</kbd><kbd class="key">d</kbd></td><td>The entire current line</td></tr>
+</tbody>
+</table>
+
+<figure class="demo">
+<img src="images/0033_delete_word.frames.gif" alt="After pressing dw — the first word is gone, text shifted left" loading="lazy">
+<figcaption>After pressing dw — the first word is gone, text shifted left</figcaption>
+</figure>
+
+<p>This is your first taste of Vim&#x27;s composable grammar: <kbd class="key">d</kbd> is the verb (delete), and the motion is the noun (what to delete). Every motion you know works with <kbd class="key">d</kbd>: <kbd class="key">d</kbd><kbd class="key">j</kbd> deletes two lines, <kbd class="key">d</kbd><kbd class="key">G</kbd> deletes to the end of the file, <kbd class="key">d</kbd><kbd class="key">g</kbd><kbd class="key">g</kbd> deletes to the top. You already know a dozen delete commands just by combining <kbd class="key">d</kbd> with the motions from the last three sections.</p>
+
+<aside class="tip">This is the key insight: in Vim, you don&#x27;t memorize individual commands. You learn operators (verbs) and motions (nouns), and they multiply. Every new motion you learn automatically works with every operator you already know.</aside>
+
+<figure class="demo">
+<img src="images/0035_delete_line.frames.gif" alt="After pressing dd — the entire first line is deleted" loading="lazy">
+<figcaption>After pressing dd — the entire first line is deleted</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=zqlIyDQcvGs" target="_blank">Watch: Delete Character (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=A-3EIE1SLxo" target="_blank">Watch: Delete Character Before (60s)</a></div>
+
+<figure class="demo">
+<img src="images/0033_delete_word.frames.gif" alt="Deleting a word with dw" loading="lazy">
+<figcaption>Deleting a word with dw</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=Jv_7WgIgetg" target="_blank">Watch: Delete Word (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=DViSbv2MfSc" target="_blank">Watch: Delete to End of Line (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=WQBb6IRUpzE" target="_blank">Watch: Delete Entire Line (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="3-6-changing-text">3.6 Changing Text</h2>
+
+<p>Change = delete + enter insert mode. The <kbd class="key">c</kbd> operator deletes the specified text and immediately drops you into insert mode, ready to type the replacement.</p>
+
+<table>
+<thead><tr><th>Command</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">c</kbd><kbd class="key">w</kbd></td><td>Change a word (delete it, start typing)</td></tr>
+<tr><td><kbd class="key">c</kbd><kbd class="key">$</kbd> or <kbd class="key">C</kbd></td><td>Change to end of line</td></tr>
+<tr><td><kbd class="key">c</kbd><kbd class="key">c</kbd> or <kbd class="key">S</kbd></td><td>Change the entire line</td></tr>
+<tr><td><kbd class="key">s</kbd></td><td>Substitute one character (delete it, enter insert mode)</td></tr>
+</tbody>
+</table>
+
+<figure class="demo">
+<img src="images/0036_change_word.frames.gif" alt="After pressing cw and typing &#x27;fox&#x27; — the word was replaced in one smooth motion" loading="lazy">
+<figcaption>After pressing cw and typing &#x27;fox&#x27; — the word was replaced in one smooth motion</figcaption>
+</figure>
+
+<p>The <kbd class="key">c</kbd> operator follows the same grammar as <kbd class="key">d</kbd>: <kbd class="key">c</kbd><kbd class="key">w</kbd> changes a word, <kbd class="key">c</kbd><kbd class="key">j</kbd> changes two lines, <kbd class="key">c</kbd><kbd class="key">G</kbd> changes to the end of the file. Same motions, different operator. The grammar scales.</p>
+
+<aside class="tip"><kbd class="key">c</kbd><kbd class="key">w</kbd> is one of the most common Vim commands. You&#x27;ll use it dozens of times per hour when editing code — jump to a word, <kbd class="key">c</kbd><kbd class="key">w</kbd>, type the replacement, <kbd class="key special">Esc</kbd>. Fast.</aside>
+
+<figure class="demo">
+<img src="images/0036_change_word.frames.gif" alt="Changing a word with cw" loading="lazy">
+<figcaption>Changing a word with cw</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=8uX8x-wIjwU" target="_blank">Watch: Change Word (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=L3YSNw0dKMU" target="_blank">Watch: Change to End of Line (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=yOoWC6_5dho" target="_blank">Watch: Change Entire Line (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=ezZGHEoc2j4" target="_blank">Watch: Substitute Character (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="3-7-yank-and-put-copy-and-paste">3.7 Yank and Put (Copy and Paste)</h2>
+
+<p>Vim calls it &quot;yank&quot; and &quot;put&quot; instead of &quot;copy&quot; and &quot;paste.&quot; The <kbd class="key">y</kbd> operator yanks (copies) text, and <kbd class="key">p</kbd> puts (pastes) it.</p>
+
+<table>
+<thead><tr><th>Command</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">y</kbd><kbd class="key">y</kbd> or <kbd class="key">Y</kbd></td><td>Yank the current line</td></tr>
+<tr><td><kbd class="key">y</kbd><kbd class="key">w</kbd></td><td>Yank a word</td></tr>
+<tr><td><kbd class="key">y</kbd><kbd class="key">$</kbd></td><td>Yank to end of line</td></tr>
+<tr><td><kbd class="key">p</kbd></td><td>Put after the cursor (or below for lines)</td></tr>
+<tr><td><kbd class="key">P</kbd></td><td>Put before the cursor (or above for lines)</td></tr>
+</tbody>
+</table>
+
+<figure class="demo">
+<img src="images/0040_yank_line.frames.gif" alt="After yy then p — the first line was yanked and pasted below" loading="lazy">
+<figcaption>After yy then p — the first line was yanked and pasted below</figcaption>
+</figure>
+
+<p>Two handy tricks with yank and put:</p>
+
+<p><kbd class="key">d</kbd><kbd class="key">d</kbd><kbd class="key">p</kbd> — swap two lines. Delete a line (it&#x27;s now in the paste register), then put it after the line below. Instant line swap.</p>
+
+<div class="key-sequence"><kbd class="key">d</kbd><span class="then"> → </span><kbd class="key">d</kbd><span class="then"> → </span><kbd class="key">p</kbd><span class="seq-label">Swap current line with the line below</span></div>
+
+<p><kbd class="key">x</kbd><kbd class="key">p</kbd> — swap two characters. Delete a character, put it after the next one. Fixes typos like &#x27;teh&#x27; → &#x27;the&#x27; in two keystrokes.</p>
+
+<div class="key-sequence"><kbd class="key">x</kbd><span class="then"> → </span><kbd class="key">p</kbd><span class="seq-label">Swap two characters</span></div>
+
+<aside class="tip">Where does yanked text go? Into a register — Vim&#x27;s clipboard. For now, just know that the most recent yank or delete is always available with <kbd class="key">p</kbd>. We&#x27;ll explore registers in detail in Chapter 12.</aside>
+
+<figure class="demo">
+<img src="images/0040_yank_line.frames.gif" alt="Yanking (copying) a line with yy" loading="lazy">
+<figcaption>Yanking (copying) a line with yy</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=RoicAQxvHnU" target="_blank">Watch: Yank a Line (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=nNVPJrMvVTI" target="_blank">Watch: Put After (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=oOZYZYqDQ-s" target="_blank">Watch: Put Before (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=pIXQxZkI5-Q" target="_blank">Watch: Yank a Motion (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=y4gtoZsay8o" target="_blank">Watch: The dd-p Swap Trick (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="3-8-replace">3.8 Replace</h2>
+
+<p>Sometimes you just need to fix one character. <kbd class="key">r</kbd><kbd class="key">X</kbd> replaces the character under the cursor with <kbd class="key">X</kbd> — without entering insert mode. No mode switch, no <kbd class="key special">Esc</kbd> needed.</p>
+
+<div class="key-sequence"><kbd class="key">r</kbd><span class="then"> → </span><span class="typed">X</span><span class="seq-label">Replace character under cursor with X</span></div>
+
+<figure class="demo">
+<img src="images/0045_replace_char.frames.gif" alt="After pressing rX — the first character was replaced with X, still in normal mode" loading="lazy">
+<figcaption>After pressing rX — the first character was replaced with X, still in normal mode</figcaption>
+</figure>
+
+<p>This is a micro-optimization that adds up. Need to change a comma to a semicolon? <kbd class="key">r</kbd><kbd class="key">;</kbd>. Need to fix a capitalization? <kbd class="key">r</kbd><kbd class="key">G</kbd>. One motion, one keystroke, done.</p>
+
+<figure class="demo">
+<img src="images/0045_replace_char.frames.gif" alt="Replacing a single character with r" loading="lazy">
+<figcaption>Replacing a single character with r</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=PzgmxSXOlTk" target="_blank">Watch: Replace a Character (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="quick-reference">Quick Reference</h2>
+
+<table>
+<thead><tr><th>Key</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">a</kbd></td><td>Append after cursor</td></tr>
+<tr><td><kbd class="key">I</kbd></td><td>Insert at start of line</td></tr>
+<tr><td><kbd class="key">A</kbd></td><td>Append at end of line</td></tr>
+<tr><td><kbd class="key">o</kbd></td><td>Open new line below</td></tr>
+<tr><td><kbd class="key">O</kbd></td><td>Open new line above</td></tr>
+<tr><td><kbd class="key">w</kbd></td><td>Next word start</td></tr>
+<tr><td><kbd class="key">b</kbd></td><td>Previous word start</td></tr>
+<tr><td><kbd class="key">e</kbd></td><td>End of word</td></tr>
+<tr><td><kbd class="key">0</kbd></td><td>Start of line (column 0)</td></tr>
+<tr><td><kbd class="key">^</kbd></td><td>First non-whitespace</td></tr>
+<tr><td><kbd class="key">$</kbd></td><td>End of line</td></tr>
+<tr><td><kbd class="key">g</kbd><kbd class="key">g</kbd></td><td>Top of file</td></tr>
+<tr><td><kbd class="key">G</kbd></td><td>Bottom of file</td></tr>
+<tr><td><kbd class="key">x</kbd></td><td>Delete character</td></tr>
+<tr><td><kbd class="key">d</kbd><kbd class="key">w</kbd></td><td>Delete word</td></tr>
+<tr><td><kbd class="key">d</kbd><kbd class="key">d</kbd></td><td>Delete line</td></tr>
+<tr><td><kbd class="key">D</kbd></td><td>Delete to end of line</td></tr>
+<tr><td><kbd class="key">c</kbd><kbd class="key">w</kbd></td><td>Change word</td></tr>
+<tr><td><kbd class="key">c</kbd><kbd class="key">c</kbd></td><td>Change entire line</td></tr>
+<tr><td><kbd class="key">C</kbd></td><td>Change to end of line</td></tr>
+<tr><td><kbd class="key">s</kbd></td><td>Substitute character</td></tr>
+<tr><td><kbd class="key">y</kbd><kbd class="key">y</kbd></td><td>Yank (copy) line</td></tr>
+<tr><td><kbd class="key">y</kbd><kbd class="key">w</kbd></td><td>Yank word</td></tr>
+<tr><td><kbd class="key">p</kbd></td><td>Put (paste) after</td></tr>
+<tr><td><kbd class="key">P</kbd></td><td>Put before</td></tr>
+<tr><td><kbd class="key">r</kbd><kbd class="key">X</kbd></td><td>Replace character with X</td></tr>
+</tbody>
+</table>
+<nav class="book-nav">
+  <span class="nav-prev"><a href="ch02_survival.html">Survival</a></span>
+  <span class="nav-toc"><a href="index.html">Table of Contents</a></span>
+  <span class="nav-next"><span class="disabled">Next</span></span>
+</nav>
+</body>
+</html>

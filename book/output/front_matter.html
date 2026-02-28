@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VimFu: Master the Vim Editing Language — VimFu</title>
+<style>
+/* ── Reset & base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  line-height: 1.7;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  color: #222;
+  background: #fafaf8;
+}
+
+/* ── Headings ───────────────────────────────────────────── */
+h1 {
+  font-size: 2rem;
+  margin: 0 0 0.3rem;
+  color: #1a1a1a;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.4rem;
+}
+h2 {
+  font-size: 1.5rem;
+  margin: 2.2rem 0 0.6rem;
+  color: #2a2a2a;
+}
+h3 {
+  font-size: 1.15rem;
+  margin: 1.6rem 0 0.4rem;
+  color: #333;
+}
+.subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+/* ── Prose ──────────────────────────────────────────────── */
+p { margin: 0.6em 0; }
+
+/* ── Key badges ─────────────────────────────────────────── */
+kbd.key {
+  display: inline-block;
+  padding: 1px 7px;
+  font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: #f4f0ec;
+  border: 1px solid #c8c0b8;
+  border-radius: 4px;
+  box-shadow: 0 2px 0 #d5cec6;
+  color: #333;
+  white-space: nowrap;
+  vertical-align: baseline;
+  line-height: 1.4;
+}
+kbd.key.special {
+  background: #e8e0f0;
+  border-color: #b8a0d0;
+  box-shadow: 0 2px 0 #c0b0d8;
+}
+
+/* ── Key-sequence row ───────────────────────────────────── */
+.key-sequence {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0.8em 0;
+  padding: 0.7em 1em;
+  background: #f5f3f0;
+  border: 1px solid #e0dcd6;
+  border-radius: 6px;
+}
+.key-sequence .then {
+  color: #999;
+  margin: 0 0.3em;
+  font-size: 0.9em;
+}
+.key-sequence .typed {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  color: #b45309;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.key-sequence .seq-label {
+  margin-left: auto;
+  font-style: italic;
+  color: #888;
+  font-size: 0.85em;
+  padding-left: 1em;
+}
+
+/* ── Screenshots ────────────────────────────────────────── */
+figure.screenshot {
+  margin: 1.5em 0;
+  text-align: center;
+}
+figure.screenshot svg {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 560px;
+  border: 2px solid #444;
+  border-radius: 6px;
+}
+figcaption {
+  font-size: 0.85em;
+  color: #777;
+  margin-top: 0.4em;
+  font-style: italic;
+}
+
+/* ── Demo GIFs ──────────────────────────────────────────── */
+figure.demo {
+  margin: 1.5em 0;
+  text-align: center;
+}
+figure.demo img {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 560px;
+  border: 2px solid #444;
+  border-radius: 6px;
+}
+
+/* ── Tip aside ──────────────────────────────────────────── */
+aside.tip {
+  margin: 1em 0;
+  padding: 0.8em 1.2em;
+  background: #f0f6ff;
+  border-left: 4px solid #4a90d9;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.95em;
+}
+aside.tip::before { content: "💡 "; }
+
+/* ── Table ──────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.95em;
+}
+th, td {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+th {
+  background: #f0ede8;
+  font-weight: 600;
+}
+td:first-child {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  white-space: nowrap;
+}
+
+/* ── Divider ────────────────────────────────────────────── */
+hr.divider { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+
+/* ── QR code link ───────────────────────────────────────── */
+.qr-link {
+  margin: 0.6em 0;
+  padding: 0.5em 1em;
+  background: #f8f5ff;
+  border: 1px solid #e0d8f0;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+.qr-link .qr-icon { font-size: 1.1em; }
+.qr-link a {
+  color: #5b3ea5;
+  text-decoration: none;
+  font-weight: 500;
+}
+.qr-link a:hover { text-decoration: underline; }
+
+/* ── Navigation bar ─────────────────────────────────────── */
+nav.book-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8em 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin: 1.5rem 0;
+  font-size: 0.9em;
+}
+nav.book-nav a {
+  color: #5b3ea5;
+  text-decoration: none;
+  font-weight: 500;
+}
+nav.book-nav a:hover { text-decoration: underline; }
+nav.book-nav .nav-prev,
+nav.book-nav .nav-next { flex: 1; }
+nav.book-nav .nav-prev { text-align: left; }
+nav.book-nav .nav-next { text-align: right; }
+nav.book-nav .nav-toc  { text-align: center; }
+nav.book-nav .nav-prev::before { content: "← "; }
+nav.book-nav .nav-next::after  { content: " →"; }
+nav.book-nav .disabled {
+  color: #ccc;
+  pointer-events: none;
+}
+
+/* ── SVG colour theme ─────────────────────────────────── */
+
+</style>
+</head>
+<body>
+<nav class="book-nav">
+  <span class="nav-prev"><span class="disabled">Previous</span></span>
+  <span class="nav-toc"><a href="index.html">Table of Contents</a></span>
+  <span class="nav-next"><a href="ch01_why_vim.html">Why Vim?</a></span>
+</nav>
+<p class="subtitle">Front Matter</p>
+<h1 id="vimfu">VimFu</h1>
+
+<p>Master the Vim Editing Language</p>
+
+<hr class="divider">
+
+<h2 id="about-this-book">About This Book</h2>
+
+<p>This book teaches you the Vim editing language — the system of motions, operators, and text objects that turns your keyboard into a precision editing instrument. It&#x27;s the companion to the VimFu YouTube Shorts series: over 500 bite-sized lessons, each under 60 seconds, each teaching exactly one concept.</p>
+
+<p>The videos show you how. This book explains why. Together they form a complete curriculum that takes you from first launch to fluency.</p>
+
+<p>You don&#x27;t need any prior Vim experience. You do need basic familiarity with programming — you should know what a function is, what a variable is, and how to open a terminal. Everything else, we&#x27;ll teach you.</p>
+
+<p>By the time you finish, you&#x27;ll be able to edit text at the speed of thought. Not because you&#x27;ve memorized 500 keybindings, but because you&#x27;ve learned a language — a composable grammar of about 15 verbs and 30 nouns that multiply together into thousands of commands.</p>
+
+<hr class="divider">
+
+<h2 id="how-to-use-this-book">How to Use This Book</h2>
+
+<p>If you&#x27;re a beginner, read front to back. Each chapter builds on the previous one, and the early chapters are designed to get you productive as fast as possible. By the end of Chapter 3, you&#x27;ll know enough to use Vim for real work.</p>
+
+<p>If you already know the basics, jump around. Each chapter is self-contained enough to read independently. Use the cross-reference table at the back to find the topics you want to learn or review.</p>
+
+<p>However you read, follow these principles:</p>
+
+<aside class="tip">Have an editor open. Learning Vim is physical, not intellectual. Read a section, then immediately practice what you just read. Your fingers need to learn this, not just your eyes.</aside>
+
+<p>Scan the QR codes. Throughout the book you&#x27;ll find QR codes that link to 60-second video demos. Watch them — seeing a command in motion is worth a thousand words of explanation. They&#x27;re free on YouTube.</p>
+
+<p>Each section ends with a quick-reference table summarizing every key covered. Use these for review and as cheat sheets while you practice.</p>
+
+<hr class="divider">
+
+<h2 id="the-vimfu-video-series">The VimFu Video Series</h2>
+
+<p>The VimFu YouTube channel publishes daily 60-second Vim tutorials as YouTube Shorts. Each video teaches one command, one motion, or one concept — nothing more. The videos use real Neovim sessions with syntax-highlighted Python code, key overlays showing exactly what&#x27;s being pressed, and narration explaining what&#x27;s happening.</p>
+
+<p>Scan this QR code to find the full playlist:</p>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://www.youtube.com/@vimfu" target="_blank">The VimFu YouTube Channel</a></div>
+<nav class="book-nav">
+  <span class="nav-prev"><span class="disabled">Previous</span></span>
+  <span class="nav-toc"><a href="index.html">Table of Contents</a></span>
+  <span class="nav-next"><a href="ch01_why_vim.html">Why Vim?</a></span>
+</nav>
+</body>
+</html>

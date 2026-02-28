@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Survival — VimFu</title>
+<style>
+/* ── Reset & base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  line-height: 1.7;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  color: #222;
+  background: #fafaf8;
+}
+
+/* ── Headings ───────────────────────────────────────────── */
+h1 {
+  font-size: 2rem;
+  margin: 0 0 0.3rem;
+  color: #1a1a1a;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.4rem;
+}
+h2 {
+  font-size: 1.5rem;
+  margin: 2.2rem 0 0.6rem;
+  color: #2a2a2a;
+}
+h3 {
+  font-size: 1.15rem;
+  margin: 1.6rem 0 0.4rem;
+  color: #333;
+}
+.subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+/* ── Prose ──────────────────────────────────────────────── */
+p { margin: 0.6em 0; }
+
+/* ── Key badges ─────────────────────────────────────────── */
+kbd.key {
+  display: inline-block;
+  padding: 1px 7px;
+  font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: #f4f0ec;
+  border: 1px solid #c8c0b8;
+  border-radius: 4px;
+  box-shadow: 0 2px 0 #d5cec6;
+  color: #333;
+  white-space: nowrap;
+  vertical-align: baseline;
+  line-height: 1.4;
+}
+kbd.key.special {
+  background: #e8e0f0;
+  border-color: #b8a0d0;
+  box-shadow: 0 2px 0 #c0b0d8;
+}
+
+/* ── Key-sequence row ───────────────────────────────────── */
+.key-sequence {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0.8em 0;
+  padding: 0.7em 1em;
+  background: #f5f3f0;
+  border: 1px solid #e0dcd6;
+  border-radius: 6px;
+}
+.key-sequence .then {
+  color: #999;
+  margin: 0 0.3em;
+  font-size: 0.9em;
+}
+.key-sequence .typed {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  color: #b45309;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.key-sequence .seq-label {
+  margin-left: auto;
+  font-style: italic;
+  color: #888;
+  font-size: 0.85em;
+  padding-left: 1em;
+}
+
+/* ── Screenshots ────────────────────────────────────────── */
+figure.screenshot {
+  margin: 1.5em 0;
+  text-align: center;
+}
+figure.screenshot svg {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 560px;
+  border: 2px solid #444;
+  border-radius: 6px;
+}
+figcaption {
+  font-size: 0.85em;
+  color: #777;
+  margin-top: 0.4em;
+  font-style: italic;
+}
+
+/* ── Demo GIFs ──────────────────────────────────────────── */
+figure.demo {
+  margin: 1.5em 0;
+  text-align: center;
+}
+figure.demo img {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 560px;
+  border: 2px solid #444;
+  border-radius: 6px;
+}
+
+/* ── Tip aside ──────────────────────────────────────────── */
+aside.tip {
+  margin: 1em 0;
+  padding: 0.8em 1.2em;
+  background: #f0f6ff;
+  border-left: 4px solid #4a90d9;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.95em;
+}
+aside.tip::before { content: "💡 "; }
+
+/* ── Table ──────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.95em;
+}
+th, td {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+th {
+  background: #f0ede8;
+  font-weight: 600;
+}
+td:first-child {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  white-space: nowrap;
+}
+
+/* ── Divider ────────────────────────────────────────────── */
+hr.divider { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+
+/* ── QR code link ───────────────────────────────────────── */
+.qr-link {
+  margin: 0.6em 0;
+  padding: 0.5em 1em;
+  background: #f8f5ff;
+  border: 1px solid #e0d8f0;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+.qr-link .qr-icon { font-size: 1.1em; }
+.qr-link a {
+  color: #5b3ea5;
+  text-decoration: none;
+  font-weight: 500;
+}
+.qr-link a:hover { text-decoration: underline; }
+
+/* ── Navigation bar ─────────────────────────────────────── */
+nav.book-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8em 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin: 1.5rem 0;
+  font-size: 0.9em;
+}
+nav.book-nav a {
+  color: #5b3ea5;
+  text-decoration: none;
+  font-weight: 500;
+}
+nav.book-nav a:hover { text-decoration: underline; }
+nav.book-nav .nav-prev,
+nav.book-nav .nav-next { flex: 1; }
+nav.book-nav .nav-prev { text-align: left; }
+nav.book-nav .nav-next { text-align: right; }
+nav.book-nav .nav-toc  { text-align: center; }
+nav.book-nav .nav-prev::before { content: "← "; }
+nav.book-nav .nav-next::after  { content: " →"; }
+nav.book-nav .disabled {
+  color: #ccc;
+  pointer-events: none;
+}
+
+/* ── SVG colour theme ─────────────────────────────────── */
+/* Color theme — original terminal colors */
+svg .bg0 { fill: #000000; }
+svg .bg1 { fill: #2e323c; }
+svg .fg0 { fill: #d4d4d4; }
+svg .fg1 { fill: #000000; }
+svg .fg2 { fill: #a6e22e; }
+svg .fg3 { fill: #ae81ff; }
+svg .fg4 { fill: #b1b1b1; }
+svg .fg5 { fill: #e6db74; }
+svg .fg6 { fill: #f8f8f0; }
+svg .fg7 { fill: #f92672; }
+svg .cursor { fill: #800000; }
+svg .cursor-text { fill: #fff; }
+</style>
+</head>
+<body>
+<nav class="book-nav">
+  <span class="nav-prev"><a href="ch01_why_vim.html">Why Vim?</a></span>
+  <span class="nav-toc"><a href="index.html">Table of Contents</a></span>
+  <span class="nav-next"><a href="ch03_basic_editing.html">Basic Editing</a></span>
+</nav>
+<p class="subtitle">Get in, type, save, and get out alive</p>
+<h1 id="chapter-2-survival">Chapter 2 — Survival</h1>
+
+<p>Get in, type, save, and get out alive. After this chapter, you can use Vim without panicking.</p>
+
+<hr class="divider">
+
+<h2 id="2-1-opening-and-closing-files">2.1 Opening and Closing Files</h2>
+
+<p>To open a file, type <kbd class="key">nvim</kbd> followed by a filename at your terminal prompt:</p>
+
+<div class="key-sequence"><span class="typed">nvim hello.py</span><span class="seq-label">Open hello.py in Neovim</span></div>
+
+<p>If the file exists, you see its contents. If it doesn&#x27;t exist, you get an empty buffer — Vim creates the file when you save.</p>
+
+<figure class="demo">
+<img src="images/0002_opening_a_file.frames.gif" alt="Neovim showing hello.py — file content above, status bar at the bottom" loading="lazy">
+<figcaption>Neovim showing hello.py — file content above, status bar at the bottom</figcaption>
+</figure>
+
+<p>You can also type just <kbd class="key">nvim</kbd> with no filename to open an empty scratch buffer. Or use <kbd class="key">vim</kbd> or even <kbd class="key">vi</kbd> — on most systems, they all launch the same editor.</p>
+
+<h3 id="saving-w">Saving — <kbd class="key">:</kbd><kbd class="key">w</kbd></h3>
+
+<p>Press <kbd class="key">:</kbd> to open the command line at the bottom of the screen, type <kbd class="key">w</kbd> (for &quot;write&quot;), and press <kbd class="key special">Enter</kbd>. Your file is saved.</p>
+
+<div class="key-sequence"><kbd class="key">:</kbd><span class="then"> → </span><span class="typed">w</span><span class="then"> → </span><kbd class="key special">Enter</kbd><span class="seq-label">Save the current file</span></div>
+
+<figure class="demo">
+<img src="images/0007_saving_your_file.frames.gif" alt="After :w — the status bar confirms the file was written" loading="lazy">
+<figcaption>After :w — the status bar confirms the file was written</figcaption>
+</figure>
+
+<h3 id="quitting-q">Quitting — <kbd class="key">:</kbd><kbd class="key">q</kbd></h3>
+
+<p>The most famous question in programming: &quot;How do I quit Vim?&quot; Press <kbd class="key">:</kbd>, type <kbd class="key">q</kbd> (for &quot;quit&quot;), press <kbd class="key special">Enter</kbd>.</p>
+
+<div class="key-sequence"><kbd class="key">:</kbd><span class="then"> → </span><span class="typed">q</span><span class="then"> → </span><kbd class="key special">Enter</kbd><span class="seq-label">Quit (if no unsaved changes)</span></div>
+
+<p>If you have unsaved changes, Vim won&#x27;t let you quit with <kbd class="key">:</kbd><kbd class="key">q</kbd>. You have three options:</p>
+
+<table>
+<thead><tr><th>Command</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">:</kbd><kbd class="key">w</kbd><kbd class="key">q</kbd></td><td>Save and quit</td></tr>
+<tr><td><kbd class="key">:</kbd><kbd class="key">x</kbd></td><td>Save and quit (same thing, shorter)</td></tr>
+<tr><td><kbd class="key">Z</kbd><kbd class="key">Z</kbd></td><td>Save and quit (no colon needed)</td></tr>
+<tr><td><kbd class="key">:</kbd><kbd class="key">q</kbd><kbd class="key">!</kbd></td><td>Quit WITHOUT saving (discard changes)</td></tr>
+<tr><td><kbd class="key">Z</kbd><kbd class="key">Q</kbd></td><td>Quit without saving (no colon needed)</td></tr>
+</tbody>
+</table>
+
+<aside class="tip">Pick one save-and-quit combo and make it a habit. <kbd class="key">Z</kbd><kbd class="key">Z</kbd> is the fastest — two keystrokes, no colon, no Enter.</aside>
+
+<figure class="demo">
+<img src="images/0002_opening_a_file.frames.gif" alt="Opening a file in Vim" loading="lazy">
+<figcaption>Opening a file in Vim</figcaption>
+</figure>
+
+<figure class="demo">
+<img src="images/0007_saving_your_file.frames.gif" alt="Saving a file in Vim" loading="lazy">
+<figcaption>Saving a file in Vim</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=Nz6Tdf_JWco" target="_blank">Watch: Opening a File (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=9xN4HPYytMc" target="_blank">Watch: Saving Your File (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="2-2-insert-mode-and-back-again">2.2 Insert Mode and Back Again</h2>
+
+<p>Right now, you&#x27;re in normal mode. Every key is a command. You can&#x27;t type text — pressing <kbd class="key">j</kbd> moves the cursor down instead of typing the letter &#x27;j&#x27;. This is the part that surprises everyone.</p>
+
+<p>To type text, press <kbd class="key">i</kbd> to enter insert mode. The status bar at the bottom will show <kbd class="key">INSERT</kbd>. Now keys type text, just like any other editor.</p>
+
+<div class="key-sequence"><kbd class="key">i</kbd><span class="seq-label">Enter insert mode</span></div>
+
+<figure class="demo">
+<img src="images/0004_insert_mode.frames.gif" alt="Insert mode — notice INSERT at the bottom. Keys now type text." loading="lazy">
+<figcaption>Insert mode — notice INSERT at the bottom. Keys now type text.</figcaption>
+</figure>
+
+<p>When you&#x27;re done typing, press <kbd class="key special">Esc</kbd> to return to normal mode. The <kbd class="key">INSERT</kbd> indicator disappears. You&#x27;re back to command mode.</p>
+
+<div class="key-sequence"><kbd class="key special">Esc</kbd><span class="seq-label">Return to normal mode</span></div>
+
+<figure class="demo">
+<img src="images/0004_insert_mode.frames.gif" alt="After pressing Escape — INSERT is gone, we&#x27;re back in normal mode" loading="lazy">
+<figcaption>After pressing Escape — INSERT is gone, we&#x27;re back in normal mode</figcaption>
+</figure>
+
+<p>That&#x27;s the fundamental rhythm of Vim editing: <kbd class="key">i</kbd> to insert, type what you need, <kbd class="key special">Esc</kbd> to return. Get in, type, get out.</p>
+
+<figure class="demo">
+<img src="images/0004_insert_mode.frames.gif" alt="Entering and leaving insert mode" loading="lazy">
+<figcaption>Entering and leaving insert mode</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=wWYoPcfwst8" target="_blank">Watch: Insert Mode (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="2-3-the-escape-habit">2.3 The Escape Habit</h2>
+
+<p>This is the single most important habit in Vim: after every edit, press <kbd class="key special">Esc</kbd>. After typing a line of code, <kbd class="key special">Esc</kbd>. After fixing a typo, <kbd class="key special">Esc</kbd>. After pasting text, <kbd class="key special">Esc</kbd>. Always return to normal mode.</p>
+
+<p>Normal mode is your home base. It&#x27;s called &quot;normal&quot; for a reason — it&#x27;s the mode you should normally be in. Insert mode is a brief excursion: get in, type, get out.</p>
+
+<p>New Vim users stay in insert mode too long. They type a paragraph, then try to navigate with arrow keys, then get confused when they can&#x27;t use <kbd class="key">d</kbd><kbd class="key">d</kbd> to delete a line. The fix is simple: build the <kbd class="key special">Esc</kbd> reflex now. It will save you from every Vim confusion.</p>
+
+<aside class="tip">If you ever feel lost or stuck, press <kbd class="key special">Esc</kbd> a few times. You&#x27;ll end up in normal mode, and from there you can do anything.</aside>
+
+<figure class="demo">
+<img src="images/0015_the_escape_habit.frames.gif" alt="Building the Escape reflex" loading="lazy">
+<figcaption>Building the Escape reflex</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=1T7OEvSUh5g" target="_blank">Watch: The Escape Habit (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="2-4-undo-and-redo">2.4 Undo and Redo</h2>
+
+<p>Vim is safe to experiment in. Made a mistake? Press <kbd class="key">u</kbd> to undo. Keep pressing <kbd class="key">u</kbd> to undo more. Vim supports multi-level undo — you can undo all the way back to the original file.</p>
+
+<div class="key-sequence"><kbd class="key">u</kbd><span class="seq-label">Undo the last change</span></div>
+
+<p>Went too far? Press <kbd class="key">Ctrl-R</kbd> to redo — bring your changes back.</p>
+
+<div class="key-sequence"><kbd class="key">Ctrl-R</kbd><span class="seq-label">Redo (undo the undo)</span></div>
+
+<figure class="demo">
+<img src="images/0011_undo.frames.gif" alt="After pressing u — the deleted line is restored" loading="lazy">
+<figcaption>After pressing u — the deleted line is restored</figcaption>
+</figure>
+
+<p>A &quot;change&quot; in Vim is everything between entering and leaving insert mode. If you press <kbd class="key">i</kbd>, type three lines, then press <kbd class="key special">Esc</kbd>, a single <kbd class="key">u</kbd> undoes all three lines. This is why the Escape habit matters — it creates natural undo checkpoints.</p>
+
+<aside class="tip">Vim&#x27;s undo is actually a tree, not a stack. Every branch is preserved. We&#x27;ll explore the undo tree in detail in Chapter 27, but for now, just know that <kbd class="key">u</kbd> and <kbd class="key">Ctrl-R</kbd> will always keep you safe.</aside>
+
+<figure class="demo">
+<img src="images/0011_undo.frames.gif" alt="Undoing changes with u" loading="lazy">
+<figcaption>Undoing changes with u</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=gNWH_h95dgU" target="_blank">Watch: Undo (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=-tkbSu_IdnE" target="_blank">Watch: Redo (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="2-5-basic-movement-h-j-k-l">2.5 Basic Movement: <kbd class="key">h</kbd> <kbd class="key">j</kbd> <kbd class="key">k</kbd> <kbd class="key">l</kbd></h2>
+
+<p>In normal mode, move the cursor with four keys right on the home row:</p>
+
+<table>
+<thead><tr><th>Key</th><th>Direction</th><th>Mnemonic</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">h</kbd></td><td>Left</td><td>Leftmost key</td></tr>
+<tr><td><kbd class="key">j</kbd></td><td>Down</td><td>j hangs below the line</td></tr>
+<tr><td><kbd class="key">k</kbd></td><td>Up</td><td>k points up</td></tr>
+<tr><td><kbd class="key">l</kbd></td><td>Right</td><td>Rightmost key</td></tr>
+</tbody>
+</table>
+
+<figure class="demo">
+<img src="images/0013_moving_hjkl.frames.gif" alt="Cursor moved to row 3, column 6 using j and l — hands never left the home row" loading="lazy">
+<figcaption>Cursor moved to row 3, column 6 using j and l — hands never left the home row</figcaption>
+</figure>
+
+<p>Yes, the arrow keys work too. But they defeat the purpose. The whole point of Vim is that your hands never leave the home row. Every time you reach for an arrow key, you lose a fraction of a second. Over thousands of edits per day, that adds up.</p>
+
+<p>Why <kbd class="key">h</kbd><kbd class="key">j</kbd><kbd class="key">k</kbd><kbd class="key">l</kbd>? On the ADM-3A terminal where vi was born in 1976, these keys had arrow symbols printed on them. It&#x27;s a historical accident that turned into the most ergonomic cursor movement in computing.</p>
+
+<aside class="tip">Don&#x27;t try to memorize all four keys at once. Start with <kbd class="key">j</kbd> (down) and <kbd class="key">k</kbd> (up) — they&#x27;re the ones you&#x27;ll use most. <kbd class="key">h</kbd> and <kbd class="key">l</kbd> will come naturally.</aside>
+
+<figure class="demo">
+<img src="images/0013_moving_hjkl.frames.gif" alt="Navigating with h j k l" loading="lazy">
+<figcaption>Navigating with h j k l</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=127qYVCOkh4" target="_blank">Watch: Moving: h j k l (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=740km_QY3wk" target="_blank">Watch: Why Not Arrow Keys? (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="quick-reference">Quick Reference</h2>
+
+<table>
+<thead><tr><th>Key</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">nvim</kbd> file</td><td>Open a file in Neovim</td></tr>
+<tr><td><kbd class="key">i</kbd></td><td>Enter insert mode</td></tr>
+<tr><td><kbd class="key special">Esc</kbd></td><td>Return to normal mode</td></tr>
+<tr><td><kbd class="key">:</kbd><kbd class="key">w</kbd><kbd class="key special">Enter</kbd></td><td>Save (write) the file</td></tr>
+<tr><td><kbd class="key">:</kbd><kbd class="key">q</kbd><kbd class="key special">Enter</kbd></td><td>Quit (if no unsaved changes)</td></tr>
+<tr><td><kbd class="key">:</kbd><kbd class="key">w</kbd><kbd class="key">q</kbd><kbd class="key special">Enter</kbd></td><td>Save and quit</td></tr>
+<tr><td><kbd class="key">Z</kbd><kbd class="key">Z</kbd></td><td>Save and quit (shortcut)</td></tr>
+<tr><td><kbd class="key">:</kbd><kbd class="key">q</kbd><kbd class="key">!</kbd><kbd class="key special">Enter</kbd></td><td>Quit without saving</td></tr>
+<tr><td><kbd class="key">Z</kbd><kbd class="key">Q</kbd></td><td>Quit without saving (shortcut)</td></tr>
+<tr><td><kbd class="key">u</kbd></td><td>Undo</td></tr>
+<tr><td><kbd class="key">Ctrl-R</kbd></td><td>Redo</td></tr>
+<tr><td><kbd class="key">h</kbd></td><td>Move left</td></tr>
+<tr><td><kbd class="key">j</kbd></td><td>Move down</td></tr>
+<tr><td><kbd class="key">k</kbd></td><td>Move up</td></tr>
+<tr><td><kbd class="key">l</kbd></td><td>Move right</td></tr>
+</tbody>
+</table>
+<nav class="book-nav">
+  <span class="nav-prev"><a href="ch01_why_vim.html">Why Vim?</a></span>
+  <span class="nav-toc"><a href="index.html">Table of Contents</a></span>
+  <span class="nav-next"><a href="ch03_basic_editing.html">Basic Editing</a></span>
+</nav>
+</body>
+</html>

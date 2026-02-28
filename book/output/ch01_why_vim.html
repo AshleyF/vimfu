@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Why Vim? — VimFu</title>
+<style>
+/* ── Reset & base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  line-height: 1.7;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  color: #222;
+  background: #fafaf8;
+}
+
+/* ── Headings ───────────────────────────────────────────── */
+h1 {
+  font-size: 2rem;
+  margin: 0 0 0.3rem;
+  color: #1a1a1a;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.4rem;
+}
+h2 {
+  font-size: 1.5rem;
+  margin: 2.2rem 0 0.6rem;
+  color: #2a2a2a;
+}
+h3 {
+  font-size: 1.15rem;
+  margin: 1.6rem 0 0.4rem;
+  color: #333;
+}
+.subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+/* ── Prose ──────────────────────────────────────────────── */
+p { margin: 0.6em 0; }
+
+/* ── Key badges ─────────────────────────────────────────── */
+kbd.key {
+  display: inline-block;
+  padding: 1px 7px;
+  font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: #f4f0ec;
+  border: 1px solid #c8c0b8;
+  border-radius: 4px;
+  box-shadow: 0 2px 0 #d5cec6;
+  color: #333;
+  white-space: nowrap;
+  vertical-align: baseline;
+  line-height: 1.4;
+}
+kbd.key.special {
+  background: #e8e0f0;
+  border-color: #b8a0d0;
+  box-shadow: 0 2px 0 #c0b0d8;
+}
+
+/* ── Key-sequence row ───────────────────────────────────── */
+.key-sequence {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0.8em 0;
+  padding: 0.7em 1em;
+  background: #f5f3f0;
+  border: 1px solid #e0dcd6;
+  border-radius: 6px;
+}
+.key-sequence .then {
+  color: #999;
+  margin: 0 0.3em;
+  font-size: 0.9em;
+}
+.key-sequence .typed {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  color: #b45309;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.key-sequence .seq-label {
+  margin-left: auto;
+  font-style: italic;
+  color: #888;
+  font-size: 0.85em;
+  padding-left: 1em;
+}
+
+/* ── Screenshots ────────────────────────────────────────── */
+figure.screenshot {
+  margin: 1.5em 0;
+  text-align: center;
+}
+figure.screenshot svg {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 560px;
+  border: 2px solid #444;
+  border-radius: 6px;
+}
+figcaption {
+  font-size: 0.85em;
+  color: #777;
+  margin-top: 0.4em;
+  font-style: italic;
+}
+
+/* ── Demo GIFs ──────────────────────────────────────────── */
+figure.demo {
+  margin: 1.5em 0;
+  text-align: center;
+}
+figure.demo img {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 560px;
+  border: 2px solid #444;
+  border-radius: 6px;
+}
+
+/* ── Tip aside ──────────────────────────────────────────── */
+aside.tip {
+  margin: 1em 0;
+  padding: 0.8em 1.2em;
+  background: #f0f6ff;
+  border-left: 4px solid #4a90d9;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.95em;
+}
+aside.tip::before { content: "💡 "; }
+
+/* ── Table ──────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.95em;
+}
+th, td {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+th {
+  background: #f0ede8;
+  font-weight: 600;
+}
+td:first-child {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  white-space: nowrap;
+}
+
+/* ── Divider ────────────────────────────────────────────── */
+hr.divider { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+
+/* ── QR code link ───────────────────────────────────────── */
+.qr-link {
+  margin: 0.6em 0;
+  padding: 0.5em 1em;
+  background: #f8f5ff;
+  border: 1px solid #e0d8f0;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+.qr-link .qr-icon { font-size: 1.1em; }
+.qr-link a {
+  color: #5b3ea5;
+  text-decoration: none;
+  font-weight: 500;
+}
+.qr-link a:hover { text-decoration: underline; }
+
+/* ── Navigation bar ─────────────────────────────────────── */
+nav.book-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8em 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin: 1.5rem 0;
+  font-size: 0.9em;
+}
+nav.book-nav a {
+  color: #5b3ea5;
+  text-decoration: none;
+  font-weight: 500;
+}
+nav.book-nav a:hover { text-decoration: underline; }
+nav.book-nav .nav-prev,
+nav.book-nav .nav-next { flex: 1; }
+nav.book-nav .nav-prev { text-align: left; }
+nav.book-nav .nav-next { text-align: right; }
+nav.book-nav .nav-toc  { text-align: center; }
+nav.book-nav .nav-prev::before { content: "← "; }
+nav.book-nav .nav-next::after  { content: " →"; }
+nav.book-nav .disabled {
+  color: #ccc;
+  pointer-events: none;
+}
+
+/* ── SVG colour theme ─────────────────────────────────── */
+
+</style>
+</head>
+<body>
+<nav class="book-nav">
+  <span class="nav-prev"><a href="front_matter.html">VimFu: Master the Vim Editing Language</a></span>
+  <span class="nav-toc"><a href="index.html">Table of Contents</a></span>
+  <span class="nav-next"><a href="ch02_survival.html">Survival</a></span>
+</nav>
+<p class="subtitle">The case for learning a 50-year-old text editor</p>
+<h1 id="chapter-1-why-vim">Chapter 1 — Why Vim?</h1>
+
+<h2 id="1-1-the-case-for-modal-editing">1.1 The Case for Modal Editing</h2>
+
+<p>You spend more time reading, navigating, and restructuring code than typing new code from scratch. Think about your last hour of editing. How much of it was actually inserting new characters? Maybe twenty percent. The rest was scrolling, searching, selecting, deleting, copying, moving, and rearranging.</p>
+
+<p>Most editors give you a full keyboard for that twenty percent — the typing part — and then make you reach for the mouse, or hold down modifier keys, or navigate menus for everything else. Vim flips this. It gives you a full keyboard for the eighty percent.</p>
+
+<p>That&#x27;s what &quot;modal&quot; means. In normal mode, every key on your keyboard is a command. <kbd class="key">j</kbd> moves down. <kbd class="key">w</kbd> jumps forward by a word. <kbd class="key">d</kbd><kbd class="key">w</kbd> deletes a word. <kbd class="key">c</kbd><kbd class="key">i</kbd><kbd class="key">&quot;</kbd> changes the text inside quotes. No mouse. No Ctrl-Shift-Arrow. Just keystrokes.</p>
+
+<p>When you need to type, press <kbd class="key">i</kbd> to enter insert mode. Type what you need. Press <kbd class="key special">Esc</kbd> to come back. Normal mode is your resting state — the mode you spend most of your time in.</p>
+
+<div class="key-sequence"><kbd class="key">i</kbd><span class="seq-label">Enter insert mode</span></div>
+
+<div class="key-sequence"><kbd class="key special">Esc</kbd><span class="seq-label">Return to normal mode</span></div>
+
+<p>This feels backwards at first. Every other editor starts in &quot;insert mode&quot; — keys type text. Vim starts in &quot;command mode&quot; — keys do things. The learning curve is real. But once you internalize the grammar, you stop thinking about keystrokes and start thinking in edits: &quot;delete this word,&quot; &quot;change inside these quotes,&quot; &quot;yank this paragraph.&quot; Your hands just execute.</p>
+
+<aside class="tip">The productivity payoff isn&#x27;t about speed — it&#x27;s about fluency. You stop translating between what you want to do and how to do it. The editing language becomes invisible, like touch typing.</aside>
+
+<figure class="demo">
+<img src="images/0001_what_is_vim.frames.gif" alt="What Is Vim — a 60-second tour" loading="lazy">
+<figcaption>What Is Vim — a 60-second tour</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/shorts/uOrfphZBjew" target="_blank">Watch: What Is Vim? (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="1-2-you-don-t-need-vim">1.2 You Don&#x27;t Need Vim</h2>
+
+<p>The demos in this book use Neovim — a modern, community-driven fork of Vim — because it&#x27;s clean, fast, and has great defaults. But here&#x27;s the secret: you don&#x27;t have to use Neovim. You don&#x27;t even have to use Vim.</p>
+
+<p>Vim keybindings are available in almost every editor and IDE:</p>
+
+<table>
+<thead><tr><th>Editor</th><th>Vim Mode</th></tr></thead>
+<tbody>
+<tr><td>VS Code</td><td>Vim extension (vscodevim)</td></tr>
+<tr><td>JetBrains IDEs</td><td>IdeaVim plugin</td></tr>
+<tr><td>Visual Studio</td><td>VsVim extension</td></tr>
+<tr><td>Sublime Text</td><td>Vintage mode (built-in)</td></tr>
+<tr><td>Emacs</td><td>Evil mode</td></tr>
+<tr><td>Xcode</td><td>Xvim2 plugin</td></tr>
+<tr><td>Chrome / Firefox</td><td>Vimium extension</td></tr>
+</tbody>
+</table>
+
+<p>This book teaches the keybindings and the editing language, not any specific editor. <kbd class="key">d</kbd><kbd class="key">i</kbd><kbd class="key">w</kbd> deletes a word in Vim, Neovim, VS Code with the Vim extension, IntelliJ with IdeaVim, and everywhere else that supports Vim keybindings. The grammar is universal.</p>
+
+<p>Use whatever editor you like. Just turn on Vim mode. Everything in this book will work.</p>
+
+<aside class="tip">If you&#x27;re already productive in VS Code or a JetBrains IDE and don&#x27;t want to switch, don&#x27;t. Install the Vim keybinding extension and learn the editing language inside the tool you already know. You get the best of both worlds.</aside>
+
+<hr class="divider">
+
+<h2 id="1-3-vi-vim-neovim-a-brief-history">1.3 Vi, Vim, Neovim — A Brief History</h2>
+
+<p>The lineage is short and worth knowing:</p>
+
+<table>
+<thead><tr><th>Year</th><th>Editor</th><th>Creator</th><th>Key Contribution</th></tr></thead>
+<tbody>
+<tr><td>1976</td><td>vi</td><td>Bill Joy</td><td>Modal editing on the ADM-3A terminal</td></tr>
+<tr><td>1991</td><td>Vim</td><td>Bram Moolenaar</td><td>Visual mode, undo, scripting, plugins</td></tr>
+<tr><td>2014</td><td>Neovim</td><td>Community fork</td><td>Lua config, async, LSP, modern defaults</td></tr>
+</tbody>
+</table>
+
+<p>Vi was born on the ADM-3A terminal at UC Berkeley. Bill Joy wrote it as the visual interface to the ex line editor. The ADM-3A&#x27;s keyboard didn&#x27;t have dedicated arrow keys — instead, the <kbd class="key">h</kbd>, <kbd class="key">j</kbd>, <kbd class="key">k</kbd>, <kbd class="key">l</kbd> keys had arrows printed on them. That&#x27;s why those four keys move the cursor in Vim today.</p>
+
+<p>Bram Moolenaar created Vim (Vi IMproved) in 1991, adding visual mode, multi-level undo, a plugin system, syntax highlighting, and hundreds of features that made vi practical for modern editing. Bram maintained Vim for over 30 years until his passing in 2023.</p>
+
+<p>Neovim forked Vim in 2014 to modernize the codebase: Lua-based configuration, asynchronous processing, built-in LSP support, and better defaults out of the box. For the keybindings covered in this book, Vi, Vim, and Neovim are identical. The differences matter for configuration and plugins, not for <kbd class="key">d</kbd><kbd class="key">a</kbd><kbd class="key">w</kbd> or <kbd class="key">c</kbd><kbd class="key">i</kbd><kbd class="key">&quot;</kbd>.</p>
+
+<hr class="divider">
+
+<h2 id="1-4-the-modal-philosophy">1.4 The Modal Philosophy</h2>
+
+<p>Vim has several modes, but two dominate daily editing:</p>
+
+<table>
+<thead><tr><th>Mode</th><th>Purpose</th><th>Enter With</th><th>Leave With</th></tr></thead>
+<tbody>
+<tr><td>Normal</td><td>Navigate, edit, command — your resting state</td><td>Launch vim, or press <kbd class="key special">Esc</kbd></td><td>Press a mode-entry key</td></tr>
+<tr><td>Insert</td><td>Type text — a brief excursion</td><td><kbd class="key">i</kbd>, <kbd class="key">a</kbd>, <kbd class="key">o</kbd>, <kbd class="key">c</kbd>, etc.</td><td><kbd class="key special">Esc</kbd></td></tr>
+<tr><td>Visual</td><td>Select text, then act on it</td><td><kbd class="key">v</kbd>, <kbd class="key">V</kbd>, <kbd class="key">Ctrl-V</kbd></td><td>Operator or <kbd class="key special">Esc</kbd></td></tr>
+<tr><td>Command-line</td><td>Ex commands (:w, :q, :s)</td><td><kbd class="key">:</kbd>, <kbd class="key">/</kbd>, <kbd class="key">?</kbd></td><td><kbd class="key special">Enter</kbd> or <kbd class="key special">Esc</kbd></td></tr>
+</tbody>
+</table>
+
+<p>The key insight: normal mode is called &quot;normal&quot; because it&#x27;s where you should normally be. Not insert mode. Not visual mode. Normal mode. After every edit — every line you type, every change you make — press <kbd class="key special">Esc</kbd> and return to normal mode. Make this a reflex.</p>
+
+<div class="key-sequence"><kbd class="key special">Esc</kbd><span class="seq-label">Always come back to normal mode</span></div>
+
+<p>In normal mode, every single key on the keyboard has a function. Lowercase letters, uppercase letters, numbers, symbols, Ctrl combinations — they&#x27;re all commands. That&#x27;s over 100 commands accessible with a single keystroke, no modifier keys needed. You get this because you have a dedicated mode for commands.</p>
+
+<p>This feels restrictive at first — &quot;I have to press <kbd class="key">i</kbd> before I can type?&quot; — but it&#x27;s actually liberating. In a non-modal editor, the letter <kbd class="key">d</kbd> can only ever type the character &#x27;d&#x27;. In Vim, <kbd class="key">d</kbd> is the delete operator. <kbd class="key">d</kbd><kbd class="key">w</kbd> deletes a word. <kbd class="key">d</kbd><kbd class="key">d</kbd> deletes a line. <kbd class="key">d</kbd><kbd class="key">i</kbd><kbd class="key">(</kbd> deletes everything inside parentheses. One key, dozens of uses. That&#x27;s only possible because of modes.</p>
+
+<aside class="tip">The two most important things to remember right now: <kbd class="key">i</kbd> gets you into insert mode. <kbd class="key special">Esc</kbd> gets you out. If you ever feel lost, press <kbd class="key special">Esc</kbd> a few times — you&#x27;ll land in normal mode, and everything will be fine.</aside>
+
+<figure class="demo">
+<img src="images/0003_normal_mode.frames.gif" alt="Normal mode — every key is a command" loading="lazy">
+<figcaption>Normal mode — every key is a command</figcaption>
+</figure>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=axyczdX5g0I" target="_blank">Watch: Normal Mode (60s)</a></div>
+
+<div class="qr-link"><span class="qr-icon">📱</span> <a href="https://youtube.com/watch?v=1T7OEvSUh5g" target="_blank">Watch: The Escape Habit (60s)</a></div>
+
+<hr class="divider">
+
+<h2 id="quick-reference">Quick Reference</h2>
+
+<table>
+<thead><tr><th>Key</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><kbd class="key">i</kbd></td><td>Enter insert mode (keys type text)</td></tr>
+<tr><td><kbd class="key special">Esc</kbd></td><td>Return to normal mode (keys are commands)</td></tr>
+<tr><td><kbd class="key">h</kbd> <kbd class="key">j</kbd> <kbd class="key">k</kbd> <kbd class="key">l</kbd></td><td>Move left, down, up, right</td></tr>
+<tr><td><kbd class="key">d</kbd><kbd class="key">w</kbd></td><td>Delete a word (operator + motion)</td></tr>
+<tr><td><kbd class="key">c</kbd><kbd class="key">i</kbd><kbd class="key">&quot;</kbd></td><td>Change inside quotes (operator + text object)</td></tr>
+</tbody>
+</table>
+<nav class="book-nav">
+  <span class="nav-prev"><a href="front_matter.html">VimFu: Master the Vim Editing Language</a></span>
+  <span class="nav-toc"><a href="index.html">Table of Contents</a></span>
+  <span class="nav-next"><a href="ch02_survival.html">Survival</a></span>
+</nav>
+</body>
+</html>

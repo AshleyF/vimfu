@@ -4,7 +4,7 @@ Learn Vim from zero to fluency — through short videos, an interactive simulato
 
 ## YouTube Shorts
 
-The `curriculum/` folder contains a structured curriculum of 188 short-form video lessons covering Vim, Tmux, and shell skills. Each lesson is a JSON file that drives the automated video pipeline in `shellpilot/` — recording real Neovim/Tmux sessions with TTS narration, keystroke overlays, and auto-generated thumbnails. Videos are published to the [VimFu YouTube playlist](https://www.youtube.com/playlist?list=PLJOq0hDFOHzJfFcxZBYbSsYkHo-wR0EC_).
+The `curriculum/` folder contains a structured curriculum of 188 short-form video lessons covering Vim, Tmux, and shell skills. Each lesson is a JSON file that drives the automated video pipeline in `shellpilot/` — recording real Neovim/Tmux sessions with TTS narration, keystroke overlays, and auto-generated thumbnails. Videos are published to the [VimFu YouTube playlist](https://www.youtube.com/playlist?list=PLxHt4V1mEKqcZprbsh4Dw90_wV_BttExs).
 
 ## Vim Simulator
 
