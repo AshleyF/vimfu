@@ -51,7 +51,7 @@
 
   /* ── Terminal scaling container ── */
   .terminal-scaler {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -223,9 +223,16 @@
     .header { padding: 4px 0; }
     h1 { font-size: 1.1rem; }
     .mode-badge { font-size: 0.75rem; padding: 1px 8px; }
-    .vkb.visible { flex: 1 1 auto; }
-    .vkb-row { flex: 1; }
-    .vkb-key { height: auto; }
+    .terminal-scaler {
+      flex: 1 1 0;
+      align-items: flex-start;
+      background: #14161b;
+    }
+    .terminal-wrapper {
+      border-color: transparent;
+      box-shadow: none;
+      border-radius: 0;
+    }
   }
 
 </style>
@@ -395,30 +402,20 @@ const termWrapper = document.getElementById('terminal-wrapper');
 const termScaler = document.getElementById('terminal-scaler');
 
 function scaleTerminal() {
-  // Reset to measure native sizes
   termWrapper.style.transform = 'none';
-  termScaler.style.height = '';
-  termScaler.style.flex = '1 1 auto';
-
   const nativeW = termWrapper.scrollWidth;
   const nativeH = termWrapper.scrollHeight;
   const availW = termScaler.clientWidth;
   const availH = termScaler.clientHeight;
-  const scaleX = availW / nativeW;
-  const scaleY = availH / nativeH;
-  const scale = Math.min(scaleX, scaleY, 1); // never upscale
+  // Fit within both dimensions; flex layout controls scaler height
+  const scale = Math.min(availW / nativeW, availH / nativeH);
   termWrapper.style.transform = `scale(${scale})`;
-  // Fix the scaler height so the VKB below positions correctly
-  termScaler.style.height = Math.ceil(nativeH * scale) + 'px';
-  termScaler.style.flex = 'none';
 }
 
 // On wide screens, let flex layout center naturally
 function handleResize() {
   if (window.innerWidth >= 920) {
     termWrapper.style.transform = 'none';
-    termScaler.style.height = '';
-    termScaler.style.flex = '';
   } else {
     scaleTerminal();
   }
