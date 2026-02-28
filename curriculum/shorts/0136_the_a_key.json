@@ -1,0 +1,259 @@
+{
+  "title": "VimFu — The a Key",
+  "description": "The A key appends text after the cursor. It's like I for insert, but starts one position to the right. A for append.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 277,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "300ZtPdQC2s",
+    "url": "https://youtube.com/watch?v=300ZtPdQC2s"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f cat.py .cat.py.swp .cat.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*cat.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "cat.py",
+      "content": "name = \"Whisk\"\ncall = \"mew\"\nkind = \"hot\"\ntoy = \"yarn\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim cat.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The a Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "A for append. Enter insert mode after the cursor. Not before it, like I."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: append to fix a word ---"
+    },
+    {
+      "say": "The name is Whisk. I want Whiskers. Move to the K.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fk",
+      "overlay": "find k"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "I is insert before. A is append after.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "a",
+      "overlay": "append"
+    },
+    {
+      "type": "ers"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Whiskers. Appended after the K."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: mew to meow ---"
+    },
+    {
+      "say": "Next line. Change mew to meow.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "+",
+      "overlay": "next line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "fe",
+      "overlay": "find e"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is on the E. Append puts text after it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "a",
+      "overlay": "append"
+    },
+    {
+      "type": "o"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Meow. If I used I instead, the O would land before the E. M O E W. Wrong."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: hot to host ---"
+    },
+    {
+      "say": "One more. Change hot to host.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "+",
+      "overlay": "next line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "fo",
+      "overlay": "find o"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor on O. Append after it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "a",
+      "overlay": "append"
+    },
+    {
+      "type": "s"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Host. The S landed right after the O. That's append."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "A for append. After the cursor. One of the most used keys in Vim."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f cat.py"
+    }
+  ]
+}

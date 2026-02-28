@@ -1,0 +1,271 @@
+{
+  "title": "VimFu — The d Key",
+  "description": "D followed by a motion deletes text. Delete word, delete line, delete inner braces. D for delete.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 280,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "9NrUry55BbU",
+    "url": "https://youtube.com/watch?v=9NrUry55BbU"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f junk.py .junk.py.swp .junk.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*junk.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "junk.py",
+      "content": "keep = \"treasure\"\ntoss = \"garbage\"\nsave = \"gold\"\nburn = \"trash\"\n\ndef clean(bag):\n    for item in bag:\n        check(item)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim junk.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The d Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "D followed by a motion deletes text. The deleted text goes into a register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: dw — delete word ---"
+    },
+    {
+      "say": "Delete the word toss. D W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "dw",
+      "overlay": "delete word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Word gone. Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: dd — delete line ---"
+    },
+    {
+      "say": "D D deletes the whole line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The garbage line is gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: d$ — delete to end ---"
+    },
+    {
+      "say": "D dollar. Delete from cursor to end of line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f=",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "d$",
+      "overlay": "delete to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything from the equals sign onward. Gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: diw — delete inner word ---"
+    },
+    {
+      "say": "D I W. Delete inner word. Cursor can be anywhere in the word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "diw",
+      "overlay": "delete inner word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Trash deleted. The quotes are still there."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "D plus a motion. Delete text. Pair it with any motion or text object."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f junk.py"
+    }
+  ]
+}

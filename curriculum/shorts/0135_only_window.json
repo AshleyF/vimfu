@@ -1,0 +1,212 @@
+{
+  "title": "VimFu — Only Window",
+  "description": "Control W O closes all other windows. Colon only does the same. Keep just the current split and go full screen.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 276,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "8v6u72ZXlkg",
+    "url": "https://youtube.com/watch?v=8v6u72ZXlkg"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f maze.py .maze.py.swp .maze.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*maze.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "maze.py",
+      "content": "rooms = 42\ntraps = 7\nkeys = 3\nboss = \"Minotaur\"\nexit = \"north\"\n\ndef solve():\n    find_key()\n    dodge_trap()\n    fight_boss()\n    escape()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with multiple splits"
+    },
+    {
+      "line": "nvim -c 'sp | vs' maze.py"
+    },
+    {
+      "waitForScreen": "maze",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Only Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W O closes every window except the current one. Only this window survives."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Ctrl-W o ---"
+    },
+    {
+      "say": "Three splits open. Move to the bottom one first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017",
+      "overlay": "Ctrl-W"
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now Control W O.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017",
+      "overlay": "Ctrl-W"
+    },
+    {
+      "keys": "o",
+      "overlay": "only"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All other windows gone. Full screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: :only ---"
+    },
+    {
+      "say": "Open splits again. Colon S P. Colon V S.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":sp"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":vs"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now colon only.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":only"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same result. One window. Full screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W O or colon only. Close all splits except the current one."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f maze.py"
+    }
+  ]
+}

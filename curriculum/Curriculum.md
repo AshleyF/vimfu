@@ -949,6 +949,7 @@ _Deep cuts for power users. These lessons assume you're comfortable with everyth
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
 | 600 | Edit a Macro | `"ap` → edit → `"ayy` | Macros live in normal registers. Paste one with `"ap` to see the keystrokes, edit them as plain text, then yank the line back with `"ayy`. Now `@a` plays your hand-edited macro. |
+| 601 | Useless Underscore | `_` → `:map _ i <Esc>` | The `_` key moves to the first non-blank character — same as `^`. With a count, `3_` goes down 2 lines to the first non-blank — but `+` already does that. So `_` is redundant. Remap it to something useful: `:map _ i <Esc>` inserts a space and returns to normal mode. Great for quick alignment without leaving normal mode. |
 
 ---
 

@@ -1,0 +1,193 @@
+{
+  "title": "VimFu — Tab Completion",
+  "description": "Press Tab to auto-complete command names and filenames. Saves typing and prevents typos.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 537,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "shell"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "rk_XyeA7mpY",
+    "url": "https://youtube.com/watch?v=rk_XyeA7mpY"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spaceship.py database.py"
+    },
+    {
+      "writeFile": "spaceship.py",
+      "content": "class Spaceship:\n    def launch(self):\n        print('Liftoff!')\n"
+    },
+    {
+      "writeFile": "database.py",
+      "content": "def connect():\n    return 'connected'\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 10.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Tab Completion",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Tab completes filenames and commands. Saves typing and prevents mistakes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: filename completion ---"
+    },
+    {
+      "say": "I want to see spaceship dot py. Type cat space, then press Tab.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "cat space"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\t",
+      "overlay": "Tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Tab filled in the rest. Press Enter.",
+      "wait": false
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: another file ---"
+    },
+    {
+      "say": "Now database. Type cat da, Tab.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "cat da"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\t",
+      "overlay": "Tab"
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Two keystrokes saved. Zero typos."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: command completion ---"
+    },
+    {
+      "say": "Tab also completes commands. Type whic, then Tab.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "whic"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\t",
+      "overlay": "Tab"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": " python3"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Tab. The most underused key on the keyboard. Use it constantly."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "line": "rm -f ~/vimfu/spaceship.py ~/vimfu/database.py"
+    }
+  ]
+}

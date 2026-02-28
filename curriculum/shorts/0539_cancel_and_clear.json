@@ -1,0 +1,208 @@
+{
+  "title": "VimFu — Cancel & Clear",
+  "description": "Control C cancels the current command. Control L clears the screen. Two essential reset buttons.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 539,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "shell"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "R2dMYeOYXU8",
+    "url": "https://youtube.com/watch?v=R2dMYeOYXU8"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 10.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Cancel & Clear",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control C cancels. Control L clears. Two reset buttons for the shell."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Ctrl-C to cancel a command ---"
+    },
+    {
+      "say": "Start typing something you don't want.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "rm -rf /oops no wait"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Changed your mind? Control C.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0003",
+      "overlay": "⌃c cancel"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Cancelled. Fresh prompt. Nothing happened."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Ctrl-C to stop a running command ---"
+    },
+    {
+      "say": "It also stops a running command. Watch.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "sleep 100"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Stuck waiting. Control C to interrupt.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0003",
+      "overlay": "⌃c cancel"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Stopped. Back to the prompt."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: Ctrl-L to clear ---"
+    },
+    {
+      "say": "Now clutter the screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "echo 'line one'"
+    },
+    "enter",
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "echo 'line two'"
+    },
+    "enter",
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "echo 'line three'"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control L clears it all.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\f",
+      "overlay": "⌃l clear"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Clean screen. Same as typing clear, but faster."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control C to cancel. Control L to clear. Use them all the time."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": []
+}

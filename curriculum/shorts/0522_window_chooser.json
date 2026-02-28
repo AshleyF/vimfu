@@ -1,0 +1,301 @@
+{
+  "title": "VimFu — Window Chooser",
+  "description": "Control B W opens an interactive tree of all sessions and windows. Navigate with j and k, press Enter to select.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 522,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "2Py0Ub7X1SM",
+    "url": "https://youtube.com/watch?v=2Py0Ub7X1SM"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "class Dungeon:\n    def __init__(self, level):\n        self.level = level\n        self.rooms = []\n\n    def explore(self, hero):\n        room = self.rooms.pop(0)\n        loot = room.search(hero)\n        return loot\n"
+    },
+    {
+      "writeFile": "loot.txt",
+      "content": "  Loot Drops (Level 3)\n  ─────────────────────\n  Rusty Sword      +2 atk\n  Health Potion    +50 hp\n  Fire Scroll      25 dmg\n  Gold Coins        x42\n"
+    },
+    {
+      "writeFile": "map.txt",
+      "content": "  Dungeon Map — Level 3\n  ──────────────────────\n  [START] → [CAVE]\n                ↓\n            [BRIDGE]\n                ↓\n         [BOSS CHAMBER]\n\n  Hero: Room 2 / 4\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Window 0 — nvim with code"
+    },
+    {
+      "line": "nvim dungeon.py"
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "waitForScreen": "Dungeon",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Window 1 — loot table"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "1:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear && cat loot.txt"
+    },
+    {
+      "comment": "Window 2 — dungeon map"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "2:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear && cat map.txt"
+    },
+    {
+      "comment": "Go back to window 0"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "0"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Window Chooser",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, W opens an interactive window list."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: open chooser, select the map window ---"
+    },
+    {
+      "say": "Three windows. I want the dungeon map. Control B, W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "w",
+      "overlay": "window list"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A tree of all windows. Navigate with J and K.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press Enter to jump.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The dungeon map. Exactly where I wanted."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: open chooser again, go to editor ---"
+    },
+    {
+      "say": "Open the list again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "w",
+      "overlay": "window list"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The star marks where you are. Back to the editor.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back in the code."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, W. See all your windows and jump to any one."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up tmux"
+    },
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/dungeon.py ~/vimfu/loot.txt ~/vimfu/map.txt"
+    }
+  ]
+}

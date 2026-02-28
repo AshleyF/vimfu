@@ -1,11 +1,11 @@
 {
-  "title": "VimFu — Append to Register",
-  "description": "Uppercase letter appends to a register instead of replacing it. Quote capital A Y Y adds to register A. Build up content across multiple yanks.",
+  "title": "VimFu — Numbered Registers",
+  "description": "Register zero holds the last yank. Registers one through nine hold the last nine deletes. Vim remembers your history automatically.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
   "humanize": 0.7,
-  "seed": 261,
+  "seed": 265,
   "ttsVoice": "echo",
   "playlist": "VimFu",
   "tags": [
@@ -25,8 +25,8 @@
     "privacyStatus": "private",
     "madeForKids": false,
     "language": "en",
-    "videoId": "N0sF05fSp2Y",
-    "url": "https://youtube.com/watch?v=N0sF05fSp2Y"
+    "videoId": "sXKUJ7oJFSc",
+    "url": "https://youtube.com/watch?v=sXKUJ7oJFSc"
   },
   "setup": [
     {
@@ -42,17 +42,17 @@
       "line": "mkdir -p ~/vimfu && cd ~/vimfu"
     },
     {
-      "line": "rm -f team.py .team.py.swp .team.py.swo"
+      "line": "rm -f inv.py .inv.py.swp .inv.py.swo"
     },
     {
-      "line": "rm -f ~/.local/state/nvim/swap/*team.py*"
+      "line": "rm -f ~/.local/state/nvim/swap/*inv.py*"
     },
     {
-      "comment": "Create demo file with scattered items to collect"
+      "comment": "Create demo file"
     },
     {
-      "writeFile": "team.py",
-      "content": "warrior = \"Thorin\"\nhealer = \"Elrond\"\nrogue = \"Bilbo\"\nmage = \"Gandalf\"\nranger = \"Strider\"\n\n# Party:\n"
+      "writeFile": "inv.py",
+      "content": "sword = 1\nbow = 2\nstaff = 3\nwand = 4\n\n# Recover:"
     },
     {
       "line": "clear"
@@ -61,7 +61,7 @@
       "comment": "Launch nvim before recording"
     },
     {
-      "line": "nvim team.py"
+      "line": "nvim inv.py"
     },
     {
       "waitForScreen": "All",
@@ -78,7 +78,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "Append to Register",
+      "caption": "Numbered Registers",
       "duration": 2.0
     },
     {
@@ -88,136 +88,102 @@
       "comment": "--- Intro ---"
     },
     {
-      "say": "Uppercase letter appends to a register. Lowercase replaces. Uppercase adds to what's already there."
+      "say": "Register zero holds the last yank. Registers one through nine hold the last nine deletes."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 1: \"ayy — start register a ---"
+      "comment": "--- Demo 1: yank fills register 0 ---"
     },
     {
-      "say": "Yank the warrior into register A.",
+      "say": "Yank line one.",
       "wait": false
     },
     {
       "wait": 0.3
-    },
-    {
-      "keys": "\"",
-      "overlay": "register"
-    },
-    {
-      "keys": "a",
-      "overlay": "register a"
     },
     {
       "keys": "yy",
       "overlay": "yank line"
     },
     {
-      "wait": 0.6
+      "wait": 0.5
     },
     {
-      "say": "Register A has the warrior."
+      "say": "That yank is in register zero."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 2: \"Ayy — append to register a ---"
+      "comment": "--- Demo 2: deletes fill 1-9 ---"
     },
     {
-      "say": "Skip the healer. Go to the rogue. Quote capital A, Y Y. Capital A means append.",
+      "say": "Now delete lines two, three, and four.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "2j",
+      "keys": "j",
       "overlay": ""
     },
     {
-      "wait": 0.3
+      "wait": 0.2
     },
     {
-      "keys": "\"",
-      "overlay": "register"
-    },
-    {
-      "keys": "A",
-      "overlay": "append to a"
-    },
-    {
-      "keys": "yy",
-      "overlay": "yank line"
-    },
-    {
-      "wait": 0.6
-    },
-    {
-      "say": "Register A now has warrior and rogue."
+      "keys": "dd",
+      "overlay": "delete line"
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 3: append one more ---"
+      "keys": "dd",
+      "overlay": "delete line"
     },
     {
-      "say": "Skip the mage. Grab the ranger too.",
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three deletes. Register one has wand. Register two has staff. Register three has bow. Each delete shifts the others down."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: paste from register 0 ---"
+    },
+    {
+      "say": "Paste from register zero. That's the yank, not a delete.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "2j",
-      "overlay": ""
+      "keys": "G",
+      "overlay": "bottom"
     },
     {
-      "wait": 0.3
-    },
-    {
-      "keys": "\"",
-      "overlay": "register"
-    },
-    {
-      "keys": "A",
-      "overlay": "append to a"
-    },
-    {
-      "keys": "yy",
-      "overlay": "yank line"
-    },
-    {
-      "wait": 0.6
-    },
-    {
-      "comment": "--- Demo 4: paste the collected register ---"
-    },
-    {
-      "say": "Go to the party section. Quote A P.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "2j",
-      "overlay": ""
-    },
-    {
-      "wait": 0.3
+      "wait": 0.2
     },
     {
       "keys": "\"",
       "overlay": "register"
     },
     {
-      "keys": "a",
-      "overlay": "register a"
+      "keys": "0",
+      "overlay": "last yank"
     },
     {
       "keys": "p",
@@ -227,7 +193,38 @@
       "wait": 0.6
     },
     {
-      "say": "Three lines. All collected from different spots in the file."
+      "say": "Sword. From the yank. Not from the deletes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: paste from register 2 ---"
+    },
+    {
+      "say": "Want the staff back? Register two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "2",
+      "overlay": "delete 2"
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Staff. From two deletes ago."
     },
     {
       "wait": 0.3
@@ -236,7 +233,7 @@
       "comment": "--- Wrap up ---"
     },
     {
-      "say": "Lowercase replaces. Uppercase appends. Build up a register piece by piece."
+      "say": "Register zero for yanks. One through nine for deletes. Vim keeps your history."
     },
     {
       "wait": 1.5
@@ -255,7 +252,7 @@
       "comment": "Clean up"
     },
     {
-      "line": "rm -f team.py"
+      "line": "rm -f inv.py"
     }
   ]
 }

@@ -1,0 +1,275 @@
+{
+  "title": "VimFu — The f Key",
+  "description": "F followed by a character jumps to the next occurrence of that character on the line. F for find. Fast horizontal navigation.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 282,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "cDaaaz45eeU",
+    "url": "https://youtube.com/watch?v=cDaaaz45eeU"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f menu.py .menu.py.swp .menu.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*menu.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "menu.py",
+      "content": "pizza = 12\nburger = 9\ntaco = 7\nbanana = 15\nsalad = 8"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim menu.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The f Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "F followed by a character finds that character on the current line. Jumps right to it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: f to find = ---"
+    },
+    {
+      "say": "Find the equals sign. F equals.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f=",
+      "overlay": "find ="
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to it. One keystroke."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: f to find a letter ---"
+    },
+    {
+      "say": "Back to the start. Now find the number.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f1",
+      "overlay": "find 1"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Landed on the one in twelve. F finds the first match."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: semicolon to repeat ---"
+    },
+    {
+      "say": "Semicolon repeats the last find. Go to another line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fa",
+      "overlay": "find a"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Found the first A."
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": ";",
+      "overlay": "repeat find"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Semicolon. Next A."
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": ";",
+      "overlay": "repeat find"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "And the next. F plus semicolon is lightning fast."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: use with delete ---"
+    },
+    {
+      "say": "Combine it with operators. D F eight. Delete to the eight.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "df8",
+      "overlay": "delete find 8"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Deleted everything up to and including the eight."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "F for find. Jump to any character on the line. One of the fastest ways to move."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f menu.py"
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "title": "VimFu — Vertical Split",
+  "description": "Control W V splits the window vertically. Colon V S does the same thing. Side by side views.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 273,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "9ktLU41pOnw",
+    "url": "https://youtube.com/watch?v=9ktLU41pOnw"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f ship.py .ship.py.swp .ship.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*ship.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "ship.py",
+      "content": "name = \"Falcon\"\ncrew = 4\nfuel = 100\nspeed = 9\nshields = True\narmed = False\n\ndef launch():\n    ignite()\n    lift_off()\n\ndef cruise():\n    hold_course()\n    scan_ahead()\n\ndef engage():\n    shields_up()\n    lock_target()\n    fire()\n\ndef land():\n    slow_down()\n    deploy_gear()\n    touch_down()\n\ndef dock():\n    align()\n    clamp()\n    power_down()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim ship.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Vertical Split",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W V splits vertically. Side by side."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Ctrl-W v ---"
+    },
+    {
+      "say": "Control W, V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017",
+      "overlay": "Ctrl-W"
+    },
+    {
+      "keys": "v",
+      "overlay": "vertical split"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two columns. Same file in both."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: navigate independently ---"
+    },
+    {
+      "say": "Jump to the bottom in this pane.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "bottom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Left pane shows the end. Right pane still at the top."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: :vs ---"
+    },
+    {
+      "say": "Close this. Control W C.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017",
+      "overlay": "Ctrl-W"
+    },
+    {
+      "keys": "c",
+      "overlay": "close"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Colon V S also works.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":vs"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same split. Vertical."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W V or colon V S. Side by side splits."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f ship.py"
+    }
+  ]
+}

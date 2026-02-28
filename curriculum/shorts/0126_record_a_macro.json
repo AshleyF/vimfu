@@ -1,0 +1,267 @@
+{
+  "title": "VimFu — Record a Macro",
+  "description": "Q followed by a letter starts recording a macro. Every keystroke is captured into that register. Press Q again to stop.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 267,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "macros"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "R7dPOWSMfbM",
+    "url": "https://youtube.com/watch?v=R7dPOWSMfbM"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f task.py .task.py.swp .task.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*task.py*"
+    },
+    {
+      "comment": "Create demo file with TODO items"
+    },
+    {
+      "writeFile": "task.py",
+      "content": "TODO buy milk\nTODO fix bug\nTODO call mom\nTODO ship feature\nTODO water plants"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim task.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Record a Macro",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Q followed by a letter starts recording. Every keystroke goes into that register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: start recording ---"
+    },
+    {
+      "say": "Let's record a macro to change to do to DONE. Q A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q",
+      "overlay": "record macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Recording. See the bottom of the screen. Now do the edit."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Do the edit ---"
+    },
+    {
+      "say": "Change the word to do to DONE.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "cw",
+      "overlay": "change word"
+    },
+    {
+      "type": "DONE"
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Move down to the next line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "keys": "0",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Stop recording ---"
+    },
+    {
+      "say": "Q again to stop recording.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q",
+      "overlay": "stop recording"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Macro recorded in register A. Changed to do to DONE, moved down, went to the start."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Play it to show the payoff ---"
+    },
+    {
+      "say": "We'll cover playing macros in detail next time. But let me show you why recording is worth it.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Watch.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@",
+      "overlay": "play macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "keys": "@",
+      "overlay": "play macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "keys": "@",
+      "overlay": "play macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Three lines changed instantly. That's the power of macros."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Q, letter, do your edits, Q again. Your keystrokes are saved. Next time, we'll learn how to play them."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f task.py"
+    }
+  ]
+}

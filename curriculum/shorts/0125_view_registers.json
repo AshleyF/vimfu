@@ -1,0 +1,236 @@
+{
+  "title": "VimFu — View Registers",
+  "description": "Colon reg shows you every register and what's in it. See your yanks, deletes, named registers, and clipboard all at once.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 266,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "registers"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "BUZ0j7Nmy7U",
+    "url": "https://youtube.com/watch?v=BUZ0j7Nmy7U"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f pizza.py .pizza.py.swp .pizza.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*pizza.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "pizza.py",
+      "content": "cheese = \"mozzarella\"\nsauce = \"marinara\"\ncrust = \"thin\"\ntopping = \"pepperoni\"\n\norder = \"\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim pizza.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "View Registers",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon reg shows all your registers. Let's put some things in them first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Setup: fill some registers ---"
+    },
+    {
+      "say": "Yank line one. Delete line two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Store crust in register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo: :reg ---"
+    },
+    {
+      "say": "Now colon reg.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":reg"
+    },
+    "enter",
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "There they are. The unnamed register. Register zero with the yank. Register one with the delete. Register A with crust."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press Enter to dismiss.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: specific register ---"
+    },
+    {
+      "say": "Check one register. Colon reg A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":reg a"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Just register A. The crust line."
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon reg. See what's in your registers anytime."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f pizza.py"
+    }
+  ]
+}

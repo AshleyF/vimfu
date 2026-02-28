@@ -1,0 +1,239 @@
+{
+  "title": "VimFu — The System Clipboard",
+  "description": "Quote plus accesses the system clipboard. Yank to it with quote plus Y Y. Paste from it with quote plus P. Share text between Vim and other apps.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 263,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "registers",
+    "clipboard"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "g9FRNibLjig",
+    "url": "https://youtube.com/watch?v=g9FRNibLjig"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spell.py .spell.py.swp .spell.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spell.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "spell.py",
+      "content": "fireball = 50\nice_blast = 35\nlightning = 45\n\n# Copy to share:\npower = \"\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spell.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The System Clipboard",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Quote plus is the system clipboard. Yank into it. Paste from it. Share text with other apps."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: yank to clipboard ---"
+    },
+    {
+      "say": "Yank this line to the clipboard. Quote plus Y Y.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "+",
+      "overlay": "clipboard"
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Fireball is on the system clipboard now. Any app could paste it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: yank a word ---"
+    },
+    {
+      "say": "Yank just the word. Quote plus Y I W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "+",
+      "overlay": "clipboard"
+    },
+    {
+      "keys": "yiw",
+      "overlay": "yank inner word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Just the word fireball. On the clipboard."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: paste from clipboard ---"
+    },
+    {
+      "say": "Paste it somewhere. Quote plus P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "+",
+      "overlay": "clipboard"
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Pasted from the clipboard. Works both ways."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: star register ---"
+    },
+    {
+      "say": "Quote star also works. On Linux it's the selection buffer. On Mac and Windows, same as plus."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Quote plus. The system clipboard. Copy between Vim and the outside world."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spell.py"
+    }
+  ]
+}

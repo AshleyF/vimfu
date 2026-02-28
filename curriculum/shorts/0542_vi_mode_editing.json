@@ -1,0 +1,223 @@
+{
+  "title": "VimFu — Vi-Mode Editing",
+  "description": "In vi-mode, press Escape for normal mode. Then use h l w b d c y p — full Vim motions on your command line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 542,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "shell"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "dpjyBGHKFoE",
+    "url": "https://youtube.com/watch?v=dpjyBGHKFoE"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "comment": "Enable vi mode"
+    },
+    {
+      "line": "set -o vi"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 10.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Vi-Mode Editing",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Vi mode is on. Full Vim editing on your command line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: motions ---"
+    },
+    {
+      "say": "Type a command. Then Escape to normal mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "git push origin main"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "B moves back by word. W moves forward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "b",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "b",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "word"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: change word ---"
+    },
+    {
+      "say": "C W changes a word. Replace origin with upstream.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "b",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "cw",
+      "overlay": "change word"
+    },
+    {
+      "type": "upstream"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Changed. Just like editing in Vim."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: delete word ---"
+    },
+    {
+      "say": "D W deletes a word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "b",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dw",
+      "overlay": "delete word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Gone. All the Vim operators work."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Clear and reset ---"
+    },
+    {
+      "keys": "i",
+      "overlay": "insert"
+    },
+    {
+      "keys": "\u0015",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Escape for normal mode. Then H L W B, D, C, Y, P. Vim on your command line."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "line": "set -o emacs"
+    }
+  ]
+}

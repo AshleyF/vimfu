@@ -1,0 +1,294 @@
+{
+  "title": "VimFu — Close a Window",
+  "description": "Control B ampersand kills the current window and all its panes. Tmux asks you to confirm before doing it.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 521,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "JeoHNngVH70",
+    "url": "https://youtube.com/watch?v=JeoHNngVH70"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f potion.py .potion.py.swp .potion.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*potion.py*"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "potion.py",
+      "content": "class Potion:\n    def __init__(self, name):\n        self.name = name\n        self.power = 50\n\n    def brew(self):\n        sparks = self.power * 2\n        return f\"{self.name}: {sparks}\"\n"
+    },
+    {
+      "writeFile": "build.txt",
+      "content": "▸ compiling potion.py   ✓\n▸ running tests         ✓\n▸ 12 passed, 0 failed\n▸ coverage: 94%\n"
+    },
+    {
+      "writeFile": "access.txt",
+      "content": "10:32 GET  /potions     200\n10:33 POST /brew        201\n10:33 GET  /inventory   200\n10:34 POST /brew        201\n10:35 GET  /health      200\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Window 0 — nvim with code"
+    },
+    {
+      "line": "nvim potion.py"
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "waitForScreen": "Potion",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Window 1 — build output"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "1:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear && cat build.txt"
+    },
+    {
+      "comment": "Window 2 — access log"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "waitForScreen": "2:zsh",
+      "timeout": 5.0
+    },
+    {
+      "line": "clear && cat access.txt"
+    },
+    {
+      "comment": "Go back to window 0"
+    },
+    {
+      "keys": "\u0002"
+    },
+    {
+      "keys": "0"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Close a Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, ampersand closes the current window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: close window 2 ---"
+    },
+    {
+      "say": "Three windows. Editor, build output, and an access log. Let's close the log.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "2",
+      "overlay": "window 2"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control B, ampersand.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "&",
+      "overlay": "close window"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Confirm with Y.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "y",
+      "overlay": "yes"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Gone. Two windows left."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: close window 1 ---"
+    },
+    {
+      "say": "Close the build window too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "1",
+      "overlay": "window 1"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "&",
+      "overlay": "close window"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "y",
+      "overlay": "yes"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Just the editor. Status bar updates automatically."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, ampersand. Close a window when you're done with it."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up tmux"
+    },
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/potion.py ~/vimfu/build.txt ~/vimfu/access.txt"
+    }
+  ]
+}

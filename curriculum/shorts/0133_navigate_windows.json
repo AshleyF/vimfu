@@ -1,0 +1,231 @@
+{
+  "title": "VimFu — Navigate Windows",
+  "description": "Control W then H J K L moves between splits. Left, down, up, right. Same as Vim motions but for windows.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 274,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "MuvcMIn50JA",
+    "url": "https://youtube.com/watch?v=MuvcMIn50JA"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f grid.py .grid.py.swp .grid.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*grid.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "grid.py",
+      "content": "north = \"ice\"\nsouth = \"sand\"\neast = \"forest\"\nwest = \"ocean\"\ncenter = \"castle\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with splits already set up"
+    },
+    {
+      "line": "nvim -c 'sp | vs' grid.py"
+    },
+    {
+      "waitForScreen": "grid",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Navigate Windows",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W then H J K L moves between window splits. Same directions as Vim motions."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Ctrl-W j ---"
+    },
+    {
+      "say": "I have splits open. Control W J moves down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017",
+      "overlay": "Ctrl-W"
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now I'm in the bottom window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Ctrl-W k ---"
+    },
+    {
+      "say": "Control W K goes back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017",
+      "overlay": "Ctrl-W"
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back in the top."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: Ctrl-W l ---"
+    },
+    {
+      "say": "Control W L goes right.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017",
+      "overlay": "Ctrl-W"
+    },
+    {
+      "keys": "l",
+      "overlay": "right"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Right pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: Ctrl-W h ---"
+    },
+    {
+      "say": "Control W H goes left.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017",
+      "overlay": "Ctrl-W"
+    },
+    {
+      "keys": "h",
+      "overlay": "left"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the left."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W, then H J K L. Navigate windows like you navigate text."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f grid.py"
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "title": "VimFu — The Status Bar",
+  "description": "The tmux status bar at the bottom shows your session name, window list, and clock. Learn to read it at a glance.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 531,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "qGs9wNWKjyg",
+    "url": "https://youtube.com/watch?v=qGs9wNWKjyg"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Create multiple named windows"
+    },
+    {
+      "line": "tmux rename-window 'edit'"
+    },
+    {
+      "line": "clear; echo 'editing code'"
+    },
+    {
+      "line": "tmux new-window -n 'test'"
+    },
+    {
+      "line": "clear; echo 'running tests'"
+    },
+    {
+      "line": "tmux new-window -n 'logs'"
+    },
+    {
+      "line": "clear; echo 'watching logs'"
+    },
+    {
+      "comment": "Go back to window 0"
+    },
+    {
+      "line": "tmux select-window -t 0"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The Status Bar",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "The green bar at the bottom is your tmux dashboard. Let's read it."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Left side ---"
+    },
+    {
+      "say": "On the left, the number in brackets is your session name. Zero is the default."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Next to it, the window list. Each window shows its number and name."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The star marks the active window. That's where you are right now."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo: switch windows and watch the bar ---"
+    },
+    {
+      "say": "Watch the star move as I switch windows.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "n",
+      "overlay": "next"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Star jumped to window one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "n",
+      "overlay": "next"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now on window two."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "0",
+      "overlay": "window 0"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Right side ---"
+    },
+    {
+      "say": "On the right side, the current time and date. Always visible."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "The status bar. Session name, windows, and clock. Your tmux dashboard at a glance."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

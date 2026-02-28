@@ -1,0 +1,236 @@
+{
+  "title": "VimFu — Enter Copy Mode",
+  "description": "Control B left bracket enters copy mode. Scroll through your terminal history with vim motions. Press Q to exit.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 527,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "frkkprfqKXk",
+    "url": "https://youtube.com/watch?v=frkkprfqKXk"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set vi mode keys for copy mode"
+    },
+    {
+      "line": "printf 'set -g mode-keys vi\n' > ~/.tmux.conf"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "comment": "Create log text file before tmux"
+    },
+    {
+      "line": "printf '── Server Log ──────────────\\n09:41 INFO  startup ok\\n09:41 INFO  db connected\\n09:42 INFO  cache warm\\n09:43 WARN  slow query 2.1s\\n09:44 INFO  /api/pizza 200 12ms\\n09:44 ERROR timeout on /api/order\\n09:45 INFO  retrying...\\n09:45 INFO  /api/order 200 89ms\\n09:46 INFO  all clear\\n09:46 INFO  /api/users 200 5ms\\n09:47 INFO  cache refresh\\n09:47 WARN  disk 89%% full\\n09:48 INFO  /api/menu 200 15ms\\n09:48 INFO  cleanup done\\n09:49 INFO  /api/status 200 3ms\\n09:49 INFO  heartbeat ok\\n' > ~/vimfu/log.txt"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Generate scrollback history"
+    },
+    {
+      "line": "cat ~/vimfu/log.txt"
+    },
+    {
+      "comment": "Push content off screen"
+    },
+    {
+      "line": "yes '' | head -20"
+    },
+    {
+      "keys": "\f"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 5.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Enter Copy Mode",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, left bracket enters copy mode. Read your scrollback history."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: enter copy mode ---"
+    },
+    {
+      "say": "I ran some commands earlier. Need to check a log entry. Control B, left bracket.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "[",
+      "overlay": "copy mode"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Copy mode. See the indicator at the top right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: scroll up ---"
+    },
+    {
+      "say": "Scroll up with K. Or jump to the top with G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's jump to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g",
+      "overlay": "top"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "There's the server log. The timeout error. All the output is still here."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: exit copy mode ---"
+    },
+    {
+      "say": "Press Q to leave copy mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q",
+      "overlay": "quit"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the normal prompt."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, left bracket. Scroll your history with Vim motions. Q to exit."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

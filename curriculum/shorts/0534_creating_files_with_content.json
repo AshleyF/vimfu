@@ -1,0 +1,188 @@
+{
+  "title": "VimFu — Creating Files with Content",
+  "description": "Use echo with greater-than to write text into a file. Double greater-than appends instead of overwriting.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 534,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "shell"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "a7LAuolE7As",
+    "url": "https://youtube.com/watch?v=a7LAuolE7As"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f list.txt"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 10.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Creating Files",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Echo with greater-than writes text to a file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: write to file ---"
+    },
+    {
+      "say": "Create a grocery list.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "echo 'eggs' > list.txt"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "cat list.txt"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "One item. The greater-than sign creates the file and writes to it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: append ---"
+    },
+    {
+      "say": "Double greater-than appends without overwriting.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "echo 'bread' >> list.txt"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "echo 'coffee' >> list.txt"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "cat list.txt"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three items. Each append added a line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: overwrite warning ---"
+    },
+    {
+      "say": "Careful. Single greater-than overwrites everything.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "echo 'oops' > list.txt"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "cat list.txt"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Gone. Only oops remains. Use double greater-than to append."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Greater-than to create. Double greater-than to append. Simple file writing from the shell."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "line": "rm -f ~/vimfu/list.txt"
+    }
+  ]
+}

@@ -1,0 +1,335 @@
+{
+  "title": "VimFu — The Command Prompt",
+  "description": "Control B colon opens the tmux command prompt. Type any tmux command directly. It's like Vim's colon mode for tmux.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 525,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "XK3MQ1k8v0g",
+    "url": "https://youtube.com/watch?v=XK3MQ1k8v0g"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f pizza.py .pizza.py.swp .pizza.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*pizza.py*"
+    },
+    {
+      "writeFile": "pizza.py",
+      "content": "class Pizza:\n    def __init__(self, size):\n        self.size = size\n        self.toppings = []\n\n    def add(self, topping):\n        self.toppings.append(topping)\n        return self\n\n    def bake(self):\n        return f\"{self.size} pizza!\"\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Open nvim with the code"
+    },
+    {
+      "line": "nvim pizza.py"
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "waitForScreen": "Pizza",
+      "timeout": 30.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The Command Prompt",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, colon opens the tmux command prompt. Like Vim's colon mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: split-window ---"
+    },
+    {
+      "say": "I'm editing code. Let me split the window from the command prompt.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ":",
+      "overlay": "command"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": "split-window -h"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "A vertical split. Code on the left, shell on the right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: resize-pane ---"
+    },
+    {
+      "say": "Resize it. Control B, colon again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ":",
+      "overlay": "command"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": "resize-pane -R 5"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Five cells wider. Any tmux command works here."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: new-window ---"
+    },
+    {
+      "say": "Create a new window from the prompt.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ":",
+      "overlay": "command"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": "new-window"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "New window. Check the status bar. Two windows now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: list-commands ---"
+    },
+    {
+      "say": "Want to see every available command? List commands.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": ":",
+      "overlay": "command"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": "list-commands"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Every command you can type at the prompt. Scroll through them.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "wait": 0.15
+    },
+    {
+      "keys": "j",
+      "wait": 0.15
+    },
+    {
+      "keys": "j",
+      "wait": 0.15
+    },
+    {
+      "keys": "j",
+      "wait": 0.15
+    },
+    {
+      "keys": "j",
+      "wait": 0.15
+    },
+    {
+      "keys": "j",
+      "wait": 0.15
+    },
+    {
+      "keys": "j",
+      "wait": 0.15
+    },
+    {
+      "keys": "j",
+      "wait": 0.15
+    },
+    {
+      "keys": "j",
+      "wait": 0.15
+    },
+    {
+      "keys": "j",
+      "wait": 0.15
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Split window, resize pane, new window. They're all here. Q to quit."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, colon. Direct access to every tmux command. Use list commands to see them all."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/pizza.py"
+    }
+  ]
+}

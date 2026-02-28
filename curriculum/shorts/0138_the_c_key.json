@@ -1,0 +1,245 @@
+{
+  "title": "VimFu — The c Key",
+  "description": "C followed by a motion deletes the text and enters insert mode. Change word, change inner quotes, change to end of line. C for change.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 279,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "-1AL5Lruq1U",
+    "url": "https://youtube.com/watch?v=-1AL5Lruq1U"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f bot.py .bot.py.swp .bot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*bot.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "bot.py",
+      "content": "name = \"Sparky\"\njob = \"cleaning\"\nspeed = \"slow\"\nmood = \"bored\"\n\ndef work():\n    sweep(\"kitchen\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim bot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The c Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "C followed by a motion changes text. Deletes it and drops you into insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: cw — change word ---"
+    },
+    {
+      "say": "Change the name. C W. Change word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "cw",
+      "overlay": "change word"
+    },
+    {
+      "type": "Turbo"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Sparky is now Turbo. Deleted the word, typed the new one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ci\" — change inner quotes ---"
+    },
+    {
+      "say": "Change what's inside the quotes on the next line. C I quote.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ci\"",
+      "overlay": "change inner quotes"
+    },
+    {
+      "type": "racing"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Cleaning became racing. C I quote changes everything inside the quotes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: c$ — change to end ---"
+    },
+    {
+      "say": "Change from cursor to end of line. C dollar.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "c$",
+      "overlay": "change to end"
+    },
+    {
+      "type": "\"turbo\""
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Changed from the quote to the end of the line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "C plus a motion. Change text. Delete and insert in one move."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f bot.py"
+    }
+  ]
+}

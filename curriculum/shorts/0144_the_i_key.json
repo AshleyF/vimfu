@@ -1,0 +1,238 @@
+{
+  "title": "VimFu — The i Key",
+  "description": "I enters insert mode before the cursor. The most fundamental way to start typing in Vim. I for insert.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 285,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "opQwaWXJL6k",
+    "url": "https://youtube.com/watch?v=opQwaWXJL6k"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f note.py .note.py.swp .note.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*note.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "note.py",
+      "content": "msg = \"hello\"\ntone = \"friendly\"\nurgent = False\nsent = False"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim note.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The i Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "I enters insert mode. Text goes in before the cursor. The most basic way to type in Vim."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: insert before cursor ---"
+    },
+    {
+      "say": "Cursor is on M. Press I to insert before it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i",
+      "overlay": "insert"
+    },
+    {
+      "type": "my_"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "My underscore M S G. The text went in before the cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: insert in the middle ---"
+    },
+    {
+      "say": "Move into a word. I inserts right there.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "i",
+      "overlay": "insert"
+    },
+    {
+      "type": "super "
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Super friendly. Inserted right before the F."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: insert mode indicator ---"
+    },
+    {
+      "say": "When you press I, the status bar shows INSERT. That means you're typing.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "i",
+      "overlay": "insert"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "See INSERT at the bottom. Press Escape to go back to normal mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to normal."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "I for insert. Before the cursor. The key you'll use most often to start typing."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f note.py"
+    }
+  ]
+}

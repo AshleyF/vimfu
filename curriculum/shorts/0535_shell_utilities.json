@@ -1,0 +1,178 @@
+{
+  "title": "VimFu — Shell Utilities",
+  "description": "Handy shell tools: wc counts lines and words, grep searches files, sort orders lines, history shows past commands, date shows the time.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 535,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "shell"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "yz0htsECMXs",
+    "url": "https://youtube.com/watch?v=yz0htsECMXs"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "writeFile": "log.txt",
+      "content": "INFO  server started\nWARN  slow query\nINFO  request ok\nERROR timeout\nINFO  cache hit\nWARN  disk 90%\nINFO  request ok\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 10.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Shell Utilities",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "A few shell tools every developer should know."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: wc ---"
+    },
+    {
+      "say": "W C counts lines, words, and characters.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "wc log.txt"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Seven lines, fourteen words."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: grep ---"
+    },
+    {
+      "say": "Grep searches for a pattern.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "grep WARN log.txt"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Two warnings found."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: sort ---"
+    },
+    {
+      "say": "Sort orders the lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "sort log.txt"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Alphabetical order. Errors first, then info, then warnings."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: date ---"
+    },
+    {
+      "say": "Date shows the current time.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "date"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "W C, grep, sort, date. Small tools that combine into powerful workflows."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "line": "rm -f ~/vimfu/log.txt"
+    }
+  ]
+}

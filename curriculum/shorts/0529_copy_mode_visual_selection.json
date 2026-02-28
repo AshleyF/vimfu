@@ -1,0 +1,241 @@
+{
+  "title": "VimFu — Copy Mode Visual Selection",
+  "description": "In copy mode, press V to start selecting text. Navigate to highlight your selection. Press Enter to copy it.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 529,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "t_3ZnWCtviQ",
+    "url": "https://youtube.com/watch?v=t_3ZnWCtviQ"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set vi mode keys for copy mode"
+    },
+    {
+      "line": "printf 'set -g mode-keys vi\n' > ~/.tmux.conf"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "writeFile": "mission.txt",
+      "content": "Mission Briefing — Op Starfall\n──────────────────────────────\nTarget: Orbital station Zeta-9\nObjective: retrieve data core\nExfil: pod bay C, deck 7\nTime limit: 12 minutes\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "cat mission.txt"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Copy Mode Selection",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "In copy mode, press V to start selecting. Navigate to extend. Enter to copy."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: select and copy ---"
+    },
+    {
+      "say": "I want to grab the mission details. Enter copy mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "[",
+      "overlay": "copy mode"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Move up to the target line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press V to start line selection.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "select lines"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Three lines highlighted. Press Enter to copy.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Copied to the tmux paste buffer."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: paste ---"
+    },
+    {
+      "say": "Control B, right bracket pastes it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "]",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "There it is. Selected, copied, pasted."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Copy mode V to select. Enter to copy. Control B, right bracket to paste."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/mission.txt"
+    }
+  ]
+}

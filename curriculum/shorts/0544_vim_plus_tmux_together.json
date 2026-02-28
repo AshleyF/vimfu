@@ -1,0 +1,264 @@
+{
+  "title": "VimFu — Vim + Tmux Together",
+  "description": "The ultimate workflow — Vim in one pane, shell in another. Edit, run, repeat without leaving the terminal.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 544,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "ncwHwS0Oslg",
+    "url": "https://youtube.com/watch?v=ncwHwS0Oslg"
+  },
+  "setup": [
+    {
+      "comment": "Clean start"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Add vim-style pane nav to tmux config"
+    },
+    {
+      "line": "printf 'bind h select-pane -L\nbind j select-pane -D\nbind k select-pane -U\nbind l select-pane -R\n' > ~/.tmux.conf"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "comment": "Create a Python file to edit"
+    },
+    {
+      "writeFile": "~/vimfu/hello.py",
+      "content": "def greet(name):\n    print(f'Hello {name}')\n\ngreet('world')\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Start tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Split into two panes — stacked top/bottom"
+    },
+    {
+      "keys": "\u0002\"",
+      "overlay": ""
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "comment": "Open vim in the bottom pane (cursor is already here after split)"
+    },
+    {
+      "line": "cd ~/vimfu && nvim hello.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Vim + Tmux Together",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Vim in one pane. Shell in the other. The ultimate terminal workflow."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: show the layout ---"
+    },
+    {
+      "say": "Below, Vim has our Python file. Above, a shell to run it."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: edit in vim ---"
+    },
+    {
+      "say": "Let's edit the code. Go to the greeting and change the name.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "last line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f'",
+      "overlay": "find quote"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ci'",
+      "overlay": "change inner"
+    },
+    {
+      "type": "VimFu"
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Save the file.",
+      "wait": false
+    },
+    {
+      "type": ":w"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 3: switch to shell and run ---"
+    },
+    {
+      "say": "Control B, K. Up to the shell.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": "top pane"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Run it.",
+      "wait": false
+    },
+    {
+      "type": "python3 hello.py"
+    },
+    "enter",
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Hello VimFu. It works."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: back to vim ---"
+    },
+    {
+      "say": "Control B, J. Back down to Vim.",
+      "wait": false
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "bottom pane"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Edit, save, switch, run. No mouse. No window manager. Just the terminal."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Vim plus tmux. Your entire development environment in one terminal."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/hello.py ~/.tmux.conf"
+    }
+  ]
+}

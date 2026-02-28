@@ -1,0 +1,245 @@
+{
+  "title": "VimFu — The e Key",
+  "description": "E moves to the end of the current or next word. Pair it with W and B for complete word navigation. E for end.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 281,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "se7gbochv88",
+    "url": "https://youtube.com/watch?v=se7gbochv88"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f song.py .song.py.swp .song.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*song.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "song.py",
+      "content": "title = \"midnight rain\"\ngenre = \"synth pop\"\ntempo = 120\nkey = \"A minor\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim song.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The e Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "E moves to the end of the word. If you're already at the end, it jumps to the end of the next word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: e from start ---"
+    },
+    {
+      "say": "Cursor is on T. Press E.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": "end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "On the E of title. End of the word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": "end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "On the equals sign. That's a word too."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": "end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "On the first quote."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: e across words ---"
+    },
+    {
+      "say": "Keep going.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": "end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": "end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": "end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "End of rain. E hops from word end to word end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: counted e ---"
+    },
+    {
+      "say": "Use a count. Go to the next line. Three E.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "3e",
+      "overlay": "3 end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped three word-ends. Landed on the quote before synth."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "E for end. Jump to the last character of each word. W goes to the start, E goes to the end."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f song.py"
+    }
+  ]
+}

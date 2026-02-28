@@ -1,0 +1,233 @@
+{
+  "title": "VimFu — The h Key",
+  "description": "H moves the cursor one character to the left. The leftmost key on the home row. H for left.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 284,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "kaMQYkiJgcI",
+    "url": "https://youtube.com/watch?v=kaMQYkiJgcI"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f key.py .key.py.swp .key.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*key.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "key.py",
+      "content": "direction = \"left\"\nsteps = 5\nspeed = \"slow\"\npath = \"straight\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim key.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The h Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "H moves left. One character at a time. Home row, left hand, index finger."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: move to end then h back ---"
+    },
+    {
+      "say": "Go to the end of the line. Then H back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "h",
+      "overlay": "left"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "h",
+      "overlay": "left"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "h",
+      "overlay": "left"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three characters left. Simple."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: counted h ---"
+    },
+    {
+      "say": "Use a count. Five H moves five characters left.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5h",
+      "overlay": "5 left"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Five left. Landed on the S of steps."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: h won't go past start ---"
+    },
+    {
+      "say": "H stops at the beginning of the line. It won't wrap to the previous line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "h",
+      "overlay": "left"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Nothing happened. Already at column zero."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "H for left. The most basic motion. Keep your hands on the home row."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f key.py"
+    }
+  ]
+}

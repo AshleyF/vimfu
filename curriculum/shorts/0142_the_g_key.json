@@ -1,0 +1,242 @@
+{
+  "title": "VimFu — The g Key",
+  "description": "G is a prefix key. It opens a gateway to dozens of commands. G G goes to the top. G E goes to end of previous word. Many more.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 283,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "kfDzHIgYNtY",
+    "url": "https://youtube.com/watch?v=kfDzHIgYNtY"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "level = 1\nboss = \"slime\"\nloot = \"potion\"\ntrap = \"spikes\"\n\ndef explore():\n    walk()\n    fight()\n    collect()\n\ndef rest():\n    heal()\n    save()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim dungeon.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The g Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G is a prefix key. It unlocks a whole second keyboard of commands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: gg — go to top ---"
+    },
+    {
+      "say": "G G goes to the top of the file. Let me go to the bottom first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "bottom"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "At the bottom. Now G G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "go to top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line one. G G goes to the very top."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ge — end of previous word ---"
+    },
+    {
+      "say": "G E goes backward to the end of the previous word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ge",
+      "overlay": "prev word end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "On the E of slime. The end of the previous word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: gU — uppercase ---"
+    },
+    {
+      "say": "G U makes text uppercase. G U I W uppercases a word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "gUiw",
+      "overlay": "uppercase word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Boss is now BOSS. G U plus a motion."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: gd — go to definition ---"
+    },
+    {
+      "say": "G D goes to the local definition of a word. Lots of G commands to explore."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G is a prefix. G G, G E, G U, and many more. A whole extra layer of commands."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ]
+}

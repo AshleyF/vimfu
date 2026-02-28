@@ -1,0 +1,182 @@
+{
+  "title": "VimFu — Clock Mode",
+  "description": "Control B T shows a fullscreen ASCII clock. Press any key to exit. Not useful, but delightful.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 530,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "UNaTO_HodUc",
+    "url": "https://youtube.com/watch?v=UNaTO_HodUc"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Clock Mode",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, T shows a big ASCII clock. It's a fun little easter egg."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: show clock ---"
+    },
+    {
+      "say": "Control B, T.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "t",
+      "overlay": "clock"
+    },
+    {
+      "wait": 2.0
+    },
+    {
+      "say": "A fullscreen clock. The time updates live."
+    },
+    {
+      "wait": 2.0
+    },
+    {
+      "say": "Press any key to exit.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "q",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the terminal."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: show it again ---"
+    },
+    {
+      "say": "One more look.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": "t",
+      "overlay": "clock"
+    },
+    {
+      "wait": 2.5
+    },
+    {
+      "keys": " ",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, T. Not the most useful command. But fun to know."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    }
+  ]
+}

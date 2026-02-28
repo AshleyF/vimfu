@@ -1,0 +1,224 @@
+{
+  "title": "VimFu — Vi-Mode History Search",
+  "description": "In vi-mode, press Escape then slash to search your command history backward. N and Shift-N cycle through matches.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 543,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "shell"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "27eY1aYNGkQ",
+    "url": "https://youtube.com/watch?v=27eY1aYNGkQ"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "comment": "Enable vi mode"
+    },
+    {
+      "line": "set -o vi"
+    },
+    {
+      "comment": "Build up some history"
+    },
+    {
+      "line": "echo hello"
+    },
+    {
+      "line": "ls -la"
+    },
+    {
+      "line": "echo goodbye"
+    },
+    {
+      "line": "git status"
+    },
+    {
+      "line": "echo done"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 10.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Vi-Mode History Search",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "In vi mode, you can search your command history just like in Vim."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: search with slash ---"
+    },
+    {
+      "say": "Press Escape, then slash to search backward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/",
+      "overlay": "search"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Type echo. Matches the most recent echo command.",
+      "wait": false
+    },
+    {
+      "type": "echo"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "There it is. Echo done."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: cycle with n ---"
+    },
+    {
+      "say": "Press N to find the previous match.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "next match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Echo goodbye. Press N again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "next match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Echo hello. Cycling back through history."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: reverse with N ---"
+    },
+    {
+      "say": "Shift N goes forward again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "N",
+      "overlay": "prev match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to echo goodbye."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Clear ---"
+    },
+    {
+      "keys": "i",
+      "overlay": "insert"
+    },
+    {
+      "keys": "\u0015",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Escape, slash, type your search. N and shift N to cycle. Find any command fast."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "line": "set -o emacs"
+    }
+  ]
+}

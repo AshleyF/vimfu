@@ -1,0 +1,266 @@
+{
+  "title": "VimFu — The b Key",
+  "description": "B moves backward to the start of the previous word. Jump word by word in reverse. B for back.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 278,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "Qidei7XFG7A",
+    "url": "https://youtube.com/watch?v=Qidei7XFG7A"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "hero = \"brave knight\"\nquest = \"find the lost crown\"\nreward = \"gold and glory\"\nboss = \"shadow dragon\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The b Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "B moves backward to the start of the previous word. B for back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: move backward ---"
+    },
+    {
+      "say": "Cursor is at the start. Let me go to the end of the line first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now B. Back one word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "b",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "On knight."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "b",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "On brave."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "b",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "On the quote. Punctuation counts as a word boundary."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: b on another line ---"
+    },
+    {
+      "say": "Let's try on the quest line. Go to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "B B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "b",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "b",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Two words back. On lost."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: counted b ---"
+    },
+    {
+      "say": "Use a count. Two B jumps two words back at once.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2b",
+      "overlay": "2 back"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same spot. Two B."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "B for back. Previous word. Pair it with W for forward."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ]
+}

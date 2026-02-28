@@ -1,0 +1,257 @@
+{
+  "title": "VimFu — Play a Macro",
+  "description": "At sign followed by a register letter plays a macro. At A runs the macro stored in register A. Replay recorded keystrokes instantly.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 269,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "macros"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "mUDbV7ivEvs",
+    "url": "https://youtube.com/watch?v=mUDbV7ivEvs"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f fix.py .fix.py.swp .fix.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*fix.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "fix.py",
+      "content": "item = apple\nitem = bread\nitem = candy\nitem = donut\nitem = egg"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim fix.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Play a Macro",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "At sign, then a register letter, plays the macro. Let's record one first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Record the macro ---"
+    },
+    {
+      "say": "Each value needs quotes. Record the fix. Q A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q",
+      "overlay": "record macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f=",
+      "overlay": "find equals"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "word forward"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "i",
+      "overlay": "insert"
+    },
+    {
+      "type": "\""
+    },
+    "escape",
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A",
+      "overlay": "append at end"
+    },
+    {
+      "type": "\""
+    },
+    "escape",
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "keys": "0",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "q",
+      "overlay": "stop recording"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Recorded. Added quotes around the value and moved to the next line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: play it ---"
+    },
+    {
+      "say": "Now play it. At A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@",
+      "overlay": "play macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Bread has quotes now. The macro ran every keystroke."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: play again ---"
+    },
+    {
+      "say": "At A again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@",
+      "overlay": "play macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Candy done. One keystroke sequence fixes each line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "At sign, register letter. Play a macro. Instant replay of your keystrokes."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f fix.py"
+    }
+  ]
+}

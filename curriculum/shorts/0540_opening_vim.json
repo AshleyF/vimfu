@@ -1,0 +1,184 @@
+{
+  "title": "VimFu — Opening Vim",
+  "description": "Launch Neovim from the shell with nvim followed by a filename. Vim and vi also work. Colon Q to quit.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 540,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "shell"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "baY2diEmI3o",
+    "url": "https://youtube.com/watch?v=baY2diEmI3o"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f rocket.py .rocket.py.swp .rocket.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*rocket.py*"
+    },
+    {
+      "writeFile": "rocket.py",
+      "content": "def launch():\n    print('3... 2... 1...')\n    print('Liftoff!')\n\nlaunch()\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "waitForScreen": "vimfu",
+      "timeout": 10.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Opening Vim",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "To open a file in Vim, type nvim followed by the filename."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: open a file ---"
+    },
+    {
+      "say": "Open rocket dot py.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "nvim rocket.py"
+    },
+    "enter",
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Vim is open. The file contents are on screen. The status bar at the bottom shows the filename."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: quit ---"
+    },
+    {
+      "say": "To quit, press Escape, then colon Q, Enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "type": ":q"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back at the shell."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: open a new file ---"
+    },
+    {
+      "say": "Open a file that doesn't exist yet. Vim creates it when you save.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "nvim newfile.py"
+    },
+    "enter",
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Empty buffer. The tildes mark empty lines. Start typing whenever you're ready."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "type": ":q"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Nvim to open. Colon Q to quit. That's the beginning of everything."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "line": "rm -f ~/vimfu/rocket.py ~/vimfu/newfile.py"
+    }
+  ]
+}

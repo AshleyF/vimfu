@@ -1,0 +1,315 @@
+{
+  "title": "VimFu — Counted Macros",
+  "description": "Prefix a macro with a count to run it multiple times. 100 at A runs macro A a hundred times. It stops on error automatically.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 271,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "macros"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "9BZv0513Nag",
+    "url": "https://youtube.com/watch?v=9BZv0513Nag"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f data.py .data.py.swp .data.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*data.py*"
+    },
+    {
+      "comment": "Create demo file with lines to transform"
+    },
+    {
+      "writeFile": "data.py",
+      "content": "red 100\nblue 200\ngreen 300\nyellow 400\npink 500\norange 600\npurple 700\nwhite 800"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim data.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Counted Macros",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Prefix a macro with a count to run it many times. It stops when it hits an error."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Record macro: wrap line in quotes ---"
+    },
+    {
+      "say": "Record a macro. Change each line into a Python string.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q",
+      "overlay": "record macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "I",
+      "overlay": "insert at start"
+    },
+    {
+      "type": "\""
+    },
+    "escape",
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A",
+      "overlay": "append at end"
+    },
+    {
+      "type": "\""
+    },
+    "escape",
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "q",
+      "overlay": "stop recording"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Line one is done. Seven lines left."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: counted macro ---"
+    },
+    {
+      "say": "Seven at A. Run it seven times.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "7",
+      "overlay": "count 7"
+    },
+    {
+      "keys": "@",
+      "overlay": "play macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "All eight lines. Wrapped in quotes. One macro, one count."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: undo and use big count ---"
+    },
+    {
+      "say": "Undo all of that.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "99u",
+      "overlay": "undo all"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "gg",
+      "overlay": "top"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now use a big count. 100 at A. It stops when it runs out of lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q",
+      "overlay": "record macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "I",
+      "overlay": "insert at start"
+    },
+    {
+      "type": "\""
+    },
+    "escape",
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A",
+      "overlay": "append at end"
+    },
+    {
+      "type": "\""
+    },
+    "escape",
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "q",
+      "overlay": "stop recording"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "100",
+      "overlay": "count 100"
+    },
+    {
+      "keys": "@",
+      "overlay": "play macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "All done. It stopped at the last line. No error."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Count at register. Run a macro any number of times. Use a big count and let it stop on its own."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f data.py"
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "title": "VimFu — Repeat Last Macro",
+  "description": "At at replays the most recently executed macro. No need to remember which register. Just double tap at sign.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 270,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "macros"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "ta95Jqxv4Pc",
+    "url": "https://youtube.com/watch?v=ta95Jqxv4Pc"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f log.py .log.py.swp .log.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*log.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "log.py",
+      "content": "print(msg1)\nprint(msg2)\nprint(msg3)\nprint(msg4)\nprint(msg5)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim log.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Repeat Last Macro",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "At at replays the last macro you ran. No register name needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Record: change print to log ---"
+    },
+    {
+      "say": "Record a macro. Change print to log. Q A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q",
+      "overlay": "record macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "cw",
+      "overlay": "change word"
+    },
+    {
+      "type": "log"
+    },
+    "escape",
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "keys": "0",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "q",
+      "overlay": "stop recording"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Play it once ---"
+    },
+    {
+      "say": "Play it. At A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@",
+      "overlay": "play macro"
+    },
+    {
+      "keys": "a",
+      "overlay": "register a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Good. Now repeat it. At at.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: @@ ---"
+    },
+    {
+      "keys": "@",
+      "overlay": "play macro"
+    },
+    {
+      "keys": "@",
+      "overlay": "repeat last"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "@",
+      "overlay": "play macro"
+    },
+    {
+      "keys": "@",
+      "overlay": "repeat last"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "At at. Repeat last. No need to type the register letter every time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "At at. Replay the last macro. Fast and easy."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f log.py"
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "title": "VimFu — Cycle Layouts",
+  "description": "Control B Space cycles through preset pane layouts. Even horizontal, even vertical, main horizontal, main vertical, and tiled.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 523,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "fiC-R4_0oEc",
+    "url": "https://youtube.com/watch?v=fiC-R4_0oEc"
+  },
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "comment": "Create content for panes"
+    },
+    {
+      "writeFile": "code.txt",
+      "content": "def scan():\n    bots = find_all()\n    for b in bots:\n        b.wake_up()\n    return len(bots)\n"
+    },
+    {
+      "writeFile": "sensors.txt",
+      "content": "TEMP  72°F  ✓\nHUMID 45%   ✓\nPRESS 1013  ✓\nLIGHT 820lx ✓\nBATT  98%   ✓\n"
+    },
+    {
+      "writeFile": "tests.txt",
+      "content": "✓ boot sequence\n✓ motor check\n✓ sensor ping\n✗ wifi link\n3/4 passed\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "comment": "Pane 0 — robot code"
+    },
+    {
+      "line": "clear && cat code.txt"
+    },
+    {
+      "comment": "Split and show sensors"
+    },
+    {
+      "line": "tmux split-window"
+    },
+    {
+      "line": "cd ~/vimfu && clear && cat sensors.txt"
+    },
+    {
+      "comment": "Split and show tests"
+    },
+    {
+      "line": "tmux split-window -h"
+    },
+    {
+      "line": "cd ~/vimfu && clear && cat tests.txt"
+    },
+    {
+      "comment": "Go back to pane 0"
+    },
+    {
+      "line": "tmux select-pane -t 0"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Cycle Layouts",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B, Space cycles through preset pane layouts."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: cycle through layouts ---"
+    },
+    {
+      "say": "Three panes. Code, sensors, and test results. Let's rearrange.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": " ",
+      "overlay": "next layout"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Different arrangement. Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": " ",
+      "overlay": "next layout"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Code gets the big pane now. Nice for editing.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": " ",
+      "overlay": "next layout"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Keep going. Five layouts total.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": " ",
+      "overlay": "next layout"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "And it cycles back around.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "keys": " ",
+      "overlay": "next layout"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control B, Space. Let tmux arrange your panes for you."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up tmux"
+    },
+    "escape",
+    {
+      "line": "tmux kill-server"
+    },
+    {
+      "line": "rm -f ~/vimfu/code.txt ~/vimfu/sensors.txt ~/vimfu/tests.txt"
+    }
+  ]
+}

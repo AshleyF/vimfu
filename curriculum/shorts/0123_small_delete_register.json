@@ -1,0 +1,234 @@
+{
+  "title": "VimFu — Small Delete Register",
+  "description": "Quote minus holds the last delete smaller than a line. Delete a word with D W and it goes into the small delete register. Handy for moving small pieces of text.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 264,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "registers"
+  ],
+  "youtube": {
+    "categoryId": "27",
+    "privacyStatus": "private",
+    "madeForKids": false,
+    "language": "en",
+    "videoId": "S2_U0CsQZPU",
+    "url": "https://youtube.com/watch?v=S2_U0CsQZPU"
+  },
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f pet.py .pet.py.swp .pet.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*pet.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "pet.py",
+      "content": "cat_name = \"Whiskers\"\ndog_name = \"Buddy\"\nfish_name = \"Nemo\"\n\nbest_pet = \"\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim pet.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Small Delete Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Quote minus holds the last delete that was smaller than a line. Delete a word and it goes there."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: delete a word ---"
+    },
+    {
+      "say": "Delete the word Whiskers.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "di\"",
+      "overlay": "delete inner quotes"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Whiskers was smaller than a line. It went into the small delete register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: paste from minus ---"
+    },
+    {
+      "say": "Go to best pet and paste it. Quote minus P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "-",
+      "overlay": "small delete"
+    },
+    {
+      "keys": "P",
+      "overlay": "paste before"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Whiskers is back. From the small delete register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: dd does NOT go to minus ---"
+    },
+    {
+      "say": "But D D deletes a whole line. That does NOT go into minus.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Whole lines go into the numbered registers instead. Quote minus only holds sub-line deletes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Quote minus. The small delete register. Catches any delete smaller than a line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f pet.py"
+    }
+  ]
+}

@@ -1,11 +1,11 @@
 {
-  "title": "VimFu — Append to Register",
-  "description": "Uppercase letter appends to a register instead of replacing it. Quote capital A Y Y adds to register A. Build up content across multiple yanks.",
+  "title": "VimFu — The Unnamed Register",
+  "description": "Every yank and delete goes into the unnamed register automatically. Quote quote refers to it. It's the default — no register needed.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
   "humanize": 0.7,
-  "seed": 261,
+  "seed": 262,
   "ttsVoice": "echo",
   "playlist": "VimFu",
   "tags": [
@@ -25,8 +25,8 @@
     "privacyStatus": "private",
     "madeForKids": false,
     "language": "en",
-    "videoId": "N0sF05fSp2Y",
-    "url": "https://youtube.com/watch?v=N0sF05fSp2Y"
+    "videoId": "9GZR5b0Jt80",
+    "url": "https://youtube.com/watch?v=9GZR5b0Jt80"
   },
   "setup": [
     {
@@ -42,17 +42,17 @@
       "line": "mkdir -p ~/vimfu && cd ~/vimfu"
     },
     {
-      "line": "rm -f team.py .team.py.swp .team.py.swo"
+      "line": "rm -f snack.py .snack.py.swp .snack.py.swo"
     },
     {
-      "line": "rm -f ~/.local/state/nvim/swap/*team.py*"
+      "line": "rm -f ~/.local/state/nvim/swap/*snack.py*"
     },
     {
-      "comment": "Create demo file with scattered items to collect"
+      "comment": "Create demo file"
     },
     {
-      "writeFile": "team.py",
-      "content": "warrior = \"Thorin\"\nhealer = \"Elrond\"\nrogue = \"Bilbo\"\nmage = \"Gandalf\"\nranger = \"Strider\"\n\n# Party:\n"
+      "writeFile": "snack.py",
+      "content": "chips = \"salty\"\ncookie = \"sweet\"\ncarrot = \"crunchy\"\n\nfavorite = \"\""
     },
     {
       "line": "clear"
@@ -61,7 +61,7 @@
       "comment": "Launch nvim before recording"
     },
     {
-      "line": "nvim team.py"
+      "line": "nvim snack.py"
     },
     {
       "waitForScreen": "All",
@@ -78,7 +78,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "Append to Register",
+      "caption": "The Unnamed Register",
       "duration": 2.0
     },
     {
@@ -88,136 +88,41 @@
       "comment": "--- Intro ---"
     },
     {
-      "say": "Uppercase letter appends to a register. Lowercase replaces. Uppercase adds to what's already there."
+      "say": "Every yank and delete goes into the unnamed register. Quote quote. It's the default."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 1: \"ayy — start register a ---"
+      "comment": "--- Demo 1: yank goes to unnamed ---"
     },
     {
-      "say": "Yank the warrior into register A.",
+      "say": "Yank this line with Y Y.",
       "wait": false
     },
     {
       "wait": 0.3
-    },
-    {
-      "keys": "\"",
-      "overlay": "register"
-    },
-    {
-      "keys": "a",
-      "overlay": "register a"
     },
     {
       "keys": "yy",
       "overlay": "yank line"
     },
     {
-      "wait": 0.6
+      "wait": 0.5
     },
     {
-      "say": "Register A has the warrior."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "comment": "--- Demo 2: \"Ayy — append to register a ---"
-    },
-    {
-      "say": "Skip the healer. Go to the rogue. Quote capital A, Y Y. Capital A means append.",
+      "say": "Now paste it. Just P. No register needed.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "2j",
+      "keys": "4j",
       "overlay": ""
     },
     {
-      "wait": 0.3
-    },
-    {
-      "keys": "\"",
-      "overlay": "register"
-    },
-    {
-      "keys": "A",
-      "overlay": "append to a"
-    },
-    {
-      "keys": "yy",
-      "overlay": "yank line"
-    },
-    {
-      "wait": 0.6
-    },
-    {
-      "say": "Register A now has warrior and rogue."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "comment": "--- Demo 3: append one more ---"
-    },
-    {
-      "say": "Skip the mage. Grab the ranger too.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "2j",
-      "overlay": ""
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "\"",
-      "overlay": "register"
-    },
-    {
-      "keys": "A",
-      "overlay": "append to a"
-    },
-    {
-      "keys": "yy",
-      "overlay": "yank line"
-    },
-    {
-      "wait": 0.6
-    },
-    {
-      "comment": "--- Demo 4: paste the collected register ---"
-    },
-    {
-      "say": "Go to the party section. Quote A P.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "2j",
-      "overlay": ""
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "\"",
-      "overlay": "register"
-    },
-    {
-      "keys": "a",
-      "overlay": "register a"
+      "wait": 0.2
     },
     {
       "keys": "p",
@@ -227,7 +132,110 @@
       "wait": 0.6
     },
     {
-      "say": "Three lines. All collected from different spots in the file."
+      "say": "It came from the unnamed register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: delete also fills it ---"
+    },
+    {
+      "say": "Undo that. Now delete line two instead.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "That delete went into the unnamed register. Paste it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "bottom"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The deleted line. Deletes and yanks share the same register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: explicit quote-quote ---"
+    },
+    {
+      "say": "You can refer to it explicitly. Quote quote P does the same thing.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"",
+      "overlay": "register"
+    },
+    {
+      "keys": "\"",
+      "overlay": "unnamed"
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same result. Quote quote is the unnamed register."
     },
     {
       "wait": 0.3
@@ -236,7 +244,7 @@
       "comment": "--- Wrap up ---"
     },
     {
-      "say": "Lowercase replaces. Uppercase appends. Build up a register piece by piece."
+      "say": "The unnamed register. Where every yank and delete lands by default."
     },
     {
       "wait": 1.5
@@ -255,7 +263,7 @@
       "comment": "Clean up"
     },
     {
-      "line": "rm -f team.py"
+      "line": "rm -f snack.py"
     }
   ]
 }
