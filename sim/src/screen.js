@@ -15,6 +15,7 @@ import { SyntaxHighlighter, grammarForFile, scopeToColor } from './highlight.js'
 
 // Ensure built-in grammars are registered
 import './langs/python.js';
+import './langs/markdown.js';
 
 // ── Theme palettes ──────────────────────────────────────────
 // Each theme defines the fixed colours for every UI element.
@@ -63,6 +64,15 @@ const THEMES = {
       builtin: '8cf8f7',        // print, len, str…  (NvimDarkCyan)
       special: '8cf8f7',        // __init__ etc      (NvimDarkCyan)
       // NOT highlighted in nvim default: number, keyword, keyword.import, operator
+      // Markdown scopes – verified against nvim -u NONE + treesitter
+      heading: '8cf8f7',        // Title             (NvimDarkCyan)
+      code: 'b3f6c0',           // String            (NvimDarkGreen)
+      'code.block': 'b3f6c0',   // String            (NvimDarkGreen)
+      'list.marker': '8cf8f7',  // @markup.list      (NvimDarkCyan)
+      link: '8cf8f7',           // @markup.link      (NvimDarkCyan)
+      'link.url': '9b9ea4',     // Comment-like      (NvimDarkGrey4)
+      blockquote: '9b9ea4',     // @markup.quote     (grey)
+      hr: '8cf8f7',             // Special           (NvimDarkCyan)
     },
   },
   monokai: {
@@ -101,6 +111,15 @@ const THEMES = {
       builtin: '66d9ef',         // Type/Constant (blue)
       operator: 'f92672',        // Operator (pink)
       special: 'f8f8f0',         // Special (white)
+      // Markdown scopes – monokai palette
+      heading: 'a6e22e',         // Title (green)
+      code: 'e6db74',            // String (yellow)
+      'code.block': 'e6db74',    // String (yellow)
+      'list.marker': 'f92672',   // Keyword (pink)
+      link: '66d9ef',            // Type (blue)
+      'link.url': '9ca0a4',      // Comment (grey)
+      blockquote: '9ca0a4',      // Comment (grey)
+      hr: 'f92672',              // Keyword (pink)
     },
   },
 };

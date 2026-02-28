@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>VimFu Simulator</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -14,14 +14,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     min-height: 100vh;
-    padding: 2rem;
+    min-height: 100dvh;
+    overflow: hidden;
   }
 
+  /* ── Header row ── */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    flex-shrink: 0;
+  }
   h1 {
-    font-size: 1.6rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
     color: #82aaff;
   }
 
@@ -32,7 +39,6 @@
     font-family: 'Cascadia Mono', Consolas, monospace;
     font-size: 0.85rem;
     font-weight: 700;
-    margin-bottom: 1rem;
     transition: background 0.15s, color 0.15s;
   }
   .mode-badge.shell   { background: #89ddff; color: #000; }
@@ -43,17 +49,26 @@
   .mode-badge.replace  { background: #f78c6c; color: #000; }
   .mode-badge.command  { background: #3c3c3c; color: #d4d4d4; }
 
+  /* ── Terminal scaling container ── */
+  .terminal-scaler {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+  }
+
   .terminal-wrapper {
     position: relative;
     border: 2px solid #333;
     border-radius: 6px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.5);
     background: #14161b;
-    min-width: 892px;
-    min-height: 532px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    transform-origin: top center;
   }
 
   .loading-overlay {
@@ -94,13 +109,15 @@
   }
   #terminal.ready { opacity: 1; }
 
+  /* ── Help (hidden on mobile) ── */
   .help {
-    margin-top: 1.5rem;
+    padding: 0.5rem 1rem;
     font-size: 0.85rem;
     color: #888;
     text-align: center;
     line-height: 1.7;
     max-width: 900px;
+    flex-shrink: 0;
   }
   .help kbd {
     display: inline-block;
@@ -113,18 +130,135 @@
     font-size: 0.8rem;
   }
 
+  /* ── Virtual keyboard toggle ── */
+  .vkb-toggle {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid #555;
+    background: #2a2a40;
+    color: #82aaff;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 100;
+    display: none; /* shown by JS */
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .vkb-toggle:active { background: #3a3a55; }
+
+  /* ── Virtual keyboard ── */
+  .vkb {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: 6px;
+    width: 100%;
+    background: #111122;
+    border-top: 1px solid #333;
+    flex-shrink: 0;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+  .vkb.visible { display: flex; }
+
+  .vkb-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .vkb-key {
+    flex: 1 1 0;
+    height: 42px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background: #2a2a3a;
+    color: #d4d4d4;
+    font-family: 'Cascadia Mono', Consolas, monospace;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.08s;
+  }
+  .vkb-key:active, .vkb-key.pressed { background: #505070; }
+
+  /* Wider special keys */
+  .vkb-key.w15 { flex: 1.5 1 0; }
+  .vkb-key.w175 { flex: 1.75 1 0; }
+  .vkb-key.w2 { flex: 2 1 0; }
+  .vkb-key.w225 { flex: 2.25 1 0; }
+  .vkb-key.space { flex: 6 1 0; }
+
+  /* Modifier active state */
+  .vkb-key.mod-active {
+    background: #82aaff;
+    color: #000;
+    border-color: #82aaff;
+  }
+
+  /* Shift state label swap */
+  .vkb-key .lbl-shift { display: none; }
+  .vkb.shifted .vkb-key .lbl-normal { display: none; }
+  .vkb.shifted .vkb-key .lbl-shift { display: inline; }
+
+  @media (min-width: 920px) {
+    body { justify-content: center; padding: 1rem; }
+    .help { display: block; }
+    .vkb-toggle { display: none !important; }
+  }
+  @media (max-width: 919px) {
+    body { justify-content: flex-start; padding: 0; }
+    .help { display: none; }
+    .header { padding: 4px 0; }
+    h1 { font-size: 1.1rem; }
+    .mode-badge { font-size: 0.75rem; padding: 1px 8px; }
+    .vkb.visible { flex: 1 1 auto; }
+    .vkb-row { flex: 1; }
+    .vkb-key { height: auto; }
+  }
+
 </style>
 </head>
 <body>
 
-<h1>VimFu Simulator</h1>
-<div id="mode-badge" class="mode-badge shell">SHELL</div>
-<div class="terminal-wrapper">
-  <div class="loading-overlay" id="loading">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Loading terminal…</div>
+<div class="header">
+  <h1>VimFu</h1>
+  <div id="mode-badge" class="mode-badge shell">SHELL</div>
+</div>
+
+<div class="terminal-scaler" id="terminal-scaler">
+  <div class="terminal-wrapper" id="terminal-wrapper">
+    <div class="loading-overlay" id="loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading terminal…</div>
+    </div>
+    <canvas id="terminal" tabindex="0"></canvas>
   </div>
-  <canvas id="terminal" tabindex="0"></canvas>
+</div>
+
+<button class="vkb-toggle" id="vkb-toggle" aria-label="Toggle keyboard">⌨</button>
+
+<div class="vkb" id="vkb">
+  <!-- Row 1: number row -->
+  <div class="vkb-row" id="vkb-row-num"></div>
+  <!-- Row 2: qwerty -->
+  <div class="vkb-row" id="vkb-row-q"></div>
+  <!-- Row 3: asdf -->
+  <div class="vkb-row" id="vkb-row-a"></div>
+  <!-- Row 4: zxcv -->
+  <div class="vkb-row" id="vkb-row-z"></div>
+  <!-- Row 5: modifiers + space -->
+  <div class="vkb-row" id="vkb-row-space"></div>
 </div>
 
 <div class="help">
@@ -150,15 +284,6 @@ const session = new SessionManager({
 
 // Seed filesystem with sample files on first visit
 if (session.fs.fileCount === 0) {
-  session.fs.write('hello.txt', [
-    'Welcome to VimFu!',
-    '',
-    'Type :q to return to the shell.',
-    'Type :w to save this file.',
-    '',
-    'Try editing this text.',
-  ].join('\n'));
-
   session.fs.write('notes.txt', [
     'Shopping list:',
     '  - milk',
@@ -170,6 +295,31 @@ if (session.fs.fileCount === 0) {
 // Always ensure demo.py exists (even for returning users)
 if (!session.fs.exists(SAMPLE_PYTHON.filename)) {
   session.fs.write(SAMPLE_PYTHON.filename, SAMPLE_PYTHON.content);
+}
+
+// Always ensure welcome.md exists (even for returning users)
+if (!session.fs.exists('welcome.md')) {
+  session.fs.write('welcome.md', [
+    '# Welcome to VimFu',
+    '',
+    'Learn Vim — from zero to fluency.',
+    '',
+    '## Quick Start',
+    '',
+    '- Press `i` to enter Insert mode',
+    '- Press `Esc` to return to Normal mode',
+    '- Type `:w` to save your changes',
+    '- Type `:q` to quit back to the shell',
+    '',
+    '## Explore',
+    '',
+    'Try editing this file! When you are done:',
+    '',
+    '- `:wq` — save and quit',
+    '- `:q!` — quit without saving',
+    '',
+    '> Tip: type `help` at the shell for more.',
+  ].join('\n'));
 }
 
 // ── Renderer ──
@@ -203,8 +353,302 @@ ctrl.attach(canvas);
 onUpdate(session.renderFrame());
 canvas.classList.add('ready');
 document.getElementById('loading').classList.add('hidden');
-canvas.focus();
 
+// ── Boot sequence: always start in vim ──
+if (session.mode === 'shell') {
+  // Show banner briefly, then auto-type into vim
+  session.shell.showWelcome('boot');
+  onUpdate(session.renderFrame());
+
+  const bootCmd = 'nvim welcome.md';
+  let i = 0;
+  const typeDelay = 60; // ms per character
+  const startDelay = 600; // pause before typing starts
+
+  setTimeout(function typeNext() {
+    if (i < bootCmd.length) {
+      session.shell._inputLine += bootCmd[i];
+      session.shell._cursorPos++;
+      i++;
+      onUpdate(session.renderFrame());
+      setTimeout(typeNext, typeDelay + Math.random() * 40);
+    } else {
+      // Press Enter to launch vim
+      setTimeout(() => {
+        session.shell.feedKey('Enter');
+        onUpdate(session.renderFrame());
+      }, 300);
+    }
+  }, startDelay);
+}
+
+// ── Show tip when returning to shell from vim ──
+const _origExitVim = session._exitVim.bind(session);
+session._exitVim = function() {
+  _origExitVim();
+  session.shell.showWelcome('return');
+};
+
+// ── Terminal scaling ──
+const termWrapper = document.getElementById('terminal-wrapper');
+const termScaler = document.getElementById('terminal-scaler');
+
+function scaleTerminal() {
+  // Reset to measure native sizes
+  termWrapper.style.transform = 'none';
+  termScaler.style.height = '';
+  termScaler.style.flex = '1 1 auto';
+
+  const nativeW = termWrapper.scrollWidth;
+  const nativeH = termWrapper.scrollHeight;
+  const availW = termScaler.clientWidth;
+  const availH = termScaler.clientHeight;
+  const scaleX = availW / nativeW;
+  const scaleY = availH / nativeH;
+  const scale = Math.min(scaleX, scaleY, 1); // never upscale
+  termWrapper.style.transform = `scale(${scale})`;
+  // Fix the scaler height so the VKB below positions correctly
+  termScaler.style.height = Math.ceil(nativeH * scale) + 'px';
+  termScaler.style.flex = 'none';
+}
+
+// On wide screens, let flex layout center naturally
+function handleResize() {
+  if (window.innerWidth >= 920) {
+    termWrapper.style.transform = 'none';
+    termScaler.style.height = '';
+    termScaler.style.flex = '';
+  } else {
+    scaleTerminal();
+  }
+}
+window.addEventListener('resize', handleResize);
+handleResize();
+
+// ── Virtual Keyboard ──
+const vkb = document.getElementById('vkb');
+const vkbToggle = document.getElementById('vkb-toggle');
+
+// Keyboard layout definition
+// Each key: [normal, shifted, width-class, key-to-send, shifted-key-to-send]
+// If key-to-send is omitted, normal label is used.
+const ROWS_DEF = [
+  // Number row
+  [
+    ['`','~','','`','~'], ['1','!','','1','!'], ['2','@','','2','@'],
+    ['3','#','','3','#'], ['4','$','','4','$'], ['5','%','','5','%'],
+    ['6','^','','6','^'], ['7','&','','7','&'], ['8','*','','8','*'],
+    ['9','(','','9','('], ['0',')','','0',')'], ['-','_','','-','_'],
+    ['=','+','','=','+'], ['⌫','⌫','w15','Backspace','Backspace'],
+  ],
+  // QWERTY row
+  [
+    ['Tab','Tab','w15','Tab','Tab'],
+    ['q','Q'], ['w','W'], ['e','E'], ['r','R'], ['t','T'],
+    ['y','Y'], ['u','U'], ['i','I'], ['o','O'], ['p','P'],
+    ['[','{','','[','{'], [']','}','',']','}'], ['\\','|','','\\','|'],
+  ],
+  // Home row
+  [
+    ['Esc','Esc','w175','Escape','Escape'],
+    ['a','A'], ['s','S'], ['d','D'], ['f','F'], ['g','G'],
+    ['h','H'], ['j','J'], ['k','K'], ['l','L'],
+    [';',':','',';',':'], ["'",'"','','\'','"'],
+    ['⏎','⏎','w175','Enter','Enter'],
+  ],
+  // Bottom row
+  [
+    ['⇧','⇧','w225','_shift','_shift'],
+    ['z','Z'], ['x','X'], ['c','C'], ['v','V'], ['b','B'],
+    ['n','N'], ['m','M'], [',','<','',',','<'], ['.','>','','.','>'],
+    ['/','?','','/','?'],
+    ['⇧','⇧','w225','_shift','_shift'],
+  ],
+  // Space row
+  [
+    ['Ctrl','Ctrl','w175','_ctrl','_ctrl'],
+    ['','','space',' ',' '],
+    ['Ctrl','Ctrl','w175','_ctrl','_ctrl'],
+  ],
+];
+
+const ROW_IDS = ['vkb-row-num', 'vkb-row-q', 'vkb-row-a', 'vkb-row-z', 'vkb-row-space'];
+
+let shiftActive = false;
+let ctrlActive = false;
+let shiftLock = false;
+let ctrlLock = false;
+
+function buildVKB() {
+  ROWS_DEF.forEach((rowDef, ri) => {
+    const rowEl = document.getElementById(ROW_IDS[ri]);
+    rowDef.forEach(def => {
+      const [normal, shifted, cls, keySend, shiftedKeySend] = [
+        def[0], def[1] || def[0], def[2] || '', def[3] || def[0], def[4] || def[1] || def[0]
+      ];
+      const btn = document.createElement('div');
+      btn.className = 'vkb-key' + (cls ? ' ' + cls : '');
+      // For letter keys, show both labels; CSS swaps with .shifted
+      if (normal.length === 1 && normal !== shifted) {
+        btn.innerHTML = `<span class="lbl-normal">${esc(normal)}</span><span class="lbl-shift">${esc(shifted)}</span>`;
+      } else {
+        btn.textContent = normal;
+      }
+      btn.dataset.key = keySend;
+      btn.dataset.shiftKey = shiftedKeySend;
+      rowEl.appendChild(btn);
+    });
+  });
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function sendVKBKey(key) {
+  if (key === '_shift') return; // handled separately
+  if (key === '_ctrl') return;
+
+  let finalKey = key;
+  if (ctrlActive && key.length === 1 && /[a-zA-Z]/.test(key)) {
+    finalKey = 'Ctrl-' + key.toUpperCase();
+  }
+  ctrl.handleKey(finalKey);
+
+  // Release non-locked modifiers after a keypress
+  if (shiftActive && !shiftLock) {
+    shiftActive = false;
+    vkb.classList.remove('shifted');
+    updateModButtons();
+  }
+  if (ctrlActive && !ctrlLock) {
+    ctrlActive = false;
+    updateModButtons();
+  }
+}
+
+function updateModButtons() {
+  vkb.querySelectorAll('.vkb-key').forEach(btn => {
+    if (btn.dataset.key === '_shift') {
+      btn.classList.toggle('mod-active', shiftActive);
+    }
+    if (btn.dataset.key === '_ctrl') {
+      btn.classList.toggle('mod-active', ctrlActive);
+    }
+  });
+}
+
+// Double-tap to lock, single tap to toggle
+let lastShiftTap = 0;
+let lastCtrlTap = 0;
+
+function handleModTap(mod) {
+  const now = Date.now();
+  if (mod === '_shift') {
+    if (now - lastShiftTap < 350) {
+      // Double-tap: lock
+      shiftLock = !shiftLock;
+      shiftActive = shiftLock;
+    } else {
+      if (shiftLock) {
+        shiftLock = false;
+        shiftActive = false;
+      } else {
+        shiftActive = !shiftActive;
+      }
+    }
+    lastShiftTap = now;
+    vkb.classList.toggle('shifted', shiftActive);
+    updateModButtons();
+  } else if (mod === '_ctrl') {
+    if (now - lastCtrlTap < 350) {
+      ctrlLock = !ctrlLock;
+      ctrlActive = ctrlLock;
+    } else {
+      if (ctrlLock) {
+        ctrlLock = false;
+        ctrlActive = false;
+      } else {
+        ctrlActive = !ctrlActive;
+      }
+    }
+    lastCtrlTap = now;
+    updateModButtons();
+  }
+}
+
+buildVKB();
+
+// Event delegation on the keyboard container
+vkb.addEventListener('pointerdown', e => {
+  const btn = e.target.closest('.vkb-key');
+  if (!btn) return;
+  e.preventDefault();
+  btn.classList.add('pressed');
+
+  const baseKey = btn.dataset.key;
+  if (baseKey === '_shift' || baseKey === '_ctrl') {
+    handleModTap(baseKey);
+    return;
+  }
+
+  const key = shiftActive ? btn.dataset.shiftKey : baseKey;
+  sendVKBKey(key);
+});
+
+vkb.addEventListener('pointerup', e => {
+  const btn = e.target.closest('.vkb-key');
+  if (btn) btn.classList.remove('pressed');
+});
+
+vkb.addEventListener('pointerleave', e => {
+  const btn = e.target.closest('.vkb-key');
+  if (btn) btn.classList.remove('pressed');
+});
+
+// Prevent any context menus or text selection on the keyboard
+vkb.addEventListener('contextmenu', e => e.preventDefault());
+
+// ── Touch/mobile detection ──
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+const isNarrow = window.innerWidth < 920;
+
+// Suppress native soft keyboard by using a hidden input trick on touch devices
+if (isTouchDevice) {
+  canvas.style.cursor = 'default';
+  // Prevent native keyboard from popping up when tapping the canvas
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    // But still allow the canvas to receive focus for Bluetooth keyboards
+    canvas.focus({ preventScroll: true });
+  });
+  // Add inputMode none to suppress soft keyboard even when focused
+  canvas.setAttribute('inputmode', 'none');
+}
+
+// Toggle button
+vkbToggle.addEventListener('click', () => {
+  const visible = vkb.classList.toggle('visible');
+  vkbToggle.textContent = visible ? '✕' : '⌨';
+  // Re-scale after the VKB changes height
+  requestAnimationFrame(handleResize);
+});
+
+// Show VKB by default on touch + narrow, show toggle on touch + wide
+if (isTouchDevice) {
+  vkb.classList.add('visible');
+  // Move toggle button into the header bar instead of floating overlay
+  const header = document.querySelector('.header');
+  vkbToggle.style.display = 'flex';
+  vkbToggle.style.position = 'static';
+  vkbToggle.style.width = '32px';
+  vkbToggle.style.height = '32px';
+  vkbToggle.style.fontSize = '18px';
+  header.appendChild(vkbToggle);
+  handleResize();
+} else {
+  canvas.focus();
+}
 
 </script>
 

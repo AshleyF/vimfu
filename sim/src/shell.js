@@ -66,7 +66,7 @@ export class ShellSim {
     this.scrollTop = 0;
 
     // Vi-mode line editing (set -o vi)
-    this._viMode = false;    // true when vi-mode is active
+    this._viMode = true;     // true when vi-mode is active
     this._viNormal = false;  // true = normal mode, false = insert mode
     this._viOperator = '';   // pending operator: 'd', 'c', 'y'
     this._viPendingChar = ''; // pending char-consumer: 'r', 'f', 'F', 't', 'T'
@@ -1492,7 +1492,26 @@ export class ShellSim {
     }
   }
 
-  /** @private */
+  /**
+   * Display welcome banner on the shell.
+   * @param {'boot'|'return'} variant
+   */
+  showWelcome(variant = 'boot') {
+    if (variant === 'boot') {
+      this._appendOutput('');
+      this._appendOutput('  VimFu — Learn Vim from zero to fluency');
+      this._appendOutput('');
+      this._appendOutput('  Type  vim <file>   to launch the editor');
+      this._appendOutput('  Type  help         for a list of commands');
+      this._appendOutput('  Type  ls           to see available files');
+      this._appendOutput('');
+    } else {
+      this._appendOutput('');
+      this._appendOutput('  Tip: vim <file> to edit  \u2502  help for commands  \u2502  ls to list files');
+      this._appendOutput('');
+    }
+  }
+
   _cmdHelp() {
     const cmds = [
       'Available commands:',
