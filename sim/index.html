@@ -100,33 +100,6 @@
   }
   #terminal.ready { opacity: 1; }
 
-  /* ── Virtual keyboard toggle ── */
-  .header-spacer {
-    width: 32px;
-    height: 32px;
-    flex-shrink: 0;
-    visibility: hidden;
-  }
-  .vkb-toggle {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    color: #82aaff;
-    font-size: 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    line-height: 1;
-    visibility: hidden;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .vkb-toggle.shown { visibility: visible; }
-  .vkb-toggle:active { background: rgba(255,255,255,0.08); }
-
   /* ── Virtual keyboard ── */
   .vkb {
     display: none;
@@ -208,10 +181,8 @@
 <body>
 
 <div class="header" id="header">
-  <div class="header-spacer" id="header-spacer"></div>
   <h1>VimFu</h1>
   <div id="mode-badge" class="mode-badge shell">SHELL</div>
-  <button class="vkb-toggle" id="vkb-toggle" aria-label="Toggle keyboard">⌨</button>
 </div>
 
 <div class="terminal-area" id="terminal-area">
@@ -360,7 +331,6 @@ function handleResize() {
 window.addEventListener('resize', handleResize);
 
 // ── Virtual Keyboard ──
-const vkbToggle = document.getElementById('vkb-toggle');
 
 // ── Two-page keyboard: ABC (with numbers) and 123 (all symbols + arrows) ──
 // Key: string char (auto-expands) or [label, shifted, class, keySend, shiftedSend]
@@ -613,7 +583,6 @@ const savedVKB = localStorage.getItem(VKB_KEY);
 function setVKBVisible(show, persist = true) {
   canvas.style.visibility = 'hidden';          // hide stale frame
   vkb.classList.toggle('visible', show);
-  vkbToggle.textContent = show ? '✕' : '⌨';
   if (persist) localStorage.setItem(VKB_KEY, show ? '1' : '0');
   // Resize synchronously in one rAF so there's no stale-size flash
   cancelAnimationFrame(resizeRAF);
@@ -625,15 +594,7 @@ function setVKBVisible(show, persist = true) {
   });
 }
 
-vkbToggle.addEventListener('click', () => {
-  setVKBVisible(!vkb.classList.contains('visible'));
-});
-
 if (isTouchDevice) {
-  // Toggle is already in header HTML; just make it visible
-  vkbToggle.classList.add('shown');
-  document.getElementById('header-spacer').style.visibility = 'visible';
-
   // Use saved preference, otherwise default to visible
   const showVKB = savedVKB !== null ? savedVKB === '1' : true;
   setVKBVisible(showVKB, false);
