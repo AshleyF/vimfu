@@ -21,7 +21,7 @@ export class Renderer {
     this.fontSize = fontSize;
 
     // Measure character cell
-    this.ctx.font = `${fontSize}px ${FONT_FAMILY}`;
+    this.ctx.font = `bold ${fontSize}px ${FONT_FAMILY}`;
     const m = this.ctx.measureText('M');
     this.charW = Math.ceil(m.width);
     this.charH = Math.ceil(fontSize * 1.4);
@@ -48,7 +48,7 @@ export class Renderer {
     }
 
     const ctx = this.ctx;
-    ctx.font = `${this.fontSize}px ${FONT_FAMILY}`;
+    ctx.font = `bold ${this.fontSize}px ${FONT_FAMILY}`;
     ctx.textBaseline = 'top';
 
     // Clear
@@ -86,7 +86,7 @@ export class Renderer {
           }
         }
         if (run.b) {
-          ctx.font = `${this.fontSize}px ${FONT_FAMILY}`;
+          ctx.font = `bold ${this.fontSize}px ${FONT_FAMILY}`;
         }
         col += run.n;
       }

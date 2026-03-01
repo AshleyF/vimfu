@@ -123,12 +123,10 @@
   .vkb {
     display: none;
     flex-direction: column;
-    gap: 5px;
-    padding: 6px;
+    gap: 6px;
+    padding: 6px 3px;
     width: 100%;
-    max-width: 900px;
-    background: #111122;
-    border-top: 1px solid #333;
+    background: #0d0d1a;
     flex-shrink: 0;
     -webkit-user-select: none;
     user-select: none;
@@ -138,41 +136,48 @@
 
   .vkb-row {
     display: flex;
-    gap: 4px;
+    gap: 5px;
     justify-content: center;
   }
 
   .vkb-key {
     flex: 1 1 0;
     height: 42px;
-    border: 1px solid #444;
     border-radius: 5px;
-    background: #2a2a3a;
-    color: #d4d4d4;
-    font-family: 'Cascadia Mono', Consolas, monospace;
-    font-size: 14px;
+    background: #3a3a4a;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 18px;
+    font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     transition: background 0.08s;
+    overflow: hidden;
+    white-space: nowrap;
   }
-  .vkb-key:active, .vkb-key.pressed { background: #505070; }
+  .vkb-key:active, .vkb-key.pressed { background: #606080; }
 
   /* Wider special keys */
   .vkb-key.w15 { flex: 1.5 1 0; }
-  .vkb-key.w175 { flex: 1.75 1 0; }
-  .vkb-key.w2 { flex: 2 1 0; }
-  .vkb-key.w225 { flex: 2.25 1 0; }
-  .vkb-key.space { flex: 6 1 0; }
+  .vkb-key.space { flex: 4 1 0; }
+
+  /* Function/special keys (darker, smaller text) */
+  .vkb-key.fn {
+    background: #2a2a3a;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .vkb-key.fn:active, .vkb-key.fn.pressed { background: #606080; }
 
   /* Modifier active state */
   .vkb-key.mod-active {
     background: #82aaff;
     color: #000;
-    border-color: #82aaff;
   }
+  .vkb-key.mod-active:active, .vkb-key.mod-active.pressed { background: #6688cc; }
 
   /* Shift state label swap */
   .vkb-key .lbl-shift { display: none; }
@@ -210,16 +215,10 @@
 <button class="vkb-toggle" id="vkb-toggle" aria-label="Toggle keyboard">⌨</button>
 
 <div class="vkb" id="vkb">
-  <!-- Row 1: number row -->
-  <div class="vkb-row" id="vkb-row-num"></div>
-  <!-- Row 2: qwerty -->
-  <div class="vkb-row" id="vkb-row-q"></div>
-  <!-- Row 3: asdf -->
-  <div class="vkb-row" id="vkb-row-a"></div>
-  <!-- Row 4: zxcv -->
-  <div class="vkb-row" id="vkb-row-z"></div>
-  <!-- Row 5: modifiers + space -->
-  <div class="vkb-row" id="vkb-row-space"></div>
+  <div class="vkb-row" id="vkb-row-1"></div>
+  <div class="vkb-row" id="vkb-row-2"></div>
+  <div class="vkb-row" id="vkb-row-3"></div>
+  <div class="vkb-row" id="vkb-row-4"></div>
 </div>
 
 <script type="module">
@@ -354,66 +353,64 @@ window.addEventListener('resize', handleResize);
 // ── Virtual Keyboard ──
 const vkbToggle = document.getElementById('vkb-toggle');
 
-// Keyboard layout definition
-// Each key: [normal, shifted, width-class, key-to-send, shifted-key-to-send]
-// If key-to-send is omitted, normal label is used.
-const ROWS_DEF = [
-  // Number row
-  [
-    ['`','~','','`','~'], ['1','!','','1','!'], ['2','@','','2','@'],
-    ['3','#','','3','#'], ['4','$','','4','$'], ['5','%','','5','%'],
-    ['6','^','','6','^'], ['7','&','','7','&'], ['8','*','','8','*'],
-    ['9','(','','9','('], ['0',')','','0',')'], ['-','_','','-','_'],
-    ['=','+','','=','+'], ['⌫','⌫','w15','Backspace','Backspace'],
+// ── Two-page keyboard: ABC and 123 ──
+// Key: string char (auto-expands) or [label, shifted, class, keySend, shiftedSend]
+const PAGES = {
+  abc: [
+    ['q','w','e','r','t','y','u','i','o','p'],
+    ['a','s','d','f','g','h','j','k','l'],
+    [['⇧','⇧','w15 fn','_shift','_shift'],
+     'z','x','c','v','b','n','m',
+     ['⌫','⌫','w15 fn','Backspace','Backspace']],
+    [['123','123','w15 fn','_page_num','_page_num'],
+     ['Esc','Esc','fn','Escape','Escape'],
+     ['Ctrl','Ctrl','fn','_ctrl','_ctrl'],
+     ['','','space',' ',' '],
+     '.',
+     ['⏎','⏎','w15 fn','Enter','Enter']],
   ],
-  // QWERTY row
-  [
-    ['Tab','Tab','w15','Tab','Tab'],
-    ['q','Q'], ['w','W'], ['e','E'], ['r','R'], ['t','T'],
-    ['y','Y'], ['u','U'], ['i','I'], ['o','O'], ['p','P'],
-    ['[','{','','[','{'], [']','}','',']','}'], ['\\','|','','\\','|'],
+  num: [
+    [['1','!'], ['2','@'], ['3','#'], ['4','$'], ['5','%'],
+     ['6','^'], ['7','&'], ['8','*'], ['9','('], ['0',')']],
+    [['-','_'], ['=','+'], ['[','{'], [']','}'], ['\\','|'],
+     [';',':'], ["'",'"'], [',','<'], ['.','>'], ['/','?']],
+    [['⇧','⇧','w15 fn','_shift','_shift'],
+     ['`','~'], ['Tab','Tab','fn','Tab','Tab'],
+     ['⌫','⌫','w15 fn','Backspace','Backspace']],
+    [['ABC','ABC','w15 fn','_page_abc','_page_abc'],
+     ['Esc','Esc','fn','Escape','Escape'],
+     ['Ctrl','Ctrl','fn','_ctrl','_ctrl'],
+     ['','','space',' ',' '],
+     ['⏎','⏎','w15 fn','Enter','Enter']],
   ],
-  // Home row
-  [
-    ['Esc','Esc','w175','Escape','Escape'],
-    ['a','A'], ['s','S'], ['d','D'], ['f','F'], ['g','G'],
-    ['h','H'], ['j','J'], ['k','K'], ['l','L'],
-    [';',':','',';',':'], ["'",'"','','\'','"'],
-    ['⏎','⏎','w175','Enter','Enter'],
-  ],
-  // Bottom row
-  [
-    ['⇧','⇧','w225','_shift','_shift'],
-    ['z','Z'], ['x','X'], ['c','C'], ['v','V'], ['b','B'],
-    ['n','N'], ['m','M'], [',','<','',',','<'], ['.','>','','.','>'],
-    ['/','?','','/','?'],
-    ['⇧','⇧','w225','_shift','_shift'],
-  ],
-  // Space row
-  [
-    ['Ctrl','Ctrl','w175','_ctrl','_ctrl'],
-    ['','','space',' ',' '],
-    ['Ctrl','Ctrl','w175','_ctrl','_ctrl'],
-  ],
-];
+};
 
-const ROW_IDS = ['vkb-row-num', 'vkb-row-q', 'vkb-row-a', 'vkb-row-z', 'vkb-row-space'];
+const ROW_IDS = ['vkb-row-1','vkb-row-2','vkb-row-3','vkb-row-4'];
 
+let currentPage = 'abc';
 let shiftActive = false;
 let ctrlActive = false;
 let shiftLock = false;
 let ctrlLock = false;
 
-function buildVKB() {
-  ROWS_DEF.forEach((rowDef, ri) => {
-    const rowEl = document.getElementById(ROW_IDS[ri]);
-    rowDef.forEach(def => {
-      const [normal, shifted, cls, keySend, shiftedKeySend] = [
-        def[0], def[1] || def[0], def[2] || '', def[3] || def[0], def[4] || def[1] || def[0]
-      ];
+function expandKey(k) {
+  if (typeof k === 'string') {
+    return [k, k.toUpperCase(), '', k, k.toUpperCase()];
+  }
+  return [k[0], k[1]||k[0], k[2]||'', k[3]||k[0], k[4]||k[1]||k[0]];
+}
+
+function buildVKBPage(page) {
+  currentPage = page;
+  const pageDef = PAGES[page];
+  ROW_IDS.forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.innerHTML = '';
+    if (i >= pageDef.length) return;
+    pageDef[i].forEach(keyDef => {
+      const [normal, shifted, cls, keySend, shiftedKeySend] = expandKey(keyDef);
       const btn = document.createElement('div');
       btn.className = 'vkb-key' + (cls ? ' ' + cls : '');
-      // For letter keys, show both labels; CSS swaps with .shifted
       if (normal.length === 1 && normal !== shifted) {
         btn.innerHTML = `<span class="lbl-normal">${esc(normal)}</span><span class="lbl-shift">${esc(shifted)}</span>`;
       } else {
@@ -421,9 +418,10 @@ function buildVKB() {
       }
       btn.dataset.key = keySend;
       btn.dataset.shiftKey = shiftedKeySend;
-      rowEl.appendChild(btn);
+      el.appendChild(btn);
     });
   });
+  updateModButtons();
 }
 
 function esc(s) {
@@ -502,7 +500,7 @@ function handleModTap(mod) {
   }
 }
 
-buildVKB();
+buildVKBPage('abc');
 
 // Event delegation on the keyboard container
 vkb.addEventListener('pointerdown', e => {
@@ -514,6 +512,10 @@ vkb.addEventListener('pointerdown', e => {
   const baseKey = btn.dataset.key;
   if (baseKey === '_shift' || baseKey === '_ctrl') {
     handleModTap(baseKey);
+    return;
+  }
+  if (baseKey.startsWith('_page_')) {
+    buildVKBPage(baseKey.slice(6));
     return;
   }
 
