@@ -148,6 +148,12 @@ export class VimEngine {
     // Visual command range — set when : is pressed in visual mode
     this._visualCmdRange = null;
 
+    // Surround (nvim-surround plugin)
+    this._pendingSurround = '';      // 'ds', 'cs', 'ys', or ''
+    this._surroundTarget = '';       // for cs: the target char (first char after cs)
+    this._ysRange = null;            // for ys: {sr, sc, er, ec} waiting for surround char
+    this._pendingVisualSurround = null; // for visual S: {sr, sc, er, ec, wasLinewise}
+
     // Desired column for vertical movement
     this._desiredCol = 0;
 
@@ -441,6 +447,59 @@ export class VimEngine {
       return;
     }
 
+    // Pending ys surround char (we have the range, waiting for the wrap char)
+    if (this._ysRange) {
+      if (key === 'Escape') {
+        this._ysRange = null; this._pendingCount = ''; return;
+      }
+      const range = this._ysRange;
+      this._ysRange = null;
+      this._saveSnapshot();
+      this._doSurroundAdd(range.sr, range.sc, range.er, range.ec, key, !range.noTrim);
+      this._lastChange = range.dotKeys ? [...range.dotKeys, key] : ['y', 's', key];
+      this._redoStack = [];
+      this._pendingCount = '';
+      return;
+    }
+
+    // Pending ds (waiting for target char)
+    if (this._pendingSurround === 'ds') {
+      this._pendingSurround = '';
+      if (key === 'Escape') { this._pendingCount = ''; return; }
+      this._saveSnapshot();
+      const ok = this._doSurroundDelete(key);
+      if (ok) {
+        this._lastChange = ['d', 's', key];
+        this._redoStack = [];
+      }
+      this._pendingCount = '';
+      return;
+    }
+
+    // Pending cs — waiting for target char
+    if (this._pendingSurround === 'cs' && !this._surroundTarget) {
+      if (key === 'Escape') {
+        this._pendingSurround = ''; this._pendingCount = ''; return;
+      }
+      this._surroundTarget = key;
+      return;
+    }
+
+    // Pending cs — have target, waiting for replacement char
+    if (this._pendingSurround === 'cs' && this._surroundTarget) {
+      const target = this._surroundTarget;
+      this._pendingSurround = ''; this._surroundTarget = '';
+      if (key === 'Escape') { this._pendingCount = ''; return; }
+      this._saveSnapshot();
+      const ok = this._doSurroundChange(target, key);
+      if (ok) {
+        this._lastChange = ['c', 's', target, key];
+        this._redoStack = [];
+      }
+      this._pendingCount = '';
+      return;
+    }
+
     // Pending r
     if (this._pendingR) {
       this._pendingR = false;
@@ -511,7 +570,23 @@ export class VimEngine {
           this.cursor.col = savedCol;  // restore if find failed
         }
         if (this._pendingOp) {
-          if (moved || (!failed && (type === 't' || type === 'T'))) {
+          if (this._pendingOp === 'ys') {
+            // ys + f/F/t/T: capture range for surround
+            if (moved || (!failed && (type === 't' || type === 'T'))) {
+              const ysStartPos = { ...this._opStartPos };
+              const endPos = { ...this.cursor };
+              let sr, sc, er, ec;
+              if (endPos.row < ysStartPos.row || (endPos.row === ysStartPos.row && endPos.col < ysStartPos.col)) {
+                sr = endPos.row; sc = endPos.col; er = ysStartPos.row; ec = ysStartPos.col;
+              } else {
+                sr = ysStartPos.row; sc = ysStartPos.col; er = endPos.row; ec = endPos.col;
+              }
+              ec++; // f is inclusive
+              this.cursor = { ...ysStartPos };
+              this._ysRange = { sr, sc, er, ec, dotKeys: ['y', 's', type, key] };
+            }
+            this._pendingOp = '';
+          } else if (moved || (!failed && (type === 't' || type === 'T'))) {
             this._motionInclusive = true;  // f/F/t/T are inclusive for operators
             const opChar = this._pendingOp;
             const dotKeys = [opChar, type, key];
@@ -628,6 +703,21 @@ export class VimEngine {
       const objType = this._pendingTextObjType;
       this._pendingTextObjType = null;
       const opChar = this._pendingOp;
+      // ys + text object: capture range, wait for surround char
+      if (opChar === 'ys') {
+        const range = this._getTextObject(objType, key);
+        if (range) {
+          const dotKeys = ['y', 's', objType, key];
+          this._ysRange = {
+            sr: range.startRow, sc: range.startCol,
+            er: range.endRow, ec: range.endCol,
+            dotKeys,
+          };
+        }
+        this._pendingOp = '';
+        this._pendingCount = '';
+        return;
+      }
       const range = this._getTextObject(objType, key);
       if (range) {
         const dotKeys = [opChar, objType, key];
@@ -647,6 +737,79 @@ export class VimEngine {
 
     // Operator pending: second key
     if (this._pendingOp) {
+      // Surround: ys, ds, cs intercepts
+      if (key === 's' && (this._pendingOp === 'y' || this._pendingOp === 'd' || this._pendingOp === 'c')) {
+        if (this._pendingOp === 'y') {
+          // ys — enter surround-add mode (need motion + surround char)
+          this._pendingOp = 'ys';
+          this._opStartPos = { ...this.cursor };
+          return;
+        } else if (this._pendingOp === 'd') {
+          // ds — enter surround-delete mode (need target char)
+          this._pendingSurround = 'ds';
+          this._pendingOp = ''; this._pendingCount = '';
+          return;
+        } else if (this._pendingOp === 'c') {
+          // cs — enter surround-change mode (need target + replacement)
+          this._pendingSurround = 'cs';
+          this._pendingOp = ''; this._pendingCount = '';
+          return;
+        }
+      }
+      // ys operator: handle yss (surround whole line) and motions
+      if (this._pendingOp === 'ys') {
+        if (key === 's') {
+          // yss — surround whole line
+          const row = this.cursor.row;
+          const line = this.buffer.lines[row];
+          const m = line.match(/\S/);
+          const fnb = m ? m.index : 0; // all-whitespace: wrap from col 0
+          const end = line.length;
+          this._ysRange = { sr: row, sc: fnb, er: row, ec: end, dotKeys: ['y', 's', 's'], noTrim: true };
+          this._pendingOp = ''; this._pendingCount = '';
+          return;
+        }
+        // Text object trigger (i or a)
+        if (key === 'i' || key === 'a') {
+          this._pendingTextObjType = key;
+          return;
+        }
+        // Operator + g prefix
+        if (key === 'g') { this._pendingG = true; return; }
+        // Operator + f/F/t/T
+        if (key === 'f' || key === 'F' || key === 't' || key === 'T') {
+          this._pendingF = key;
+          this._motionInclusive = (key === 'f' || key === 'F');
+          return;
+        }
+        // Handle motion to get range, then wait for surround char
+        this._motionInclusive = false;
+        this._motionLinewise = false;
+        this._motionExclusive = false;
+        const ysStartPos = { ...this.cursor };
+        const motionCountStr = this._pendingCount;
+        const moved = this._doMotion(key);
+        if (moved || this._motionInclusive) {
+          let sr, sc, er, ec;
+          const endPos = { ...this.cursor };
+          // Normalize range (start <= end)
+          if (endPos.row < ysStartPos.row || (endPos.row === ysStartPos.row && endPos.col < ysStartPos.col)) {
+            sr = endPos.row; sc = endPos.col; er = ysStartPos.row; ec = ysStartPos.col;
+          } else {
+            sr = ysStartPos.row; sc = ysStartPos.col; er = endPos.row; ec = endPos.col;
+          }
+          // For inclusive motions (e, $, f), include the endpoint char
+          if (this._motionInclusive) ec++;
+          // Restore cursor to start for ys
+          this.cursor = { ...ysStartPos };
+          const dotKeys = ['y', 's'];
+          if (motionCountStr) for (const ch of motionCountStr) dotKeys.push(ch);
+          dotKeys.push(key);
+          this._ysRange = { sr, sc, er, ec, dotKeys };
+        }
+        this._pendingOp = ''; this._pendingCount = '';
+        return;
+      }
       // Double operator = line op (dd, cc, yy, >>, <<)
       if (key === this._pendingOp[this._pendingOp.length - 1]) {
         const countStr = this._pendingCount;
@@ -2361,6 +2524,34 @@ export class VimEngine {
       this._pendingCount = ''; return;
     }
 
+    // Pending visual surround: S was pressed, waiting for surround char
+    if (this._pendingVisualSurround) {
+      const vs = this._pendingVisualSurround;
+      this._pendingVisualSurround = null;
+      if (key === 'Escape') {
+        this.mode = Mode.NORMAL; this.commandLine = '';
+        this._pendingCount = ''; return;
+      }
+      const savedCursor = { ...this.cursor };
+      this.cursor = { row: vs.sr, col: vs.sc };
+      this._saveSnapshot();
+      this.cursor = savedCursor;
+      if (vs.wasLinewise) {
+        // Linewise visual S: place surround on separate lines
+        const { open, close } = this._getSurroundPair(key);
+        // Insert closing delimiter line after selected lines
+        this.buffer.lines.splice(vs.er + 1, 0, close);
+        // Insert opening delimiter line before selected lines
+        this.buffer.lines.splice(vs.sr, 0, open);
+        this.cursor.row = vs.sr; this.cursor.col = 0;
+      } else {
+        this._doSurroundAdd(vs.sr, vs.sc, vs.er, vs.ec, key);
+      }
+      this.mode = Mode.NORMAL; this.commandLine = '';
+      this._redoStack = [];
+      this._pendingCount = ''; return;
+    }
+
     // Pending text object type (i/a)
     if (this._pendingTextObjType) {
       const objType = this._pendingTextObjType;
@@ -2464,6 +2655,28 @@ export class VimEngine {
     // g prefix
     if (key === 'g') {
       this._pendingG = true;
+      return;
+    }
+
+    // Visual surround: S key triggers surround
+    if (key === 'S') {
+      this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
+      const wasLinewise = (this.mode === Mode.VISUAL_LINE);
+      let sr, sc, er, ec;
+      if (wasLinewise) {
+        sr = Math.min(this._visualStart.row, this.cursor.row);
+        er = Math.max(this._visualStart.row, this.cursor.row);
+        sc = 0; ec = this.buffer.lineLength(er);
+      } else {
+        if (this._visualStart.row < this.cursor.row || (this._visualStart.row === this.cursor.row && this._visualStart.col <= this.cursor.col)) {
+          sr = this._visualStart.row; sc = this._visualStart.col;
+          er = this.cursor.row; ec = this.cursor.col + 1;
+        } else {
+          sr = this.cursor.row; sc = this.cursor.col;
+          er = this._visualStart.row; ec = this._visualStart.col + 1;
+        }
+      }
+      this._pendingVisualSurround = { sr, sc, er, ec, wasLinewise };
       return;
     }
 
@@ -4133,6 +4346,200 @@ export class VimEngine {
     }
 
     return { startRow: row, startCol, endRow: row, endCol };
+  }
+
+  // ── Surround (nvim-surround plugin) ──
+
+  /**
+   * Map a surround char to an open/close pair.
+   * Opening marks add space, closing marks don't.
+   */
+  _getSurroundPair(ch) {
+    const pairs = {
+      ')': { open: '(', close: ')' }, 'b': { open: '(', close: ')' },
+      '(': { open: '( ', close: ' )' },
+      ']': { open: '[', close: ']' }, 'r': { open: '[', close: ']' },
+      '[': { open: '[ ', close: ' ]' },
+      '}': { open: '{', close: '}' }, 'B': { open: '{', close: '}' },
+      '{': { open: '{ ', close: ' }' },
+      '>': { open: '<', close: '>' }, 'a': { open: '<', close: '>' },
+      '<': { open: '< ', close: ' >' },
+    };
+    if (pairs[ch]) return pairs[ch];
+    // Quotes and arbitrary characters: same char on both sides
+    return { open: ch, close: ch };
+  }
+
+  /**
+   * Map a target char (for ds/cs) to the open/close delimiter to search for.
+   * Opening marks indicate space-trimming.
+   */
+  _getSurroundTarget(ch) {
+    const trim = ch === '(' || ch === '[' || ch === '{' || ch === '<';
+    const map = {
+      ')': { open: '(', close: ')', trim: false },
+      '(': { open: '(', close: ')', trim: true },
+      'b': { open: '(', close: ')', trim: false },
+      ']': { open: '[', close: ']', trim: false },
+      '[': { open: '[', close: ']', trim: true },
+      'r': { open: '[', close: ']', trim: false },
+      '}': { open: '{', close: '}', trim: false },
+      '{': { open: '{', close: '}', trim: true },
+      'B': { open: '{', close: '}', trim: false },
+      '>': { open: '<', close: '>', trim: false },
+      '<': { open: '<', close: '>', trim: true },
+      'a': { open: '<', close: '>', trim: false },
+    };
+    if (map[ch]) return map[ch];
+    // Quotes and arbitrary: same char, no trim
+    return { open: ch, close: ch, trim: false };
+  }
+
+  /**
+   * Find the positions of the surrounding delimiters on the current line (for ds/cs).
+   * Returns { openRow, openCol, closeRow, closeCol } or null.
+   */
+  _findSurrounding(ch) {
+    const target = this._getSurroundTarget(ch);
+    if (target.open === target.close) {
+      // Symmetric (quotes, arbitrary) — use quote-finding logic (single line)
+      const line = this.buffer.lines[this.cursor.row];
+      const q = target.open;
+      const pos = [];
+      for (let i = 0; i < line.length; i++) {
+        if (line[i] === q && (i === 0 || line[i - 1] !== '\\')) pos.push(i);
+      }
+      let f = -1, s = -1;
+      for (let i = 0; i < pos.length - 1; i += 2) {
+        if (pos[i] <= this.cursor.col && pos[i + 1] >= this.cursor.col) {
+          f = pos[i]; s = pos[i + 1]; break;
+        }
+      }
+      if (f === -1) {
+        for (let i = 0; i < pos.length - 1; i += 2) {
+          if (pos[i] > this.cursor.col) { f = pos[i]; s = pos[i + 1]; break; }
+        }
+      }
+      if (f === -1 || s === -1) return null;
+      return { openRow: this.cursor.row, openCol: f, closeRow: this.cursor.row, closeCol: s, trim: target.trim };
+    }
+    // Paired delimiters — use bracket-matching logic (multi-line)
+    const open = target.open, close = target.close;
+    let depth = 0, sr = -1, sc = -1, found = false;
+    outer1:
+    for (let r = this.cursor.row; r >= 0; r--) {
+      const line = this.buffer.lines[r];
+      const start = (r === this.cursor.row) ? this.cursor.col : line.length - 1;
+      for (let c = start; c >= 0; c--) {
+        if (line[c] === close && !(r === this.cursor.row && c === this.cursor.col)) depth++;
+        if (line[c] === open) {
+          if (depth === 0) { sr = r; sc = c; found = true; break outer1; }
+          depth--;
+        }
+      }
+    }
+    if (!found) return null;
+    depth = 0; let er = -1, ec = -1; found = false;
+    outer2:
+    for (let r = sr; r < this.buffer.lineCount; r++) {
+      const line = this.buffer.lines[r];
+      const start = (r === sr) ? sc + 1 : 0;
+      for (let c = start; c < line.length; c++) {
+        if (line[c] === open) depth++;
+        if (line[c] === close) {
+          if (depth === 0) { er = r; ec = c; found = true; break outer2; }
+          depth--;
+        }
+      }
+    }
+    if (!found) return null;
+    return { openRow: sr, openCol: sc, closeRow: er, closeCol: ec, trim: target.trim };
+  }
+
+  /**
+   * Add surrounding chars around a range. Used by ys and visual S.
+   * nvim-surround trims trailing whitespace from the range before wrapping.
+   */
+  _doSurroundAdd(sr, sc, er, ec, ch, trim = true) {
+    const { open, close } = this._getSurroundPair(ch);
+    // Trim trailing/leading whitespace from range (nvim-surround behavior)
+    // Only for motions like w/W/aw/aW that include extraneous whitespace.
+    if (trim) {
+      if (sr === er) {
+        const line = this.buffer.lines[sr];
+        while (ec > sc && (line[ec - 1] === ' ' || line[ec - 1] === '\t')) ec--;
+        while (sc < ec && (line[sc] === ' ' || line[sc] === '\t')) sc++;
+      } else {
+        const line = this.buffer.lines[er];
+        while (ec > 0 && (line[ec - 1] === ' ' || line[ec - 1] === '\t')) ec--;
+      }
+    }
+    // Insert close first (so positions don't shift for the open insert)
+    if (sr === er) {
+      const line = this.buffer.lines[sr];
+      this.buffer.lines[sr] = line.slice(0, ec) + close + line.slice(ec);
+      this.buffer.lines[sr] = this.buffer.lines[sr].slice(0, sc) + open + this.buffer.lines[sr].slice(sc);
+    } else {
+      // Multi-line: insert close at end position
+      const eLine = this.buffer.lines[er];
+      this.buffer.lines[er] = eLine.slice(0, ec) + close + eLine.slice(ec);
+      // Insert open at start position
+      const sLine = this.buffer.lines[sr];
+      this.buffer.lines[sr] = sLine.slice(0, sc) + open + sLine.slice(sc);
+    }
+    this.cursor.row = sr; this.cursor.col = sc;
+    this._updateDesiredCol();
+  }
+
+  /**
+   * Delete surrounding delimiters. Used by ds.
+   * Returns true if successful.
+   */
+  _doSurroundDelete(ch) {
+    const pos = this._findSurrounding(ch);
+    if (!pos) return false;
+    const { openRow, openCol, closeRow, closeCol, trim } = pos;
+    if (openRow === closeRow) {
+      const line = this.buffer.lines[openRow];
+      let inner = line.slice(openCol + 1, closeCol);
+      if (trim) inner = inner.trim();
+      this.buffer.lines[openRow] = line.slice(0, openCol) + inner + line.slice(closeCol + 1);
+    } else {
+      // Multi-line: remove close delimiter, then open delimiter
+      const cLine = this.buffer.lines[closeRow];
+      this.buffer.lines[closeRow] = cLine.slice(0, closeCol) + cLine.slice(closeCol + 1);
+      const oLine = this.buffer.lines[openRow];
+      this.buffer.lines[openRow] = oLine.slice(0, openCol) + oLine.slice(openCol + 1);
+    }
+    this.cursor.row = openRow; this.cursor.col = openCol;
+    this._updateDesiredCol();
+    return true;
+  }
+
+  /**
+   * Change surrounding delimiters. Used by cs.
+   * Returns true if successful.
+   */
+  _doSurroundChange(target, replacement) {
+    const pos = this._findSurrounding(target);
+    if (!pos) return false;
+    const { openRow, openCol, closeRow, closeCol, trim } = pos;
+    const { open, close } = this._getSurroundPair(replacement);
+    if (openRow === closeRow) {
+      const line = this.buffer.lines[openRow];
+      let inner = line.slice(openCol + 1, closeCol);
+      if (trim) inner = inner.trim();
+      this.buffer.lines[openRow] = line.slice(0, openCol) + open + inner + close + line.slice(closeCol + 1);
+    } else {
+      // Multi-line: replace close, then open
+      const cLine = this.buffer.lines[closeRow];
+      this.buffer.lines[closeRow] = cLine.slice(0, closeCol) + close + cLine.slice(closeCol + 1);
+      const oLine = this.buffer.lines[openRow];
+      this.buffer.lines[openRow] = oLine.slice(0, openCol) + open + oLine.slice(openCol + 1);
+    }
+    this.cursor.row = openRow; this.cursor.col = openCol;
+    this._updateDesiredCol();
+    return true;
   }
 
   // ── Put (paste) ──

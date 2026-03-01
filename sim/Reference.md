@@ -317,6 +317,142 @@ Multi-line pairs supported. Handles escaped quotes. If cursor not inside, search
 
 ---
 
+## Surround (nvim-surround)
+
+Requires nvim-surround plugin. Delete, change, or add surrounding delimiters.
+
+### Delimiter Types
+
+Every surround operation accepts the same set of delimiter characters:
+
+| Char | Pair | Notes |
+|---|---|---|
+| `)` / `b` | `(`…`)` | Closing — no inner space |
+| `(` | `( `…` )` | Opening — adds inner space |
+| `]` / `r` | `[`…`]` | Closing — no inner space |
+| `[` | `[ `…` ]` | Opening — adds inner space |
+| `}` / `B` | `{`…`}` | Closing — no inner space |
+| `{` | `{ `…` }` | Opening — adds inner space |
+| `>` / `a` | `<`…`>` | Closing — no inner space |
+| `<` | `< `…` >` | Opening — adds inner space |
+| `"` | `"`…`"` | Double quotes |
+| `'` | `'`…`'` | Single quotes |
+| `` ` `` | `` ` ``…`` ` `` | Backticks |
+| *any other* | *char*…*char* | Symmetric — e.g. `*`, `|`, `_`, `/`, `~` |
+
+**Closing** characters (`)`/`]`/`}`/`>`) produce tight delimiters.
+**Opening** characters (`(`/`[`/`{`/`<`) add an inner space on each side.
+Aliases: `b` = `)`, `r` = `]`, `B` = `}`, `a` = `>`.
+
+### Delete Surroundings (`ds`)
+
+`ds{target}` — delete the nearest surrounding pair that matches *target*.
+
+| Key | Description |
+|---|---|
+| `ds"` | Delete surrounding double quotes |
+| `ds'` | Delete surrounding single quotes |
+| `` ds` `` | Delete surrounding backticks |
+| `ds)` / `dsb` | Delete surrounding parentheses |
+| `ds(` | Delete surrounding parentheses **and** trim inner whitespace |
+| `ds]` / `dsr` | Delete surrounding brackets |
+| `ds[` | Delete surrounding brackets **and** trim inner whitespace |
+| `ds}` / `dsB` | Delete surrounding braces |
+| `ds{` | Delete surrounding braces **and** trim inner whitespace |
+| `ds>` / `dsa` | Delete surrounding angle brackets |
+| `ds<` | Delete surrounding angle brackets **and** trim inner whitespace |
+| `ds*`, `ds|`, `ds/`, … | Delete any symmetric surrounding character |
+
+When the target is an **opening** bracket (`(`, `[`, `{`, `<`), inner whitespace
+adjacent to the delimiters is trimmed. When it's a **closing** bracket or alias,
+the content is left untouched.
+
+### Change Surroundings (`cs`)
+
+`cs{target}{replacement}` — find the nearest pair matching *target*, then
+replace both delimiters with the *replacement* pair.
+
+| Key | Description |
+|---|---|
+| `cs"'` | `"hello"` → `'hello'` |
+| `cs'"` | `'hello'` → `"hello"` |
+| `` cs"` `` | `"hello"` → `` `hello` `` |
+| `` cs`" `` | `` `hello` `` → `"hello"` |
+| `cs)]` | `(hello)` → `[hello]` |
+| `cs])` | `[hello]` → `(hello)` |
+| `cs)}` | `(hello)` → `{hello}` |
+| `cs}>` | `{hello}` → `<hello>` |
+| `cs)"` | `(hello)` → `"hello"` |
+| `cs"[` | `"hello"` → `[ hello ]` (opening replacement adds space) |
+| `cs)(` | `(hello)` → `( hello )` (opening replacement adds space) |
+| `cs({` | `( hello )` → `{hello}` (opening target trims inner space) |
+
+**Rules for `cs`:**
+- The *target* follows `ds` rules: opening targets (`(`, `[`, `{`, `<`) trim inner whitespace; closing targets leave content intact.
+- The *replacement* follows `ys` rules: opening chars add inner space; closing chars don't.
+- Both effects compose: `cs({` trims then wraps tight; `cs)(` keeps then adds space.
+- Quotes, backticks, and arbitrary characters work as both target and replacement.
+
+### Add Surroundings (`ys`)
+
+`ys{motion}{char}` — surround the text described by *motion* with the
+delimiter pair for *char*.
+
+| Key | Description |
+|---|---|
+| `ysiw)` | `hello` → `(hello)` |
+| `ysiw(` | `hello` → `( hello )` |
+| `ysiw]` | `hello` → `[hello]` |
+| `ysiw[` | `hello` → `[ hello ]` |
+| `ysiw}` | `hello` → `{hello}` |
+| `ysiw{` | `hello` → `{ hello }` |
+| `ysiw>` | `hello` → `<hello>` |
+| `ysiw<` | `hello` → `< hello >` |
+| `ysiw"` | `hello` → `"hello"` |
+| `ysiw'` | `hello` → `'hello'` |
+| `` ysiw` `` | `hello` → `` `hello` `` |
+| `ysiw*` | `hello` → `*hello*` |
+| `ysiw|` | `hello` → `\|hello\|` |
+| `ysaw)` | Surround a-word (includes trailing whitespace in selection) |
+| `ysaW}` | Surround a-WORD |
+| `ysiW)` | Surround inner WORD |
+| `ys$"` | Surround from cursor to end of line |
+| `ysw)` | Surround from cursor to next word start |
+| `yse]` | Surround from cursor to end of word |
+| `ysf.)` | Surround from cursor up to and including next `.` |
+| `yst.)` | Surround from cursor up to (not including) next `.` |
+| `ysF.)` | Surround backward up to and including previous `.` |
+| `ys2w"` | Surround next 2 words |
+| `yss)` | Surround entire line (leading/trailing whitespace preserved inside) |
+| `yss(` | Surround entire line with inner space |
+| `yss"` | Surround entire line in double quotes |
+
+Any motion (`w`, `e`, `b`, `$`, `0`, `^`, `f`, `F`, `t`, `T`, counted motions)
+and any text object (`iw`, `aw`, `iW`, `aW`, `i)`, `a]`, etc.) can be
+used with `ys`.
+
+### Visual Surround (`S`)
+
+Select text in Visual mode, then press `S{char}` to surround it.
+
+| Key | Description |
+|---|---|
+| `viw` → `S)` | `hello` → `(hello)` |
+| `viw` → `S"` | `hello` → `"hello"` |
+| `viw` → `S'` | `hello` → `'hello'` |
+| `viw` → `` S` `` | `hello` → `` `hello` `` |
+| `viw` → `S]` | `hello` → `[hello]` |
+| `viw` → `S}` | `hello` → `{hello}` |
+| `viw` → `S>` | `hello` → `<hello>` |
+| `viw` → `S*` | `hello` → `*hello*` |
+| `viw` → `S(` | `hello` → `( hello )` (opening adds space) |
+| `V` → `S)` | Linewise — content placed on its own indented line |
+| `V` → `S]` | Linewise — works with any delimiter type |
+
+All surround operations support dot-repeat (`.`), undo (`u`), and redo (`Ctrl-R`).
+
+---
+
 ## Command Mode (Ex Commands)
 
 All Ex commands accept standard nvim abbreviations — any unambiguous prefix

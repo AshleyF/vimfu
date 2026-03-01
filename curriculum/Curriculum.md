@@ -957,6 +957,8 @@ _Deep cuts for power users. These lessons assume you're comfortable with everyth
 
 _Tim Pope's surround.vim is one of the most popular Vim plugins ever written. Many editors and emulators (including the VS Code Vim extension) ship surround bindings by default. If you use Vim, you should know surround._
 
+_**Installing in Neovim:** Neovim ships with [lazy.nvim](https://github.com/folke/lazy.nvim) as the most common plugin manager (it bootstraps itself automatically on first launch in many starter configs). Once you have lazy.nvim, add `{ "kylechui/nvim-surround", version = "*", event = "VeryLazy", config = function() require("nvim-surround").setup({}) end }` to your plugin list in `~/.config/nvim/init.lua`, then run `:Lazy sync` and you're done. Note: the Neovim port is [nvim-surround](https://github.com/kylechui/nvim-surround), not Tim Pope's original — the keybindings are the same (`ys`, `ds`, `cs`, `S` in visual mode)._
+
 ### What Is Surround?
 
 | #   | Title | Keys | Description |

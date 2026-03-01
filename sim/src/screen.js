@@ -53,6 +53,8 @@ const THEMES = {
     // Line numbers
     lineNrFg: '4f5258',       // LineNr (dark grey)
     cursorLineNrFg: 'e0e2ea', // CursorLineNr (bright white)
+    // MatchParen – default nvim uses bold+underline only (no fg change)
+    matchParenFg: null,
     // Syntax highlighting – verified against nvim -u NONE + syntax on + termguicolors
     syntax: {
       comment: '9b9ea4',        // Comment           (NvimDarkGrey4)
@@ -97,6 +99,7 @@ const THEMES = {
     // Line numbers
     lineNrFg: 'd4d4d4',          // LineNr (fg=default → terminal default)
     cursorLineNrFg: 'fd971f',    // CursorLineNr (orange)
+    matchParenFg: 'f92672',        // MatchParen (pink)
     // Syntax highlighting – tanvirtin/monokai.nvim palette
     syntax: {
       comment: '9ca0a4',         // Comment
@@ -226,6 +229,21 @@ export class Screen {
       const allLines = buf.lines.slice(0, buf.lineCount);
       const result = hl.tokenizeLines(allLines);
       syntaxTokens = result.tokens;
+    }
+
+    // ── MatchParen highlight setup ──
+    // Neovim highlights the bracket under the cursor and its matching pair.
+    let matchParenA = null; // bracket under cursor {row, col}
+    let matchParenB = null; // matching bracket    {row, col}
+    if (t.matchParenFg && (mode === 'normal' || mode === 'visual' || mode === 'visual_line' || mode === 'insert')) {
+      const curLine = buf.lines[cursor.row] || '';
+      const ch = curLine[cursor.col];
+      if (ch && '([{)]}'.includes(ch)) {
+        matchParenB = this._findMatchingBracket(buf, cursor.row, cursor.col, ch);
+        if (matchParenB) {
+          matchParenA = { row: cursor.row, col: cursor.col };
+        }
+      }
     }
 
     // ── Line number gutter computation ──
@@ -395,6 +413,18 @@ export class Screen {
             for (let sc = Math.max(matchStart, sliceStart); sc <= Math.min(matchEnd, sliceEnd - 1); sc++) {
               colFg[sc - sliceStart] = sFg;
               colBg[sc - sliceStart] = sBg;
+            }
+          }
+        }
+
+        // Apply MatchParen highlight (fg-only, preserves bg)
+        if (matchParenA || matchParenB) {
+          for (const mp of [matchParenA, matchParenB]) {
+            if (mp && mp.row === bufRow) {
+              const scrCol = bufToScreen[mp.col] ?? 0;
+              if (scrCol >= sliceStart && scrCol < sliceEnd) {
+                colFg[scrCol - sliceStart] = t.matchParenFg;
+              }
             }
           }
         }
@@ -618,6 +648,43 @@ export class Screen {
   renderText(engine) {
     const frame = this.render(engine);
     return frame.lines.map(l => l.text);
+  }
+
+  /**
+   * Find the matching bracket for the character at (row, col).
+   * @private
+   * @returns {{row: number, col: number}|null}
+   */
+  _findMatchingBracket(buf, row, col, ch) {
+    const PAIRS = { '(': ')', ')': '(', '[': ']', ']': '[', '{': '}', '}': '{' };
+    const match = PAIRS[ch];
+    if (!match) return null;
+    const forward = '([{'.includes(ch);
+    let depth = 1;
+    if (forward) {
+      let r = row, c = col + 1;
+      while (r < buf.lineCount) {
+        const line = buf.lines[r];
+        while (c < line.length) {
+          if (line[c] === ch) depth++;
+          else if (line[c] === match) { depth--; if (depth === 0) return { row: r, col: c }; }
+          c++;
+        }
+        r++; c = 0;
+      }
+    } else {
+      let r = row, c = col - 1;
+      while (r >= 0) {
+        const line = buf.lines[r];
+        while (c >= 0) {
+          if (line[c] === ch) depth++;
+          else if (line[c] === match) { depth--; if (depth === 0) return { row: r, col: c }; }
+          c--;
+        }
+        r--; if (r >= 0) c = buf.lines[r].length - 1;
+      }
+    }
+    return null;
   }
 
   /** @private */

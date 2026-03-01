@@ -26,6 +26,9 @@ export class Renderer {
     this.charW = Math.ceil(m.width);
     this.charH = Math.ceil(fontSize * 1.4);
     this.padding = 6;
+    this._logicalW = 0;
+    this._logicalH = 0;
+    this._dpr = 0;
   }
 
   /**
@@ -40,14 +43,21 @@ export class Renderer {
 
     const w = pad * 2 + cols * cw;
     const h = pad * 2 + rows * ch;
+    const dpr = window.devicePixelRatio || 1;
 
-    // Resize canvas if needed
-    if (this.canvas.width !== w || this.canvas.height !== h) {
-      this.canvas.width = w;
-      this.canvas.height = h;
+    // Resize canvas if needed (accounting for DPI scale)
+    if (this._logicalW !== w || this._logicalH !== h || this._dpr !== dpr) {
+      this.canvas.width = Math.round(w * dpr);
+      this.canvas.height = Math.round(h * dpr);
+      this.canvas.style.width = w + 'px';
+      this.canvas.style.height = h + 'px';
+      this._logicalW = w;
+      this._logicalH = h;
+      this._dpr = dpr;
     }
 
     const ctx = this.ctx;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.font = `bold ${this.fontSize}px ${FONT_FAMILY}`;
     ctx.textBaseline = 'top';
 
