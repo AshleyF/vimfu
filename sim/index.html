@@ -219,6 +219,7 @@
   <div class="vkb-row" id="vkb-row-2"></div>
   <div class="vkb-row" id="vkb-row-3"></div>
   <div class="vkb-row" id="vkb-row-4"></div>
+  <div class="vkb-row" id="vkb-row-5"></div>
 </div>
 
 <script type="module">
@@ -353,16 +354,19 @@ window.addEventListener('resize', handleResize);
 // ── Virtual Keyboard ──
 const vkbToggle = document.getElementById('vkb-toggle');
 
-// ── Two-page keyboard: ABC and 123 ──
+// ── Two-page keyboard: ABC (with numbers) and 123 (all symbols + arrows) ──
 // Key: string char (auto-expands) or [label, shifted, class, keySend, shiftedSend]
 const PAGES = {
   abc: [
+    // Number row: shift shows standard shifted-digit symbols
+    [['1','!'], ['2','@'], ['3','#'], ['4','$'], ['5','%'],
+     ['6','^'], ['7','&'], ['8','*'], ['9','('], ['0',')']],
     ['q','w','e','r','t','y','u','i','o','p'],
     ['a','s','d','f','g','h','j','k','l'],
     [['⇧','⇧','w15 fn','_shift','_shift'],
      'z','x','c','v','b','n','m',
      ['⌫','⌫','w15 fn','Backspace','Backspace']],
-    [['123','123','w15 fn','_page_num','_page_num'],
+    [['#+=','#+=','w15 fn','_page_num','_page_num'],
      ['Esc','Esc','fn','Escape','Escape'],
      ['Ctrl','Ctrl','fn','_ctrl','_ctrl'],
      ['','','space',' ',' '],
@@ -370,13 +374,21 @@ const PAGES = {
      ['⏎','⏎','w15 fn','Enter','Enter']],
   ],
   num: [
-    [['1','!'], ['2','@'], ['3','#'], ['4','$'], ['5','%'],
-     ['6','^'], ['7','&'], ['8','*'], ['9','('], ['0',')']],
-    [['-','_'], ['=','+'], ['[','{'], [']','}'], ['\\','|'],
-     [';',':'], ["'",'"'], [',','<'], ['.','>'], ['/','?']],
-    [['⇧','⇧','w15 fn','_shift','_shift'],
-     ['`','~'], ['Tab','Tab','fn','Tab','Tab'],
-     ['⌫','⌫','w15 fn','Backspace','Backspace']],
+    // Row 1: shifted-digit symbols (same positions as ABC number row)
+    ['!','@','#','$','%','^','&','*','(', ')'],
+    // Row 2: common Vim/programming symbols
+    ['`','~','-','_','=','+','\\','|','/','?'],
+    // Row 3: brackets and quotes
+    ['[',']','{','}','<','>',';',':','\'','"'],
+    // Row 4: Tab, arrows, delete
+    [['Tab','Tab','fn','Tab','Tab'],
+     ',',
+     ['←','←','fn','ArrowLeft','ArrowLeft'],
+     ['↓','↓','fn','ArrowDown','ArrowDown'],
+     ['↑','↑','fn','ArrowUp','ArrowUp'],
+     ['→','→','fn','ArrowRight','ArrowRight'],
+     ['⌫','⌫','fn','Backspace','Backspace']],
+    // Row 5: controls
     [['ABC','ABC','w15 fn','_page_abc','_page_abc'],
      ['Esc','Esc','fn','Escape','Escape'],
      ['Ctrl','Ctrl','fn','_ctrl','_ctrl'],
@@ -385,7 +397,7 @@ const PAGES = {
   ],
 };
 
-const ROW_IDS = ['vkb-row-1','vkb-row-2','vkb-row-3','vkb-row-4'];
+const ROW_IDS = ['vkb-row-1','vkb-row-2','vkb-row-3','vkb-row-4','vkb-row-5'];
 
 let currentPage = 'abc';
 let shiftActive = false;
@@ -563,10 +575,18 @@ const VKB_KEY = 'vimfu-vkb';
 const savedVKB = localStorage.getItem(VKB_KEY);
 
 function setVKBVisible(show, persist = true) {
+  canvas.style.visibility = 'hidden';          // hide stale frame
   vkb.classList.toggle('visible', show);
   vkbToggle.textContent = show ? '✕' : '⌨';
   if (persist) localStorage.setItem(VKB_KEY, show ? '1' : '0');
-  requestAnimationFrame(handleResize);
+  // Resize synchronously in one rAF so there's no stale-size flash
+  cancelAnimationFrame(resizeRAF);
+  resizeRAF = requestAnimationFrame(() => {
+    const { rows, cols } = computeGridSize();
+    session.resize(rows, cols);
+    onUpdate(session.renderFrame());
+    canvas.style.visibility = '';                // reveal new frame
+  });
 }
 
 vkbToggle.addEventListener('click', () => {
