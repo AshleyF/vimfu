@@ -153,6 +153,16 @@ export class Controller {
     };
     if (specials[e.key]) return specials[e.key];
 
+    // Ctrl combos
+    if (e.ctrlKey && !e.altKey && !e.metaKey && /^[a-z]$/i.test(e.key)) {
+      return 'Ctrl-' + e.key.toUpperCase();
+    }
+
+    // Alt/Meta combos (for completeness / mappability)
+    if ((e.altKey || e.metaKey) && !e.ctrlKey && e.key.length === 1) {
+      return 'Meta-' + e.key;
+    }
+
     // Regular printable character (respect Shift via e.key)
     if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
       return e.key;

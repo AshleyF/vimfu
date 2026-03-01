@@ -122,7 +122,8 @@ export class SessionController {
       if (
         dominated.includes(e.key) ||
         (e.key.length === 1 && !e.altKey && !e.metaKey) ||
-        (e.ctrlKey && /^[a-z]$/i.test(e.key))
+        (e.ctrlKey && /^[a-z]$/i.test(e.key)) ||
+        ((e.altKey || e.metaKey) && !e.ctrlKey && e.key.length === 1)
       ) {
         e.preventDefault();
       }
@@ -189,6 +190,11 @@ export class SessionController {
     if (e.ctrlKey && !e.altKey && !e.metaKey && e.key.startsWith('Arrow')) {
       const dir = e.key.slice(5); // 'ArrowLeft' → 'Left'
       return 'Ctrl-' + dir;
+    }
+
+    // Alt/Meta combos (for completeness / mappability)
+    if ((e.altKey || e.metaKey) && !e.ctrlKey && e.key.length === 1) {
+      return 'Meta-' + e.key;
     }
 
     // Special keys
