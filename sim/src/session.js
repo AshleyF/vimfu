@@ -526,6 +526,44 @@ export class SessionManager {
     this._savedChangeCount = 0;
   }
 
+  /**
+   * Resize the terminal grid.  Propagates to shell, screen, engine, and tmux.
+   * @param {number} rows
+   * @param {number} cols
+   */
+  resize(rows, cols) {
+    if (rows === this.rows && cols === this.cols) return;
+    this.rows = rows;
+    this.cols = cols;
+    this.shell.rows = rows;
+    this.shell.cols = cols;
+    this.shell._textRows = rows - 1;
+    this.screen.rows = rows;
+    this.screen.cols = cols;
+    if (this.engine) {
+      this.engine.rows = rows;
+      this.engine.cols = cols;
+      this.engine._textRows = rows - 2;
+      // Re-clamp scroll / cursor
+      this.engine._ensureCursorVisible();
+    }
+    if (this._tmux) {
+      this._tmux.rows = rows;
+      this._tmux.cols = cols;
+      this._tmux._paneRows = rows - 1;
+      // Resize all windows + panes
+      for (const sess of this._tmux.sessions) {
+        sess.rows = rows;
+        sess.cols = cols;
+        for (const win of sess.windows) {
+          win.rows = rows;
+          win.cols = cols;
+          win.layout.computeLayout(0, 0, cols, rows);
+        }
+      }
+    }
+  }
+
   /** @private – update vim status line with filename */
   _updateVimStatus() {
     // The engine generates its own status line, but we could

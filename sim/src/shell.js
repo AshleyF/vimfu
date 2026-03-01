@@ -85,6 +85,10 @@ export class ShellSim {
     this._viSearchPattern = '';  // last committed search pattern
     this._viSearchDir = 1;       // 1 = forward (/) , -1 = backward (?)
 
+    // Pager (for help, etc.)
+    this._pagerLines = null;  // array of strings when pager is active
+    this._pagerOffset = 0;    // current scroll offset in pager
+
     // Status
     this._exited = false;
   }
@@ -124,6 +128,27 @@ export class ShellSim {
     if (this._exited) return;
     // Ctrl-[ is the terminal equivalent of Escape
     if (key === 'Ctrl-[') key = 'Escape';
+
+    // ── Pager mode (more-style) ──
+    if (this._pagerLines) {
+      if (key === 'q' || key === 'Escape') {
+        this._pagerLines = null;
+        this._pagerOffset = 0;
+      } else {
+        // Any other key: advance one page
+        const pageSize = this.rows - 1; // reserve last row for --more--
+        this._pagerOffset += pageSize;
+        if (this._pagerOffset >= this._pagerLines.length) {
+          // Dump remaining lines to output and exit pager
+          for (const line of this._pagerLines) {
+            this._appendOutput(line);
+          }
+          this._pagerLines = null;
+          this._pagerOffset = 0;
+        }
+      }
+      return;
+    }
 
     // ── Vi history search mode (/ or ? prompt) ──
     if (this._viSearchMode) {
@@ -962,6 +987,29 @@ export class ShellSim {
    * @returns {{ lines: string[], cursor: {row: number, col: number} }}
    */
   getScreen() {
+    // ── Pager mode: show a page of content with --more-- footer ──
+    if (this._pagerLines) {
+      const lines = [];
+      const pageSize = this.rows - 1;
+      for (let r = 0; r < pageSize; r++) {
+        const idx = this._pagerOffset + r;
+        if (idx < this._pagerLines.length) {
+          lines.push(this._pad(this._pagerLines[idx]));
+        } else {
+          lines.push(' '.repeat(this.cols));
+        }
+      }
+      const remaining = this._pagerLines.length - this._pagerOffset - pageSize;
+      if (remaining > 0) {
+        const footer = '-- more -- (press key to continue, q to quit)';
+        lines.push(this._pad(footer));
+      } else {
+        const footer = '-- end -- (press any key)';
+        lines.push(this._pad(footer));
+      }
+      return { lines, cursor: { row: this.rows - 1, col: 0 } };
+    }
+
     const lines = [];
     const totalOutput = this._outputLines.length;
     // Total content = output lines + 1 prompt line
@@ -1042,7 +1090,13 @@ export class ShellSim {
       // Check if this output line starts with the prompt (echoed command)
       const hasPrompt = isInputLine || text.startsWith(promptStr);
 
-      if (hasPrompt && arrowLen + dirLen < this.cols) {
+      // Pager footer: inverted colors
+      if (this._pagerLines && r === this.rows - 1) {
+        frameLines.push({
+          text,
+          runs: [{ n: this.cols, fg: bg, bg: fg }],
+        });
+      } else if (hasPrompt && arrowLen + dirLen < this.cols) {
         // Color: green arrow, cyan dirname, default rest
         const runs = [];
         runs.push({ n: arrowLen, fg: arrowFg, bg, b: true });
@@ -1061,11 +1115,12 @@ export class ShellSim {
 
     // Cursor shape: block in vi-normal and replace mode, beam in insert/emacs
     const cursorShape = (this._viMode && (this._viNormal || this._viReplaceMode)) ? 'block' : 'beam';
+    const cursorVisible = !this._pagerLines;
 
     return {
       rows: this.rows,
       cols: this.cols,
-      cursor: { row: cursor.row, col: cursor.col, visible: true, shape: cursorShape },
+      cursor: { row: cursor.row, col: cursor.col, visible: cursorVisible, shape: cursorShape },
       defaultFg: t.normalFg || 'e0e2ea',
       defaultBg: t.normalBg || '14161b',
       lines: frameLines,
@@ -1499,43 +1554,51 @@ export class ShellSim {
   showWelcome(variant = 'boot') {
     if (variant === 'boot') {
       this._appendOutput('');
-      this._appendOutput('  VimFu — Learn Vim from zero to fluency');
+      this._appendOutput('  VimFu — Learn Vim');
       this._appendOutput('');
-      this._appendOutput('  Type  vim <file>   to launch the editor');
-      this._appendOutput('  Type  help         for a list of commands');
-      this._appendOutput('  Type  ls           to see available files');
+      this._appendOutput('  nvim <file> Launch editor');
+      this._appendOutput('  help        Commands');
+      this._appendOutput('  ls          List files');
       this._appendOutput('');
     } else {
       this._appendOutput('');
-      this._appendOutput('  Tip: vim <file> to edit  \u2502  help for commands  \u2502  ls to list files');
+      this._appendOutput('  vim <file> | help | ls');
       this._appendOutput('');
     }
   }
 
   _cmdHelp() {
     const cmds = [
-      'Available commands:',
-      '  nvim [file]   Open file in Neovim (also: vim, vi)',
-      '  ls            List files',
-      '  cat <file>    Display file contents',
-      '  rm <file>     Remove a file',
-      '  touch <file>  Create empty file',
-      '  cp <s> <d>    Copy a file',
-      '  mv <s> <d>    Move/rename a file',
-      '  echo <text>   Print text (> and >> redirect)',
-      '  wc <file>     Count lines, words, bytes',
-      '  grep <p> <f>  Search for pattern in file',
-      '  sort <file>   Sort lines of a file (-r -n -u)',
-      '  history       Show command history',
-      '  tmux          Start terminal multiplexer (attach, ls)',
-      '  set -o vi     Enable vi-mode editing (set -o emacs to disable)',
-      '  date          Print current date and time',
-      '  clear         Clear screen',
-      '  exit          Exit shell',
-      '  help          Show this help',
+      'Commands:',
+      '',
+      '  nvim [file]  Edit (vim, vi)',
+      '  ls           List files',
+      '  cat <file>   Show contents',
+      '  rm <file>    Remove file',
+      '  touch <file> Create file',
+      '  cp <s> <d>   Copy file',
+      '  mv <s> <d>   Move/rename',
+      '  echo <text>  Print (> >>)',
+      '  wc <file>    Count l/w/b',
+      '  grep <p> <f> Search file',
+      '  sort <file>  Sort (-r -n -u)',
+      '  history      History',
+      '  tmux         Multiplexer',
+      '  set -o vi    Vi-mode editing',
+      '  date         Current date',
+      '  clear        Clear screen',
+      '  exit         Exit shell',
+      '  help         This help',
     ];
-    for (const line of cmds) {
-      this._appendOutput(line);
+    // Use pager if content won't fit on screen
+    const availRows = this.rows - 1; // minus the prompt row that was just echoed
+    if (cmds.length > availRows) {
+      this._pagerLines = cmds;
+      this._pagerOffset = 0;
+    } else {
+      for (const line of cmds) {
+        this._appendOutput(line);
+      }
     }
   }
 

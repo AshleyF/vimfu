@@ -8,14 +8,14 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #1a1a2e;
+    background: #000;
     color: #d4d4d4;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
   }
 
@@ -49,26 +49,15 @@
   .mode-badge.replace  { background: #f78c6c; color: #000; }
   .mode-badge.command  { background: #3c3c3c; color: #d4d4d4; }
 
-  /* ── Terminal scaling container ── */
-  .terminal-scaler {
-    flex: 0 0 auto;
+  /* ── Terminal area (fills remaining space) ── */
+  .terminal-area {
+    flex: 1 1 0;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     overflow: hidden;
-  }
-
-  .terminal-wrapper {
     position: relative;
-    border: 2px solid #333;
-    border-radius: 6px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-    background: #14161b;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transform-origin: top center;
   }
 
   .loading-overlay {
@@ -101,34 +90,12 @@
   }
 
   #terminal {
-    border-radius: 4px;
     cursor: text;
     outline: none;
     opacity: 0;
     transition: opacity 0.3s;
   }
   #terminal.ready { opacity: 1; }
-
-  /* ── Help (hidden on mobile) ── */
-  .help {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-    color: #888;
-    text-align: center;
-    line-height: 1.7;
-    max-width: 900px;
-    flex-shrink: 0;
-  }
-  .help kbd {
-    display: inline-block;
-    background: #333;
-    color: #eee;
-    border: 1px solid #555;
-    border-radius: 3px;
-    padding: 1px 5px;
-    font-family: 'Cascadia Mono', Consolas, monospace;
-    font-size: 0.8rem;
-  }
 
   /* ── Virtual keyboard toggle ── */
   .vkb-toggle {
@@ -213,45 +180,31 @@
   .vkb.shifted .vkb-key .lbl-shift { display: inline; }
 
   @media (min-width: 920px) {
-    body { justify-content: center; padding: 1rem; }
-    .help { display: block; }
-    .vkb-toggle { display: none !important; }
+    body { background: #1a1a2e; justify-content: center; padding: 1rem; }
   }
   @media (max-width: 919px) {
     body { justify-content: flex-start; padding: 0; }
-    .help { display: none; }
+
     .header { padding: 4px 0; }
     h1 { font-size: 1.1rem; }
     .mode-badge { font-size: 0.75rem; padding: 1px 8px; }
-    .terminal-scaler {
-      flex: 1 1 0;
-      align-items: flex-start;
-      background: #14161b;
-    }
-    .terminal-wrapper {
-      border-color: transparent;
-      box-shadow: none;
-      border-radius: 0;
-    }
   }
 
 </style>
 </head>
 <body>
 
-<div class="header">
+<div class="header" id="header">
   <h1>VimFu</h1>
   <div id="mode-badge" class="mode-badge shell">SHELL</div>
 </div>
 
-<div class="terminal-scaler" id="terminal-scaler">
-  <div class="terminal-wrapper" id="terminal-wrapper">
-    <div class="loading-overlay" id="loading">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">Loading terminal…</div>
-    </div>
-    <canvas id="terminal" tabindex="0"></canvas>
+<div class="terminal-area" id="terminal-area">
+  <div class="loading-overlay" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading terminal…</div>
   </div>
+  <canvas id="terminal" tabindex="0"></canvas>
 </div>
 
 <button class="vkb-toggle" id="vkb-toggle" aria-label="Toggle keyboard">⌨</button>
@@ -269,23 +222,41 @@
   <div class="vkb-row" id="vkb-row-space"></div>
 </div>
 
-<div class="help">
-  Type <kbd>help</kbd> at the shell prompt for available commands.
-</div>
-
 <script type="module">
 import { SessionManager }    from './src/session.js';
 import { SessionController } from './src/session_controller.js';
 import { Renderer }          from './src/renderer.js';
 import { SAMPLE_PYTHON }     from './src/samples.js';
 
-const ROWS = 20;
-const COLS = 80;
 const FONT_SIZE = 18;
+const MIN_ROWS = 10;
+const MIN_COLS = 20;
+const MAX_COLS = 80; // cap on wide screens
+const MAX_ROWS = 40;
+
+// ── Renderer (created first to measure character cell size) ──
+const canvas = document.getElementById('terminal');
+const renderer = new Renderer(canvas, { fontSize: FONT_SIZE });
+const { charW, charH, padding: canvasPad } = renderer;
+
+// ── Compute initial terminal dimensions from available space ──
+const header   = document.getElementById('header');
+const termArea = document.getElementById('terminal-area');
+const vkb      = document.getElementById('vkb');
+
+function computeGridSize() {
+  const availW = termArea.clientWidth;
+  const availH = termArea.clientHeight;
+  const cols = Math.max(MIN_COLS, Math.min(MAX_COLS, Math.floor((availW - canvasPad * 2) / charW)));
+  const rows = Math.max(MIN_ROWS, Math.min(MAX_ROWS, Math.floor((availH - canvasPad * 2) / charH)));
+  return { rows, cols };
+}
+
+const initSize = computeGridSize();
 
 const session = new SessionManager({
-  rows: ROWS,
-  cols: COLS,
+  rows: initSize.rows,
+  cols: initSize.cols,
   themeName: 'monokai',
   persist: true,
 });
@@ -310,29 +281,25 @@ if (!session.fs.exists('welcome.md')) {
   session.fs.write('welcome.md', [
     '# Welcome to VimFu',
     '',
-    'Learn Vim — from zero to fluency.',
+    'Learn Vim — zero to fluency.',
     '',
     '## Quick Start',
     '',
-    '- Press `i` to enter Insert mode',
-    '- Press `Esc` to return to Normal mode',
-    '- Type `:w` to save your changes',
-    '- Type `:q` to quit back to the shell',
+    '- Press `i` for Insert mode',
+    '- Press `Esc` for Normal mode',
+    '- Type `:w` to save',
+    '- Type `:q` to quit',
     '',
     '## Explore',
     '',
-    'Try editing this file! When you are done:',
+    'Try editing this file!',
     '',
     '- `:wq` — save and quit',
     '- `:q!` — quit without saving',
     '',
-    '> Tip: type `help` at the shell for more.',
+    '> Tip: `help` at the shell',
   ].join('\n'));
 }
-
-// ── Renderer ──
-const canvas = document.getElementById('terminal');
-const renderer = new Renderer(canvas, { fontSize: FONT_SIZE });
 
 // ── Mode badge ──
 const modeBadge = document.getElementById('mode-badge');
@@ -361,70 +328,30 @@ ctrl.attach(canvas);
 onUpdate(session.renderFrame());
 canvas.classList.add('ready');
 document.getElementById('loading').classList.add('hidden');
+canvas.focus();
 
-// ── Boot sequence: always start in vim ──
+// ── Boot sequence: launch nvim immediately ──
 if (session.mode === 'shell') {
-  // Show banner briefly, then auto-type into vim
   session.shell.showWelcome('boot');
+  session.shell._inputLine = 'nvim welcome.md';
+  session.shell._cursorPos = 15;
+  session.shell.feedKey('Enter');
   onUpdate(session.renderFrame());
-
-  const bootCmd = 'nvim welcome.md';
-  let i = 0;
-  const typeDelay = 60; // ms per character
-  const startDelay = 600; // pause before typing starts
-
-  setTimeout(function typeNext() {
-    if (i < bootCmd.length) {
-      session.shell._inputLine += bootCmd[i];
-      session.shell._cursorPos++;
-      i++;
-      onUpdate(session.renderFrame());
-      setTimeout(typeNext, typeDelay + Math.random() * 40);
-    } else {
-      // Press Enter to launch vim
-      setTimeout(() => {
-        session.shell.feedKey('Enter');
-        onUpdate(session.renderFrame());
-      }, 300);
-    }
-  }, startDelay);
 }
 
-// ── Show tip when returning to shell from vim ──
-const _origExitVim = session._exitVim.bind(session);
-session._exitVim = function() {
-  _origExitVim();
-  session.shell.showWelcome('return');
-};
-
-// ── Terminal scaling ──
-const termWrapper = document.getElementById('terminal-wrapper');
-const termScaler = document.getElementById('terminal-scaler');
-
-function scaleTerminal() {
-  termWrapper.style.transform = 'none';
-  const nativeW = termWrapper.scrollWidth;
-  const nativeH = termWrapper.scrollHeight;
-  const availW = termScaler.clientWidth;
-  const availH = termScaler.clientHeight;
-  // Fit within both dimensions; flex layout controls scaler height
-  const scale = Math.min(availW / nativeW, availH / nativeH);
-  termWrapper.style.transform = `scale(${scale})`;
-}
-
-// On wide screens, let flex layout center naturally
+// ── Dynamic terminal resizing ──
+let resizeRAF = 0;
 function handleResize() {
-  if (window.innerWidth >= 920) {
-    termWrapper.style.transform = 'none';
-  } else {
-    scaleTerminal();
-  }
+  cancelAnimationFrame(resizeRAF);
+  resizeRAF = requestAnimationFrame(() => {
+    const { rows, cols } = computeGridSize();
+    session.resize(rows, cols);
+    onUpdate(session.renderFrame());
+  });
 }
 window.addEventListener('resize', handleResize);
-handleResize();
 
 // ── Virtual Keyboard ──
-const vkb = document.getElementById('vkb');
 const vkbToggle = document.getElementById('vkb-toggle');
 
 // Keyboard layout definition
@@ -609,33 +536,43 @@ vkb.addEventListener('contextmenu', e => e.preventDefault());
 
 // ── Touch/mobile detection ──
 const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-const isNarrow = window.innerWidth < 920;
 
 // Suppress native soft keyboard by using a hidden input trick on touch devices
 if (isTouchDevice) {
   canvas.style.cursor = 'default';
   // Prevent native keyboard from popping up when tapping the canvas
-  canvas.addEventListener('touchstart', e => {
+  // Tap on canvas or the black bezel area toggles VKB
+  const hideFn = e => {
     e.preventDefault();
-    // But still allow the canvas to receive focus for Bluetooth keyboards
     canvas.focus({ preventScroll: true });
+    setVKBVisible(!vkb.classList.contains('visible'));
+  };
+  canvas.addEventListener('touchstart', hideFn);
+  document.getElementById('terminal-area').addEventListener('touchstart', e => {
+    if (e.target === canvas) return; // already handled above
+    hideFn(e);
   });
   // Add inputMode none to suppress soft keyboard even when focused
   canvas.setAttribute('inputmode', 'none');
 }
 
-// Toggle button
-vkbToggle.addEventListener('click', () => {
-  const visible = vkb.classList.toggle('visible');
-  vkbToggle.textContent = visible ? '✕' : '⌨';
-  // Re-scale after the VKB changes height
+// ── VKB visibility with localStorage persistence ──
+const VKB_KEY = 'vimfu-vkb';
+const savedVKB = localStorage.getItem(VKB_KEY);
+
+function setVKBVisible(show, persist = true) {
+  vkb.classList.toggle('visible', show);
+  vkbToggle.textContent = show ? '✕' : '⌨';
+  if (persist) localStorage.setItem(VKB_KEY, show ? '1' : '0');
   requestAnimationFrame(handleResize);
+}
+
+vkbToggle.addEventListener('click', () => {
+  setVKBVisible(!vkb.classList.contains('visible'));
 });
 
-// Show VKB by default on touch + narrow, show toggle on touch + wide
 if (isTouchDevice) {
-  vkb.classList.add('visible');
-  // Move toggle button into the header bar instead of floating overlay
+  // Move toggle button into the header bar
   const header = document.querySelector('.header');
   vkbToggle.style.display = 'flex';
   vkbToggle.style.position = 'static';
@@ -643,9 +580,21 @@ if (isTouchDevice) {
   vkbToggle.style.height = '32px';
   vkbToggle.style.fontSize = '18px';
   header.appendChild(vkbToggle);
-  handleResize();
+
+  // Use saved preference, otherwise default to visible
+  const showVKB = savedVKB !== null ? savedVKB === '1' : true;
+  setVKBVisible(showVKB, false);
+
+  // Auto-detect hardware keyboard: first physical keydown hides VKB
+  if (savedVKB === null) {
+    const detectHardwareKB = () => {
+      setVKBVisible(false); // persists to localStorage
+      window.removeEventListener('keydown', detectHardwareKB);
+    };
+    window.addEventListener('keydown', detectHardwareKB);
+  }
 } else {
-  canvas.focus();
+  // Desktop: no VKB needed
 }
 
 </script>
