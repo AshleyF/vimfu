@@ -121,16 +121,12 @@ export class Controller {
   }
 
   /**
-   * On focus, pre-read the system clipboard into the + register
-   * so it's ready for "+p without any async delay.
+   * On focus, nothing to do — clipboard is read lazily when the
+   * user actually selects the + register (avoids mobile paste prompt).
    * @private
    */
   _onFocus() {
-    if (navigator.clipboard && navigator.clipboard.readText) {
-      navigator.clipboard.readText().then((text) => {
-        this.engine.setClipboardText(text);
-      }).catch(() => {}); // permission denied is fine
-    }
+    // no-op: clipboard read moved to _onKeyDown when "+/"* is pending
   }
 
   /**

@@ -160,14 +160,14 @@ export class SessionController {
   }
 
   /**
-   * On focus, pre-read the system clipboard into the + register.
+   * On focus, wire clipboard callbacks but don't eagerly read —
+   * that triggers a paste-permission prompt on mobile.
    * @private
    */
   _onFocus() {
     const engine = this._getEngine();
     if (engine) {
       this._wireClipboard(engine);
-      this._preReadClipboard();
     }
   }
 
