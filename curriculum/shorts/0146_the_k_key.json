@@ -1,0 +1,283 @@
+{
+  "title": "VimFu — The k Key",
+  "description": "K moves the cursor up one line. The counterpart to J. K for up.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 287,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tower.py .tower.py.swp .tower.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*tower.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "tower.py",
+      "content": "floor = 5\nview = \"sky\"\nwind = \"strong\"\nbirds = 3\nquest = \"Climb the Ancient Tower\"\nlv = 2\ntitle = \"Guardian of Crystal Spire\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim tower.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The k Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "K moves up one line. The opposite of J."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: go to bottom, k up ---"
+    },
+    {
+      "say": "Jump to the last line first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "last line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "On birds. Press K.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Wind. One line up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "View.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Floor. Each K climbs one line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: counted k ---"
+    },
+    {
+      "say": "Use a count. Back to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "last line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Two K.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2k",
+      "overlay": "2 up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Skipped wind. Landed on view."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: column memory ---"
+    },
+    {
+      "say": "Same column trick as J. Go to the last line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "last line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fC",
+      "overlay": "find C"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Cursor is on the C of Crystal. Middle of a long line. K.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Short line. Cursor stopped at the end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "K again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Long line. Cursor jumped right back to the same column. Vim remembers."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "K for up. J down, K up. And Vim always remembers your column."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f tower.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "iXCOvcfmfjI",
+    "url": "https://youtube.com/watch?v=iXCOvcfmfjI"
+  }
+}

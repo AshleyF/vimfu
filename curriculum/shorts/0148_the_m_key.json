@@ -1,0 +1,227 @@
+{
+  "title": "VimFu — The m Key",
+  "description": "M followed by a letter sets a named mark at the cursor position. Jump back anytime with single-quote. M for mark.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 289,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f atlas.py .atlas.py.swp .atlas.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*atlas.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "atlas.py",
+      "content": "city = \"tokyo\"\npop = 14000000\narea = 2194\nrail = \"metro\"\npark = \"ueno\"\nhero = \"samurai\"\nquest = \"find\"\nboss = \"dragon\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim atlas.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The m Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "M sets a mark. A bookmark you can jump back to anytime."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: set mark a, jump away, come back ---"
+    },
+    {
+      "say": "M A. Mark this spot as A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ma",
+      "overlay": "mark a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now go to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "last line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Way down at boss. Single-quote A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'a",
+      "overlay": "jump to a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to city. Right where I marked."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: set mark b on a different line ---"
+    },
+    {
+      "say": "Set another mark. Go to the hero line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5j",
+      "overlay": "5 down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "mb",
+      "overlay": "mark b"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "M B. Now I have two marks.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "go to top"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Single-quote B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'b",
+      "overlay": "jump to b"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Hero line. Marks stick around until you overwrite them."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "M for mark. Set bookmarks anywhere. Single-quote to jump back."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f atlas.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "fIsQN8Jrjm8",
+    "url": "https://youtube.com/watch?v=fIsQN8Jrjm8"
+  }
+}

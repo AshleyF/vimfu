@@ -1,0 +1,233 @@
+{
+  "title": "VimFu — The q Key",
+  "description": "Q starts and stops macro recording. Record a sequence of keystrokes and replay them. Q for record.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 293,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f data.py .data.py.swp .data.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*data.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "data.py",
+      "content": "x = 1\nx = 2\nx = 3\nx = 4"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim data.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The q Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Q starts and stops macro recording. Record your keystrokes, replay them later."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: record a macro ---"
+    },
+    {
+      "say": "Q A. Start recording into register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "qa",
+      "overlay": "record into a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Recording. Every keystroke is captured.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "cw",
+      "overlay": "change word"
+    },
+    {
+      "type": "val"
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.1
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Q to stop.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "q",
+      "overlay": "stop recording"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Macro saved in register A."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: play the macro ---"
+    },
+    {
+      "say": "At A. Play it back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@a",
+      "overlay": "play macro a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same edit. Automatically."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: repeat macro ---"
+    },
+    {
+      "say": "At at repeats the last macro.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@@",
+      "overlay": "repeat macro"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines changed. Record once, replay twice."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Q to record. Q to stop. At to play. Automate anything."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f data.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "Z7WBTSifAd8",
+    "url": "https://youtube.com/watch?v=Z7WBTSifAd8"
+  }
+}

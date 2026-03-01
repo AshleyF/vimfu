@@ -1,0 +1,250 @@
+{
+  "title": "VimFu — The u Key",
+  "description": "U undoes the last change. Step backward through your edit history. U for undo.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 297,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f draft.py .draft.py.swp .draft.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*draft.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "draft.py",
+      "content": "title = \"sunrise\"\nmood = \"calm\"\ntempo = \"slow\"\nkey = \"C major\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim draft.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The u Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "U undoes the last change. Your safety net. Anything you break, U fixes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: dd then u ---"
+    },
+    {
+      "say": "Delete a line. D D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Title line gone. Press U.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back. Like it never happened."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: x then u ---"
+    },
+    {
+      "say": "Any change works. X deletes a character.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "x",
+      "overlay": "delete char"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "M is gone. U.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Mood is whole again."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: multiple undos ---"
+    },
+    {
+      "say": "Multiple undos. Delete two lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Two lines gone. U. U.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both back. Each U steps back one change. Control R to redo."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "U for undo. Your safety net. Experiment without fear."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f draft.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "6gYgaResvvM",
+    "url": "https://youtube.com/watch?v=6gYgaResvvM"
+  }
+}

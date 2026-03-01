@@ -1,0 +1,202 @@
+{
+  "title": "VimFu — The o Key",
+  "description": "O opens a new line below the cursor and drops into insert mode. One key to start a new line. O for open.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 291,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f todo.py .todo.py.swp .todo.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*todo.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "todo.py",
+      "content": "task = \"clean\"\ndone = False\nprio = \"high\"\ndue = \"friday\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim todo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The o Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "O opens a new line below the cursor and enters insert mode. One key to start typing on a fresh line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: o to open below ---"
+    },
+    {
+      "say": "Cursor on task. Press O.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o",
+      "overlay": "open below"
+    },
+    {
+      "type": "note = \"urgent\""
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "New line appeared below. Typed the note and escaped back to normal."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: o on a different line ---"
+    },
+    {
+      "say": "Works on any line. Move to prio.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o",
+      "overlay": "open below"
+    },
+    {
+      "type": "tag = \"work\""
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Inserted between prio and due. O always opens below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: mention O (capital) ---"
+    },
+    {
+      "say": "Capital O opens above instead. Same idea, opposite direction."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "O for open. A new line, instant insert mode. One of the fastest ways to add code."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f todo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "Ds1vQYtA8nc",
+    "url": "https://youtube.com/watch?v=Ds1vQYtA8nc"
+  }
+}

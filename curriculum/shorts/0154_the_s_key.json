@@ -1,0 +1,234 @@
+{
+  "title": "VimFu — The s Key",
+  "description": "S deletes the character under the cursor and enters insert mode. Quick single-character substitution. S for substitute.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 295,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tag.py .tag.py.swp .tag.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*tag.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "tag.py",
+      "content": "x = 5\nhp = 9\ntag = \"old\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim tag.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The s Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "S substitutes. It deletes the character under your cursor and drops you into insert mode. Replace and keep typing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: one char becomes two different chars ---"
+    },
+    {
+      "say": "Variable X should be P I. Cursor is on X. Press S.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "s",
+      "overlay": "substitute"
+    },
+    {
+      "type": "pi"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "X became P I. S deleted the character and let me type the replacement."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: digit becomes two digits ---"
+    },
+    {
+      "say": "H P is nine. Should be ten.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "+f9",
+      "overlay": "find 9"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "S on the nine.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "s",
+      "overlay": "substitute"
+    },
+    {
+      "type": "10"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Nine became ten. One digit replaced by two."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: counted s ---"
+    },
+    {
+      "say": "Use a count. Three S to delete three characters at once.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "+fo",
+      "overlay": "find o"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "3s",
+      "overlay": "3 substitute"
+    },
+    {
+      "type": "new"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three S deleted O L D and dropped into insert mode. Typed new."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "S for substitute. Deletes and enters insert. Perfect when one character needs to become something different."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f tag.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "Op24FGNgn1U",
+    "url": "https://youtube.com/watch?v=Op24FGNgn1U"
+  }
+}

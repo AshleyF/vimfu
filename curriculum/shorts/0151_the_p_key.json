@@ -1,0 +1,220 @@
+{
+  "title": "VimFu — The p Key",
+  "description": "P puts text after the cursor. Whatever you deleted or yanked goes right back in. P for put.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 292,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f deck.py .deck.py.swp .deck.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*deck.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "deck.py",
+      "content": "ace = 11\nking = 10\nqueen = 10\njack = 10"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim deck.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The p Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "P puts text after the cursor. Delete or yank something, then P brings it back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: dd then p to move a line ---"
+    },
+    {
+      "say": "Delete the ace line. D D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Gone. Now move down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "P to put it here.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "put after"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Ace moved below queen. D D cuts, P pastes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: yy then p to duplicate ---"
+    },
+    {
+      "say": "Y Y copies a line. P puts a duplicate below.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "put after"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two aces. Y Y copies, P duplicates."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "P for put. Paste after the cursor. Capital P pastes before."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f deck.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "3nRdJ0cgmvM",
+    "url": "https://youtube.com/watch?v=3nRdJ0cgmvM"
+  }
+}

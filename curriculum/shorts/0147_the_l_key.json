@@ -1,0 +1,215 @@
+{
+  "title": "VimFu — The l Key",
+  "description": "L moves the cursor one character to the right. The rightmost home row motion. L for right.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 288,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f trail.py .trail.py.swp .trail.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*trail.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "trail.py",
+      "content": "name = \"river\"\ndepth = 4\nflow = \"east\"\nfish = \"trout\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim trail.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The l Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "L moves right. One character at a time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: l one at a time ---"
+    },
+    {
+      "say": "Cursor is on N. Press L.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "l",
+      "overlay": "right"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "l",
+      "overlay": "right"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "l",
+      "overlay": "right"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three characters right. On the E of name."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: counted l ---"
+    },
+    {
+      "say": "Go to the next line. Use a count. Five L.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "5l",
+      "overlay": "5 right"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped five. Landed on the four."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: l at end of line ---"
+    },
+    {
+      "say": "L stops at the end of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "l",
+      "overlay": "right"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Nothing. Already at the last character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "L for right. H left, L right. Keep your fingers on the home row."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f trail.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "TYNiw23ucWU",
+    "url": "https://youtube.com/watch?v=TYNiw23ucWU"
+  }
+}

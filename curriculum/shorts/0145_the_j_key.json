@@ -1,0 +1,269 @@
+{
+  "title": "VimFu — The j Key",
+  "description": "J moves the cursor down one line. Stay on the home row. J for down.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 286,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f climb.py .climb.py.swp .climb.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*climb.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "climb.py",
+      "content": "level = 1\nhealth = 100\narmor = \"iron\"\nweapon = \"sword\"\ntitle = \"The Hero Arrives at Dawn\"\nhp = 5\nquest = \"The Quest Begins at Dawn\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim climb.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The j Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "J moves the cursor down one line. Straight down, same column."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: j one at a time ---"
+    },
+    {
+      "say": "Cursor is on level. Press J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Health. One line down."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Armor.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Weapon. Each J drops one line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: counted j ---"
+    },
+    {
+      "say": "Use a count. Back to the top first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "go to top"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Three J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j",
+      "overlay": "3 down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped three lines. Landed on weapon."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: column memory ---"
+    },
+    {
+      "say": "Here's a subtlety. Go to the title line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5G",
+      "overlay": "line 5"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fH",
+      "overlay": "find H"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Cursor is on the H. Middle of a long line. Now J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Short line. Cursor had to stop at the end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "But press J again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Long line again. And look. The cursor jumped right back to the same column. Vim remembers where you were."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "J for down. Home row navigation. And Vim always remembers your column."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f climb.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "sRd9Hr_7v8c",
+    "url": "https://youtube.com/watch?v=sRd9Hr_7v8c"
+  }
+}

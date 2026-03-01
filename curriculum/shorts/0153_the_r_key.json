@@ -1,0 +1,215 @@
+{
+  "title": "VimFu — The r Key",
+  "description": "R replaces the character under the cursor with one keystroke. Stay in normal mode. R for replace.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 294,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spell.py .spell.py.swp .spell.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spell.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "spell.py",
+      "content": "fire = 10\nice = 8\nwind = 12\nrock = 6"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spell.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The r Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "R replaces one character. Swap a single character without entering insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: capitalize first letter ---"
+    },
+    {
+      "say": "Cursor on lowercase F. R capital F.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "rF",
+      "overlay": "replace F"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Fire is now capital F. One keystroke."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: replace on next line ---"
+    },
+    {
+      "say": "Next line. Same thing.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "rI",
+      "overlay": "replace I"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Ice with a capital I. Still in normal mode. No escape needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: counted r ---"
+    },
+    {
+      "say": "Use a count. Jump to rock.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Three R X. Replace three characters with X.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3rx",
+      "overlay": "3 replace x"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "R O C became X X X. Counted replace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "R for replace. One character, one keystroke, stays in normal mode."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spell.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "iHnCOG0Srs0",
+    "url": "https://youtube.com/watch?v=iHnCOG0Srs0"
+  }
+}

@@ -122,6 +122,11 @@ Special: `cw` on a word behaves like `ce` (doesn't include trailing space). `dw`
 | `p` | ✅ | Put after cursor (linewise: below) |
 | `P` | ✅ | Put before cursor (linewise: above) |
 
+**Cursor placement after put:** When putting characterwise text (e.g. from `yw`,
+`d$`, `x`), the cursor lands at the **end** of the pasted text. When putting
+linewise text (e.g. from `yy`, `dd`), the cursor lands at the **beginning**
+(first non-blank) of the pasted block. This applies to both `p` and `P`.
+
 ### Enter Insert Mode
 
 | Key | Count | Description |

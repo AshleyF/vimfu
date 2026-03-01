@@ -1,0 +1,194 @@
+{
+  "title": "VimFu — The n Key",
+  "description": "N jumps to the next match after a search. Repeat your search without retyping it. N for next.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 290,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f log.py .log.py.swp .log.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*log.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "log.py",
+      "content": "info = \"starting\"\nerr = \"disk full\"\nwarn = \"low mem\"\nerr = \"timeout\"\ninfo = \"all clear\"\nerr = \"not found\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim log.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The n Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "N repeats the last search. Hop from match to match without retyping."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: search then n ---"
+    },
+    {
+      "say": "First, search for something. Slash E R R.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/",
+      "overlay": "search"
+    },
+    {
+      "type": "err"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Found the first error. Now press N."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "next match"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Timeout. Next match."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "next match"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Not found. N hops through every match in the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: N goes backward ---"
+    },
+    {
+      "say": "Capital N goes backward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "N",
+      "overlay": "previous match"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to timeout. Capital N reverses direction."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "N for next. Search once, N as many times as you need."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f log.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "QRIyR09eeRY",
+    "url": "https://youtube.com/watch?v=QRIyR09eeRY"
+  }
+}
