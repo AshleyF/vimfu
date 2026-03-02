@@ -111,6 +111,7 @@
     flex-shrink: 0;
     -webkit-user-select: none;
     user-select: none;
+    -webkit-touch-callout: none;
     touch-action: manipulation;
   }
   .vkb.visible { display: flex; }
@@ -135,6 +136,8 @@
     justify-content: center;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: none;
     transition: background 0.08s;
     overflow: hidden;
     white-space: nowrap;
@@ -309,25 +312,27 @@ canvas.classList.add('ready');
 document.getElementById('loading').classList.add('hidden');
 
 // ── Focus management ──
-// Click anywhere on the terminal wrapper to focus the canvas (desktop)
-termArea.addEventListener('mousedown', () => {
-  canvas.focus({ preventScroll: true });
-});
-// Try programmatic focus at several timing points (browsers are fickle).
+// Best-effort programmatic focus (works when browser allows it).
 canvas.focus();
 requestAnimationFrame(() => canvas.focus());
-setTimeout(() => canvas.focus(), 0);
-setTimeout(() => canvas.focus(), 120);
-window.addEventListener('load', () => canvas.focus(), { once: true });
-// Last resort: if the browser blocked all the above (no "user activation"),
-// steal focus on the very first click or keydown *anywhere* on the page.
-function grabFocus() {
-  canvas.focus({ preventScroll: true });
-  document.removeEventListener('mousedown', grabFocus, true);
-  document.removeEventListener('keydown', grabFocus, true);
+// Document-level keyboard fallback: if the canvas doesn't have focus
+// (e.g. right after a refresh before the user clicks), forward the
+// keydown directly to the controller so keystrokes are never lost.
+document.addEventListener('keydown', e => {
+  if (document.activeElement === canvas) return;   // canvas handler has it
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  ctrl._onKeyDown(e);
+  canvas.focus({ preventScroll: true });           // grab focus for next time
+}, true);
+// Desktop-only: click anywhere on terminal area → focus canvas.
+// (Touch devices handle focus inside their own touchstart → VKB toggle logic,
+//  so we must NOT add mousedown listeners that would interfere.)
+const _isTouchDev = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+if (!_isTouchDev) {
+  termArea.addEventListener('mousedown', () => {
+    canvas.focus({ preventScroll: true });
+  });
 }
-document.addEventListener('mousedown', grabFocus, true);
-document.addEventListener('keydown', grabFocus, true);
 
 // ── Boot sequence: launch nvim immediately ──
 if (session.mode === 'shell') {
@@ -571,8 +576,11 @@ vkb.addEventListener('pointerleave', e => {
   if (btn) btn.classList.remove('pressed');
 });
 
-// Prevent any context menus or text selection on the keyboard
+// Prevent any context menus, text selection, or copy popups on the keyboard
 vkb.addEventListener('contextmenu', e => e.preventDefault());
+vkb.addEventListener('selectstart', e => e.preventDefault());
+vkb.addEventListener('dblclick', e => e.preventDefault());
+vkb.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
 
 // ── Touch/mobile detection ──
 const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
@@ -591,6 +599,19 @@ if (isTouchDevice) {
   document.getElementById('terminal-area').addEventListener('touchstart', e => {
     if (e.target === canvas) return; // already handled above
     hideFn(e);
+  });
+  // Hybrid device support: also handle mouse clicks (e.g. Windows
+  // laptops with touchscreen where the user uses a mouse).
+  // On pure-touch, touchstart's preventDefault() suppresses the click
+  // event, so this won't double-fire.
+  const clickToggle = () => {
+    canvas.focus({ preventScroll: true });
+    setVKBVisible(!vkb.classList.contains('visible'));
+  };
+  canvas.addEventListener('click', clickToggle);
+  document.getElementById('terminal-area').addEventListener('click', e => {
+    if (e.target === canvas) return;
+    clickToggle();
   });
   // Add inputMode none to suppress soft keyboard even when focused
   canvas.setAttribute('inputmode', 'none');
