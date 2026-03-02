@@ -211,6 +211,12 @@ export class Screen {
           visER = vs.row; visEC = vs.col;
         }
       }
+    } else if (mode === 'normal' && engine._ysRange) {
+      // Show visual highlight for pending ys surround range
+      const r = engine._ysRange;
+      visMode = 'char';
+      visSR = r.sr; visSC = r.sc;
+      visER = r.er; visEC = r.ec - 1; // ec is exclusive in _ysRange
     }
 
     // ── Compute search matches on visible lines ──

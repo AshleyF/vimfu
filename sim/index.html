@@ -307,7 +307,27 @@ ctrl.attach(canvas);
 onUpdate(session.renderFrame());
 canvas.classList.add('ready');
 document.getElementById('loading').classList.add('hidden');
+
+// ── Focus management ──
+// Click anywhere on the terminal wrapper to focus the canvas (desktop)
+termArea.addEventListener('mousedown', () => {
+  canvas.focus({ preventScroll: true });
+});
+// Try programmatic focus at several timing points (browsers are fickle).
 canvas.focus();
+requestAnimationFrame(() => canvas.focus());
+setTimeout(() => canvas.focus(), 0);
+setTimeout(() => canvas.focus(), 120);
+window.addEventListener('load', () => canvas.focus(), { once: true });
+// Last resort: if the browser blocked all the above (no "user activation"),
+// steal focus on the very first click or keydown *anywhere* on the page.
+function grabFocus() {
+  canvas.focus({ preventScroll: true });
+  document.removeEventListener('mousedown', grabFocus, true);
+  document.removeEventListener('keydown', grabFocus, true);
+}
+document.addEventListener('mousedown', grabFocus, true);
+document.addEventListener('keydown', grabFocus, true);
 
 // ── Boot sequence: launch nvim immediately ──
 if (session.mode === 'shell') {

@@ -581,7 +581,9 @@ export class VimEngine {
               } else {
                 sr = ysStartPos.row; sc = ysStartPos.col; er = endPos.row; ec = endPos.col;
               }
-              ec++; // f is inclusive
+              // f/t are inclusive (include found char); for backward F/T, don't include the start pos char
+              const isForward = endPos.row > ysStartPos.row || (endPos.row === ysStartPos.row && endPos.col >= ysStartPos.col);
+              if (isForward) ec++;
               this.cursor = { ...ysStartPos };
               this._ysRange = { sr, sc, er, ec, dotKeys: ['y', 's', type, key] };
             }
@@ -708,11 +710,16 @@ export class VimEngine {
         const range = this._getTextObject(objType, key);
         if (range) {
           const dotKeys = ['y', 's', objType, key];
-          this._ysRange = {
-            sr: range.startRow, sc: range.startCol,
-            er: range.endRow, ec: range.endCol,
-            dotKeys,
-          };
+          let sr = range.startRow, sc = range.startCol, er = range.endRow, ec = range.endCol;
+          // Trim trailing whitespace from range (nvim-surround trims before wrapping)
+          if (sr === er) {
+            const line = this.buffer.lines[sr];
+            while (ec > sc && (line[ec - 1] === ' ' || line[ec - 1] === '\t')) ec--;
+          } else {
+            const eline = this.buffer.lines[er];
+            while (ec > 0 && (eline[ec - 1] === ' ' || eline[ec - 1] === '\t')) ec--;
+          }
+          this._ysRange = { sr, sc, er, ec, dotKeys };
         }
         this._pendingOp = '';
         this._pendingCount = '';
@@ -798,6 +805,11 @@ export class VimEngine {
           } else {
             sr = ysStartPos.row; sc = ysStartPos.col; er = endPos.row; ec = endPos.col;
           }
+          // If word motion overshot to start of next line, clamp to end of start line
+          if (er > sr && ec === 0 && (key === 'w' || key === 'W')) {
+            er = sr;
+            ec = this.buffer.lines[sr].length;
+          }
           // For inclusive motions (e, $, f), include the endpoint char
           if (this._motionInclusive) ec++;
           // Restore cursor to start for ys
@@ -805,6 +817,14 @@ export class VimEngine {
           const dotKeys = ['y', 's'];
           if (motionCountStr) for (const ch of motionCountStr) dotKeys.push(ch);
           dotKeys.push(key);
+          // Trim trailing whitespace from range (nvim-surround trims before wrapping)
+          if (sr === er) {
+            const line = this.buffer.lines[sr];
+            while (ec > sc && (line[ec - 1] === ' ' || line[ec - 1] === '\t')) ec--;
+          } else {
+            const eline = this.buffer.lines[er];
+            while (ec > 0 && (eline[ec - 1] === ' ' || eline[ec - 1] === '\t')) ec--;
+          }
           this._ysRange = { sr, sc, er, ec, dotKeys };
         }
         this._pendingOp = ''; this._pendingCount = '';
@@ -2538,7 +2558,10 @@ export class VimEngine {
       this.cursor = savedCursor;
       if (vs.wasLinewise) {
         // Linewise visual S: place surround on separate lines
-        const { open, close } = this._getSurroundPair(key);
+        let { open, close } = this._getSurroundPair(key);
+        // For linewise mode, strip padding spaces from open/close (e.g. '( ' → '(')
+        open = open.trim();
+        close = close.trim();
         // Insert closing delimiter line after selected lines
         this.buffer.lines.splice(vs.er + 1, 0, close);
         // Insert opening delimiter line before selected lines
@@ -4438,7 +4461,16 @@ export class VimEngine {
         }
       }
     }
-    if (!found) return null;
+    if (!found) {
+      // Vim/nvim behavior: search forward on current line for next bracket pair
+      const fLine = this.buffer.lines[this.cursor.row];
+      for (let c = this.cursor.col + 1; c < fLine.length; c++) {
+        if (fLine[c] === open) {
+          sr = this.cursor.row; sc = c; found = true; break;
+        }
+      }
+      if (!found) return null;
+    }
     depth = 0; let er = -1, ec = -1; found = false;
     outer2:
     for (let r = sr; r < this.buffer.lineCount; r++) {
