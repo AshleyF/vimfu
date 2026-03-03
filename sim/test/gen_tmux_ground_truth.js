@@ -752,6 +752,420 @@ addCase('tmux_window_list', () => {
 });
 
 // ───────────────────────────────────────────────────────────
+// Shell exit in tmux panes
+// ───────────────────────────────────────────────────────────
+
+addCase('tmux_exit_one_vsplit_pane', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  // Active pane is right; exit it
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Exit right pane in vsplit — back to single pane',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_exit_original_vsplit_pane', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  feedString(s, 'echo LEFT');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  feedString(s, 'echo RIGHT');
+  s.feedKey('Enter');
+  // Navigate to left pane and exit it
+  s.feedKey('Ctrl-B');
+  s.feedKey('ArrowLeft');
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Exit left pane — right pane survives with its content',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_exit_one_hsplit_pane', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('"');
+  feedString(s, 'echo BOTTOM');
+  s.feedKey('Enter');
+  // Exit bottom pane
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Exit bottom pane in hsplit — back to single pane',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_exit_last_pane_detaches', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  // Exit the only pane — tmux should detach
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Exit only pane — tmux detaches, back to top-level shell',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_ctrld_exit_pane', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  // Ctrl-D on empty line exits
+  s.feedKey('Ctrl-D');
+  return {
+    description: 'Ctrl-D on empty line exits pane — back to single pane',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_ctrld_last_pane_detaches', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  // Ctrl-D on the only pane — tmux detaches
+  s.feedKey('Ctrl-D');
+  return {
+    description: 'Ctrl-D on only pane — tmux detaches, back to shell',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_exit_three_panes_to_two', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  s.feedKey('Ctrl-B');
+  s.feedKey('"');
+  // Now 3 panes: left, top-right (active), bottom-right
+  // Active is bottom-right; exit it
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Three panes → exit active → two panes remain',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_exit_three_panes_to_one', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  s.feedKey('Ctrl-B');
+  s.feedKey('"');
+  // Exit bottom-right pane
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  // Now 2 panes (left + right). Exit right pane.
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Three panes → exit two → single pane remains',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Top-level shell exit refusal
+// ───────────────────────────────────────────────────────────
+
+addCase('tmux_toplevel_exit_refused', () => {
+  const s = newSession();
+  // At top-level shell (not in tmux), type exit
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Top-level shell refuses exit — shows hint message',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_toplevel_ctrld_ignored', () => {
+  const s = newSession();
+  // At top-level shell, Ctrl-D on empty line should be ignored
+  s.feedKey('Ctrl-D');
+  return {
+    description: 'Ctrl-D on top-level shell is ignored — shell still active',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Vim launch/quit inside tmux panes
+// ───────────────────────────────────────────────────────────
+
+addCase('tmux_vim_quit_returns_to_pane', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  // Launch vim in right pane
+  feedString(s, 'vim test.txt');
+  s.feedKey('Enter');
+  // Quit vim
+  s.feedKey(':');
+  feedString(s, 'q');
+  s.feedKey('Enter');
+  return {
+    description: 'Vim quit returns to shell within the tmux pane',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_vim_in_left_shell_in_right', () => {
+  const s = newSession();
+  s.fs.write('code.txt', 'line 1\nline 2');
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  feedString(s, 'vim code.txt');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  feedString(s, 'echo hello');
+  s.feedKey('Enter');
+  return {
+    description: 'Vim in left pane, shell output in right pane',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_vim_quit_then_exit_pane', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  // Launch and quit vim in right pane
+  feedString(s, 'vim test.txt');
+  s.feedKey('Enter');
+  s.feedKey(':');
+  feedString(s, 'q');
+  s.feedKey('Enter');
+  // Then exit the shell in that pane
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Quit vim then exit pane — back to single pane',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_vim_wq_shell_exit', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  // Edit and save in right pane
+  feedString(s, 'vim notes.txt');
+  s.feedKey('Enter');
+  s.feedKey('i');
+  feedString(s, 'saved text');
+  s.feedKey('Escape');
+  s.feedKey(':');
+  feedString(s, 'wq');
+  s.feedKey('Enter');
+  // Now exit the pane
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'vim :wq then shell exit — single pane with saved file',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Exit pane in multi-window scenarios
+// ───────────────────────────────────────────────────────────
+
+addCase('tmux_exit_last_pane_in_second_window', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  feedString(s, 'echo WIN0');
+  s.feedKey('Enter');
+  // Create second window
+  s.feedKey('Ctrl-B');
+  s.feedKey('c');
+  feedString(s, 'echo WIN1');
+  s.feedKey('Enter');
+  // Exit the only pane in window 1 — should close window, go back to window 0
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Exit only pane in window 1 → window closes, window 0 shown',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_exit_split_pane_in_second_window', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  // Create second window and split it
+  s.feedKey('Ctrl-B');
+  s.feedKey('c');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  feedString(s, 'echo W1_RIGHT');
+  s.feedKey('Enter');
+  // Exit right pane — window 1 still exists with left pane
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Exit one split pane in window 1 — window 1 survives with one pane',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Detach and reattach after pane operations
+// ───────────────────────────────────────────────────────────
+
+addCase('tmux_detach_reattach_after_split', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  feedString(s, 'echo SPLIT_RIGHT');
+  s.feedKey('Enter');
+  // Detach
+  s.feedKey('Ctrl-B');
+  s.feedKey('d');
+  // Reattach
+  feedString(s, 'tmux attach');
+  s.feedKey('Enter');
+  return {
+    description: 'Detach and reattach preserves split layout and content',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_detach_reattach_after_exit', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  // Exit one pane
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  // Detach
+  s.feedKey('Ctrl-B');
+  s.feedKey('d');
+  // Reattach
+  feedString(s, 'tmux attach');
+  s.feedKey('Enter');
+  return {
+    description: 'After closing a pane, detach+reattach shows remaining pane',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Shell responsiveness after exit refusal
+// ───────────────────────────────────────────────────────────
+
+addCase('tmux_toplevel_exit_then_use_shell', () => {
+  const s = newSession();
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  // Shell should still be functional
+  feedString(s, 'echo still here');
+  s.feedKey('Enter');
+  return {
+    description: 'After refused exit, shell still accepts commands',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_toplevel_exit_then_launch_tmux', () => {
+  const s = newSession();
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  // Launch tmux after refused exit
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  return {
+    description: 'After refused exit, can launch tmux normally',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
+// Exit after various operations
+// ───────────────────────────────────────────────────────────
+
+addCase('tmux_exit_after_zoom_unzoom', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  // Zoom right pane
+  s.feedKey('Ctrl-B');
+  s.feedKey('z');
+  // Unzoom
+  s.feedKey('Ctrl-B');
+  s.feedKey('z');
+  // Exit the right pane
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Exit pane after zoom/unzoom — back to single pane',
+    frame: snap(s),
+  };
+});
+
+addCase('tmux_exit_after_navigate', () => {
+  const s = newSession();
+  feedString(s, 'tmux');
+  s.feedKey('Enter');
+  feedString(s, 'echo PANE_A');
+  s.feedKey('Enter');
+  s.feedKey('Ctrl-B');
+  s.feedKey('%');
+  feedString(s, 'echo PANE_B');
+  s.feedKey('Enter');
+  // Navigate left, right, left
+  s.feedKey('Ctrl-B');
+  s.feedKey('ArrowLeft');
+  s.feedKey('Ctrl-B');
+  s.feedKey('ArrowRight');
+  s.feedKey('Ctrl-B');
+  s.feedKey('ArrowLeft');
+  // Exit left pane (PANE_A)
+  feedString(s, 'exit');
+  s.feedKey('Enter');
+  return {
+    description: 'Navigate between panes then exit — remaining pane takes over',
+    frame: snap(s),
+  };
+});
+
+// ───────────────────────────────────────────────────────────
 // Save and finish
 // ───────────────────────────────────────────────────────────
 

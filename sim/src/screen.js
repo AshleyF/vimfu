@@ -81,7 +81,7 @@ const THEMES = {
     // Verified against tanvirtin/monokai.nvim with bg override to #000000
     normalFg: 'd4d4d4',
     normalBg: '000000',
-    tildeFg: '000000',          // EndOfBuffer – hidden (black on black)
+    tildeFg: '5c5cff',          // EndOfBuffer – blue (matches real vim)
     tildeBg: '000000',
     statusFg: 'b1b1b1',
     statusBg: '2e323c',
@@ -141,6 +141,9 @@ export class Screen {
     this.rows = rows;
     this.cols = cols;
     this.theme = THEMES[themeName] || THEMES.monokai;
+    // When false, mimics vim with laststatus=1 (single window):
+    // no separate status line, ruler shown on command line.
+    this.showStatusLine = true;
   }
 
   /**
@@ -155,8 +158,9 @@ export class Screen {
     const cursor = engine.cursor;
     const mode = engine.mode;
 
-    // Neovim uses rows-2 for the text area (1 status, 1 command/msg line)
-    const textRows = this.rows - 2;
+    // When showStatusLine is true (nvim / laststatus=2): rows-2 for text, 1 status, 1 command
+    // When showStatusLine is false (vim / laststatus=1): rows-1 for text, 1 command
+    const textRows = this.showStatusLine ? this.rows - 2 : this.rows - 1;
     const lines = [];
 
     // Compute the viewport window (scroll offset)
@@ -511,21 +515,34 @@ export class Screen {
       screenRow++;
     }
 
-    // ── Status line (row rows-2) ──
-    const statusText = this._padOrTruncate(
-      engine.statusLine ?? '',
-      this.cols
-    );
-    lines.push({
-      text: statusText,
-      runs: [{ n: this.cols, fg: t.statusFg, bg: t.statusBg }],
-    });
+    // ── Status line (row rows-2) — only when showStatusLine is true ──
+    if (this.showStatusLine) {
+      const statusText = this._padOrTruncate(
+        engine.statusLine ?? '',
+        this.cols
+      );
+      lines.push({
+        text: statusText,
+        runs: [{ n: this.cols, fg: t.statusFg, bg: t.statusBg }],
+      });
+    }
 
     // ── Command / message line (row rows-1) ──
-    const cmdText = this._padOrTruncate(
-      engine.commandLine ?? '',
-      this.cols
-    );
+    // When showStatusLine is false (vim laststatus=1), merge the ruler from
+    // statusLine onto the right side of the command line.
+    let rawCmd = engine.commandLine ?? '';
+    if (!this.showStatusLine) {
+      const ruler = (engine.statusLine ?? '').trim();
+      if (ruler && !rawCmd) {
+        // Show ruler right-aligned on the command line
+        rawCmd = ' '.repeat(Math.max(0, this.cols - ruler.length)) + ruler;
+      } else if (ruler && rawCmd) {
+        // Show command on left, ruler on right
+        const gap = Math.max(1, this.cols - rawCmd.length - ruler.length);
+        rawCmd = rawCmd + ' '.repeat(gap) + ruler;
+      }
+    }
+    const cmdText = this._padOrTruncate(rawCmd, this.cols);
     // Recording indicator gets special color (green in nvim_default)
     if (t.recordingFg && engine._macroRecording && engine.mode === 'normal'
         && (engine.commandLine ?? '').startsWith('recording @')) {

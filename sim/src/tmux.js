@@ -187,6 +187,10 @@ class TmuxPane {
     // Each pane has its own independent SessionManager (injected)
     this.session = session;
 
+    // Vim in tmux uses laststatus=1: no status line for single window.
+    // This gives one extra row to the buffer area (rows-1 vs rows-2).
+    this.session.screen.showStatusLine = false;
+
     // Copy mode scrollback
     this._copyModeScroll = 0;
     this._copyModeCursor = { row: 0, col: 0 };
@@ -219,7 +223,12 @@ class TmuxPane {
     if (this.session.engine) {
       this.session.engine.rows = newHeight;
       this.session.engine.cols = newWidth;
-      this.session.engine._textRows = newHeight - 2;
+      this.session.engine._textRows = newHeight - (this.session.screen.showStatusLine ? 2 : 1);
+      // Clear sticky command line on resize (real vim clears initial file
+      // message when the terminal is resized, e.g., by tmux split)
+      this.session.engine._stickyCommandLine = false;
+      this.session.engine.commandLine = '';
+      this.session.engine._updateStatus();
     }
   }
 
@@ -714,6 +723,11 @@ export class Tmux {
     /** Whether we are detached (signals to SessionManager to exit tmux) */
     this.detached = false;
 
+    /** Whether tmux exited because all panes/windows/sessions closed
+     *  (as opposed to a detach via Ctrl-B d).  Real tmux prints "[exited]"
+     *  in this case rather than "[detached (from session X)]". */
+    this.exited = false;
+
     // Create first session
     this._createSession('0');
   }
@@ -891,11 +905,12 @@ export class Tmux {
       this._mode = TmuxMode.PREFIX;
       return;
     }
-    // Forward to active pane
-    if (this.activePane) {
-      this.activePane.feedKey(key);
+    // Capture pane reference before forwarding key (defensive)
+    const pane = this.activePane;
+    if (pane) {
+      pane.feedKey(key);
       // Check if the pane's shell exited (like real tmux)
-      this._checkPaneExited(this.activePane);
+      this._checkPaneExited(pane);
     }
   }
 
@@ -915,6 +930,10 @@ export class Tmux {
     if (!win) return;
 
     const panes = win.getPanes();
+
+    // Guard: verify this pane is actually in the current window
+    if (!panes.includes(pane)) return;
+
     if (panes.length > 1) {
       // Close the pane, remaining panes fill the space
       win.closePane(pane);
@@ -924,8 +943,9 @@ export class Tmux {
       if (sess.windows.length > 1) {
         sess.closeWindow(sess.activeWindowIndex);
       } else {
-        // Last window in session — detach (exit tmux)
+        // Last window in session — exit tmux (all panes dead)
         this.detached = true;
+        this.exited = true;
       }
     }
   }
@@ -1488,7 +1508,13 @@ export class Tmux {
 
   _enterCopyMode() {
     this._mode = TmuxMode.COPY;
-    this._copyCursor = { row: 0, col: 0 };
+    // Start the copy cursor at the pane's current cursor position
+    // (real tmux starts at the cursor position when entering copy mode)
+    const pane = this.activePane;
+    const paneFrame = pane ? pane.renderFrame() : null;
+    this._copyCursor = paneFrame
+      ? { row: paneFrame.cursor.row, col: paneFrame.cursor.col }
+      : { row: 0, col: 0 };
     this._copyScroll = 0;
     this._copySelecting = false;
     this._copyAnchor = null;
@@ -1499,22 +1525,17 @@ export class Tmux {
 
   /** Get theme colors for tmux UI elements */
   _getThemeColors() {
-    // Monokai tmux theme — captured from real tmux via ShellPilot.
-    // See test/capture_tmux_colors.py and test/tmux_real_colors.json.
+    // Default tmux theme — matches real tmux behavior captured via ShellPilot.
+    // See test/tmux_ground_truth_real.py and test/ground_truth_tmux_screen.json.
     return {
-      fg: 'f8f8f2',              // Monokai foreground
+      fg: 'd4d4d4',              // terminal default foreground
       bg: '000000',              // terminal background
-      borderFg: '49483e',        // inactive pane border (Monokai selection)
-      borderActiveFg: 'a6e22e',  // active pane border (Monokai green)
-      statusBg: '272822',        // status bar background (Monokai bg)
-      statusFg: 'f8f8f2',        // status bar default text
-      statusSepFg: '75715e',     // pipe separators and date (Monokai comment)
-      statusActiveFg: 'a6e22e',  // active window + session name (green, bold)
-      statusActiveBg: '49483e',  // active window highlight bg
-      statusInactiveFg: '75715e', // inactive window text (comment gray)
-      statusClockFg: '66d9ef',   // clock digits (Monokai cyan)
-      cmdBg: '49483e',           // command/copy prompt bg
-      cmdFg: 'f8f8f2',           // command/copy prompt fg
+      borderFg: 'd4d4d4',        // inactive pane border (default fg — blends with text)
+      borderActiveFg: '00cd00',  // active pane border (tmux default green)
+      statusBg: '00cd00',        // status bar background (default tmux green)
+      statusFg: '000000',        // status bar text (black on green)
+      cmdBg: 'cdcd00',           // command prompt background (tmux yellow)
+      cmdFg: '000000',           // command prompt foreground (black)
       paneNumFg: 'a6e22e',
       paneNumBg: '000000',
     };
@@ -1557,9 +1578,10 @@ export class Tmux {
         cells.push({ fg: run.fg, bg: run.bg, b: run.b });
       }
     }
-    // Pad to totalCols
+    // Pad to totalCols (use tmux terminal colors)
+    const t = this._getThemeColors();
     while (cells.length < totalCols) {
-      cells.push({ fg: 'e0e2ea', bg: '14161b' });
+      cells.push({ fg: t.fg, bg: t.bg });
     }
 
     // Expand src and overwrite
@@ -1600,15 +1622,23 @@ export class Tmux {
 
   /** Draw borders between panes by traversing the layout tree */
   _drawBorders(frameLines, node, t, activePane) {
+    // Two-pass approach:
+    // 1. Draw all border lines (horizontal and vertical) recursively
+    // 2. Fix intersection characters after all borders are placed
+    this._drawBorderLines(frameLines, node, t, activePane);
+    this._fixIntersections(frameLines, node, t);
+  }
+
+  /** Pass 1: Draw border lines only (no intersections) */
+  _drawBorderLines(frameLines, node, t, activePane) {
     if (node.isLeaf()) return;
 
-    // In real tmux, the border belongs to the first (left/top) child.
-    // It uses active color only when the first child contains the active pane.
+    // Border adjacent to the active pane gets the active border color
     const firstHasActive = node.first.getPanes().includes(activePane);
-    const borderFg = firstHasActive ? t.borderActiveFg : t.borderFg;
+    const secondHasActive = node.second.getPanes().includes(activePane);
+    const borderFg = (firstHasActive || secondHasActive) ? t.borderActiveFg : t.borderFg;
 
     if (node.type === SplitDir.HSPLIT) {
-      // Horizontal border at the split line
       const borderRow = node.first.top + node.first.height;
       if (borderRow < this._paneRows) {
         const line = frameLines[borderRow];
@@ -1617,11 +1647,9 @@ export class Tmux {
           chars[c] = BORDER.H;
         }
         line.text = chars.join('');
-        // Set the run colors for the border
         this._setBorderRuns(line, node.left, node.width, borderFg, t.bg);
       }
     } else {
-      // Vertical border at the split column
       const borderCol = node.first.left + node.first.width;
       if (borderCol < this.cols) {
         for (let r = node.top; r < node.top + node.height && r < this._paneRows; r++) {
@@ -1634,63 +1662,91 @@ export class Tmux {
       }
     }
 
-    // Handle intersections between borders
-    this._drawIntersections(frameLines, node, t);
-
     // Recurse into children
-    this._drawBorders(frameLines, node.first, t, activePane);
-    this._drawBorders(frameLines, node.second, t, activePane);
+    this._drawBorderLines(frameLines, node.first, t, activePane);
+    this._drawBorderLines(frameLines, node.second, t, activePane);
   }
 
-  /** Draw intersection characters where borders cross */
-  _drawIntersections(frameLines, node, t) {
-    // At a split node, check if the children also have splits
-    // that create intersections
+  /** Pass 2: Fix intersection characters where borders cross */
+  _fixIntersections(frameLines, node, t) {
+    if (node.isLeaf()) return;
+
     if (node.type === SplitDir.HSPLIT) {
       const borderRow = node.first.top + node.first.height;
-      if (borderRow >= this._paneRows) return;
-      // Check if children have vertical splits at this row
-      this._addVIntersections(frameLines, node.first, borderRow, t);
-      this._addVIntersections(frameLines, node.second, borderRow, t);
+      if (borderRow < this._paneRows) {
+        this._fixVIntersections(frameLines, node.first, borderRow, t);
+        this._fixVIntersections(frameLines, node.second, borderRow, t);
+      }
     } else {
       const borderCol = node.first.left + node.first.width;
-      // Check if children have horizontal splits at this column
-      this._addHIntersections(frameLines, node.first, borderCol, t);
-      this._addHIntersections(frameLines, node.second, borderCol, t);
+      this._fixHIntersections(frameLines, node.first, borderCol, t);
+      this._fixHIntersections(frameLines, node.second, borderCol, t);
     }
+
+    this._fixIntersections(frameLines, node.first, t);
+    this._fixIntersections(frameLines, node.second, t);
   }
 
-  _addVIntersections(frameLines, node, borderRow, t) {
+  _fixVIntersections(frameLines, node, borderRow, t) {
     if (node.isLeaf()) return;
     if (node.type === SplitDir.VSPLIT) {
       const col = node.first.left + node.first.width;
       if (col < this.cols && borderRow < this._paneRows) {
         const chars = frameLines[borderRow].text.split('');
-        chars[col] = BORDER.X;
+        // Choose the right junction character based on context:
+        // ┼ if borders on all four sides
+        // ┴ bottom tee — vertical border above only
+        // ┬ top tee — vertical border below only
+        const hasAbove = borderRow > 0 && frameLines[borderRow - 1].text[col] === BORDER.V;
+        const hasBelow = borderRow < this._paneRows - 1 && frameLines[borderRow + 1]?.text[col] === BORDER.V;
+        if (hasAbove && hasBelow) {
+          chars[col] = BORDER.X;   // ┼ cross
+        } else if (hasAbove) {
+          chars[col] = BORDER.B;   // ┴ bottom tee
+        } else if (hasBelow) {
+          chars[col] = BORDER.T;   // ┬ top tee
+        } else {
+          chars[col] = BORDER.X;   // ┼ fallback
+        }
         frameLines[borderRow].text = chars.join('');
       }
     }
-    this._addVIntersections(frameLines, node.first, borderRow, t);
-    this._addVIntersections(frameLines, node.second, borderRow, t);
+    this._fixVIntersections(frameLines, node.first, borderRow, t);
+    this._fixVIntersections(frameLines, node.second, borderRow, t);
   }
 
-  _addHIntersections(frameLines, node, borderCol, t) {
+  _fixHIntersections(frameLines, node, borderCol, t) {
     if (node.isLeaf()) return;
     if (node.type === SplitDir.HSPLIT) {
       const row = node.first.top + node.first.height;
       if (row < this._paneRows && borderCol < this.cols) {
         const chars = frameLines[row].text.split('');
-        chars[borderCol] = BORDER.X;
+        // Choose the right junction character based on context:
+        // ├ left tee — horizontal border extends right only
+        // ┤ right tee — horizontal border extends left only
+        // ┼ cross — horizontal borders on both sides
+        const hasLeft = borderCol > 0 && chars[borderCol - 1] === BORDER.H;
+        const hasRight = borderCol < this.cols - 1 && chars[borderCol + 1] === BORDER.H;
+        if (hasLeft && hasRight) {
+          chars[borderCol] = BORDER.X;  // ┼ cross
+        } else if (hasLeft) {
+          chars[borderCol] = BORDER.R;  // ┤ right tee
+        } else if (hasRight) {
+          chars[borderCol] = BORDER.L;  // ├ left tee
+        } else {
+          chars[borderCol] = BORDER.X;  // ┼ fallback
+        }
         frameLines[row].text = chars.join('');
       }
     }
-    this._addHIntersections(frameLines, node.first, borderCol, t);
-    this._addHIntersections(frameLines, node.second, borderCol, t);
+    this._fixHIntersections(frameLines, node.first, borderCol, t);
+    this._fixHIntersections(frameLines, node.second, borderCol, t);
   }
 
   /** Set border colors for specific cells in a line's run array */
   _setBorderRuns(line, col, width, fg, bg) {
     // Expand, set, re-compact
+    const t = this._getThemeColors();
     const cells = [];
     for (const run of line.runs) {
       for (let i = 0; i < run.n; i++) {
@@ -1698,7 +1754,7 @@ export class Tmux {
       }
     }
     while (cells.length < this.cols) {
-      cells.push({ fg: 'e0e2ea', bg: '14161b' });
+      cells.push({ fg: t.fg, bg: t.bg });
     }
     for (let c = col; c < col + width && c < this.cols; c++) {
       cells[c] = { fg, bg };
@@ -1711,36 +1767,34 @@ export class Tmux {
     const sess = this.activeSession;
     if (!sess) return;
 
-    // Build status segments matching real tmux Monokai theme:
-    //   "sess | 0:zsh* 1:zsh-  | HH:MM | DD-Mon-YY"
-    // Each segment has its own color.
+    // Build status bar matching real tmux default format:
+    //   "[session] 0:bash* 1:bash-   "hostname" HH:MM DD-Mon-YY"
+    // The entire bar is black text on green background.
     const statusRow = this.rows - 1;
     const totalWidth = this.cols;
 
-    // Segments: session name, separator, windows, separator, clock, separator, date
-    const sessName = sess.name + ' ';
-    const sep = '| ';
+    // Left side: [session] window-list
+    const sessName = `[${sess.name}] `;
 
     const windowParts = [];
     for (let i = 0; i < sess.windows.length; i++) {
       const w = sess.windows[i];
       const marker = i === sess.activeWindowIndex ? '*' : '-';
       const zoomFlag = (i === sess.activeWindowIndex && w._zoomed) ? 'Z' : '';
-      windowParts.push({ text: `${i}:${w.name}${marker}${zoomFlag}`, active: i === sess.activeWindowIndex });
+      windowParts.push(`${i}:${w.name}${marker}${zoomFlag}`);
     }
-    const windowStr = windowParts.map(p => p.text).join(' ');
+    const windowStr = windowParts.join(' ');
 
+    // Right side: "hostname" HH:MM DD-Mon-YY
     const now = new Date();
-    const timeStr = now.toTimeString().slice(0, 5) + ' ';
+    const timeStr = now.toTimeString().slice(0, 5);
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const dateStr = '| ' + `${now.getDate()}-${months[now.getMonth()]}-${String(now.getFullYear()).slice(-2)}`;
+    const dateStr = `${now.getDate().toString().padStart(2, '0')}-${months[now.getMonth()]}-${String(now.getFullYear()).slice(-2)}`;
+    const hostname = '"vimfu"';
+    const rightText = `${hostname} ${timeStr} ${dateStr}`;
 
-    // Compose left side:  "sess | win0* win1-"
-    const leftText = sessName + sep + windowStr;
-    // Right side:  "| HH:MM | DD-Mon-YY"
-    const rightText = sep + timeStr + dateStr;
-
-    // Build full status string
+    // Compose full status: left + gap + right
+    const leftText = sessName + windowStr;
     const gap = totalWidth - leftText.length - rightText.length;
     let statusText;
     if (gap > 0) {
@@ -1751,57 +1805,8 @@ export class Tmux {
     statusText = this._padStr(statusText, totalWidth);
     frameLines[statusRow].text = statusText;
 
-    // Build per-cell color array
-    const cells = [];
-    let pos = 0;
-
-    // Session name (green, bold on statusBg)
-    const pushCells = (len, fg, bg, bold) => {
-      for (let i = 0; i < len && pos < totalWidth; i++, pos++) {
-        const c = { fg, bg };
-        if (bold) c.b = true;
-        cells.push(c);
-      }
-    };
-
-    pushCells(sessName.length, t.statusActiveFg, t.statusBg, true); // session name
-    pushCells(sep.length, t.statusSepFg, t.statusBg, true);        // "| "
-
-    // Window list — each window colored individually
-    for (let wi = 0; wi < windowParts.length; wi++) {
-      const wp = windowParts[wi];
-      if (wp.active) {
-        pushCells(wp.text.length, t.statusActiveFg, t.statusActiveBg, true);
-      } else {
-        pushCells(wp.text.length, t.statusInactiveFg, t.statusBg, false);
-      }
-      // Space between windows
-      if (wi < windowParts.length - 1) {
-        pushCells(1, t.statusFg, t.statusBg, false);
-      }
-    }
-
-    // Fill gap with default status colors
-    const rightStart = leftText.length + Math.max(0, gap);
-    while (pos < rightStart && pos < totalWidth) {
-      cells.push({ fg: t.statusFg, bg: t.statusBg });
-      pos++;
-    }
-
-    // Right side: "| " separator
-    pushCells(sep.length, t.statusSepFg, t.statusBg, false);
-    // Clock
-    pushCells(timeStr.length, t.statusClockFg, t.statusBg, false);
-    // "| " + date
-    pushCells(dateStr.length, t.statusSepFg, t.statusBg, false);
-
-    // Pad remaining
-    while (pos < totalWidth) {
-      cells.push({ fg: t.statusFg, bg: t.statusBg });
-      pos++;
-    }
-
-    frameLines[statusRow].runs = this._compactRuns(cells);
+    // Uniform color: black on green (real tmux default)
+    frameLines[statusRow].runs = [{ n: totalWidth, fg: t.statusFg, bg: t.statusBg }];
   }
 
   /** Set status bar text (for messages/prompts) */
@@ -1813,16 +1818,25 @@ export class Tmux {
 
   /** Render copy mode overlay */
   _renderCopyOverlay(frameLines, t) {
-    // Real tmux shows the normal status bar but changes the window name
-    // to "[tmux]" while in copy mode.  We achieve this by temporarily
-    // renaming the active window, rendering the status bar normally,
-    // and then restoring the original name.
-    const win = this.activeWindow;
-    if (!win) return;
-    const savedName = win.name;
-    win.name = '[tmux]';
+    // Real tmux keeps the normal status bar and shows [N/M] search position
+    // indicator in the top-right corner of the active pane.
+    // Render the normal status bar first.
     this._renderStatusBar(frameLines, t);
-    win.name = savedName;
+
+    // Show [line/total] indicator in the upper right of the active pane
+    // Real tmux shows [offset/scrollback_lines], where scrollback_lines is
+    // the total number of history lines (1 for an empty shell with just a prompt)
+    const pane = this.activePane;
+    if (pane) {
+      // Use the shell's output line count (+ 1 for the prompt line) as the total
+      const shell = pane.session.shell;
+      const totalLines = shell ? shell._outputLines.length + 1 : pane.height;
+      const indicator = `[${this._copyCursor.row}/${totalLines}]`;
+      const col = pane.left + pane.width - indicator.length;
+      if (col >= pane.left && col < this.cols) {
+        this._overlayText(frameLines, pane.top, col, indicator, '000000', 'cdcd00', indicator.length);
+      }
+    }
   }
 
   /** Render window list overlay */
@@ -1995,12 +2009,13 @@ export class Tmux {
 
   /** Build the final frame dict */
   _buildFrame(lines, cursor) {
+    const t = this._getThemeColors();
     return {
       rows: this.rows,
       cols: this.cols,
       cursor,
-      defaultFg: 'e0e2ea',
-      defaultBg: '14161b',
+      defaultFg: t.fg,
+      defaultBg: t.bg,
       lines,
     };
   }

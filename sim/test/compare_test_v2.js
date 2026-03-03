@@ -39,8 +39,11 @@ function loadSuites() {
   const suites = {};
 
   // Load per-suite files: ground_truth_<suite>.json
+  // (skip tmux_screen — it uses a different format, tested by compare_tmux_screen.js)
   const files = readdirSync(__dirname)
-    .filter(f => f.startsWith('ground_truth_') && f.endsWith('.json') && f !== 'ground_truth_all.json')
+    .filter(f => f.startsWith('ground_truth_') && f.endsWith('.json')
+      && f !== 'ground_truth_all.json'
+      && f !== 'ground_truth_tmux_screen.json')
     .sort();
 
   for (const file of files) {
@@ -194,7 +197,7 @@ for (const [suiteName, cases] of Object.entries(suites)) {
     }
     feedKeys(engine, gt.keys);
 
-    const screen = new Screen(ROWS, COLS, 'monokai');
+    const screen = new Screen(ROWS, COLS, 'nvim_default');
     const frame = screen.render(engine);
     const simTextLines = frame.lines.map(l => l.text).slice(0, ROWS - 2);
 

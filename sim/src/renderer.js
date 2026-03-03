@@ -61,8 +61,9 @@ export class Renderer {
     ctx.font = `bold ${this.fontSize}px ${FONT_FAMILY}`;
     ctx.textBaseline = 'top';
 
-    // Clear
-    ctx.fillStyle = '#' + (frame.defaultBg || '000000');
+    // Clear canvas to the frame's default background
+    const defaultBgHex = '#' + (frame.defaultBg || '000000');
+    ctx.fillStyle = defaultBgHex;
     ctx.fillRect(0, 0, w, h);
 
     // Draw each line
@@ -77,9 +78,9 @@ export class Renderer {
         const x = pad + col * cw;
         const runW = run.n * cw;
 
-        // Background
+        // Background — skip if it matches the canvas clear color (defaultBg)
         const bg = '#' + (run.bg || '000000');
-        if (bg !== '#000000') {
+        if (bg !== defaultBgHex) {
           ctx.fillStyle = bg;
           ctx.fillRect(x, y, runW, ch);
         }

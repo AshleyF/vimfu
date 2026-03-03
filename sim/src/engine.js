@@ -5068,7 +5068,7 @@ export class VimEngine {
   _updateStatus() {
     const r = this.cursor.row + 1, c = this.cursor.col + 1, total = this.buffer.lineCount;
     const pos = `${r},${c}`;
-    const pct = total <= 1 ? 'All' : r === 1 ? 'Top' : r === total ? 'Bot' : `${Math.round((r / total) * 100)}%`;
+    const pct = total <= this._textRows ? 'All' : r === 1 ? 'Top' : r === total ? 'Bot' : `${Math.round((r / total) * 100)}%`;
     const right = `${pos}          ${pct}`;
     this.statusLine = ' '.repeat(Math.max(0, this.cols - right.length)) + right;
     if (this.mode === Mode.INSERT) this.commandLine = '-- INSERT --';

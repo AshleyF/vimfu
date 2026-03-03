@@ -50,6 +50,7 @@ export class SessionManager {
       onLaunchVim: (filename) => this._launchVim(filename),
       onLaunchTmux: (args) => this._launchTmux(args),
     });
+    this.shell._isTopLevel = true;
 
     // Vim engine (created on demand when vim is launched)
     /** @type {VimEngine|null} */
@@ -118,10 +119,18 @@ export class SessionManager {
       }
     } else if (this.mode === 'tmux') {
       this._tmux.feedKey(key);
-      // Check if tmux detached
+      // Check if tmux detached or exited
       if (this._tmux.detached) {
         this.mode = 'shell';
-        this.shell._appendOutput('[detached (from session ' + this._tmux.activeSession?.name + ')]');
+        if (this._tmux.exited) {
+          // All panes/windows closed — real tmux prints "[exited]"
+          this.shell._appendOutput('[exited]');
+          // Destroy the tmux instance so next `tmux` creates a fresh one
+          this._tmux = null;
+        } else {
+          // User detached (Ctrl-B d) — session is still alive
+          this.shell._appendOutput('[detached (from session ' + this._tmux.activeSession?.name + ')]');
+        }
       }
     }
 
@@ -208,6 +217,8 @@ export class SessionManager {
           sm.shell.fs = fs;
           // Mark as inside tmux (prevents nested tmux)
           sm.shell._insideTmux = true;
+          // Pane shells are NOT top-level — allow exit to close the pane
+          sm.shell._isTopLevel = false;
           return sm;
         },
       });
@@ -229,6 +240,12 @@ export class SessionManager {
     this.engine = new VimEngine({ rows: this.rows, cols: this.cols });
     this.engine.filename = filename;  // for syntax highlighting
 
+    // Sync engine text rows with screen layout
+    // (vim in tmux uses laststatus=1: no status line, so rows-1 for text)
+    if (!this.screen.showStatusLine) {
+      this.engine._textRows = this.rows - 1;
+    }
+
     // Load file from VFS if it exists, otherwise start empty
     if (filename && this.fs.exists(filename)) {
       const content = this.fs.read(filename);
@@ -241,6 +258,19 @@ export class SessionManager {
 
     // Set the filename in the engine's status
     this._updateVimStatus();
+
+    // Set the initial file message on the command line (like real vim)
+    if (!this.screen.showStatusLine && filename) {
+      const isNew = !this.fs.exists(filename);
+      if (isNew) {
+        this.engine.commandLine = `"${filename}" [New]`;
+      } else {
+        const lineCount = this.engine.buffer.lineCount;
+        const charCount = this.engine.buffer.lines.join('\n').length;
+        this.engine.commandLine = `"${filename}" ${lineCount}L, ${charCount}C`;
+      }
+      this.engine._stickyCommandLine = true;
+    }
 
     this.mode = 'vim';
   }
@@ -543,7 +573,7 @@ export class SessionManager {
     if (this.engine) {
       this.engine.rows = rows;
       this.engine.cols = cols;
-      this.engine._textRows = rows - 2;
+      this.engine._textRows = rows - (this.screen.showStatusLine ? 2 : 1);
       // Re-clamp scroll / cursor
       this.engine._ensureCursorVisible();
     }

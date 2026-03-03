@@ -71,8 +71,12 @@ def run_case(name: str, case: dict) -> dict:
     tmp = Path(tempfile.mktemp(suffix=".txt", dir="."))
     tmp.write_text(initial, encoding="utf-8")
 
+    # Ensure nvim enables termguicolors (needed for true-color capture via pyte)
+    import os
+    os.environ['COLORTERM'] = 'truecolor'
+
     shell = ShellPilot(
-        shell=f'nvim -n -i NONE {tmp.name}',
+        shell=f'nvim --clean -n {tmp.name}',
         rows=ROWS,
         cols=COLS,
     )

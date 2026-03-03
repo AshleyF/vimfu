@@ -498,6 +498,262 @@ const scenarios = {
     s.feedKey('Ctrl-B');
     s.feedKey('w');
   },
+
+  // ─── Shell exit in tmux panes ───
+
+  tmux_exit_one_vsplit_pane(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  tmux_exit_original_vsplit_pane(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    feedString(s, 'echo LEFT');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    feedString(s, 'echo RIGHT');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('ArrowLeft');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  tmux_exit_one_hsplit_pane(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('"');
+    feedString(s, 'echo BOTTOM');
+    s.feedKey('Enter');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  tmux_exit_last_pane_detaches(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  tmux_ctrld_exit_pane(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    s.feedKey('Ctrl-D');
+  },
+
+  tmux_ctrld_last_pane_detaches(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-D');
+  },
+
+  tmux_exit_three_panes_to_two(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    s.feedKey('Ctrl-B');
+    s.feedKey('"');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  tmux_exit_three_panes_to_one(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    s.feedKey('Ctrl-B');
+    s.feedKey('"');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  // ─── Top-level shell exit refusal ───
+
+  tmux_toplevel_exit_refused(s) {
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  tmux_toplevel_ctrld_ignored(s) {
+    s.feedKey('Ctrl-D');
+  },
+
+  // ─── Vim launch/quit inside tmux panes ───
+
+  tmux_vim_quit_returns_to_pane(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    feedString(s, 'vim test.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'q');
+    s.feedKey('Enter');
+  },
+
+  tmux_vim_in_left_shell_in_right(s) {
+    s.fs.write('code.txt', 'line 1\nline 2');
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    feedString(s, 'vim code.txt');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    feedString(s, 'echo hello');
+    s.feedKey('Enter');
+  },
+
+  tmux_vim_quit_then_exit_pane(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    feedString(s, 'vim test.txt');
+    s.feedKey('Enter');
+    s.feedKey(':');
+    feedString(s, 'q');
+    s.feedKey('Enter');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  tmux_vim_wq_shell_exit(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    feedString(s, 'vim notes.txt');
+    s.feedKey('Enter');
+    s.feedKey('i');
+    feedString(s, 'saved text');
+    s.feedKey('Escape');
+    s.feedKey(':');
+    feedString(s, 'wq');
+    s.feedKey('Enter');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  // ─── Exit pane in multi-window scenarios ───
+
+  tmux_exit_last_pane_in_second_window(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    feedString(s, 'echo WIN0');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('c');
+    feedString(s, 'echo WIN1');
+    s.feedKey('Enter');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  tmux_exit_split_pane_in_second_window(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('c');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    feedString(s, 'echo W1_RIGHT');
+    s.feedKey('Enter');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  // ─── Detach and reattach after pane operations ───
+
+  tmux_detach_reattach_after_split(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    feedString(s, 'echo SPLIT_RIGHT');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('d');
+    feedString(s, 'tmux attach');
+    s.feedKey('Enter');
+  },
+
+  tmux_detach_reattach_after_exit(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('d');
+    feedString(s, 'tmux attach');
+    s.feedKey('Enter');
+  },
+
+  // ─── Shell responsiveness after exit refusal ───
+
+  tmux_toplevel_exit_then_use_shell(s) {
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+    feedString(s, 'echo still here');
+    s.feedKey('Enter');
+  },
+
+  tmux_toplevel_exit_then_launch_tmux(s) {
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+  },
+
+  // ─── Exit after various operations ───
+
+  tmux_exit_after_zoom_unzoom(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    s.feedKey('Ctrl-B');
+    s.feedKey('z');
+    s.feedKey('Ctrl-B');
+    s.feedKey('z');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
+
+  tmux_exit_after_navigate(s) {
+    feedString(s, 'tmux');
+    s.feedKey('Enter');
+    feedString(s, 'echo PANE_A');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('%');
+    feedString(s, 'echo PANE_B');
+    s.feedKey('Enter');
+    s.feedKey('Ctrl-B');
+    s.feedKey('ArrowLeft');
+    s.feedKey('Ctrl-B');
+    s.feedKey('ArrowRight');
+    s.feedKey('Ctrl-B');
+    s.feedKey('ArrowLeft');
+    feedString(s, 'exit');
+    s.feedKey('Enter');
+  },
 };
 
 // ── Special-dimension scenarios ──

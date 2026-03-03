@@ -14,6 +14,21 @@ No build step. ES modules served via HTTP (`python serve.py` from `sim/`).
 Use `serve.py` (not `python -m http.server`) — it sends `Cache-Control: no-cache`
 headers on every response so the browser always loads fresh JS modules.
 
+## Workflow — Always Make a Failing Test First
+
+**RULE:** Never start by debugging or trying to fix the code. Always:
+
+1. **Create a test scenario** that reproduces the bug / exercises the feature.
+2. **Run it against the real program** (real nvim via ShellPilot for vim features, real tmux via ShellPilot for tmux features) to capture ground truth.
+3. **Add the test** to the appropriate test suite and comparator.
+4. **Verify the test fails** against the current sim code.
+5. **Then** fix the code until the test passes.
+6. **Then** check for regressions across all existing tests.
+
+This workflow ensures every fix is grounded in real-world behavior, not
+guesses about what the code should do. Self-generated ground truth only
+catches regressions — real-program ground truth catches actual bugs.
+
 ## Workflow for Adding a New Feature
 
 ### 1. Research

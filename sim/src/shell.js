@@ -269,11 +269,11 @@ export class ShellSim {
       this._viOperator = '';
       this._viCount = '';
     } else if (key === 'Ctrl-D') {
-      // On empty line: exit shell. Otherwise: delete char under cursor.
-      if (this._inputLine.length === 0) {
+      // On empty line: exit shell (only if inside tmux pane).
+      // Otherwise: delete char under cursor.
+      if (this._inputLine.length === 0 && !this._isTopLevel) {
         this._appendOutput(this.prompt + 'exit');
         this._exited = true;
-        if (this._onExit) this._onExit();
       } else if (this._cursorPos < this._inputLine.length) {
         this._inputLine = this._inputLine.slice(0, this._cursorPos) + this._inputLine.slice(this._cursorPos + 1);
       }
@@ -1196,7 +1196,12 @@ export class ShellSim {
         break;
 
       case 'exit':
-        this._exited = true;
+        if (this._isTopLevel) {
+          // Top-level shell — nowhere to exit to
+          this._appendOutput('Type  vim <file>  to launch the editor');
+        } else {
+          this._exited = true;
+        }
         break;
       case 'tmux':
         this._cmdTmux(rest);
@@ -1587,7 +1592,7 @@ export class ShellSim {
       '  set -o vi    Vi-mode editing',
       '  date         Current date',
       '  clear        Clear screen',
-      '  exit         Exit shell',
+      '  exit         Exit pane (tmux)',
       '  help         This help',
     ];
     // Use pager if content won't fit on screen
