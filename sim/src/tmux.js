@@ -854,6 +854,9 @@ export class Tmux {
       cursorShape = 'block';
     } else if (this._mode === TmuxMode.WINDOW_LIST) {
       this._renderWindowList(frameLines, t);
+      cursorRow = this._windowListCursor;
+      cursorCol = 0;
+      cursorVisible = false;
     } else if (this._mode === TmuxMode.PANE_NUMBERS) {
       this._renderPaneNumbers(frameLines, t);
     } else if (this._mode === TmuxMode.CLOCK) {
@@ -977,7 +980,7 @@ export class Tmux {
       case 'ArrowUp':    case 'k': if (win._zoomed) win.toggleZoom(); win.navigatePane('Up');    break;
       case 'ArrowDown':  case 'j': if (win._zoomed) win.toggleZoom(); win.navigatePane('Down');  break;
       case 'ArrowLeft':  case 'h': if (win._zoomed) win.toggleZoom(); win.navigatePane('Left');  break;
-      case 'ArrowRight': case 'l': if (win._zoomed) win.toggleZoom(); win.navigatePane('Right'); break;
+      case 'ArrowRight': if (win._zoomed) win.toggleZoom(); win.navigatePane('Right'); break;
       case 'o':  if (win._zoomed) win.toggleZoom(); win.nextPane();  break;
       case ';':  // last pane
         if (win.lastActivePane && win.getPanes().includes(win.lastActivePane)) {
@@ -1052,8 +1055,10 @@ export class Tmux {
         this._confirmTarget = 'window';
         this._mode = TmuxMode.CONFIRM;
         break;
-      case 'w':  // window list
-        this._windowListCursor = sess.activeWindowIndex;
+      case 'w':  // window list (tree view)
+        // Flat list: index 0 = session row, 1+ = window rows
+        // Start with the active window highlighted
+        this._windowListCursor = sess.activeWindowIndex + 1;
         this._mode = TmuxMode.WINDOW_LIST;
         break;
 
@@ -1064,7 +1069,7 @@ export class Tmux {
         break;
 
       // ── Last window ──
-      case 'L':
+      case 'l':
         sess.lastWindow();
         break;
 
@@ -1282,23 +1287,30 @@ export class Tmux {
     }
   }
 
-  /** Window list handler */
+  /** Window list (tree) handler — flat list: 0=session, 1+=windows */
   _handleWindowList(key) {
     const sess = this.activeSession;
     if (!sess) { this._mode = TmuxMode.NORMAL; return; }
+    const maxIdx = sess.windows.length; // 0=session row, 1..N=window rows
 
     switch (key) {
       case 'j':
       case 'ArrowDown':
-        this._windowListCursor = Math.min(this._windowListCursor + 1, sess.windows.length - 1);
+        this._windowListCursor = Math.min(this._windowListCursor + 1, maxIdx);
         break;
       case 'k':
       case 'ArrowUp':
         this._windowListCursor = Math.max(0, this._windowListCursor - 1);
         break;
       case 'Enter':
-        sess.switchWindow(this._windowListCursor);
-        this._mode = TmuxMode.NORMAL;
+        if (this._windowListCursor === 0) {
+          // Selected the session row — just close the tree
+          this._mode = TmuxMode.NORMAL;
+        } else {
+          // Selected a window row — switch to it
+          sess.switchWindow(this._windowListCursor - 1);
+          this._mode = TmuxMode.NORMAL;
+        }
         break;
       case 'Escape':
       case 'q':
@@ -1839,37 +1851,65 @@ export class Tmux {
     }
   }
 
-  /** Render window list overlay */
+  /**
+   * Render window list as a tree view — matches real tmux `Ctrl-B w`.
+   *
+   * Real tmux format:
+   *   (0) - <session>: N windows (attached)
+   *   (1) ├─> 0: <name>*
+   *   (2) ├─> 1: <name>
+   *   (3) └─> 2: <name>-
+   *
+   * The highlighted row has yellow bg (cdcd00) / black fg (000000).
+   * Non-highlighted rows: default fg/bg.
+   */
   _renderWindowList(frameLines, t) {
     const sess = this.activeSession;
     if (!sess) return;
 
-    // Draw a centered box with the window list
-    const items = sess.windows.map((w, i) =>
-      `${i === this._windowListCursor ? '>' : ' '} ${i}: ${w.name} [${w.getPanes().length} panes]${i === sess.activeWindowIndex ? ' (active)' : ''}`
-    );
+    const numWin = sess.windows.length;
+    const highlightFg = '000000';
+    const highlightBg = 'cdcd00';
+    const normalFg = 'd4d4d4';
+    const normalBg = '000000';
 
-    const title = '── Choose Window ──';
-    const maxWidth = Math.min(this.cols - 4, Math.max(title.length, ...items.map(s => s.length)) + 4);
-    const boxLeft = Math.floor((this.cols - maxWidth) / 2);
-    const boxTop = Math.max(0, Math.floor((this._paneRows - items.length - 2) / 2));
+    // ── Row 0: session header ──
+    const sessLine = `(0) - ${sess.name}: ${numWin} windows (attached)`;
+    const isSessionSelected = (this._windowListCursor === 0);
+    this._overlayText(frameLines, 0, 0,
+      this._padStr(sessLine, this.cols),
+      isSessionSelected ? highlightFg : normalFg,
+      isSessionSelected ? highlightBg : normalBg,
+      this.cols);
 
-    // Title bar
-    if (boxTop < this._paneRows) {
-      const titleLine = (' ' + title + ' ').padEnd(maxWidth);
-      this._overlayText(frameLines, boxTop, boxLeft, titleLine, t.statusFg, t.statusBg, maxWidth);
+    // ── Rows 1..N: window entries ──
+    for (let i = 0; i < numWin; i++) {
+      const row = i + 1;
+      if (row >= this._paneRows) break;
+
+      const w = sess.windows[i];
+      const connector = (i === numWin - 1) ? '└─>' : '├─>';
+      const listIdx = i + 1; // flat-list position
+
+      // Window name suffix: * = active, - = last active
+      let suffix = '';
+      if (i === sess.activeWindowIndex) suffix = '*';
+      else if (i === sess.lastWindowIndex) suffix = '-';
+
+      const winLine = `(${listIdx}) ${connector} ${i}: ${w.name}${suffix}`;
+      const isSelected = (this._windowListCursor === listIdx);
+      this._overlayText(frameLines, row, 0,
+        this._padStr(winLine, this.cols),
+        isSelected ? highlightFg : normalFg,
+        isSelected ? highlightBg : normalBg,
+        this.cols);
     }
 
-    // Items
-    for (let i = 0; i < items.length; i++) {
-      const r = boxTop + 1 + i;
-      if (r >= this._paneRows) break;
-      const line = items[i].padEnd(maxWidth);
-      const isSelected = (i === this._windowListCursor);
-      this._overlayText(frameLines, r, boxLeft, line,
-        isSelected ? t.statusActiveFg : t.statusFg,
-        isSelected ? t.statusActiveBg : t.statusBg,
-        maxWidth);
+    // ── Clear remaining rows (below the tree) ──
+    for (let row = numWin + 1; row < this._paneRows; row++) {
+      this._overlayText(frameLines, row, 0,
+        ' '.repeat(this.cols),
+        normalFg, normalBg, this.cols);
     }
   }
 

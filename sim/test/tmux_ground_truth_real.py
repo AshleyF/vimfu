@@ -116,17 +116,19 @@ def run_case(name: str, case: dict) -> dict | None:
         shell.start()
         time.sleep(1.5)  # let WSL bash start
 
-        # Create any needed files in the test working directory
-        # (must happen after the _TMUX_LAUNCH creates the temp dir but before tmux starts)
-        # We write them to /tmp/vimfu_test_workdir since that's where tmux will cd to
-        for fname, content in write_files.items():
-            escaped = content.replace("'", "'\\''")
-            shell.send_line(f"mkdir -p /tmp/vimfu_test_workdir && printf '%s' '{escaped}' > /tmp/vimfu_test_workdir/{fname}")
-            time.sleep(0.2)
-
         # Execute steps
         for step in steps:
-            if step[0] == "line":
+            if step[0] == "__inject_write_files__":
+                # Create files INSIDE the tmux pane (after rm -rf cleaned the dir)
+                for fname, content in write_files.items():
+                    escaped = content.replace("'", "'\\''")
+                    shell.send_line(f"printf '%s' '{escaped}' > {fname}")
+                    time.sleep(0.3)
+                if write_files:
+                    shell.send_line("clear")
+                    time.sleep(0.3)
+                continue
+            elif step[0] == "line":
                 shell.send_line(step[1])
             elif step[0] == "keys":
                 shell.send_keys(step[1])
