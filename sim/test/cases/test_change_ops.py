@@ -169,6 +169,14 @@ CASES = {
     "r_second_line": {"keys": "jrx", "initial": "abc\ndef\nghi"},
     "r_multiline_mid": {"keys": "jllrX", "initial": "abc\ndefgh\nijk"},
 
+    # ── r<Enter> (replace char with newline / split line) ──
+    "r_enter_mid_word": {"keys": "llr\r", "initial": "hello world"},
+    "r_enter_at_space": {"keys": "f r\r", "initial": "hello world", "settle": 0.4},
+    "r_enter_first_char": {"keys": "r\r", "initial": "hello"},
+    "r_enter_last_char": {"keys": "$r\r", "initial": "hello"},
+    "r_enter_multiline": {"keys": "jllr\r", "initial": "abc\ndefgh\nijk"},
+    "r_enter_single_char": {"keys": "r\r", "initial": "a"},
+
     # ── {count}r{char} (replace multiple chars) ──
     "r_count_2": {"keys": "2ra", "initial": "hello"},
     "r_count_3": {"keys": "3rx", "initial": "abcdef"},

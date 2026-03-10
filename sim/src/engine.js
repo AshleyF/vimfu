@@ -572,7 +572,24 @@ export class VimEngine {
     // Pending r
     if (this._pendingR) {
       this._pendingR = false;
-      if (key.length === 1 && key !== 'Escape') {
+      if (key === 'Enter') {
+        // r<Enter>: replace character(s) with a newline (split line)
+        this._saveSnapshot();
+        this._startRecording();
+        this._saveForDot('r'); this._saveForDot(key);
+        const count = this._getCount();
+        const line = this.buffer.lines[this.cursor.row];
+        if (this.cursor.col + count - 1 < line.length) {
+          const before = line.slice(0, this.cursor.col);
+          const after = line.slice(this.cursor.col + count);
+          this.buffer.lines[this.cursor.row] = before;
+          this.buffer.lines.splice(this.cursor.row + 1, 0, after);
+          this.cursor.row++;
+          this.cursor.col = 0;
+        }
+        this._stopRecording();
+        this._redoStack = [];
+      } else if (key.length === 1 && key !== 'Escape') {
         this._saveSnapshot();
         this._startRecording();
         this._saveForDot('r'); this._saveForDot(key);
