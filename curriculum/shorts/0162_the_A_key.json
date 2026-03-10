@@ -1,0 +1,248 @@
+{
+  "title": "VimFu — The A Key",
+  "description": "Capital A appends at the end of the line. Jump to the end and start typing. A for append at end.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 303,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f shop.py .shop.py.swp .shop.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*shop.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "shop.py",
+      "content": "item = \"sword\"\nprice = 100\nstock = 5\nnote = \"sharp\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim shop.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The A Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital A jumps to the end of the line and enters insert mode. Append at the end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: append text to end ---"
+    },
+    {
+      "say": "Add a comment to the first line. Capital A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append end"
+    },
+    {
+      "type": "  # melee"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Cursor jumped to the end and I typed a comment. No need to navigate there first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: works from anywhere on the line ---"
+    },
+    {
+      "say": "Works from any position. Cursor is at the start of line two. Capital A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A",
+      "overlay": "append end"
+    },
+    {
+      "type": "  # gold"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Straight to the end. Doesn't matter where you start."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: add to multiple lines with dot ---"
+    },
+    {
+      "say": "Combine with dot. Capital A, add a semicolon, escape. Then J dot, J dot.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A",
+      "overlay": "append end"
+    },
+    {
+      "type": ";"
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": ".",
+      "overlay": "repeat"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Dot repeated the append on the next line. Capital A plus dot is a power combo."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital A. Append at end of line. Instant jump, start typing."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f shop.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "6yIkMr67-lY",
+    "url": "https://youtube.com/watch?v=6yIkMr67-lY"
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "title": "VimFu — The z Key",
+  "description": "Z is a prefix for scroll commands. Z Z centers, Z T tops, Z B bottoms. Z for zoom your view.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 302,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tower.py .tower.py.swp .tower.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*tower.py*"
+    },
+    {
+      "comment": "Create demo file — 40 lines so scroll commands show dramatic shifts"
+    },
+    {
+      "writeFile": "tower.py",
+      "content": "floor_1 = \"entrance\"\nfloor_2 = \"guard room\"\nfloor_3 = \"armory\"\nfloor_4 = \"kitchen\"\nfloor_5 = \"mess hall\"\nfloor_6 = \"barracks\"\nfloor_7 = \"training yard\"\nfloor_8 = \"stables\"\nfloor_9 = \"storage\"\nfloor_10 = \"workshop\"\nfloor_11 = \"forge\"\nfloor_12 = \"library\"\nfloor_13 = \"study\"\nfloor_14 = \"gallery\"\nfloor_15 = \"chapel\"\nfloor_16 = \"map room\"\nfloor_17 = \"war room\"\nfloor_18 = \"great hall\"\nfloor_19 = \"treasury\"\nfloor_20 = \"prison\"\nfloor_21 = \"dungeon\"\nfloor_22 = \"vault\"\nfloor_23 = \"lab\"\nfloor_24 = \"alchemy\"\nfloor_25 = \"throne room\"\nfloor_26 = \"balcony\"\nfloor_27 = \"clock tower\"\nfloor_28 = \"bell tower\"\nfloor_29 = \"archive\"\nfloor_30 = \"observatory\"\nfloor_31 = \"rooftop\"\nfloor_32 = \"sky dock\"\nfloor_33 = \"cloud walk\"\nfloor_34 = \"wind spire\"\nfloor_35 = \"star deck\"\nfloor_36 = \"portal\"\nfloor_37 = \"void\"\nfloor_38 = \"nexus\"\nfloor_39 = \"apex\"\nfloor_40 = \"summit\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim tower.py"
+    },
+    {
+      "waitForScreen": "floor_1",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The z Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z is a prefix for scroll commands. It repositions the screen around your cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump deep then zz to center ---"
+    },
+    {
+      "say": "Jump down to the throne room on line twenty-five. It lands near the bottom of the screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "24j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z Z. Centers the current line on screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zz",
+      "overlay": "zz  center"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The throne room jumped to the middle. Completely different view. The cursor stayed put. The screen moved."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: zt — top ---"
+    },
+    {
+      "say": "Z T. Current line to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zt",
+      "overlay": "zt  top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now the throne room is the first line you see. Everything above it is gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: zb — bottom ---"
+    },
+    {
+      "say": "Z B. Current line to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zb",
+      "overlay": "zb  bottom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Throne room is now at the bottom. Everything below it is gone. Three totally different views, same cursor position."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z Z to center. Z T for top. Z B for bottom. Control your viewport."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f tower.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "ccgy178bLzY",
+    "url": "https://youtube.com/watch?v=ccgy178bLzY"
+  }
+}

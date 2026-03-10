@@ -1,0 +1,229 @@
+{
+  "title": "VimFu — The B Key",
+  "description": "Capital B moves backward by WORD — whitespace-delimited chunks. Bigger jumps than lowercase B.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 304,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f path.py .path.py.swp .path.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*path.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "path.py",
+      "content": "src = \"/usr/local/bin\"\ndst = \"~/back-up/old\"\nlog = \"err.2024-01.txt\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim path.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The B Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital B moves backward by WORD. A WORD is anything separated by whitespace. Punctuation doesn't stop it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: B vs b on a path ---"
+    },
+    {
+      "say": "Cursor at the end of the path. Lowercase B first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "b",
+      "overlay": "back word"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "b",
+      "overlay": "back word"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "b",
+      "overlay": "back word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three presses and we're still inside the path. Lowercase B stops at slashes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: capital B skips the whole thing ---"
+    },
+    {
+      "say": "Now capital B from the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "B",
+      "overlay": "back WORD"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One jump. Landed on the quote. The entire path is one WORD."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: B on line with dashes and dots ---"
+    },
+    {
+      "say": "Line three. File name with dashes and dots. Capital B from the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "B",
+      "overlay": "back WORD"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One jump past all the dots and dashes. Capital B treats the whole chunk as one WORD."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital B. Back by WORD. Whitespace is the only boundary. Great for paths, URLs, and filenames."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f path.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "fhd1NX2EuRA",
+    "url": "https://youtube.com/watch?v=fhd1NX2EuRA"
+  }
+}

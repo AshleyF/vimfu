@@ -1,0 +1,219 @@
+{
+  "title": "VimFu — The x Key",
+  "description": "X deletes the character under the cursor. Quick single-character removal. X to x-out.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 300,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f typo.py .typo.py.swp .typo.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*typo.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "typo.py",
+      "content": "hero = \"knigght\"\nquest = \"slay the dragoon\"\nwho = \"teh knight\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim typo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The x Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "X deletes the character under the cursor. Quick and surgical."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: fix a doubled letter ---"
+    },
+    {
+      "say": "Knight has a double G. Find the extra G and press X.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fg",
+      "overlay": "find g"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "x",
+      "overlay": "x  delete char"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One letter gone. Knight is fixed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: delete the extra O in dragoon ---"
+    },
+    {
+      "say": "Dragoon should be dragon. Find the extra O and X it out.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jfo",
+      "overlay": "find o"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "x",
+      "overlay": "x  delete char"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Dragon. One X, one fix."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: xp to swap characters ---"
+    },
+    {
+      "say": "Classic trick. Teh should be the. Put your cursor on the E and press X P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0",
+      "overlay": ""
+    },
+    {
+      "keys": "fe",
+      "overlay": "find e"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "x",
+      "overlay": "x  delete char"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "p  put after"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "X grabbed the E, P put it back after the H. Teh becomes the. X P is the character-swap trick."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "X to x-out a character. X P to swap two. Simple."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f typo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "7q5_SMZzpQA",
+    "url": "https://youtube.com/watch?v=7q5_SMZzpQA"
+  }
+}

@@ -1,0 +1,236 @@
+{
+  "title": "VimFu — The w Key",
+  "description": "W moves to the start of the next word. The fastest way to hop through code. W for word.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 299,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spell.py .spell.py.swp .spell.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spell.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "spell.py",
+      "content": "name = \"fireball\"\ndmg = 40\nrange = \"long\"\ncost = 5"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spell.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The w Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "W moves to the start of the next word. One of the most-used motions in Vim."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: hop word by word ---"
+    },
+    {
+      "say": "Cursor on N. Press W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Landed on the equals sign. W again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "On the quote. Each W hops to the next word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: with a count ---"
+    },
+    {
+      "say": "Use a count. Jump to line two. Three W skips three words.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "3w",
+      "overlay": "3 words"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped straight to forty. Three words in one shot."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: dw — delete word ---"
+    },
+    {
+      "say": "Combine with D. D W deletes a word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "dw",
+      "overlay": "delete word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Range gone. W is a motion. Pair it with any operator."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "W for word. Jump forward word by word. Add a count or pair with an operator."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spell.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "LXkXlXWciE4",
+    "url": "https://youtube.com/watch?v=LXkXlXWciE4"
+  }
+}

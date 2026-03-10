@@ -1,0 +1,243 @@
+{
+  "title": "VimFu — The y Key",
+  "description": "Y followed by a motion copies text. Y Y yanks a whole line. Y for yank.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 301,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f crew.py .crew.py.swp .crew.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*crew.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "crew.py",
+      "content": "pilot = \"Zara\"\nnav = \"Rex\"\ngunner = \"Koda\"\ncook = \"Pip\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim crew.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The y Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Y yanks. That's Vim for copy. Y plus a motion copies text into a register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: yy to yank a whole line ---"
+    },
+    {
+      "say": "Y Y yanks the whole line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Copied. Now P to paste it below.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "put"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Duplicate line. Y Y P is the line duplicator."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: yw to yank a word ---"
+    },
+    {
+      "say": "Y W yanks one word. Jump to Rex.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": "find \""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "yw",
+      "overlay": "yank word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Rex copied. Just the word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: y$ to yank to end of line ---"
+    },
+    {
+      "say": "Y dollar yanks to the end of the line. Jump to the cook line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "y$",
+      "overlay": "yank to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything from the cursor to the end of the line, yanked."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Y for yank. Y Y for a line. Y W for a word. Y dollar for the rest of the line. Copy anything."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f crew.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "34RWLt6IQ0c",
+    "url": "https://youtube.com/watch?v=34RWLt6IQ0c"
+  }
+}

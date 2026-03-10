@@ -1,0 +1,257 @@
+{
+  "title": "VimFu — The v Key",
+  "description": "V starts character-wise visual mode. Select text, then act on it. V for visual.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 298,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f loot.py .loot.py.swp .loot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*loot.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "loot.py",
+      "content": "sword = \"iron\"\nshield = \"oak\"\npotion = \"red\"\ngold = 50"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim loot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The v Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "V starts visual mode. Select text character by character, then do something with it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: select and delete ---"
+    },
+    {
+      "say": "Select the word sword. V to start, then E to the end of the word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "v",
+      "overlay": "visual"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": "end of word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Five characters highlighted. D to delete.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d",
+      "overlay": "delete"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gone. The selection disappears with one key."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: select across words and yank ---"
+    },
+    {
+      "say": "Select across the equals sign. V, then W W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "v",
+      "overlay": "visual"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2w",
+      "overlay": "2 words"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Y to yank the selection.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "y",
+      "overlay": "yank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Copied. Visual mode ends. Paste it anywhere with P."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: select and uppercase ---"
+    },
+    {
+      "say": "Make gold uppercase. Jump down. V, then E.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "v",
+      "overlay": "visual"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": "end of word"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "U",
+      "overlay": "uppercase"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gold became G O L D. Visual select, then act."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "V for visual. Select, then delete, yank, uppercase, or any operator."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f loot.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "-IdOu9z7tU4",
+    "url": "https://youtube.com/watch?v=-IdOu9z7tU4"
+  }
+}
