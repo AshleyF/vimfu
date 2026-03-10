@@ -603,6 +603,7 @@ def render_page(page, *, images_dir: Path | None = None,
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" type="image/svg+xml" href="../../logo.svg">
 <title>{title} — VimFu</title>
 <style>
 {PAGE_CSS}
@@ -686,6 +687,7 @@ ul.toc li a:hover { text-decoration: underline; }
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" type="image/svg+xml" href="../../logo.svg">
 <title>VimFu — Table of Contents</title>
 <style>
 {toc_css}
