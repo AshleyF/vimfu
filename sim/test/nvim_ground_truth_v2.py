@@ -46,7 +46,7 @@ CASES_DIR = _here / "cases"
 
 
 def discover_suites() -> dict[str, dict]:
-    """Import all test_*.py modules from cases/ and return {suite_name: CASES_dict}."""
+    """Import all test_*.py modules from cases/ and return {suite_name: {cases, nvim_cmd}}."""
     suites = {}
     for py_file in sorted(CASES_DIR.glob("test_*.py")):
         module_name = py_file.stem  # e.g. "test_motions_basic"
@@ -55,16 +55,19 @@ def discover_suites() -> dict[str, dict]:
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         if hasattr(mod, "CASES") and isinstance(mod.CASES, dict):
-            suites[suite_name] = mod.CASES
+            nvim_cmd = getattr(mod, "NVIM_CMD", None)
+            suites[suite_name] = {"cases": mod.CASES, "nvim_cmd": nvim_cmd}
         else:
             print(f"  WARNING: {py_file.name} has no CASES dict, skipping")
     return suites
 
 
-def run_case(name: str, case: dict) -> dict:
+def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
     """Run a single test case against Neovim and return captured state."""
     keys = case["keys"]
     initial = case.get("initial", "")
+    settle = case.get("settle", 0.3)
+    key_delay = case.get("key_delay", 0.04)
 
     # Write initial content to a temp file in the current directory
     # (short path avoids ConPTY escaping issues)
@@ -75,8 +78,10 @@ def run_case(name: str, case: dict) -> dict:
     import os
     os.environ['COLORTERM'] = 'truecolor'
 
+    # Use custom nvim command if provided (e.g. for plugin-dependent suites)
+    cmd = nvim_cmd or 'nvim --clean'
     shell = ShellPilot(
-        shell=f'nvim --clean -n {tmp.name}',
+        shell=f'{cmd} -n {tmp.name}',
         rows=ROWS,
         cols=COLS,
     )
@@ -119,13 +124,13 @@ def run_case(name: str, case: dict) -> dict:
                     j += 1  # include the terminator
                     shell.send_keys(keys[i:j])
                     i = j
-                    time.sleep(0.04)
+                    time.sleep(key_delay)
                     continue
             shell.send_keys(ch)
             i += 1
-            time.sleep(0.04)
+            time.sleep(key_delay)
 
-        time.sleep(0.3)  # settle
+        time.sleep(settle)  # settle
 
         # Capture frame
         frame = capture_frame(shell.screen)
@@ -156,7 +161,7 @@ def run_case(name: str, case: dict) -> dict:
             pass
 
 
-def run_suite(suite_name: str, cases: dict, case_filter: str | None = None) -> dict:
+def run_suite(suite_name: str, cases: dict, case_filter: str | None = None, nvim_cmd: str | None = None) -> dict:
     """Run all cases in a suite and return results dict."""
     if case_filter:
         if case_filter not in cases:
@@ -174,7 +179,7 @@ def run_suite(suite_name: str, cases: dict, case_filter: str | None = None) -> d
             results[name] = {"skip": case["skip"]}
             continue
         try:
-            result = run_case(name, case)
+            result = run_case(name, case, nvim_cmd=nvim_cmd)
             results[name] = result
             r, c = result["cursor"]["row"], result["cursor"]["col"]
             print(f"OK  cursor=({r},{c})")
@@ -203,8 +208,10 @@ def main():
 
     if args.list:
         total = 0
-        for name, cases in suites.items():
-            print(f"  {name}: {len(cases)} cases")
+        for name, info in suites.items():
+            cases = info["cases"]
+            extra = f" (nvim_cmd: {info['nvim_cmd']})" if info.get("nvim_cmd") else ""
+            print(f"  {name}: {len(cases)} cases{extra}")
             total += len(cases)
         print(f"\n  TOTAL: {total} test cases across {len(suites)} suites")
         return
@@ -223,16 +230,20 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     all_results = {}
-    grand_total = sum(len(c) for c in run_suites.values())
+    grand_total = sum(len(info["cases"]) for info in run_suites.values())
     completed = 0
 
-    for suite_name, cases in run_suites.items():
+    for suite_name, info in run_suites.items():
+        cases = info["cases"]
+        nvim_cmd = info.get("nvim_cmd")
         count = len(cases) if not args.case else 1
         print(f"\n{'='*60}")
         print(f"Suite: {suite_name} ({count} cases)")
+        if nvim_cmd:
+            print(f"  nvim_cmd: {nvim_cmd}")
         print(f"{'='*60}")
 
-        results = run_suite(suite_name, cases, args.case)
+        results = run_suite(suite_name, cases, args.case, nvim_cmd=nvim_cmd)
 
         # Write per-suite JSON
         out_file = out_dir / f"ground_truth_{suite_name}.json"

@@ -53,8 +53,9 @@ const THEMES = {
     // Line numbers
     lineNrFg: '4f5258',       // LineNr (dark grey)
     cursorLineNrFg: 'e0e2ea', // CursorLineNr (bright white)
-    // MatchParen – default nvim uses bold+underline only (no fg change)
-    matchParenFg: null,
+    cursorLineBg: '2c2e33',    // CursorLine background (verified nvim default)
+    // MatchParen – default nvim uses bold + guibg=NvimDarkGrey4
+    matchParenBg: '4f5258',
     // Syntax highlighting – verified against nvim -u NONE + syntax on + termguicolors
     syntax: {
       comment: '9b9ea4',        // Comment           (NvimDarkGrey4)
@@ -99,6 +100,8 @@ const THEMES = {
     // Line numbers
     lineNrFg: 'd4d4d4',          // LineNr (fg=default → terminal default)
     cursorLineNrFg: 'fd971f',    // CursorLineNr (orange)
+    cursorLineBg: '1a1a1a',        // CursorLine background (subtle)
+    matchParenBg: '4f5258',        // MatchParen (bg)
     matchParenFg: 'f92672',        // MatchParen (pink)
     // Syntax highlighting – tanvirtin/monokai.nvim palette
     syntax: {
@@ -226,7 +229,12 @@ export class Screen {
     // ── Compute search matches on visible lines ──
     let searchRegex = null;
     if (engine._searchPattern && engine._hlsearchActive) {
-      try { searchRegex = new RegExp(engine._searchPattern, 'g'); } catch (e) { /* bad regex */ }
+      // Respect ignorecase/smartcase settings
+      let caseFlag = '';
+      if (engine._settings?.ignorecase) {
+        caseFlag = (engine._settings.smartcase && /[A-Z]/.test(engine._searchPattern)) ? '' : 'i';
+      }
+      try { searchRegex = new RegExp(engine._searchPattern, 'g' + caseFlag); } catch (e) { /* bad regex */ }
     }
 
     // ── Syntax highlighting setup ──
@@ -245,7 +253,7 @@ export class Screen {
     // Neovim highlights the bracket under the cursor and its matching pair.
     let matchParenA = null; // bracket under cursor {row, col}
     let matchParenB = null; // matching bracket    {row, col}
-    if (t.matchParenFg && (mode === 'normal' || mode === 'visual' || mode === 'visual_line' || mode === 'insert')) {
+    if ((t.matchParenBg || t.matchParenFg) && (mode === 'normal' || mode === 'visual' || mode === 'visual_line' || mode === 'insert')) {
       const curLine = buf.lines[cursor.row] || '';
       const ch = curLine[cursor.col];
       if (ch && '([{)]}'.includes(ch)) {
@@ -270,13 +278,14 @@ export class Screen {
     const textCols = this.cols - gutterWidth; // available columns for text
 
     // ── Helper: expand a raw buffer line into screen text and mappings ──
+    const ts = engine._settings.tabstop || 8;
     const expandLine = (raw) => {
       let expanded = '';
       const bufToScreen = [];
       for (let i = 0; i < raw.length; i++) {
         bufToScreen[i] = expanded.length;
         if (raw[i] === '\t') {
-          const spaces = 8 - (expanded.length % 8);
+          const spaces = ts - (expanded.length % ts);
           expanded += ' '.repeat(spaces);
         } else {
           expanded += raw[i];
@@ -363,6 +372,13 @@ export class Screen {
           }
         }
 
+        // Apply cursorline highlight (bg-only; before visual/search)
+        if (engine._settings.cursorline && bufRow === cursor.row && t.cursorLineBg) {
+          for (let c = 0; c < textCols; c++) {
+            colBg[c] = t.cursorLineBg;
+          }
+        }
+
         // Apply visual highlight
         if (visMode) {
           let hlStart = -1, hlEnd = -1; // in expanded-string coords (absolute)
@@ -427,13 +443,14 @@ export class Screen {
           }
         }
 
-        // Apply MatchParen highlight (fg-only, preserves bg)
+        // Apply MatchParen highlight (bg, and optional fg)
         if (matchParenA || matchParenB) {
           for (const mp of [matchParenA, matchParenB]) {
             if (mp && mp.row === bufRow) {
               const scrCol = bufToScreen[mp.col] ?? 0;
               if (scrCol >= sliceStart && scrCol < sliceEnd) {
-                colFg[scrCol - sliceStart] = t.matchParenFg;
+                if (t.matchParenBg) colBg[scrCol - sliceStart] = t.matchParenBg;
+                if (t.matchParenFg) colFg[scrCol - sliceStart] = t.matchParenFg;
               }
             }
           }
@@ -466,7 +483,10 @@ export class Screen {
             // Continuation wrapped rows: blank gutter
             gutterText = ' '.repeat(gutterWidth);
           }
-          const nrFg = t.lineNrFg || t.normalFg;
+          const isCL = (bufRow === cursor.row);
+          const useCursorLine = isCL && engine._settings.cursorline;
+          const nrFg = useCursorLine ? (t.cursorLineNrFg || t.lineNrFg || t.normalFg)
+                                     : (t.lineNrFg || t.normalFg);
           gutterRuns.push({ n: gutterWidth, fg: nrFg, bg: t.normalBg });
         }
 
@@ -491,7 +511,7 @@ export class Screen {
           // visual column of that tab (not the first).
           let adjustedVirtCol = cursorVirtCol;
           if (cursor.col < raw.length && raw[cursor.col] === '\t') {
-            adjustedVirtCol += 8 - (cursorVirtCol % 8) - 1;
+            adjustedVirtCol += ts - (cursorVirtCol % ts) - 1;
           }
           const cursorWrapRow = Math.floor(adjustedVirtCol / textCols);
           if (wrapIdx === cursorWrapRow) {

@@ -1912,4 +1912,143 @@ CASES = {
     },
 
     # int_shell_history removed — real bash has persistent history; sim only tracks session commands
+
+    # ─────────────────────────────────────────────────────
+    # Border rendering (multi-split active pane border coloring)
+    # ─────────────────────────────────────────────────────
+
+    "border_three_pane_active_bottom_right": {
+        "description": "Three panes (vsplit + hsplit right) — active bottom-right, only adjacent borders green",
+        "steps": _tmux(
+            ("keys", CTRL_B + "%"),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + '"'),
+            ("sleep", 0.5),
+        ),
+        "sim_keys": [
+            "tmux", "Enter",
+            "Ctrl-B", "%",
+            "Ctrl-B", '"',
+        ],
+    },
+
+    "border_three_pane_active_top_right": {
+        "description": "Three panes (vsplit + hsplit right) — navigate to top-right pane",
+        "steps": _tmux(
+            ("keys", CTRL_B + "%"),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + '"'),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + "\x1b[A"),  # Up arrow → top-right pane
+            ("sleep", 0.3),
+        ),
+        "sim_keys": [
+            "tmux", "Enter",
+            "Ctrl-B", "%",
+            "Ctrl-B", '"',
+            "Ctrl-B", "ArrowUp",
+        ],
+    },
+
+    "border_three_pane_active_left": {
+        "description": "Three panes (vsplit + hsplit right) — navigate to left pane",
+        "steps": _tmux(
+            ("keys", CTRL_B + "%"),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + '"'),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + "\x1b[D"),  # Left arrow → left pane
+            ("sleep", 0.3),
+        ),
+        "sim_keys": [
+            "tmux", "Enter",
+            "Ctrl-B", "%",
+            "Ctrl-B", '"',
+            "Ctrl-B", "ArrowLeft",
+        ],
+    },
+
+    "border_four_panes_cross": {
+        "description": "Four panes (vsplit both sides) — cross intersection, active bottom-right",
+        "steps": _tmux(
+            ("keys", CTRL_B + "%"),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + '"'),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + "\x1b[D"),  # Left arrow → left pane
+            ("sleep", 0.3),
+            ("keys", CTRL_B + '"'),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + "\x1b[C"),  # Right arrow → right side
+            ("sleep", 0.3),
+            ("keys", CTRL_B + "\x1b[B"),  # Down arrow → bottom-right
+            ("sleep", 0.3),
+        ),
+        "sim_keys": [
+            "tmux", "Enter",
+            "Ctrl-B", "%",
+            "Ctrl-B", '"',
+            "Ctrl-B", "ArrowLeft",
+            "Ctrl-B", '"',
+            "Ctrl-B", "ArrowRight",
+            "Ctrl-B", "ArrowDown",
+        ],
+    },
+
+    "border_four_panes_active_top_left": {
+        "description": "Four panes — navigate to top-left, check partial border coloring",
+        "steps": _tmux(
+            ("keys", CTRL_B + "%"),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + '"'),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + "\x1b[D"),  # Left arrow → left pane
+            ("sleep", 0.3),
+            ("keys", CTRL_B + '"'),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + "\x1b[A"),  # Up arrow → top-left
+            ("sleep", 0.3),
+        ),
+        "sim_keys": [
+            "tmux", "Enter",
+            "Ctrl-B", "%",
+            "Ctrl-B", '"',
+            "Ctrl-B", "ArrowLeft",
+            "Ctrl-B", '"',
+            "Ctrl-B", "ArrowUp",
+        ],
+    },
+
+    "border_hsplit_then_vsplit": {
+        "description": "Hsplit then vsplit bottom — T intersection, active bottom-right",
+        "steps": _tmux(
+            ("keys", CTRL_B + '"'),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + "%"),
+            ("sleep", 0.5),
+        ),
+        "sim_keys": [
+            "tmux", "Enter",
+            "Ctrl-B", '"',
+            "Ctrl-B", "%",
+        ],
+    },
+
+    "border_hsplit_vsplit_active_top": {
+        "description": "Hsplit then vsplit bottom — navigate to top pane",
+        "steps": _tmux(
+            ("keys", CTRL_B + '"'),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + "%"),
+            ("sleep", 0.5),
+            ("keys", CTRL_B + "\x1b[A"),  # Up arrow → top pane
+            ("sleep", 0.3),
+        ),
+        "sim_keys": [
+            "tmux", "Enter",
+            "Ctrl-B", '"',
+            "Ctrl-B", "%",
+            "Ctrl-B", "ArrowUp",
+        ],
+    },
 }

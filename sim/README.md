@@ -19,6 +19,11 @@ View (src/renderer.js)
   └── Takes a Frame dict → renders to a <canvas> or DOM grid
 ```
 
+## Documentation
+
+- [Reference.md](Reference.md) — Quick reference of all keys and key combinations and what they do, for users.
+- [VimBehavior.md](VimBehavior.md) — Comprehensive technical specification of Vim behavior, detailed enough to derive a correct implementation from.
+
 ## Testing
 
 Tests compare the simulator's screen output against actual Neovim running

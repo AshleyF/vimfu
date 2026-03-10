@@ -21,6 +21,12 @@ Sections:
 Total: 344 unique test cases.
 """
 
+from pathlib import Path as _Path
+
+# Use nvim with surround plugin loaded (not --clean)
+_init_lua = str((_Path(__file__).resolve().parent.parent / "surround_init.lua").as_posix())
+NVIM_CMD = f'nvim --clean -u {_init_lua}'
+
 CASES = {
     # ==========================================================
     # 01. ys HIGHLIGHT STATE
@@ -1776,6 +1782,31 @@ CASES = {
     "wrap_then_delete_inner": {
         "description": "ysiw) then ysiw] then ds) deletes inner pair",
         "keys": "ysiw)lysiw]ds)",
+        "initial": "hello world",
+    },
+
+    # ==========================================================
+    # 10. CROSS-SUITE (moved from edge_cases / matchparen)
+    # ==========================================================
+
+    "dot_after_ysiw_paren_w": {
+        "description": "ysiw) on first word, w. on next — dot repeats surround",
+        "keys": "ysiw)w.",
+        "initial": "alpha beta gamma",
+    },
+    "dot_after_ysiw_bracket_w": {
+        "description": "ysiw] then w. — repeats bracket surround",
+        "keys": "ysiw]w.",
+        "initial": "one two three",
+    },
+    "dot_after_ys_dollar_quote": {
+        "description": "ys$\" wraps to EOL in quotes, j0. repeats on next line",
+        "keys": "ys$\"j0.",
+        "initial": "first line\nsecond line",
+    },
+    "mp_after_ysiw_paren": {
+        "description": "After ysiw), cursor on ( — both brackets highlighted",
+        "keys": "ysiw)",
         "initial": "hello world",
     },
 }

@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
 <title>VimFu Simulator</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -213,8 +214,8 @@ import { SAMPLE_PYTHON }     from './src/samples.js';
 const FONT_SIZE = 18;
 const MIN_ROWS = 10;
 const MIN_COLS = 20;
-const MAX_COLS = 80; // cap on wide screens
-const MAX_ROWS = 40;
+const MAX_COLS = 120; // cap on wide screens
+const MAX_ROWS = 50;
 
 // ── Renderer (created first to measure character cell size) ──
 const canvas = document.getElementById('terminal');
@@ -595,11 +596,11 @@ if (isTouchDevice) {
     canvas.focus({ preventScroll: true });
     setVKBVisible(!vkb.classList.contains('visible'));
   };
-  canvas.addEventListener('touchstart', hideFn);
+  canvas.addEventListener('touchstart', hideFn, { passive: false });
   document.getElementById('terminal-area').addEventListener('touchstart', e => {
     if (e.target === canvas) return; // already handled above
     hideFn(e);
-  });
+  }, { passive: false });
   // Hybrid device support: also handle mouse clicks (e.g. Windows
   // laptops with touchscreen where the user uses a mouse).
   // On pure-touch, touchstart's preventDefault() suppresses the click

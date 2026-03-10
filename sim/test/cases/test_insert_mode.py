@@ -469,6 +469,8 @@ CASES = {
     "O_then_esc_then_O": {
         "keys": "Ofirst\x1bOsecond\x1b",
         "initial": "bottom",
+        "settle": 1.0,
+        "key_delay": 0.15,
     },
     "i_long_text": {
         "keys": "iThe quick brown fox jumps\x1b",

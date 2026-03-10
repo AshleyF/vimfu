@@ -1105,6 +1105,62 @@ const simScenarios = {
   ],
 
   // int_shell_history removed — real bash has persistent history; sim only tracks session
+
+  // ═══════════════════════════════════════════════════════
+  //  BORDER RENDERING TESTS (multi-split active pane coloring)
+  // ═══════════════════════════════════════════════════════
+
+  border_three_pane_active_bottom_right: [
+    "tmux", "Enter",
+    "Ctrl-B", "%",
+    "Ctrl-B", '"',
+  ],
+
+  border_three_pane_active_top_right: [
+    "tmux", "Enter",
+    "Ctrl-B", "%",
+    "Ctrl-B", '"',
+    "Ctrl-B", "ArrowUp",
+  ],
+
+  border_three_pane_active_left: [
+    "tmux", "Enter",
+    "Ctrl-B", "%",
+    "Ctrl-B", '"',
+    "Ctrl-B", "ArrowLeft",
+  ],
+
+  border_four_panes_cross: [
+    "tmux", "Enter",
+    "Ctrl-B", "%",
+    "Ctrl-B", '"',
+    "Ctrl-B", "ArrowLeft",
+    "Ctrl-B", '"',
+    "Ctrl-B", "ArrowRight",
+    "Ctrl-B", "ArrowDown",
+  ],
+
+  border_four_panes_active_top_left: [
+    "tmux", "Enter",
+    "Ctrl-B", "%",
+    "Ctrl-B", '"',
+    "Ctrl-B", "ArrowLeft",
+    "Ctrl-B", '"',
+    "Ctrl-B", "ArrowUp",
+  ],
+
+  border_hsplit_then_vsplit: [
+    "tmux", "Enter",
+    "Ctrl-B", '"',
+    "Ctrl-B", "%",
+  ],
+
+  border_hsplit_vsplit_active_top: [
+    "tmux", "Enter",
+    "Ctrl-B", '"',
+    "Ctrl-B", "%",
+    "Ctrl-B", "ArrowUp",
+  ],
 };
 
 const caseEntries = Object.entries(groundTruth);

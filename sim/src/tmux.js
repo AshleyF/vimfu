@@ -1645,10 +1645,14 @@ export class Tmux {
   _drawBorderLines(frameLines, node, t, activePane) {
     if (node.isLeaf()) return;
 
-    // Border adjacent to the active pane gets the active border color
-    const firstHasActive = node.first.getPanes().includes(activePane);
-    const secondHasActive = node.second.getPanes().includes(activePane);
-    const borderFg = (firstHasActive || secondHasActive) ? t.borderActiveFg : t.borderFg;
+    // Get the active pane's bounding box for per-cell adjacency checks.
+    // In real tmux, only border cells directly adjacent to the active pane
+    // get the active color; other segments of the same border stay default.
+    const aLeaf = activePane ? node.findLeaf(activePane) : null;
+    const aTop = aLeaf ? activePane.top : -1;
+    const aLeft = aLeaf ? activePane.left : -1;
+    const aBottom = aLeaf ? activePane.top + activePane.height : -1;
+    const aRight = aLeaf ? activePane.left + activePane.width : -1;
 
     if (node.type === SplitDir.HSPLIT) {
       const borderRow = node.first.top + node.first.height;
@@ -1659,7 +1663,20 @@ export class Tmux {
           chars[c] = BORDER.H;
         }
         line.text = chars.join('');
-        this._setBorderRuns(line, node.left, node.width, borderFg, t.bg);
+
+        if (aLeaf &&
+            (aTop + (aBottom - aTop) === borderRow || aTop === borderRow + 1)) {
+          // Active pane is directly above or below this horizontal border.
+          // Only the columns overlapping the active pane get active color.
+          this._setBorderRuns(line, node.left, node.width, t.borderFg, t.bg);
+          const overlapLeft = Math.max(node.left, aLeft);
+          const overlapRight = Math.min(node.left + node.width, aRight);
+          if (overlapLeft < overlapRight) {
+            this._setBorderRuns(line, overlapLeft, overlapRight - overlapLeft, t.borderActiveFg, t.bg);
+          }
+        } else {
+          this._setBorderRuns(line, node.left, node.width, t.borderFg, t.bg);
+        }
       }
     } else {
       const borderCol = node.first.left + node.first.width;
@@ -1669,7 +1686,11 @@ export class Tmux {
           const chars = line.text.split('');
           chars[borderCol] = BORDER.V;
           line.text = chars.join('');
-          this._setBorderRuns(line, borderCol, 1, borderFg, t.bg);
+          // Active pane is adjacent at this row if it's directly left or right
+          // of the border and this row is within its vertical span.
+          const isAdj = aLeaf && r >= aTop && r < aBottom &&
+                        (aRight === borderCol || aLeft === borderCol + 1);
+          this._setBorderRuns(line, borderCol, 1, isAdj ? t.borderActiveFg : t.borderFg, t.bg);
         }
       }
     }

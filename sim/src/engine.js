@@ -80,6 +80,8 @@ export class VimEngine {
     this._unnamedReg = '';
     this._regType = 'char'; // 'char' or 'line'
     this._namedRegs = {};   // {a-z, +, *}: { text, type }
+    this._numberedRegs = new Array(10).fill(null); // "0-"9: {text, type} or null
+    this._smallDeleteReg = null; // "-: {text, type} for deletes < 1 line
     this._pendingRegKey = ''; // pending " register prefix
     this._pendingCtrlR = false; // pending Ctrl-R in insert mode
     /** @type {((text: string) => void) | null} */
@@ -140,6 +142,7 @@ export class VimEngine {
     // Jump list (for Ctrl-O / Ctrl-I)
     this._jumpList = [];
     this._jumpListPos = -1;
+    this._lastJumpPos = null; // for '' / `` marks (position before last jump)
 
     // Ex command hook — set by _executeCommand when it processes :w/:q etc.
     // SessionManager reads and clears this after each feedKey.
@@ -161,6 +164,14 @@ export class VimEngine {
     this._settings = {
       number: false,       // :set number / :set nonumber
       relativenumber: false, // :set relativenumber / :set norelativenumber
+      ignorecase: false,   // :set ignorecase / :set noignorecase (ic/noic)
+      smartcase: false,    // :set smartcase / :set nosmartcase (scs/noscs)
+      scrolloff: 0,        // :set scrolloff=N (so)
+      expandtab: false,    // :set expandtab / :set noexpandtab (et/noet)
+      tabstop: 8,          // :set tabstop=N (ts)
+      shiftwidth: 8,       // :set shiftwidth=N (sw)
+      autoindent: true,   // :set autoindent / :set noautoindent (ai/noai) — nvim default is on
+      cursorline: false,   // :set cursorline / :set nocursorline (cul/nocul)
     };
 
     this._updateStatus();
@@ -325,17 +336,58 @@ export class VimEngine {
 
   _hasCount() { return this._pendingCount !== ''; }
 
-  /** Save text to the current register (named or unnamed) */
-  _setReg(text, type) {
+  /**
+   * Save text to registers after a delete, change, or yank.
+   * @param {string} text
+   * @param {'char'|'line'} type
+   * @param {'delete'|'yank'} [op='delete'] – whether this is a delete/change or a yank
+   */
+  _setReg(text, type, op = 'delete') {
     const reg = this._pendingRegKey;
+    this._pendingRegKey = '';
+
+    // Black hole register: discard everything
+    if (reg === '_') return;
+
+    // Always update unnamed register
     this._unnamedReg = text;
     this._regType = type;
+
     if (reg) {
-      this._namedRegs[reg] = { text, type };
-      this._pendingRegKey = '';
+      // Uppercase register: append to the lowercase register
+      if (reg >= 'A' && reg <= 'Z') {
+        const lower = reg.toLowerCase();
+        const existing = this._namedRegs[lower];
+        if (existing) {
+          const sep = (existing.type === 'line' || type === 'line') ? '\n' : '';
+          this._namedRegs[lower] = { text: existing.text + sep + text, type: type === 'line' || existing.type === 'line' ? 'line' : 'char' };
+        } else {
+          this._namedRegs[lower] = { text, type };
+        }
+      } else {
+        this._namedRegs[reg] = { text, type };
+      }
       // Notify controller when writing to clipboard registers
       if ((reg === '+' || reg === '*') && this._onClipboardWrite) {
         this._onClipboardWrite(text);
+      }
+    }
+
+    // Numbered register logic (only when no explicit named register was given)
+    if (!reg || (reg >= 'A' && reg <= 'Z')) {
+      if (op === 'yank') {
+        // "0 always gets the most recent yank
+        this._numberedRegs[0] = { text, type };
+      } else {
+        // delete/change: if linewise OR multiline, shift "1-"9 and store in "1
+        const isMultiline = text.includes('\n');
+        if (type === 'line' || isMultiline) {
+          for (let i = 9; i >= 2; i--) this._numberedRegs[i] = this._numberedRegs[i - 1];
+          this._numberedRegs[1] = { text, type };
+        } else {
+          // Small delete (less than one line) → "- register
+          this._smallDeleteReg = { text, type };
+        }
       }
     }
   }
@@ -345,7 +397,24 @@ export class VimEngine {
     const reg = this._pendingRegKey;
     this._pendingRegKey = '';
     if (reg) {
-      const r = this._namedRegs[reg];
+      // Black hole register
+      if (reg === '_') return { text: '', type: 'char' };
+      // Numbered registers
+      if (reg >= '0' && reg <= '9') {
+        const r = this._numberedRegs[parseInt(reg)];
+        return r ? r : { text: '', type: 'char' };
+      }
+      // Small delete register
+      if (reg === '-') {
+        return this._smallDeleteReg ? this._smallDeleteReg : { text: '', type: 'char' };
+      }
+      // Last search register
+      if (reg === '/') {
+        return { text: this._searchPattern || '', type: 'char' };
+      }
+      // Uppercase register reads from lowercase
+      const key = (reg >= 'A' && reg <= 'Z') ? reg.toLowerCase() : reg;
+      const r = this._namedRegs[key];
       return r ? r : { text: '', type: 'char' };
     }
     return { text: this._unnamedReg, type: this._regType };
@@ -439,7 +508,7 @@ export class VimEngine {
     // Pending " (register selection)
     if (this._pendingDblQuote) {
       this._pendingDblQuote = false;
-      if (key.length === 1 && ((key >= 'a' && key <= 'z') || key === '+' || key === '*')) {
+      if (key.length === 1 && (/^[a-zA-Z0-9]$/.test(key) || '+-*_/"'.includes(key))) {
         this._pendingRegKey = key;
       }
       // After setting register, fall through to normal processing
@@ -627,9 +696,10 @@ export class VimEngine {
     // Pending ' (mark line)
     if (this._pendingQuote) {
       this._pendingQuote = false;
-      if (key.length === 1 && key >= 'a' && key <= 'z' && this._marks[key]) {
+      const mark = this._resolveMark(key);
+      if (mark) {
         const sr = this.cursor.row, sc = this.cursor.col;
-        this.cursor.row = this._marks[key].row;
+        this.cursor.row = Math.min(mark.row, this.buffer.lineCount - 1);
         this.cursor.col = this._firstNonBlank(this.cursor.row);
         if (this._pendingOp) {
           this._motionLinewise = true;
@@ -648,10 +718,14 @@ export class VimEngine {
     // Pending ` (mark exact)
     if (this._pendingBacktick) {
       this._pendingBacktick = false;
-      if (key.length === 1 && key >= 'a' && key <= 'z' && this._marks[key]) {
+      const mark = this._resolveMark(key);
+      if (mark) {
         const sr = this.cursor.row, sc = this.cursor.col;
-        this.cursor.row = this._marks[key].row;
-        this.cursor.col = this._marks[key].col;
+        this.cursor.row = Math.min(mark.row, this.buffer.lineCount - 1);
+        this.cursor.col = mark.col;
+        // Clamp col to line length
+        const maxCol = Math.max(0, this.buffer.lineLength(this.cursor.row) - 1);
+        if (this.cursor.col > maxCol) this.cursor.col = maxCol;
         if (this._pendingOp) {
           this._motionInclusive = false;
           this._motionLinewise = false;
@@ -1370,7 +1444,7 @@ export class VimEngine {
       case 'Y': {
         const count = this._getCount();
         const line = this.buffer.lines[this.cursor.row];
-        this._setReg(line.slice(this.cursor.col), 'char');
+        this._setReg(line.slice(this.cursor.col), 'char', 'yank');
         break;
       }
 
@@ -1379,7 +1453,7 @@ export class VimEngine {
         const count = this._getCount();
         const explicitReg = this._pendingRegKey;
         const reg = this._getReg();
-        if (explicitReg && !reg.text) {
+        if (explicitReg && !reg.text && explicitReg !== '_') {
           this.commandLine = 'E353: Nothing in register ' + explicitReg;
           this._stickyCommandLine = true;
           break;
@@ -1399,7 +1473,7 @@ export class VimEngine {
         const count = this._getCount();
         const explicitReg = this._pendingRegKey;
         const reg = this._getReg();
-        if (explicitReg && !reg.text) {
+        if (explicitReg && !reg.text && explicitReg !== '_') {
           this.commandLine = 'E353: Nothing in register ' + explicitReg;
           this._stickyCommandLine = true;
           break;
@@ -1449,7 +1523,7 @@ export class VimEngine {
       case 'o': {
         this._insertCount = this._getCount();
         this._saveSnapshot(); this._startRecording(); this._saveForDot('o');
-        const oIndent = this.buffer.lines[this.cursor.row].match(/^[ \t]*/)[0];
+        const oIndent = this._settings.autoindent ? this.buffer.lines[this.cursor.row].match(/^[ \t]*/)[0] : '';
         this.buffer.insertLineAfter(this.cursor.row);
         this.cursor.row++;
         this.buffer.lines[this.cursor.row] = oIndent;
@@ -1460,7 +1534,7 @@ export class VimEngine {
       case 'O': {
         this._insertCount = this._getCount();
         this._saveSnapshot(); this._startRecording(); this._saveForDot('O');
-        const OIndent = this.buffer.lines[this.cursor.row].match(/^[ \t]*/)[0];
+        const OIndent = this._settings.autoindent ? this.buffer.lines[this.cursor.row].match(/^[ \t]*/)[0] : '';
         this.buffer.insertLineBefore(this.cursor.row);
         this.buffer.lines[this.cursor.row] = OIndent;
         this.cursor.col = OIndent.length;
@@ -1519,8 +1593,8 @@ export class VimEngine {
         this._searchInput = '';
         this.commandLine = '?';
         return;
-      case 'n': { this._addJumpEntry(); const c = this._getCount(); for (let i = 0; i < c; i++) this._searchNext(this._searchForward); this._showCurSearch = true; this._hlsearchActive = true; break; }
-      case 'N': { this._addJumpEntry(); const c = this._getCount(); for (let i = 0; i < c; i++) this._searchNext(!this._searchForward); this._showCurSearch = true; this._hlsearchActive = true; break; }
+      case 'n': { this._addJumpEntry(); const c = this._getCount(); let found = false; for (let i = 0; i < c; i++) found = this._searchNext(this._searchForward); if (!found && this._searchPattern) { this.commandLine = 'E486: Pattern not found: ' + this._searchPattern; this._stickyCommandLine = true; } this._showCurSearch = true; this._hlsearchActive = true; break; }
+      case 'N': { this._addJumpEntry(); const c = this._getCount(); let found = false; for (let i = 0; i < c; i++) found = this._searchNext(!this._searchForward); if (!found && this._searchPattern) { this.commandLine = 'E486: Pattern not found: ' + this._searchPattern; this._stickyCommandLine = true; } this._showCurSearch = true; this._hlsearchActive = true; break; }
       case '*': {
         const w = this._wordUnderCursor();
         if (w) { this._addJumpEntry(); this._searchPattern = '\\b' + w + '\\b'; this._searchForward = true; this._searchNext(true); this._showCurSearch = true; this._hlsearchActive = true; }
@@ -1629,6 +1703,8 @@ export class VimEngine {
           }
           this._macroPlaying = wasPlaying;
           this._macroAborted = false;
+        } else {
+          this._messagePrompt = { error: "E354: Invalid register name: '^@'" };
         }
         this._pendingCount = '';
         break;
@@ -2086,11 +2162,156 @@ export class VimEngine {
       return;
     }
 
+    // :pu[t][!] [register] — paste register content as new lines
+    {
+      const putMatch = cmd.match(/^pu(t)?(!)?\s*(.*)$/);
+      if (putMatch) {
+        const bang = !!putMatch[2];
+        const regArg = putMatch[3].trim();
+        // Determine which register to read
+        // :put takes a single character register name (e.g. :put a, :put /, :put ")
+        // If multiple chars are given (e.g. :put "/), the first char is the register
+        let regName = '';
+        let reg;
+        if (regArg.length >= 1) {
+          regName = regArg[0];
+          this._pendingRegKey = regName;
+          reg = this._getReg();
+        } else {
+          // No register specified — use unnamed register
+          regName = '"';
+          reg = { text: this._unnamedReg, type: this._regType };
+        }
+        const text = reg.text || '';
+        if (!text) {
+          // E353: Nothing in register X
+          this.commandLine = 'E353: Nothing in register ' + regName;
+          this._stickyCommandLine = true;
+          return;
+        }
+        this._saveSnapshot();
+        this._redoStack = [];
+        const lines = text.split('\n');
+        // Remove trailing empty string from split if text ended with \n
+        if (lines.length > 0 && lines[lines.length - 1] === '' && text.endsWith('\n')) {
+          lines.pop();
+        }
+        if (bang) {
+          // :put! — insert above current line
+          this.buffer.lines.splice(this.cursor.row, 0, ...lines);
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+        } else {
+          // :put — insert below current line
+          this.buffer.lines.splice(this.cursor.row + 1, 0, ...lines);
+          this.cursor.row += 1;
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+        }
+        this._updateDesiredCol();
+        this.commandLine = '';
+        return;
+      }
+    }
+
     // :set commands
     if (/^set?\s/.test(cmd) || cmd === 'set') {
       this._executeSet(cmd);
       this.commandLine = '';
       return;
+    }
+
+    // :s[ubstitute]/pattern/replacement/[flags]  and  :%s/...  and  :'<,'>s/...
+    {
+      const subMatch = cmd.match(/^(?:(%|'<,'>)\s*)?s(?:u(?:b(?:s(?:t(?:i(?:t(?:u(?:te?)?)?)?)?)?)?)?)?([\/:!#])(.*)/);
+      if (subMatch) {
+        const rangeSpec = subMatch[1] || '';
+        const delim = subMatch[2];
+        const rest = subMatch[3];
+        // Parse: pattern<delim>replacement<delim>[flags]
+        // Handle escaped delimiters within pattern/replacement
+        let pattern = '', replacement = '', flagStr = '';
+        let part = 0; // 0=pattern, 1=replacement, 2=flags
+        for (let i = 0; i < rest.length; i++) {
+          if (rest[i] === '\\' && i + 1 < rest.length) {
+            const target = part === 0 ? 'pattern' : part === 1 ? 'replacement' : 'flags';
+            if (target === 'pattern') pattern += rest[i] + rest[i + 1];
+            else if (target === 'replacement') replacement += rest[i] + rest[i + 1];
+            else flagStr += rest[i] + rest[i + 1];
+            i++; continue;
+          }
+          if (rest[i] === delim) { part++; continue; }
+          if (part === 0) pattern += rest[i];
+          else if (part === 1) replacement += rest[i];
+          else flagStr += rest[i];
+        }
+        if (!pattern) { this.commandLine = ''; return; }
+
+        // Parse flags
+        let globalFlag = false, icFlag = false, confirmFlag = false;
+        for (const ch of flagStr) {
+          if (ch === 'g') globalFlag = true;
+          else if (ch === 'i') icFlag = true;
+          else if (ch === 'c') confirmFlag = true; // confirm not yet interactive, just apply all
+        }
+
+        // Determine range
+        let sr = this.cursor.row, er = this.cursor.row;
+        if (rangeSpec === '%') { sr = 0; er = this.buffer.lineCount - 1; }
+        else if (rangeSpec === "'<,'>" && this._visualCmdRange) {
+          sr = this._visualCmdRange.start; er = this._visualCmdRange.end;
+          this._visualCmdRange = null;
+        }
+
+        // Set search pattern for n/N/highlighting (must be BEFORE _searchCaseFlag for smartcase)
+        this._searchPattern = pattern;
+        this._hlsearchActive = true;
+
+        // Translate vim "magic" regex to JavaScript regex
+        // In vim's default magic mode: \+ → +, \? → ?, \( → (, \) → ), \| → |, \{ → {, \} → }
+        let jsPattern = pattern
+          .replace(/\\\+/g, '+')
+          .replace(/\\\?/g, '?')
+          .replace(/\\\(/g, '(')
+          .replace(/\\\)/g, ')')
+          .replace(/\\\|/g, '|')
+          .replace(/\\\{/g, '{')
+          .replace(/\\\}/g, '}');
+
+        // Build regex (respect ignorecase/smartcase + explicit i flag)
+        let caseFlag = icFlag ? 'i' : this._searchCaseFlag();
+        let regex;
+        try { regex = new RegExp(jsPattern, (globalFlag ? 'g' : '') + caseFlag); } catch {
+          this.commandLine = 'E486: Pattern not found: ' + pattern;
+          this._stickyCommandLine = true;
+          return;
+        }
+
+        // Perform substitutions
+        this._saveSnapshot();
+        this._redoStack = [];
+        let totalSubs = 0;
+        let lastSubRow = sr;
+        for (let r = sr; r <= er; r++) {
+          const before = this.buffer.lines[r];
+          const after = before.replace(regex, replacement);
+          if (after !== before) {
+            this.buffer.lines[r] = after;
+            totalSubs++;
+            lastSubRow = r;
+          }
+        }
+
+        if (totalSubs === 0) {
+          this.commandLine = 'E486: Pattern not found: ' + pattern;
+          this._stickyCommandLine = true;
+        } else {
+          // Move cursor to last substituted line, first non-blank
+          this.cursor.row = lastSubRow;
+          this.cursor.col = this._firstNonBlank(lastSubRow);
+          this.commandLine = totalSubs + ' substitution' + (totalSubs > 1 ? 's' : '') + ' on ' + (er - sr + 1) + ' line' + ((er - sr + 1) > 1 ? 's' : '');
+          this._stickyCommandLine = true;
+        }
+        return;
+      }
     }
 
     // :sort — sort lines in buffer or visual range
@@ -2196,26 +2417,42 @@ export class VimEngine {
   _executeSet(cmd) {
     // Parse: "set option" or "set nooption" or "set option=value"
     const args = cmd.replace(/^set?\s*/, '').split(/\s+/);
+    // Short-form aliases → canonical names
+    const shortAliases = {
+      nu: 'number', rnu: 'relativenumber',
+      ic: 'ignorecase', scs: 'smartcase',
+      et: 'expandtab', ai: 'autoindent',
+      cul: 'cursorline',
+      ts: 'tabstop', sw: 'shiftwidth', so: 'scrolloff',
+    };
     for (const arg of args) {
       if (!arg) continue;
-      // Boolean options: :set option / :set nooption
+
+      // Handle numeric settings: option=value
+      const eqMatch = arg.match(/^(\w+)=(\d+)$/);
+      if (eqMatch) {
+        const optName = shortAliases[eqMatch[1]] || eqMatch[1];
+        if (optName in this._settings && typeof this._settings[optName] === 'number') {
+          this._settings[optName] = parseInt(eqMatch[2], 10);
+        }
+        continue;
+      }
+
+      // Boolean options: :set nooption
       const noMatch = arg.match(/^no(.+)$/);
       if (noMatch) {
-        const opt = noMatch[1];
+        const raw = noMatch[1];
+        const opt = shortAliases[raw] || raw;
         if (opt in this._settings && typeof this._settings[opt] === 'boolean') {
           this._settings[opt] = false;
         }
-        // Handle short forms
-        else if (opt === 'nu') this._settings.number = false;
-        else if (opt === 'rnu') this._settings.relativenumber = false;
         continue;
       }
-      // Handle short forms for enabling
-      if (arg === 'nu') { this._settings.number = true; continue; }
-      if (arg === 'rnu') { this._settings.relativenumber = true; continue; }
-      // Direct boolean enable
-      if (arg in this._settings && typeof this._settings[arg] === 'boolean') {
-        this._settings[arg] = true;
+
+      // Boolean enable (short or long form)
+      const opt = shortAliases[arg] || arg;
+      if (opt in this._settings && typeof this._settings[opt] === 'boolean') {
+        this._settings[opt] = true;
         continue;
       }
     }
@@ -2229,15 +2466,15 @@ export class VimEngine {
       this._pendingCtrlR = false;
       this._saveForDot(key);
       let regText = '';
-      if (/^[a-zA-Z0-9]$/.test(key)) {
-        const rk = key.toLowerCase();
-        const r = this._namedRegs[rk];
-        regText = r ? r.text : '';
-      } else if (key === '+' || key === '*') {
-        const r = this._namedRegs[key];
-        regText = r ? r.text : '';
-      } else if (key === '"') {
-        regText = this._unnamedReg || '';
+      // Use _getReg logic for consistency: set _pendingRegKey then call _getReg
+      if (/^[a-zA-Z0-9]$/.test(key) || '+-*_/"'.includes(key)) {
+        this._pendingRegKey = key === '"' ? '' : key;
+        if (key === '"') {
+          regText = this._unnamedReg || '';
+        } else {
+          const r = this._getReg();
+          regText = r.text || '';
+        }
       }
       if (regText) {
         const lines = regText.split('\n');
@@ -2279,6 +2516,11 @@ export class VimEngine {
         }
         // Save cursor position before adjusting for gi
         this._lastInsertPos = { row: this.cursor.row, col: this.cursor.col };
+        // Update change list with the position after editing (for `. mark)
+        if (this._changeList.length > 0) {
+          const endCol = Math.max(0, this.cursor.col - 1);
+          this._changeList[this._changeList.length - 1] = { row: this.cursor.row, col: endCol };
+        }
         this.mode = Mode.NORMAL; this.commandLine = '';
         if (this.cursor.col > 0) this.cursor.col--;
         this._stopRecording(); this._redoStack = [];
@@ -2610,8 +2852,8 @@ export class VimEngine {
     // Pending register selection ("x)
     if (this._pendingDblQuote) {
       this._pendingDblQuote = false;
-      if (/^[a-zA-Z0-9]$/.test(key) || key === '+' || key === '*') {
-        this._pendingRegKey = key === '+' || key === '*' ? key : key.toLowerCase();
+      if (key.length === 1 && (/^[a-zA-Z0-9]$/.test(key) || '+-*_/\"'.includes(key))) {
+        this._pendingRegKey = key;
       }
       return;
     }
@@ -2813,9 +3055,9 @@ export class VimEngine {
       case 'y': {
         if (this.mode === Mode.VISUAL_LINE) {
           let y = ''; for (let r = sr; r <= er; r++) y += (r > sr ? '\n' : '') + this.buffer.lines[r];
-          this._setReg(y, 'line');
+          this._setReg(y, 'line', 'yank');
         } else {
-          this._setReg(this._extractRange(sr, sc, er, ec), 'char');
+          this._setReg(this._extractRange(sr, sc, er, ec), 'char', 'yank');
         }
         this.mode = Mode.NORMAL; this.commandLine = '';
         this.cursor.row = sr; this.cursor.col = sc;
@@ -3377,9 +3619,9 @@ export class VimEngine {
       case 'y': {
         if (isLinewise) {
           let y = ''; for (let r = sr; r <= er; r++) y += (r > sr ? '\n' : '') + this.buffer.lines[r];
-          this._setReg(y, 'line');
+          this._setReg(y, 'line', 'yank');
         } else {
-          this._setReg(this.buffer.lines[sr].slice(sc, ecSlice), 'char');
+          this._setReg(this.buffer.lines[sr].slice(sc, ecSlice), 'char', 'yank');
         }
         this.cursor.row = sr; this.cursor.col = sc;
         break;
@@ -3487,7 +3729,7 @@ export class VimEngine {
         case 'y': {
           let y = '';
           for (let r = startRow; r <= endRow; r++) y += (r > startRow ? '\n' : '') + this.buffer.lines[r];
-          this._setReg(y, 'line');
+          this._setReg(y, 'line', 'yank');
           this.cursor.row = startRow;
           this.cursor.col = this._firstNonBlank(startRow);
           break;
@@ -3518,17 +3760,35 @@ export class VimEngine {
         break;
       }
       case 'c': {
-        if (range.multilineInner) {
-          // ci( / ci{ multiline: replace inner lines with indented blank line
-          const indent = this.buffer.lines[startRow].match(/^(\s*)/)[1];
-          // Remove all inner lines and insert blank indented line
+        if (range.multilineInner && startCol === 0) {
+          // ci( / ci{ multiline where inner starts on a new line after the
+          // opening delimiter: nvim deletes all inner lines and inserts
+          // a blank line with the indentation of the first inner line,
+          // keeping the opening/closing delimiter lines intact.
+          let cy = this.buffer.lines[startRow].slice(startCol);
+          for (let r = startRow + 1; r < endRow; r++) cy += '\n' + this.buffer.lines[r];
+          cy += '\n' + this.buffer.lines[endRow].slice(0, endCol);
+          this._setReg(cy, 'char');
+          // Grab indentation from the first inner line before modifying
+          const firstInnerLine = this.buffer.lines[startRow];
+          const indentMatch = firstInnerLine.match(/^(\s*)/);
+          const indent = indentMatch ? indentMatch[1] : '';
+          // Trim the closing delimiter line (keep from endCol onwards)
+          this.buffer.lines[endRow] = this.buffer.lines[endRow].slice(endCol);
+          // Replace inner lines (startRow through endRow-1) with a single blank indented line
           this.buffer.lines.splice(startRow, endRow - startRow, indent);
+          // Cursor goes on the blank indented line
           this.cursor.row = startRow; this.cursor.col = indent.length;
         } else if (startRow !== endRow) {
+          let cy = this.buffer.lines[startRow].slice(startCol);
+          for (let r = startRow + 1; r < endRow; r++) cy += '\n' + this.buffer.lines[r];
+          cy += '\n' + this.buffer.lines[endRow].slice(0, endCol);
+          this._setReg(cy, 'char');
           this._deleteRange(startRow, startCol, endRow, endCol - 1);
           this.cursor.row = startRow; this.cursor.col = startCol;
         } else {
           const l = this.buffer.lines[startRow];
+          this._setReg(l.slice(startCol, endCol), 'char');
           this.buffer.lines[startRow] = l.slice(0, startCol) + l.slice(endCol);
           this.cursor.row = startRow; this.cursor.col = startCol;
         }
@@ -3542,9 +3802,9 @@ export class VimEngine {
           let y = this.buffer.lines[startRow].slice(startCol);
           for (let r = startRow + 1; r < endRow; r++) y += '\n' + this.buffer.lines[r];
           y += '\n' + this.buffer.lines[endRow].slice(0, endCol);
-          this._setReg(y, 'char');
+          this._setReg(y, 'char', 'yank');
         } else {
-          this._setReg(this.buffer.lines[startRow].slice(startCol, endCol), 'char');
+          this._setReg(this.buffer.lines[startRow].slice(startCol, endCol), 'char', 'yank');
         }
         break;
       }
@@ -3631,7 +3891,7 @@ export class VimEngine {
       }
       case 'y': {
         let y = ''; for (let r = sr; r <= er; r++) y += (r > sr ? '\n' : '') + this.buffer.lines[r];
-        this._setReg(y, 'line');
+        this._setReg(y, 'line', 'yank');
         break;
       }
       case '>': {
@@ -4038,10 +4298,21 @@ export class VimEngine {
 
   // ── Search ──
 
+  /**
+   * Compute regex flags for the current search pattern based on ignorecase/smartcase.
+   * Returns '' or 'i'.
+   */
+  _searchCaseFlag() {
+    if (!this._settings.ignorecase) return '';
+    if (this._settings.smartcase && this._searchPattern && /[A-Z]/.test(this._searchPattern)) return '';
+    return 'i';
+  }
+
   _searchNext(forward) {
     if (!this._searchPattern) return false;
+    const caseFlag = this._searchCaseFlag();
     let pattern;
-    try { pattern = new RegExp(this._searchPattern); } catch { return false; }
+    try { pattern = new RegExp(this._searchPattern, caseFlag); } catch { return false; }
     const sr = this.cursor.row, sc = this.cursor.col;
     const lc = this.buffer.lineCount;
     if (forward) {
@@ -4064,7 +4335,7 @@ export class VimEngine {
         const end = (r === sr && i === 0) ? sc : this.buffer.lines[r].length;
         const sub = this.buffer.lines[r].slice(0, end);
         let last = null, m;
-        const re = new RegExp(this._searchPattern, 'g');
+        const re = new RegExp(this._searchPattern, 'g' + caseFlag);
         while ((m = re.exec(sub)) !== null) last = m;
         if (last) {
           this.cursor.row = r; this.cursor.col = last.index;
@@ -4716,8 +4987,19 @@ export class VimEngine {
   }
 
   _ensureCursorVisible() {
-    if (this.cursor.row < this.scrollTop) this.scrollTop = this.cursor.row;
-    if (this.cursor.row >= this.scrollTop + this._textRows) this.scrollTop = this.cursor.row - this._textRows + 1;
+    const so = this._settings.scrolloff || 0;
+    // Clamp scrolloff so it doesn't exceed half the screen
+    const eff = Math.min(so, Math.floor(this._textRows / 2));
+    if (this.cursor.row < this.scrollTop + eff) {
+      this.scrollTop = Math.max(0, this.cursor.row - eff);
+    }
+    if (this.cursor.row >= this.scrollTop + this._textRows - eff) {
+      this.scrollTop = this.cursor.row - this._textRows + 1 + eff;
+      // Don't over-scroll past end of buffer for scrolloff purposes
+      // (nvim won't auto-scroll beyond the last line to satisfy scrolloff)
+      const maxSoScroll = Math.max(0, this.buffer.lines.length - this._textRows);
+      if (this.scrollTop > maxSoScroll) this.scrollTop = maxSoScroll;
+    }
   }
 
   /** Compute the 0-indexed virtual (screen) column for a byte position in a line. */
@@ -4787,21 +5069,26 @@ export class VimEngine {
   _shiftLineRight(row) {
     const line = this.buffer.lines[row];
     if (line.length === 0) return; // skip empty lines
-    const sw = 8;
+    const sw = this._settings.shiftwidth || 8;
+    const ts = this._settings.tabstop || 8;
+    const et = this._settings.expandtab;
     // Compute current indent in virtual columns
     let indent = 0;
     let i = 0;
     while (i < line.length && (line[i] === ' ' || line[i] === '\t')) {
-      if (line[i] === '\t') indent += sw - (indent % sw);
+      if (line[i] === '\t') indent += ts - (indent % ts);
       else indent++;
       i++;
     }
     const text = line.slice(i);
     const newIndent = indent + sw;
-    // With noexpandtab and tabstop=8: convert to tabs + spaces
-    const tabs = Math.floor(newIndent / sw);
-    const spaces = newIndent % sw;
-    this.buffer.lines[row] = '\t'.repeat(tabs) + ' '.repeat(spaces) + text;
+    if (et) {
+      this.buffer.lines[row] = ' '.repeat(newIndent) + text;
+    } else {
+      const tabs = Math.floor(newIndent / ts);
+      const spaces = newIndent % ts;
+      this.buffer.lines[row] = '\t'.repeat(tabs) + ' '.repeat(spaces) + text;
+    }
   }
 
   /**
@@ -4812,21 +5099,27 @@ export class VimEngine {
   _shiftLineLeft(row) {
     const line = this.buffer.lines[row];
     if (line.length === 0) return; // skip empty lines
-    const sw = 8;
+    const sw = this._settings.shiftwidth || 8;
+    const ts = this._settings.tabstop || 8;
+    const et = this._settings.expandtab;
     // Compute current indent in virtual columns
     let indent = 0;
     let i = 0;
     while (i < line.length && (line[i] === ' ' || line[i] === '\t')) {
-      if (line[i] === '\t') indent += sw - (indent % sw);
+      if (line[i] === '\t') indent += ts - (indent % ts);
       else indent++;
       i++;
     }
     if (indent === 0) return; // nothing to dedent
     const text = line.slice(i);
     const newIndent = Math.max(0, indent - sw);
-    const tabs = Math.floor(newIndent / sw);
-    const spaces = newIndent % sw;
-    this.buffer.lines[row] = '\t'.repeat(tabs) + ' '.repeat(spaces) + text;
+    if (et) {
+      this.buffer.lines[row] = ' '.repeat(newIndent) + text;
+    } else {
+      const tabs = Math.floor(newIndent / ts);
+      const spaces = newIndent % ts;
+      this.buffer.lines[row] = '\t'.repeat(tabs) + ' '.repeat(spaces) + text;
+    }
   }
 
   _firstNonBlank(row) {
@@ -4847,9 +5140,59 @@ export class VimEngine {
     return 0;
   }
 
+  // ── Mark resolution ──
+
+  /**
+   * Resolve a mark key to a {row, col} position, or null if not set.
+   * Supports a-z (user marks), . (last change), ' and ` (last jump position),
+   * < and > (visual selection bounds).
+   */
+  _resolveMark(key) {
+    // User marks a-z
+    if (key.length === 1 && key >= 'a' && key <= 'z') {
+      return this._marks[key] || null;
+    }
+    // `. / '. — last change position
+    if (key === '.') {
+      if (this._changeList.length > 0) {
+        return this._changeList[this._changeList.length - 1];
+      }
+      return null;
+    }
+    // `' / '' — position before last jump
+    if (key === "'" || key === '`') {
+      return this._lastJumpPos || null;
+    }
+    // `< / '< — start of last visual selection
+    if (key === '<') {
+      if (this._lastVisual) {
+        const s = this._lastVisual.start;
+        const e = this._lastVisual.end;
+        const sr = Math.min(s.row, e.row);
+        const sc = (s.row < e.row) ? s.col : (s.row === e.row ? Math.min(s.col, e.col) : e.col);
+        return { row: sr, col: sc };
+      }
+      return null;
+    }
+    // `> / '> — end of last visual selection
+    if (key === '>') {
+      if (this._lastVisual) {
+        const s = this._lastVisual.start;
+        const e = this._lastVisual.end;
+        const er = Math.max(s.row, e.row);
+        const ec = (s.row > e.row) ? s.col : (s.row === e.row ? Math.max(s.col, e.col) : e.col);
+        return { row: er, col: ec };
+      }
+      return null;
+    }
+    return null;
+  }
+
   // ── Jump list ──
 
   _addJumpEntry() {
+    // Record position before jump for '' / `` marks
+    this._lastJumpPos = { row: this.cursor.row, col: this.cursor.col };
     const entry = { row: this.cursor.row, col: this.cursor.col };
     // Don't add duplicate of top entry
     if (this._jumpList.length > 0) {

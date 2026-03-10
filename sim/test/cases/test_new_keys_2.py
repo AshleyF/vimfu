@@ -444,11 +444,15 @@ CASES = {
         "description": "* then Ctrl-O returns to start",
         "keys": "*\x0f",
         "initial": "foo bar foo baz foo",
+        "settle": 1.5,
+        "key_delay": 0.15,
     },
     "ctrl_o_after_hash": {
         "description": "# then Ctrl-O returns to original position",
         "keys": "$b#\x0f",
         "initial": "foo bar foo baz foo",
+        "settle": 1.5,
+        "key_delay": 0.15,
     },
     "ctrl_o_after_gd": {
         "description": "gd then Ctrl-O returns to original position",

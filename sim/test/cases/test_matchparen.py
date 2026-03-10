@@ -172,13 +172,4 @@ CASES = {
         "initial": "arr[idx] = val",
     },
 
-    # ══════════════════════════════════════════════════════════
-    # AFTER SURROUND OPERATION
-    # ══════════════════════════════════════════════════════════
-
-    "mp_after_ysiw_paren": {
-        "description": "After ysiw), cursor on ( — both brackets highlighted",
-        "keys": "ysiw)",
-        "initial": "hello world",
-    },
 }

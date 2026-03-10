@@ -75,7 +75,7 @@ CASES = {
     "cG_single_line": {"keys": "cGNEW\x1b", "initial": "hello"},
 
     # ── cgg (change to start of file, linewise) ──
-    "cgg_from_last": {"keys": "GcggNEW\x1b", "initial": "one\ntwo\nthree\nfour"},
+    "cgg_from_last": {"keys": "GcggNEW\x1b", "initial": "one\ntwo\nthree\nfour", "settle": 0.8},
     "cgg_from_mid": {"keys": "jjcggNEW\x1b", "initial": "one\ntwo\nthree\nfour"},
     "cgg_from_first": {"keys": "cggNEW\x1b", "initial": "one\ntwo\nthree"},
 

@@ -52,25 +52,6 @@ CASES = {
     },
 
     # ══════════════════════════════════════════════════════════
-    # DOT REPEAT AFTER SURROUND WITH MOTIONS
-    # ══════════════════════════════════════════════════════════
-
-    "dot_after_ysiw_paren_w": {
-        "description": "ysiw) on first word, w. on next — dot repeats surround",
-        "keys": "ysiw)w.",
-        "initial": "alpha beta gamma",
-    },
-    "dot_after_ysiw_bracket_w": {
-        "description": "ysiw] then w. — repeats bracket surround",
-        "keys": "ysiw]w.",
-        "initial": "one two three",
-    },
-    "dot_after_ys_dollar_quote": {
-        "description": "ys$\" wraps to EOL in quotes, j0. repeats on next line",
-        "keys": "ys$\"j0.",
-        "initial": "first line\nsecond line",
-    },
-
     # ══════════════════════════════════════════════════════════
     # TEXT OBJECTS AT BUFFER BOUNDARIES
     # ══════════════════════════════════════════════════════════
