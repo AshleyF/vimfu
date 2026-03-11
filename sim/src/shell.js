@@ -1562,12 +1562,13 @@ export class ShellSim {
       this._appendOutput('  VimFu — Learn Vim');
       this._appendOutput('');
       this._appendOutput('  nvim <file> Launch editor');
+      this._appendOutput('  tmux        Multiplexer');
       this._appendOutput('  help        Commands');
       this._appendOutput('  ls          List files');
       this._appendOutput('');
     } else {
       this._appendOutput('');
-      this._appendOutput('  vim <file> | help | ls');
+      this._appendOutput('  vim <file> | tmux | help | ls');
       this._appendOutput('');
     }
   }
