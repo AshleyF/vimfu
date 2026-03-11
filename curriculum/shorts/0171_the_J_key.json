@@ -1,0 +1,215 @@
+{
+  "title": "VimFu — The J Key",
+  "description": "Capital J joins the current line with the next one, adding a space. J for join.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 312,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f words.txt .words.txt.swp .words.txt.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*words.txt*"
+    },
+    {
+      "comment": "Create demo file — short words, one per line"
+    },
+    {
+      "writeFile": "words.txt",
+      "content": "the\nquick\nbrown\nfox\njumps"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim words.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The J Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital J joins the current line with the next one. It adds a space at the join point."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: basic join ---"
+    },
+    {
+      "say": "Five words on five lines. Capital J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "J",
+      "overlay": "join"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The and quick on one line now. A space added at the join."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: counted join ---"
+    },
+    {
+      "say": "Three J. Join three lines together.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3J",
+      "overlay": "join 3 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three words on one line. Each join adds a space."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: visual join ---"
+    },
+    {
+      "say": "Visual select all five. Then J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "J",
+      "overlay": "join"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One line. The quick brown fox jumps. Visual J joins the whole selection."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital J for join. Merges lines with a space. Use a count or visual mode for multiple lines."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f words.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "bMRwE6m6xzA",
+    "url": "https://youtube.com/watch?v=bMRwE6m6xzA"
+  }
+}

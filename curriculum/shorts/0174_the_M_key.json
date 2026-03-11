@@ -1,0 +1,192 @@
+{
+  "title": "VimFu — The M Key",
+  "description": "Capital M moves the cursor to the middle of the visible screen. M for middle.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 315,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f rank.py .rank.py.swp .rank.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*rank.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "rank.py",
+      "content": "r01 = \"bronze\"\nr02 = \"silver\"\nr03 = \"gold\"\nr04 = \"plat\"\nr05 = \"diamond\"\nr06 = \"master\"\nr07 = \"legend\"\nr08 = \"myth\"\nr09 = \"titan\"\nr10 = \"cosmic\"\nr11 = \"void\"\nr12 = \"omega\"\nr13 = \"apex\"\nr14 = \"prime\"\nr15 = \"ultra\"\nr16 = \"zenith\"\nr17 = \"astral\"\nr18 = \"eternal\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim rank.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The M Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital M moves your cursor to the middle of the screen. M for middle."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: M from top ---"
+    },
+    {
+      "say": "Cursor at the top. Capital M.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "M",
+      "overlay": "screen middle"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Right in the center of the screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: H M L sequence ---"
+    },
+    {
+      "say": "Watch all three. H to top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "H",
+      "overlay": "screen top"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "L to bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "L",
+      "overlay": "screen bottom"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "M back to middle.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "M",
+      "overlay": "screen middle"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three keys to jump anywhere on the visible screen. No scrolling."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital M. Middle of the screen. Combine with H and L for full screen navigation."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f rank.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "1hKgHVHrn1c",
+    "url": "https://youtube.com/watch?v=1hKgHVHrn1c"
+  }
+}

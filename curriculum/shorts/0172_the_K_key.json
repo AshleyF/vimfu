@@ -1,0 +1,200 @@
+{
+  "title": "VimFu — The K Key",
+  "description": "Capital K looks up the keyword under the cursor. In Neovim, it opens the man page. K for keyword.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 313,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f code.py .code.py.swp .code.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*code.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "code.py",
+      "content": "import os\nimport json\npath = os.getcwd()\ndata = json.loads('{}')"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim code.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The K Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital K looks up the keyword under your cursor. In Neovim, it opens the man page or help."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: K on a keyword ---"
+    },
+    {
+      "say": "Cursor on json. Press capital K.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jw",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "K",
+      "overlay": "keyword lookup"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Neovim opened the man page for json. Documentation right inside your editor."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "q",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: K on os ---"
+    },
+    {
+      "say": "Try it on O S. Jump up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg0w",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "K",
+      "overlay": "keyword lookup"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Whatever is under your cursor, K looks it up."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "q",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital K for keyword lookup. Quick way to check documentation without leaving Vim."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f code.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "3ae7BkszvoI",
+    "url": "https://youtube.com/watch?v=3ae7BkszvoI"
+  }
+}

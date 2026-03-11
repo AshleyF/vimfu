@@ -1,0 +1,217 @@
+{
+  "title": "VimFu — The Q Key",
+  "description": "In Neovim, capital Q replays the last recorded macro. Different from at-at which replays the last played macro.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 319,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tags.py .tags.py.swp .tags.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*tags.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "tags.py",
+      "content": "tag = \"wip\"\ntag = \"wip\"\ntag = \"wip\"\ntag = \"wip\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim tags.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The Q Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "In Neovim, capital Q replays the last recorded macro. Quick replay, no register needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: record a macro then Q ---"
+    },
+    {
+      "say": "Record a macro to change wip to done. Q A to record into A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "qa",
+      "overlay": "record into a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ci\"",
+      "overlay": "change inner \""
+    },
+    {
+      "type": "done"
+    },
+    "escape",
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "q",
+      "overlay": "stop recording"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Macro recorded. Now capital Q.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Q",
+      "overlay": "replay last recorded"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Replayed. Second wip became done."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Q again ---"
+    },
+    {
+      "say": "Capital Q again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Q",
+      "overlay": "replay last recorded"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Third line done. Capital Q always replays the last recorded macro."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital Q. Instant macro replay. Record once, Q to repeat. Neovim only."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f tags.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "7QMY80-vq3U",
+    "url": "https://youtube.com/watch?v=7QMY80-vq3U"
+  }
+}

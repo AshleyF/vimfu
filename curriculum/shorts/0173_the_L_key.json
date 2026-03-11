@@ -1,0 +1,187 @@
+{
+  "title": "VimFu — The L Key",
+  "description": "Capital L moves the cursor to the lowest visible line on screen. L for low.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 314,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f levels.py .levels.py.swp .levels.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*levels.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "levels.py",
+      "content": "lv01 = \"start\"\nlv02 = \"forest\"\nlv03 = \"cave\"\nlv04 = \"river\"\nlv05 = \"mountain\"\nlv06 = \"desert\"\nlv07 = \"swamp\"\nlv08 = \"ruins\"\nlv09 = \"castle\"\nlv10 = \"tower\"\nlv11 = \"abyss\"\nlv12 = \"throne\"\nlv13 = \"lair\"\nlv14 = \"summit\"\nlv15 = \"void\"\nlv16 = \"nexus\"\nlv17 = \"omega\"\nlv18 = \"beyond\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim levels.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The L Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital L moves your cursor to the bottom of the screen. L for low."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: L from top ---"
+    },
+    {
+      "say": "Cursor at the top. Capital L.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "L",
+      "overlay": "screen bottom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Bottom of the screen. One key."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: H back to top ---"
+    },
+    {
+      "say": "Capital H to go back to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "H",
+      "overlay": "screen top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Top again. H and L are opposites."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: L with count ---"
+    },
+    {
+      "say": "Three L. Three lines from the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3L",
+      "overlay": "3 from bottom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Not the very last line, but three from the bottom. The count is an offset."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital L for low. Jump to the bottom of what's visible. Add a count to offset."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f levels.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "zuGBjeFKnvY",
+    "url": "https://youtube.com/watch?v=zuGBjeFKnvY"
+  }
+}

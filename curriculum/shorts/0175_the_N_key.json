@@ -1,0 +1,192 @@
+{
+  "title": "VimFu — The N Key",
+  "description": "Capital N jumps to the previous search match. The reverse of lowercase N. N for next in reverse.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 316,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hunt.py .hunt.py.swp .hunt.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*hunt.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "hunt.py",
+      "content": "gem = \"ruby\"\nore = \"iron\"\ngem = \"opal\"\nore = \"gold\"\ngem = \"jade\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim hunt.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The N Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital N jumps to the previous search match. It goes the opposite direction from N."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: search then N to go back ---"
+    },
+    {
+      "say": "Search for gem. Slash gem enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/gem"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Found the second gem. Lowercase N goes forward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "next match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Third gem. Now capital N.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "N",
+      "overlay": "prev match"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the second gem. Capital N reverses direction."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: N again ---"
+    },
+    {
+      "say": "Capital N again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "N",
+      "overlay": "prev match"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "First gem. Keep pressing N to walk backward through all matches."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital N. Previous search match. Lowercase N goes forward, capital N goes back."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f hunt.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "SlM5cV-gkMY",
+    "url": "https://youtube.com/watch?v=SlM5cV-gkMY"
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "title": "VimFu — The O Key",
+  "description": "Capital O opens a new line above the cursor and enters insert mode. The reverse of lowercase O.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 317,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f recipe.py .recipe.py.swp .recipe.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*recipe.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "recipe.py",
+      "content": "step1 = \"chop\"\nstep2 = \"boil\"\nstep3 = \"serve\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim recipe.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The O Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital O opens a new line above the cursor and enters insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: O to add a line above ---"
+    },
+    {
+      "say": "Cursor on step two. Need to add a step before it. Capital O.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "O",
+      "overlay": "open above"
+    },
+    {
+      "type": "prep = \"wash\""
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "New line appeared above step two. Lowercase O goes below, capital O goes above."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: O on the first line ---"
+    },
+    {
+      "say": "Capital O on the first line adds a new first line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "O",
+      "overlay": "open above"
+    },
+    {
+      "type": "# cooking steps"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Header added above everything. Even works on line one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: compare o vs O ---"
+    },
+    {
+      "say": "Compare. On step two, lowercase O opens below.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "o",
+      "overlay": "open below"
+    },
+    {
+      "type": "stir = \"mix\""
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Below step two. Capital O, above. Lowercase O, below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital O. Open above. When you need a new line on top."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f recipe.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "JEmn0-IQLL4",
+    "url": "https://youtube.com/watch?v=JEmn0-IQLL4"
+  }
+}
