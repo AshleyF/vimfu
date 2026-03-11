@@ -1,0 +1,208 @@
+{
+  "title": "VimFu — The F Key",
+  "description": "Capital F searches backward on the line for a character. The reverse of lowercase F. F for find backward.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 308,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f deck.py .deck.py.swp .deck.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*deck.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "deck.py",
+      "content": "hand = [\"ace\", \"king\", \"queen\"]\nbet = 50\npot = 200"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim deck.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The F Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital F searches backward on the current line for a character. The reverse of lowercase F."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: F from end of line ---"
+    },
+    {
+      "say": "Cursor at the end of line one. Capital F K.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Fk",
+      "overlay": "find k backward"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped backward to the K in king. Landed right on it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: F to jump back to a bracket ---"
+    },
+    {
+      "say": "Capital F bracket. Jump back to the opening bracket.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "F[",
+      "overlay": "find [ backward"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Straight to the bracket. Fast way to go back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: dF — delete backward to char ---"
+    },
+    {
+      "say": "Combine with delete. Cursor at the end. D capital F comma.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dF,",
+      "overlay": "delete find , backward"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Deleted backward from the end to the last comma. Removed the last entry."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital F. Find backward on the line. Pair with operators for precision edits."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f deck.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "12WNOOCIIZg",
+    "url": "https://youtube.com/watch?v=12WNOOCIIZg"
+  }
+}

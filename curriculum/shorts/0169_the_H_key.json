@@ -1,0 +1,252 @@
+{
+  "title": "VimFu — The H Key",
+  "description": "Capital H moves the cursor to the highest visible line on screen. H for high.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 310,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f floors.py .floors.py.swp .floors.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*floors.py*"
+    },
+    {
+      "comment": "Create demo file with enough lines to fill the screen"
+    },
+    {
+      "writeFile": "floors.py",
+      "content": "f01 = \"lobby\"\nf02 = \"cafe\"\nf03 = \"gym\"\nf04 = \"pool\"\nf05 = \"spa\"\nf06 = \"shop\"\nf07 = \"bar\"\nf08 = \"club\"\nf09 = \"lab\"\nf10 = \"den\"\nf11 = \"loft\"\nf12 = \"roof\"\nf13 = \"deck\"\nf14 = \"dome\"\nf15 = \"nest\"\nf16 = \"peak\"\nf17 = \"core\"\nf18 = \"hub\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim floors.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The H Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital H moves your cursor to the top of the screen. H for high."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: H from bottom ---"
+    },
+    {
+      "say": "Cursor is at the top. Jump to the bottom first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now capital H.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "H",
+      "overlay": "screen top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Top of the screen. Instant. No scrolling."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: H with L ---"
+    },
+    {
+      "say": "Capital L is the opposite. Bottom of the screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "L",
+      "overlay": "screen bottom"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital H.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "H",
+      "overlay": "screen top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the top. H and L bounce you between the edges."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: M for middle ---"
+    },
+    {
+      "say": "Capital M goes to the middle.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "M",
+      "overlay": "screen middle"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "H, M, L. Top, middle, bottom. Navigate the visible screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: counts with H and L ---"
+    },
+    {
+      "say": "Add a count. Five H.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5H",
+      "overlay": "5 from top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Fifth line from the top. Three L.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3L",
+      "overlay": "3 from bottom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Third from the bottom. Counts let you land precisely."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "H for high. L for low. M for middle. Add a count to offset from the edge."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f floors.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "uTmevLh6NdU",
+    "url": "https://youtube.com/watch?v=uTmevLh6NdU"
+  }
+}

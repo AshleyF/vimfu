@@ -1,0 +1,229 @@
+{
+  "title": "VimFu — The E Key",
+  "description": "Capital E moves to the end of the current or next WORD. Whitespace-delimited, ignoring punctuation. E for end of WORD.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 307,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f api.py .api.py.swp .api.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*api.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "api.py",
+      "content": "url = \"https://api.game.io/v2\"\nkey = \"abc-123-xyz\"\nttl = 3600"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim api.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The E Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital E jumps to the end of the current or next WORD. A WORD is anything separated by whitespace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: e vs E on a URL ---"
+    },
+    {
+      "say": "Compare lowercase E and capital E on this URL. First, lowercase E from the start.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": "find \""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "e",
+      "overlay": "end word"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "e",
+      "overlay": "end word"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "e",
+      "overlay": "end word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three presses, still inside the URL. Lowercase E stops at colons, slashes, dots."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: capital E jumps to end of WORD ---"
+    },
+    {
+      "say": "Now capital E from the same spot.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0f\"l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "E",
+      "overlay": "end WORD"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One jump to the closing quote. The whole URL is one WORD."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: E on API keys ---"
+    },
+    {
+      "say": "Line two. Capital E from the key value.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf\"l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "E",
+      "overlay": "end WORD"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Past all the dashes to the closing quote. Punctuation is not a boundary for capital E."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital E. End of WORD. Skips right past dots, dashes, and slashes. Use it on URLs, paths, and keys."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f api.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "TN0aqkoDTmg",
+    "url": "https://youtube.com/watch?v=TN0aqkoDTmg"
+  }
+}

@@ -1,0 +1,236 @@
+{
+  "title": "VimFu — The D Key",
+  "description": "Capital D deletes from the cursor to the end of the line. Chop the rest off. D for delete to end.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 306,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f log.py .log.py.swp .log.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*log.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "log.py",
+      "content": "msg = \"ok\"  # old comment\nerr = \"timeout\"  # remove this\nwarn = \"slow\"  # and this too"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim log.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The D Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital D deletes from the cursor to the end of the line. Everything after the cursor, gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: remove a trailing comment ---"
+    },
+    {
+      "say": "Remove this comment. Find the hash. Capital D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f#",
+      "overlay": "find #"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "D",
+      "overlay": "delete to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Comment gone. Just the code remains."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: from the middle of a line ---"
+    },
+    {
+      "say": "Line two. Same thing. Find the hash. Capital D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f#",
+      "overlay": "find #"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "D",
+      "overlay": "delete to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Clean. Capital D is like a line trimmer."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: D vs dd ---"
+    },
+    {
+      "say": "D D deletes the whole line. Capital D only deletes from the cursor. Big difference.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f#",
+      "overlay": "find #"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "D",
+      "overlay": "delete to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The code stays. Only the comment is gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital D. Delete to end of line. Fast way to trim anything after your cursor."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f log.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "kdj8Yk3H-w0",
+    "url": "https://youtube.com/watch?v=kdj8Yk3H-w0"
+  }
+}

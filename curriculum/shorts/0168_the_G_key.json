@@ -1,0 +1,187 @@
+{
+  "title": "VimFu — The G Key",
+  "description": "Capital G jumps to the last line of the file, or to a specific line with a count. G for go.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 309,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create demo file with line numbers shown"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "room_1 = \"entrance\"\nroom_2 = \"corridor\"\nroom_3 = \"trap\"\nroom_4 = \"armory\"\nroom_5 = \"vault\"\nroom_6 = \"boss\"\nroom_7 = \"treasure\"\nroom_8 = \"exit\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' dungeon.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The G Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital G goes to the last line of the file. Or give it a count to jump to any line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: G to bottom ---"
+    },
+    {
+      "say": "Cursor is on line one. Press G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "go to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line eight. The exit. G jumps straight to the bottom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: gg to top ---"
+    },
+    {
+      "say": "G G goes back to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "go to top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line one. Entrance. G G is the counterpart."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: count + G to go to a line ---"
+    },
+    {
+      "say": "Five G. Jump to line five.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5G",
+      "overlay": "go to line 5"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The vault. Line five. Type any number before G to go to that line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital G. Bottom of the file. G G for top. Number G for any line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "Lj7pakP_CNc",
+    "url": "https://youtube.com/watch?v=Lj7pakP_CNc"
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "title": "VimFu — The I Key",
+  "description": "Capital I inserts at the first non-blank character of the line. Jump to the start and type. I for insert at beginning.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 311,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f task.py .task.py.swp .task.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*task.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "task.py",
+      "content": "def run():\n    speed = 10\n    fuel = 100\n    cargo = 50"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim task.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The I Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital I moves to the first non-blank character of the line and enters insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: I on an indented line ---"
+    },
+    {
+      "say": "Line two is indented. Cursor is at the end. Capital I.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I",
+      "overlay": "insert at start"
+    },
+    {
+      "type": "max_"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped past the indentation to the S in speed. Typed max underscore. Respects the indent."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: I vs 0i ---"
+    },
+    {
+      "say": "Capital I skips whitespace. Zero I would put you at column zero, in the indent. Capital I is smarter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I",
+      "overlay": "insert at start"
+    },
+    {
+      "type": "max_"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Fuel became max underscore fuel. Right at the start of the code, not the whitespace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: I with dot repeat ---"
+    },
+    {
+      "say": "Capital I plus dot. Add a prefix to multiple lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I",
+      "overlay": "insert at start"
+    },
+    {
+      "type": "max_"
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Max underscore cargo. Capital I takes you to the right spot every time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital I. Insert at the first non-blank character. Perfect for indented code."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f task.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "Ip0-nDNKd7M",
+    "url": "https://youtube.com/watch?v=Ip0-nDNKd7M"
+  }
+}
