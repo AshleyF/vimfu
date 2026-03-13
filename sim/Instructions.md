@@ -29,6 +29,28 @@ This workflow ensures every fix is grounded in real-world behavior, not
 guesses about what the code should do. Self-generated ground truth only
 catches regressions — real-program ground truth catches actual bugs.
 
+## CRITICAL: Never Use `--clean` for Neovim Ground Truth
+
+**ALL ground truth MUST be generated against the installed, configured nvim — not
+the defaults.** The user's `~/.config/nvim/init.lua` sets:
+
+- **`monokai` colorscheme** (tanvirtin/monokai.nvim) — this is what the sim targets
+- **nvim-surround** plugin (kylechui/nvim-surround)
+- **termguicolors** enabled
+- **Black background** override (Normal bg = `#000000`)
+- **Hidden EndOfBuffer** markers (fg = `#000000`)
+- **`shortmess+=I`** — no intro screen
+- **Mouse disabled**, termsync off
+
+Using `nvim --clean` skips all of this and gives completely wrong colors. For
+example, SpecialKey (`^J` in `:reg`) is **magenta** in Monokai but gray in the
+default theme. `--clean` would generate ground truth against the wrong colors.
+
+**Rule:** The `NVIM_CMD` in test case files and the default in
+`nvim_ground_truth_v2.py` must NEVER include `--clean`. If a test needs extra
+nvim flags (e.g. `--cmd "let g:loaded_clipboard_provider=2"`), add those flags
+without `--clean`.
+
 ## Workflow for Adding a New Feature
 
 ### 1. Research
@@ -99,7 +121,12 @@ C:/source/vimfu/.venv/Scripts/python.exe test/nvim_ground_truth_v2.py --suite <f
 This produces `test/ground_truth_<feature>.json` with the expected screen output for each test case.
 
 Neovim settings:
-- Uses the WSL Neovim config (Monokai colorscheme)
+- Uses the WSL Neovim config (Monokai colorscheme, nvim-surround, custom highlights)
+- **NEVER use `--clean`** — ground truth must come from the installed nvim with the
+  user's `~/.config/nvim/init.lua`. The `--clean` flag skips the user's config, giving
+  wrong colors (e.g. default theme SpecialKey is gray, but Monokai SpecialKey is magenta).
+- The user's config includes: monokai colorscheme, nvim-surround plugin, termguicolors,
+  black background override, hidden EndOfBuffer markers, and `shortmess+=I`.
 - Screen: 40 cols × 20 rows
 - No swap (`-n`), no shada (`-i NONE`)
 
@@ -347,8 +374,9 @@ The simulator uses the `monokai` theme everywhere — browser, tests, and ground
 truth capture. Ground truth is generated against Neovim with the user's WSL
 config (which uses Monokai). The compare tests validate colors match exactly.
 
-**Rule:** Do not use `-u NONE` for Neovim. Do not use `nvim_default` theme.
-Everything uses the user's actual Monokai colorscheme.
+**Rule:** Do not use `--clean` or `-u NONE` for Neovim. Do not use `nvim_default` theme.
+Everything uses the user's actual Monokai colorscheme from `~/.config/nvim/init.lua`.
+Ground truth must always come from the installed, configured nvim — never the defaults.
 
 ### The `:e` missing filename bug (caught Feb 2026)
 

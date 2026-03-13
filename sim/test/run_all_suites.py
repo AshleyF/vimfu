@@ -55,7 +55,7 @@ def run_case(name, case, fast=False):
     post_key_settle = 0.15 if fast else 0.3
 
     shell = ShellPilot(
-        shell=f'nvim -u NONE -n -i NONE {tmp.name}',
+        shell=f'nvim -n {tmp.name}',
         rows=ROWS,
         cols=COLS,
     )

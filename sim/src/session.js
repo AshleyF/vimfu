@@ -481,11 +481,11 @@ export class SessionManager {
           const n = lines.length;
           this.engine.commandLine = `${n} line${n !== 1 ? 's' : ''} added`;
           this.engine._stickyCommandLine = true;
-          // Enable syntax highlighting if buffer has no filename yet
-          if (!this.engine.filename) {
-            this._vimFilename = filename;
-            this.engine.filename = filename;
-          }
+          // Update syntax highlighting to match the read file's type.
+          // In real Vim, :r doesn't change filetype, but in the simulator
+          // it's more useful to highlight the content that was just loaded.
+          this._vimFilename = filename;
+          this.engine.filename = filename;
         }
       } else {
         this.engine.commandLine = 'E32: No file name';

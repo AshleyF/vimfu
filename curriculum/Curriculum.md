@@ -1034,6 +1034,164 @@ _**Installing in Neovim:** Neovim ships with [lazy.nvim](https://github.com/folk
 
 ---
 
+# Part 22 — Ex Commands
+
+> These lessons cover the ex (command-line) commands.` Lessons are
+> numbered starting at **0800** to avoid conflicts with existing ranges.
+
+## Understanding the Command Line
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 800 | What Is the Command Line? | `:` | Pressing `:` in normal mode opens the command line at the bottom of the screen. This is where you type ex commands. |
+| 801 | Running a Command | `:` … `Enter` | After typing a command, press Enter to execute it. The result appears in the buffer or status line. |
+| 802 | Canceling a Command | `:` … `Escape` | Press Escape to cancel a command you've started typing without executing it. |
+| 803 | Command History | `:` `↑` `↓` | Press `:` then use the up/down arrow keys to recall previous commands. |
+
+## Range Addressing
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 804 | Go to a Line Number | `:{number}` | Typing a number as a command jumps the cursor to that line. `:10` goes to line 10. |
+| 805 | The Current Line `.` | `:.` | A dot represents the current line. `:.d` deletes the current line. Most commands default to `.` if no range is given. |
+| 806 | The Last Line `$` | `:$` | The dollar sign represents the last line of the file. `:$` jumps to the end. |
+| 807 | A Range of Lines | `:{from},{to}` | Two line addresses separated by a comma define a range. `:3,7d` deletes lines 3 through 7. |
+| 808 | The Entire File `%` | `:%` | The percent sign is shorthand for `1,$` — the entire file. `:%d` deletes everything. |
+| 809 | Visual Range `'<,'>` | `:'<,'>` | After making a visual selection and pressing `:`, Vim inserts `'<,'>` automatically — the range of the selection. |
+| 810 | Mark-Based Ranges | `:'a,'b` | Use marks as range endpoints. `:'a,'b d` deletes from mark `a` to mark `b`. |
+| 811 | Offsets in Ranges | `:.+2` `.,.+5` | Add `+N` or `-N` to any address. `:.,.+5d` deletes from the current line through 5 lines below. |
+| 812 | Combining Range Forms | `:'{mark},$` | Mix and match — mark to end of file, line number to mark, current line plus offset to last line, etc. |
+
+## File Operations
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 813 | `:w` — Write (Save) | `:w` | Save the current buffer to disk. The status line confirms the write. |
+| 814 | `:w {file}` — Write to a File | `:w {file}` | Save to a different filename without switching buffers. The original file remains open. |
+| 815 | `:wq` — Write and Quit | `:wq` | Save and close the editor. The most common exit command. |
+| 816 | `:x` — Write and Quit (Smart) | `:x` | Like `:wq` but only writes if changes were made. Avoids unnecessary file touches. |
+| 817 | `:q` — Quit | `:q` | Quit the editor. Fails if there are unsaved changes — Vim protects your work. |
+| 818 | `:q!` — Force Quit | `:q!` | Quit discarding all unsaved changes. The `!` means "I know what I'm doing." |
+| 819 | `:e {file}` — Edit a File | `:e {file}` | Open a different file for editing. Fails if current buffer has unsaved changes. |
+| 820 | `:e!` — Revert to Saved | `:e!` | Discard all changes and reload the file from disk. A fresh start. |
+| 821 | `:sav {file}` — Save As | `:sav {file}` | Save the buffer to a new filename AND switch to editing the new file. Unlike `:w {file}` which keeps the original. |
+| 822 | `:r {file}` — Read a File | `:r {file}` | Insert the contents of another file below the cursor line. |
+| 823 | `:r !{cmd}` — Read Shell Output | `:r !{cmd}` | Run a shell command and insert its output below the cursor. `:r !date` inserts today's date. |
+
+## Line Editing Commands
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 824 | `:[range]d` — Delete Lines | `:3d` `:5,10d` | Delete one or more lines. Without a range, deletes the current line. Deleted text goes to the unnamed register. |
+| 825 | `:[range]d {reg}` — Delete into Register | `:3d a` | Delete lines and store them in a named register. `:5,10d b` stores the block in register `b`. |
+| 826 | `:[range]y` — Yank (Copy) Lines | `:3y` `:5,10y` | Yank (copy) lines without deleting them. Text goes to the unnamed register. |
+| 827 | `:[range]y {reg}` — Yank into Register | `:3y a` | Yank lines into a named register. Use capital letters to append: `:3y A` appends to register `a`. |
+| 828 | `:[range]m {address}` — Move Lines | `:3m 7` `:5,10m $` | Move lines to after the target address. `:3m 0` moves line 3 to the very top. |
+| 829 | `:[range]co {address}` — Copy Lines | `:3co 7` `:5,10co $` | Copy (duplicate) lines to after the target address. `:co` and `:t` are synonyms. |
+| 830 | `:[range]t {address}` — Copy (Synonym) | `:3t 7` `:t$` | Same as `:co`. The `t` stands for "to". Shorter to type and very common in practice. |
+| 831 | `:[range]j` — Join Lines | `:3,5j` `:%j` | Join a range of lines into one, adding spaces between. `:%j` joins the entire file into one line. |
+| 832 | `:pu {reg}` — Put Register | `:pu a` `:pu` | Insert the contents of a register below the current line. Without a register, puts the unnamed register. |
+| 833 | `:[range]sort` — Sort Lines | `:%sort` `:3,10sort` | Sort lines alphabetically. Works on a range or the whole file. |
+| 834 | `:[range]sort!` — Reverse Sort | `:%sort!` | Sort in reverse (descending) order. The `!` flips the sort direction. |
+| 835 | `:[range]sort` Options | `:sort n` `:sort u` `:sort i` | Flags: `n` = numeric sort, `u` = remove duplicates, `i` = ignore case. Combine them: `:sort niu`. |
+
+## Substitution (Search and Replace)
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 836 | `:s/old/new/` — Substitute on Line | `:s/old/new/` | Replace the first occurrence of "old" with "new" on the current line. |
+| 837 | `:s` Flag `g` — All on Line | `:s/old/new/g` | The `g` flag replaces ALL occurrences on the line, not just the first. |
+| 838 | `:s` Flag `i` — Case Insensitive | `:s/old/new/gi` | The `i` flag ignores case when matching. Combine with `g` for all matches. |
+| 839 | `:s` Flag `c` — Confirm Each | `:s/old/new/gc` | The `c` flag asks for confirmation before each replacement. `y`/`n`/`a`/`q`/`l` to respond. |
+| 840 | `:s` Flag `n` — Count Only | `:s/old/new/gn` | The `n` flag counts matches without replacing. Great for checking how many matches exist. |
+| 841 | `:%s/old/new/g` — Whole File | `:%s/old/new/g` | Use `%` to substitute across the entire file. The most common form of search-and-replace. |
+| 842 | `:'<,'>s` — Substitute in Selection | `:'<,'>s/old/new/g` | After a visual selection, `:s` operates only within the selected lines. |
+| 843 | `:[range]s` — Substitute in Range | `:5,20s/old/new/g` | Any range works — line numbers, marks, offsets. `:.,+5s/old/new/g` replaces from here through 5 lines down. |
+| 844 | `:noh` — Clear Search Highlighting | `:noh` | After a search or `:s`, highlighted matches can be distracting. `:noh` clears them until the next search. |
+
+## Display and Information Commands
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 845 | `:marks` — Show All Marks | `:marks` | Display a table of all active marks — their name, line number, column, and the text on that line. |
+| 846 | `:reg` — Show All Registers | `:reg` | Display the contents of all registers — unnamed, numbered, named, small delete, search, and more. Also available as `:di` (`:display`). |
+| 847 | `:[range]p` — Print Lines | `:3p` `:5,10p` | Print (display) lines in the status area. Without a range, prints the current line. The cursor moves to the last printed line. |
+| 848 | `:[range]nu` — Print with Line Numbers | `:3nu` `:5,10nu` | Like `:p` but each line is prefixed with its line number. Also available as `:#`. |
+| 849 | `:=` — Show Line Count | `:=` | Without a range, shows the total number of lines in the file. |
+| 850 | `:{range}=` — Show Line Number | `:.=` `:$=` | With an address, shows the line number of that address. `:.=` shows the current line number, `:$=` shows the last. |
+| 851 | `:jumps` — Show Jump List | `:jumps` | Display the jump list — a history of cursor positions you've jumped between. Navigate with `Ctrl-O` (back) and `Ctrl-I` / `Tab` (forward). |
+| 852 | `:changes` — Show Change List | `:changes` | Display the change list — a history of positions where text was modified. Navigate with `g;` (older) and `g,` (newer). |
+
+## Indentation
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 853 | `:[range]>` — Indent Lines | `:3>` `:5,10>` | Shift lines right by one `shiftwidth`. Works on a single line or a range. |
+| 854 | `:[range]<` — Dedent Lines | `:3<` `:5,10<` | Shift lines left by one `shiftwidth`. Removes leading whitespace. |
+| 855 | Visual Selection + `:>` / `:<` | `:'<,'>>`  `:'<,'><` | Select lines visually, then `:>` or `:<` to indent or dedent just the selection. |
+| 856 | Multiple Shifts | `:3>>` `:5,10<<<` | Repeat `>` or `<` to shift by multiple `shiftwidth` units. `:>>` shifts right twice. |
+
+## Multi-Line Power Commands
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 857 | `:[range]norm {keys}` — Normal on Lines | `:%norm A;` | Execute normal-mode keystrokes on every line in the range. `:%norm A;` appends a semicolon to every line. |
+| 858 | `:norm` with Insert Mode | `:%norm I# ` | Normal commands can enter insert mode. `:%norm I# ` comments out every line (inserts `# ` at the start). |
+| 859 | `:norm` on a Range | `:5,10norm dd` | Limit `:norm` to specific lines. `:5,10norm dd` deletes lines 5 through 10 one by one. |
+| 860 | `:g/{pattern}/{cmd}` — Global | `:g/TODO/d` | Execute an ex command on every line matching a pattern. `:g/TODO/d` deletes all lines containing "TODO". |
+| 861 | `:g` with `:d` — Delete Matches | `:g/^$/d` | A classic: `:g/^$/d` deletes all blank lines. The pattern is a regular expression. |
+| 862 | `:g` with `:m` — Collect Matches | `:g/import/m 0` | Move all matching lines somewhere. `:g/import/m 0` collects all imports at the top of the file. |
+| 863 | `:g` with `:norm` — Normal on Matches | `:g/TODO/norm 0x` | Combine `:g` and `:norm` for surgical strikes. Only lines matching the pattern get the keystrokes. |
+| 864 | `:g` with `:s` — Substitute on Matches | `:g/class/s/old/new/g` | Run `:s` only on lines matching a different pattern. Two-stage filtering. |
+| 865 | `:v/{pattern}/{cmd}` — Inverse Global | `:v/keep/d` | The opposite of `:g` — acts on lines that do NOT match. `:v/keep/d` deletes every line that doesn't contain "keep". |
+| 866 | `:v` with `:d` — Keep Only Matches | `:v/important/d` | A quick way to filter a file down to only the lines you care about. |
+
+## Settings (`:set`)
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 867 | `:set number` — Line Numbers | `:set number` `:set nu` | Show absolute line numbers in the gutter. `:set nonumber` (or `:set nonu`) to turn off. |
+| 868 | `:set relativenumber` — Relative Numbers | `:set relativenumber` `:set rnu` | Show line numbers relative to the cursor. Great for quick `5j` / `12k` jumps. `:set nornu` to disable. |
+| 869 | `:set hlsearch` — Highlight Search | `:set hlsearch` `:set hls` | Highlight all matches for the current search pattern. `:set nohlsearch` to disable. Use `:noh` to clear temporarily. |
+| 870 | `:set incsearch` — Incremental Search | `:set incsearch` `:set is` | Show matches in real-time as you type a search pattern. `:set noincsearch` to disable. |
+| 871 | `:set ignorecase` — Case Insensitive | `:set ignorecase` `:set ic` | Make searches case-insensitive by default. `:set noignorecase` to restore case sensitivity. |
+| 872 | `:set smartcase` — Smart Case | `:set smartcase` `:set scs` | When `ignorecase` is on, typing an uppercase letter makes that search case-sensitive again. Best used with `ignorecase`. |
+| 873 | `:set scrolloff` — Scroll Margin | `:set scrolloff=5` `:set so=5` | Keep at least N lines visible above and below the cursor when scrolling. Prevents the cursor from touching the edge. |
+| 874 | `:set expandtab` / `tabstop` / `shiftwidth` | `:set et` `:set ts=4` `:set sw=4` | Control tab behavior. `expandtab` inserts spaces instead of tabs. `tabstop` sets tab display width. `shiftwidth` sets indent width for `>` / `<`. |
+| 875 | `:set autoindent` — Auto Indent | `:set autoindent` `:set ai` | New lines inherit the indentation of the previous line. `:set noautoindent` to disable. |
+| 876 | `:set cursorline` — Highlight Current Line | `:set cursorline` `:set cul` | Highlight the entire line the cursor is on. Makes it easy to spot your position. `:set nocursorline` to disable. |
+| 877 | Toggling Settings with `no` Prefix | `:set noX` | Any boolean setting can be turned off by prefixing `no`. `:set number` → `:set nonumber`. Works with all aliases too: `:set nonu`. |
+| 878 | Querying Settings with `?` | `:set number?` `:set ts?` | Append `?` to check a setting's current value without changing it. Boolean settings show `number` or `nonumber`. Numeric settings show the value. |
+| 879 | Setting Numeric Values with `=` | `:set scrolloff=3` `:set ts=2` | Numeric settings use `=` to assign a value. `:set sw=4` sets shiftwidth to 4. |
+
+## Shell Commands
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 880 | `:!{cmd}` — Run Shell Command | `:!ls` `:!python %` | Execute an external shell command. Output is displayed but doesn't affect the buffer. Press Enter to return. |
+
+## Putting It All Together
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 881 | Recipe: Delete a Block of Lines | `:5,15d` | Select a range and delete. Faster than visual mode for known line numbers. |
+| 882 | Recipe: Duplicate a Section | `:5,15t 20` | Copy a block of lines to another location. Great for duplicating functions or blocks. |
+| 883 | Recipe: Move Code Around | `:5,15m 30` | Reorganize code by moving line ranges. `:m 0` moves to the top, `:m $` to the bottom. |
+| 884 | Recipe: Mass Rename | `:%s/oldName/newName/g` | Rename a variable or function across the entire file in one command. |
+| 885 | Recipe: Delete All Comments | `:g/^#/d` `:g/^\/\//d` | Use `:g` with a comment pattern to strip all comments from a file. |
+| 886 | Recipe: Add to Every Line | `:%norm A;` | Append a semicolon (or anything) to every line. Change `A` to `I` to prepend instead. |
+| 887 | Recipe: Number All Lines | `:%norm I\<C-r>=line('.').' '\<CR>` | Advanced: use `:norm` with expression register to prepend line numbers. |
+| 888 | Recipe: Sort and Deduplicate | `:%sort u` | Sort all lines and remove duplicates in one command. |
+| 889 | Recipe: Reverse File Order | `:g/^/m 0` | A classic trick — `:g/^/m 0` matches every line and moves it to line 0, effectively reversing the file. |
+| 890 | Recipe: Extract Matching Lines | `:v/pattern/d` | Keep only lines matching a pattern — delete everything else. Quick log filtering. |
+| 891 | Recipe: Comment Out a Range | `:5,15norm I# ` | Add comment characters to a range of lines using `:norm`. |
+| 892 | Recipe: Indent a Block | `:5,15>` | Indent a range from the command line — no visual mode needed. |
+| 893 | Recipe: Yank to Named Register | `:5,15y a` | Yank a block into register `a` from the command line. Paste with `"ap` anywhere. |
+| 894 | Recipe: Sort Imports | `:1,10sort` | Sort just the import lines at the top of a file. Use line numbers or marks. |
+| 895 | Recipe: Clean Trailing Whitespace | `:%s/\s\+$//g` | Remove trailing whitespace from every line. A common cleanup task. |
+
+---
+
 ## Appendix A — Synonym Reference
 
 Many keys do the same thing. Knowing synonyms helps you recognize them in the wild.
@@ -1087,7 +1245,8 @@ Any operator × any motion/text-object = a command. This is why Vim scales — l
 6. **Days 36–60**: Parts 5–8 (Walking the Keyboard) — one key per day, daily flash cards
 7. **Days 61–90**: Parts 9–12 (`g`, `z`, `[`, `Ctrl-W`) — one command per day
 8. **Days 91–120**: Parts 13–16 (Insert mode, Ex commands, visual, command-line) — as needed
-9. **Days 121+**: Parts 17–18 (Patterns & Advanced) — ongoing daily tips
+9. **Days 100–130**: Part 22 (Ex Commands in Simulator) — practice alongside Part 14; all commands work in the sim
+10. **Days 121+**: Parts 17–18 (Patterns & Advanced) — ongoing daily tips
 
 ---
 
@@ -1196,11 +1355,15 @@ real Neovim.
 ### Fully Supported in Simulator
 
 - **Parts 1–3** (Lessons 1–90): All features except `Ctrl-V` block visual mode (Lessons 66–67)
-- **Part 4** (Lessons 91–135): All features except global marks (`m{A-Z}`), special marks
-  (`''`, `` `` ``, `'.`, `'^`), auto-indent (`=`), append registers (`"A-Z`), system clipboard
-  (`"+`, `"*`), small delete register (`"-`), numbered registers (`"0`–`"9`), `:reg`, and nvim
-  window splits (`:sp`, `:vs`, `Ctrl-W`). Use tmux panes instead of nvim splits!
+- **Part 4** (Lessons 91–135): All features except global marks (`m{A-Z}`), auto-indent (`=`),
+  system clipboard (`"+`, `"*`), and nvim window splits (`:sp`, `:vs`, `Ctrl-W`). Use tmux
+  panes instead of nvim splits! Special marks (`` '. `` `` `' `` `< `>`), append registers
+  (`"A-Z`), small delete (`"-`), numbered registers (`"0`–`"9`), and `:reg` are now supported.
 - **Part 19** (Lessons 501–545): All tmux and shell features fully supported
+- **Part 22** (Lessons 800–895): All ex commands fully supported in the simulator — ranges,
+  `:d`, `:y`, `:m`, `:co`/`:t`, `:j`, `:pu`, `:sort`, `:s` (with `g`/`i`/`c`/`n` flags),
+  `:norm`, `:g`, `:v`, `:marks`, `:reg`, `:p`/`:nu`/`:#`, `:=`, `:jumps`, `:changes`,
+  `:[range]>`, `:[range]<`, `:set` (10 options), `:!`, and all file operations.
 
 ### Not in Simulator
 
@@ -1211,13 +1374,8 @@ not available in the VimFu simulator. Practice these in real Neovim.
 |---------|---------|-------|
 | `Ctrl-V` block visual | 66, 67, 232, 433, 443, 444, 469 | Use `v` and `V` instead |
 | Global marks `m{A-Z}` | 100 | Local marks `m{a-z}` work fine |
-| Special marks `''` `'.` `'^` | 101 | |
 | Auto-indent `=` / `==` | 110, 206 | `>` and `<` indent/dedent work |
-| Append registers `"A-Z` | 120 | Named `"a-z` work |
 | System clipboard `"+` `"*` | 122 | |
-| Small delete register `"-` | 123 | |
-| Numbered registers `"0`–`"9` | 124 | |
-| `:reg` | 125 | |
 | Nvim window splits | 131–135, 334–365 | Use tmux panes instead |
 | `K` keyword lookup | 172 | |
 | `U` undo line | 182 | `u` undo works |
@@ -1235,10 +1393,8 @@ not available in the VimFu simulator. Practice these in real Neovim.
 | Bracket `[` / `]` commands | 317–333 | |
 | Insert `Ctrl-O` (insert-normal) | 368 | |
 | Insert `Ctrl-T` / `Ctrl-D` indent | 372, 373 | |
-| `:s` substitution | 405–409 | |
 | Buffers / `:ls` / `:b` | 410–414 | |
 | Tabs / `:tabnew` | 415–418 | |
 | `:{range}!{filter}` | 421 | |
 | `:terminal` | 422 | |
 | `q:` / `q/` history windows | 446, 447 | |
-| `:norm` / `:g` / `:v` | 457–459 | |

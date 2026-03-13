@@ -546,6 +546,30 @@ function handleModTap(mod) {
 
 buildVKBPage('abc');
 
+// ── Key-repeat for virtual keyboard ──
+// Mimics hardware keyboard: initial delay, then steady repeat.
+const REPEAT_DELAY = 400;   // ms before first repeat
+const REPEAT_INTERVAL = 80; // ms between repeats
+let _repeatTimer = null;
+let _repeatInterval = null;
+
+function stopRepeat() {
+  if (_repeatTimer)   { clearTimeout(_repeatTimer);   _repeatTimer = null; }
+  if (_repeatInterval) { clearInterval(_repeatInterval); _repeatInterval = null; }
+}
+
+function startRepeat(btn) {
+  stopRepeat();
+  const fire = () => {
+    const key = shiftActive ? btn.dataset.shiftKey : btn.dataset.key;
+    sendVKBKey(key);
+  };
+  _repeatTimer = setTimeout(() => {
+    fire();
+    _repeatInterval = setInterval(fire, REPEAT_INTERVAL);
+  }, REPEAT_DELAY);
+}
+
 // Event delegation on the keyboard container
 vkb.addEventListener('pointerdown', e => {
   const btn = e.target.closest('.vkb-key');
@@ -565,14 +589,17 @@ vkb.addEventListener('pointerdown', e => {
 
   const key = shiftActive ? btn.dataset.shiftKey : baseKey;
   sendVKBKey(key);
+  startRepeat(btn);
 });
 
 vkb.addEventListener('pointerup', e => {
+  stopRepeat();
   const btn = e.target.closest('.vkb-key');
   if (btn) btn.classList.remove('pressed');
 });
 
 vkb.addEventListener('pointerleave', e => {
+  stopRepeat();
   const btn = e.target.closest('.vkb-key');
   if (btn) btn.classList.remove('pressed');
 });

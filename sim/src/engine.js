@@ -87,6 +87,9 @@ export class VimEngine {
     /** @type {((text: string) => void) | null} */
     this._onClipboardWrite = null; // callback when + or * register is written
 
+    // File name (for "% register in :di)
+    this._fileName = null;
+
     // Search
     this._searchPattern = '';
     this._searchForward = true;
@@ -100,6 +103,7 @@ export class VimEngine {
 
     // Sticky command line: preserves error/info messages for one frame
     this._stickyCommandLine = false;
+    this._commandLineLineNrLen = 0; // for :nu/:# line number coloring
 
     // Last insert position (for gi)
     this._lastInsertPos = null;
@@ -179,8 +183,9 @@ export class VimEngine {
 
   // ── Public API ──
 
-  loadFile(text) {
+  loadFile(text, fileName) {
     const lines = text.split('\n');
+    this._fileName = fileName || null;
     if (lines.length > 1 && lines[lines.length - 1] === '') lines.pop();
     this.buffer = new Buffer(lines);
     // Neovim opens files with cursor at the first non-blank character
@@ -194,6 +199,9 @@ export class VimEngine {
     this._changeCount = 0;
     this._jumpList = [];
     this._jumpListPos = -1;
+    // Nvim records the file-open cursor position as the initial jumplist entry
+    this._jumpList.push({ row: 0, col: fnb });
+    this._jumpListPos = 1; // points past the initial entry (current position)
     this._changeList = [];
     this._changeListPos = -1;
     this._saveSnapshot();
@@ -225,6 +233,7 @@ export class VimEngine {
     // Clear sticky command line from previous feedKey
     if (this._stickyCommandLine) {
       this._stickyCommandLine = false;
+      this._commandLineLineNrLen = 0;
       this.commandLine = '';
     }
 
@@ -245,7 +254,7 @@ export class VimEngine {
 
   // ── Snapshot / Undo / Redo ──
 
-  _saveSnapshot() {
+  _saveSnapshot(cursorOverride) {
     // During macro playback, suppress intermediate snapshots
     // (the single pre-playback snapshot handles undo for the whole macro)
     if (this._macroPlaying) return;
@@ -256,7 +265,7 @@ export class VimEngine {
     this._changeListPos = this._changeList.length;
     this._undoStack.push({
       lines: [...this.buffer.lines],
-      cursor: { ...this.cursor },
+      cursor: cursorOverride ? { ...cursorOverride } : { ...this.cursor },
       scrollTop: this.scrollTop,
     });
     if (this._undoStack.length > 100) this._undoStack.shift();
@@ -471,6 +480,9 @@ export class VimEngine {
             for (const ch of this._lastExCommand) this.feedKey(ch);
             this.feedKey('Enter');
           }
+        } else {
+          this._messagePrompt = { error: 'E30: No previous command line' };
+          this.commandLine = '';
         }
         this._pendingCount = '';
         return;
@@ -1439,6 +1451,13 @@ export class VimEngine {
           this._setReg(y, 'char');
           this.buffer.lines.splice(this.cursor.row + 1, lastRow - this.cursor.row);
           this.buffer.lines[this.cursor.row] = line.slice(0, this.cursor.col);
+          // If the line became empty and there are more lines, remove it (matches nvim)
+          if (this.buffer.lines[this.cursor.row] === '' && this.buffer.lineCount > 1) {
+            this.buffer.lines.splice(this.cursor.row, 1);
+            if (this.cursor.row >= this.buffer.lineCount) {
+              this.cursor.row = this.buffer.lineCount - 1;
+            }
+          }
         } else {
           this._setReg(line.slice(this.cursor.col), 'char');
           this.buffer.lines[this.cursor.row] = line.slice(0, this.cursor.col);
@@ -1560,8 +1579,8 @@ export class VimEngine {
       }
 
       // Undo/Redo
-      case 'u': { const c = this._getCount(); for (let i = 0; i < c; i++) this._undo(); break; }
-      case 'Ctrl-R': { const c = this._getCount(); for (let i = 0; i < c; i++) this._redo(); break; }
+      case 'u': { const c = this._getCount(); for (let i = 0; i < c; i++) this._undo(); if (this._showCurSearch) this._updateCurSearchPos(); break; }
+      case 'Ctrl-R': { const c = this._getCount(); for (let i = 0; i < c; i++) this._redo(); if (this._showCurSearch) this._updateCurSearchPos(); break; }
 
       // Dot repeat
       case '.': {
@@ -1733,8 +1752,8 @@ export class VimEngine {
         const total = this.buffer.lineCount;
         let bytes = 0;
         for (let i = 0; i < total; i++) bytes += this.buffer.lines[i].length + (i < total - 1 ? 1 : 0);
-        this.commandLine = `"${name}" ${total}L, ${bytes}B`;
-        this._stickyCommandLine = true;
+        this._messagePrompt = { info: `"${name}" ${total}L, ${bytes}B` };
+        this.commandLine = '';
         this._pendingCount = '';
         break;
       }
@@ -1765,15 +1784,23 @@ export class VimEngine {
       case 'Ctrl-O': {
         if (this._jumpList.length > 0 && this._jumpListPos > 0) {
           if (this._jumpListPos >= this._jumpList.length) {
-            // Save current position before jumping back
-            this._jumpList.push({ row: this.cursor.row, col: this.cursor.col });
+            // Save current position before jumping back.
+            // Same-line dedup: if last entry is on same row, update col (nvim setpcmark).
+            const last = this._jumpList[this._jumpList.length - 1];
+            if (last.row === this.cursor.row) {
+              last.col = this.cursor.col;
+            } else {
+              this._jumpList.push({ row: this.cursor.row, col: this.cursor.col });
+            }
             this._jumpListPos = this._jumpList.length - 1;
           }
-          this._jumpListPos--;
-          const entry = this._jumpList[this._jumpListPos];
-          this.cursor.row = Math.min(entry.row, this.buffer.lineCount - 1);
-          this.cursor.col = Math.min(entry.col, this._maxCol());
-          this._updateDesiredCol();
+          if (this._jumpListPos > 0) {
+            this._jumpListPos--;
+            const entry = this._jumpList[this._jumpListPos];
+            this.cursor.row = Math.min(entry.row, this.buffer.lineCount - 1);
+            this.cursor.col = Math.min(entry.col, this._maxCol());
+            this._updateDesiredCol();
+          }
         }
         this._pendingCount = '';
         break;
@@ -1956,8 +1983,9 @@ export class VimEngine {
       case 'a': {
         // ga — show ASCII value of char under cursor
         const line = this.buffer.lines[this.cursor.row];
+        let gaMsg;
         if (line.length === 0) {
-          this.commandLine = 'NUL';
+          gaMsg = 'NUL';
         } else {
           const ch = line[this.cursor.col] || line[line.length - 1];
           const code = ch.charCodeAt(0);
@@ -1965,9 +1993,19 @@ export class VimEngine {
           const hex = code.toString(16);
           const oct = code.toString(8);
           const display = code < 32 ? '^' + String.fromCharCode(code + 64) : ch;
-          this.commandLine = `<${display}>  ${dec},  Hex ${hex.padStart(2, '0')},  Oct ${oct.padStart(3, '0')}`;
+          gaMsg = `<${display}>  ${dec},  Hex ${hex.padStart(2, '0')},  Oct ${oct.padStart(3, '0')}`;
         }
-        this._stickyCommandLine = true;
+        // nvim shows "Press ENTER" (overlay) for chars with digraph info
+        // (space, control chars, DEL, high bytes); regular printable chars
+        // (0x21–0x7E) display inline in the cmdline.
+        const gaCode = (line.length > 0) ? (line[this.cursor.col] || line[line.length - 1]).charCodeAt(0) : 0;
+        if (gaCode >= 0x21 && gaCode <= 0x7E) {
+          this.commandLine = gaMsg;
+          this._stickyCommandLine = true;
+        } else {
+          this._messagePrompt = { info: gaMsg };
+          this.commandLine = '';
+        }
         this._pendingCount = '';
         break;
       }
@@ -2094,9 +2132,330 @@ export class VimEngine {
     }
   }
 
+  // ── Ex command helpers ──
+
+  /**
+   * Parse a single ex address starting at position `pos` in string `cmd`.
+   * Returns { line: number (0-based), pos: number } or null.
+   */
+  _parseExAddr(cmd, pos) {
+    if (pos >= cmd.length) return null;
+    let line = null;
+    const ch = cmd[pos];
+
+    if (ch === '.') {
+      line = this.cursor.row;
+      pos++;
+    } else if (ch === '$') {
+      line = this.buffer.lineCount - 1;
+      pos++;
+    } else if (ch === "'" && pos + 1 < cmd.length) {
+      const mk = cmd[pos + 1];
+      pos += 2;
+      if (mk === '<' && this._visualCmdRange) {
+        line = this._visualCmdRange.start;
+      } else if (mk === '>' && this._visualCmdRange) {
+        line = this._visualCmdRange.end;
+      } else {
+        const resolved = this._resolveMark(mk);
+        if (resolved) line = resolved.row;
+        else return null;
+      }
+    } else if (ch >= '0' && ch <= '9') {
+      let num = '';
+      while (pos < cmd.length && cmd[pos] >= '0' && cmd[pos] <= '9') {
+        num += cmd[pos]; pos++;
+      }
+      line = parseInt(num, 10) - 1; // 1-based to 0-based
+    } else if (ch === '+' || ch === '-') {
+      // Bare +N or -N means current line with offset
+      line = this.cursor.row;
+    } else {
+      return null;
+    }
+
+    // Parse +N/-N offsets (can be chained)
+    while (pos < cmd.length && (cmd[pos] === '+' || cmd[pos] === '-')) {
+      const sign = cmd[pos] === '+' ? 1 : -1;
+      pos++;
+      let offset = '';
+      while (pos < cmd.length && cmd[pos] >= '0' && cmd[pos] <= '9') {
+        offset += cmd[pos]; pos++;
+      }
+      line += sign * (offset ? parseInt(offset, 10) : 1);
+    }
+
+    // Clamp — allow -1 for "before first line" (address 0 in ex commands)
+    line = Math.max(-1, Math.min(line, this.buffer.lineCount - 1));
+    return { line, pos };
+  }
+
+  /**
+   * Parse the range prefix from an ex command string.
+   * Returns { sr, er, hasRange, rest }.
+   */
+  _parseExRange(cmd) {
+    // Special case: % means entire file
+    if (cmd.startsWith('%')) {
+      return {
+        sr: 0, er: this.buffer.lineCount - 1, hasRange: true,
+        rest: cmd.slice(1)
+      };
+    }
+
+    // Special case: '<,'> (visual range)
+    if (cmd.startsWith("'<,'>")) {
+      if (this._visualCmdRange) {
+        const sr = this._visualCmdRange.start;
+        const er = this._visualCmdRange.end;
+        return { sr, er, hasRange: true, rest: cmd.slice(5) };
+      }
+      return { sr: this.cursor.row, er: this.cursor.row, hasRange: false, rest: cmd.slice(5) };
+    }
+
+    // Try to parse first address
+    const first = this._parseExAddr(cmd, 0);
+    if (!first) {
+      return { sr: this.cursor.row, er: this.cursor.row, hasRange: false, rest: cmd };
+    }
+
+    // Check for comma (range)
+    if (first.pos < cmd.length && cmd[first.pos] === ',') {
+      const second = this._parseExAddr(cmd, first.pos + 1);
+      if (second) {
+        return { sr: Math.max(0, first.line), er: Math.max(0, second.line), hasRange: true, rest: cmd.slice(second.pos) };
+      }
+      // Comma but no second address: use end of file
+      return { sr: Math.max(0, first.line), er: this.buffer.lineCount - 1, hasRange: true, rest: cmd.slice(first.pos + 1) };
+    }
+
+    // Single address
+    return { sr: Math.max(0, first.line), er: Math.max(0, first.line), hasRange: true, rest: cmd.slice(first.pos) };
+  }
+
+  /** :d[elete] [register] — delete lines in range */
+  _exDelete(sr, er, regName) {
+    this._saveSnapshot({ row: sr, col: 0 });
+    this._redoStack = [];
+    const count = er - sr + 1;
+    const deleted = this.buffer.lines.splice(sr, count);
+    if (this.buffer.lines.length === 0) this.buffer.lines.push('');
+    const text = deleted.join('\n');
+    if (regName) this._pendingRegKey = regName;
+    this._setReg(text, 'line', 'delete');
+    this.cursor.row = Math.min(sr, this.buffer.lineCount - 1);
+    this.cursor.col = this._firstNonBlank(this.cursor.row);
+    this._updateDesiredCol();
+    if (count >= 2) {
+      this.commandLine = count + ' fewer lines';
+      this._stickyCommandLine = true;
+    } else {
+      this.commandLine = '';
+    }
+  }
+
+  /** :y[ank] [register] — yank lines in range without modifying buffer */
+  _exYank(sr, er, regName) {
+    const count = er - sr + 1;
+    const text = this.buffer.lines.slice(sr, er + 1).join('\n');
+    if (regName) this._pendingRegKey = regName;
+    this._setReg(text, 'line', 'yank');
+    // :yank does NOT move the cursor
+    if (count >= 2) {
+      this.commandLine = count + ' lines yanked';
+      this._stickyCommandLine = true;
+    } else {
+      this.commandLine = '';
+    }
+  }
+
+  /** :m[ove] {address} — move lines from range to after address */
+  _exMove(sr, er, dest) {
+    this._saveSnapshot({ row: sr, col: 0 });
+    this._redoStack = [];
+    const count = er - sr + 1;
+    const moved = this.buffer.lines.splice(sr, count);
+    // Adjust dest for the removed lines
+    if (dest > er) dest -= count;
+    else if (dest >= sr && dest <= er) dest = sr - 1;
+    // Insert after dest (dest is 0-based line; insert after it)
+    const insertAt = dest + 1;
+    this.buffer.lines.splice(insertAt, 0, ...moved);
+    this.cursor.row = insertAt + count - 1;
+    this.cursor.col = this._firstNonBlank(this.cursor.row);
+    this._updateDesiredCol();
+    this.commandLine = '';
+  }
+
+  /** :co[py]/:t {address} — copy lines from range to after address */
+  _exCopy(sr, er, dest) {
+    this._saveSnapshot({ row: dest + 1, col: 0 });
+    this._redoStack = [];
+    const count = er - sr + 1;
+    const copied = this.buffer.lines.slice(sr, er + 1);
+    const insertAt = dest + 1;
+    this.buffer.lines.splice(insertAt, 0, ...copied);
+    this.cursor.row = insertAt + count - 1;
+    this.cursor.col = this._firstNonBlank(this.cursor.row);
+    this._updateDesiredCol();
+    this.commandLine = '';
+  }
+
+  /** :j[oin][!] — join lines in range */
+  _exJoin(sr, er, bang) {
+    this._saveSnapshot({ row: sr, col: 0 });
+    this._redoStack = [];
+    // If single line (no range given), join with next line
+    if (sr === er) er = sr + 1;
+    if (sr >= er || er >= this.buffer.lineCount) return;
+    let result = this.buffer.lines[sr];
+    for (let i = sr + 1; i <= er; i++) {
+      const next = this.buffer.lines[i];
+      if (bang) {
+        result += next;
+      } else {
+        const trimmed = next.replace(/^\s+/, '');
+        if (result.length > 0 && trimmed.length > 0) {
+          result += ' ' + trimmed;
+        } else {
+          result += trimmed;
+        }
+      }
+    }
+    this.buffer.lines.splice(sr, er - sr + 1, result);
+    this.cursor.row = sr;
+    this.cursor.col = this._firstNonBlank(sr);
+    this._updateDesiredCol();
+    this.commandLine = '';
+  }
+
+  /** :norm[al][!] {keys} — execute normal-mode keys on each line in range */
+  _exNormal(sr, er, keys) {
+    this._saveSnapshot({ row: sr, col: 0 });
+    this._redoStack = [];
+    const wasPlaying = this._macroPlaying;
+    this._macroPlaying = true;
+    const iterCount = er - sr + 1;
+    let row = sr;
+    for (let i = 0; i < iterCount; i++) {
+      if (this.buffer.lineCount === 0) break;
+      // Clamp row to valid range (when lines have been deleted, row may exceed buffer)
+      if (row >= this.buffer.lineCount) row = this.buffer.lineCount - 1;
+      this.cursor.row = row;
+      this.cursor.col = 0;
+      this.mode = Mode.NORMAL;
+      for (const ch of keys) {
+        this.feedKey(ch);
+      }
+      if (this.mode !== Mode.NORMAL) this.feedKey('Escape');
+      // Always advance row by 1 — nvim uses fixed iteration count
+      row++;
+    }
+    this._macroPlaying = wasPlaying;
+    this.mode = Mode.NORMAL;
+    this.commandLine = '';
+  }
+
+  /** :g[lobal]/{pattern}/{cmd} and :v[global]/{pattern}/{cmd} */
+  _exGlobal(sr, er, pattern, subcmd, invert) {
+    // Snapshot is saved after finding matches (to set cursor at first match)
+
+    // Build regex
+    let jsPattern = pattern
+      .replace(/\\\+/g, '+')
+      .replace(/\\\?/g, '?')
+      .replace(/\\\(/g, '(')
+      .replace(/\\\)/g, ')')
+      .replace(/\\\|/g, '|')
+      .replace(/\\\{/g, '{')
+      .replace(/\\\}/g, '}');
+    let caseFlag = this._searchCaseFlag();
+    let regex;
+    try { regex = new RegExp(jsPattern, caseFlag); } catch {
+      this.commandLine = 'E486: Pattern not found: ' + pattern;
+      this._stickyCommandLine = true;
+      return;
+    }
+
+    // Set search pattern for highlighting
+    this._searchPattern = pattern;
+    this._hlsearchActive = true;
+    this._showCurSearch = true;
+
+    // Collect matching line indices
+    const matches = [];
+    for (let r = sr; r <= er; r++) {
+      const hit = regex.test(this.buffer.lines[r]);
+      if (invert ? !hit : hit) matches.push(r);
+    }
+
+    if (matches.length === 0) {
+      this.commandLine = 'E486: Pattern not found: ' + pattern;
+      this._stickyCommandLine = true;
+      return;
+    }
+
+    // Save snapshot with cursor at first match position
+    this._saveSnapshot({ row: matches[0], col: 0 });
+    this._redoStack = [];
+
+    const trimmedSub = subcmd.trim();
+
+    // :g/.../d — delete matching lines (process bottom to top)
+    if (/^d(e(l(e(te?)?)?)?)?(\s.*)?$/.test(trimmedSub)) {
+      for (let i = matches.length - 1; i >= 0; i--) {
+        this.buffer.lines.splice(matches[i], 1);
+      }
+      if (this.buffer.lines.length === 0) this.buffer.lines.push('');
+      // Cursor: approximate position of the last original match
+      const lastMatch = matches[matches.length - 1];
+      const deletionsBefore = matches.length - 1; // matches before the last one
+      let newPos = lastMatch - deletionsBefore;
+      newPos = Math.max(0, Math.min(newPos, this.buffer.lineCount - 1));
+      this.cursor.row = newPos;
+      this.cursor.col = this._firstNonBlank(this.cursor.row);
+      this._updateDesiredCol();
+      // Set CurSearch: only if cursor is exactly at the start of a match
+      this._setCurSearchAtCursor();
+      this.commandLine = '';
+      return;
+    }
+
+    // :g/.../norm {keys}
+    const normMatch = trimmedSub.match(/^norm(?:a(?:l)?)?!?\s+(.+)$/);
+    if (normMatch) {
+      const keys = normMatch[1];
+      const wasPlaying = this._macroPlaying;
+      this._macroPlaying = true;
+      // Process from top to bottom, adjusting for line count changes
+      let offset = 0;
+      for (let i = 0; i < matches.length; i++) {
+        const row = matches[i] + offset;
+        if (row >= this.buffer.lineCount) break;
+        const beforeCount = this.buffer.lineCount;
+        this.cursor.row = row;
+        this.cursor.col = 0;
+        this.mode = Mode.NORMAL;
+        for (const ch of keys) {
+          this.feedKey(ch);
+        }
+        if (this.mode !== Mode.NORMAL) this.feedKey('Escape');
+        offset += this.buffer.lineCount - beforeCount;
+      }
+      this._macroPlaying = wasPlaying;
+      this.mode = Mode.NORMAL;
+      // Set CurSearch: only if cursor is exactly at the start of a match
+      this._setCurSearchAtCursor();
+      this.commandLine = '';
+      return;
+    }
+
+    this.commandLine = '';
+  }
+
   _executeCommand() {
     const prefix = this.commandLine[0];
-    const cmd = this._searchInput.trim();
+    const cmd = this._searchInput.replace(/^\s+/, ''); // trim leading whitespace only
     this.mode = Mode.NORMAL;
 
     if (prefix === '/' || prefix === '?') {
@@ -2179,56 +2538,6 @@ export class VimEngine {
       return;
     }
 
-    // :pu[t][!] [register] — paste register content as new lines
-    {
-      const putMatch = cmd.match(/^pu(t)?(!)?\s*(.*)$/);
-      if (putMatch) {
-        const bang = !!putMatch[2];
-        const regArg = putMatch[3].trim();
-        // Determine which register to read
-        // :put takes a single character register name (e.g. :put a, :put /, :put ")
-        // If multiple chars are given (e.g. :put "/), the first char is the register
-        let regName = '';
-        let reg;
-        if (regArg.length >= 1) {
-          regName = regArg[0];
-          this._pendingRegKey = regName;
-          reg = this._getReg();
-        } else {
-          // No register specified — use unnamed register
-          regName = '"';
-          reg = { text: this._unnamedReg, type: this._regType };
-        }
-        const text = reg.text || '';
-        if (!text) {
-          // E353: Nothing in register X
-          this.commandLine = 'E353: Nothing in register ' + regName;
-          this._stickyCommandLine = true;
-          return;
-        }
-        this._saveSnapshot();
-        this._redoStack = [];
-        const lines = text.split('\n');
-        // Remove trailing empty string from split if text ended with \n
-        if (lines.length > 0 && lines[lines.length - 1] === '' && text.endsWith('\n')) {
-          lines.pop();
-        }
-        if (bang) {
-          // :put! — insert above current line
-          this.buffer.lines.splice(this.cursor.row, 0, ...lines);
-          this.cursor.col = this._firstNonBlank(this.cursor.row);
-        } else {
-          // :put — insert below current line
-          this.buffer.lines.splice(this.cursor.row + 1, 0, ...lines);
-          this.cursor.row += 1;
-          this.cursor.col = this._firstNonBlank(this.cursor.row);
-        }
-        this._updateDesiredCol();
-        this.commandLine = '';
-        return;
-      }
-    }
-
     // :set commands
     if (/^set?\s/.test(cmd) || cmd === 'set') {
       this._executeSet(cmd);
@@ -2236,54 +2545,280 @@ export class VimEngine {
       return;
     }
 
-    // :s[ubstitute]/pattern/replacement/[flags]  and  :%s/...  and  :'<,'>s/...
+    // ── Parse range and dispatch ex commands ──
+    const parsed = this._parseExRange(cmd);
+    let { sr, er, hasRange } = parsed;
+    const rest = parsed.rest.trimStart();
+
+    // Clear visual range now that the parser consumed it
+    this._visualCmdRange = null;
+
+    // :marks — display marks list
+    if (/^marks?\s*$/.test(rest)) {
+      // Build structured lines for the message prompt with proper color runs.
+      // Colors from monokai theme (verified against nvim ground truth):
+      const normalFg = 'd4d4d4', normalBg = '000000', dirFg = '66d9ef';
+      const cols = this.cols;
+      const mkLine = (text, runs) => ({ text, runs });
+      const mkFullLine = (text) => mkLine(text, [{ n: cols, fg: normalFg, bg: normalBg }]);
+      const mkDataLine = (prefix, lineText) => {
+        // prefix is 15 chars (mark + line + col + space), lineText is the buffer text
+        const textLen = Math.min(lineText.length, cols - 15);
+        const padLen = cols - 15 - textLen;
+        const fullText = prefix + lineText.slice(0, cols - 15) + ' '.repeat(padLen);
+        const runs = [
+          { n: 15, fg: normalFg, bg: normalBg },
+        ];
+        if (textLen > 0) runs.push({ n: textLen, fg: dirFg, bg: normalBg });
+        if (padLen > 0) runs.push({ n: padLen, fg: normalFg, bg: normalBg });
+        return mkLine(fullText, runs);
+      };
+
+      const promptLines = [];
+      // :marks header (full-width single run)
+      promptLines.push(mkFullLine(':marks' + ' '.repeat(cols - 6)));
+      // Column header: "mark line  col file/text" — monokai yellow e6db74 + bold
+      const hdrFg = 'e6db74';
+      const hdr = 'mark line  col file/text';
+      promptLines.push(mkLine(hdr + ' '.repeat(cols - hdr.length), [
+        { n: hdr.length, fg: hdrFg, bg: normalBg, b: true },
+        { n: cols - hdr.length, fg: normalFg, bg: normalBg },
+      ]));
+
+      const fmtPrefix = (ch, row, col) => {
+        return ' ' + ch + String(row + 1).padStart(7) + String(col).padStart(5) + ' ';
+      };
+      const getLineText = (row) => (row < this.buffer.lineCount) ? this.buffer.lines[row] : '';
+
+      // ' — last jump position (defaults to line 1, col 0)
+      const jp = this._lastJumpPos || { row: 0, col: 0 };
+      promptLines.push(mkDataLine(fmtPrefix("'", jp.row, jp.col), getLineText(jp.row)));
+      // User marks a-z
+      const markKeys = Object.keys(this._marks).sort();
+      for (const mk of markKeys) {
+        const m = this._marks[mk];
+        promptLines.push(mkDataLine(fmtPrefix(mk, m.row, m.col), getLineText(m.row)));
+      }
+      // " — last position when exiting file
+      promptLines.push(mkDataLine(fmtPrefix('"', jp.row, jp.col), getLineText(jp.row)));
+      // [ — start of buffer
+      promptLines.push(mkDataLine(fmtPrefix('[', 0, 0), getLineText(0)));
+      // ] — end of buffer
+      const lastRow = this.buffer.lineCount - 1;
+      promptLines.push(mkDataLine(fmtPrefix(']', lastRow, 0), getLineText(lastRow)));
+
+      this._messagePrompt = { lines: promptLines };
+      this.commandLine = '';
+      return;
+    }
+
+    // :reg[isters] / :di[splay]
+    if (/^(reg(i(s(t(e(rs?)?)?)?)?)?|di(s(p(l(a(y)?)?)?)?)?)\s*$/.test(rest)) {
+      // Structured lines with monokai colors (verified against nvim ground truth):
+      //   Header "Type Name Content" → monokai yellow e6db74 + bold
+      //   Data rows (type, "name, content) → Normal d4d4d4
+      //   ^J newline markers in content    → SpecialKey f92672 (magenta/pink)
+      const normalFg = 'd4d4d4', normalBg = '000000', specialKeyFg = 'f92672';
+      const cols = this.cols;
+      const pad = (s) => s.length < cols ? s + ' '.repeat(cols - s.length) : s.slice(0, cols);
+      const mkLine = (text, runs) => ({ text, runs });
+
+      // Build a register data line.  rawText may contain \n displayed as ^J.
+      // prefix ("  c  ""   ") and text content are Normal;  ^J markers are SpecialKey (dim gray).
+      const mkRegLine = (prefix, rawText) => {
+        const parts = rawText.split('\n');
+        const displayContent = parts.join('^J');
+        const fullRaw = prefix + displayContent;
+        const fullText = fullRaw.length < cols
+          ? fullRaw + ' '.repeat(cols - fullRaw.length)
+          : fullRaw.slice(0, cols);
+        const runs = [];
+        let pos = 0;
+        // Prefix in Normal
+        const pLen = Math.min(prefix.length, cols);
+        if (pLen > 0) { runs.push({ n: pLen, fg: normalFg, bg: normalBg }); pos += pLen; }
+        // Content parts with ^J in SpecialKey (dim gray 4f5258)
+        for (let j = 0; j < parts.length && pos < cols; j++) {
+          if (j > 0 && pos < cols) {
+            const n = Math.min(2, cols - pos);
+            runs.push({ n, fg: specialKeyFg, bg: normalBg });
+            pos += n;
+          }
+          if (pos < cols && parts[j].length > 0) {
+            const n = Math.min(parts[j].length, cols - pos);
+            runs.push({ n, fg: normalFg, bg: normalBg });
+            pos += n;
+          }
+        }
+        // Trailing padding
+        if (pos < cols) { runs.push({ n: cols - pos, fg: normalFg, bg: normalBg }); }
+        return mkLine(fullText, runs);
+      };
+
+      const promptLines = [];
+      // Echo line (shows the command as typed)
+      const mkFullLine = (text) => mkLine(text, [{ n: cols, fg: normalFg, bg: normalBg }]);
+      const echoCmd = ':' + rest.trim();
+      promptLines.push(mkFullLine(pad(echoCmd)));
+      // Header line — monokai yellow e6db74 + bold
+      const hdrFg = 'e6db74';
+      const hdr = 'Type Name Content';
+      promptLines.push(mkLine(pad(hdr), [
+        { n: Math.min(hdr.length, cols), fg: hdrFg, bg: normalBg, b: true },
+        ...(hdr.length < cols ? [{ n: cols - hdr.length, fg: normalFg, bg: normalBg }] : []),
+      ]));
+      // Unnamed register
+      if (this._unnamedReg) {
+        const t = this._regType === 'line' ? 'l' : 'c';
+        const regText = this._unnamedReg + (this._regType === 'line' ? '\n' : '');
+        promptLines.push(mkRegLine('  ' + t + '  ""   ', regText));
+      }
+      // Numbered registers 0-9
+      for (let i = 0; i <= 9; i++) {
+        const r = this._numberedRegs[i];
+        if (r && r.text) {
+          const t = r.type === 'line' ? 'l' : 'c';
+          const regText = r.text + (r.type === 'line' ? '\n' : '');
+          promptLines.push(mkRegLine('  ' + t + '  "' + i + '   ', regText));
+        }
+      }
+      // Small delete register
+      if (this._smallDeleteReg && this._smallDeleteReg.text) {
+        const t = this._smallDeleteReg.type === 'line' ? 'l' : 'c';
+        const regText = this._smallDeleteReg.text + (this._smallDeleteReg.type === 'line' ? '\n' : '');
+        promptLines.push(mkRegLine('  ' + t + '  "-   ', regText));
+      }
+      // Named registers a-z
+      const namedKeys = Object.keys(this._namedRegs).sort();
+      for (const k of namedKeys) {
+        const r = this._namedRegs[k];
+        if (r && r.text) {
+          const t = r.type === 'line' ? 'l' : 'c';
+          const regText = r.text + (r.type === 'line' ? '\n' : '');
+          promptLines.push(mkRegLine('  ' + t + '  "' + k + '   ', regText));
+        }
+      }
+      // Clipboard registers "* and "+ (always shown as empty characterwise)
+      promptLines.push(mkRegLine('  c  "*   ', ''));
+      promptLines.push(mkRegLine('  c  "+   ', ''));
+      // Current file name register "%
+      if (this._fileName) {
+        promptLines.push(mkRegLine('  c  "%   ', this._fileName));
+      }
+      // Last search register
+      if (this._searchPattern) {
+        promptLines.push(mkRegLine('  c  "/   ', this._searchPattern));
+      }
+      this._messagePrompt = { lines: promptLines };
+      this.commandLine = '';
+      return;
+    }
+
+    // :norm[al][!] {keys}
     {
-      const subMatch = cmd.match(/^(?:(%|'<,'>)\s*)?s(?:u(?:b(?:s(?:t(?:i(?:t(?:u(?:te?)?)?)?)?)?)?)?)?([\/:!#])(.*)/);
+      const normMatch = rest.match(/^norm(?:a(?:l)?)?!?\s+(.+)$/);
+      if (normMatch) {
+        this._exNormal(sr, er, normMatch[1]);
+        return;
+      }
+    }
+
+    // :g[lobal]/{pattern}/{cmd}
+    {
+      const gMatch = rest.match(/^g(?:l(?:o(?:b(?:a(?:l)?)?)?)?)?(!?)([\/:!#])(.*)/);
+      if (gMatch) {
+        const invert = !!gMatch[1]; // g! is inverted
+        const delim = gMatch[2];
+        const body = gMatch[3];
+        // :g without range defaults to entire file
+        const gsr = hasRange ? sr : 0;
+        const ger = hasRange ? er : this.buffer.lineCount - 1;
+        // Parse pattern and subcmd separated by delim
+        let pattern = '', subcmd = '';
+        let inPat = true;
+        for (let i = 0; i < body.length; i++) {
+          if (body[i] === '\\' && i + 1 < body.length && inPat) {
+            pattern += body[i] + body[i + 1]; i++; continue;
+          }
+          if (body[i] === delim && inPat) { inPat = false; continue; }
+          if (inPat) pattern += body[i]; else subcmd += body[i];
+        }
+        if (pattern) {
+          this._exGlobal(gsr, ger, pattern, subcmd, invert);
+        }
+        this.commandLine = '';
+        return;
+      }
+    }
+
+    // :v[global]/{pattern}/{cmd}
+    {
+      const vMatch = rest.match(/^v(?:g(?:l(?:o(?:b(?:a(?:l)?)?)?)?)?)?(!?)([\/:!#])(.*)/);
+      if (vMatch) {
+        const delim = vMatch[2];
+        const body = vMatch[3];
+        // :v without range defaults to entire file
+        const vsr = hasRange ? sr : 0;
+        const ver = hasRange ? er : this.buffer.lineCount - 1;
+        let pattern = '', subcmd = '';
+        let inPat = true;
+        for (let i = 0; i < body.length; i++) {
+          if (body[i] === '\\' && i + 1 < body.length && inPat) {
+            pattern += body[i] + body[i + 1]; i++; continue;
+          }
+          if (body[i] === delim && inPat) { inPat = false; continue; }
+          if (inPat) pattern += body[i]; else subcmd += body[i];
+        }
+        if (pattern) {
+          this._exGlobal(vsr, ver, pattern, subcmd, true);
+        }
+        this.commandLine = '';
+        return;
+      }
+    }
+
+    // :s[ubstitute] with delimiter — full substitution
+    {
+      const subMatch = rest.match(/^s(?:u(?:b(?:s(?:t(?:i(?:t(?:u(?:te?)?)?)?)?)?)?)?)?([\/:!#])(.*)/);
       if (subMatch) {
-        const rangeSpec = subMatch[1] || '';
-        const delim = subMatch[2];
-        const rest = subMatch[3];
+        const delim = subMatch[1];
+        const body = subMatch[2];
         // Parse: pattern<delim>replacement<delim>[flags]
-        // Handle escaped delimiters within pattern/replacement
         let pattern = '', replacement = '', flagStr = '';
         let part = 0; // 0=pattern, 1=replacement, 2=flags
-        for (let i = 0; i < rest.length; i++) {
-          if (rest[i] === '\\' && i + 1 < rest.length) {
+        for (let i = 0; i < body.length; i++) {
+          if (body[i] === '\\' && i + 1 < body.length) {
             const target = part === 0 ? 'pattern' : part === 1 ? 'replacement' : 'flags';
-            if (target === 'pattern') pattern += rest[i] + rest[i + 1];
-            else if (target === 'replacement') replacement += rest[i] + rest[i + 1];
-            else flagStr += rest[i] + rest[i + 1];
+            if (target === 'pattern') pattern += body[i] + body[i + 1];
+            else if (target === 'replacement') replacement += body[i] + body[i + 1];
+            else flagStr += body[i] + body[i + 1];
             i++; continue;
           }
-          if (rest[i] === delim) { part++; continue; }
-          if (part === 0) pattern += rest[i];
-          else if (part === 1) replacement += rest[i];
-          else flagStr += rest[i];
+          if (body[i] === delim) { part++; continue; }
+          if (part === 0) pattern += body[i];
+          else if (part === 1) replacement += body[i];
+          else flagStr += body[i];
         }
         if (!pattern) { this.commandLine = ''; return; }
 
         // Parse flags
-        let globalFlag = false, icFlag = false, confirmFlag = false;
+        let globalFlag = false, icFlag = false, confirmFlag = false, countOnly = false;
         for (const ch of flagStr) {
           if (ch === 'g') globalFlag = true;
           else if (ch === 'i') icFlag = true;
-          else if (ch === 'c') confirmFlag = true; // confirm not yet interactive, just apply all
+          else if (ch === 'c') confirmFlag = true;
+          else if (ch === 'n') countOnly = true;
         }
 
-        // Determine range
-        let sr = this.cursor.row, er = this.cursor.row;
-        if (rangeSpec === '%') { sr = 0; er = this.buffer.lineCount - 1; }
-        else if (rangeSpec === "'<,'>" && this._visualCmdRange) {
-          sr = this._visualCmdRange.start; er = this._visualCmdRange.end;
-          this._visualCmdRange = null;
-        }
+        // Store last substitution for bare :s repeat
+        this._lastSubstitution = { pattern, replacement, flags: flagStr };
 
-        // Set search pattern for n/N/highlighting (must be BEFORE _searchCaseFlag for smartcase)
+        // Set search pattern for n/N/highlighting
         this._searchPattern = pattern;
         this._hlsearchActive = true;
+        this._showCurSearch = true;
 
         // Translate vim "magic" regex to JavaScript regex
-        // In vim's default magic mode: \+ → +, \? → ?, \( → (, \) → ), \| → |, \{ → {, \} → }
         let jsPattern = pattern
           .replace(/\\\+/g, '+')
           .replace(/\\\?/g, '?')
@@ -2293,7 +2828,16 @@ export class VimEngine {
           .replace(/\\\{/g, '{')
           .replace(/\\\}/g, '}');
 
-        // Build regex (respect ignorecase/smartcase + explicit i flag)
+        // Handle & in replacement: vim's & means "whole match" → JS $&
+        // But \& is a literal & in vim → keep as &
+        // Order matters: escape $ first, then convert &, so $& won't be double-escaped
+        let jsReplacement = replacement
+          .replace(/\\&/g, '\x00AMP')       // protect literal \&
+          .replace(/\$/g, '$$$$')            // escape bare $ (vim $ is literal, JS $ is special)
+          .replace(/&/g, '$$&')              // vim & → JS $& ($$& in .replace = literal $ + &)
+          .replace(/\x00AMP/g, '&');         // restore literal &
+
+        // Build regex
         let caseFlag = icFlag ? 'i' : this._searchCaseFlag();
         let regex;
         try { regex = new RegExp(jsPattern, (globalFlag ? 'g' : '') + caseFlag); } catch {
@@ -2302,14 +2846,29 @@ export class VimEngine {
           return;
         }
 
+        // Count-only mode (n flag)
+        if (countOnly) {
+          let matchCount = 0, lineCount = 0;
+          for (let r = sr; r <= er; r++) {
+            const line = this.buffer.lines[r];
+            const re = new RegExp(jsPattern, 'g' + caseFlag);
+            const m = line.match(re);
+            if (m) { matchCount += m.length; lineCount++; }
+          }
+          this.commandLine = matchCount + ' match' + (matchCount !== 1 ? 'es' : '') + ' on ' + lineCount + ' line' + (lineCount !== 1 ? 's' : '');
+          this._stickyCommandLine = true;
+          this._updateCurSearchPos();
+          return;
+        }
+
         // Perform substitutions
-        this._saveSnapshot();
+        this._saveSnapshot({ row: sr, col: 0 });
         this._redoStack = [];
         let totalSubs = 0;
         let lastSubRow = sr;
         for (let r = sr; r <= er; r++) {
           const before = this.buffer.lines[r];
-          const after = before.replace(regex, replacement);
+          const after = before.replace(regex, jsReplacement);
           if (after !== before) {
             this.buffer.lines[r] = after;
             totalSubs++;
@@ -2321,111 +2880,470 @@ export class VimEngine {
           this.commandLine = 'E486: Pattern not found: ' + pattern;
           this._stickyCommandLine = true;
         } else {
-          // Move cursor to last substituted line, first non-blank
           this.cursor.row = lastSubRow;
           this.cursor.col = this._firstNonBlank(lastSubRow);
           this.commandLine = totalSubs + ' substitution' + (totalSubs > 1 ? 's' : '') + ' on ' + (er - sr + 1) + ' line' + ((er - sr + 1) > 1 ? 's' : '');
           this._stickyCommandLine = true;
         }
+        this._showCurSearch = false;
+        this._curSearchPos = null;
         return;
       }
     }
 
-    // :sort — sort lines in buffer or visual range
-    const sortMatch = cmd.match(/^(?:'<,'>\s*)?sort(!)?\s*(.*)?$/);
-    if (sortMatch) {
-      const bang = !!sortMatch[1];  // :sort! = reverse
-      const flags = (sortMatch[2] || '').trim();
-      let reverse = bang;
-      let numeric = false;
-      let unique = false;
-      let ignoreCase = false;
-      // Parse flags: n=numeric, i=ignore-case, u=unique
-      for (const ch of flags) {
-        if (ch === 'n') numeric = true;
-        else if (ch === 'i') ignoreCase = true;
-        else if (ch === 'u') unique = true;
-      }
-      // Determine range
-      let sr = 0, er = this.buffer.lineCount - 1;
-      if (this._visualCmdRange) {
-        sr = this._visualCmdRange.start;
-        er = this._visualCmdRange.end;
-        this._visualCmdRange = null;
-      }
-      // Extract lines to sort
-      const slice = this.buffer.lines.slice(sr, er + 1);
-      // Sort
-      if (numeric) {
-        slice.sort((a, b) => {
-          const na = parseFloat(a) || 0;
-          const nb = parseFloat(b) || 0;
-          return na - nb;
-        });
-      } else if (ignoreCase) {
-        slice.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-      } else {
-        slice.sort();
-      }
-      if (reverse) slice.reverse();
-      if (unique) {
-        const seen = new Set();
-        const deduped = [];
-        for (const line of slice) {
-          const key = ignoreCase ? line.toLowerCase() : line;
-          if (!seen.has(key)) { seen.add(key); deduped.push(line); }
+    // Bare :s — repeat last substitution on current line (or range)
+    if (/^s(u(b(s(t(i(t(u(te?)?)?)?)?)?)?)?)?$/.test(rest)) {
+      if (this._lastSubstitution) {
+        const { pattern, replacement, flags } = this._lastSubstitution;
+        this._searchPattern = pattern;
+        this._hlsearchActive = true;
+        this._showCurSearch = true;
+
+        let jsPattern = pattern
+          .replace(/\\\+/g, '+')
+          .replace(/\\\?/g, '?')
+          .replace(/\\\(/g, '(')
+          .replace(/\\\)/g, ')')
+          .replace(/\\\|/g, '|')
+          .replace(/\\\{/g, '{')
+          .replace(/\\\}/g, '}');
+        let jsReplacement = replacement
+          .replace(/\\&/g, '\x00AMP')
+          .replace(/\$/g, '$$$$')
+          .replace(/&/g, '$$&')
+          .replace(/\x00AMP/g, '&');
+        let globalFlag = flags.includes('g');
+        let icFlag = flags.includes('i');
+        let caseFlag = icFlag ? 'i' : this._searchCaseFlag();
+        let regex;
+        try { regex = new RegExp(jsPattern, (globalFlag ? 'g' : '') + caseFlag); } catch {
+          this.commandLine = 'E486: Pattern not found: ' + pattern;
+          this._stickyCommandLine = true;
+          return;
         }
-        slice.length = 0;
-        slice.push(...deduped);
+        this._saveSnapshot({ row: sr, col: 0 });
+        this._redoStack = [];
+        let totalSubs = 0, lastSubRow = sr;
+        for (let r = sr; r <= er; r++) {
+          const before = this.buffer.lines[r];
+          const after = before.replace(regex, jsReplacement);
+          if (after !== before) { this.buffer.lines[r] = after; totalSubs++; lastSubRow = r; }
+        }
+        if (totalSubs === 0) {
+          this.commandLine = 'E486: Pattern not found: ' + pattern;
+          this._stickyCommandLine = true;
+        } else {
+          this.cursor.row = lastSubRow;
+          this.cursor.col = this._firstNonBlank(lastSubRow);
+          this.commandLine = totalSubs + ' substitution' + (totalSubs > 1 ? 's' : '') + ' on ' + (er - sr + 1) + ' line' + ((er - sr + 1) > 1 ? 's' : '');
+          this._stickyCommandLine = true;
+        }
+        this._showCurSearch = false;
+        this._curSearchPos = null;
       }
-      // Replace lines in buffer
-      this._saveSnapshot();
-      this._redoStack = [];
-      this.buffer.lines.splice(sr, er - sr + 1, ...slice);
-      // Position cursor at start of sorted range
-      this.cursor.row = sr;
-      this.cursor.col = this._firstNonBlank(sr);
-      this._updateDesiredCol();
-      const count = slice.length;
-      this.commandLine = `${count} line${count !== 1 ? 's' : ''} sorted`;
+      return;
+    }
+
+    // :sort[!] [flags]
+    {
+      const sortMatch = rest.match(/^sort(!)?\s*(.*)?$/);
+      if (sortMatch) {
+        const bang = !!sortMatch[1];
+        const flags = (sortMatch[2] || '').trim();
+        let reverse = bang;
+        let numeric = false;
+        let unique = false;
+        let ignoreCase = false;
+        for (const ch of flags) {
+          if (ch === 'n') numeric = true;
+          else if (ch === 'i') ignoreCase = true;
+          else if (ch === 'u') unique = true;
+        }
+        // If no explicit range was given, sort entire file
+        if (!hasRange) { sr = 0; er = this.buffer.lineCount - 1; }
+        const slice = this.buffer.lines.slice(sr, er + 1);
+        if (numeric) {
+          slice.sort((a, b) => {
+            const na = parseFloat(a) || 0;
+            const nb = parseFloat(b) || 0;
+            return na - nb;
+          });
+        } else if (ignoreCase) {
+          slice.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+        } else {
+          slice.sort();
+        }
+        if (reverse) slice.reverse();
+        if (unique) {
+          const seen = new Set();
+          const deduped = [];
+          for (const line of slice) {
+            const key = ignoreCase ? line.toLowerCase() : line;
+            if (!seen.has(key)) { seen.add(key); deduped.push(line); }
+          }
+          slice.length = 0;
+          slice.push(...deduped);
+        }
+        this._saveSnapshot({ row: sr, col: 0 });
+        this._redoStack = [];
+        this.buffer.lines.splice(sr, er - sr + 1, ...slice);
+        this.cursor.row = sr;
+        this.cursor.col = this._firstNonBlank(sr);
+        this._updateDesiredCol();
+        const count = slice.length;
+        this.commandLine = `${count} line${count !== 1 ? 's' : ''} sorted`;
+        this._stickyCommandLine = true;
+        return;
+      }
+    }
+
+    // :j[oin][!]
+    {
+      const joinMatch = rest.match(/^j(o(i(n)?)?)?(!)?\s*$/);
+      if (joinMatch) {
+        const bang = !!joinMatch[4];
+        // If no range given, default to joining current line with next
+        if (!hasRange) er = sr;
+        this._exJoin(sr, er, bang);
+        return;
+      }
+    }
+
+    // :d[elete] [register]
+    {
+      const delMatch = rest.match(/^d(e(l(e(te?)?)?)?)?\s*([a-zA-Z])?\s*$/);
+      if (delMatch) {
+        const regName = delMatch[5] || '';
+        this._exDelete(sr, er, regName);
+        return;
+      }
+    }
+
+    // :y[ank] [register]
+    {
+      const yankMatch = rest.match(/^y(a(n(k)?)?)?\s*([a-zA-Z])?\s*$/);
+      if (yankMatch) {
+        const regName = yankMatch[4] || '';
+        this._exYank(sr, er, regName);
+        return;
+      }
+    }
+
+    // :m[ove] {address} — MUST come after :marks check
+    {
+      const moveMatch = rest.match(/^m(o(ve?)?)?\s*(.*)/);
+      if (moveMatch) {
+        const addrStr = moveMatch[3].trim();
+        const addrParsed = this._parseExAddr(addrStr, 0);
+        if (addrParsed) {
+          this._exMove(sr, er, addrParsed.line);
+        }
+        this.commandLine = '';
+        return;
+      }
+    }
+
+    // :co[py]/:t {address}
+    {
+      const copyMatch = rest.match(/^(?:co(?:py?)?|t)\s*(.*)/);
+      if (copyMatch) {
+        const addrStr = copyMatch[1].trim();
+        const addrParsed = this._parseExAddr(addrStr, 0);
+        if (addrParsed) {
+          this._exCopy(sr, er, addrParsed.line);
+        }
+        this.commandLine = '';
+        return;
+      }
+    }
+
+    // :pu[t][!] [register] — paste register content as new lines
+    {
+      const putMatch = rest.match(/^pu(t)?(!)?\s*(.*)$/);
+      if (putMatch) {
+        const bang = !!putMatch[2];
+        const regArg = putMatch[3].trim();
+        let regName = '';
+        let reg;
+        if (regArg.length >= 1) {
+          regName = regArg[0];
+          this._pendingRegKey = regName;
+          reg = this._getReg();
+        } else {
+          regName = '"';
+          reg = { text: this._unnamedReg, type: this._regType };
+        }
+        const text = reg.text || '';
+        if (!text) {
+          this.commandLine = 'E353: Nothing in register ' + regName;
+          this._stickyCommandLine = true;
+          return;
+        }
+        this._saveSnapshot();
+        this._redoStack = [];
+        const lines = text.split('\n');
+        if (lines.length > 0 && lines[lines.length - 1] === '' && text.endsWith('\n')) {
+          lines.pop();
+        }
+        // If a range/line address was given, use sr as target line
+        const targetRow = hasRange ? sr : this.cursor.row;
+        if (bang) {
+          this.buffer.lines.splice(targetRow, 0, ...lines);
+          this.cursor.row = targetRow + lines.length - 1;
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+        } else {
+          this.buffer.lines.splice(targetRow + 1, 0, ...lines);
+          this.cursor.row = targetRow + lines.length;
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+        }
+        this._updateDesiredCol();
+        this.commandLine = '';
+        return;
+      }
+    }
+
+    // :[range]> — shift lines right (indent)
+    {
+      const shiftRightMatch = rest.match(/^(>+)\s*$/);
+      if (shiftRightMatch) {
+        const count = shiftRightMatch[1].length; // >> means shift twice
+        if (!hasRange) { sr = this.cursor.row; er = this.cursor.row; }
+        this._saveSnapshot({ row: sr, col: 0 });
+        this._redoStack = [];
+        for (let i = 0; i < count; i++) {
+          for (let r = sr; r <= er; r++) this._shiftLineRight(r);
+        }
+        this.cursor.row = er;
+        this.cursor.col = this._firstNonBlank(er);
+        this._updateDesiredCol();
+        this.commandLine = '';
+        return;
+      }
+    }
+
+    // :[range]< — shift lines left (unindent)
+    {
+      const shiftLeftMatch = rest.match(/^(<+)\s*$/);
+      if (shiftLeftMatch) {
+        const count = shiftLeftMatch[1].length; // << means shift twice
+        if (!hasRange) { sr = this.cursor.row; er = this.cursor.row; }
+        this._saveSnapshot({ row: sr, col: 0 });
+        this._redoStack = [];
+        for (let i = 0; i < count; i++) {
+          for (let r = sr; r <= er; r++) this._shiftLineLeft(r);
+        }
+        this.cursor.row = er;
+        this.cursor.col = this._firstNonBlank(er);
+        this._updateDesiredCol();
+        this.commandLine = '';
+        return;
+      }
+    }
+
+    // := — print total number of lines; :.= — print current line number
+    if (rest === '=') {
+      if (hasRange) {
+        this.commandLine = String(er + 1);
+      } else {
+        this.commandLine = String(this.buffer.lineCount);
+      }
       this._stickyCommandLine = true;
       return;
     }
-    // Clear visual range if it wasn't consumed
-    this._visualCmdRange = null;
 
-    let targetLine = -1;
-    if (cmd === '$') {
-      targetLine = this.buffer.lineCount - 1;
-    } else {
-      const lineNum = parseInt(cmd, 10);
-      if (!isNaN(lineNum)) targetLine = Math.max(0, Math.min(lineNum - 1, this.buffer.lineCount - 1));
+    // :p[rint] / :nu[mber] / :# — display lines
+    {
+      const printMatch = rest.match(/^(p(r(i(nt?)?)?)?|nu(m(b(e(r)?)?)?)?|#)\s*$/);
+      if (printMatch) {
+        if (!hasRange) { sr = this.cursor.row; er = this.cursor.row; }
+        const isNumber = rest.startsWith('nu') || rest === '#';
+        const numWidth = Math.max(3, String(this.buffer.lineCount).length);
+        // Move cursor to last line in range
+        this.cursor.row = er;
+        this.cursor.col = this._firstNonBlank(er);
+        this._updateDesiredCol();
+        if (sr === er) {
+          // Single line: show in command line (like neovim)
+          let line;
+          if (isNumber) {
+            line = String(sr + 1).padStart(numWidth) + ' ' + this.buffer.lines[sr];
+            this._commandLineLineNrLen = numWidth + 1; // include space after number
+          } else {
+            line = this.buffer.lines[sr];
+          }
+          this.commandLine = line;
+          this._stickyCommandLine = true;
+        } else {
+          // Multi-line: show in message prompt with proper colors
+          const normalFg = 'd4d4d4', normalBg = '000000', lineNrFg = 'd4d4d4';
+          const cols = 40; // standard screen width
+          const promptLines = [];
+          for (let r = sr; r <= er; r++) {
+            if (isNumber) {
+              const numStr = String(r + 1).padStart(numWidth);
+              const lineText = this.buffer.lines[r];
+              const full = numStr + ' ' + lineText;
+              const padded = full.length < cols ? full + ' '.repeat(cols - full.length) : full.slice(0, cols);
+              const nrLen = numWidth + 1; // line number + space separator
+              const restLen = cols - nrLen;
+              const runs = [];
+              runs.push({ n: nrLen, fg: lineNrFg, bg: normalBg });
+              if (restLen > 0) runs.push({ n: restLen, fg: normalFg, bg: normalBg });
+              promptLines.push({ text: padded, runs });
+            } else {
+              const lineText = this.buffer.lines[r];
+              const padded = lineText.length < cols ? lineText + ' '.repeat(cols - lineText.length) : lineText.slice(0, cols);
+              promptLines.push({ text: padded, runs: [{ n: cols, fg: normalFg, bg: normalBg }] });
+            }
+          }
+          this._messagePrompt = { lines: promptLines };
+          this.commandLine = '';
+        }
+        return;
+      }
     }
-    if (targetLine >= 0) {
+
+    // :ju[mps] — display jump list
+    if (/^ju(m(ps?)?)?\s*$/.test(rest)) {
+      // Build structured lines with monokai colors (verified against nvim ground truth):
+      //   Header " jump line  col file/text" → monokai yellow e6db74 + bold
+      //   Data prefix (marker, num, line, col) → Normal d4d4d4
+      //   Data text (file/text)               → Directory/blue 66d9ef (current buf)
+      const normalFg = 'd4d4d4', normalBg = '000000', dirFg = '66d9ef';
+      const cols = this.cols;
+      const pad = (s) => s.length < cols ? s + ' '.repeat(cols - s.length) : s.slice(0, cols);
+      const mkLine = (text, runs) => ({ text, runs });
+      const mkDataLine = (prefix, lineText) => {
+        const prefixLen = prefix.length;
+        const textLen = Math.min(lineText.length, Math.max(0, cols - prefixLen));
+        const padLen = Math.max(0, cols - prefixLen - textLen);
+        const fullText = prefix + lineText.slice(0, Math.max(0, cols - prefixLen)) + ' '.repeat(padLen);
+        const runs = [{ n: Math.min(prefixLen, cols), fg: normalFg, bg: normalBg }];
+        if (textLen > 0) runs.push({ n: textLen, fg: dirFg, bg: normalBg });
+        if (padLen > 0) runs.push({ n: padLen, fg: normalFg, bg: normalBg });
+        return mkLine(fullText, runs);
+      };
+
+      const promptLines = [];
+      // Echo line (shows the command as typed)
+      const mkFullLine = (text) => mkLine(text, [{ n: cols, fg: normalFg, bg: normalBg }]);
+      const echoCmd = ':' + rest.trim();
+      promptLines.push(mkFullLine(pad(echoCmd)));
+      // Header line — monokai yellow e6db74 + bold
+      const hdr = ' jump line  col file/text';
+      promptLines.push(mkLine(pad(hdr), [
+        { n: Math.min(hdr.length, cols), fg: 'e6db74', bg: normalBg, b: true },
+        ...(hdr.length < cols ? [{ n: cols - hdr.length, fg: normalFg, bg: normalBg }] : []),
+      ]));
+
+      const list = this._jumpList;
+      const pos = this._jumpListPos;
+      for (let i = 0; i < list.length; i++) {
+        const e = list[i];
+        const jumpNum = list.length - i;
+        const marker = (i === pos) ? '>' : ' ';
+        const lineText = (e.row < this.buffer.lineCount) ? this.buffer.lines[e.row] : '';
+        const prefix = marker + String(jumpNum).padStart(3) + String(e.row + 1).padStart(6) + String(e.col).padStart(5) + ' ';
+        promptLines.push(mkDataLine(prefix, lineText));
+      }
+      // Current position (>) at bottom — nvim shows just ">" with no data
+      if (pos >= list.length) {
+        promptLines.push(mkLine(pad('>'), [{ n: cols, fg: normalFg, bg: normalBg }]));
+      }
+      if (list.length === 0) {
+        promptLines.push(mkLine(pad('>'), [{ n: cols, fg: normalFg, bg: normalBg }]));
+      }
+      this._messagePrompt = { lines: promptLines };
+      this.commandLine = '';
+      return;
+    }
+
+    // :changes — display change list
+    if (/^changes?\s*$/.test(rest)) {
+      // Build structured lines with monokai colors (verified against nvim ground truth):
+      //   Header "change line  col text" → monokai yellow e6db74 + bold
+      //   Data prefix (marker, num, line, col) → Normal d4d4d4
+      //   Data text content                    → Directory/blue 66d9ef (current buf)
+      const normalFg = 'd4d4d4', normalBg = '000000', dirFg = '66d9ef';
+      const cols = this.cols;
+      const pad = (s) => s.length < cols ? s + ' '.repeat(cols - s.length) : s.slice(0, cols);
+      const mkLine = (text, runs) => ({ text, runs });
+      const mkDataLine = (prefix, lineText) => {
+        const prefixLen = prefix.length;
+        const textLen = Math.min(lineText.length, Math.max(0, cols - prefixLen));
+        const padLen = Math.max(0, cols - prefixLen - textLen);
+        const fullText = prefix + lineText.slice(0, Math.max(0, cols - prefixLen)) + ' '.repeat(padLen);
+        const runs = [{ n: Math.min(prefixLen, cols), fg: normalFg, bg: normalBg }];
+        if (textLen > 0) runs.push({ n: textLen, fg: dirFg, bg: normalBg });
+        if (padLen > 0) runs.push({ n: padLen, fg: normalFg, bg: normalBg });
+        return mkLine(fullText, runs);
+      };
+
+      const promptLines = [];
+      // Echo line (shows the command as typed)
+      const mkFullLine = (text) => mkLine(text, [{ n: cols, fg: normalFg, bg: normalBg }]);
+      const echoCmd = ':' + rest.trim();
+      promptLines.push(mkFullLine(pad(echoCmd)));
+      // Header line — monokai yellow e6db74 + bold
+      const hdr = 'change line  col text';
+      promptLines.push(mkLine(pad(hdr), [
+        { n: Math.min(hdr.length, cols), fg: 'e6db74', bg: normalBg, b: true },
+        ...(hdr.length < cols ? [{ n: cols - hdr.length, fg: normalFg, bg: normalBg }] : []),
+      ]));
+
+      const list = this._changeList;
+      const pos = this._changeListPos;
+      for (let i = 0; i < list.length; i++) {
+        const e = list[i];
+        const changeNum = list.length - i;
+        const marker = (i === pos) ? '>' : ' ';
+        const lineText = (e.row < this.buffer.lineCount) ? this.buffer.lines[e.row] : '';
+        const prefix = marker + String(changeNum).padStart(4) + String(e.row + 1).padStart(6) + String(e.col).padStart(5) + ' ';
+        promptLines.push(mkDataLine(prefix, lineText));
+      }
+      // Current position at bottom if pos >= list.length
+      if (pos >= list.length) {
+        const prefix = '>' + String(0).padStart(4) + String(this.cursor.row + 1).padStart(6) + String(this.cursor.col).padStart(5) + ' ';
+        promptLines.push(mkDataLine(prefix, ''));
+      }
+      if (list.length === 0) {
+        // Just the header, no data
+      }
+      this._messagePrompt = { lines: promptLines };
+      this.commandLine = '';
+      return;
+    }
+
+    // No command after range — goto line (if range was given or bare number/$ in original cmd)
+    if (hasRange && rest === '') {
+      const targetLine = er;
       this.cursor.row = targetLine;
       this.cursor.col = this._firstNonBlank(this.cursor.row);
       // Neovim-style scroll: center when jump distance is large
       const half = Math.floor((this._textRows - 1) / 2);
       if (this.cursor.row < this.scrollTop) {
-        // Cursor above viewport
         const dist = this.scrollTop - this.cursor.row;
         if (dist >= half) {
-          // Center
           this.scrollTop = Math.max(0, this.cursor.row - half);
         } else {
           this.scrollTop = this.cursor.row;
         }
       } else if (this.cursor.row >= this.scrollTop + this._textRows) {
-        // Cursor below viewport
         const dist = this.cursor.row - (this.scrollTop + this._textRows - 1);
         if (dist >= half) {
-          // Center
           const maxST = Math.max(0, this.buffer.lineCount - this._textRows);
           this.scrollTop = Math.min(this.cursor.row - half, maxST);
         } else {
           this.scrollTop = this.cursor.row - this._textRows + 1;
         }
       }
+      this.commandLine = '';
+      return;
+    }
+
+    // Unknown command — show error
+    if (rest) {
+      this._messagePrompt = { error: 'E492: Not an editor command: ' + cmd };
     }
     this.commandLine = '';
   }
@@ -3706,6 +4624,23 @@ export class VimEngine {
         } else {
           this._curSearchPos = null;
         }
+      }
+    } catch {
+      this._curSearchPos = null;
+    }
+  }
+
+  /** Set CurSearch position only if cursor is exactly at the start of a match */
+  _setCurSearchAtCursor() {
+    if (!this._searchPattern) { this._curSearchPos = null; return; }
+    try {
+      const re = new RegExp(this._searchPattern);
+      const line = this.buffer.lines[this.cursor.row] || '';
+      const m = line.slice(this.cursor.col).match(re);
+      if (m && m.index === 0) {
+        this._curSearchPos = { row: this.cursor.row, col: this.cursor.col };
+      } else {
+        this._curSearchPos = null;
       }
     } catch {
       this._curSearchPos = null;
@@ -5211,10 +6146,14 @@ export class VimEngine {
     // Record position before jump for '' / `` marks
     this._lastJumpPos = { row: this.cursor.row, col: this.cursor.col };
     const entry = { row: this.cursor.row, col: this.cursor.col };
-    // Don't add duplicate of top entry
+    // Same-line dedup: if last entry is on same line, update col (nvim setpcmark)
     if (this._jumpList.length > 0) {
       const last = this._jumpList[this._jumpList.length - 1];
-      if (last.row === entry.row && last.col === entry.col) return;
+      if (last.row === entry.row) {
+        last.col = entry.col;
+        this._jumpListPos = this._jumpList.length;
+        return;
+      }
     }
     this._jumpList.push(entry);
     if (this._jumpList.length > 100) this._jumpList.shift();

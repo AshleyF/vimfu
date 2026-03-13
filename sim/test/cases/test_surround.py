@@ -21,11 +21,8 @@ Sections:
 Total: 344 unique test cases.
 """
 
-from pathlib import Path as _Path
-
-# Use nvim with surround plugin loaded (not --clean)
-_init_lua = str((_Path(__file__).resolve().parent.parent / "surround_init.lua").as_posix())
-NVIM_CMD = f'nvim --clean -u {_init_lua}'
+# Use nvim with user's config (has nvim-surround installed via lazy.nvim)
+NVIM_CMD = 'nvim'
 
 CASES = {
     # ==========================================================

@@ -161,15 +161,19 @@ linewise text (e.g. from `yy`, `dd`), the cursor lands at the **beginning**
 | `m{a-z}` | Set mark |
 | `'{a-z}` | Jump to mark line (first non-blank) |
 | `` `{a-z} `` | Jump to exact mark position |
+| `` `. `` / `'.` | Jump to last change position |
+| ` `` ` `` ` / `''` | Jump to position before last jump |
+| `` `< `` / `'<` | Jump to start of last visual selection |
+| `` `> `` / `'>` | Jump to end of last visual selection |
 
-Works with operators: `d'a` (linewise), `` d`a `` (charwise).
+Works with operators: `d'a` (linewise), `` d`a `` (charwise), `d'.` (delete to last change), etc.
 
 ### Jump List
 
 | Key | Description |
 |---|---|
 | `Ctrl-O` | Jump to older position in jump list |
-| `Ctrl-I` | Jump to newer position in jump list |
+| `Ctrl-I` / `Tab` | Jump to newer position in jump list |
 
 Jump entries added by: `G`, `gg`, `/`, `?`, `n`, `N`, `*`, `#`, `gd`.
 
@@ -200,11 +204,24 @@ Entire macro is a single undo unit. Aborts on failed motion.
 
 | Key | Description |
 |---|---|
-| `"{a-z}` | Select register for next `d`/`c`/`y`/`p` |
+| `"{a-z}` | Select named register for next `d`/`c`/`y`/`p` |
+| `"{A-Z}` | Append to named register (uppercase = append) |
+| `"{0-9}` | Select numbered register |
+| `"+` / `"*` | Clipboard registers |
+| `"-` | Small delete register (sub-line deletes) |
+| `"_` | Black hole register (discard text) |
+| `"/` | Last search pattern register (read-only) |
+| `""` | Unnamed register (explicit) |
 
-Unnamed register always updated. Named registers `a-z` only when explicitly selected. Each stores content + type (line or char).
-In visual mode, `"` also accepts uppercase `A-Z` and digit `0-9` registers.
+All register types work in both normal and visual mode.
 `Ctrl-R` in insert mode accepts `a-z`, `0-9`, and `"` (unnamed).
+
+**Numbered register behavior:**
+- `"0` always holds the most recent yank.
+- `"1`–`"9` form a delete queue: linewise or multiline deletes shift through `"1`→`"2`→…→`"9`.
+- Small (single-line charwise) deletes go to `"-` instead of `"1`.
+
+Clipboard registers (`"+`/`"*`) trigger the external clipboard callback when written.
 
 ### Search
 
@@ -463,6 +480,8 @@ All surround operations support dot-repeat (`.`), undo (`u`), and redo (`Ctrl-R`
 All Ex commands accept standard nvim abbreviations — any unambiguous prefix
 of the full command name is valid (e.g. `:wri` → `:write`, `:qui` → `:quit`).
 
+### File / Quit / Navigation
+
 | Command | Description |
 |---|---|
 | `:w[rite] [file]` | Save to VFS (shows `"file" NL, NB written`); if buffer has no filename, uses the given name and sets it as current |
@@ -482,6 +501,458 @@ of the full command name is valid (e.g. `:wri` → `:write`, `:qui` → `:quit`)
 | `:[range]sort[!] [flags]` | Sort lines (`!` = reverse; flags: `n` numeric, `i` ignore-case, `u` unique) |
 | `:!command` | Run shell command (see below) |
 
+### Editing Commands
+
+| Command | Description |
+|---|---|
+| `:[range]d[elete] [reg]` | Delete lines in range; saves to register (linewise) |
+| `:[range]y[ank] [reg]` | Yank lines in range to register (no buffer modification) |
+| `:[range]m[ove] {addr}` | Move lines in range to after {addr} |
+| `:[range]co[py] {addr}` | Copy lines in range to after {addr} |
+| `:[range]t {addr}` | Alias for `:copy` |
+| `:[range]j[oin][!]` | Join lines in range (with spaces; `!` = no spaces) |
+| `:[range]norm[al][!] {keys}` | Execute normal-mode keys on each line in range |
+| `:[range]g[lobal]/{pat}/{cmd}` | Execute {cmd} on lines matching {pat} |
+| `:[range]v[global]/{pat}/{cmd}` | Execute {cmd} on lines NOT matching {pat} |
+| `:[range]s[ubstitute]/{pat}/{rep}/[flags]` | Substitute (see below) |
+| `:s` | Repeat last substitution on current line |
+| `:[range]pu[t][!] [reg]` | Put register content as lines (below; `!` = above) |
+| `:[range]>` | Shift lines right (indent) by `shiftwidth` |
+| `:[range]<` | Shift lines left (unindent) by `shiftwidth` |
+| `:[range]p[rint]` | Display lines |
+| `:[range]nu[mber]` | Display lines with line numbers |
+| `:[range]#` | Same as `:number` |
+| `:=` | Print total number of lines (or line number with range) |
+| `:marks` | Display marks list (message prompt) |
+| `:reg[isters]` | Display register contents (message prompt) |
+| `:di[splay]` | Alias for `:registers` |
+| `:ju[mps]` | Display jump list (message prompt) |
+| `:changes` | Display change list (message prompt) |
+
+All editing commands are undoable with `u` and support visual-mode ranges via `:'<,'>`.
+
+Unknown commands show `E492: Not an editor command: {cmd}`.
+
+### Range Addressing
+
+Ranges prefix editing commands to specify which lines to operate on.
+If no range is given, most commands default to the current line.
+
+| Address | Meaning |
+|---|---|
+| `N` | Line N (1-based) |
+| `.` | Current line |
+| `$` | Last line |
+| `%` | Entire file (shorthand for `1,$`) |
+| `'<,'>` | Visual selection (auto-filled when `:` pressed in visual mode) |
+| `'{a-z}` | Line of mark |
+| `.+N` | Current line + N |
+| `.-N` | Current line − N |
+| `$-N` | Last line − N |
+| `N+M` | Line N + M |
+
+Ranges are formed by combining two addresses with a comma:
+`:2,4d` (delete lines 2–4), `:.,$d` (delete from cursor to end),
+`:1,3m$` (move lines 1–3 to end), `:%y` (yank all lines).
+
+Offsets can be chained: `:2+2` means line 4, `:$-2,$` means last 3 lines.
+
+### `:d[elete]` — Delete Lines
+
+`:[range]d[elete] [register]`
+
+Deletes the specified lines and stores them in a register (linewise).
+
+| Example | Description |
+|---|---|
+| `:d` | Delete current line |
+| `:3d` | Delete line 3 |
+| `:2,4d` | Delete lines 2 through 4 |
+| `:%d` | Delete all lines |
+| `:.,$d` | Delete from cursor line to end |
+| `:.,+2d` | Delete current line and next 2 |
+| `:d a` | Delete current line into register `a` |
+| `:2,4d a` | Delete lines 2–4 into register `a` |
+
+The deleted text goes to the unnamed register (and numbered registers shift)
+unless a named register is specified. If all lines are deleted, the buffer
+becomes a single empty line. Cursor moves to the first non-blank character
+of the line at the deletion point (or the new last line if deleted past end).
+
+### `:y[ank]` — Yank Lines
+
+`:[range]y[ank] [register]`
+
+Copies the specified lines into a register without modifying the buffer.
+
+| Example | Description |
+|---|---|
+| `:y` | Yank current line |
+| `:3y` | Yank line 3 |
+| `:2,4y` | Yank lines 2 through 4 |
+| `:%y` | Yank all lines |
+| `:$y` | Yank last line |
+| `:2y a` | Yank line 2 into register `a` |
+| `:1,3y b` | Yank lines 1–3 into register `b` |
+
+Cursor moves to the first line of the range. Yanked text is linewise and
+can be pasted with `p`/`P` or `:pu`. If a named register is specified,
+the text is stored there; otherwise it goes to the unnamed and `"0` registers.
+
+### `:m[ove]` — Move Lines
+
+`:[range]m[ove] {address}`
+
+Removes lines from the range and inserts them after {address}.
+
+| Example | Description |
+|---|---|
+| `:m3` | Move current line to after line 3 |
+| `:m$` | Move current line to end of file |
+| `:m0` | Move current line to top of file |
+| `:3m$` | Move line 3 to end |
+| `:5m0` | Move line 5 to top |
+| `:1m3` | Move line 1 to after line 3 |
+| `:2,3m$` | Move lines 2–3 to end |
+| `:4,5m0` | Move lines 4–5 to top |
+| `:.m$` | Move current line to end |
+
+Address `0` means "before line 1" (top of file). Cursor lands on the last
+moved line at the first non-blank character. Moving a line to its own position
+is a no-op (line stays, cursor moves to it).
+
+### `:co[py]` / `:t` — Copy Lines
+
+`:[range]co[py] {address}` or `:[range]t {address}`
+
+Copies lines from the range and inserts the copy after {address}.
+`:t` is a short alias for `:copy`.
+
+| Example | Description |
+|---|---|
+| `:co$` | Copy current line to end |
+| `:co0` | Copy current line to top |
+| `:co3` | Copy current line to after line 3 |
+| `:t$` | Same as `:co$` |
+| `:t0` | Same as `:co0` |
+| `:3co$` | Copy line 3 to end |
+| `:1t4` | Copy line 1 to after line 4 |
+| `:2,4co$` | Copy lines 2–4 to end |
+| `:1,3t0` | Copy lines 1–3 to top |
+| `:%t$` | Duplicate entire file (append below) |
+| `:.t$` | Copy current line to end |
+| `:2t2` | Duplicate line 2 (insert copy after it) |
+
+Cursor lands on the last copied line at the first non-blank character.
+
+### `:j[oin]` — Join Lines
+
+`:[range]j[oin][!]`
+
+Joins lines in the range into a single line. Without `!`, a space is added
+between joined lines (matching `J` in normal mode). With `!`, lines are
+concatenated directly (matching `gJ`).
+
+| Example | Description |
+|---|---|
+| `:j` | Join current line with next |
+| `:join` | Same as `:j` |
+| `:1,3j` | Join lines 1 through 3 |
+| `:2,5j` | Join lines 2 through 5 |
+| `:%j` | Join all lines into one |
+| `:j!` | Join current + next without spaces |
+| `:1,3j!` | Join lines 1–3 without spaces |
+| `:%j!` | Join all lines without spaces |
+
+Without a range, `:j` joins the current line with the line below it.
+With a single-line range (e.g. `:3j`), it joins that line with the next.
+Cursor moves to the first line of the joined range.
+
+### `:norm[al]` — Execute Normal-Mode Keys
+
+`:[range]norm[al][!] {keys}`
+
+Executes the given normal-mode key sequence on each line in the range.
+The cursor is placed at column 0 of each line before executing the keys.
+
+| Example | Description |
+|---|---|
+| `:%norm Aend` | Append "end" to every line |
+| `:%norm dw` | Delete first word on every line |
+| `:2,4norm Aend` | Append "end" to lines 2–4 |
+| `:%norm I>> ` | Prepend ">> " to every line |
+| `:2,4norm dd` | Delete lines 2–4 (one `dd` per line) |
+| `:%norm x` | Delete first character of every line |
+
+If the key sequence enters insert mode, `Escape` is automatically sent
+after the keys to return to normal mode. The entire `:norm` operation is
+a single undo unit.
+
+### `:g[lobal]` — Execute on Matching Lines
+
+`:[range]g[lobal]/{pattern}/{command}`
+
+Executes {command} on every line matching {pattern}.
+
+| Example | Description |
+|---|---|
+| `:g/foo/d` | Delete all lines containing "foo" |
+| `:g/hello/d` | Delete all lines containing "hello" |
+| `:g/aaa/d` | Delete all lines matching "aaa" |
+| `:g/foo/norm A!` | Append "!" to lines matching "foo" |
+| `:1,3g/foo/d` | Delete matching lines only in range 1–3 |
+
+Supported sub-commands: `d[elete]`, `norm[al] {keys}`.
+The search pattern is set for `/`/`?`/`n`/`N` highlighting.
+Deletions are processed from bottom to top to preserve line indices.
+The entire `:g` operation is a single undo unit.
+
+### `:v[global]` — Execute on Non-Matching Lines
+
+`:[range]v[global]/{pattern}/{command}`
+
+Inverted form of `:g` — executes {command} on lines NOT matching {pattern}.
+
+| Example | Description |
+|---|---|
+| `:v/foo/d` | Delete all lines NOT containing "foo" (keep only "foo" lines) |
+| `:v/hello/d` | Keep only lines containing "hello" |
+
+Same sub-commands as `:g`. Same undo behavior.
+
+### `:s[ubstitute]` — Search and Replace
+
+`:[range]s[ubstitute]/{pattern}/{replacement}/[flags]`
+
+Performs regex substitution on lines in the range.
+
+| Flag | Description |
+|---|---|
+| `g` | Replace all occurrences on each line (not just first) |
+| `i` | Case-insensitive matching |
+| `c` | Confirm each replacement (currently applies all) |
+| `n` | Count matches only — do not replace (reports count) |
+
+| Example | Description |
+|---|---|
+| `:s/foo/bar` | Replace first "foo" with "bar" on current line |
+| `:s/foo/bar/g` | Replace all "foo" with "bar" on current line |
+| `:%s/foo/bar/g` | Replace all "foo" with "bar" in entire file |
+| `:2,4s/old/new` | Replace on lines 2–4 |
+| `:.,+2s/a/b/g` | Replace from cursor line through 2 lines below |
+| `:.,$s/a/b/g` | Replace from cursor to end of file |
+| `:%s/word//g` | Delete all occurrences of "word" |
+| `:%s/Line/[&]/g` | Wrap matches with brackets (`&` = matched text) |
+| `:s` | Repeat last substitution on current line |
+| `:%s/foo//gn` | Count "foo" occurrences without replacing |
+
+Any single character can serve as the delimiter (not just `/`): `:s!old!new!g`,
+`:s#old#new#g`, etc. Escaped delimiters (`\/`) are handled correctly.
+
+The `&` character in the replacement refers to the matched text (like `\0`).
+Use `\&` for a literal ampersand.
+
+The search pattern is set for `n`/`N`/highlighting after substitution.
+A bare `:s` with no arguments repeats the last substitution on the current line.
+
+### `:pu[t]` — Put Register Content
+
+`:[line]pu[t][!] [register]`
+
+Inserts register content as new lines below the current line (or above with `!`).
+
+| Example | Description |
+|---|---|
+| `:pu` | Put unnamed register below current line |
+| `:pu!` | Put unnamed register above current line |
+| `:3pu` | Put unnamed register below line 3 |
+| `:pu a` | Put register `a` below current line |
+
+If a line number precedes the command, the put happens relative to that line
+rather than the cursor position.
+
+### `:[range]>` — Shift Right (Indent)
+
+`:[range]>`
+
+Shifts lines in the range right by one `shiftwidth` (default 8). Adds leading spaces to each line.
+
+| Example | Description |
+|---|---|
+| `:>` | Indent current line |
+| `:3>` | Indent line 3 |
+| `:2,4>` | Indent lines 2 through 4 |
+| `:%>` | Indent all lines |
+| `:>>` | Indent current line twice (4 spaces) |
+| `:'<,'>>` | Indent visual selection |
+
+Multiple `>` characters repeat the shift: `:>>` shifts twice, `:>>>` shifts
+three times. Cursor moves to the last line of the range, at the first non-blank
+character. The shift is undoable with `u`.
+
+### `:[range]<` — Shift Left (Unindent)
+
+`:[range]<`
+
+Shifts lines in the range left by one `shiftwidth` (default 8). Removes up to one `shiftwidth` of leading spaces from each line.
+
+| Example | Description |
+|---|---|
+| `:<` | Unindent current line |
+| `:2<` | Unindent line 2 |
+| `:2,4<` | Unindent lines 2 through 4 |
+| `:%<` | Unindent all lines |
+| `:<<` | Unindent current line twice (4 spaces) |
+| `:'<,'><` | Unindent visual selection |
+
+Multiple `<` characters repeat the shift: `:<<` shifts twice, `:<<<` shifts
+three times. Lines with insufficient leading whitespace lose only the whitespace
+they have. Cursor moves to the last line of the range, at the first non-blank
+character. The shift is undoable with `u`.
+
+### `:[range]p[rint]` — Display Lines
+
+`:[range]p[rint]`
+
+Displays the contents of the specified lines.
+
+| Example | Description |
+|---|---|
+| `:p` | Display current line |
+| `:3p` | Display line 3 |
+| `:1,3p` | Display lines 1 through 3 |
+| `:%p` | Display all lines |
+| `:print` | Full form of `:p` |
+
+With a single-line range, the line is shown in the command line area. With
+multiple lines, a message prompt overlay is shown with the line contents.
+Cursor moves to the last line of the range at the first non-blank character.
+
+### `:[range]nu[mber]` / `:[range]#` — Display Lines with Numbers
+
+`:[range]nu[mber]` or `:[range]#`
+
+Same as `:print` but prefixes each line with its line number.
+
+| Example | Description |
+|---|---|
+| `:nu` | Display current line with number |
+| `:3nu` | Display line 3 with number |
+| `:1,3nu` | Display lines 1–3 with numbers |
+| `:%nu` | Display all lines with numbers |
+| `:number` | Full form of `:nu` |
+| `:#` | Same as `:nu` |
+| `:1,3#` | Same as `:1,3nu` |
+
+Line numbers are right-aligned in a column with minimum width 3, expanding
+for files with more than 999 lines. The number column is displayed in
+`LineNr` color (dark grey in nvim_default theme).
+
+### `:=` — Print Line Number
+
+`:=` or `:[range]=`
+
+Without a range, prints the total number of lines in the buffer. With a range,
+prints the line number of the last line in the range.
+
+| Example | Description |
+|---|---|
+| `:=` | Print total number of lines |
+| `:.=` | Print current line number |
+| `:$=` | Print last line number (same as total) |
+| `:3=` | Print `3` |
+
+The result is displayed in the command line area.
+
+### `:marks` — Display Marks
+
+`:marks`
+
+Shows a message prompt listing all set marks with their line number, column,
+and the text of the line they point to. Includes:
+- `'` — position before last jump (defaults to line 1, col 0)
+- User marks `a`–`z` (sorted alphabetically)
+- `"` — last position when exiting file
+- `[` — start of buffer (always line 1, col 0)
+- `]` — end of buffer (last line, col 0)
+
+Format:
+```
+mark line  col file/text
+ '      1    0 first line of file
+ a      3    5 third line content
+ "      1    0 first line of file
+ [      1    0 first line of file
+ ]      7    0 last line of file
+```
+
+Press `Enter` to dismiss the prompt.
+
+### `:reg[isters]` — Display Registers
+
+`:reg[isters]`
+
+Shows a message prompt listing all non-empty registers with their type and content.
+Displays in order: unnamed (`""`), numbered (`"0`–`"9`), small delete (`"-`),
+named (`"a`–`"z`), and last search (`"/`).
+
+Format:
+```
+Type Name Content
+  l  ""   line content^J
+  c  "0   yanked text
+  c  "-   small delete
+  c  "a   some text
+  c  "/   search pattern
+```
+
+Type is `l` (linewise) or `c` (charwise). Newlines are displayed as `^J`.
+Press `Enter` to dismiss the prompt.
+
+### `:di[splay]` — Display Registers (Alias)
+
+`:di[splay]`
+
+Alias for `:reg[isters]`. Shows the same register listing.
+
+### `:ju[mps]` — Display Jump List
+
+`:ju[mps]`
+
+Shows a message prompt listing the jump list entries.
+
+Format:
+```
+ jump line  col file/text
+   3     1    0 first line
+   2     5    3 fifth line
+   1    10    0 tenth line
+>  0    15    4 current position
+```
+
+The `>` marker indicates the current position in the jump list.
+Jump numbers count backwards: the most recent jump is 1, the one before is 2, etc.
+Press `Enter` to dismiss the prompt.
+
+### `:changes` — Display Change List
+
+`:changes`
+
+Shows a message prompt listing the change list entries.
+
+Format:
+```
+change line  col text
+    3     1    0 first change
+    2     5    3 second change
+    1    10    0 third change
+>   0    15    4 current position
+```
+
+The `>` marker indicates the current position in the change list.
+Change numbers count backwards: the most recent change is 1, the one before is 2, etc.
+Press `Enter` to dismiss the prompt.
+
 ### `:wq` vs `:x`
 
 `:wq` always writes the file, even if the buffer is clean. `:x` only writes if
@@ -489,12 +960,28 @@ the buffer has been modified (dirty). Both quit after writing.
 
 ### `:set` Options
 
-| Option | Short | Description |
-|---|---|---|
-| `number` | `nu` | Show absolute line numbers in a left gutter |
-| `nonumber` | `nonu` | Hide absolute line numbers |
-| `relativenumber` | `rnu` | Show relative line distances in the gutter |
-| `norelativenumber` | `nornu` | Hide relative line numbers |
+#### Boolean Options
+
+| Option | Short | `no`-prefix | Default | Description |
+|---|---|---|---|---|
+| `number` | `nu` | `nonumber` / `nonu` | off | Show absolute line numbers in a left gutter |
+| `relativenumber` | `rnu` | `norelativenumber` / `nornu` | off | Show relative line distances in the gutter |
+| `ignorecase` | `ic` | `noignorecase` / `noic` | off | Case-insensitive search |
+| `smartcase` | `scs` | `nosmartcase` / `noscs` | off | Override `ignorecase` when pattern has uppercase |
+| `expandtab` | `et` | `noexpandtab` / `noet` | off | Insert spaces instead of tab characters |
+| `autoindent` | `ai` | `noautoindent` / `noai` | **on** | Copy indent from current line on `Enter`/`o`/`O` |
+| `cursorline` | `cul` | `nocursorline` / `nocul` | off | Highlight the screen line of the cursor |
+
+#### Numeric Options
+
+| Option | Short | Default | Description |
+|---|---|---|---|
+| `tabstop` | `ts` | 8 | Number of spaces a tab character displays as |
+| `shiftwidth` | `sw` | 8 | Spaces per indent level (`>>`, `<<`, `:>`, `:<`) |
+| `scrolloff` | `so` | 0 | Minimum lines to keep above/below cursor |
+
+Numeric options use `=` syntax: `:set ts=4`, `:set sw=2`, `:set so=5`.
+All short aliases work everywhere: `:set nu`, `:set noic`, `:set sw=2`.
 
 When both `number` and `relativenumber` are set, the cursor line shows the
 absolute number (left-aligned) and all other lines show relative distances.

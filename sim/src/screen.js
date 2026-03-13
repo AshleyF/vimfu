@@ -53,6 +53,7 @@ const THEMES = {
     // Line numbers
     lineNrFg: '4f5258',       // LineNr (dark grey)
     cursorLineNrFg: 'e0e2ea', // CursorLineNr (bright white)
+    cursorLineNrBg: null,      // CursorLineNr bg (inherits normalBg)
     cursorLineBg: '2c2e33',    // CursorLine background (verified nvim default)
     // MatchParen – default nvim uses bold + guibg=NvimDarkGrey4
     matchParenBg: '4f5258',
@@ -82,7 +83,7 @@ const THEMES = {
     // Verified against tanvirtin/monokai.nvim with bg override to #000000
     normalFg: 'd4d4d4',
     normalBg: '000000',
-    tildeFg: '5c5cff',          // EndOfBuffer – blue (matches real vim)
+    tildeFg: '000000',          // EndOfBuffer – hidden (user config override)
     tildeBg: '000000',
     statusFg: 'b1b1b1',
     statusBg: '2e323c',
@@ -96,12 +97,13 @@ const THEMES = {
     curSearchFg: '07080d',     // CurSearch
     curSearchBg: 'fce094',     // CurSearch
     errorFg: 'e95678',         // ErrorMsg
-    promptFg: 'f8f8f0',        // MoreMsg
+    promptFg: 'e6db74',        // Question (Press ENTER prompt) — yellow
     // Line numbers
     lineNrFg: 'd4d4d4',          // LineNr (fg=default → terminal default)
     cursorLineNrFg: 'fd971f',    // CursorLineNr (orange)
-    cursorLineBg: '1a1a1a',        // CursorLine background (subtle)
-    matchParenBg: '4f5258',        // MatchParen (bg)
+    cursorLineNrBg: '26292c',      // CursorLineNr bg (monokai)
+    cursorLineBg: '2e323c',        // CursorLine background (monokai)
+    matchParenBg: null,              // MatchParen – monokai sets fg only, bg inherits Normal
     matchParenFg: 'f92672',        // MatchParen (pink)
     // Syntax highlighting – tanvirtin/monokai.nvim palette
     syntax: {
@@ -147,6 +149,22 @@ export class Screen {
     // When false, mimics vim with laststatus=1 (single window):
     // no separate status line, ruler shown on command line.
     this.showStatusLine = true;
+  }
+
+  /** Merge adjacent runs with the same fg/bg (ignores bold). */
+  static _mergeRuns(runs) {
+    if (!runs || runs.length <= 1) return runs;
+    const merged = [runs[0]];
+    for (let i = 1; i < runs.length; i++) {
+      const prev = merged[merged.length - 1];
+      const cur = runs[i];
+      if (prev.fg === cur.fg && prev.bg === cur.bg) {
+        merged[merged.length - 1] = { ...prev, n: prev.n + cur.n };
+      } else {
+        merged.push(cur);
+      }
+    }
+    return merged;
   }
 
   /**
@@ -487,7 +505,8 @@ export class Screen {
           const useCursorLine = isCL && engine._settings.cursorline;
           const nrFg = useCursorLine ? (t.cursorLineNrFg || t.lineNrFg || t.normalFg)
                                      : (t.lineNrFg || t.normalFg);
-          gutterRuns.push({ n: gutterWidth, fg: nrFg, bg: t.normalBg });
+          const nrBg = useCursorLine ? (t.cursorLineNrBg || t.normalBg) : t.normalBg;
+          gutterRuns.push({ n: gutterWidth, fg: nrFg, bg: nrBg });
         }
 
         // Compress colour arrays into runs
@@ -591,6 +610,16 @@ export class Screen {
           { n: this.cols - modeLen, fg: t.cmdFg, bg: t.cmdBg },
         ],
       });
+    } else if (engine._commandLineLineNrLen > 0) {
+      // :nu[mber] / :# single-line — line number prefix in lineNr color
+      const nrLen = Math.min(engine._commandLineLineNrLen, this.cols);
+      lines.push({
+        text: cmdText,
+        runs: [
+          { n: nrLen, fg: t.lineNrFg || t.cmdFg, bg: t.cmdBg },
+          { n: this.cols - nrLen, fg: t.cmdFg, bg: t.cmdBg },
+        ],
+      });
     } else {
       lines.push({
         text: cmdText,
@@ -601,25 +630,31 @@ export class Screen {
     // ── Message prompt overlay ("Press ENTER or type command to continue") ──
     if (engine._messagePrompt) {
       const mp = engine._messagePrompt;
-      const errRaw = mp.error || '';
       const prompt = 'Press ENTER or type command to continue';
 
-      // Split error into physical lines: first split on \n, then wrap each
-      // line to screen width (matching nvim's behavior).
-      const errPhysical = [];
-      for (const logicalLine of errRaw.split('\n')) {
-        if (logicalLine.length <= this.cols) {
-          errPhysical.push(logicalLine);
-        } else {
-          for (let i = 0; i < logicalLine.length; i += this.cols) {
-            errPhysical.push(logicalLine.slice(i, i + this.cols));
+      // Two modes: structured lines (mp.lines) or raw text (mp.error / mp.info)
+      let physical;   // array of { text, fg } or strings
+      if (mp.lines) {
+        // Structured: each element is { text, runs } (pre-built) or a string
+        physical = mp.lines;
+      } else {
+        const raw = mp.error || mp.info || '';
+        const isInfo = !!mp.info;
+        const contentFg = isInfo ? t.cmdFg : (t.errorFg || t.cmdFg);
+        physical = [];
+        for (const logicalLine of raw.split('\n')) {
+          if (logicalLine.length <= this.cols) {
+            physical.push({ text: logicalLine, fg: contentFg });
+          } else {
+            for (let i = 0; i < logicalLine.length; i += this.cols) {
+              physical.push({ text: logicalLine.slice(i, i + this.cols), fg: contentFg });
+            }
           }
         }
       }
 
-      // We need: 1 blank status-bar separator + N error lines + 1 prompt line.
-      // Total overlay rows = errPhysical.length + 2 (separator + prompt).
-      const overlayRows = errPhysical.length + 2;
+      // We need: 1 blank status-bar separator + N content lines + 1 prompt line.
+      const overlayRows = physical.length + 2;
       const startRow = this.rows - overlayRows;
 
       // Blank status-colored separator line
@@ -630,16 +665,25 @@ export class Screen {
         };
       }
 
-      // Error message lines (red text)
-      for (let i = 0; i < errPhysical.length; i++) {
+      // Content lines
+      for (let i = 0; i < physical.length; i++) {
         const row = startRow + 1 + i;
         if (row >= 0 && row < this.rows) {
-          const errText = this._padOrTruncate(errPhysical[i], this.cols);
-          const errLen = Math.min(errPhysical[i].length, this.cols);
-          const runs = [];
-          if (errLen > 0) runs.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg });
-          if (errLen < this.cols) runs.push({ n: this.cols - errLen, fg: t.cmdFg, bg: t.cmdBg });
-          lines[row] = { text: errText, runs };
+          const item = physical[i];
+          if (item.runs) {
+            // Pre-built runs from engine
+            lines[row] = { text: this._padOrTruncate(item.text, this.cols), runs: item.runs };
+          } else {
+            // Simple text + fg — split into content and padding runs
+            const rawText = item.text || item;
+            const lineText = this._padOrTruncate(rawText, this.cols);
+            const lineLen = Math.min(rawText.length, this.cols);
+            const fg = item.fg || t.cmdFg;
+            const runs = [];
+            if (lineLen > 0) runs.push({ n: lineLen, fg, bg: t.cmdBg });
+            if (lineLen < this.cols) runs.push({ n: this.cols - lineLen, fg: t.cmdFg, bg: t.cmdBg });
+            lines[row] = { text: lineText, runs };
+          }
         }
       }
 
@@ -651,6 +695,9 @@ export class Screen {
       if (promptLen > 0) promptRuns.push({ n: promptLen, fg: t.promptFg || t.cmdFg, bg: t.cmdBg });
       if (promptLen < this.cols) promptRuns.push({ n: this.cols - promptLen, fg: t.cmdFg, bg: t.cmdBg });
       lines[promptRow] = { text: promptText, runs: promptRuns };
+
+      // Merge adjacent runs with identical fg/bg (e.g. lineNr + text both d4d4d4 in monokai)
+      for (const l of lines) if (l && l.runs) l.runs = Screen._mergeRuns(l.runs);
 
       return {
         rows: this.rows,
@@ -665,6 +712,9 @@ export class Screen {
         lines,
       };
     }
+
+    // Merge adjacent runs with identical fg/bg (e.g. lineNr + text both d4d4d4 in monokai)
+    for (const l of lines) if (l && l.runs) l.runs = Screen._mergeRuns(l.runs);
 
     // Cursor position was computed during rendering (accounting for wrapping).
     return {

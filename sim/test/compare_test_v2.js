@@ -193,11 +193,11 @@ for (const [suiteName, cases] of Object.entries(suites)) {
     // Run through sim engine
     const engine = new VimEngine({ rows: ROWS, cols: COLS });
     if (gt.initialContent) {
-      engine.loadFile(gt.initialContent);
+      engine.loadFile(gt.initialContent, gt.fileName || null);
     }
     feedKeys(engine, gt.keys);
 
-    const screen = new Screen(ROWS, COLS, 'nvim_default');
+    const screen = new Screen(ROWS, COLS, 'monokai');
     const frame = screen.render(engine);
     const simTextLines = frame.lines.map(l => l.text).slice(0, ROWS - 2);
 

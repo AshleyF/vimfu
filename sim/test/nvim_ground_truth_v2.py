@@ -78,10 +78,33 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
     import os
     os.environ['COLORTERM'] = 'truecolor'
 
-    # Use custom nvim command if provided (e.g. for plugin-dependent suites)
-    cmd = nvim_cmd or 'nvim --clean'
+    # Use custom nvim command if provided, otherwise plain nvim with user's config
+    cmd = nvim_cmd or 'nvim'
+
+    # Create a wrapper vimrc with a null clipboard provider
+    # This prevents live system clipboard content and errors in :di/:reg output
+    # The null provider makes "* and "+ appear as empty characterwise registers
+    wrapper_vimrc = Path(tempfile.mktemp(suffix='.lua', dir='.'))
+    wrapper_vimrc.write_text(
+        "-- Null clipboard provider: no system clipboard, no warnings\n"
+        "vim.g.clipboard = {\n"
+        "  name = 'null',\n"
+        "  copy = {\n"
+        "    ['+'] = function() end,\n"
+        "    ['*'] = function() end,\n"
+        "  },\n"
+        "  paste = {\n"
+        "    ['+'] = function() return {}, '' end,\n"
+        "    ['*'] = function() return {}, '' end,\n"
+        "  },\n"
+        "  cache_enabled = 0,\n"
+        "}\n"
+        "local init_path = vim.fn.stdpath('config') .. '/init.lua'\n"
+        "local f = io.open(init_path, 'r')\n"
+        "if f then f:close(); dofile(init_path) end\n"
+    )
     shell = ShellPilot(
-        shell=f'{cmd} -n {tmp.name}',
+        shell=f'{cmd} -u {wrapper_vimrc} -n -i NONE {tmp.name}',
         rows=ROWS,
         cols=COLS,
     )
@@ -139,6 +162,7 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
         return {
             "keys": keys,
             "initialContent": initial,
+            "fileName": tmp.name,
             "frame": frame,
             "textLines": text_lines,
             "cursor": frame["cursor"],
@@ -159,10 +183,13 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
             tmp.unlink()
         except Exception:
             pass
+        try:
+            wrapper_vimrc.unlink()
+        except Exception:
+            pass
 
 
 def run_suite(suite_name: str, cases: dict, case_filter: str | None = None, nvim_cmd: str | None = None) -> dict:
-    """Run all cases in a suite and return results dict."""
     if case_filter:
         if case_filter not in cases:
             print(f"  Unknown case '{case_filter}' in suite '{suite_name}'")
