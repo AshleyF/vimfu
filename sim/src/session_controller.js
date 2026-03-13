@@ -116,7 +116,7 @@ export class SessionController {
   _onKeyDown(e) {
     const key = this._translateKey(e);
     if (key) {
-      if (this.onKeyInput) this.onKeyInput(key);
+      if (this.onKeyInput) this.onKeyInput(key, e.repeat);
       // Prevent browser defaults
       const dominated = [
         'Escape', 'Backspace', 'Enter', 'Tab',

@@ -66,12 +66,12 @@
     font-size: 1.1rem;
     line-height: 1;
     padding: 2px 4px;
-    color: #666;
+    opacity: 0.35;
     -webkit-tap-highlight-color: transparent;
-    transition: color 0.15s;
+    transition: opacity 0.15s;
   }
-  .sound-toggle:hover { color: #82aaff; }
-  .sound-toggle.on { color: #82aaff; }
+  .sound-toggle:hover { opacity: 0.8; }
+  .sound-toggle.on { opacity: 1; }
 
   /* ── Terminal area (fills remaining space) ── */
   .terminal-area {
@@ -352,7 +352,8 @@ soundBtn.addEventListener('click', async () => {
 
 // Play click sound on every keystroke (both physical and VKB)
 let _audioInited = false;
-ctrl.onKeyInput = async (key) => {
+ctrl.onKeyInput = async (key, repeat) => {
+  if (_vkbRepeating || repeat) return; // held key – no repeat clicks
   if (!_audioInited) {
     await initAudio();
     _audioInited = true;
@@ -600,16 +601,19 @@ const REPEAT_DELAY = 400;   // ms before first repeat
 const REPEAT_INTERVAL = 80; // ms between repeats
 let _repeatTimer = null;
 let _repeatInterval = null;
+let _vkbRepeating = false;
 
 function stopRepeat() {
   if (_repeatTimer)   { clearTimeout(_repeatTimer);   _repeatTimer = null; }
   if (_repeatInterval) { clearInterval(_repeatInterval); _repeatInterval = null; }
+  _vkbRepeating = false;
 }
 
 function startRepeat(btn) {
   stopRepeat();
   const fire = () => {
     const key = shiftActive ? btn.dataset.shiftKey : btn.dataset.key;
+    _vkbRepeating = true;
     sendVKBKey(key);
   };
   _repeatTimer = setTimeout(() => {
