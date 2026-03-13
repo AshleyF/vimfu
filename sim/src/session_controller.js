@@ -19,6 +19,7 @@ export class SessionController {
   constructor(session, onUpdate = () => {}) {
     this.session = session;
     this.onUpdate = onUpdate;
+    this.onKeyInput = null;    // optional callback(key) fired on every keystroke
     this._boundKeyDown = this._onKeyDown.bind(this);
     this._boundPaste = this._onPaste.bind(this);
     this._boundFocus = this._onFocus.bind(this);
@@ -49,6 +50,7 @@ export class SessionController {
    * @param {string} key
    */
   handleKey(key) {
+    if (this.onKeyInput) this.onKeyInput(key);
     this.session.feedKey(key);
     this.onUpdate(this.session.renderFrame());
   }
@@ -114,6 +116,7 @@ export class SessionController {
   _onKeyDown(e) {
     const key = this._translateKey(e);
     if (key) {
+      if (this.onKeyInput) this.onKeyInput(key);
       // Prevent browser defaults
       const dominated = [
         'Escape', 'Backspace', 'Enter', 'Tab',
