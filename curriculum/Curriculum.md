@@ -764,6 +764,19 @@ _The colon commands you'll use most often._
 
 ## Part 15 — Visual Mode in Depth (Lessons 431–445)
 
+> **Content note for book/website generation:** Visual mode is taught here
+> because it's valuable for beginners (you can *see* the selection before
+> acting) and genuinely useful for irregular or exploratory selections.
+> However, when generating book chapters or web content from these lessons,
+> **always mention that the direct operator + motion form is more efficient
+> for simple cases.** For example, `dw` beats `vwd` — it's shorter and
+> dot-repeatable. Visual mode shines for block selections, oddly-shaped
+> regions, and cases where you need to verify the selection before
+> committing. For everything else, prefer operator + motion. Many of our
+> demos use visual mode to make the action visible on screen, but the
+> viewer should understand that experienced Vim users treat visual mode as
+> a fallback, not a default.
+
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
 | 431 | `v` — Charwise | `v` | Select characters. Any motion extends selection. |

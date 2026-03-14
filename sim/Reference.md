@@ -279,6 +279,20 @@ Backspace cannot go before the position where `R` was pressed.
 
 ## Visual Mode
 
+> **Editorial note:** Visual mode is useful for selecting irregular regions that
+> are hard to express as a single motion, and it lets beginners *see* what
+> they're about to act on. However, if the selection can be described by a
+> single motion or text object, the direct **operator + motion** form is almost
+> always more efficient. For example, `dw` (delete word) is faster than
+> `vwd` (visual-select word, then delete) — same result, one fewer keystroke,
+> and it's dot-repeatable. As a rule of thumb: **use visual mode when the
+> shape of the selection is complex or exploratory; use operator + motion
+> when you know exactly what you want.** Many of our demos use visual mode
+> to make the operation visible on screen, but in practice experienced Vim
+> users reach for it sparingly. Any book or website generated from this
+> content should mention that visual mode is a useful learning tool but
+> can become a crutch — the operator + motion grammar is Vim's real power.
+
 ### Mode Switching
 
 | Key | Description |
