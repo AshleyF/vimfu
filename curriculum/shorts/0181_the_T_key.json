@@ -1,0 +1,215 @@
+{
+  "title": "VimFu — The T Key",
+  "description": "Capital T jumps backward to just after a character. Like F but lands one character to the right. T for till backward.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 322,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spell.py .spell.py.swp .spell.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spell.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "spell.py",
+      "content": "cast = \"fire(50,red)\"\nheal = \"cure(30,green)\"\nbuff = \"shield(99,blue)\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim spell.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The T Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital T searches backward, landing just after the target character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: T backward to comma ---"
+    },
+    {
+      "say": "Cursor at the end of the line. Capital T comma.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "T,",
+      "overlay": "till back to ,"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Landed one character after the comma. On the R of red. T stops just short."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: dT to delete backward ---"
+    },
+    {
+      "say": "D capital T can delete backward. On line two, end of line. D T comma.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dT,",
+      "overlay": "delete back to ,"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Deleted green and the closing paren. The comma stayed because T stops just after it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: T vs F ---"
+    },
+    {
+      "say": "Capital F would land on the comma. Capital T lands just after. One character difference.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "T(",
+      "overlay": "till back to ("
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Landed on the 9, just after the open paren. Perfect for changes inside delimiters."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital T. Till backward. Jumps just after the character. Great with delete and change."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spell.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "R_KcKP5oLDs",
+    "url": "https://youtube.com/watch?v=R_KcKP5oLDs"
+  }
+}

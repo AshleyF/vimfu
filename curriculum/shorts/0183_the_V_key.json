@@ -1,0 +1,227 @@
+{
+  "title": "VimFu — The V Key",
+  "description": "Capital V selects entire lines in visual line mode. Great for moving, copying, or deleting whole lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 324,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f squad.py .squad.py.swp .squad.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*squad.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "squad.py",
+      "content": "tank = \"Grim\"\nhealer = \"Luna\"\nscout = \"Dash\"\nmage = \"Ember\"\nrogue = \"Shadow\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim squad.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The V Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital V enters visual line mode. It selects entire lines at a time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: select and delete lines ---"
+    },
+    {
+      "say": "Select lines two and three. Capital V, then J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d",
+      "overlay": "delete"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two whole lines deleted. Visual line always grabs the entire line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: select and move ---"
+    },
+    {
+      "say": "Select the rogue. Move him to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d",
+      "overlay": "delete"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "P",
+      "overlay": "put above"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Shadow moved to the top. Visual line plus delete, then paste wherever."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital V. Visual line mode. Select whole lines for delete, yank, move, or any operation."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f squad.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "d41Sa3eeOks",
+    "url": "https://youtube.com/watch?v=d41Sa3eeOks"
+  }
+}

@@ -1,0 +1,258 @@
+{
+  "title": "VimFu — The R Key",
+  "description": "Capital R enters replace mode. Overtype existing characters until you press Escape. R for replace mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 320,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f grid.py .grid.py.swp .grid.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*grid.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "grid.py",
+      "content": "row = \"ABCDEFGH\"\ncol = \"12345678\"\npin = \"0000\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim grid.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The R Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital R enters replace mode. Every character you type overwrites what's underneath."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: overtype letters ---"
+    },
+    {
+      "say": "Move to the D in the row. Capital R.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "4l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "R",
+      "overlay": "replace mode"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "X",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "Y",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "Z",
+      "overlay": ""
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "D E F became X Y Z. Each character I typed replaced the one underneath."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: overtype the PIN ---"
+    },
+    {
+      "say": "Change the pin. Move to the first zero. Capital R.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "keys": "f0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "R",
+      "overlay": "replace mode"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "3",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "3",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "7",
+      "overlay": ""
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Zero zero zero zero became one three three seven. Exact same length, just overwritten."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital R. Replace mode. Overtype character by character. Escape when you're done."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f grid.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "x2wDRy0fu0E",
+    "url": "https://youtube.com/watch?v=x2wDRy0fu0E"
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "title": "VimFu — The S Key",
+  "description": "Capital S deletes the entire line contents and enters insert mode. It preserves indentation. S for substitute line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 321,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f bot.py .bot.py.swp .bot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*bot.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "bot.py",
+      "content": "def greet():\n    msg = \"hello\"\n    tone = \"friendly\"\n    return msg"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim bot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The S Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital S clears the entire line and enters insert mode. It keeps the indentation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: replace an indented line ---"
+    },
+    {
+      "say": "Replace line two completely. Capital S.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "S",
+      "overlay": "substitute line"
+    },
+    {
+      "type": "msg = \"hey there\""
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The old line is gone. New text is in. Notice the indent stayed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: S preserves indent ---"
+    },
+    {
+      "say": "Line three. Capital S.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "S",
+      "overlay": "substitute line"
+    },
+    {
+      "type": "mood = \"chill\""
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Tone became mood. The four-space indent is preserved. Capital S is the same as C C."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital S. Substitute the whole line. Keeps your indent, clears the rest. Same as C C."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f bot.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "5sc-qMB2pjg",
+    "url": "https://youtube.com/watch?v=5sc-qMB2pjg"
+  }
+}

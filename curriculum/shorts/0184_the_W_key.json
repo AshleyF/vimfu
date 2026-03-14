@@ -1,0 +1,272 @@
+{
+  "title": "VimFu — The W Key",
+  "description": "Capital W moves forward by WORD — any non-blank sequence. Unlike lowercase w, it skips right over punctuation. W for big WORD forward.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 325,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*config.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "host = \"bob@dev-01.srv\" # login\npath = \"/var/log/app.db\" # logs\nflag = \"--no-cache\" # fast"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim config.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The W Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital W moves forward one big WORD. Unlike lowercase w, it skips punctuation and only stops at whitespace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: w vs W on hostname ---"
+    },
+    {
+      "say": "Watch lowercase w on this hostname.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.25
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.25
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.25
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.25
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Five presses. Barely past the at sign. Every dash and dot is a boundary."
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "F\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital W from the same spot.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "W"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "One press. Jumped straight to the comment. The whole hostname was one big WORD."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: w vs W on file path ---"
+    },
+    {
+      "say": "Same thing on this path.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Lowercase w trips on every slash.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "F\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "W"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "One W. Straight to the comment."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital W. Jumps by whitespace, ignores punctuation. Use it on paths, URLs, and flags."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "RMrU-Knh4C4",
+    "url": "https://youtube.com/watch?v=RMrU-Knh4C4"
+  }
+}
