@@ -204,6 +204,24 @@ linewise text (e.g. from `yy`, `dd`), the cursor lands at the **beginning**
 | `z+` | ✅ | Scroll: line below window to top, cursor to first non-blank |
 | `z^` | ✅ | Scroll: line above window to bottom, cursor to first non-blank |
 
+### Horizontal Scroll (nowrap mode)
+
+When `:set nowrap` is active, long lines are truncated at the screen edge
+instead of wrapping. The viewport can be scrolled horizontally.
+
+| Key | Description |
+|---|---|
+| `zl` | Scroll screen right by N columns |
+| `zh` | Scroll screen left by N columns |
+| `zL` | Scroll screen right by half screen width |
+| `zH` | Scroll screen left by half screen width |
+| `zs` | Scroll so cursor column is at left edge |
+| `ze` | Scroll so cursor column is at right edge |
+
+Auto-scroll: when the cursor moves past the visible area, the viewport
+auto-adjusts. Small overflows scroll the minimum amount; large jumps
+recenter the cursor.
+
 ### Folding (Manual)
 
 The simulator supports manual folding (`foldmethod=manual`). Create folds with
@@ -249,6 +267,63 @@ or different buffers with independent cursor and scroll positions.
 | `Ctrl-W c` | Close current window |
 | `Ctrl-W o` | Close all other windows |
 | `Ctrl-W q` | Close current window |
+| `Ctrl-W T` | Move current window to a new tab |
+
+### Buffer List
+
+The engine maintains a buffer list tracking all open buffers. Each buffer
+preserves its own cursor, scroll position, undo history, marks, and folds.
+
+| Key | Description |
+|---|---|
+| `:ls` / `:buffers` | List all buffers |
+| `:bn[ext]` | Switch to next buffer |
+| `:bp[rev]` | Switch to previous buffer |
+| `:b[uffer] N` | Switch to buffer N |
+| `:b[uffer] name` | Switch to buffer by name (partial match) |
+| `:bd[elete][!]` | Delete current buffer |
+| `:enew[!]` | Edit a new unnamed buffer |
+| `Ctrl-^` / `Ctrl-6` | Toggle alternate buffer |
+
+Buffer indicators in `:ls` output:
+- `%` — current buffer
+- `#` — alternate buffer
+- `a` — active (loaded and displayed)
+- `+` — modified
+
+### Tab Pages
+
+Tab pages provide a way to organize multiple window layouts. Each tab
+contains its own set of windows. A tab line appears when ≥2 tabs exist.
+
+| Key | Description |
+|---|---|
+| `:tabnew` | Open new tab with empty buffer |
+| `:tabe[dit]` | Open new tab with empty buffer |
+| `:tabn[ext]` | Go to next tab |
+| `:tabp[rev]` | Go to previous tab |
+| `:tabc[lose]` | Close current tab |
+| `:tabo[nly]` | Close all other tabs |
+| `gt` | Go to next tab (with count: go to tab N) |
+| `gT` | Go to previous tab |
+| `Ctrl-W T` | Move current window to new tab |
+
+### Spell Checking
+
+Enable with `:set spell`. Uses a built-in ~5000-word English dictionary.
+Misspelled words are highlighted with `SpellBad` (red foreground).
+
+| Key | Description |
+|---|---|
+| `:set spell` | Enable spell checking |
+| `:set nospell` | Disable spell checking |
+| `]s` | Jump to next misspelled word |
+| `[s` | Jump to previous misspelled word |
+| `z=` | Show spelling suggestions for word under cursor |
+| `zg` | Add word under cursor to good words list |
+| `zw` | Mark word under cursor as misspelled |
+| `zug` | Undo `zg` (remove from good list) |
+| `zuw` | Undo `zw` (remove from bad list) |
 
 ### Bracket Commands
 
@@ -1196,6 +1271,8 @@ the buffer has been modified (dirty). Both quit after writing.
 | `list` | | `nolist` | off | Show whitespace characters (tabs, trailing spaces) |
 | `splitbelow` | `sb` | `nosplitbelow` / `nosb` | off | New horizontal splits open below current window |
 | `splitright` | `spr` | `nosplitright` / `nospr` | off | New vertical splits open to the right |
+| `spell` | | `nospell` | off | Enable spell checking (highlights misspelled words) |
+| `wrap` | | `nowrap` | on | Wrap long lines (off = horizontal scroll) |
 
 #### Numeric Options
 
@@ -1337,15 +1414,15 @@ and replace modes.
 | `B` | ✅ | WORD backward |
 | `e` | ✅ | End of word forward (inclusive) |
 | `E` | ✅ | End of WORD forward |
-| `0` / `Home` | — | Start of line |
-| `$` / `End` | — | End of line (inclusive) |
-| `^` / `_` | — | First non-whitespace character |
-| `f{char}` | — | Find char forward (inclusive) |
-| `F{char}` | — | Find char backward (inclusive) |
-| `t{char}` | — | Till char forward (exclusive — stops one before) |
-| `T{char}` | — | Till char backward (exclusive — stops one after) |
-| `;` | — | Repeat last `f`/`F`/`t`/`T` |
-| `,` | — | Repeat last find, reversed direction |
+| `0` / `Home` | ✅ | Start of line |
+| `$` / `End` | ✅ | End of line (inclusive) |
+| `^` / `_` | ✅ | First non-whitespace character |
+| `f{char}` | ✅ | Find char forward (inclusive) |
+| `F{char}` | ✅ | Find char backward (inclusive) |
+| `t{char}` | ✅ | Till char forward (exclusive — stops one before) |
+| `T{char}` | ✅ | Till char backward (exclusive — stops one after) |
+| `;` | ✅ | Repeat last `f`/`F`/`t`/`T` |
+| `,` | ✅ | Repeat last find, reversed direction |
 
 #### Normal Mode — Operators
 
@@ -1370,17 +1447,17 @@ matching vim behavior.
 | `x` | ✅ | Delete char under cursor |
 | `X` | ✅ | Delete char before cursor |
 | `s` | ✅ | Substitute N chars (delete + insert mode) |
-| `S` | — | Substitute entire line |
+| `S` | ✅ | Substitute entire line |
 | `r{char}` | ✅ | Replace N chars with {char} |
-| `R` | — | Enter replace (overtype) mode |
+| `R` | ✅ | Enter replace (overtype) mode |
 | `~` | ✅ | Toggle case, advance cursor |
-| `D` | — | Delete to end of line |
-| `C` | — | Change to end of line |
+| `D` | ✅ | Delete to end of line |
+| `C` | ✅ | Change to end of line |
 | `p` | ✅ | Put yanked text after cursor (N times) |
 | `P` | ✅ | Put yanked text before cursor (N times) |
-| `u` | — | Undo last change |
-| `.` | — | Repeat last change (dot-repeat) |
-| `#` | — | Comment out line (prepend `#`) and execute |
+| `u` | ✅ | Undo last change |
+| `.` | ✅ | Repeat last change (dot-repeat) |
+| `#` | ✅ | Comment out line (prepend `#`) and execute |
 
 #### Normal Mode — Mode Switching
 
@@ -1568,7 +1645,7 @@ Entered via `Ctrl-B :`. Type a command and press `Enter`.
 | `detach-client` | `detach` | Detach from tmux |
 | `next-layout` | `nextl` | Cycle to next layout preset |
 | `display-panes` | `displayp` | Show pane number overlay |
-| `clock-mode` | — | Show ASCII art clock |
+| `clock-mode` | `clock` | Show ASCII art clock |
 | `list-keys` | `lsk` | Show key bindings help |
 
 Unknown commands display: `unknown command: …`

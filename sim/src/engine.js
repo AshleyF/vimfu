@@ -27,6 +27,7 @@
  */
 
 import { Buffer } from './buffer.js';
+import { DICTIONARY } from './dictionary.js';
 
 /** @enum {string} */
 export const Mode = {
@@ -47,6 +48,7 @@ export class VimEngine {
     this.cursor = { row: 0, col: 0 };
     this.mode = Mode.NORMAL;
     this.scrollTop = 0;
+    this.scrollLeft = 0; // horizontal scroll offset (buffer column of left edge)
     this.statusLine = '';
     this.commandLine = '';
     this.filename = null;   // set by SessionManager for syntax highlighting
@@ -65,6 +67,7 @@ export class VimEngine {
     this._pendingOp = '';
     this._pendingG = false;
     this._pendingZ = false;
+    this._pendingZu = false;
     this._pendingCapZ = false;
     this._pendingF = '';
     this._pendingR = false;
@@ -193,6 +196,11 @@ export class VimEngine {
     this._cmdHistory = [];
     this._cmdHistoryPos = -1;
 
+    // Command-line Tab completion state
+    this._cmdCompletions = [];     // current list of matching completions
+    this._cmdCompletionIdx = -1;   // index into _cmdCompletions (-1 = not cycling)
+    this._cmdCompletionBase = '';  // the original prefix before first Tab
+
     // Settings (:set)
     this._settings = {
       number: false,       // :set number / :set nonumber
@@ -212,7 +220,12 @@ export class VimEngine {
       list: false,         // :set list / :set nolist
       splitbelow: false,   // :set splitbelow / :set nosplitbelow (sb/nosb)
       splitright: false,   // :set splitright / :set nosplitright (spr/nospr)
+      spell: false,        // :set spell / :set nospell
     };
+
+    // Spell checking
+    this._spellGoodWords = new Set(); // words added with zg
+    this._spellBadWords = new Set();  // words marked bad with zw
 
     this._updateStatus();
 
@@ -221,15 +234,31 @@ export class VimEngine {
       buffer: this.buffer,
       cursor: { ...this.cursor },
       scrollTop: this.scrollTop,
+      scrollLeft: this.scrollLeft,
       folds: this._folds,
       _desiredCol: 0,
     }];
     this._activeWin = 0;
+
+    // ── Buffer list ──
+    this._nextBufId = 1;
+    this._bufferList = []; // {id, buffer, fileName, cursor, scrollTop, scrollLeft, undoStack, redoStack, changeCount, marks, folds, desiredCol, jumpList, jumpListPos, changeList, changeListPos}
+    this._currentBufId = this._registerBuffer(this.buffer, this._fileName);
+    this._alternateBufId = null;
+
+    // ── Tab pages ──
+    this._tabs = [{ windows: this._windows, activeWin: this._activeWin }];
+    this._activeTab = 0;
   }
 
   // ── Public API ──
 
   loadFile(text, fileName) {
+    // Register in buffer list (save old state BEFORE replacing this.buffer)
+    if (this._bufferList && this._currentBufId != null) {
+      this._saveCurrentBufState();
+      this._alternateBufId = this._currentBufId;
+    }
     const lines = text.split('\n');
     this._fileName = fileName || null;
     if (lines.length > 1 && lines[lines.length - 1] === '') lines.pop();
@@ -240,6 +269,7 @@ export class VimEngine {
     // Set desiredCol to the virtual column of the first non-blank
     this._desiredCol = this._virtColAt(0, fnb);
     this.scrollTop = 0;
+    this.scrollLeft = 0;
     this._undoStack = [];
     this._redoStack = [];
     this._changeCount = 0;
@@ -251,11 +281,36 @@ export class VimEngine {
     this._jumpListPos = 1; // points past the initial entry (current position)
     this._changeList = [];
     this._changeListPos = -1;
+    this._marks = {};
+    this._folds = [];
     this._saveSnapshot();
     this._changeCount = 0; // reset after initial snapshot
     // Clear change list — loading a file is not a "change"
     this._changeList = [];
     this._changeListPos = -1;
+    // Register new buffer or reuse existing
+    if (this._bufferList) {
+      // Check if we already have a buffer for this fileName
+      let existingEntry = null;
+      if (fileName) {
+        existingEntry = this._bufferList.find(e => e.fileName === fileName);
+      }
+      if (existingEntry) {
+        // Re-use existing entry (reload content)
+        existingEntry.buffer = this.buffer;
+        existingEntry.cursor = { ...this.cursor };
+        existingEntry.scrollTop = 0;
+        existingEntry.scrollLeft = 0;
+        existingEntry.undoStack = this._undoStack;
+        existingEntry.redoStack = this._redoStack;
+        existingEntry.changeCount = 0;
+        existingEntry.marks = {};
+        existingEntry.folds = [];
+        this._currentBufId = existingEntry.id;
+      } else {
+        this._currentBufId = this._registerBuffer(this.buffer, fileName);
+      }
+    }
     this._updateStatus();
   }
 
@@ -328,6 +383,7 @@ export class VimEngine {
     this._adjustCursorForFolds();
     this._clampCursor();
     this._ensureCursorVisible();
+    this._adjustHorizontalScroll();
     this._updateStatus();
   }
 
@@ -960,6 +1016,13 @@ export class VimEngine {
     if (this._pendingZ) {
       this._pendingZ = false;
       this._handleZ(key);
+      this._pendingCount = '';
+      return;
+    }
+
+    // Pending zu (zug/zuw)
+    if (this._pendingZu) {
+      this._handleZ(key); // _handleZ checks _pendingZu internally
       this._pendingCount = '';
       return;
     }
@@ -2094,6 +2157,19 @@ export class VimEngine {
         break;
       }
 
+      // Alternate buffer (Ctrl-^ / Ctrl-6)
+      case 'Ctrl-^':
+      case 'Ctrl-6': {
+        if (this._alternateBufId != null) {
+          this._switchToBuffer(this._alternateBufId);
+        } else {
+          this.commandLine = 'E23: No alternate file';
+          this._stickyCommandLine = true;
+        }
+        this._pendingCount = '';
+        break;
+      }
+
       // Increment / Decrement number
       case 'Ctrl-A': {
         const countStr = this._pendingCount;
@@ -2992,15 +3068,167 @@ export class VimEngine {
         break;
       }
 
+      // gt — next tab page (with count: go to tab N)
+      case 't': {
+        if (this._hasCount()) {
+          const n = this._getCount();
+          // gt with count: go to tab page N (1-based)
+          const idx = Math.max(0, Math.min(n - 1, this._tabs.length - 1));
+          this._switchToTab(idx);
+        } else {
+          // Next tab (wrapping)
+          const nextIdx = (this._activeTab + 1) % this._tabs.length;
+          this._switchToTab(nextIdx);
+        }
+        this._pendingCount = '';
+        break;
+      }
+
+      // gT — previous tab page
+      case 'T': {
+        const count = this._hasCount() ? this._getCount() : 1;
+        const prevIdx = ((this._activeTab - count) % this._tabs.length + this._tabs.length) % this._tabs.length;
+        this._switchToTab(prevIdx);
+        this._pendingCount = '';
+        break;
+      }
+
       default:
         this._pendingCount = '';
         break;
     }
   }
 
+  // ── Buffer list helpers ──
+
+  /**
+   * Register a buffer in the buffer list. Returns the assigned buffer id.
+   */
+  _registerBuffer(buffer, fileName) {
+    // Check if this buffer is already registered
+    for (const entry of this._bufferList) {
+      if (entry.buffer === buffer) return entry.id;
+    }
+    const id = this._nextBufId++;
+    this._bufferList.push({
+      id,
+      buffer,
+      fileName: fileName || null,
+      cursor: { row: 0, col: 0 },
+      scrollTop: 0,
+      scrollLeft: 0,
+      undoStack: [],
+      redoStack: [],
+      changeCount: 0,
+      marks: {},
+      folds: [],
+      desiredCol: 0,
+      jumpList: [],
+      jumpListPos: -1,
+      changeList: [],
+      changeListPos: -1,
+    });
+    return id;
+  }
+
+  /**
+   * Find a buffer entry by id.
+   */
+  _getBufEntry(id) {
+    return this._bufferList.find(e => e.id === id) || null;
+  }
+
+  /**
+   * Save current engine state into the buffer list entry for _currentBufId.
+   */
+  _saveCurrentBufState() {
+    const entry = this._getBufEntry(this._currentBufId);
+    if (!entry) return;
+    entry.buffer = this.buffer;
+    entry.fileName = this._fileName;
+    entry.cursor = { ...this.cursor };
+    entry.scrollTop = this.scrollTop;
+    entry.scrollLeft = this.scrollLeft;
+    entry.undoStack = this._undoStack;
+    entry.redoStack = this._redoStack;
+    entry.changeCount = this._changeCount;
+    entry.marks = this._marks;
+    entry.folds = this._folds;
+    entry.desiredCol = this._desiredCol;
+    entry.jumpList = this._jumpList;
+    entry.jumpListPos = this._jumpListPos;
+    entry.changeList = this._changeList;
+    entry.changeListPos = this._changeListPos;
+  }
+
+  /**
+   * Switch to a buffer by id. Saves current state and restores the target buffer's state.
+   */
+  _switchToBuffer(id) {
+    if (id === this._currentBufId) return;
+    const entry = this._getBufEntry(id);
+    if (!entry) return;
+    // Save current buffer state
+    this._saveCurrentBufState();
+    // Set alternate buffer
+    this._alternateBufId = this._currentBufId;
+    this._currentBufId = id;
+    // Restore target buffer state
+    this.buffer = entry.buffer;
+    this._fileName = entry.fileName;
+    this.cursor = { ...entry.cursor };
+    this.scrollTop = entry.scrollTop;
+    this.scrollLeft = entry.scrollLeft;
+    this._undoStack = entry.undoStack;
+    this._redoStack = entry.redoStack;
+    this._changeCount = entry.changeCount;
+    this._marks = entry.marks;
+    this._folds = entry.folds;
+    this._desiredCol = entry.desiredCol;
+    this._jumpList = entry.jumpList;
+    this._jumpListPos = entry.jumpListPos;
+    this._changeList = entry.changeList;
+    this._changeListPos = entry.changeListPos;
+    // Update active window
+    this._windows[this._activeWin].buffer = this.buffer;
+    this._windows[this._activeWin].cursor = { ...this.cursor };
+    this._windows[this._activeWin].scrollTop = this.scrollTop;
+    this._windows[this._activeWin].scrollLeft = this.scrollLeft;
+    this._windows[this._activeWin].folds = this._folds;
+    this._windows[this._activeWin]._desiredCol = this._desiredCol;
+    // Reset mode to normal
+    if (this.mode !== Mode.NORMAL) {
+      this.mode = Mode.NORMAL;
+    }
+    // Clamp cursor
+    this._clampCursor();
+    this._updateStatus();
+  }
+
   // ── z prefix ──
 
   _handleZ(key) {
+    // Handle pending zu (for zug/zuw)
+    if (this._pendingZu) {
+      this._pendingZu = false;
+      if (key === 'g') {
+        // zug — undo zg (remove word from good list)
+        const w = this._getWordAtCursor();
+        if (w) {
+          this._spellGoodWords.delete(w.word.toLowerCase());
+          this.commandLine = '';
+        }
+      } else if (key === 'w') {
+        // zuw — undo zw (remove word from bad list)
+        const w = this._getWordAtCursor();
+        if (w) {
+          this._spellBadWords.delete(w.word.toLowerCase());
+          this.commandLine = '';
+        }
+      }
+      return;
+    }
+
     const maxST = Math.max(0, this.buffer.lineCount - 1);
     switch (key) {
       case 'z': case '.':
@@ -3134,6 +3362,135 @@ export class VimEngine {
         }
         break;
       }
+
+      // ── Horizontal scroll (nowrap only) ──
+
+      case 'l': {
+        // zl — scroll screen right by N columns
+        if (!this._settings.wrap) {
+          const count = this._getCount(1);
+          this.scrollLeft += count;
+          // Clamp cursor to stay on-screen (left edge)
+          const lineLen = this.buffer.lines[this.cursor.row].length;
+          if (this.cursor.col < this.scrollLeft) {
+            this.cursor.col = Math.min(this.scrollLeft, Math.max(lineLen - 1, 0));
+          }
+          // If line is short, clamp scrollLeft so cursor stays visible
+          if (this.cursor.col < this.scrollLeft) {
+            this.scrollLeft = this.cursor.col;
+          }
+          this._updateDesiredCol();
+        }
+        break;
+      }
+      case 'h': {
+        // zh — scroll screen left by N columns
+        if (!this._settings.wrap) {
+          const count = this._getCount(1);
+          this.scrollLeft = Math.max(0, this.scrollLeft - count);
+          this._updateDesiredCol();
+        }
+        break;
+      }
+      case 'L': {
+        // zL — scroll half screen right
+        if (!this._settings.wrap) {
+          const half = Math.floor(this._computeTextCols() / 2);
+          this.scrollLeft += half;
+          const lineLen = this.buffer.lines[this.cursor.row].length;
+          if (this.cursor.col < this.scrollLeft) {
+            this.cursor.col = Math.min(this.scrollLeft, Math.max(lineLen - 1, 0));
+          }
+          if (this.cursor.col < this.scrollLeft) {
+            this.scrollLeft = this.cursor.col;
+          }
+          this._updateDesiredCol();
+        }
+        break;
+      }
+      case 'H': {
+        // zH — scroll half screen left
+        if (!this._settings.wrap) {
+          const half = Math.floor(this._computeTextCols() / 2);
+          this.scrollLeft = Math.max(0, this.scrollLeft - half);
+          this._updateDesiredCol();
+        }
+        break;
+      }
+      case 's': {
+        // zs — scroll so cursor column is at left edge
+        if (!this._settings.wrap) {
+          this.scrollLeft = this._virtColAt(this.cursor.row, this.cursor.col);
+        }
+        break;
+      }
+      case 'e': {
+        // ze — scroll so cursor column is at right edge
+        if (!this._settings.wrap) {
+          const textCols = this._computeTextCols();
+          this.scrollLeft = Math.max(0, this.cursor.col - textCols + 1);
+        }
+        break;
+      }
+
+      // ── Spell commands ──
+
+      case '=': {
+        // z= — show spelling suggestions for word under cursor
+        if (this._settings.spell) {
+          const w = this._getWordAtCursor();
+          if (w && this._isSpellBad(w.word)) {
+            const suggestions = this._spellSuggest(w.word);
+            if (suggestions.length > 0) {
+              const normalFg = 'd4d4d4', normalBg = '000000';
+              const cols = this.cols;
+              const mkLine = (text, runs) => ({ text, runs });
+              const promptLines = [];
+              promptLines.push(mkLine(('Change "' + w.word + '" to:' + ' '.repeat(cols)).slice(0, cols),
+                [{ n: cols, fg: normalFg, bg: normalBg }]));
+              for (let i = 0; i < suggestions.length; i++) {
+                const numStr = String(i + 1);
+                const lineText = (' ' + numStr + ' "' + suggestions[i] + '"' + ' '.repeat(cols)).slice(0, cols);
+                promptLines.push(mkLine(lineText, [{ n: cols, fg: normalFg, bg: normalBg }]));
+              }
+              this._messagePrompt = { lines: promptLines };
+            } else {
+              this.commandLine = 'Sorry, no strggestions';
+              this._stickyCommandLine = true;
+            }
+          }
+        }
+        break;
+      }
+      case 'g': {
+        // zg — add word under cursor to good words list
+        if (this._settings.spell) {
+          const w = this._getWordAtCursor();
+          if (w) {
+            this._spellGoodWords.add(w.word.toLowerCase());
+            this._spellBadWords.delete(w.word.toLowerCase());
+            this.commandLine = '';
+          }
+        }
+        break;
+      }
+      case 'w': {
+        // zw — mark word under cursor as bad (wrong)
+        if (this._settings.spell) {
+          const w = this._getWordAtCursor();
+          if (w) {
+            this._spellBadWords.add(w.word.toLowerCase());
+            this._spellGoodWords.delete(w.word.toLowerCase());
+            this.commandLine = '';
+          }
+        }
+        break;
+      }
+      case 'u': {
+        // zu — pending for zug/zuw
+        this._pendingZu = true;
+        return; // don't fall through to end
+      }
     }
   }
 
@@ -3144,6 +3501,7 @@ export class VimEngine {
     if (!w) return;
     w.cursor = { ...this.cursor };
     w.scrollTop = this.scrollTop;
+    w.scrollLeft = this.scrollLeft;
     w.folds = this._folds;
     w._desiredCol = this._desiredCol;
     w.buffer = this.buffer;
@@ -3155,6 +3513,7 @@ export class VimEngine {
     this.buffer = w.buffer;
     this.cursor = { ...w.cursor };
     this.scrollTop = w.scrollTop;
+    this.scrollLeft = w.scrollLeft || 0;
     this._folds = w.folds;
     this._desiredCol = w._desiredCol || 0;
   }
@@ -3198,6 +3557,133 @@ export class VimEngine {
     this._windows = [cur];
     this._activeWin = 0;
     this._restoreWindowState();
+  }
+
+  // ── Tab page helpers ──
+
+  /**
+   * Save the current tab's state (windows + activeWin).
+   */
+  _saveTabState() {
+    this._saveWindowState();
+    this._tabs[this._activeTab] = {
+      windows: this._windows,
+      activeWin: this._activeWin,
+    };
+  }
+
+  /**
+   * Restore a tab's state.
+   */
+  _restoreTabState() {
+    const tab = this._tabs[this._activeTab];
+    this._windows = tab.windows;
+    this._activeWin = tab.activeWin;
+    this._restoreWindowState();
+  }
+
+  /**
+   * Switch to a tab by index.
+   */
+  _switchToTab(idx) {
+    if (idx < 0 || idx >= this._tabs.length || idx === this._activeTab) return;
+    this._saveTabState();
+    this._activeTab = idx;
+    this._restoreTabState();
+  }
+
+  /**
+   * Create a new tab with an empty buffer.
+   */
+  _doTabNew() {
+    this._saveTabState();
+    // Save current buffer state
+    this._saveCurrentBufState();
+    this._alternateBufId = this._currentBufId;
+    // Create new empty buffer
+    this.buffer = new Buffer(['']);
+    this.cursor = { row: 0, col: 0 };
+    this.scrollTop = 0;
+    this.scrollLeft = 0;
+    this._fileName = null;
+    this._undoStack = [];
+    this._redoStack = [];
+    this._changeCount = 0;
+    this._marks = {};
+    this._folds = [];
+    this._desiredCol = 0;
+    this._currentBufId = this._registerBuffer(this.buffer, null);
+    // New tab with a single window showing the new buffer
+    const newWin = {
+      buffer: this.buffer,
+      cursor: { ...this.cursor },
+      scrollTop: 0,
+      scrollLeft: 0,
+      folds: [],
+      _desiredCol: 0,
+    };
+    this._tabs.splice(this._activeTab + 1, 0, { windows: [newWin], activeWin: 0 });
+    this._activeTab++;
+    this._windows = this._tabs[this._activeTab].windows;
+    this._activeWin = 0;
+  }
+
+  /**
+   * Close the current tab. If it's the last tab, do nothing (Vim shows E784).
+   */
+  _doTabClose() {
+    if (this._tabs.length <= 1) return;
+    this._tabs.splice(this._activeTab, 1);
+    if (this._activeTab >= this._tabs.length) {
+      this._activeTab = this._tabs.length - 1;
+    }
+    this._restoreTabState();
+  }
+
+  /**
+   * Close all other tabs.
+   */
+  _doTabOnly() {
+    if (this._tabs.length <= 1) return;
+    this._saveTabState();
+    this._tabs = [this._tabs[this._activeTab]];
+    this._activeTab = 0;
+  }
+
+  /**
+   * Get the number of tab pages.
+   */
+  get tabCount() {
+    return this._tabs.length;
+  }
+
+  /**
+   * Get info for rendering the tab line.
+   * Returns array of { label, active } for each tab.
+   */
+  getTabLineInfo() {
+    return this._tabs.map((tab, i) => {
+      // Find the active window's filename in this tab
+      const win = tab.windows[tab.activeWin] || tab.windows[0];
+      let label;
+      if (win && win.buffer) {
+        // Find filename for this buffer from buffer list
+        const entry = this._bufferList.find(e => e.buffer === win.buffer);
+        if (entry && entry.fileName) {
+          // Just the basename
+          const parts = entry.fileName.replace(/\\/g, '/').split('/');
+          label = parts[parts.length - 1];
+        } else if (i === this._activeTab && this._fileName) {
+          const parts = this._fileName.replace(/\\/g, '/').split('/');
+          label = parts[parts.length - 1];
+        } else {
+          label = '[No Name]';
+        }
+      } else {
+        label = '[No Name]';
+      }
+      return { label, active: i === this._activeTab };
+    });
   }
 
   // ── Ctrl-W (window) prefix ──
@@ -3261,6 +3747,25 @@ export class VimEngine {
         break;
       case '-':
         // Decrease window height (no-op for now)
+        break;
+      case 'T':
+        // Ctrl-W T — move current window to a new tab
+        if (this._windows.length > 1) {
+          this._saveWindowState();
+          const win = this._windows.splice(this._activeWin, 1)[0];
+          if (this._activeWin >= this._windows.length) {
+            this._activeWin = this._windows.length - 1;
+          }
+          // Save current tab state (without the removed window)
+          this._tabs[this._activeTab].windows = this._windows;
+          this._tabs[this._activeTab].activeWin = this._activeWin;
+          // Create new tab with the removed window
+          this._tabs.splice(this._activeTab + 1, 0, { windows: [win], activeWin: 0 });
+          this._activeTab++;
+          this._windows = this._tabs[this._activeTab].windows;
+          this._activeWin = 0;
+          this._restoreWindowState();
+        }
         break;
       default:
         break;
@@ -3331,6 +3836,118 @@ export class VimEngine {
 
   // ── Command (Ex) mode ──
 
+  // Canonical list of all Ex commands the simulator supports (sorted).
+  // Used for Tab completion and Ctrl-D.
+  static _EX_COMMANDS = [
+    'bdelete', 'bnext', 'bprevious', 'buffer', 'buffers',
+    'changes', 'close', 'copy', 'delete', 'delmarks', 'display',
+    'echo', 'edit', 'enew', 'file', 'files', 'global',
+    'join', 'jumps', 'ls', 'marks', 'move', 'new',
+    'nohlsearch', 'normal', 'number', 'only',
+    'print', 'put', 'pwd',
+    'qa', 'quit',
+    'read', 'registers', 'retab',
+    'saveas', 'set', 'sort', 'split', 'substitute',
+    'tabclose', 'tabedit', 'tabnew', 'tabnext', 'tabonly', 'tabprevious',
+    'undolist', 'vglobal', 'vsplit',
+    'wa', 'wq', 'wqa', 'write',
+    'xa', 'xit', 'yank',
+  ];
+
+  // All :set option names (sorted).
+  static _SET_OPTIONS = [
+    'autoindent', 'cursorline', 'expandtab', 'fileformat',
+    'hlsearch', 'ignorecase', 'incsearch', 'list',
+    'number', 'relativenumber', 'scrolloff', 'shiftwidth',
+    'smartcase', 'spell', 'splitbelow', 'splitright', 'tabstop', 'wrap',
+  ];
+
+  // Short-form aliases for :set options → canonical names
+  static _SET_ALIASES = {
+    ai: 'autoindent', cul: 'cursorline', et: 'expandtab', ff: 'fileformat',
+    hls: 'hlsearch', ic: 'ignorecase', is: 'incsearch',
+    nu: 'number', rnu: 'relativenumber', so: 'scrolloff', sw: 'shiftwidth',
+    scs: 'smartcase', sb: 'splitbelow', spr: 'splitright', ts: 'tabstop',
+  };
+
+  /**
+   * Get completions for a command-line prefix.
+   * Returns sorted list of full command/option names matching the prefix.
+   */
+  _getCompletions(input) {
+    // Trim leading whitespace from input (after the : prefix)
+    const trimmed = input.trimStart();
+
+    // Check if this is a :set subcommand — complete option names
+    const setMatch = trimmed.match(/^set?\s+(no)?(.*)$/);
+    if (setMatch) {
+      const noPrefix = setMatch[1] || '';
+      const partial = setMatch[2];
+      // Match against option names and aliases
+      const matches = [];
+      for (const opt of VimEngine._SET_OPTIONS) {
+        if (opt.startsWith(partial)) {
+          matches.push(noPrefix + opt);
+        }
+      }
+      for (const [alias, opt] of Object.entries(VimEngine._SET_ALIASES)) {
+        if (alias.startsWith(partial) && !matches.includes(noPrefix + opt)) {
+          matches.push(noPrefix + opt);
+        }
+      }
+      matches.sort();
+      return { matches, replaceFrom: trimmed.indexOf(noPrefix + partial), context: 'set' };
+    }
+
+    // Complete Ex command names
+    const matches = VimEngine._EX_COMMANDS.filter(c => c.startsWith(trimmed));
+    return { matches, replaceFrom: 0, context: 'command' };
+  }
+
+  /**
+   * Handle Tab in command mode: cycle through completions.
+   */
+  _cmdTabComplete() {
+    const prefix = this.commandLine[0]; // ':' or '/' or '?'
+    if (prefix !== ':') return; // only complete : commands
+
+    // If not currently cycling, start a new completion
+    if (this._cmdCompletionIdx < 0) {
+      this._cmdCompletionBase = this._searchInput;
+      const { matches, context } = this._getCompletions(this._searchInput);
+      this._cmdCompletions = matches;
+      if (matches.length === 0) return;
+      this._cmdCompletionIdx = 0;
+    } else {
+      // Cycle to next
+      this._cmdCompletionIdx = (this._cmdCompletionIdx + 1) % this._cmdCompletions.length;
+    }
+
+    // Apply the completion
+    const match = this._cmdCompletions[this._cmdCompletionIdx];
+    const base = this._cmdCompletionBase;
+    const { context } = this._getCompletions(base);
+
+    if (context === 'set') {
+      // Replace just the option part after "set "
+      const setMatch = base.match(/^(set?\s+)/);
+      const setPrefix = setMatch ? setMatch[1] : 'set ';
+      this._searchInput = setPrefix + match;
+    } else {
+      this._searchInput = match;
+    }
+    this.commandLine = prefix + this._searchInput;
+  }
+
+  /**
+   * Reset Tab completion state (called when input changes).
+   */
+  _resetTabCompletion() {
+    this._cmdCompletionIdx = -1;
+    this._cmdCompletions = [];
+    this._cmdCompletionBase = '';
+  }
+
   _commandKey(key) {
     if (key === 'Escape') {
       this.mode = Mode.NORMAL; this.commandLine = '';
@@ -3339,10 +3956,27 @@ export class VimEngine {
       this._visualCmdRange = null;
       this._filterRange = null;
       this._cmdHistoryPos = -1;
+      this._resetTabCompletion();
       return;
     }
-    if (key === 'Enter' || key === 'Ctrl-J' || key === 'Ctrl-M') { this._executeCommand(); return; }
+    if (key === 'Enter' || key === 'Ctrl-J' || key === 'Ctrl-M') { this._resetTabCompletion(); this._executeCommand(); return; }
+    if (key === 'Tab') {
+      // Tab completion — only for : commands, not / or ? search
+      if (this.commandLine[0] === ':') {
+        this._cmdTabComplete();
+      }
+      return;
+    }
+    if (key === 'Ctrl-D') {
+      // Show completions — populate _cmdCompletions without changing commandLine
+      if (this.commandLine[0] === ':') {
+        const { matches } = this._getCompletions(this._searchInput);
+        this._cmdCompletions = matches;
+      }
+      return;
+    }
     if (key === 'Backspace') {
+      this._resetTabCompletion();
       if (this._searchInput.length > 0) {
         this._searchInput = this._searchInput.slice(0, -1);
         this.commandLine = this.commandLine[0] + this._searchInput;
@@ -3355,11 +3989,13 @@ export class VimEngine {
       return;
     }
     if (key === 'Ctrl-U') {
+      this._resetTabCompletion();
       this._searchInput = '';
       this.commandLine = this.commandLine[0];
       return;
     }
     if (key === 'Ctrl-W') {
+      this._resetTabCompletion();
       // Delete word backward: strip trailing whitespace, then strip one word
       // Vim word: keyword chars (a-z, A-Z, 0-9, _) or non-keyword non-whitespace chars
       let s = this._searchInput;
@@ -3438,6 +4074,7 @@ export class VimEngine {
       return;
     }
     if (key.length === 1) {
+      this._resetTabCompletion();
       this._searchInput += key;
       this.commandLine = this.commandLine[0] + this._searchInput;
     }
@@ -3875,11 +4512,21 @@ export class VimEngine {
     // :new — new empty buffer in split
     if (/^new(\s|$)/.test(cmd)) {
       this._doSplit();
+      // Save current buffer state, register new buffer
+      this._saveCurrentBufState();
+      this._alternateBufId = this._currentBufId;
       // Clear the active window's buffer
       this.buffer = new Buffer(['']);
       this.cursor = { row: 0, col: 0 };
       this.scrollTop = 0;
+      this.scrollLeft = 0;
       this._fileName = null;
+      this._undoStack = [];
+      this._redoStack = [];
+      this._changeCount = 0;
+      this._marks = {};
+      this._folds = [];
+      this._currentBufId = this._registerBuffer(this.buffer, null);
       this._saveWindowState();
       this.commandLine = '';
       return;
@@ -3887,13 +4534,165 @@ export class VimEngine {
 
     // :enew[!] — edit new unnamed buffer
     if (/^ene(w!?)?(\s|$)/.test(cmd)) {
+      // Save current buffer state before creating new
+      this._saveCurrentBufState();
+      this._alternateBufId = this._currentBufId;
       this.buffer = new Buffer(['']);
       this.cursor = { row: 0, col: 0 };
       this.scrollTop = 0;
+      this.scrollLeft = 0;
       this._fileName = null;
       this._undoStack = [];
       this._redoStack = [];
       this._changeCount = 0;
+      this._marks = {};
+      this._folds = [];
+      this._currentBufId = this._registerBuffer(this.buffer, null);
+      this.commandLine = '';
+      return;
+    }
+
+    // :ls / :buffers — list all buffers
+    if (/^(ls|buffers?|files?)(\s|$)/.test(cmd)) {
+      this._saveCurrentBufState();
+      const normalFg = 'd4d4d4', normalBg = '000000', dirFg = '66d9ef';
+      const cols = this.cols;
+      const mkLine = (text, runs) => ({ text, runs });
+      const promptLines = [];
+
+      // Header
+      promptLines.push(mkLine(':' + cmd + ' '.repeat(cols - cmd.length - 1), [{ n: cols, fg: normalFg, bg: normalBg }]));
+
+      for (const entry of this._bufferList) {
+        const isCurrent = entry.id === this._currentBufId;
+        const isAlternate = entry.id === this._alternateBufId;
+        const flags = (isCurrent ? '%' : (isAlternate ? '#' : ' '))
+                    + (isCurrent ? 'a' : ' ')
+                    + (entry.changeCount > 0 ? '+' : ' ');
+        const name = entry.fileName ? '"' + entry.fileName + '"' : '"[No Name]"';
+        const lineNum = isCurrent ? (this.cursor.row + 1) : (entry.cursor.row + 1);
+        const prefix = String(entry.id).padStart(3) + ' ' + flags + '   ' + name;
+        const suffix = 'line ' + lineNum;
+        const gap = Math.max(1, cols - prefix.length - suffix.length);
+        const lineText = (prefix + ' '.repeat(gap) + suffix).slice(0, cols);
+        const padded = lineText.length < cols ? lineText + ' '.repeat(cols - lineText.length) : lineText;
+        promptLines.push(mkLine(padded, [{ n: cols, fg: normalFg, bg: normalBg }]));
+      }
+
+      this._messagePrompt = { lines: promptLines };
+      this.commandLine = '';
+      return;
+    }
+
+    // :bn[ext] / :bnext — switch to next buffer
+    if (/^bn(e(xt?)?)?(\s|$)/.test(cmd)) {
+      const count = 1;
+      const idx = this._bufferList.findIndex(e => e.id === this._currentBufId);
+      if (idx >= 0 && this._bufferList.length > 1) {
+        const nextIdx = (idx + count) % this._bufferList.length;
+        this._switchToBuffer(this._bufferList[nextIdx].id);
+      }
+      this.commandLine = '';
+      return;
+    }
+
+    // :bp[revious] / :bprev — switch to previous buffer
+    if (/^bp(r(e(v(i(o(us?)?)?)?)?)?)?(\s|$)/.test(cmd)) {
+      const count = 1;
+      const idx = this._bufferList.findIndex(e => e.id === this._currentBufId);
+      if (idx >= 0 && this._bufferList.length > 1) {
+        const prevIdx = (idx - count + this._bufferList.length) % this._bufferList.length;
+        this._switchToBuffer(this._bufferList[prevIdx].id);
+      }
+      this.commandLine = '';
+      return;
+    }
+
+    // :b[uffer] N — switch to buffer N
+    // :b[uffer] name — switch to buffer by name
+    if (/^b(u(f(f(er?)?)?)?)?(\s|$)/.test(cmd)) {
+      const parts = cmd.split(/\s+/);
+      const arg = parts[1];
+      if (arg) {
+        const num = parseInt(arg, 10);
+        if (!isNaN(num)) {
+          // Switch by buffer number
+          const entry = this._getBufEntry(num);
+          if (entry) {
+            this._switchToBuffer(entry.id);
+          } else {
+            this.commandLine = 'E86: Buffer ' + num + ' does not exist';
+            this._stickyCommandLine = true;
+          }
+        } else {
+          // Switch by name (partial match)
+          const matches = this._bufferList.filter(e =>
+            e.fileName && e.fileName.includes(arg));
+          if (matches.length === 1) {
+            this._switchToBuffer(matches[0].id);
+          } else if (matches.length > 1) {
+            this.commandLine = 'E93: More than one match for ' + arg;
+            this._stickyCommandLine = true;
+          } else {
+            this.commandLine = 'E94: No matching buffer for ' + arg;
+            this._stickyCommandLine = true;
+          }
+        }
+      }
+      this.commandLine = this.commandLine || '';
+      return;
+    }
+
+    // :bd[elete][!] — delete buffer
+    if (/^bd(e(l(e(te?)?)?)?)?!?(\s|$)/.test(cmd)) {
+      const force = cmd.includes('!');
+      if (!force && this._changeCount > 0) {
+        this.commandLine = 'E89: No write since last change (add ! to override)';
+        this._stickyCommandLine = true;
+        return;
+      }
+      if (this._bufferList.length <= 1) {
+        // Last buffer — just clear it
+        this.buffer = new Buffer(['']);
+        this.cursor = { row: 0, col: 0 };
+        this.scrollTop = 0;
+        this.scrollLeft = 0;
+        this._fileName = null;
+        this._undoStack = [];
+        this._redoStack = [];
+        this._changeCount = 0;
+        const entry = this._getBufEntry(this._currentBufId);
+        if (entry) {
+          entry.buffer = this.buffer;
+          entry.fileName = null;
+          entry.changeCount = 0;
+        }
+      } else {
+        // Remove current buffer and switch to next
+        const idx = this._bufferList.findIndex(e => e.id === this._currentBufId);
+        const removedId = this._currentBufId;
+        this._bufferList.splice(idx, 1);
+        // Switch to next (or previous if last)
+        const nextIdx = Math.min(idx, this._bufferList.length - 1);
+        this._currentBufId = this._bufferList[nextIdx].id;
+        // Restore the new current buffer
+        const entry = this._getBufEntry(this._currentBufId);
+        this.buffer = entry.buffer;
+        this._fileName = entry.fileName;
+        this.cursor = { ...entry.cursor };
+        this.scrollTop = entry.scrollTop;
+        this.scrollLeft = entry.scrollLeft;
+        this._undoStack = entry.undoStack;
+        this._redoStack = entry.redoStack;
+        this._changeCount = entry.changeCount;
+        this._marks = entry.marks;
+        this._folds = entry.folds;
+        this._desiredCol = entry.desiredCol;
+        // Fix alternate if it was the deleted buffer
+        if (this._alternateBufId === removedId) {
+          this._alternateBufId = null;
+        }
+      }
       this.commandLine = '';
       return;
     }
@@ -3908,6 +4707,50 @@ export class VimEngine {
     // :on[ly] — close all other windows
     if (/^on(ly?)?$/.test(cmd)) {
       this._doOnlyWindow();
+      this.commandLine = '';
+      return;
+    }
+
+    // :tabnew / :tabe[dit] — open a new tab page
+    if (/^tabnew(\s|$)/.test(cmd) || /^tabe(d(it?)?)?(\s|$)/.test(cmd)) {
+      this._doTabNew();
+      this.commandLine = '';
+      return;
+    }
+
+    // :tabn[ext] — go to next tab page
+    if (/^tabn(e(xt?)?)?(\s|$)/.test(cmd)) {
+      const parts = cmd.split(/\s+/);
+      const arg = parts[1] ? parseInt(parts[1], 10) : 0;
+      if (arg > 0) {
+        const idx = Math.max(0, Math.min(arg - 1, this._tabs.length - 1));
+        this._switchToTab(idx);
+      } else {
+        const nextIdx = (this._activeTab + 1) % this._tabs.length;
+        this._switchToTab(nextIdx);
+      }
+      this.commandLine = '';
+      return;
+    }
+
+    // :tabp[revious] / :tabN[ext] — go to previous tab page
+    if (/^tabp(r(e(v(i(o(us?)?)?)?)?)?)?(\s|$)/.test(cmd) || /^tabN(e(xt?)?)?(\s|$)/.test(cmd)) {
+      const prevIdx = ((this._activeTab - 1) % this._tabs.length + this._tabs.length) % this._tabs.length;
+      this._switchToTab(prevIdx);
+      this.commandLine = '';
+      return;
+    }
+
+    // :tabc[lose] — close current tab page
+    if (/^tabc(l(o(se?)?)?)?(\s|$)/.test(cmd)) {
+      this._doTabClose();
+      this.commandLine = '';
+      return;
+    }
+
+    // :tabo[nly] — close all other tab pages
+    if (/^tabo(n(ly?)?)?(\s|$)/.test(cmd)) {
+      this._doTabOnly();
       this.commandLine = '';
       return;
     }
@@ -7944,6 +8787,30 @@ export class VimEngine {
         }
         break;
       }
+      case ']s': {
+        // ]s — next misspelled word
+        if (this._settings.spell) {
+          const pos = this._findNextSpellError(this.cursor.row, this.cursor.col, true);
+          if (pos) {
+            this.cursor.row = pos.row;
+            this.cursor.col = pos.col;
+            this._updateDesiredCol();
+          }
+        }
+        break;
+      }
+      case '[s': {
+        // [s — previous misspelled word
+        if (this._settings.spell) {
+          const pos = this._findNextSpellError(this.cursor.row, this.cursor.col, false);
+          if (pos) {
+            this.cursor.row = pos.row;
+            this.cursor.col = pos.col;
+            this._updateDesiredCol();
+          }
+        }
+        break;
+      }
       default:
         break;
     }
@@ -8797,6 +9664,136 @@ export class VimEngine {
       const maxSoScroll = Math.max(0, this.buffer.lines.length - this._textRows);
       if (this.scrollTop > maxSoScroll) this.scrollTop = maxSoScroll;
     }
+  }
+
+  /**
+   * Adjust scrollLeft to keep cursor visible in nowrap mode.
+   * Uses Neovim-compatible sidescroll=1 behavior:
+   * - small overshoot → cursor at edge
+   * - large overshoot (> half screen) → recenter
+   */
+  _adjustHorizontalScroll() {
+    if (this._settings.wrap) {
+      this.scrollLeft = 0;
+      return;
+    }
+    const textCols = this._computeTextCols();
+    if (textCols <= 0) return;
+    const virtCol = this._virtColAt(this.cursor.row, this.cursor.col);
+    if (virtCol > this.scrollLeft + textCols - 1) {
+      // Cursor past right edge
+      const needed = virtCol - (this.scrollLeft + textCols - 1);
+      if (needed > Math.floor(textCols / 2)) {
+        this.scrollLeft = virtCol - Math.floor(textCols / 2);
+      } else {
+        this.scrollLeft = virtCol - textCols + 1;
+      }
+    } else if (virtCol < this.scrollLeft) {
+      // Cursor past left edge
+      this.scrollLeft = virtCol;
+    }
+    this.scrollLeft = Math.max(0, this.scrollLeft);
+  }
+
+  /**
+   * Compute the available text columns (total cols minus gutter width).
+   */
+  _computeTextCols() {
+    let gw = 0;
+    if (this._settings.number || this._settings.relativenumber) {
+      const nd = String(this.buffer.lineCount).length;
+      gw = Math.max(4, nd + 1);
+    }
+    return this.cols - gw;
+  }
+
+  // ── Spell checking helpers ──
+
+  /**
+   * Check if a word is misspelled.
+   * Returns true if the word is NOT in the dictionary and NOT in the good words list,
+   * OR if it's explicitly in the bad words list.
+   */
+  _isSpellBad(word) {
+    if (!word || !this._settings.spell) return false;
+    const lower = word.toLowerCase();
+    if (this._spellBadWords.has(lower)) return true;
+    if (this._spellGoodWords.has(lower)) return false;
+    return !DICTIONARY.has(lower);
+  }
+
+  /**
+   * Get the word under or near the cursor.
+   * Returns {word, startCol, endCol} or null.
+   */
+  _getWordAtCursor() {
+    const line = this.buffer.lines[this.cursor.row] || '';
+    let col = this.cursor.col;
+    // Find word boundaries (word = sequence of word chars)
+    if (col >= line.length) col = Math.max(0, line.length - 1);
+    if (!/[a-zA-Z']/.test(line[col])) return null;
+    let start = col, end = col;
+    while (start > 0 && /[a-zA-Z']/.test(line[start - 1])) start--;
+    while (end < line.length - 1 && /[a-zA-Z']/.test(line[end + 1])) end++;
+    return { word: line.slice(start, end + 1), startCol: start, endCol: end };
+  }
+
+  /**
+   * Find the next misspelled word from the given position.
+   * Returns {row, col} or null.
+   */
+  _findNextSpellError(fromRow, fromCol, forward) {
+    const wordRegex = /[a-zA-Z']+/g;
+    const lineCount = this.buffer.lineCount;
+    let row = fromRow;
+    let startOffset = forward ? fromCol + 1 : 0;
+    // Search through lines
+    for (let i = 0; i < lineCount; i++) {
+      const line = this.buffer.lines[row] || '';
+      wordRegex.lastIndex = 0;
+      let match;
+      const matches = [];
+      while ((match = wordRegex.exec(line)) !== null) {
+        matches.push({ word: match[0], col: match.index });
+      }
+      if (!forward) matches.reverse();
+      for (const m of matches) {
+        if (forward && row === fromRow && m.col <= fromCol) continue;
+        if (!forward && row === fromRow && m.col >= fromCol) continue;
+        if (this._isSpellBad(m.word)) {
+          return { row, col: m.col };
+        }
+      }
+      row = forward
+        ? (row + 1) % lineCount
+        : (row - 1 + lineCount) % lineCount;
+    }
+    return null;
+  }
+
+  /**
+   * Generate simple spelling suggestions for a misspelled word.
+   * Returns array of up to 5 suggestions.
+   */
+  _spellSuggest(word) {
+    if (!word) return [];
+    const lower = word.toLowerCase();
+    const suggestions = [];
+    // Simple edit distance 1: substitution, deletion, insertion, transposition
+    for (const dictWord of DICTIONARY) {
+      if (suggestions.length >= 5) break;
+      if (Math.abs(dictWord.length - lower.length) > 1) continue;
+      let dist = 0;
+      const maxLen = Math.max(dictWord.length, lower.length);
+      for (let i = 0; i < maxLen; i++) {
+        if (dictWord[i] !== lower[i]) dist++;
+        if (dist > 1) break;
+      }
+      if (dist <= 1 && dictWord !== lower) {
+        suggestions.push(dictWord);
+      }
+    }
+    return suggestions;
   }
 
   /** Compute the 0-indexed virtual (screen) column for a byte position in a line. */

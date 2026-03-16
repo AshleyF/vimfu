@@ -113,6 +113,8 @@ const THEMES = {
     foldedBg: '2e323c',        // Folded bg (dark)
     matchParenBg: null,              // MatchParen – monokai sets fg only, bg inherits Normal
     matchParenFg: 'f92672',        // MatchParen (pink)
+    // Spell checking
+    spellBadFg: 'e95678',           // SpellBad (red/pink underline, fallback to fg color)
     // Syntax highlighting – tanvirtin/monokai.nvim palette
     syntax: {
       comment: '9ca0a4',         // Comment
@@ -195,8 +197,35 @@ export class Screen {
 
     // When showStatusLine is true (nvim / laststatus=2): rows-2 for text, 1 status, 1 command
     // When showStatusLine is false (vim / laststatus=1): rows-1 for text, 1 command
-    const textRows = this.showStatusLine ? this.rows - 2 : this.rows - 1;
+    const hasTabLine = engine._tabs && engine._tabs.length > 1;
+    let textRows = this.showStatusLine ? this.rows - 2 : this.rows - 1;
+    if (hasTabLine) textRows--; // tab line takes one row
     const lines = [];
+
+    // ── Tab line (when ≥2 tabs exist) ──
+    if (hasTabLine) {
+      const tabInfo = engine.getTabLineInfo();
+      let tabText = '';
+      const tabRuns = [];
+      for (const tab of tabInfo) {
+        const label = ' ' + tab.label + ' ';
+        if (tab.active) {
+          tabRuns.push({ n: label.length, fg: t.normalFg, bg: t.normalBg });
+        } else {
+          tabRuns.push({ n: label.length, fg: t.statusFg || t.normalFg, bg: t.statusBg || t.normalBg });
+        }
+        tabText += label;
+      }
+      // Fill remainder with tabline fill color
+      const remaining = this.cols - tabText.length;
+      if (remaining > 0) {
+        tabText += ' '.repeat(remaining);
+        tabRuns.push({ n: remaining, fg: t.statusFg || t.normalFg, bg: t.statusBg || t.normalBg });
+      } else if (tabText.length > this.cols) {
+        tabText = tabText.slice(0, this.cols);
+      }
+      lines.push({ text: tabText, runs: Screen._mergeRuns(tabRuns) });
+    }
 
     // Compute the viewport window (scroll offset)
     const scrollTop = engine.scrollTop ?? 0;
@@ -338,7 +367,11 @@ export class Screen {
     };
 
     // ── Helper: how many screen rows does a buffer line consume? ──
-    const wrapRows = (expanded) => expanded.length === 0 ? 1 : Math.ceil(expanded.length / textCols);
+    const noWrap = engine._settings?.wrap === false;
+    const wrapRows = (expanded) => {
+      if (noWrap) return 1; // nowrap: one buffer line = one screen row
+      return expanded.length === 0 ? 1 : Math.ceil(expanded.length / textCols);
+    };
 
     // ── Adjust scrollTop so cursor is on-screen (accounting for wrapping) ──
     // scrollTop is in buffer rows. We need to ensure the cursor's wrapped
@@ -398,6 +431,32 @@ export class Screen {
     }
     // Update the engine's scrollTop so it stays in sync
     engine.scrollTop = scrollTopAdj;
+
+    // ── Adjust scrollLeft for nowrap mode ──
+    let scrollLeftAdj = 0;
+    if (noWrap) {
+      scrollLeftAdj = engine.scrollLeft || 0;
+      if (cursor.row < buf.lineCount) {
+        const { expanded: curExp, bufToScreen: curB2S } = expandLine(buf.lines[cursor.row]);
+        const cursorVirtCol = curB2S[Math.min(cursor.col, buf.lines[cursor.row].length)] ?? 0;
+        if (cursorVirtCol > scrollLeftAdj + textCols - 1) {
+          // Cursor past right edge
+          const needed = cursorVirtCol - (scrollLeftAdj + textCols - 1);
+          if (needed > Math.floor(textCols / 2)) {
+            // Large jump: recenter cursor in screen
+            scrollLeftAdj = cursorVirtCol - Math.floor(textCols / 2);
+          } else {
+            // Small scroll: put cursor at right edge
+            scrollLeftAdj = cursorVirtCol - textCols + 1;
+          }
+        } else if (cursorVirtCol < scrollLeftAdj) {
+          // Cursor past left edge
+          scrollLeftAdj = cursorVirtCol;
+        }
+        scrollLeftAdj = Math.max(0, scrollLeftAdj);
+      }
+      engine.scrollLeft = scrollLeftAdj;
+    }
 
     // ── Text area (with wrapping) ──
     let screenRow = 0;       // current screen row being filled
@@ -462,12 +521,12 @@ export class Screen {
 
       const raw = buf.lines[bufRow];
       const { expanded, bufToScreen } = expandLine(raw);
-      const numWraps = wrapRows(expanded);
+      const numWraps = noWrap ? 1 : wrapRows(expanded);
 
       for (let wrapIdx = 0; wrapIdx < numWraps && screenRow < textRows; wrapIdx++) {
-        const sliceStart = wrapIdx * textCols;
+        const sliceStart = noWrap ? scrollLeftAdj : wrapIdx * textCols;
         const sliceEnd = Math.min(sliceStart + textCols, expanded.length);
-        const sliceText = expanded.slice(sliceStart, sliceEnd);
+        const sliceText = sliceStart < expanded.length ? expanded.slice(sliceStart, sliceEnd) : '';
         const bodyText = sliceText.length >= textCols
           ? sliceText
           : sliceText + ' '.repeat(textCols - sliceText.length);
@@ -486,6 +545,23 @@ export class Screen {
             // Map to this wrap slice
             for (let sc = Math.max(scrStart, sliceStart); sc <= Math.min(scrEnd, sliceEnd - 1); sc++) {
               colFg[sc - sliceStart] = color;
+            }
+          }
+        }
+
+        // Apply spell highlighting (SpellBad: underline/red for misspelled words)
+        if (engine._settings?.spell && engine._isSpellBad) {
+          const spellFg = t.spellBadFg || 'ff0000'; // red for misspelled
+          const wordRegex = /[a-zA-Z']+/g;
+          wordRegex.lastIndex = 0;
+          let sm;
+          while ((sm = wordRegex.exec(raw)) !== null) {
+            if (engine._isSpellBad(sm[0])) {
+              const wStart = bufToScreen[sm.index] ?? sm.index;
+              const wEnd = (bufToScreen[sm.index + sm[0].length] ?? (sm.index + sm[0].length)) - 1;
+              for (let sc = Math.max(wStart, sliceStart); sc <= Math.min(wEnd, sliceEnd - 1); sc++) {
+                colFg[sc - sliceStart] = spellFg;
+              }
             }
           }
         }
@@ -682,10 +758,18 @@ export class Screen {
           if (cursor.col < raw.length && raw[cursor.col] === '\t') {
             adjustedVirtCol += ts - (cursorVirtCol % ts) - 1;
           }
-          const cursorWrapRow = Math.floor(adjustedVirtCol / textCols);
-          if (wrapIdx === cursorWrapRow) {
-            cursorScreenRow = screenRow;
-            cursorScreenCol = (adjustedVirtCol % textCols) + gutterWidth;
+          if (noWrap) {
+            // In nowrap mode: cursor visible if within scrollLeft range
+            if (adjustedVirtCol >= scrollLeftAdj && adjustedVirtCol < scrollLeftAdj + textCols) {
+              cursorScreenRow = screenRow;
+              cursorScreenCol = (adjustedVirtCol - scrollLeftAdj) + gutterWidth;
+            }
+          } else {
+            const cursorWrapRow = Math.floor(adjustedVirtCol / textCols);
+            if (wrapIdx === cursorWrapRow) {
+              cursorScreenRow = screenRow;
+              cursorScreenCol = (adjustedVirtCol % textCols) + gutterWidth;
+            }
           }
         }
 

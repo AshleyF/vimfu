@@ -1164,6 +1164,10 @@ export class Tmux {
       // Stay in command mode even when input is empty (matches real tmux)
       return;
     }
+    if (key === 'Ctrl-U') {
+      this._commandInput = '';
+      return;
+    }
     if (key.length === 1) {
       this._commandInput += key;
     }
@@ -1519,6 +1523,7 @@ export class Tmux {
         this._mode = TmuxMode.PANE_NUMBERS;
         break;
       case 'clock-mode':
+      case 'clock':
         this._mode = TmuxMode.CLOCK;
         break;
       case 'list-keys':
