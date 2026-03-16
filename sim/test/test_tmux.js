@@ -142,10 +142,10 @@ tests.tmux_renders_frame = () => {
 tests.tmux_status_bar = () => {
   const t = newTmux();
   const statusBar = getStatusBar(t);
-  assertIncludes(statusBar, '0 ', 'session name in status bar');
+  assertIncludes(statusBar, '[0]', 'session name in status bar');
   assertIncludes(statusBar, '0:zsh', 'window name in status bar');
   assertIncludes(statusBar, '*', 'active window marker');
-  assertIncludes(statusBar, '|', 'pipe separator in status bar');
+  assertIncludes(statusBar, '"vimfu"', 'hostname in status bar');
 };
 
 // ── Prefix Key Tests ──
@@ -278,6 +278,36 @@ tests.navigate_pane_arrow = () => {
   t.feedKey('Ctrl-B');
   t.feedKey('ArrowRight');
   assertEqual(t.activePane, panes[1], 'navigated back to right pane');
+};
+
+tests.navigate_pane_hjkl = () => {
+  // Vertical split: left|right — test h/l
+  const t = newTmux({ cols: 80, rows: 24 });
+  t.feedKey('Ctrl-B');
+  t.feedKey('%');
+  const panes = t.activeWindow.getPanes();
+  assertEqual(t.activePane, panes[1], 'right pane active after vsplit');
+  // h → left pane
+  t.feedKey('Ctrl-B');
+  t.feedKey('h');
+  assertEqual(t.activePane, panes[0], 'h navigated to left pane');
+  // l → right pane
+  t.feedKey('Ctrl-B');
+  t.feedKey('l');
+  assertEqual(t.activePane, panes[1], 'l navigated to right pane');
+  // Horizontal split: top/bottom — test j/k
+  t.feedKey('Ctrl-B');
+  t.feedKey('"');
+  const panes2 = t.activeWindow.getPanes();
+  assertEqual(t.activePane, panes2[2], 'bottom pane active after hsplit');
+  // k → up
+  t.feedKey('Ctrl-B');
+  t.feedKey('k');
+  assertEqual(t.activePane, panes2[1], 'k navigated to upper pane');
+  // j → down
+  t.feedKey('Ctrl-B');
+  t.feedKey('j');
+  assertEqual(t.activePane, panes2[2], 'j navigated to lower pane');
 };
 
 // ── Pane Close Tests ──
@@ -678,15 +708,18 @@ tests.copy_mode_navigation = () => {
   const t = newTmux();
   t.feedKey('Ctrl-B');
   t.feedKey('[');
-  // Move around
+  // Copy cursor starts at the shell's current cursor position
+  const startCol = t._copyCursor.col;
+  const startRow = t._copyCursor.row;
+  // Move around (relative checks — cursor starts at prompt position)
   t.feedKey('l');
-  assertEqual(t._copyCursor.col, 1, 'moved right');
+  assertEqual(t._copyCursor.col, startCol + 1, 'moved right');
   t.feedKey('j');
-  assertEqual(t._copyCursor.row, 1, 'moved down');
+  assertEqual(t._copyCursor.row, startRow + 1, 'moved down');
   t.feedKey('h');
-  assertEqual(t._copyCursor.col, 0, 'moved left');
+  assertEqual(t._copyCursor.col, startCol, 'moved left');
   t.feedKey('k');
-  assertEqual(t._copyCursor.row, 0, 'moved up');
+  assertEqual(t._copyCursor.row, startRow, 'moved up');
   t.feedKey('Escape');
 };
 

@@ -13,6 +13,7 @@ Exhaustive reference of every key, command, and feature supported.
 | Replace | `R` | `-- REPLACE --` |
 | Visual | `v` | `-- VISUAL --` |
 | Visual Line | `V` | `-- VISUAL LINE --` |
+| Visual Block | `Ctrl-V` | `-- VISUAL BLOCK --` |
 | Command | `:`, `/`, `?` | shows typed command |
 
 ---
@@ -39,8 +40,8 @@ Exhaustive reference of every key, command, and feature supported.
 | `E` | ✅ | End of WORD forward (inclusive) |
 | `ge` | ✅ | End of word backward |
 | `gE` | ✅ | End of WORD backward |
-| `0` | — | Start of line (col 0) |
-| `^` | — | First non-blank on line |
+| `0` | ✅ | Start of line (col 0) |
+| `^` | ✅ | First non-blank on line |
 | `$` | ✅ | End of line (`2$` = end of next line) |
 | `_` | ✅ | First non-blank, count−1 lines down |
 | `g_` | ✅ | Last non-blank on line |
@@ -50,7 +51,7 @@ Exhaustive reference of every key, command, and feature supported.
 | `T{char}` | ✅ | Till char backward (exclusive; `Tab` = literal tab) |
 | `;` | ✅ | Repeat last `f`/`F`/`t`/`T` |
 | `,` | ✅ | Repeat last find, reversed |
-| `%` | — | Match bracket `(){}[]` |
+| `%` | ✅ | Match bracket `(){}[]` |
 | `{count}%` | ✅ | Go to N% of file |
 | `{` | ✅ | Paragraph backward |
 | `}` | ✅ | Paragraph forward |
@@ -59,17 +60,29 @@ Exhaustive reference of every key, command, and feature supported.
 | `gg` | ✅ | Go to line N (default: first) |
 | `G` | ✅ | Go to line N (default: last) |
 | `H` | ✅ | Screen top (count = offset) |
-| `M` | — | Screen middle |
+| `M` | ✅ | Screen middle |
 | `L` | ✅ | Screen bottom (count = offset) |
 | `+` / `Enter` | ✅ | Next line, first non-blank |
 | `-` | ✅ | Prev line, first non-blank |
 | `\|` | ✅ | Go to column N (1-based) |
+| `go` | ✅ | Go to byte offset N in the buffer |
 | `Backspace` | ✅ | Left, wrapping to prev line |
 | `Space` | ✅ | Right, wrapping to next line |
 | `n` | ✅ | Next search match |
 | `N` | ✅ | Prev search match |
-| `*` | — | Search word under cursor forward |
-| `#` | — | Search word under cursor backward |
+| `*` | ✅ | Search word under cursor forward |
+| `#` | ✅ | Search word under cursor backward |
+| `g*` | ✅ | Search word under cursor forward (no `\b` boundaries) |
+| `g#` | ✅ | Search word under cursor backward (no `\b` boundaries) |
+| `gn` | ✅ | Search forward and visually select match (or operate on match with pending operator) |
+| `gN` | ✅ | Search backward and visually select match |
+| `gj` | ✅ | Down one display line (wrapping-aware) |
+| `gk` | ✅ | Up one display line (wrapping-aware) |
+| `g0` | ✅ | Start of display line |
+| `g$` | ✅ | End of display line |
+| `g^` | ✅ | First non-blank of display line |
+| `gm` | ✅ | Middle column of screen |
+| `gM` | ✅ | Middle of text on line |
 
 ### Editing
 
@@ -80,21 +93,29 @@ Exhaustive reference of every key, command, and feature supported.
 | `s` | ✅ | Substitute N chars (delete + insert) |
 | `S` | ✅ | Substitute N lines (preserves indent) |
 | `r{char}` | ✅ | Replace N chars with {char} |
-| `R` | — | Enter replace mode |
+| `R` | ✅ | Enter replace mode |
 | `~` | ✅ | Toggle case, advance cursor |
 | `J` | ✅ | Join N lines (smart spacing) |
 | `gJ` | ✅ | Join N lines (no spacing) |
 | `D` | ✅ | Delete to end of line (`d$`); `2D` deletes to EOL + next line |
-| `C` | — | Change to end of line (`c$`) |
-| `Y` | — | Yank to end of line (`y$`) |
+| `C` | ✅ | Change to end of line (`c$`) |
+| `Y` | ✅ | Yank to end of line (`y$`) |
 | `u` | ✅ | Undo |
 | `Ctrl-R` | ✅ | Redo |
 | `.` | ✅ | Repeat last change (count overrides) |
 | `Ctrl-A` | ✅ | Increment number at/after cursor |
 | `Ctrl-X` | ✅ | Decrement number at/after cursor |
-| `Ctrl-G` | — | Show file info (name, lines, bytes) |
-| `ga` | — | Show ASCII/hex/octal of char under cursor |
-| `gd` | — | Go to local declaration of word under cursor |
+| `Ctrl-G` | ✅ | Show file info (name, lines, bytes) |
+| `ga` | ✅ | Show ASCII/hex/octal of char under cursor |
+| `gd` | ✅ | Go to local declaration of word under cursor |
+| `gD` | ✅ | Go to global declaration (first occurrence of word in file) |
+| `g8` | ✅ | Show hex value of character under cursor |
+| `gp` | ✅ | Put after, move cursor past pasted text |
+| `gP` | ✅ | Put before, move cursor past pasted text |
+| `U` | ✅ | Undo all changes on current line |
+| `K` | ✅ | Keyword lookup (shows error in simulator) |
+| `&` | ✅ | Repeat last `:s` on current line |
+| `g&` | ✅ | Repeat last `:s` on all lines (`:%s//~/&`) |
 
 ### Operators
 
@@ -110,10 +131,32 @@ Operators combine with any motion or text object: `{op}[count]{motion}`.
 | `gu` | `guu` | Lowercase |
 | `gU` | `gUU` | Uppercase |
 | `g~` | `g~~` | Toggle case |
+| `=` | `==` | Auto-indent (C-style brace indentation) |
+| `gq` | `gqq` | Format text (join lines; cursor moves to start) |
+| `gw` | `gww` | Format text (join lines; cursor stays) |
+| `g?` | `g??` / `g?g?` | ROT13 encode |
+| `!` | `!!` | Shell filter — pipes text through external command |
 
 Examples: `d3w`, `ciw`, `>}`, `gUap`, `yy`, `5dd`, `<<`, `dG`, `c/foo↵`
 
 Special: `cw` on a word behaves like `ce` (doesn't include trailing space). `dw` at EOL doesn't cross lines. `cc` / `S` preserve leading indent.
+
+#### Shell Filter Operator (`!`)
+
+`!{motion}cmd↵` — filter lines through an external command. The operator selects
+lines based on the motion, then enters command mode pre-filled with `:.,.+N!`.
+Type the shell command and press Enter.
+
+| Key | Description |
+|---|---|
+| `!{motion}cmd↵` | Filter lines covered by motion through `cmd` |
+| `!!cmd↵` | Filter current line through `cmd` |
+| `{count}!!cmd↵` | Filter count lines through `cmd` |
+| `:{range}!cmd` | Ex form: filter range through `cmd` |
+| Visual `!cmd↵` | Filter visual selection through `cmd` |
+
+Supported shell commands: `sort`, `grep`, `cat`, `uniq`, `tr`, `rev`, `tac`,
+`head`, `tail`, `sed`, `wc`.
 
 ### Put (Paste)
 
@@ -121,6 +164,8 @@ Special: `cw` on a word behaves like `ce` (doesn't include trailing space). `dw`
 |---|---|---|
 | `p` | ✅ | Put after cursor (linewise: below) |
 | `P` | ✅ | Put before cursor (linewise: above) |
+| `[p` | ✅ | Put before with indent adjustment |
+| `]p` | ✅ | Put after with indent adjustment |
 
 **Cursor placement after put:** When putting characterwise text (e.g. from `yw`,
 `d$`, `x`), the cursor lands at the **end** of the pasted text. When putting
@@ -137,8 +182,8 @@ linewise text (e.g. from `yy`, `dd`), the cursor lands at the **beginning**
 | `A` | ✅ | Append at end of line |
 | `o` | ✅ | Open line below (inherits indent) |
 | `O` | ✅ | Open line above (inherits indent) |
-| `gi` | — | Insert at last insert position |
-| `gI` | — | Insert at column 0 |
+| `gi` | ✅ | Insert at last insert position |
+| `gI` | ✅ | Insert at column 0 |
 
 ### Scroll
 
@@ -150,9 +195,81 @@ linewise text (e.g. from `yy`, `dd`), the cursor lands at the **beginning**
 | `Ctrl-B` | ✅ | Full page backward |
 | `Ctrl-E` | ✅ | Scroll viewport down 1 line |
 | `Ctrl-Y` | ✅ | Scroll viewport up 1 line |
-| `zz` | — | Center current line |
-| `zt` | — | Current line to top |
-| `zb` | — | Current line to bottom |
+| `zz` | ✅ | Center current line |
+| `zt` | ✅ | Current line to top |
+| `zb` | ✅ | Current line to bottom |
+| `z.` | ✅ | Center current line, cursor to first non-blank |
+| `z-` | ✅ | Current line to bottom, cursor to first non-blank |
+| `z Enter` | ✅ | Current line to top, cursor to first non-blank |
+| `z+` | ✅ | Scroll: line below window to top, cursor to first non-blank |
+| `z^` | ✅ | Scroll: line above window to bottom, cursor to first non-blank |
+
+### Folding (Manual)
+
+The simulator supports manual folding (`foldmethod=manual`). Create folds with
+`zf{motion}` or visual selection + `zf`. Closed folds render as a single line
+showing the fold summary. Cursor movement (`j`/`k`) skips over closed folds.
+
+| Key | Description |
+|---|---|
+| `zf{motion}` | Create fold over motion range (operator) |
+| `zf` (visual) | Create fold from visual selection |
+| `zo` | Open fold under cursor |
+| `zO` | Open all folds under cursor (recursive) |
+| `zc` | Close fold under cursor |
+| `zC` | Close all folds under cursor (recursive) |
+| `za` | Toggle fold under cursor |
+| `zA` | Toggle all folds under cursor (recursive) |
+| `zd` | Delete fold under cursor |
+| `zD` | Delete all folds under cursor (recursive) |
+| `zE` | Delete all folds in buffer |
+| `zR` | Open all folds |
+| `zM` | Close all folds |
+| `zj` | Move to next fold start |
+| `zk` | Move to previous fold |
+
+### Window Splits
+
+The simulator supports horizontal window splits. Each window shows the same
+or different buffers with independent cursor and scroll positions.
+
+| Key | Description |
+|---|---|
+| `:sp[lit]` | Horizontal split (new window above) |
+| `:vsp[lit]` | Vertical split (same as `:sp` in flat model) |
+| `:clo[se]` | Close current window |
+| `:on[ly]` | Close all other windows |
+| `Ctrl-W s` | Same as `:sp` |
+| `Ctrl-W v` | Same as `:vsp` |
+| `Ctrl-W w` | Cycle to next window |
+| `Ctrl-W j` | Move to window below |
+| `Ctrl-W k` | Move to window above |
+| `Ctrl-W h` | Move to window left |
+| `Ctrl-W l` | Move to window right |
+| `Ctrl-W c` | Close current window |
+| `Ctrl-W o` | Close all other windows |
+| `Ctrl-W q` | Close current window |
+
+### Bracket Commands
+
+| Key | Count | Description |
+|---|---|---|
+| `[(` | ✅ | Go to previous unmatched `(` |
+| `])` | ✅ | Go to next unmatched `)` |
+| `[{` | ✅ | Go to previous unmatched `{` |
+| `]}` | ✅ | Go to next unmatched `}` |
+| `[[` | ✅ | Go to previous `{` in column 0 (section start) |
+| `]]` | ✅ | Go to next `{` in column 0 (section start) |
+| `[]` | ✅ | Go to previous `}` in column 0 (section end) |
+| `][` | ✅ | Go to next `}` in column 0 (section end) |
+| `[m` | ✅ | Go to previous `{` (method start) |
+| `]m` | ✅ | Go to next `{` (method start) |
+| `[M` | ✅ | Go to previous `}` (method end) |
+| `]M` | ✅ | Go to next `}` (method end) |
+| `[p` | ✅ | Put before with indent adjustment |
+| `]p` | ✅ | Put after with indent adjustment |
+| `['` | ✅ | Go to previous line with a lowercase mark |
+| `]'` | ✅ | Go to next line with a lowercase mark |
 
 ### Marks
 
@@ -212,6 +329,9 @@ Entire macro is a single undo unit. Aborts on failed motion.
 | `"_` | Black hole register (discard text) |
 | `"/` | Last search pattern register (read-only) |
 | `""` | Unnamed register (explicit) |
+| `".` | Last inserted text (read-only) |
+| `":` | Last ex command (read-only) |
+| `"%` | Current filename (read-only) |
 
 All register types work in both normal and visual mode.
 `Ctrl-R` in insert mode accepts `a-z`, `0-9`, and `"` (unnamed).
@@ -243,6 +363,18 @@ Wraps around file. Supports operator + search: `d/foo↵` deletes to match.
 | `ZZ` | Write and quit |
 | `ZQ` | Quit without saving |
 
+### Normal Mode Ctrl-Key Synonyms
+
+| Key | Equivalent | Description |
+|---|---|---|
+| `Ctrl-H` | `h` | Move left |
+| `Ctrl-J` | `j` | Move down |
+| `Ctrl-M` | `+` | Next line, first non-blank |
+| `Ctrl-N` | `j` | Move down |
+| `Ctrl-P` | `k` | Move up |
+| `Ctrl-L` | ✅ | Redraw screen (no-op in simulator) |
+| `Ctrl-C` | ✅ | Cancel / interrupt (returns to normal) |
+
 ---
 
 ## Insert Mode
@@ -256,6 +388,13 @@ Wraps around file. Supports operator + search: `d/foo↵` deletes to match.
 | `Ctrl-W` | Delete word backward |
 | `Ctrl-U` | Delete to start of line |
 | `Ctrl-R {reg}` | Paste from register (`a-z`, `0-9`, `"`) |
+| `Ctrl-O {cmd}` | Execute one normal-mode command, then return to insert |
+| `Ctrl-T` | Indent current line (add one shiftwidth) |
+| `Ctrl-D` | Unindent current line (remove one shiftwidth) |
+| `Ctrl-E` | Copy character from line below |
+| `Ctrl-Y` | Copy character from line above |
+| `Ctrl-A` | Re-insert last inserted text |
+| `Ctrl-C` | Exit insert mode (like `Escape`, no abbreviation trigger) |
 | `←` / `→` | Move cursor left/right |
 | `↑` / `↓` | Move cursor up/down |
 | Any printable | Insert character |
@@ -299,6 +438,7 @@ Backspace cannot go before the position where `R` was pressed.
 |---|---|
 | `v` | Toggle char-visual / exit |
 | `V` | Toggle line-visual / exit |
+| `Ctrl-V` | Toggle block-visual / exit |
 | `gv` | Reselect last visual selection |
 | `Escape` | Return to normal |
 | `o` / `O` | Swap cursor and selection anchor |
@@ -324,6 +464,26 @@ All normal-mode motions work in visual mode to extend the selection.
 | `r{char}` | Replace every char with {char} |
 | `"{a-z}` | Select register for next action |
 | `:` | Enter command line with `'<,'>` range pre-filled |
+| `g Ctrl-A` | Sequential increment (first number on each selected line: +1, +2, …) |
+| `g Ctrl-X` | Sequential decrement |
+
+### Visual Block Mode (`Ctrl-V`)
+
+Block-visual selects a rectangular column region across multiple lines.
+
+| Key | Description |
+|---|---|
+| `d` / `x` | Delete the block (removes columns from each line) |
+| `c` | Change the block (delete + enter insert; typed text replaces on all lines) |
+| `I` | Insert before block column (typed text prepended to all lines on Esc) |
+| `A` | Append after block column (typed text appended to all lines on Esc) |
+| `y` | Yank blockwise |
+| `p` | Replace block with register (blockwise paste) |
+| `r{char}` | Replace all chars in block with {char} |
+| `>` / `<` | Indent / dedent selected lines |
+| `$` | Extend selection to end of each line |
+| `o` | Toggle active corner (top-left ↔ bottom-right) |
+| `O` | Toggle horizontal edge (left ↔ right) |
 
 ### Text Objects in Visual
 
@@ -348,6 +508,7 @@ Used with operators or in visual mode: `{op}{i|a}{object}`.
 | `{` / `}` / `B` | Inside `{}` | Including `{}` |
 | `[` / `]` | Inside `[]` | Including `[]` |
 | `<` / `>` | Inside `<>` | Including `<>` |
+| `t` | Inside HTML/XML tag (`<tag>…</tag>`) | Including the tags |
 
 Multi-line pairs supported. Handles escaped quotes. If cursor not inside, searches forward.
 
@@ -375,6 +536,7 @@ Every surround operation accepts the same set of delimiter characters:
 | `'` | `'`…`'` | Single quotes |
 | `` ` `` | `` ` ``…`` ` `` | Backticks |
 | *any other* | *char*…*char* | Symmetric — e.g. `*`, `|`, `_`, `/`, `~` |
+| `t` / `<` | `<tag>`…`</tag>` | HTML/XML tag (prompts for tag name) |
 
 **Closing** characters (`)`/`]`/`}`/`>`) produce tight delimiters.
 **Opening** characters (`(`/`[`/`{`/`<`) add an inner space on each side.
@@ -398,6 +560,7 @@ Aliases: `b` = `)`, `r` = `]`, `B` = `}`, `a` = `>`.
 | `ds>` / `dsa` | Delete surrounding angle brackets |
 | `ds<` | Delete surrounding angle brackets **and** trim inner whitespace |
 | `ds*`, `ds|`, `ds/`, … | Delete any symmetric surrounding character |
+| `dst` | Delete surrounding HTML/XML tag (`<div>hello</div>` → `hello`) |
 
 When the target is an **opening** bracket (`(`, `[`, `{`, `<`), inner whitespace
 adjacent to the delimiters is trimmed. When it's a **closing** bracket or alias,
@@ -422,6 +585,8 @@ replace both delimiters with the *replacement* pair.
 | `cs"[` | `"hello"` → `[ hello ]` (opening replacement adds space) |
 | `cs)(` | `(hello)` → `( hello )` (opening replacement adds space) |
 | `cs({` | `( hello )` → `{hello}` (opening target trims inner space) |
+| `cst<span>` | `<div>hello</div>` → `<span>hello</span>` (change tag) |
+| `cst"` | `<div>hello</div>` → `"hello"` (tag to quotes) |
 
 **Rules for `cs`:**
 - The *target* follows `ds` rules: opening targets (`(`, `[`, `{`, `<`) trim inner whitespace; closing targets leave content intact.
@@ -462,6 +627,8 @@ delimiter pair for *char*.
 | `yss)` | Surround entire line (leading/trailing whitespace preserved inside) |
 | `yss(` | Surround entire line with inner space |
 | `yss"` | Surround entire line in double quotes |
+| `ysiw<div>` | `hello` → `<div>hello</div>` (tag surround) |
+| `ysiwt` + `div>` | Same as above (tag prompt) |
 
 Any motion (`w`, `e`, `b`, `$`, `0`, `^`, `f`, `F`, `t`, `T`, counted motions)
 and any text object (`iw`, `aw`, `iW`, `aW`, `i)`, `a]`, etc.) can be
@@ -494,6 +661,18 @@ All surround operations support dot-repeat (`.`), undo (`u`), and redo (`Ctrl-R`
 All Ex commands accept standard nvim abbreviations — any unambiguous prefix
 of the full command name is valid (e.g. `:wri` → `:write`, `:qui` → `:quit`).
 
+### Command-Line Editing
+
+| Key | Description |
+|---|---|
+| `Backspace` / `Ctrl-H` | Delete character before cursor |
+| `Ctrl-U` | Delete to start of command (after the `:`) |
+| `Ctrl-W` | Delete word backward (word-class aware) |
+| `Ctrl-R {reg}` | Insert register contents into command line (`"`, `a`–`z`, `/`, `:`, `%`) |
+| `Up` / `Down` | Browse command/search history |
+| `Escape` | Cancel command |
+| `Enter` | Execute command |
+
 ### File / Quit / Navigation
 
 | Command | Description |
@@ -503,9 +682,14 @@ of the full command name is valid (e.g. `:wri` → `:write`, `:qui` → `:quit`)
 | `:x[it]` | Save (only if dirty) and quit (shows E32 if no filename available) |
 | `:q[uit]` | Quit (fails with E37 if dirty) |
 | `:q[uit]!` | Force quit (discard changes) |
+| `:qa[!]` | Quit all windows (with `!` discards changes) |
+| `:wa[!]` | Write all buffers |
+| `:wqa` / `:xa` | Write all and quit |
 | `:e[dit] [file]` | Edit file; with no arg, reloads current file from VFS (shows E32 if no filename set) |
 | `:e[dit]! [file]` | Force re-edit (discard changes); also accepts a filename |
 | `:sav[eas] file` | Save buffer to new file, set it as current filename, update highlighting |
+| `:new` | Open a new empty buffer in a horizontal split |
+| `:ene[w][!]` | Edit a new unnamed buffer (clears current buffer) |
 | `:{number}` | Go to line number |
 | `:$` | Go to last line |
 | `:noh[lsearch]` | Clear search highlighting (pattern kept for `n`/`N`) |
@@ -513,7 +697,13 @@ of the full command name is valid (e.g. `:wri` → `:write`, `:qui` → `:quit`)
 | `:r[ead] file` | Read file contents below cursor (shows "N line(s) added"; sets filename if none; shows E484 if file not found) |
 | `:r[ead]! command` | Read shell command output below cursor (shows "N line(s) added") |
 | `:[range]sort[!] [flags]` | Sort lines (`!` = reverse; flags: `n` numeric, `i` ignore-case, `u` unique) |
+| `:[range]ret[ab][!] [N]` | Convert tabs↔spaces; with `expandtab` or `!`, converts tabs to N spaces |
 | `:!command` | Run shell command (see below) |
+| `:pwd` | Display current directory |
+| `:f[ile]` | Show file info (name, modified status, line count) |
+| `:delm[arks] {marks}` | Delete specified marks |
+| `:delm[arks]!` | Delete all lowercase marks |
+| `:undol[ist]` | Show number of undo entries |
 
 ### Editing Commands
 
@@ -764,7 +954,22 @@ Any single character can serve as the delimiter (not just `/`): `:s!old!new!g`,
 `:s#old#new#g`, etc. Escaped delimiters (`\/`) are handled correctly.
 
 The `&` character in the replacement refers to the matched text (like `\0`).
-Use `\&` for a literal ampersand.
+Use `\&` for a literal ampersand. Backreferences `\1` through `\9` refer to
+captured groups from `\(…\)` in the pattern.
+
+**Vim regex syntax:** Patterns use Vim's "magic" mode, which is automatically
+translated to JavaScript regex. Key mappings:
+
+| Vim | JS | Meaning |
+|---|---|---|
+| `\+` | `+` | One or more |
+| `\?` | `?` | Zero or one |
+| `\(…\)` | `(…)` | Capture group |
+| `\|` | `\|` | Alternation |
+| `\{…\}` | `{…}` | Quantifier |
+| `\<`, `\>` | `\b` | Word boundary |
+
+This translation applies to `/` and `?` search, `:s`, `:g`, `&`, and `g&`.
 
 The search pattern is set for `n`/`N`/highlighting after substitution.
 A bare `:s` with no arguments repeats the last substitution on the current line.
@@ -985,6 +1190,12 @@ the buffer has been modified (dirty). Both quit after writing.
 | `expandtab` | `et` | `noexpandtab` / `noet` | off | Insert spaces instead of tab characters |
 | `autoindent` | `ai` | `noautoindent` / `noai` | **on** | Copy indent from current line on `Enter`/`o`/`O` |
 | `cursorline` | `cul` | `nocursorline` / `nocul` | off | Highlight the screen line of the cursor |
+| `hlsearch` | `hls` | `nohlsearch` / `nohls` | on | Highlight all search matches |
+| `wrap` | | `nowrap` | **on** | Wrap long lines (visual only) |
+| `incsearch` | `is` | `noincsearch` / `nois` | off | Show incremental search matches while typing |
+| `list` | | `nolist` | off | Show whitespace characters (tabs, trailing spaces) |
+| `splitbelow` | `sb` | `nosplitbelow` / `nosb` | off | New horizontal splits open below current window |
+| `splitright` | `spr` | `nosplitright` / `nospr` | off | New vertical splits open to the right |
 
 #### Numeric Options
 
@@ -1248,6 +1459,13 @@ All navigation keys auto-unzoom if the window is zoomed.
 | `→` / `l` | Navigate to pane right |
 | `o` | Cycle to next pane |
 | `;` | Toggle to last-active pane |
+
+> **Common remapping note:** The `h`/`j`/`k`/`l` bindings are not tmux defaults —
+> they are added via `bind h select-pane -L`, etc. in `~/.tmux.conf` (our
+> simulator has them built-in). Because `l` (lowercase) shadows the default
+> "last window" binding, most people remap last-window to another key — `Tab` is
+> a popular choice (`bind Tab last-window`). In our simulator, last-window is on
+> `L` (uppercase, i.e. `Prefix + Shift-L`).
 
 ### Pane Resize
 

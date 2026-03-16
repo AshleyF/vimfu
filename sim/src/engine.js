@@ -34,6 +34,7 @@ export const Mode = {
   INSERT: 'insert',
   VISUAL: 'visual',
   VISUAL_LINE: 'visual_line',
+  VISUAL_BLOCK: 'visual_block',
   REPLACE: 'replace',
   COMMAND: 'command',
 };
@@ -51,7 +52,15 @@ export class VimEngine {
     this.filename = null;   // set by SessionManager for syntax highlighting
     this._textRows = rows - 2;
 
+    // Fold state
+    this._folds = [];  // Array of { startRow, endRow, closed: true/false }
+
+    // Window management (splits)
+    this._windows = [];
+    this._activeWin = 0;
+
     // Pending state
+    this._pendingCtrlW = false;
     this._pendingCount = '';
     this._pendingOp = '';
     this._pendingG = false;
@@ -65,11 +74,13 @@ export class VimEngine {
     this._pendingQuote = false;
     this._pendingBacktick = false;
     this._pendingTextObjType = null;
+    this._pendingBracket = '';
     this._opStartPos = null;
     this._motionInclusive = false;
     this._motionLinewise = false;
     this._motionExclusive = false;
     this._insertCount = 1;
+    this._insertOneShot = false; // Ctrl-O: execute one normal command, then return to insert
     this._scrollHalf = 0; // sticky scroll amount for Ctrl-D/Ctrl-U
 
     // Operator saved across async-like sequences (e.g. d/pattern<CR>)
@@ -84,6 +95,8 @@ export class VimEngine {
     this._smallDeleteReg = null; // "-: {text, type} for deletes < 1 line
     this._pendingRegKey = ''; // pending " register prefix
     this._pendingCtrlR = false; // pending Ctrl-R in insert mode
+    this._cmdPendingCtrlR = false; // pending Ctrl-R in command mode
+    this._lastMessage = ''; // last displayed message (for g<)
     /** @type {((text: string) => void) | null} */
     this._onClipboardWrite = null; // callback when + or * register is written
 
@@ -108,12 +121,20 @@ export class VimEngine {
     // Last insert position (for gi)
     this._lastInsertPos = null;
 
+    // Last inserted text (for ". register)
+    this._lastInsertedText = '';
+
+    // Line undo save (for U command)
+    this._lineUndoSave = null;
+
     // Find on line
     this._lastFind = null;
 
     // Visual mode
     this._visualStart = { row: 0, col: 0 };
     this._visualExclusive = false; // true when last visual motion was exclusive (e.g. ), ()
+    this._visualBlockDollar = false; // true when $ was pressed in visual_block mode
+    this._blockInsertState = null; // {mode, topRow, bottomRow, leftCol, rightCol, dollar, editRow, insertCol, origLine}
     this._lastVisual = null; // {mode, start: {row, col}, end: {row, col}} for gv
 
     // Dot repeat
@@ -152,6 +173,9 @@ export class VimEngine {
     // SessionManager reads and clears this after each feedKey.
     this._lastExCommand = null;
 
+    // Echo message (persists across feedKeys until mode change)
+    this._echoMessage = null;
+
     // Visual command range — set when : is pressed in visual mode
     this._visualCmdRange = null;
 
@@ -160,9 +184,14 @@ export class VimEngine {
     this._surroundTarget = '';       // for cs: the target char (first char after cs)
     this._ysRange = null;            // for ys: {sr, sc, er, ec} waiting for surround char
     this._pendingVisualSurround = null; // for visual S: {sr, sc, er, ec, wasLinewise}
+    this._pendingTagInput = null;    // tag input mode: { buffer, context, ...data }
 
     // Desired column for vertical movement
     this._desiredCol = 0;
+
+    // Command-line history
+    this._cmdHistory = [];
+    this._cmdHistoryPos = -1;
 
     // Settings (:set)
     this._settings = {
@@ -176,9 +205,26 @@ export class VimEngine {
       shiftwidth: 8,       // :set shiftwidth=N (sw)
       autoindent: true,   // :set autoindent / :set noautoindent (ai/noai) — nvim default is on
       cursorline: false,   // :set cursorline / :set nocursorline (cul/nocul)
+      hlsearch: true,      // :set hlsearch / :set nohlsearch (hls/nohls)
+      fileformat: 'dos',   // :set fileformat=dos/unix (ff)
+      wrap: true,          // :set wrap / :set nowrap
+      incsearch: false,    // :set incsearch / :set noincsearch (is/nois)
+      list: false,         // :set list / :set nolist
+      splitbelow: false,   // :set splitbelow / :set nosplitbelow (sb/nosb)
+      splitright: false,   // :set splitright / :set nosplitright (spr/nospr)
     };
 
     this._updateStatus();
+
+    // Initialize default window (must be after all other state init)
+    this._windows = [{
+      buffer: this.buffer,
+      cursor: { ...this.cursor },
+      scrollTop: this.scrollTop,
+      folds: this._folds,
+      _desiredCol: 0,
+    }];
+    this._activeWin = 0;
   }
 
   // ── Public API ──
@@ -197,6 +243,7 @@ export class VimEngine {
     this._undoStack = [];
     this._redoStack = [];
     this._changeCount = 0;
+    this._lineUndoSave = null;  // reset for new file
     this._jumpList = [];
     this._jumpListPos = -1;
     // Nvim records the file-open cursor position as the initial jumplist entry
@@ -234,6 +281,7 @@ export class VimEngine {
     if (this._stickyCommandLine) {
       this._stickyCommandLine = false;
       this._commandLineLineNrLen = 0;
+      this._errorCmdLineCursor = false;
       this.commandLine = '';
     }
 
@@ -243,10 +291,41 @@ export class VimEngine {
     }
 
     if (this.mode === Mode.COMMAND) this._commandKey(key);
-    else if (this.mode === Mode.NORMAL) this._normalKey(key);
+    else if (this.mode === Mode.NORMAL) {
+      this._normalKey(key);
+      // Ctrl-O one-shot: return to insert mode after one normal command
+      if (this._insertOneShot) {
+        if (this.mode !== Mode.NORMAL) {
+          // Command switched to another mode (insert, visual, etc.) — cancel one-shot
+          this._insertOneShot = false;
+        } else if (!this._pendingOp && !this._pendingG && !this._pendingZ && !this._pendingCapZ
+            && !this._pendingF && !this._pendingR && !this._pendingM && !this._pendingQ
+            && !this._pendingAt && !this._pendingQuote && !this._pendingBacktick
+            && !this._pendingDblQuote && !this._pendingSurround && !this._ysRange
+            && !this._pendingCount && !this._pendingTextObjType && !this._pendingCtrlW) {
+          // Normal command completed with no pending state — return to insert
+          this._insertOneShot = false;
+          this.mode = Mode.INSERT;
+          this.commandLine = '-- INSERT --';
+        }
+        // else: still pending (e.g. operator-pending like d waiting for motion) — stay in normal
+      }
+    }
     else if (this.mode === Mode.INSERT) this._insertKey(key);
-    else if (this.mode === Mode.VISUAL || this.mode === Mode.VISUAL_LINE) this._visualKey(key);
+    else if (this.mode === Mode.VISUAL || this.mode === Mode.VISUAL_LINE || this.mode === Mode.VISUAL_BLOCK) this._visualKey(key);
     else if (this.mode === Mode.REPLACE) this._replaceKey(key);
+    // Clear line undo save when cursor moves to a different row
+    if (this._lineUndoSave && this._lineUndoSave.row !== this.cursor.row) {
+      this._lineUndoSave = null;
+    }
+    // Clear echo message when mode changes or new messages appear
+    if (this._echoMessage != null) {
+      if (this._stickyCommandLine || this._messagePrompt || this.mode !== Mode.NORMAL) {
+        this._echoMessage = null;
+      }
+    }
+    // If cursor landed inside a closed fold, snap to fold start
+    this._adjustCursorForFolds();
     this._clampCursor();
     this._ensureCursorVisible();
     this._updateStatus();
@@ -259,6 +338,10 @@ export class VimEngine {
     // (the single pre-playback snapshot handles undo for the whole macro)
     if (this._macroPlaying) return;
     this._changeCount++;
+    // Track original line content for U (undo line)
+    if (this._lineUndoSave === null || this._lineUndoSave.row !== this.cursor.row) {
+      this._lineUndoSave = { row: this.cursor.row, text: this.buffer.lines[this.cursor.row] };
+    }
     // Record position in change list
     this._changeList.push({ row: this.cursor.row, col: this.cursor.col });
     if (this._changeList.length > 100) this._changeList.shift();
@@ -421,6 +504,14 @@ export class VimEngine {
       if (reg === '/') {
         return { text: this._searchPattern || '', type: 'char' };
       }
+      // Last inserted text register
+      if (reg === '.') {
+        return { text: this._lastInsertedText || '', type: 'char' };
+      }
+      // Last ex command register
+      if (reg === ':') {
+        return { text: this._lastExCommand || '', type: 'char' };
+      }
       // Uppercase register reads from lowercase
       const key = (reg >= 'A' && reg <= 'Z') ? reg.toLowerCase() : reg;
       const r = this._namedRegs[key];
@@ -444,7 +535,7 @@ export class VimEngine {
 
   _normalKey(key) {
     // q stops macro recording (before any other dispatch)
-    if (this._macroRecording && key === 'q' && !this._pendingOp && !this._pendingF && !this._pendingR && !this._pendingG && !this._pendingZ && !this._pendingCapZ && !this._pendingM && !this._pendingQuote && !this._pendingBacktick && !this._pendingTextObjType) {
+    if (this._macroRecording && key === 'q' && !this._pendingOp && !this._pendingF && !this._pendingR && !this._pendingG && !this._pendingZ && !this._pendingCapZ && !this._pendingM && !this._pendingQuote && !this._pendingBacktick && !this._pendingTextObjType && !this._pendingBracket && !this._pendingCtrlW) {
       // Remove the trailing 'q' we just captured
       this._macroKeys.pop();
       this._macroRegisters[this._macroRecording] = [...this._macroKeys];
@@ -520,7 +611,7 @@ export class VimEngine {
     // Pending " (register selection)
     if (this._pendingDblQuote) {
       this._pendingDblQuote = false;
-      if (key.length === 1 && (/^[a-zA-Z0-9]$/.test(key) || '+-*_/"'.includes(key))) {
+      if (key.length === 1 && (/^[a-zA-Z0-9]$/.test(key) || '+-*_/".:'.includes(key))) {
         this._pendingRegKey = key;
       }
       // After setting register, fall through to normal processing
@@ -528,10 +619,73 @@ export class VimEngine {
       return;
     }
 
+    // Pending tag input mode (collecting tag name for surround operations)
+    if (this._pendingTagInput) {
+      if (key === 'Escape') { this._pendingTagInput = null; this._pendingCount = ''; return; }
+      if (key === 'Enter') {
+        const tagName = this._pendingTagInput.buffer.trim();
+        if (!tagName) { this._pendingTagInput = null; this._pendingCount = ''; return; }
+        const ctx = this._pendingTagInput;
+        this._pendingTagInput = null;
+        if (ctx.context === 'ys') {
+          this._saveSnapshot();
+          this._doSurroundAdd(ctx.range.sr, ctx.range.sc, ctx.range.er, ctx.range.ec,
+            null, !ctx.range.noTrim, `<${tagName}>`, `</${tagName.split(/\s/)[0]}>`);
+          const dotKeys = ctx.range.dotKeys
+            ? [...ctx.range.dotKeys, 't', ...tagName.split(''), 'Enter']
+            : ['y', 's', 't', ...tagName.split(''), 'Enter'];
+          this._lastChange = dotKeys;
+          this._redoStack = [];
+        } else if (ctx.context === 'cs') {
+          this._saveSnapshot();
+          const ok = this._doSurroundChangeTag(ctx.target, tagName);
+          if (ok) {
+            this._lastChange = ['c', 's', ctx.target, 't', ...tagName.split(''), 'Enter'];
+            this._redoStack = [];
+          }
+        } else if (ctx.context === 'S') {
+          const vs = ctx.vs;
+          const savedCursor = { ...this.cursor };
+          this.cursor = { row: vs.sr, col: vs.sc };
+          this._saveSnapshot();
+          this.cursor = savedCursor;
+          if (vs.wasLinewise) {
+            const open = `<${tagName}>`;
+            const close = `</${tagName.split(/\s/)[0]}>`;
+            this.buffer.lines.splice(vs.er + 1, 0, close);
+            this.buffer.lines.splice(vs.sr, 0, open);
+            this.cursor.row = vs.sr; this.cursor.col = 0;
+          } else {
+            this._doSurroundAdd(vs.sr, vs.sc, vs.er, vs.ec,
+              null, true, `<${tagName}>`, `</${tagName.split(/\s/)[0]}>`);
+          }
+          this.mode = Mode.NORMAL; this.commandLine = '';
+          this._redoStack = [];
+        }
+        this._pendingCount = '';
+        return;
+      }
+      if (key === 'Backspace' || key === 'Ctrl-H') {
+        this._pendingTagInput.buffer = this._pendingTagInput.buffer.slice(0, -1);
+        return;
+      }
+      if (key.length === 1) {
+        this._pendingTagInput.buffer += key;
+        return;
+      }
+      return;
+    }
+
     // Pending ys surround char (we have the range, waiting for the wrap char)
     if (this._ysRange) {
       if (key === 'Escape') {
         this._ysRange = null; this._pendingCount = ''; return;
+      }
+      if (key === 't') {
+        // Tag surround: enter tag input mode
+        this._pendingTagInput = { buffer: '', context: 'ys', range: this._ysRange };
+        this._ysRange = null;
+        return;
       }
       const range = this._ysRange;
       this._ysRange = null;
@@ -547,6 +701,17 @@ export class VimEngine {
     if (this._pendingSurround === 'ds') {
       this._pendingSurround = '';
       if (key === 'Escape') { this._pendingCount = ''; return; }
+      if (key === 't') {
+        // Delete surrounding tag
+        this._saveSnapshot();
+        const ok = this._doSurroundDeleteTag();
+        if (ok) {
+          this._lastChange = ['d', 's', 't'];
+          this._redoStack = [];
+        }
+        this._pendingCount = '';
+        return;
+      }
       this._saveSnapshot();
       const ok = this._doSurroundDelete(key);
       if (ok) {
@@ -571,6 +736,19 @@ export class VimEngine {
       const target = this._surroundTarget;
       this._pendingSurround = ''; this._surroundTarget = '';
       if (key === 'Escape') { this._pendingCount = ''; return; }
+      if (target === 't') {
+        // Tag target: always enter tag input for replacement
+        this._pendingTagInput = { buffer: key === 't' ? '' : key, context: 'cs', target: 't' };
+        if (key === 't') {
+          // 't' as replacement char also means tag input, start with empty buffer
+        }
+        return;
+      }
+      if (key === 't') {
+        // Non-tag target, but replacement is tag: enter tag input mode
+        this._pendingTagInput = { buffer: '', context: 'cs', target };
+        return;
+      }
       this._saveSnapshot();
       const ok = this._doSurroundChange(target, key);
       if (ok) {
@@ -770,6 +948,14 @@ export class VimEngine {
       return;
     }
 
+    // Pending Ctrl-W (window command)
+    if (this._pendingCtrlW) {
+      this._pendingCtrlW = false;
+      this._handleCtrlW(key);
+      this._pendingCount = '';
+      return;
+    }
+
     // Pending z
     if (this._pendingZ) {
       this._pendingZ = false;
@@ -785,6 +971,26 @@ export class VimEngine {
         this._lastExCommand = 'wq';
       } else if (key === 'Q') {
         this._lastExCommand = 'q!';
+      }
+      this._pendingCount = '';
+      return;
+    }
+
+    // Pending [ or ] bracket command
+    if (this._pendingBracket) {
+      const bracket = this._pendingBracket;
+      this._pendingBracket = '';
+      if (key === 'Escape') { this._pendingOp = ''; this._pendingCount = ''; return; }
+      const startPos = this._opStartPos || { ...this.cursor };
+      this._handleBracketCommand(bracket, key);
+      if (this._pendingOp) {
+        const moved = (this.cursor.row !== startPos.row || this.cursor.col !== startPos.col);
+        if (moved) {
+          this._motionInclusive = false;
+          this._motionLinewise = false;
+          this._executeOperator(startPos, { ...this.cursor });
+        }
+        this._pendingOp = '';
       }
       this._pendingCount = '';
       return;
@@ -933,6 +1139,25 @@ export class VimEngine {
         this._pendingOp = ''; this._pendingCount = '';
         return;
       }
+      // !! — filter current line(s) through shell command
+      if (this._pendingOp === '!' && key === '!') {
+        const count = this._getCount();
+        const sr = this.cursor.row;
+        const er = Math.min(sr + count - 1, this.buffer.lineCount - 1);
+        let rangeStr;
+        if (count === 1) {
+          rangeStr = '.';
+        } else {
+          rangeStr = '.,.+' + (count - 1);
+        }
+        this._filterRange = { sr, er };
+        this.mode = Mode.COMMAND;
+        this._searchInput = rangeStr + '!';
+        this.commandLine = ':' + rangeStr + '!';
+        this._pendingOp = '';
+        this._pendingCount = '';
+        return;
+      }
       // Double operator = line op (dd, cc, yy, >>, <<)
       if (key === this._pendingOp[this._pendingOp.length - 1]) {
         const countStr = this._pendingCount;
@@ -982,6 +1207,11 @@ export class VimEngine {
       }
       if (key === '`') {
         this._pendingBacktick = true;
+        return;
+      }
+      // Bracket commands in operator-pending: [( ]) [{ ]} [[ ]] [] ][
+      if (key === '[' || key === ']') {
+        this._pendingBracket = key;
         return;
       }
       // Search in operator-pending: save operator state, enter command mode
@@ -1091,6 +1321,7 @@ export class VimEngine {
 
     switch (key) {
       // Movement
+      case 'Ctrl-H':
       case 'h': case 'ArrowLeft': {
         const count = this._getCount();
         for (let i = 0; i < count; i++) { if (this.cursor.col > 0) this.cursor.col--; }
@@ -1131,21 +1362,37 @@ export class VimEngine {
         this._updateDesiredCol();
         break;
       }
+      case 'Ctrl-N':
+      case 'Ctrl-J':
       case 'j': case 'ArrowDown': {
         const count = this._getCount();
         const beforeRow = this.cursor.row;
         for (let i = 0; i < count; i++) {
-          if (this.cursor.row < this.buffer.lineCount - 1) this.cursor.row++;
+          if (this.cursor.row < this.buffer.lineCount - 1) {
+            // Skip closed folds: if on fold start, jump past fold end
+            const cf = this.getClosedFoldAt(this.cursor.row);
+            if (cf) {
+              this.cursor.row = Math.min(cf.endRow + 1, this.buffer.lineCount - 1);
+            } else {
+              this.cursor.row++;
+            }
+          }
         }
         if (this._macroPlaying && this.cursor.row === beforeRow) this._macroAborted = true;
         this._applyDesiredCol();
         break;
       }
+      case 'Ctrl-P':
       case 'k': case 'ArrowUp': {
         const count = this._getCount();
         const beforeRow = this.cursor.row;
         for (let i = 0; i < count; i++) {
-          if (this.cursor.row > 0) this.cursor.row--;
+          if (this.cursor.row > 0) {
+            this.cursor.row--;
+            // Skip closed folds: if landed inside a fold, jump to fold start
+            const hf = this.getFoldHidingRow(this.cursor.row);
+            if (hf) this.cursor.row = hf.startRow;
+          }
         }
         this._applyDesiredCol();
         break;
@@ -1255,6 +1502,7 @@ export class VimEngine {
       }
 
       // + - Enter
+      case 'Ctrl-M':
       case '+': case 'Enter': {
         const c = this._getCount();
         this.cursor.row = Math.min(this.cursor.row + c, this.buffer.lineCount - 1);
@@ -1430,12 +1678,60 @@ export class VimEngine {
         break;
       }
 
+      // K — keyword lookup
+      case 'K': {
+        const word = this._wordUnderCursor();
+        if (word) {
+          this.commandLine = 'E149: Sorry, no help for ' + word;
+          this._stickyCommandLine = true;
+        }
+        break;
+      }
+
       // Operators
       case 'd': this._pendingOp = 'd'; this._opStartPos = { ...this.cursor }; return;
       case 'c': this._pendingOp = 'c'; this._opStartPos = { ...this.cursor }; return;
       case 'y': this._pendingOp = 'y'; this._opStartPos = { ...this.cursor }; return;
       case '>': this._pendingOp = '>'; this._opStartPos = { ...this.cursor }; return;
       case '<': this._pendingOp = '<'; this._opStartPos = { ...this.cursor }; return;
+      case '=': this._pendingOp = '='; this._opStartPos = { ...this.cursor }; return;
+      case '!': this._pendingOp = '!'; this._opStartPos = { ...this.cursor }; return;
+
+      // & (repeat last :s on current line)
+      case '&': {
+        if (this._lastSubstitution) {
+          const { pattern, replacement } = this._lastSubstitution;
+          let jsPattern = this._vimPatternToJs(pattern);
+          let jsReplacement = replacement
+            .replace(/\\&/g, '\x00AMP')
+            .replace(/\$/g, '$$$$')
+            .replace(/&/g, '$$&')
+            .replace(/\x00AMP/g, '&')
+            .replace(/\\([1-9])/g, '$$$1');
+          let caseFlag = this._searchCaseFlag();
+          let regex;
+          try { regex = new RegExp(jsPattern, caseFlag); } catch {
+            this.commandLine = 'E486: Pattern not found: ' + pattern;
+            this._stickyCommandLine = true;
+            break;
+          }
+          const r = this.cursor.row;
+          const before = this.buffer.lines[r];
+          const after = before.replace(regex, jsReplacement);
+          if (after !== before) {
+            this._saveSnapshot();
+            this.buffer.lines[r] = after;
+            this.cursor.col = this._firstNonBlank(r);
+            this._redoStack = [];
+          }
+          this.commandLine = ':&&';
+          this._stickyCommandLine = true;
+        } else {
+          this._messagePrompt = { error: 'E33: No previous substitute regular expression' };
+          this.commandLine = '';
+        }
+        break;
+      }
 
       // D C Y
       case 'D': {
@@ -1581,6 +1877,16 @@ export class VimEngine {
       // Undo/Redo
       case 'u': { const c = this._getCount(); for (let i = 0; i < c; i++) this._undo(); if (this._showCurSearch) this._updateCurSearchPos(); break; }
       case 'Ctrl-R': { const c = this._getCount(); for (let i = 0; i < c; i++) this._redo(); if (this._showCurSearch) this._updateCurSearchPos(); break; }
+      case 'U': {
+        // Undo all changes on current line
+        if (this._lineUndoSave && this._lineUndoSave.row === this.cursor.row) {
+          this._saveSnapshot();
+          this.buffer.lines[this.cursor.row] = this._lineUndoSave.text;
+          this.cursor.col = Math.min(this.cursor.col, Math.max(0, this.buffer.lineLength(this.cursor.row) - 1));
+          this._redoStack = [];
+        }
+        break;
+      }
 
       // Dot repeat
       case '.': {
@@ -1614,6 +1920,12 @@ export class VimEngine {
         this.mode = Mode.VISUAL_LINE;
         this._visualStart = { ...this.cursor };
         this.commandLine = '-- VISUAL LINE --';
+        break;
+      case 'Ctrl-V':
+        this.mode = Mode.VISUAL_BLOCK;
+        this._visualStart = { ...this.cursor };
+        this._visualBlockDollar = false;
+        this.commandLine = '-- VISUAL BLOCK --';
         break;
 
       // Search
@@ -1746,6 +2058,30 @@ export class VimEngine {
         break;
       }
 
+      case 'Ctrl-L':
+        this.commandLine = '';
+        this._stickyCommandLine = false;
+        break;
+      case 'Ctrl-W':
+        this._pendingCtrlW = true;
+        return;
+      case 'Ctrl-C':
+        // Cancel any pending operation
+        this._pendingOp = '';
+        this._pendingCount = '';
+        this._pendingG = false;
+        this._pendingZ = false;
+        this._pendingCtrlW = false;
+        this._pendingSurround = '';
+        this._surroundTarget = '';
+        this._pendingR = false;
+        this._pendingBracket = '';
+        this._pendingTagInput = null;
+        this._pendingDblQuote = false;
+        this.commandLine = '';
+        this._stickyCommandLine = false;
+        break;
+
       // File info
       case 'Ctrl-G': {
         const name = this.filename || '[No Name]';
@@ -1831,6 +2167,13 @@ export class VimEngine {
         this._updateDesiredCol();
         break;
       }
+
+      // Bracket commands
+      case '[':
+      case ']':
+        this._pendingBracket = key;
+        this._opStartPos = { ...this.cursor };
+        return;
 
       // Command mode
       case ':':
@@ -1957,6 +2300,25 @@ export class VimEngine {
         this._opStartPos = { ...this.cursor };
         break;
       }
+      case 'o': {
+        // go — go to byte offset N
+        const targetByte = this._getCount() - 1; // 1-based to 0-based
+        const eolSize = this._settings.fileformat === 'dos' ? 2 : 1;
+        let bytePos = 0;
+        for (let r = 0; r < this.buffer.lineCount; r++) {
+          const lineLen = this.buffer.lines[r].length + eolSize; // +eolSize for line ending
+          if (bytePos + lineLen > targetByte) {
+            this.cursor.row = r;
+            this.cursor.col = Math.min(targetByte - bytePos, this.buffer.lines[r].length - 1);
+            this.cursor.col = Math.max(0, this.cursor.col);
+            break;
+          }
+          bytePos += lineLen;
+        }
+        this._updateDesiredCol();
+        this._pendingCount = '';
+        break;
+      }
       case 'v': {
         // gv — reselect last visual selection
         if (this._lastVisual) {
@@ -2076,6 +2438,560 @@ export class VimEngine {
         this._pendingCount = '';
         break;
       }
+      case '*': {
+        // g* — search word under cursor forward (no word boundaries)
+        const w = this._wordUnderCursor();
+        if (w) {
+          this._addJumpEntry();
+          const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          this._searchPattern = escaped;
+          this._searchForward = true;
+          const c = this._getCount();
+          for (let i = 0; i < c; i++) this._searchNext(true);
+          this._showCurSearch = true;
+          this._hlsearchActive = true;
+        }
+        break;
+      }
+      case '#': {
+        // g# — search word under cursor backward (no word boundaries)
+        const w = this._wordUnderCursor();
+        if (w) {
+          this._addJumpEntry();
+          const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          this._searchPattern = escaped;
+          this._searchForward = false;
+          const c = this._getCount();
+          for (let i = 0; i < c; i++) this._searchNext(false);
+          this._showCurSearch = true;
+          this._hlsearchActive = true;
+        }
+        break;
+      }
+      case 'p': {
+        // gp — put after, cursor after pasted text
+        const count = this._getCount();
+        const explicitReg = this._pendingRegKey;
+        const reg = this._getReg();
+        if (explicitReg && !reg.text && explicitReg !== '_') {
+          this.commandLine = 'E353: Nothing in register ' + explicitReg;
+          this._stickyCommandLine = true;
+          break;
+        }
+        this._saveSnapshot();
+        this._startRecording(); this._saveForDot('g'); this._saveForDot('p');
+        for (let i = 0; i < count; i++) this._putAfter(reg);
+        // Move cursor after pasted text
+        if (reg.type === 'line') {
+          // For linewise: cursor goes to line after last pasted line
+          const pastedLines = reg.text.split('\n').length * count;
+          // After _putAfter for linewise, cursor is on first pasted line (row was incremented)
+          // We need to go to the line after the last pasted line
+          const lastPastedRow = this.cursor.row + pastedLines - 1;
+          if (lastPastedRow < this.buffer.lineCount - 1) {
+            this.cursor.row = lastPastedRow + 1;
+          } else {
+            this.cursor.row = this.buffer.lineCount - 1;
+          }
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+        } else {
+          // For charwise: cursor is already on last char of pasted text after _putAfter;
+          // move one position forward (after the pasted text)
+          this.cursor.col = Math.min(this.cursor.col + 1, this.buffer.lineLength(this.cursor.row) > 0 ? this.buffer.lineLength(this.cursor.row) - 1 : 0);
+        }
+        this._updateDesiredCol();
+        this._stopRecording(); this._redoStack = [];
+        break;
+      }
+      case 'P': {
+        // gP — put before, cursor after pasted text
+        const count = this._getCount();
+        const explicitReg = this._pendingRegKey;
+        const reg = this._getReg();
+        if (explicitReg && !reg.text && explicitReg !== '_') {
+          this.commandLine = 'E353: Nothing in register ' + explicitReg;
+          this._stickyCommandLine = true;
+          break;
+        }
+        this._saveSnapshot();
+        this._startRecording(); this._saveForDot('g'); this._saveForDot('P');
+        for (let i = 0; i < count; i++) this._putBefore(reg);
+        // Move cursor after pasted text
+        if (reg.type === 'line') {
+          // For linewise: cursor goes to line after last pasted line
+          const pastedLines = reg.text.split('\n').length * count;
+          const lastPastedRow = this.cursor.row + pastedLines - 1;
+          if (lastPastedRow < this.buffer.lineCount - 1) {
+            this.cursor.row = lastPastedRow + 1;
+          } else {
+            this.cursor.row = this.buffer.lineCount - 1;
+          }
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+        } else {
+          // For charwise: move one past end of pasted text
+          this.cursor.col = Math.min(this.cursor.col + 1, this.buffer.lineLength(this.cursor.row) > 0 ? this.buffer.lineLength(this.cursor.row) - 1 : 0);
+        }
+        this._updateDesiredCol();
+        this._stopRecording(); this._redoStack = [];
+        break;
+      }
+      case 'n': {
+        // gn — search forward and select match (or operate on match)
+        if (!this._searchPattern) break;
+        const match = this._findSearchMatch(true);
+        if (!match) break;
+        if (this._pendingOp) {
+          // Operator-pending: operate on the match range
+          const opChar = this._pendingOp;
+          const startPos = { row: match.row, col: match.col };
+          const endPos = { row: match.row, col: match.col + match.len - 1 };
+          this._motionInclusive = true;
+          this._motionLinewise = false;
+          this.cursor = { ...endPos };
+          const dotKeys = [opChar, 'g', 'n'];
+          if (opChar === 'c') {
+            this._dotPrefix = dotKeys;
+          }
+          this._executeOperator(startPos, endPos);
+          if (opChar !== 'c' && opChar !== 'y') {
+            this._lastChange = dotKeys;
+          }
+          this._pendingOp = '';
+          this._showCurSearch = false;
+          this._curSearchPos = null;
+        } else {
+          // Normal mode: visually select the match
+          this.mode = Mode.VISUAL;
+          this._visualStart = { row: match.row, col: match.col };
+          this.cursor.row = match.row;
+          this.cursor.col = match.col + match.len - 1;
+          this.commandLine = '-- VISUAL --';
+          this._showCurSearch = true;
+          this._curSearchPos = { row: match.row, col: match.col };
+        }
+        this._hlsearchActive = true;
+        break;
+      }
+      case 'N': {
+        // gN — search backward and select match (or operate on match)
+        if (!this._searchPattern) break;
+        const match = this._findSearchMatch(false);
+        if (!match) break;
+        if (this._pendingOp) {
+          // Operator-pending: operate on the match range
+          const opChar = this._pendingOp;
+          const startPos = { row: match.row, col: match.col };
+          const endPos = { row: match.row, col: match.col + match.len - 1 };
+          this._motionInclusive = true;
+          this._motionLinewise = false;
+          this.cursor = { ...endPos };
+          const dotKeys = [opChar, 'g', 'N'];
+          if (opChar === 'c') {
+            this._dotPrefix = dotKeys;
+          }
+          this._executeOperator(startPos, endPos);
+          if (opChar !== 'c' && opChar !== 'y') {
+            this._lastChange = dotKeys;
+          }
+          this._pendingOp = '';
+          this._showCurSearch = false;
+          this._curSearchPos = null;
+        } else {
+          // Normal mode: visually select the match
+          this.mode = Mode.VISUAL;
+          this._visualStart = { row: match.row, col: match.col + match.len - 1 };
+          this.cursor.row = match.row;
+          this.cursor.col = match.col;
+          this.commandLine = '-- VISUAL --';
+          this._showCurSearch = true;
+          this._curSearchPos = { row: match.row, col: match.col };
+        }
+        this._hlsearchActive = true;
+        break;
+      }
+      // ── Display-line motions ──
+
+      case 'j': {
+        // gj — move down one display line
+        const count = this._getCount();
+        if (this._pendingOp) {
+          // Operator-pending: gj is an exclusive motion (unlike j which is linewise)
+          const startPos = this._opStartPos;
+          for (let i = 0; i < count; i++) {
+            const info = this._displayLineInfo(this.cursor.row, this.cursor.col);
+            if (info.displayRow < info.totalDisplayRows - 1) {
+              // Move to next display row within same buffer line
+              this.cursor.col = this._bufColForDisplayCol(this.cursor.row, info.displayRow + 1,
+                Math.min(this._desiredCol, this._getTextCols() - 1));
+            } else if (this.cursor.row < this.buffer.lineCount - 1) {
+              // Move to first display row of next buffer line
+              this.cursor.row++;
+              this.cursor.col = this._bufColForDisplayCol(this.cursor.row, 0,
+                Math.min(this._desiredCol, this._getTextCols() - 1));
+            }
+          }
+          this._executeOperator(startPos, { ...this.cursor });
+          this._pendingOp = '';
+        } else {
+          for (let i = 0; i < count; i++) {
+            const info = this._displayLineInfo(this.cursor.row, this.cursor.col);
+            if (info.displayRow < info.totalDisplayRows - 1) {
+              // Move to next display row within same buffer line
+              this.cursor.col = this._bufColForDisplayCol(this.cursor.row, info.displayRow + 1,
+                Math.min(this._desiredCol, this._getTextCols() - 1));
+            } else if (this.cursor.row < this.buffer.lineCount - 1) {
+              // Move to first display row of next buffer line
+              this.cursor.row++;
+              this.cursor.col = this._bufColForDisplayCol(this.cursor.row, 0,
+                Math.min(this._desiredCol, this._getTextCols() - 1));
+            }
+          }
+        }
+        // Don't update desiredCol — gj preserves it like j
+        this._pendingCount = '';
+        break;
+      }
+      case 'k': {
+        // gk — move up one display line
+        const count = this._getCount();
+        if (this._pendingOp) {
+          // Operator-pending: gk is an exclusive motion (unlike k which is linewise)
+          const startPos = this._opStartPos;
+          for (let i = 0; i < count; i++) {
+            const info = this._displayLineInfo(this.cursor.row, this.cursor.col);
+            if (info.displayRow > 0) {
+              // Move to previous display row within same buffer line
+              this.cursor.col = this._bufColForDisplayCol(this.cursor.row, info.displayRow - 1,
+                Math.min(this._desiredCol, this._getTextCols() - 1));
+            } else if (this.cursor.row > 0) {
+              // Move to last display row of previous buffer line
+              this.cursor.row--;
+              const prevInfo = this._displayLineInfo(this.cursor.row, this.buffer.lineLength(this.cursor.row));
+              this.cursor.col = this._bufColForDisplayCol(this.cursor.row, prevInfo.totalDisplayRows - 1,
+                Math.min(this._desiredCol, this._getTextCols() - 1));
+            }
+          }
+          this._executeOperator(startPos, { ...this.cursor });
+          this._pendingOp = '';
+        } else {
+          for (let i = 0; i < count; i++) {
+            const info = this._displayLineInfo(this.cursor.row, this.cursor.col);
+            if (info.displayRow > 0) {
+              // Move to previous display row within same buffer line
+              this.cursor.col = this._bufColForDisplayCol(this.cursor.row, info.displayRow - 1,
+                Math.min(this._desiredCol, this._getTextCols() - 1));
+            } else if (this.cursor.row > 0) {
+              // Move to last display row of previous buffer line
+              this.cursor.row--;
+              const prevInfo = this._displayLineInfo(this.cursor.row, this.buffer.lineLength(this.cursor.row));
+              this.cursor.col = this._bufColForDisplayCol(this.cursor.row, prevInfo.totalDisplayRows - 1,
+                Math.min(this._desiredCol, this._getTextCols() - 1));
+            }
+          }
+        }
+        // Don't update desiredCol — gk preserves it like k
+        this._pendingCount = '';
+        break;
+      }
+      case 'Ctrl-A':
+      case 'Ctrl-X': {
+        // g Ctrl-A / g Ctrl-X — sequential increment/decrement in visual mode
+        if (this.mode === Mode.VISUAL || this.mode === Mode.VISUAL_LINE || this.mode === Mode.VISUAL_BLOCK) {
+          this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
+          const sr = Math.min(this._visualStart.row, this.cursor.row);
+          const er = Math.max(this._visualStart.row, this.cursor.row);
+          const savedCursor = { ...this.cursor };
+          this.cursor = { row: sr, col: 0 };
+          this._saveSnapshot();
+          this.cursor = savedCursor;
+          const sign = (key === 'Ctrl-A') ? 1 : -1;
+          let seq = 1;
+          for (let r = sr; r <= er; r++) {
+            const line = this.buffer.lines[r];
+            const re = /-?\d+/g;
+            const m = re.exec(line);
+            if (m) {
+              const s = m.index;
+              const e = s + m[0].length - 1;
+              const num = parseInt(m[0], 10) + sign * seq;
+              const newText = num.toString();
+              this.buffer.lines[r] = line.slice(0, s) + newText + line.slice(e + 1);
+            }
+            seq++;
+          }
+          const lineCount = er - sr + 1;
+          this.cursor.row = sr;
+          this.cursor.col = 0;
+          this.mode = Mode.NORMAL;
+          if (lineCount >= 2) {
+            this.commandLine = lineCount + ' lines changed';
+            this._stickyCommandLine = true;
+          } else {
+            this.commandLine = '';
+          }
+          this._redoStack = [];
+        }
+        this._pendingCount = '';
+        break;
+      }
+      case '0': {
+        // g0 — move to start of current display line
+        const info = this._displayLineInfo(this.cursor.row, this.cursor.col);
+        this.cursor.col = info.displayLineStart;
+        this._updateDesiredCol();
+        if (this._pendingOp) {
+          this._executeOperator(this._opStartPos, { ...this.cursor });
+          this._pendingOp = '';
+        }
+        this._pendingCount = '';
+        break;
+      }
+      case '$': {
+        // g$ — move to end of current display line
+        const info = this._displayLineInfo(this.cursor.row, this.cursor.col);
+        this.cursor.col = info.displayLineEnd;
+        this._updateDesiredCol();
+        if (this._pendingOp) {
+          this._motionInclusive = true;
+          this._executeOperator(this._opStartPos, { ...this.cursor });
+          this._pendingOp = '';
+        }
+        this._pendingCount = '';
+        break;
+      }
+      case '^': {
+        // g^ — move to first non-blank of current display line
+        const info = this._displayLineInfo(this.cursor.row, this.cursor.col);
+        const raw = this.buffer.lines[this.cursor.row] || '';
+        // Find first non-blank character at or after displayLineStart
+        let col = info.displayLineStart;
+        while (col <= info.displayLineEnd && col < raw.length &&
+               (raw[col] === ' ' || raw[col] === '\t')) {
+          col++;
+        }
+        // If all chars in this display line are blank, stay at displayLineStart
+        if (col > info.displayLineEnd) col = info.displayLineStart;
+        this.cursor.col = col;
+        this._updateDesiredCol();
+        if (this._pendingOp) {
+          this._executeOperator(this._opStartPos, { ...this.cursor });
+          this._pendingOp = '';
+        }
+        this._pendingCount = '';
+        break;
+      }
+      case 'm': {
+        // gm — move to middle of screen width
+        // Moves cursor to the character at screen column textCols/2
+        // (middle of the screen, not middle of the text)
+        const textCols = this._getTextCols();
+        const info = this._displayLineInfo(this.cursor.row, this.cursor.col);
+        const midScreenCol = Math.floor(textCols / 2);
+        this.cursor.col = this._bufColForDisplayCol(this.cursor.row, info.displayRow, midScreenCol);
+        // Clamp to end of line
+        const maxC = this.buffer.lineLength(this.cursor.row) > 0 ? this.buffer.lineLength(this.cursor.row) - 1 : 0;
+        if (this.cursor.col > maxC) this.cursor.col = maxC;
+        this._updateDesiredCol();
+        if (this._pendingOp) {
+          this._motionInclusive = true;
+          this._executeOperator(this._opStartPos, { ...this.cursor });
+          this._pendingOp = '';
+        }
+        this._pendingCount = '';
+        break;
+      }
+      case 'M': {
+        // gM — move to middle of actual text on the line
+        // For a line of length L, go to floor((L-1)/2)
+        const lineLen = this.buffer.lineLength(this.cursor.row);
+        if (lineLen === 0) {
+          this.cursor.col = 0;
+        } else {
+          this.cursor.col = Math.floor((lineLen - 1) / 2);
+        }
+        this._updateDesiredCol();
+        if (this._pendingOp) {
+          this._motionInclusive = true;
+          this._executeOperator(this._opStartPos, { ...this.cursor });
+          this._pendingOp = '';
+        }
+        this._pendingCount = '';
+        break;
+      }
+
+      case '?': {
+        // g? — rot13 operator
+        if (this.mode === Mode.VISUAL || this.mode === Mode.VISUAL_LINE) {
+          // Visual mode: apply rot13 to selection immediately
+          this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
+          let sr, sc, er, ec;
+          if (this.mode === Mode.VISUAL_LINE) {
+            sr = Math.min(this._visualStart.row, this.cursor.row);
+            er = Math.max(this._visualStart.row, this.cursor.row);
+            sc = 0; ec = this.buffer.lineLength(er);
+          } else {
+            if (this._visualStart.row < this.cursor.row || (this._visualStart.row === this.cursor.row && this._visualStart.col <= this.cursor.col)) {
+              sr = this._visualStart.row; sc = this._visualStart.col;
+              er = this.cursor.row; ec = this.cursor.col;
+            } else {
+              sr = this.cursor.row; sc = this.cursor.col;
+              er = this._visualStart.row; ec = this._visualStart.col;
+            }
+          }
+          const savedCursor = { ...this.cursor };
+          this.cursor = { row: sr, col: sc };
+          this._saveSnapshot();
+          this.cursor = savedCursor;
+          if (this.mode === Mode.VISUAL_LINE) {
+            for (let r = sr; r <= er; r++) this.buffer.lines[r] = this._rot13(this.buffer.lines[r]);
+          } else {
+            for (let r = sr; r <= er; r++) {
+              const line = this.buffer.lines[r];
+              const s = (r === sr) ? sc : 0;
+              const e = (r === er) ? ec : line.length - 1;
+              this.buffer.lines[r] = line.slice(0, s) + this._rot13(line.slice(s, e + 1)) + line.slice(e + 1);
+            }
+          }
+          this.mode = Mode.NORMAL; this.commandLine = '';
+          this.cursor.row = sr; this.cursor.col = sc;
+          this._redoStack = [];
+          this._updateDesiredCol();
+        } else if (this._pendingOp === 'g?') {
+          // g?g? — current line
+          this._doLineOperation('g?', this._getCount());
+          this._pendingOp = '';
+        } else {
+          this._pendingOp = 'g?';
+          this._opStartPos = { ...this.cursor };
+        }
+        break;
+      }
+      case 'q': {
+        // gq — format operator
+        if (this._pendingOp === 'gq') {
+          // gqgq — current line
+          this._doLineOperation('gq', this._getCount());
+          this._pendingOp = '';
+        } else {
+          this._pendingOp = 'gq';
+          this._opStartPos = { ...this.cursor };
+        }
+        break;
+      }
+      case 'w': {
+        // gw — format operator (cursor stays)
+        if (this._pendingOp === 'gw') {
+          // gwgw — current line
+          this._doLineOperation('gw', this._getCount());
+          this._pendingOp = '';
+        } else if (this._pendingOp) {
+          // operator + gw motion: w is the motion
+          const c = this._getCount();
+          for (let i = 0; i < c; i++) this._moveWordForward(false);
+          this._updateDesiredCol();
+          this._executeOperator(this._opStartPos, { ...this.cursor });
+          this._pendingOp = '';
+        } else {
+          this._pendingOp = 'gw';
+          this._opStartPos = { ...this.cursor };
+        }
+        break;
+      }
+      case 'D': {
+        // gD — go to first occurrence of word under cursor in file (global declaration)
+        let w2 = this._wordUnderCursor();
+        if (!w2) {
+          const line = this.buffer.lines[this.cursor.row];
+          let c = this.cursor.col;
+          while (c < line.length && !this._isWordChar(line[c])) c++;
+          if (c < line.length) {
+            let e = c;
+            while (e < line.length && this._isWordChar(line[e])) e++;
+            w2 = line.slice(c, e);
+          }
+        }
+        if (w2) {
+          const escaped = w2.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          this._searchPattern = '\\b' + escaped + '\\b';
+          this._showCurSearch = true;
+          this._hlsearchActive = true;
+          const re = new RegExp('\\b' + escaped + '\\b');
+          for (let r = 0; r < this.buffer.lineCount; r++) {
+            const m = this.buffer.lines[r].match(re);
+            if (m) {
+              this._addJumpEntry();
+              this.cursor.row = r;
+              this.cursor.col = m.index;
+              this._curSearchPos = { row: r, col: m.index };
+              this._updateDesiredCol();
+              break;
+            }
+          }
+        }
+        this._pendingCount = '';
+        break;
+      }
+      case '8': {
+        // g8 — show hex of character under cursor
+        const line = this.buffer.lines[this.cursor.row];
+        if (this.cursor.col < line.length) {
+          const ch = line[this.cursor.col];
+          const hex = ch.charCodeAt(0).toString(16);
+          this.commandLine = hex;
+          this._stickyCommandLine = true;
+        }
+        this._pendingCount = '';
+        break;
+      }
+      case '<': {
+        // g< — redisplay last message output
+        if (this._lastMessage) {
+          this.commandLine = this._lastMessage;
+          this._stickyCommandLine = true;
+        }
+        this._pendingCount = '';
+        break;
+      }
+      case '&': {
+        // g& — repeat last :s on all lines
+        if (this._lastSubstitution) {
+          const { pattern, replacement } = this._lastSubstitution;
+          let jsPattern = this._vimPatternToJs(pattern);
+          let jsReplacement = replacement
+            .replace(/\\&/g, '\x00AMP')
+            .replace(/\$/g, '$$$$')
+            .replace(/&/g, '$$&')
+            .replace(/\x00AMP/g, '&')
+            .replace(/\\([1-9])/g, '$$$1');
+          let caseFlag = this._searchCaseFlag();
+          let regex;
+          try { regex = new RegExp(jsPattern, caseFlag); } catch {
+            this.commandLine = 'E486: Pattern not found: ' + pattern;
+            this._stickyCommandLine = true;
+            break;
+          }
+          this._saveSnapshot({ row: 0, col: 0 });
+          this._redoStack = [];
+          let totalSubs = 0, lastSubRow = 0;
+          for (let r = 0; r < this.buffer.lineCount; r++) {
+            const before = this.buffer.lines[r];
+            const after = before.replace(regex, jsReplacement);
+            if (after !== before) { this.buffer.lines[r] = after; totalSubs++; lastSubRow = r; }
+          }
+          if (totalSubs > 0) {
+            this.cursor.row = lastSubRow;
+            this.cursor.col = this._firstNonBlank(lastSubRow);
+          }
+          this.commandLine = ':s/' + pattern + '/' + replacement + '/';
+          this._stickyCommandLine = true;
+        } else {
+          this._messagePrompt = { error: 'E33: No previous substitute regular expression' };
+          this.commandLine = '';
+        }
+        this._pendingCount = '';
+        break;
+      }
+
       default:
         this._pendingCount = '';
         break;
@@ -2087,21 +3003,329 @@ export class VimEngine {
   _handleZ(key) {
     const maxST = Math.max(0, this.buffer.lineCount - 1);
     switch (key) {
-      case 'z':
+      case 'z': case '.':
         this.scrollTop = Math.max(0, Math.min(this.cursor.row - Math.floor((this._textRows - 1) / 2), maxST));
         this.cursor.col = this._firstNonBlank(this.cursor.row);
         this._updateDesiredCol();
         break;
-      case 't':
+      case 't': case 'Enter':
         this.scrollTop = Math.max(0, Math.min(this.cursor.row, maxST));
         this.cursor.col = this._firstNonBlank(this.cursor.row);
         this._updateDesiredCol();
         break;
-      case 'b':
+      case 'b': case '-':
         this.scrollTop = Math.max(0, Math.min(this.cursor.row - this._textRows + 1, maxST));
         this.cursor.col = this._firstNonBlank(this.cursor.row);
         this._updateDesiredCol();
         break;
+      case '+': {
+        // z+ — line below window to top, first non-blank
+        const textRows = this.rows - 1; // status line
+        let bottomRow = this.scrollTop;
+        for (let i = 0; i < textRows && bottomRow < this.buffer.lineCount - 1; bottomRow++) {
+          i++;
+        }
+        const newTop = Math.min(bottomRow, this.buffer.lineCount - 1);
+        this.scrollTop = newTop;
+        this.cursor.row = newTop;
+        this.cursor.col = this._firstNonBlank(this.cursor.row);
+        this._updateDesiredCol();
+        break;
+      }
+      case '^': {
+        // z^ — line above window to bottom, first non-blank
+        const textRows = this.rows - 1;
+        const lineAbove = Math.max(0, this.scrollTop - 1);
+        const newTop = Math.max(0, lineAbove - textRows + 1);
+        this.scrollTop = newTop;
+        this.cursor.row = lineAbove;
+        this.cursor.col = this._firstNonBlank(this.cursor.row);
+        this._updateDesiredCol();
+        break;
+      }
+      case 'f':
+        // zf is an operator - set pending and wait for motion
+        this._pendingOp = 'zf';
+        this._opStartPos = { ...this.cursor };
+        return;
+      case 'o': {
+        const fold = this._findFoldAt(this.cursor.row);
+        if (fold) fold.closed = false;
+        break;
+      }
+      case 'O': {
+        const folds = this._findAllFoldsAt(this.cursor.row);
+        for (const f of folds) f.closed = false;
+        break;
+      }
+      case 'c': {
+        const fold = this._findFoldAt(this.cursor.row);
+        if (fold) fold.closed = true;
+        break;
+      }
+      case 'C': {
+        const folds = this._findAllFoldsAt(this.cursor.row);
+        for (const f of folds) f.closed = true;
+        break;
+      }
+      case 'd': {
+        const fold = this._findFoldAt(this.cursor.row);
+        if (fold) {
+          const idx = this._folds.indexOf(fold);
+          if (idx >= 0) this._folds.splice(idx, 1);
+        }
+        break;
+      }
+      case 'D': {
+        const folds = this._findAllFoldsAt(this.cursor.row);
+        for (const f of folds) {
+          const idx = this._folds.indexOf(f);
+          if (idx >= 0) this._folds.splice(idx, 1);
+        }
+        break;
+      }
+      case 'E':
+        this._folds = [];
+        break;
+      case 'R':
+        for (const f of this._folds) f.closed = false;
+        break;
+      case 'M':
+        for (const f of this._folds) f.closed = true;
+        break;
+      case 'a': {
+        const fold = this._findFoldAt(this.cursor.row);
+        if (fold) fold.closed = !fold.closed;
+        break;
+      }
+      case 'A': {
+        const folds = this._findAllFoldsAt(this.cursor.row);
+        const anyOpen = folds.some(f => !f.closed);
+        for (const f of folds) f.closed = anyOpen;
+        break;
+      }
+      case 'j': {
+        // Move to next fold start
+        let nextFold = null;
+        for (const f of this._folds) {
+          if (f.startRow > this.cursor.row) {
+            if (!nextFold || f.startRow < nextFold.startRow) nextFold = f;
+          }
+        }
+        if (nextFold) {
+          this.cursor.row = nextFold.startRow;
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+          this._updateDesiredCol();
+        }
+        break;
+      }
+      case 'k': {
+        // Move to previous fold end
+        let prevFold = null;
+        for (const f of this._folds) {
+          if (f.endRow < this.cursor.row) {
+            if (!prevFold || f.endRow > prevFold.endRow) prevFold = f;
+          }
+        }
+        if (prevFold) {
+          this.cursor.row = prevFold.startRow;
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+          this._updateDesiredCol();
+        }
+        break;
+      }
+    }
+  }
+
+  // ── Window split helpers ──
+
+  _saveWindowState() {
+    const w = this._windows[this._activeWin];
+    if (!w) return;
+    w.cursor = { ...this.cursor };
+    w.scrollTop = this.scrollTop;
+    w.folds = this._folds;
+    w._desiredCol = this._desiredCol;
+    w.buffer = this.buffer;
+  }
+
+  _restoreWindowState() {
+    const w = this._windows[this._activeWin];
+    if (!w) return;
+    this.buffer = w.buffer;
+    this.cursor = { ...w.cursor };
+    this.scrollTop = w.scrollTop;
+    this._folds = w.folds;
+    this._desiredCol = w._desiredCol || 0;
+  }
+
+  _switchToWindow(idx) {
+    if (idx < 0 || idx >= this._windows.length || idx === this._activeWin) return;
+    this._saveWindowState();
+    this._activeWin = idx;
+    this._restoreWindowState();
+  }
+
+  _doSplit() {
+    this._saveWindowState();
+    const cur = this._windows[this._activeWin];
+    const newWin = {
+      buffer: cur.buffer,
+      cursor: { ...cur.cursor },
+      scrollTop: cur.scrollTop,
+      folds: cur.folds.map(f => ({ ...f })),
+      _desiredCol: cur._desiredCol || 0,
+    };
+    // Insert new window at current position (new on top, old shifts down)
+    this._windows.splice(this._activeWin, 0, newWin);
+    // activeWin now points to the new window (top)
+    this._restoreWindowState();
+  }
+
+  _doCloseWindow() {
+    if (this._windows.length <= 1) return; // Can't close last window
+    this._windows.splice(this._activeWin, 1);
+    if (this._activeWin >= this._windows.length) {
+      this._activeWin = this._windows.length - 1;
+    }
+    this._restoreWindowState();
+  }
+
+  _doOnlyWindow() {
+    if (this._windows.length <= 1) return;
+    this._saveWindowState();
+    const cur = this._windows[this._activeWin];
+    this._windows = [cur];
+    this._activeWin = 0;
+    this._restoreWindowState();
+  }
+
+  // ── Ctrl-W (window) prefix ──
+
+  _handleCtrlW(key) {
+    switch (key) {
+      case 's': case 'Ctrl-S':
+        this._doSplit();
+        break;
+      case 'v': case 'Ctrl-V':
+        // For now, vertical split behaves same as horizontal (flat model)
+        this._doSplit();
+        break;
+      case 'w': case 'Ctrl-W':
+        // Cycle to next window
+        if (this._windows.length > 1) {
+          const next = (this._activeWin + 1) % this._windows.length;
+          this._switchToWindow(next);
+        }
+        break;
+      case 'j': case 'Ctrl-J': case 'ArrowDown':
+        // Move to window below
+        if (this._activeWin < this._windows.length - 1) {
+          this._switchToWindow(this._activeWin + 1);
+        }
+        break;
+      case 'k': case 'Ctrl-K': case 'ArrowUp':
+        // Move to window above
+        if (this._activeWin > 0) {
+          this._switchToWindow(this._activeWin - 1);
+        }
+        break;
+      case 'h': case 'Ctrl-H': case 'ArrowLeft':
+        // Move to window left (same as up for horizontal-only splits)
+        if (this._activeWin > 0) {
+          this._switchToWindow(this._activeWin - 1);
+        }
+        break;
+      case 'l': case 'Ctrl-L': case 'ArrowRight':
+        // Move to window right (same as down for horizontal-only splits)
+        if (this._activeWin < this._windows.length - 1) {
+          this._switchToWindow(this._activeWin + 1);
+        }
+        break;
+      case 'c': case 'q':
+        // Close current window
+        this._doCloseWindow();
+        break;
+      case 'o':
+        // Only: close all other windows
+        this._doOnlyWindow();
+        break;
+      case '=':
+        // Equalize window sizes (handled by renderer)
+        break;
+      case '_':
+        // Maximize current window height (handled by renderer)
+        break;
+      case '+':
+        // Increase window height (no-op for now)
+        break;
+      case '-':
+        // Decrease window height (no-op for now)
+        break;
+      default:
+        break;
+    }
+  }
+
+  // ── Fold helpers ──
+
+  // Find the innermost fold containing the given row
+  _findFoldAt(row) {
+    let best = null;
+    for (const f of this._folds) {
+      if (row >= f.startRow && row <= f.endRow) {
+        if (!best || (f.endRow - f.startRow) < (best.endRow - best.startRow)) {
+          best = f;
+        }
+      }
+    }
+    return best;
+  }
+
+  // Find all folds containing the given row
+  _findAllFoldsAt(row) {
+    return this._folds.filter(f => row >= f.startRow && row <= f.endRow);
+  }
+
+  // Get the closed fold that hides this row (if any)
+  // Returns the fold if row is inside a closed fold AND row !== fold.startRow
+  // (the fold start line is always visible)
+  getFoldHidingRow(row) {
+    for (const f of this._folds) {
+      if (f.closed && row > f.startRow && row <= f.endRow) {
+        return f;
+      }
+    }
+    return null;
+  }
+
+  // Get the closed fold starting at this row (if any)
+  getClosedFoldAt(row) {
+    for (const f of this._folds) {
+      if (f.closed && f.startRow === row) {
+        return f;
+      }
+    }
+    return null;
+  }
+
+  // Get the next visible row in the given direction (1=down, -1=up)
+  _nextVisibleRow(row, direction) {
+    let r = row + direction;
+    while (r >= 0 && r < this.buffer.lineCount) {
+      if (!this.getFoldHidingRow(r)) return r;
+      r += direction;
+    }
+    return row; // Can't move
+  }
+
+  // If cursor is inside a closed fold (not on the start line), move to fold start
+  _adjustCursorForFolds() {
+    const fold = this.getFoldHidingRow(this.cursor.row);
+    if (fold) {
+      this.cursor.row = fold.startRow;
+      this.cursor.col = this._firstNonBlank(this.cursor.row);
+      this._updateDesiredCol();
     }
   }
 
@@ -2113,9 +3337,11 @@ export class VimEngine {
       this._pendingOpForSearch = '';
       this._opStartPosForSearch = null;
       this._visualCmdRange = null;
+      this._filterRange = null;
+      this._cmdHistoryPos = -1;
       return;
     }
-    if (key === 'Enter') { this._executeCommand(); return; }
+    if (key === 'Enter' || key === 'Ctrl-J' || key === 'Ctrl-M') { this._executeCommand(); return; }
     if (key === 'Backspace') {
       if (this._searchInput.length > 0) {
         this._searchInput = this._searchInput.slice(0, -1);
@@ -2123,7 +3349,92 @@ export class VimEngine {
       } else {
         this.mode = Mode.NORMAL; this.commandLine = '';
         this._visualCmdRange = null;
+        this._filterRange = null;
+        this._cmdHistoryPos = -1;
       }
+      return;
+    }
+    if (key === 'Ctrl-U') {
+      this._searchInput = '';
+      this.commandLine = this.commandLine[0];
+      return;
+    }
+    if (key === 'Ctrl-W') {
+      // Delete word backward: strip trailing whitespace, then strip one word
+      // Vim word: keyword chars (a-z, A-Z, 0-9, _) or non-keyword non-whitespace chars
+      let s = this._searchInput;
+      // Strip trailing whitespace first
+      s = s.replace(/\s+$/, '');
+      if (s.length > 0) {
+        const last = s[s.length - 1];
+        if (/\w/.test(last)) {
+          // keyword chars
+          s = s.replace(/\w+$/, '');
+        } else {
+          // non-keyword non-whitespace chars
+          s = s.replace(/[^\w\s]+$/, '');
+        }
+      }
+      this._searchInput = s;
+      this.commandLine = this.commandLine[0] + this._searchInput;
+      return;
+    }
+    if (key === 'ArrowUp') {
+      const prefix = this.commandLine[0];
+      if (this._cmdHistory.length === 0) return;
+      if (this._cmdHistoryPos < 0) {
+        this._cmdHistorySaved = this._searchInput;
+        this._cmdHistoryPos = this._cmdHistory.length - 1;
+      } else if (this._cmdHistoryPos > 0) {
+        this._cmdHistoryPos--;
+      } else {
+        return;
+      }
+      this._searchInput = this._cmdHistory[this._cmdHistoryPos];
+      this.commandLine = prefix + this._searchInput;
+      return;
+    }
+    if (key === 'ArrowDown') {
+      const prefix = this.commandLine[0];
+      if (this._cmdHistoryPos < 0) return;
+      if (this._cmdHistoryPos < this._cmdHistory.length - 1) {
+        this._cmdHistoryPos++;
+        this._searchInput = this._cmdHistory[this._cmdHistoryPos];
+      } else {
+        this._cmdHistoryPos = -1;
+        this._searchInput = this._cmdHistorySaved || '';
+      }
+      this.commandLine = prefix + this._searchInput;
+      return;
+    }
+    if (this._cmdPendingCtrlR) {
+      this._cmdPendingCtrlR = false;
+      let regText = '';
+      if (/^[a-zA-Z0-9]$/.test(key) || '+-*_/"'.includes(key)) {
+        this._pendingRegKey = (key === '"') ? '' : key;
+        if (key === '"') {
+          regText = this._unnamedReg || '';
+        } else {
+          const r = this._getReg();
+          regText = r.text || '';
+        }
+      } else if (key === '/') {
+        regText = this._searchPattern || '';
+      } else if (key === ':') {
+        regText = this._lastExCommand || '';
+      } else if (key === '%') {
+        regText = this._fileName || '';
+      }
+      if (regText) {
+        // Insert register contents into command/search input (strip newlines)
+        const clean = regText.replace(/\n/g, '');
+        this._searchInput += clean;
+        this.commandLine = this.commandLine[0] + this._searchInput;
+      }
+      return;
+    }
+    if (key === 'Ctrl-R') {
+      this._cmdPendingCtrlR = true;
       return;
     }
     if (key.length === 1) {
@@ -2361,14 +3672,7 @@ export class VimEngine {
     // Snapshot is saved after finding matches (to set cursor at first match)
 
     // Build regex
-    let jsPattern = pattern
-      .replace(/\\\+/g, '+')
-      .replace(/\\\?/g, '?')
-      .replace(/\\\(/g, '(')
-      .replace(/\\\)/g, ')')
-      .replace(/\\\|/g, '|')
-      .replace(/\\\{/g, '{')
-      .replace(/\\\}/g, '}');
+    let jsPattern = this._vimPatternToJs(pattern);
     let caseFlag = this._searchCaseFlag();
     let regex;
     try { regex = new RegExp(jsPattern, caseFlag); } catch {
@@ -2458,6 +3762,12 @@ export class VimEngine {
     const cmd = this._searchInput.replace(/^\s+/, ''); // trim leading whitespace only
     this.mode = Mode.NORMAL;
 
+    // Push to command history
+    if (cmd) {
+      this._cmdHistory.push(cmd);
+    }
+    this._cmdHistoryPos = -1;
+
     if (prefix === '/' || prefix === '?') {
       if (cmd) {
         this._addJumpEntry();
@@ -2520,12 +3830,108 @@ export class VimEngine {
     // Store every : command for @: replay
     this._lastExCommand = cmd;
 
+    // If _filterRange is set and the user typed something after the pre-filled range+!,
+    // pass through as _lastExCommand so the session can handle the filter
+    if (this._filterRange && cmd.includes('!')) {
+      this._lastExCommand = cmd;
+      this.commandLine = '';
+      return;
+    }
+
+    // Detect :{range}!cmd (filter through shell) — pass to session
+    // This catches %!sort, 1,5!sort, .,.+3!sort, '<,'>!sort, etc.
+    {
+      const parsed = this._parseExRange(cmd);
+      if (parsed.hasRange && parsed.rest.startsWith('!')) {
+        this._lastExCommand = cmd;
+        this.commandLine = '';
+        return;
+      }
+    }
+
     // : commands — file/quit operations (with nvim-style abbreviations)
     // :w[rite], :wq, :x[it], :q[uit], :q[uit]!, :e[dit], :r[ead], :!
     // Set _lastExCommand so SessionManager can intercept; clear commandLine.
-    if (/^(w(r(i(te?)?)?)?|wq|x(it?)?|q(u(it?)?)?!?)(\s|$)/.test(cmd) || /^e(d(it?)?)?!?(\s|$)/.test(cmd) || /^r(e(ad?)?)?!/.test(cmd) || /^r(e(ad?)?)?(\s|$)/.test(cmd) || cmd.startsWith('!')) {
+    if (/^(w(r(i(te?)?)?)?|wq|x(it?)?|q(u(it?)?)?!?|qa!?|wa!?|wqa!?|xa!?|sav(e(as?)?)?)(\s|$)/.test(cmd) || /^e(d(it?)?)?!?(\s|$)/.test(cmd) || /^r(e(ad?)?)?!/.test(cmd) || /^r(e(ad?)?)?(\s|$)/.test(cmd) || cmd.startsWith('!')) {
       this._lastExCommand = cmd;
       this.commandLine = '';
+      return;
+    }
+
+    // :sp[lit] — horizontal split
+    if (/^sp(l(it?)?)?(\s|$)/.test(cmd)) {
+      this._doSplit();
+      this.commandLine = '';
+      return;
+    }
+
+    // :vsp[lit] — vertical split (uses same horizontal model for now)
+    if (/^vs(p(l(it?)?)?)?(\s|$)/.test(cmd)) {
+      this._doSplit();
+      this.commandLine = '';
+      return;
+    }
+
+    // :new — new empty buffer in split
+    if (/^new(\s|$)/.test(cmd)) {
+      this._doSplit();
+      // Clear the active window's buffer
+      this.buffer = new Buffer(['']);
+      this.cursor = { row: 0, col: 0 };
+      this.scrollTop = 0;
+      this._fileName = null;
+      this._saveWindowState();
+      this.commandLine = '';
+      return;
+    }
+
+    // :enew[!] — edit new unnamed buffer
+    if (/^ene(w!?)?(\s|$)/.test(cmd)) {
+      this.buffer = new Buffer(['']);
+      this.cursor = { row: 0, col: 0 };
+      this.scrollTop = 0;
+      this._fileName = null;
+      this._undoStack = [];
+      this._redoStack = [];
+      this._changeCount = 0;
+      this.commandLine = '';
+      return;
+    }
+
+    // :clo[se] — close current window
+    if (/^clo(se?)?$/.test(cmd)) {
+      this._doCloseWindow();
+      this.commandLine = '';
+      return;
+    }
+
+    // :on[ly] — close all other windows
+    if (/^on(ly?)?$/.test(cmd)) {
+      this._doOnlyWindow();
+      this.commandLine = '';
+      return;
+    }
+
+    // :pwd — display current directory
+    if (cmd === 'pwd') {
+      this.commandLine = '/home/user';
+      this._stickyCommandLine = true;
+      return;
+    }
+
+    // :echo — display expression result
+    if (/^echo(\s|$)/.test(cmd)) {
+      const arg = cmd.slice(4).trim();
+      let result = '';
+      if (arg.startsWith("'") && arg.endsWith("'") && arg.length >= 2) {
+        result = arg.slice(1, -1);
+      } else if (arg.startsWith('"') && arg.endsWith('"') && arg.length >= 2) {
+        result = arg.slice(1, -1);
+      } else {
+        result = arg;
+      }
+      this.commandLine = result;
+      this._echoMessage = result;
       return;
     }
 
@@ -2609,6 +4015,45 @@ export class VimEngine {
 
       this._messagePrompt = { lines: promptLines };
       this.commandLine = '';
+      return;
+    }
+
+    // :f[ile] — show file info
+    if (/^f(i(le?)?)?\s*$/.test(rest)) {
+      const name = this._fileName || '[No Name]';
+      const mod = this._changeCount > 0 ? ' [Modified]' : '';
+      const lines = this.buffer.lineCount;
+      this.commandLine = '"' + name + '"' + mod + ' ' + lines + ' line' + (lines !== 1 ? 's' : '');
+      this._stickyCommandLine = true;
+      return;
+    }
+
+    // :delm[arks] {marks} or :delm[arks]!
+    {
+      const delmMatch = rest.match(/^delm(a(r(ks?)?)?)?\s*(.*)/);
+      if (delmMatch) {
+        const arg = delmMatch[4].trim();
+        if (arg === '!') {
+          // Delete all lowercase marks
+          this._marks = {};
+        } else {
+          // Delete specified marks
+          for (const ch of arg) {
+            if (/[a-z]/.test(ch)) {
+              delete this._marks[ch];
+            }
+          }
+        }
+        this.commandLine = '';
+        return;
+      }
+    }
+
+    // :undol[ist] — show undo info
+    if (/^undol(i(st?)?)?\s*$/.test(rest)) {
+      const numEntries = this._undoStack.length;
+      this.commandLine = 'number of changes: ' + numEntries;
+      this._stickyCommandLine = true;
       return;
     }
 
@@ -2819,14 +4264,7 @@ export class VimEngine {
         this._showCurSearch = true;
 
         // Translate vim "magic" regex to JavaScript regex
-        let jsPattern = pattern
-          .replace(/\\\+/g, '+')
-          .replace(/\\\?/g, '?')
-          .replace(/\\\(/g, '(')
-          .replace(/\\\)/g, ')')
-          .replace(/\\\|/g, '|')
-          .replace(/\\\{/g, '{')
-          .replace(/\\\}/g, '}');
+        let jsPattern = this._vimPatternToJs(pattern);
 
         // Handle & in replacement: vim's & means "whole match" → JS $&
         // But \& is a literal & in vim → keep as &
@@ -2835,7 +4273,8 @@ export class VimEngine {
           .replace(/\\&/g, '\x00AMP')       // protect literal \&
           .replace(/\$/g, '$$$$')            // escape bare $ (vim $ is literal, JS $ is special)
           .replace(/&/g, '$$&')              // vim & → JS $& ($$& in .replace = literal $ + &)
-          .replace(/\x00AMP/g, '&');         // restore literal &
+          .replace(/\x00AMP/g, '&')          // restore literal &
+          .replace(/\\([1-9])/g, '$$$1');    // vim \1-\9 → JS $1-$9
 
         // Build regex
         let caseFlag = icFlag ? 'i' : this._searchCaseFlag();
@@ -2993,6 +4432,45 @@ export class VimEngine {
         const count = slice.length;
         this.commandLine = `${count} line${count !== 1 ? 's' : ''} sorted`;
         this._stickyCommandLine = true;
+        return;
+      }
+    }
+
+    // :retab[!] [N]
+    {
+      const retabMatch = rest.match(/^ret(ab?)?(!)?\s*(\d+)?\s*$/);
+      if (retabMatch) {
+        const bang = !!retabMatch[2];
+        const oldTs = this._settings.tabstop;
+        const newTs = retabMatch[3] ? parseInt(retabMatch[3], 10) : oldTs;
+        if (retabMatch[3]) this._settings.tabstop = newTs;
+        this._saveSnapshot();
+        this._redoStack = [];
+        const rsr = hasRange ? sr : 0;
+        const rer = hasRange ? er : this.buffer.lineCount - 1;
+        if (this._settings.expandtab || bang) {
+          // Convert tabs to spaces using the OLD tabstop for visual width
+          for (let r = rsr; r <= rer; r++) {
+            this.buffer.lines[r] = this.buffer.lines[r].replace(/\t/g, ' '.repeat(oldTs));
+          }
+        } else {
+          // Convert spaces to tabs using new tabstop
+          for (let r = rsr; r <= rer; r++) {
+            const line = this.buffer.lines[r];
+            const match = line.match(/^( +)/);
+            if (match) {
+              const leading = match[1];
+              const tabCount = Math.floor(leading.length / newTs);
+              const remainder = leading.length % newTs;
+              this.buffer.lines[r] = '\t'.repeat(tabCount) + ' '.repeat(remainder) + line.slice(leading.length);
+            }
+          }
+        }
+        // Place cursor on first non-blank of current line (like nvim)
+        const line = this.buffer.lines[this.cursor.row];
+        const fnb = line.search(/\S/);
+        this.cursor.col = fnb >= 0 ? fnb : 0;
+        this.commandLine = '';
         return;
       }
     }
@@ -3357,8 +4835,9 @@ export class VimEngine {
       nu: 'number', rnu: 'relativenumber',
       ic: 'ignorecase', scs: 'smartcase',
       et: 'expandtab', ai: 'autoindent',
-      cul: 'cursorline',
+      cul: 'cursorline', hls: 'hlsearch',
       ts: 'tabstop', sw: 'shiftwidth', so: 'scrolloff',
+      is: 'incsearch', sb: 'splitbelow', spr: 'splitright',
     };
     for (const arg of args) {
       if (!arg) continue;
@@ -3391,6 +4870,8 @@ export class VimEngine {
         continue;
       }
     }
+    // Sync hlsearch active state with setting
+    this._hlsearchActive = this._settings.hlsearch;
   }
 
   // ── Insert mode ──
@@ -3428,6 +4909,32 @@ export class VimEngine {
     }
     this._saveForDot(key);
     switch (key) {
+      case 'Ctrl-A': {
+        // Re-insert previously inserted text
+        if (this._lastInsertedText) {
+          for (const ch of this._lastInsertedText) {
+            if (ch === '\n') {
+              // Split line
+              const line = this.buffer.lines[this.cursor.row];
+              const before = line.slice(0, this.cursor.col);
+              const after = line.slice(this.cursor.col);
+              this.buffer.lines[this.cursor.row] = before;
+              this.buffer.lines.splice(this.cursor.row + 1, 0, after);
+              this.cursor.row++;
+              this.cursor.col = 0;
+            } else {
+              // Insert character
+              const line = this.buffer.lines[this.cursor.row];
+              this.buffer.lines[this.cursor.row] = line.slice(0, this.cursor.col) + ch + line.slice(this.cursor.col);
+              this.cursor.col++;
+            }
+          }
+        } else {
+          this._insertError = 'E29: No inserted text yet';
+        }
+        break;
+      }
+      case 'Ctrl-C':
       case 'Escape': {
         // Handle count-prefix insert (e.g. 3iHa<Esc> -> HaHaHa)
         if (this._insertCount > 1) {
@@ -3449,6 +4956,22 @@ export class VimEngine {
           }
           this._insertCount = 1;
         }
+        // Compute last inserted text for ". register
+        {
+          let insText = '';
+          for (let ri = 1; ri < this._recordedKeys.length; ri++) {
+            const k = this._recordedKeys[ri];
+            if (k === 'Escape') continue;
+            if (k === 'Ctrl-R') { ri++; continue; } // skip register name
+            if (k === 'Enter' || k === 'Ctrl-J') { insText += '\n'; continue; }
+            if (k === 'Backspace' || k === 'Ctrl-H') {
+              if (insText.length > 0) insText = insText.slice(0, -1);
+              continue;
+            }
+            if (k.length === 1 && k >= ' ') insText += k;
+          }
+          this._lastInsertedText = insText;
+        }
         // Save cursor position before adjusting for gi
         this._lastInsertPos = { row: this.cursor.row, col: this.cursor.col };
         // Update change list with the position after editing (for `. mark)
@@ -3456,9 +4979,58 @@ export class VimEngine {
           const endCol = Math.max(0, this.cursor.col - 1);
           this._changeList[this._changeList.length - 1] = { row: this.cursor.row, col: endCol };
         }
-        this.mode = Mode.NORMAL; this.commandLine = '';
+        this.mode = Mode.NORMAL;
+        // Preserve error messages (e.g. E29) set during insert mode
+        if (this._insertError) {
+          this.commandLine = this._insertError;
+          this._insertError = null;
+          this._stickyCommandLine = true;
+          this._errorCmdLineCursor = true;
+        } else {
+          this.commandLine = '';
+        }
         if (this.cursor.col > 0) this.cursor.col--;
         this._stopRecording(); this._redoStack = [];
+
+        // Handle block insert state (visual block I/A/c): apply typed text to all rows
+        if (this._blockInsertState) {
+          const bs = this._blockInsertState;
+          this._blockInsertState = null;
+          const newLine = this.buffer.lines[bs.editRow];
+          const lenDiff = newLine.length - bs.origLine.length;
+          const typedText = lenDiff > 0 ? newLine.slice(bs.insertCol, bs.insertCol + lenDiff) : '';
+          if (typedText.length > 0) {
+            for (let r = bs.topRow; r <= bs.bottomRow; r++) {
+              if (r === bs.editRow) continue;
+              const line = this.buffer.lines[r];
+              if (bs.mode === 'I') {
+                // Insert at leftCol
+                const padded = line.length < bs.leftCol ? line + ' '.repeat(bs.leftCol - line.length) : line;
+                this.buffer.lines[r] = padded.slice(0, bs.leftCol) + typedText + padded.slice(bs.leftCol);
+              } else if (bs.mode === 'A') {
+                if (bs.dollar) {
+                  // Append at end of line
+                  this.buffer.lines[r] = line + typedText;
+                } else {
+                  // Insert at rightCol + 1
+                  const insertAt = bs.rightCol + 1;
+                  const padded = line.length < insertAt ? line + ' '.repeat(insertAt - line.length) : line;
+                  this.buffer.lines[r] = padded.slice(0, insertAt) + typedText + padded.slice(insertAt);
+                }
+              } else if (bs.mode === 'c') {
+                // Block columns already deleted; insert typed text at leftCol
+                const padded = line.length < bs.leftCol ? line + ' '.repeat(bs.leftCol - line.length) : line;
+                this.buffer.lines[r] = padded.slice(0, bs.leftCol) + typedText + padded.slice(bs.leftCol);
+              }
+            }
+          }
+          // For I and A, cursor goes to (topRow, leftCol); for c, stays at normal Esc position
+          if (bs.mode === 'I' || bs.mode === 'A') {
+            this.cursor.row = bs.topRow;
+            this.cursor.col = bs.leftCol;
+          }
+        }
+
         this._updateDesiredCol();
         // Update CurSearch position after text changes from insert mode
         if (this._showCurSearch) this._updateCurSearchPos();
@@ -3553,6 +5125,60 @@ export class VimEngine {
         }
         this._insertCount = 1;
         break;
+      case 'Ctrl-O': {
+        // Execute one normal-mode command, then return to insert
+        this._insertOneShot = true;
+        this.mode = Mode.NORMAL;
+        this.commandLine = '-- (insert) --';
+        return;
+      }
+      case 'Ctrl-T': {
+        // Indent current line by one shiftwidth
+        const lineBeforeT = this.buffer.lines[this.cursor.row];
+        const oldLenT = lineBeforeT.length;
+        this._shiftLineRight(this.cursor.row);
+        // Adjust cursor position by the actual change in line length
+        const lineAfterT = this.buffer.lines[this.cursor.row];
+        const addedT = lineAfterT.length - oldLenT;
+        this.cursor.col = Math.min(this.cursor.col + addedT, lineAfterT.length);
+        break;
+      }
+      case 'Ctrl-D': {
+        // Unindent current line by one shiftwidth
+        const lineBefore = this.buffer.lines[this.cursor.row];
+        const oldLen = lineBefore.length;
+        this._shiftLineLeft(this.cursor.row);
+        const lineAfterD = this.buffer.lines[this.cursor.row];
+        const removed = oldLen - lineAfterD.length;
+        this.cursor.col = Math.max(0, this.cursor.col - removed);
+        break;
+      }
+      case 'Ctrl-E': {
+        // Insert character from line below at current column
+        const belowRow = this.cursor.row + 1;
+        if (belowRow < this.buffer.lineCount) {
+          const belowLine = this.buffer.lines[belowRow];
+          if (this.cursor.col < belowLine.length) {
+            const ch = belowLine[this.cursor.col];
+            this.buffer.insertChar(this.cursor.row, this.cursor.col, ch);
+            this.cursor.col++;
+          }
+        }
+        break;
+      }
+      case 'Ctrl-Y': {
+        // Insert character from line above at current column
+        const aboveRow = this.cursor.row - 1;
+        if (aboveRow >= 0) {
+          const aboveLine = this.buffer.lines[aboveRow];
+          if (this.cursor.col < aboveLine.length) {
+            const ch = aboveLine[this.cursor.col];
+            this.buffer.insertChar(this.cursor.row, this.cursor.col, ch);
+            this.cursor.col++;
+          }
+        }
+        break;
+      }
       case 'Ctrl-R': // Ctrl-R: paste from register
         this._pendingCtrlR = true;
         return; // don't fall through
@@ -3729,6 +5355,13 @@ export class VimEngine {
         this.mode = Mode.NORMAL; this.commandLine = '';
         this._pendingCount = ''; return;
       }
+      if (key === 't') {
+        // Tag surround: enter tag input mode
+        this._pendingTagInput = { buffer: '', context: 'S', vs };
+        this.mode = Mode.NORMAL;
+        this.commandLine = '';
+        return;
+      }
       const savedCursor = { ...this.cursor };
       this.cursor = { row: vs.sr, col: vs.sc };
       this._saveSnapshot();
@@ -3784,10 +5417,32 @@ export class VimEngine {
       this._pendingCount = ''; return;
     }
 
+    // Pending z prefix
+    if (this._pendingZ) {
+      this._pendingZ = false;
+      if (key === 'f') {
+        // zf in visual mode: create fold from selection
+        this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
+        const sr = Math.min(this._visualStart.row, this.cursor.row);
+        const er = Math.max(this._visualStart.row, this.cursor.row);
+        if (sr < er) {
+          this._folds.push({ startRow: sr, endRow: er, closed: true });
+          this._folds.sort((a, b) => a.startRow - b.startRow);
+        }
+        this.cursor.row = sr;
+        this.cursor.col = this._firstNonBlank(sr);
+        this._updateDesiredCol();
+        this.mode = Mode.NORMAL;
+        this.commandLine = '';
+      }
+      this._pendingCount = '';
+      return;
+    }
+
     // Pending register selection ("x)
     if (this._pendingDblQuote) {
       this._pendingDblQuote = false;
-      if (key.length === 1 && (/^[a-zA-Z0-9]$/.test(key) || '+-*_/\"'.includes(key))) {
+      if (key.length === 1 && (/^[a-zA-Z0-9]$/.test(key) || '+-*_/".:'.includes(key))) {
         this._pendingRegKey = key;
       }
       return;
@@ -3796,6 +5451,29 @@ export class VimEngine {
     if (key === '"') {
       this._pendingDblQuote = true;
       return;
+    }
+
+    if (key === 'z') {
+      this._pendingZ = true;
+      return;
+    }
+
+    if (key === '!') {
+      // Visual mode !: enter command mode with filter for visual range
+      this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
+      const sr = Math.min(this._visualStart.row, this.cursor.row);
+      const er = Math.max(this._visualStart.row, this.cursor.row);
+      this._visualCmdRange = {
+        start: sr, end: er,
+        visMode: this.mode,
+        visStart: { ...this._visualStart },
+        visEnd: { ...this.cursor },
+      };
+      this._filterRange = { sr, er };
+      this.mode = Mode.COMMAND;
+      this._searchInput = "'<,'>!";
+      this.commandLine = ":'<,'>!";
+      this._pendingCount = ''; return;
     }
 
     if (key === ':') {
@@ -3823,21 +5501,51 @@ export class VimEngine {
       if (this.mode === Mode.VISUAL) {
         this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
         this.mode = Mode.NORMAL; this.commandLine = '';
-      } else { this.mode = Mode.VISUAL; this.commandLine = '-- VISUAL --'; }
+      } else { this.mode = Mode.VISUAL; this._visualBlockDollar = false; this.commandLine = '-- VISUAL --'; }
       this._pendingCount = ''; return;
     }
     if (key === 'V') {
       if (this.mode === Mode.VISUAL_LINE) {
         this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
         this.mode = Mode.NORMAL; this.commandLine = '';
-      } else { this.mode = Mode.VISUAL_LINE; this.commandLine = '-- VISUAL LINE --'; }
+      } else { this.mode = Mode.VISUAL_LINE; this._visualBlockDollar = false; this.commandLine = '-- VISUAL LINE --'; }
+      this._pendingCount = ''; return;
+    }
+    if (key === 'Ctrl-V') {
+      if (this.mode === Mode.VISUAL_BLOCK) {
+        this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
+        this.mode = Mode.NORMAL; this.commandLine = '';
+      } else { this.mode = Mode.VISUAL_BLOCK; this._visualBlockDollar = false; this.commandLine = '-- VISUAL BLOCK --'; }
       this._pendingCount = ''; return;
     }
     if (key === 'o' || key === 'O') {
-      const t = { ...this._visualStart };
-      this._visualStart = { ...this.cursor };
-      this.cursor = t;
+      if (this.mode === Mode.VISUAL_BLOCK && key === 'O') {
+        // In visual_block, O swaps horizontal position only
+        const tmpCol = this._visualStart.col;
+        this._visualStart.col = this.cursor.col;
+        this.cursor.col = tmpCol;
+      } else {
+        const t = { ...this._visualStart };
+        this._visualStart = { ...this.cursor };
+        this.cursor = t;
+      }
       this._pendingCount = ''; return;
+    }
+
+    // Pending bracket command in visual mode
+    if (this._pendingBracket) {
+      const bracket = this._pendingBracket;
+      this._pendingBracket = '';
+      if (key !== 'Escape') {
+        this._handleBracketCommand(bracket, key);
+      }
+      this._pendingCount = ''; return;
+    }
+
+    // Bracket command prefix in visual mode
+    if (key === '[' || key === ']') {
+      this._pendingBracket = key;
+      return;
     }
 
     // Text object prefixes
@@ -3881,7 +5589,22 @@ export class VimEngine {
     }
 
     // Actions
-    const actionKeys = new Set(['d','c','y','>','<','~','U','u','J','p','x','s','r','Delete']);
+    const actionKeys = new Set(['d','c','y','>','<','~','U','u','J','p','x','s','r','Delete','=']);
+
+    // Visual Block: I/A for block insert/append
+    if (this.mode === Mode.VISUAL_BLOCK && (key === 'I' || key === 'A')) {
+      this._doVisualBlockInsert(key);
+      this._pendingCount = '';
+      return;
+    }
+
+    // Visual Block: route block actions to dedicated handler
+    if (this.mode === Mode.VISUAL_BLOCK && actionKeys.has(key)) {
+      this._doVisualBlockAction(key);
+      this._pendingCount = '';
+      return;
+    }
+
     if (actionKeys.has(key)) {
       this._doVisualAction(key);
       this._pendingCount = '';
@@ -3893,6 +5616,15 @@ export class VimEngine {
     // Sentence motions are exclusive — in visual mode, the cursor char is not highlighted
     const exclusiveVisualMotions = new Set([')', '(']);
     this._visualExclusive = exclusiveVisualMotions.has(key);
+    // Track _visualBlockDollar for visual_block $ motion
+    if (this.mode === Mode.VISUAL_BLOCK) {
+      if (key === '$') {
+        this._visualBlockDollar = true;
+      } else if (key !== 'j' && key !== 'k' && key !== 'ArrowDown' && key !== 'ArrowUp'
+          && key !== 'G' && key !== 'H' && key !== 'M' && key !== 'L') {
+        this._visualBlockDollar = false;
+      }
+    }
   }
 
   _doVisualAction(key) {
@@ -4067,6 +5799,20 @@ export class VimEngine {
         this._redoStack = [];
         break;
       }
+      case '=': {
+        this._cindent(sr, er);
+        this.mode = Mode.NORMAL; this.commandLine = '';
+        this.cursor.row = sr;
+        this.cursor.col = 0;
+        const lineCount = er - sr + 1;
+        if (lineCount > 2) {
+          this.commandLine = lineCount + ' lines indented';
+          this._stickyCommandLine = true;
+        }
+        this._updateDesiredCol();
+        this._redoStack = [];
+        break;
+      }
       case 'J': {
         let joinCol = 0;
         for (let r = sr; r < er; r++) {
@@ -4170,6 +5916,28 @@ export class VimEngine {
 
   _doVisualReplace(ch) {
     let sr, sc, er, ec;
+    if (this.mode === Mode.VISUAL_BLOCK) {
+      // Block replace
+      const topRow = Math.min(this._visualStart.row, this.cursor.row);
+      const bottomRow = Math.max(this._visualStart.row, this.cursor.row);
+      const leftCol = Math.min(this._visualStart.col, this.cursor.col);
+      const rightCol = Math.max(this._visualStart.col, this.cursor.col);
+      this._saveSnapshot();
+      for (let r = topRow; r <= bottomRow; r++) {
+        const line = this.buffer.lines[r];
+        const rc = Math.min(rightCol, line.length - 1);
+        let nl = '';
+        for (let c = 0; c < line.length; c++) {
+          nl += (c >= leftCol && c <= rc) ? ch : line[c];
+        }
+        this.buffer.lines[r] = nl;
+      }
+      this.cursor.row = topRow; this.cursor.col = leftCol;
+      this._updateDesiredCol();
+      this.mode = Mode.NORMAL; this.commandLine = '';
+      this._redoStack = [];
+      return;
+    }
     if (this.mode === Mode.VISUAL_LINE) {
       sr = Math.min(this._visualStart.row, this.cursor.row);
       er = Math.max(this._visualStart.row, this.cursor.row);
@@ -4198,6 +5966,225 @@ export class VimEngine {
     this._updateDesiredCol();
     this.mode = Mode.NORMAL; this.commandLine = '';
     this._redoStack = [];
+  }
+
+  // ── Visual Block helpers ──
+
+  /** Compute the block selection rectangle from visualStart and cursor */
+  _getBlockRect() {
+    const topRow = Math.min(this._visualStart.row, this.cursor.row);
+    const bottomRow = Math.max(this._visualStart.row, this.cursor.row);
+    const leftCol = Math.min(this._visualStart.col, this.cursor.col);
+    const rightCol = Math.max(this._visualStart.col, this.cursor.col);
+    return { topRow, bottomRow, leftCol, rightCol, dollar: this._visualBlockDollar };
+  }
+
+  /** Block I/A: enter insert mode for block insert or append */
+  _doVisualBlockInsert(key) {
+    this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
+    const { topRow, bottomRow, leftCol, rightCol, dollar } = this._getBlockRect();
+
+    // Save snapshot with cursor at top-left
+    const savedCursor = { ...this.cursor };
+    this.cursor = { row: topRow, col: leftCol };
+    this._saveSnapshot();
+
+    let insertCol;
+    if (key === 'I') {
+      // Insert at left column of block on top row
+      insertCol = leftCol;
+    } else {
+      // A: append after right column (or end of line with $)
+      if (dollar) {
+        insertCol = this.buffer.lineLength(topRow);
+      } else {
+        insertCol = rightCol + 1;
+        // Pad line if needed
+        const line = this.buffer.lines[topRow];
+        if (line.length < insertCol) {
+          this.buffer.lines[topRow] = line + ' '.repeat(insertCol - line.length);
+        }
+      }
+    }
+
+    const origLine = this.buffer.lines[topRow];
+    this.cursor = { row: topRow, col: insertCol };
+
+    this._blockInsertState = {
+      mode: key, // 'I' or 'A'
+      topRow, bottomRow, leftCol, rightCol, dollar,
+      editRow: topRow,
+      insertCol,
+      origLine,
+    };
+
+    this._startRecording();
+    this.mode = Mode.INSERT; this.commandLine = '-- INSERT --';
+    this._redoStack = [];
+  }
+
+  /** Block d/c/y/>/</p action */
+  _doVisualBlockAction(key) {
+    this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
+    const { topRow, bottomRow, leftCol, rightCol, dollar } = this._getBlockRect();
+
+    // Save snapshot with cursor at top-left
+    const savedCursor = { ...this.cursor };
+    this.cursor = { row: topRow, col: leftCol };
+    this._saveSnapshot();
+    this.cursor = savedCursor;
+
+    switch (key) {
+      case 'd': case 'x': case 'Delete': {
+        // Yank block text, then delete
+        const blockLines = [];
+        for (let r = topRow; r <= bottomRow; r++) {
+          const line = this.buffer.lines[r];
+          const rc = dollar ? line.length : Math.min(rightCol + 1, line.length);
+          blockLines.push(line.slice(leftCol, rc));
+        }
+        this._setReg(blockLines.join('\n'), 'block');
+        // Delete block columns
+        for (let r = topRow; r <= bottomRow; r++) {
+          const line = this.buffer.lines[r];
+          const rc = dollar ? line.length : Math.min(rightCol + 1, line.length);
+          this.buffer.lines[r] = line.slice(0, leftCol) + line.slice(rc);
+        }
+        this.cursor.row = topRow;
+        this.cursor.col = Math.min(leftCol, Math.max(0, this.buffer.lineLength(topRow) - 1));
+        this._updateDesiredCol();
+        this.mode = Mode.NORMAL; this.commandLine = '';
+        this._redoStack = [];
+        break;
+      }
+      case 'c': case 's': {
+        // Yank block, delete from all rows, enter insert on top row
+        const blockLines = [];
+        for (let r = topRow; r <= bottomRow; r++) {
+          const line = this.buffer.lines[r];
+          const rc = dollar ? line.length : Math.min(rightCol + 1, line.length);
+          blockLines.push(line.slice(leftCol, rc));
+        }
+        this._setReg(blockLines.join('\n'), 'block');
+        // Delete block columns from all rows
+        for (let r = topRow; r <= bottomRow; r++) {
+          const line = this.buffer.lines[r];
+          const rc = dollar ? line.length : Math.min(rightCol + 1, line.length);
+          this.buffer.lines[r] = line.slice(0, leftCol) + line.slice(rc);
+        }
+        const origLine = this.buffer.lines[topRow];
+        this.cursor = { row: topRow, col: leftCol };
+
+        this._blockInsertState = {
+          mode: 'c',
+          topRow, bottomRow, leftCol, rightCol, dollar,
+          editRow: topRow,
+          insertCol: leftCol,
+          origLine,
+        };
+
+        this._startRecording();
+        this.mode = Mode.INSERT; this.commandLine = '-- INSERT --';
+        this._redoStack = [];
+        break;
+      }
+      case 'y': {
+        const blockLines = [];
+        for (let r = topRow; r <= bottomRow; r++) {
+          const line = this.buffer.lines[r];
+          const rc = dollar ? line.length : Math.min(rightCol + 1, line.length);
+          blockLines.push(line.slice(leftCol, rc));
+        }
+        this._setReg(blockLines.join('\n'), 'block', 'yank');
+        this.cursor.row = topRow; this.cursor.col = leftCol;
+        this.mode = Mode.NORMAL; this.commandLine = '';
+        break;
+      }
+      case '>': {
+        const savedCol = this._desiredCol;
+        for (let r = topRow; r <= bottomRow; r++) this._shiftLineRight(r);
+        this.mode = Mode.NORMAL;
+        this.cursor.row = topRow;
+        this.cursor.col = this._byteColForVirtCol(topRow, savedCol);
+        this._desiredCol = this._virtColEnd(topRow, this.cursor.col);
+        this._redoStack = [];
+        // Show shift message for 2+ lines
+        const lineCount = bottomRow - topRow + 1;
+        if (lineCount >= 2) {
+          this.commandLine = lineCount + ' lines >ed 1 time';
+          this._stickyCommandLine = true;
+        } else {
+          this.commandLine = '';
+        }
+        break;
+      }
+      case '<': {
+        const savedColL = this._desiredCol;
+        for (let r = topRow; r <= bottomRow; r++) this._shiftLineLeft(r);
+        this.mode = Mode.NORMAL;
+        this.cursor.row = topRow;
+        this.cursor.col = this._byteColForVirtCol(topRow, savedColL);
+        this._desiredCol = this._virtColEnd(topRow, this.cursor.col);
+        this._redoStack = [];
+        const lineCountL = bottomRow - topRow + 1;
+        if (lineCountL >= 2) {
+          this.commandLine = lineCountL + ' lines <ed 1 time';
+          this._stickyCommandLine = true;
+        } else {
+          this.commandLine = '';
+        }
+        break;
+      }
+      case 'p': {
+        const reg = this._getReg();
+        const text = reg.text || this._unnamedReg;
+        const type = reg.type || this._regType;
+        if (!text) { this.mode = Mode.NORMAL; this.commandLine = ''; break; }
+        // Delete block first
+        for (let r = topRow; r <= bottomRow; r++) {
+          const line = this.buffer.lines[r];
+          const rc = dollar ? line.length : Math.min(rightCol + 1, line.length);
+          this.buffer.lines[r] = line.slice(0, leftCol) + line.slice(rc);
+        }
+        // Paste: insert register text at leftCol on each block row
+        const pasteLines = text.split('\n');
+        for (let i = 0; i < pasteLines.length; i++) {
+          const r = topRow + i;
+          if (r >= this.buffer.lineCount) this.buffer.lines.push('');
+          const line = this.buffer.lines[r];
+          const padded = line.length < leftCol ? line + ' '.repeat(leftCol - line.length) : line;
+          this.buffer.lines[r] = padded.slice(0, leftCol) + pasteLines[i] + padded.slice(leftCol);
+        }
+        this.cursor.row = topRow; this.cursor.col = leftCol;
+        this._updateDesiredCol();
+        this.mode = Mode.NORMAL; this.commandLine = '';
+        this._redoStack = [];
+        break;
+      }
+      case '~': {
+        for (let r = topRow; r <= bottomRow; r++) {
+          const line = this.buffer.lines[r];
+          const rc = dollar ? line.length - 1 : Math.min(rightCol, line.length - 1);
+          let nl = '';
+          for (let c = 0; c < line.length; c++) {
+            if (c >= leftCol && c <= rc) {
+              const ch = line[c];
+              nl += ch === ch.toUpperCase() ? ch.toLowerCase() : ch.toUpperCase();
+            } else nl += line[c];
+          }
+          this.buffer.lines[r] = nl;
+        }
+        this.cursor.row = topRow; this.cursor.col = leftCol;
+        this.mode = Mode.NORMAL; this.commandLine = '';
+        this._redoStack = [];
+        break;
+      }
+      default:
+        // For unhandled block keys, fall through to normal visual action
+        this.cursor = savedCursor;
+        this._doVisualAction(key);
+        break;
+    }
   }
 
   // ── Motion execution ──
@@ -4248,7 +6235,7 @@ export class VimEngine {
         const c = this._getCount();
         if (c > 1) this.cursor.row = Math.min(this.cursor.row + c - 1, this.buffer.lineCount - 1);
         // In visual mode, $ goes one past the last char (like insert mode)
-        if (this.mode === Mode.VISUAL || this.mode === Mode.VISUAL_LINE) {
+        if (this.mode === Mode.VISUAL || this.mode === Mode.VISUAL_LINE || this.mode === Mode.VISUAL_BLOCK) {
           this.cursor.col = this.buffer.lineLength(this.cursor.row);
         } else {
           this.cursor.col = this._maxCol();
@@ -4428,6 +6415,45 @@ export class VimEngine {
     const backward = (er < sr || (er === sr && ec < sc));
     if (backward) [sr, sc, er, ec] = [er, ec, sr, sc];
 
+    // zf operator: create fold from startRow to endRow
+    if (op === 'zf') {
+      const foldSr = Math.min(startPos.row, endPos.row);
+      const foldEr = Math.max(startPos.row, endPos.row);
+      if (foldSr < foldEr) {  // Need at least 2 lines
+        this._folds.push({ startRow: foldSr, endRow: foldEr, closed: true });
+        // Sort folds by startRow
+        this._folds.sort((a, b) => a.startRow - b.startRow);
+      }
+      this.cursor.row = foldSr;
+      this.cursor.col = this._firstNonBlank(foldSr);
+      this._updateDesiredCol();
+      this._motionLinewise = false;
+      this._motionInclusive = false;
+      this._motionExclusive = false;
+      return;
+    }
+
+    // ! operator: enter command mode with range pre-filled for shell filter
+    if (op === '!') {
+      // Always line-wise for ! operator
+      const lineSr = Math.min(startPos.row, endPos.row);
+      const lineEr = Math.max(startPos.row, endPos.row);
+      let rangeStr;
+      if (lineSr === lineEr) {
+        rangeStr = '.';
+      } else {
+        rangeStr = '.,.+' + (lineEr - lineSr);
+      }
+      this._filterRange = { sr: lineSr, er: lineEr };
+      this.mode = Mode.COMMAND;
+      this._searchInput = rangeStr + '!';
+      this.commandLine = ':' + rangeStr + '!';
+      this._motionLinewise = false;
+      this._motionInclusive = false;
+      this._motionExclusive = false;
+      return;
+    }
+
     // Vim rule: exclusive motion ending at column 0 adjusts to inclusive
     // end of previous line (`:help exclusive`)
     if (!isLinewise && !this._motionInclusive && ec === 0 && er > sr) {
@@ -4596,6 +6622,75 @@ export class VimEngine {
         this.cursor.row = sr; this.cursor.col = sc; this._redoStack = [];
         break;
       }
+      case '=': {
+        this._cindent(sr, er);
+        this.cursor.row = sr;
+        this.cursor.col = 0;
+        const lineCount = er - sr + 1;
+        if (lineCount > 2) {
+          this.commandLine = lineCount + ' lines indented';
+          this._stickyCommandLine = true;
+        }
+        this._redoStack = [];
+        break;
+      }
+      case 'g?': {
+        if (isLinewise) {
+          for (let r = sr; r <= er; r++) this.buffer.lines[r] = this._rot13(this.buffer.lines[r]);
+        } else {
+          const l = this.buffer.lines[sr];
+          this.buffer.lines[sr] = l.slice(0, sc) + this._rot13(l.slice(sc, ecSlice)) + l.slice(ecSlice);
+        }
+        this.cursor.row = sr; this.cursor.col = sc; this._redoStack = [];
+        break;
+      }
+      case 'gq': {
+        if (sr === er) {
+          // Single line: no-op, just move cursor to first non-blank
+          this.cursor.row = sr;
+          this.cursor.col = this._firstNonBlank(sr);
+        } else {
+          // Join lines in range: concatenate with spaces
+          let joined = this.buffer.lines[sr];
+          for (let r = sr + 1; r <= er; r++) {
+            const trimmed = this.buffer.lines[r].replace(/^\s+/, '');
+            if (joined.length > 0 && trimmed.length > 0) {
+              joined += ' ' + trimmed;
+            } else {
+              joined += trimmed;
+            }
+          }
+          this.buffer.lines.splice(sr, er - sr + 1, joined);
+          this.cursor.row = sr;
+          this.cursor.col = this._firstNonBlank(sr);
+        }
+        this._redoStack = [];
+        break;
+      }
+      case 'gw': {
+        const savedRow = this._opStartPos.row;
+        const savedCol = this._opStartPos.col;
+        if (sr === er) {
+          // Single line: no-op
+        } else {
+          // Join lines in range
+          let joined = this.buffer.lines[sr];
+          for (let r = sr + 1; r <= er; r++) {
+            const trimmed = this.buffer.lines[r].replace(/^\s+/, '');
+            if (joined.length > 0 && trimmed.length > 0) {
+              joined += ' ' + trimmed;
+            } else {
+              joined += trimmed;
+            }
+          }
+          this.buffer.lines.splice(sr, er - sr + 1, joined);
+        }
+        // Restore cursor position
+        this.cursor.row = Math.min(savedRow, this.buffer.lineCount - 1);
+        this.cursor.col = Math.min(savedCol, Math.max(0, this.buffer.lineLength(this.cursor.row) - 1));
+        this._redoStack = [];
+        break;
+      }
     }
     this._updateDesiredCol();
     // After text-modifying operator, update CurSearch to cursor position
@@ -4611,7 +6706,7 @@ export class VimEngine {
   _updateCurSearchPos() {
     if (!this._searchPattern) return;
     try {
-      const re = new RegExp(this._searchPattern);
+      const re = new RegExp(this._vimPatternToJs(this._searchPattern));
       const line = this.buffer.lines[this.cursor.row] || '';
       const m = line.slice(this.cursor.col).match(re);
       if (m) {
@@ -4634,7 +6729,7 @@ export class VimEngine {
   _setCurSearchAtCursor() {
     if (!this._searchPattern) { this._curSearchPos = null; return; }
     try {
-      const re = new RegExp(this._searchPattern);
+      const re = new RegExp(this._vimPatternToJs(this._searchPattern));
       const line = this.buffer.lines[this.cursor.row] || '';
       const m = line.slice(this.cursor.col).match(re);
       if (m && m.index === 0) {
@@ -4880,6 +6975,34 @@ export class VimEngine {
         const toggle = s => [...s].map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join('');
         for (let r = sr; r <= er; r++) this.buffer.lines[r] = toggle(this.buffer.lines[r]);
         this.cursor.col = this._firstNonBlank(this.cursor.row);
+        this._redoStack = [];
+        break;
+      }
+      case '=': {
+        this._cindent(sr, er);
+        this.cursor.col = 0;
+        const lineCount = er - sr + 1;
+        if (lineCount > 2) {
+          this.commandLine = lineCount + ' lines indented';
+          this._stickyCommandLine = true;
+        }
+        this._redoStack = [];
+        break;
+      }
+      case 'g?': {
+        for (let r = sr; r <= er; r++) this.buffer.lines[r] = this._rot13(this.buffer.lines[r]);
+        this.cursor.col = this._firstNonBlank(this.cursor.row);
+        this._redoStack = [];
+        break;
+      }
+      case 'gq': {
+        // Single line: no-op, just move cursor
+        this.cursor.col = this._firstNonBlank(sr);
+        this._redoStack = [];
+        break;
+      }
+      case 'gw': {
+        // Single line: no-op
         this._redoStack = [];
         break;
       }
@@ -5260,11 +7383,25 @@ export class VimEngine {
     return 'i';
   }
 
+  /** Translate Vim "magic" regex syntax to JavaScript regex syntax */
+  _vimPatternToJs(pat) {
+    return pat
+      .replace(/\\</g, '\\b')
+      .replace(/\\>/g, '\\b')
+      .replace(/\\\+/g, '+')
+      .replace(/\\\?/g, '?')
+      .replace(/\\\(/g, '(')
+      .replace(/\\\)/g, ')')
+      .replace(/\\\|/g, '|')
+      .replace(/\\\{/g, '{')
+      .replace(/\\\}/g, '}');
+  }
+
   _searchNext(forward) {
     if (!this._searchPattern) return false;
     const caseFlag = this._searchCaseFlag();
     let pattern;
-    try { pattern = new RegExp(this._searchPattern, caseFlag); } catch { return false; }
+    try { pattern = new RegExp(this._vimPatternToJs(this._searchPattern), caseFlag); } catch { return false; }
     const sr = this.cursor.row, sc = this.cursor.col;
     const lc = this.buffer.lineCount;
     if (forward) {
@@ -5287,7 +7424,7 @@ export class VimEngine {
         const end = (r === sr && i === 0) ? sc : this.buffer.lines[r].length;
         const sub = this.buffer.lines[r].slice(0, end);
         let last = null, m;
-        const re = new RegExp(this._searchPattern, 'g' + caseFlag);
+        const re = new RegExp(this._vimPatternToJs(this._searchPattern), 'g' + caseFlag);
         while ((m = re.exec(sub)) !== null) last = m;
         if (last) {
           this.cursor.row = r; this.cursor.col = last.index;
@@ -5297,6 +7434,68 @@ export class VimEngine {
       }
     }
     return false;
+  }
+
+  /**
+   * Find the next (or previous) search match, returning { row, col, len } or null.
+   * For gn: if cursor is inside a match on the current line, return that match.
+   * Otherwise search forward (or backward for gN) wrapping around.
+   */
+  _findSearchMatch(forward) {
+    if (!this._searchPattern) return null;
+    const caseFlag = this._searchCaseFlag();
+    let re;
+    try { re = new RegExp(this._vimPatternToJs(this._searchPattern), 'g' + caseFlag); } catch { return null; }
+    const lc = this.buffer.lineCount;
+    const cr = this.cursor.row, cc = this.cursor.col;
+
+    // First check if cursor is inside (or at the start of) a match on the current line
+    const curLine = this.buffer.lines[cr];
+    let m;
+    re.lastIndex = 0;
+    while ((m = re.exec(curLine)) !== null) {
+      const ms = m.index, me = m.index + m[0].length - 1;
+      if (forward) {
+        // gn: match that starts at or after cursor, or contains cursor
+        if (ms >= cc || (ms <= cc && me >= cc)) {
+          return { row: cr, col: ms, len: m[0].length };
+        }
+      } else {
+        // gN: match that ends at or before cursor, or contains cursor
+        if (me <= cc || (ms <= cc && me >= cc)) {
+          // Keep searching for the last qualifying match on this line
+          let best = { row: cr, col: ms, len: m[0].length };
+          while ((m = re.exec(curLine)) !== null) {
+            const ms2 = m.index, me2 = m.index + m[0].length - 1;
+            if (me2 <= cc || (ms2 <= cc && me2 >= cc)) {
+              best = { row: cr, col: ms2, len: m[0].length };
+            } else break;
+          }
+          return best;
+        }
+      }
+    }
+
+    // No match on current line covering cursor; search forward/backward wrapping
+    if (forward) {
+      for (let i = 1; i <= lc; i++) {
+        const r = (cr + i) % lc;
+        const line = this.buffer.lines[r];
+        re.lastIndex = 0;
+        const fm = re.exec(line);
+        if (fm) return { row: r, col: fm.index, len: fm[0].length };
+      }
+    } else {
+      for (let i = 1; i <= lc; i++) {
+        const r = (cr - i + lc) % lc;
+        const line = this.buffer.lines[r];
+        re.lastIndex = 0;
+        let last = null;
+        while ((m = re.exec(line)) !== null) last = m;
+        if (last) return { row: r, col: last.index, len: last[0].length };
+      }
+    }
+    return null;
   }
 
   _wordUnderCursor() {
@@ -5323,6 +7522,7 @@ export class VimEngine {
       case '<': case '>': return this._textObjPair('<', '>', inner);
       case 'p': return this._textObjParagraph(inner);
       case 's': return this._textObjSentence(inner);
+      case 't': return this._textObjTag(inner);
       default: return null;
     }
   }
@@ -5594,6 +7794,489 @@ export class VimEngine {
     return { startRow: row, startCol, endRow: row, endCol };
   }
 
+  // ── Bracket commands ──
+
+  _handleBracketCommand(bracket, key) {
+    const combo = bracket + key;
+    switch (combo) {
+      case '[(':
+        this._gotoPrevUnmatched('(', ')');
+        break;
+      case '])':
+        this._gotoNextUnmatched('(', ')');
+        break;
+      case '[{':
+        this._gotoPrevUnmatched('{', '}');
+        break;
+      case ']}':
+        this._gotoNextUnmatched('{', '}');
+        break;
+      case '[[':
+        this._gotoCol0Char('{', false);
+        break;
+      case ']]':
+        this._gotoCol0Char('{', true);
+        break;
+      case '[]':
+        this._gotoCol0Char('}', false);
+        break;
+      case '][':
+        this._gotoCol0Char('}', true);
+        break;
+      case '[p': {
+        // Put before with indent adjustment
+        const reg = this._getReg();
+        if (!reg.text) break;
+        this._saveSnapshot();
+        if (reg.type === 'line') {
+          const curIndent = this.buffer.lines[this.cursor.row].match(/^[ \t]*/)[0];
+          const pasteLines = reg.text.split('\n');
+          const firstIndent = pasteLines[0].match(/^[ \t]*/)[0];
+          const delta = curIndent.length - firstIndent.length;
+          const adjusted = pasteLines.map(line => {
+            if (delta > 0) return ' '.repeat(delta) + line;
+            if (delta < 0) {
+              const li = line.match(/^[ \t]*/)[0];
+              return line.slice(Math.min(-delta, li.length));
+            }
+            return line;
+          });
+          this.buffer.lines.splice(this.cursor.row, 0, ...adjusted);
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+        } else {
+          this._putBefore(reg);
+        }
+        this._redoStack = [];
+        this._updateDesiredCol();
+        break;
+      }
+      case ']p': {
+        // Put after with indent adjustment
+        const reg = this._getReg();
+        if (!reg.text) break;
+        this._saveSnapshot();
+        if (reg.type === 'line') {
+          const curIndent = this.buffer.lines[this.cursor.row].match(/^[ \t]*/)[0];
+          const pasteLines = reg.text.split('\n');
+          const firstIndent = pasteLines[0].match(/^[ \t]*/)[0];
+          const delta = curIndent.length - firstIndent.length;
+          const adjusted = pasteLines.map(line => {
+            if (delta > 0) return ' '.repeat(delta) + line;
+            if (delta < 0) {
+              const li = line.match(/^[ \t]*/)[0];
+              return line.slice(Math.min(-delta, li.length));
+            }
+            return line;
+          });
+          this.buffer.lines.splice(this.cursor.row + 1, 0, ...adjusted);
+          this.cursor.row++;
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+        } else {
+          this._putAfter(reg);
+        }
+        this._redoStack = [];
+        this._updateDesiredCol();
+        break;
+      }
+      case "['": {
+        // Go to previous line with a lowercase mark
+        const markRows = new Set();
+        for (const [k, v] of Object.entries(this._marks)) {
+          if (k >= 'a' && k <= 'z') markRows.add(v.row);
+        }
+        for (let r = this.cursor.row - 1; r >= 0; r--) {
+          if (markRows.has(r)) {
+            this.cursor.row = r;
+            this.cursor.col = this._firstNonBlank(r);
+            this._updateDesiredCol();
+            break;
+          }
+        }
+        break;
+      }
+      case "]'": {
+        // Go to next line with a lowercase mark
+        const markRows = new Set();
+        for (const [k, v] of Object.entries(this._marks)) {
+          if (k >= 'a' && k <= 'z') markRows.add(v.row);
+        }
+        for (let r = this.cursor.row + 1; r < this.buffer.lineCount; r++) {
+          if (markRows.has(r)) {
+            this.cursor.row = r;
+            this.cursor.col = this._firstNonBlank(r);
+            this._updateDesiredCol();
+            break;
+          }
+        }
+        break;
+      }
+      case '[M':
+      case '[m': {
+        // Go to previous unmatched '{' (method start)
+        for (let r = this.cursor.row; r >= 0; r--) {
+          const line = this.buffer.lines[r];
+          const startC = (r === this.cursor.row) ? this.cursor.col - 1 : line.length - 1;
+          for (let c = startC; c >= 0; c--) {
+            if (line[c] === '{') {
+              this.cursor.row = r;
+              this.cursor.col = c;
+              this._updateDesiredCol();
+              return;
+            }
+          }
+        }
+        break;
+      }
+      case ']M':
+      case ']m': {
+        // Go to next unmatched '{' (method start)
+        for (let r = this.cursor.row; r < this.buffer.lineCount; r++) {
+          const line = this.buffer.lines[r];
+          const startC = (r === this.cursor.row) ? this.cursor.col + 1 : 0;
+          for (let c = startC; c < line.length; c++) {
+            if (line[c] === '{') {
+              this.cursor.row = r;
+              this.cursor.col = c;
+              this._updateDesiredCol();
+              return;
+            }
+          }
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Go to previous unmatched `open` character, searching backward from cursor.
+   * Used by [( and [{
+   */
+  _gotoPrevUnmatched(open, close) {
+    let depth = 0;
+    for (let r = this.cursor.row; r >= 0; r--) {
+      const line = this.buffer.lines[r];
+      const startC = (r === this.cursor.row) ? this.cursor.col - 1 : line.length - 1;
+      for (let c = startC; c >= 0; c--) {
+        if (line[c] === close) {
+          depth++;
+        } else if (line[c] === open) {
+          if (depth === 0) {
+            this.cursor.row = r;
+            this.cursor.col = c;
+            this._updateDesiredCol();
+            return;
+          }
+          depth--;
+        }
+      }
+    }
+  }
+
+  /**
+   * Go to next unmatched `close` character, searching forward from cursor.
+   * Used by ]) and ]}
+   */
+  _gotoNextUnmatched(open, close) {
+    let depth = 0;
+    for (let r = this.cursor.row; r < this.buffer.lineCount; r++) {
+      const line = this.buffer.lines[r];
+      const startC = (r === this.cursor.row) ? this.cursor.col + 1 : 0;
+      for (let c = startC; c < line.length; c++) {
+        if (line[c] === open) {
+          depth++;
+        } else if (line[c] === close) {
+          if (depth === 0) {
+            this.cursor.row = r;
+            this.cursor.col = c;
+            this._updateDesiredCol();
+            return;
+          }
+          depth--;
+        }
+      }
+    }
+  }
+
+  /**
+   * Go to next/previous line that has `ch` at column 0.
+   * Used by [[ ]] [] ][
+   */
+  _gotoCol0Char(ch, forward) {
+    if (forward) {
+      for (let r = this.cursor.row + 1; r < this.buffer.lineCount; r++) {
+        if (this.buffer.lines[r].length > 0 && this.buffer.lines[r][0] === ch) {
+          this.cursor.row = r;
+          this.cursor.col = 0;
+          this._updateDesiredCol();
+          return;
+        }
+      }
+    } else {
+      for (let r = this.cursor.row - 1; r >= 0; r--) {
+        if (this.buffer.lines[r].length > 0 && this.buffer.lines[r][0] === ch) {
+          this.cursor.row = r;
+          this.cursor.col = 0;
+          this._updateDesiredCol();
+          return;
+        }
+      }
+    }
+  }
+
+  // ── Tag text objects ──
+
+  /**
+   * Find enclosing HTML/XML tag pair for it/at text objects.
+   * @param {boolean} inner - true for inner tag (between tags), false for outer (including tags)
+   * @returns {{ startRow: number, startCol: number, endRow: number, endCol: number } | null}
+   */
+  _textObjTag(inner) {
+    // Flatten buffer into a single string for easier scanning
+    const lines = this.buffer.lines;
+    const cursorOffset = this._offsetFromPos(this.cursor.row, this.cursor.col);
+
+    // Search backward from cursor for an opening tag that encloses the cursor
+    let searchFrom = cursorOffset;
+
+    while (searchFrom >= 0) {
+      // Find the previous '<' that starts an opening tag (not </ or <!-- or self-closing)
+      const openTagStart = this._findPrevOpeningTagStart(searchFrom);
+      if (openTagStart === -1) return null;
+
+      // Parse the tag name and find end of opening tag
+      const openTagInfo = this._parseOpeningTag(openTagStart);
+      if (!openTagInfo) {
+        searchFrom = openTagStart - 1;
+        continue;
+      }
+
+      // Find the matching closing tag, searching forward from end of opening tag
+      const closeTagInfo = this._findMatchingCloseTag(openTagInfo.tagName, openTagInfo.tagEnd);
+      if (!closeTagInfo) {
+        searchFrom = openTagStart - 1;
+        continue;
+      }
+
+      // Check if the cursor is between the opening and closing tags
+      if (cursorOffset >= openTagStart && cursorOffset <= closeTagInfo.closeEnd) {
+        // Found enclosing tag pair
+        if (inner) {
+          // Inner: between end of opening tag and start of closing tag
+          const iStart = openTagInfo.tagEnd + 1;
+          const iEnd = closeTagInfo.closeStart; // exclusive end (the '<' of closing tag)
+          if (iStart >= iEnd) {
+            // Empty tag content
+            const startPos = this._posFromOffset(iStart);
+            return { startRow: startPos.row, startCol: startPos.col, endRow: startPos.row, endCol: startPos.col };
+          }
+          const startPos = this._posFromOffset(iStart);
+          const endPos = this._posFromOffset(iEnd);
+          return { startRow: startPos.row, startCol: startPos.col, endRow: endPos.row, endCol: endPos.col };
+        } else {
+          // Outer: from start of opening tag to end of closing tag
+          const startPos = this._posFromOffset(openTagStart);
+          const endPos = this._posFromOffset(closeTagInfo.closeEnd);
+          return { startRow: startPos.row, startCol: startPos.col, endRow: endPos.row, endCol: endPos.col + 1 };
+        }
+      }
+
+      // This tag pair doesn't enclose cursor, keep searching backward
+      searchFrom = openTagStart - 1;
+    }
+
+    return null;
+  }
+
+  /** Convert (row, col) to a flat buffer offset. */
+  _offsetFromPos(row, col) {
+    let offset = 0;
+    for (let r = 0; r < row; r++) {
+      offset += this.buffer.lines[r].length + 1; // +1 for newline
+    }
+    return offset + col;
+  }
+
+  /** Convert a flat buffer offset back to {row, col}. */
+  _posFromOffset(offset) {
+    let remaining = offset;
+    for (let r = 0; r < this.buffer.lineCount; r++) {
+      const lineLen = this.buffer.lines[r].length + 1; // +1 for newline
+      if (remaining < lineLen) {
+        return { row: r, col: remaining };
+      }
+      remaining -= lineLen;
+    }
+    // Past end of buffer
+    const lastRow = this.buffer.lineCount - 1;
+    return { row: lastRow, col: this.buffer.lines[lastRow].length };
+  }
+
+  /** Get character at flat buffer offset. */
+  _charAtOffset(offset) {
+    let remaining = offset;
+    for (let r = 0; r < this.buffer.lineCount; r++) {
+      const line = this.buffer.lines[r];
+      if (remaining < line.length) {
+        return line[remaining];
+      }
+      if (remaining === line.length) {
+        return '\n'; // newline between lines
+      }
+      remaining -= line.length + 1;
+    }
+    return null;
+  }
+
+  /** Get total buffer length including newlines. */
+  _totalBufferLength() {
+    let len = 0;
+    for (let r = 0; r < this.buffer.lineCount; r++) {
+      len += this.buffer.lines[r].length;
+      if (r < this.buffer.lineCount - 1) len++; // newline
+    }
+    return len;
+  }
+
+  /**
+   * Search backward from `offset` for a '<' that starts an opening tag.
+   * Skips closing tags (</), comments (<!--), and self-closing tags (/>).
+   */
+  _findPrevOpeningTagStart(offset) {
+    const totalLen = this._totalBufferLength();
+    for (let i = offset; i >= 0; i--) {
+      const ch = this._charAtOffset(i);
+      if (ch === '<') {
+        // Skip closing tags </
+        const next = this._charAtOffset(i + 1);
+        if (next === '/') continue;
+        // Skip comments <!--
+        if (next === '!') continue;
+        // Skip processing instructions <?
+        if (next === '?') continue;
+        // Check it's a valid tag start (letter follows <)
+        if (next && /[a-zA-Z]/.test(next)) {
+          // Check if it's self-closing: find the > and see if preceded by /
+          let j = i + 1;
+          while (j < totalLen) {
+            const c = this._charAtOffset(j);
+            if (c === '>') {
+              const prev = this._charAtOffset(j - 1);
+              if (prev === '/') break; // self-closing, skip
+              return i; // valid opening tag
+            }
+            if (c === '<') break; // malformed, stop
+            j++;
+          }
+          // If we hit < before >, this is malformed; check for self-closing
+          const prevOfClose = this._charAtOffset(j - 1);
+          if (j < totalLen && this._charAtOffset(j) === '>' && prevOfClose === '/') continue;
+          if (j < totalLen && this._charAtOffset(j) === '>') return i;
+        }
+      }
+    }
+    return -1;
+  }
+
+  /**
+   * Parse an opening tag starting at `offset` (the '<').
+   * Returns { tagName, tagEnd } where tagEnd is the offset of the '>'.
+   * Returns null if not a valid opening tag.
+   */
+  _parseOpeningTag(offset) {
+    const totalLen = this._totalBufferLength();
+    if (this._charAtOffset(offset) !== '<') return null;
+    // Extract tag name
+    let i = offset + 1;
+    let tagName = '';
+    while (i < totalLen) {
+      const ch = this._charAtOffset(i);
+      if (/[a-zA-Z0-9:\-_.]/.test(ch)) {
+        tagName += ch;
+        i++;
+      } else {
+        break;
+      }
+    }
+    if (tagName.length === 0) return null;
+    // Find the closing >
+    while (i < totalLen) {
+      const ch = this._charAtOffset(i);
+      if (ch === '>') {
+        // Check self-closing
+        if (this._charAtOffset(i - 1) === '/') return null;
+        return { tagName, tagEnd: i };
+      }
+      if (ch === '<') return null; // malformed
+      i++;
+    }
+    return null;
+  }
+
+  /**
+   * Find matching closing tag </tagName> starting search from `fromOffset`.
+   * Handles nested same-name tags.
+   * Returns { closeStart, closeEnd } where closeStart is offset of '<' in </tag>
+   * and closeEnd is offset of '>' in </tag>. Returns null if not found.
+   */
+  _findMatchingCloseTag(tagName, fromOffset) {
+    const totalLen = this._totalBufferLength();
+    let depth = 0;
+    let i = fromOffset + 1;
+    while (i < totalLen) {
+      const ch = this._charAtOffset(i);
+      if (ch === '<') {
+        const next = this._charAtOffset(i + 1);
+        if (next === '/') {
+          // Closing tag — extract name
+          let j = i + 2;
+          let name = '';
+          while (j < totalLen) {
+            const c = this._charAtOffset(j);
+            if (/[a-zA-Z0-9:\-_.]/.test(c)) { name += c; j++; }
+            else break;
+          }
+          if (name.toLowerCase() === tagName.toLowerCase()) {
+            // Find the >
+            while (j < totalLen && this._charAtOffset(j) !== '>') j++;
+            if (j < totalLen) {
+              if (depth === 0) {
+                return { closeStart: i, closeEnd: j };
+              }
+              depth--;
+            }
+          }
+          i = j + 1;
+          continue;
+        } else if (next && /[a-zA-Z]/.test(next)) {
+          // Possible opening tag — extract name
+          let j = i + 1;
+          let name = '';
+          while (j < totalLen) {
+            const c = this._charAtOffset(j);
+            if (/[a-zA-Z0-9:\-_.]/.test(c)) { name += c; j++; }
+            else break;
+          }
+          // Find the >
+          while (j < totalLen && this._charAtOffset(j) !== '>') j++;
+          if (j < totalLen) {
+            // Check if self-closing
+            if (this._charAtOffset(j - 1) !== '/') {
+              if (name.toLowerCase() === tagName.toLowerCase()) {
+                depth++;
+              }
+            }
+          }
+          i = j + 1;
+          continue;
+        }
+      }
+      i++;
+    }
+    return null;
+  }
+
   // ── Surround (nvim-surround plugin) ──
 
   /**
@@ -5715,8 +8398,9 @@ export class VimEngine {
    * Add surrounding chars around a range. Used by ys and visual S.
    * nvim-surround trims trailing whitespace from the range before wrapping.
    */
-  _doSurroundAdd(sr, sc, er, ec, ch, trim = true) {
-    const { open, close } = this._getSurroundPair(ch);
+  _doSurroundAdd(sr, sc, er, ec, ch, trim = true, customOpen = null, customClose = null) {
+    const open = customOpen != null ? customOpen : this._getSurroundPair(ch).open;
+    const close = customClose != null ? customClose : this._getSurroundPair(ch).close;
     // Trim trailing/leading whitespace from range (nvim-surround behavior)
     // Only for motions like w/W/aw/aW that include extraneous whitespace.
     if (trim) {
@@ -5797,12 +8481,159 @@ export class VimEngine {
     return true;
   }
 
+  /**
+   * Find the nearest enclosing HTML tag pair around the cursor.
+   * Returns { openRow, openCol, openEndRow, openEndCol, closeRow, closeCol, closeEndRow, closeEndCol, tagName }
+   * where openCol..openEndCol spans the full opening tag <tag ...> and closeCol..closeEndCol spans </tag>.
+   * Returns null if no enclosing tag found.
+   */
+  _findSurroundingTag() {
+    const cursorOffset = this._offsetFromPos(this.cursor.row, this.cursor.col);
+    let searchFrom = cursorOffset;
+
+    while (searchFrom >= 0) {
+      const openTagStart = this._findPrevOpeningTagStart(searchFrom);
+      if (openTagStart === -1) return null;
+
+      const openTagInfo = this._parseOpeningTag(openTagStart);
+      if (!openTagInfo) {
+        searchFrom = openTagStart - 1;
+        continue;
+      }
+
+      const closeTagInfo = this._findMatchingCloseTag(openTagInfo.tagName, openTagInfo.tagEnd);
+      if (!closeTagInfo) {
+        searchFrom = openTagStart - 1;
+        continue;
+      }
+
+      // Check if the cursor is between the opening and closing tags (inclusive)
+      if (cursorOffset >= openTagStart && cursorOffset <= closeTagInfo.closeEnd) {
+        const openStart = this._posFromOffset(openTagStart);
+        const openEnd = this._posFromOffset(openTagInfo.tagEnd);
+        const closeStart = this._posFromOffset(closeTagInfo.closeStart);
+        const closeEnd = this._posFromOffset(closeTagInfo.closeEnd);
+        return {
+          openRow: openStart.row, openCol: openStart.col,
+          openEndRow: openEnd.row, openEndCol: openEnd.col,
+          closeRow: closeStart.row, closeCol: closeStart.col,
+          closeEndRow: closeEnd.row, closeEndCol: closeEnd.col,
+          tagName: openTagInfo.tagName
+        };
+      }
+
+      searchFrom = openTagStart - 1;
+    }
+    return null;
+  }
+
+  /**
+   * Delete surrounding HTML tag pair (dst).
+   * Returns true if successful.
+   */
+  _doSurroundDeleteTag() {
+    const tag = this._findSurroundingTag();
+    if (!tag) return false;
+    const { openRow, openCol, openEndRow, openEndCol, closeRow, closeCol, closeEndRow, closeEndCol } = tag;
+
+    if (openRow === closeRow && openEndRow === closeEndRow) {
+      // Everything on one line: remove closing tag, then opening tag
+      const line = this.buffer.lines[openRow];
+      // closeCol is start of </tag>, closeEndCol is position of '>'
+      const afterClose = line.slice(0, closeCol) + line.slice(closeEndCol + 1);
+      // openCol is start of <tag>, openEndCol is position of '>'
+      this.buffer.lines[openRow] = afterClose.slice(0, openCol) + afterClose.slice(openEndCol + 1);
+    } else {
+      // Multi-line: remove closing tag first (higher row), then opening tag
+      if (closeRow === closeEndRow) {
+        const cLine = this.buffer.lines[closeRow];
+        this.buffer.lines[closeRow] = cLine.slice(0, closeCol) + cLine.slice(closeEndCol + 1);
+      }
+      if (openRow === openEndRow) {
+        const oLine = this.buffer.lines[openRow];
+        this.buffer.lines[openRow] = oLine.slice(0, openCol) + oLine.slice(openEndCol + 1);
+      }
+    }
+
+    this.cursor.row = openRow;
+    this.cursor.col = openCol;
+    this._clampCursor();
+    this._updateDesiredCol();
+    return true;
+  }
+
+  /**
+   * Change surrounding HTML tag pair to a new tag (cst).
+   * tagName is the replacement tag name (e.g. "span", "h2", "div class=\"x\"").
+   * Replaces only the tag name in opening tag (preserving existing attributes),
+   * and fully replaces the closing tag name.
+   * Returns true if successful.
+   */
+  _doSurroundChangeTag(target, tagName) {
+    const tag = this._findSurroundingTag();
+    if (!tag) return false;
+
+    const newOpenTag = `<${tagName}>`;
+    const newTagBase = tagName.split(/\s/)[0];
+    const newCloseTag = `</${newTagBase}>`;
+
+    const { openRow, openCol, openEndRow, openEndCol, closeRow, closeCol, closeEndRow, closeEndCol } = tag;
+
+    // Replace closing tag first (so positions for opening tag are stable)
+    if (closeRow === closeEndRow) {
+      const cLine = this.buffer.lines[closeRow];
+      this.buffer.lines[closeRow] = cLine.slice(0, closeCol) + newCloseTag + cLine.slice(closeEndCol + 1);
+    }
+
+    // Replace opening tag (keeping attributes from original if new tag has none)
+    if (openRow === openEndRow) {
+      const oLine = this.buffer.lines[openRow];
+      // Parse old opening tag to see if we should preserve attributes
+      const oldOpenStr = oLine.slice(openCol, openEndCol + 1);
+      // Extract old tag name end position to preserve attributes
+      let nameEnd = openCol + 1; // skip '<'
+      while (nameEnd <= openEndCol && /[a-zA-Z0-9:\-_.]/.test(oLine[nameEnd])) nameEnd++;
+      const oldAttrs = oLine.slice(nameEnd, openEndCol); // everything between name and '>'
+
+      // If new tag name has attributes (contains space), use it directly
+      // Otherwise, preserve old attributes
+      let replacement;
+      if (tagName.includes(' ')) {
+        replacement = newOpenTag;
+      } else {
+        replacement = `<${tagName}${oldAttrs}>`;
+      }
+
+      this.buffer.lines[openRow] = oLine.slice(0, openCol) + replacement + oLine.slice(openEndCol + 1);
+    }
+
+    this.cursor.row = openRow;
+    this.cursor.col = openCol + 1; // cursor on first char of new tag name (nvim-surround behavior)
+    this._updateDesiredCol();
+    return true;
+  }
+
   // ── Put (paste) ──
 
   _putAfter(reg) {
     const text = reg ? reg.text : this._unnamedReg;
     const type = reg ? reg.type : this._regType;
     if (text == null) return;
+    if (type === 'block') {
+      // Blockwise paste: insert each line after cursor column on successive rows
+      const pl = text.split('\n');
+      const insertCol = this.cursor.col + 1;
+      for (let i = 0; i < pl.length; i++) {
+        const r = this.cursor.row + i;
+        if (r >= this.buffer.lineCount) this.buffer.lines.push('');
+        const line = this.buffer.lines[r];
+        const padded = line.length < insertCol ? line + ' '.repeat(insertCol - line.length) : line;
+        this.buffer.lines[r] = padded.slice(0, insertCol) + pl[i] + padded.slice(insertCol);
+      }
+      this.cursor.col = insertCol;
+      this._updateDesiredCol();
+      return;
+    }
     if (type === 'line') {
       const pl = text.split('\n');
       this.buffer.lines.splice(this.cursor.row + 1, 0, ...pl);
@@ -5830,6 +8661,20 @@ export class VimEngine {
     const text = reg ? reg.text : this._unnamedReg;
     const type = reg ? reg.type : this._regType;
     if (text == null) return;
+    if (type === 'block') {
+      // Blockwise paste: insert each line at cursor column on successive rows
+      const pl = text.split('\n');
+      const insertCol = this.cursor.col;
+      for (let i = 0; i < pl.length; i++) {
+        const r = this.cursor.row + i;
+        if (r >= this.buffer.lineCount) this.buffer.lines.push('');
+        const line = this.buffer.lines[r];
+        const padded = line.length < insertCol ? line + ' '.repeat(insertCol - line.length) : line;
+        this.buffer.lines[r] = padded.slice(0, insertCol) + pl[i] + padded.slice(insertCol);
+      }
+      this._updateDesiredCol();
+      return;
+    }
     if (type === 'line') {
       const pl = text.split('\n');
       this.buffer.lines.splice(this.cursor.row, 0, ...pl);
@@ -5930,7 +8775,7 @@ export class VimEngine {
     const max = this._maxCol();
     if (this.cursor.col < 0) this.cursor.col = 0;
     // In visual mode after $, allow cursor one past end of line
-    if ((this.mode === Mode.VISUAL || this.mode === Mode.VISUAL_LINE) && this._desiredCol === Infinity) {
+    if ((this.mode === Mode.VISUAL || this.mode === Mode.VISUAL_LINE || this.mode === Mode.VISUAL_BLOCK) && this._desiredCol === Infinity) {
       const len = this.buffer.lineLength(this.cursor.row);
       if (this.cursor.col > len) this.cursor.col = len;
     } else {
@@ -6072,6 +8917,122 @@ export class VimEngine {
       const spaces = newIndent % ts;
       this.buffer.lines[row] = '\t'.repeat(tabs) + ' '.repeat(spaces) + text;
     }
+  }
+
+  // ── Display-line helpers (for gj, gk, g0, g$, g^, gm, gM) ──
+
+  /** Number of text columns available for content (accounts for line-number gutter). */
+  _getTextCols() {
+    const showGutter = this._settings?.number || this._settings?.relativenumber;
+    if (!showGutter) return this.cols;
+    const numDigits = String(this.buffer.lineCount).length;
+    const gutterWidth = Math.max(4, numDigits + 1);
+    return this.cols - gutterWidth;
+  }
+
+  /** Tab-expand a raw buffer line into a screen string (same logic as screen.js). */
+  _expandLineText(raw) {
+    const ts = this._settings.tabstop || 8;
+    let expanded = '';
+    for (let i = 0; i < raw.length; i++) {
+      if (raw[i] === '\t') {
+        const spaces = ts - (expanded.length % ts);
+        expanded += ' '.repeat(spaces);
+      } else {
+        expanded += raw[i];
+      }
+    }
+    return expanded;
+  }
+
+  /**
+   * Get display-line information for a cursor position within a wrapped buffer line.
+   * @param {number} bufRow  - buffer row index
+   * @param {number} bufCol  - buffer column (byte index)
+   * @returns {{ displayRow: number, totalDisplayRows: number, displayLineStart: number, displayLineEnd: number }}
+   *   displayRow        – which display row the cursor is on (0-based)
+   *   totalDisplayRows  – total wrapped display rows for this buffer line
+   *   displayLineStart  – buffer column where this display row starts
+   *   displayLineEnd    – buffer column of the last character on this display row
+   */
+  _displayLineInfo(bufRow, bufCol) {
+    const textCols = this._getTextCols();
+    const raw = this.buffer.lines[bufRow] || '';
+    const ts = this._settings.tabstop || 8;
+
+    // Build mapping: for each buffer column, what is its screen (expanded) column?
+    const bufToScreen = [];
+    let screenCol = 0;
+    for (let i = 0; i < raw.length; i++) {
+      bufToScreen[i] = screenCol;
+      if (raw[i] === '\t') {
+        screenCol += ts - (screenCol % ts);
+      } else {
+        screenCol++;
+      }
+    }
+    bufToScreen[raw.length] = screenCol; // sentinel for end-of-line
+    const expandedLen = screenCol;
+
+    const totalDisplayRows = expandedLen === 0 ? 1 : Math.ceil(expandedLen / textCols);
+
+    // Which display row is bufCol on?
+    const cursorScreenCol = bufToScreen[Math.min(bufCol, raw.length)];
+    const displayRow = textCols > 0 ? Math.floor(cursorScreenCol / textCols) : 0;
+
+    // Screen column range for this display row
+    const screenStart = displayRow * textCols;
+    const screenEnd = Math.min((displayRow + 1) * textCols - 1, expandedLen - 1);
+
+    // Map screen columns back to buffer columns
+    // displayLineStart: first buffer col whose screen col >= screenStart
+    let displayLineStart = raw.length; // default: end of line
+    for (let i = 0; i < raw.length; i++) {
+      if (bufToScreen[i] >= screenStart) { displayLineStart = i; break; }
+    }
+
+    // displayLineEnd: last buffer col whose screen col <= screenEnd
+    let displayLineEnd = displayLineStart;
+    for (let i = raw.length - 1; i >= 0; i--) {
+      if (bufToScreen[i] <= screenEnd) { displayLineEnd = i; break; }
+    }
+
+    // For empty lines, both start and end are 0
+    if (raw.length === 0) {
+      return { displayRow: 0, totalDisplayRows: 1, displayLineStart: 0, displayLineEnd: 0 };
+    }
+
+    return { displayRow, totalDisplayRows, displayLineStart, displayLineEnd };
+  }
+
+  /**
+   * Map a screen column on a given display row back to a buffer column.
+   * @param {number} bufRow       - buffer row
+   * @param {number} displayRow   - display row within the wrapped line (0-based)
+   * @param {number} targetScreenCol - target screen column relative to the display row start
+   * @returns {number} buffer column
+   */
+  _bufColForDisplayCol(bufRow, displayRow, targetScreenCol) {
+    const textCols = this._getTextCols();
+    const raw = this.buffer.lines[bufRow] || '';
+    if (raw.length === 0) return 0;
+    const ts = this._settings.tabstop || 8;
+
+    // Absolute screen column
+    const absTarget = displayRow * textCols + targetScreenCol;
+
+    let screenCol = 0;
+    for (let i = 0; i < raw.length; i++) {
+      let nextScreen;
+      if (raw[i] === '\t') {
+        nextScreen = screenCol + (ts - (screenCol % ts));
+      } else {
+        nextScreen = screenCol + 1;
+      }
+      if (absTarget < nextScreen) return i;
+      screenCol = nextScreen;
+    }
+    return Math.max(0, raw.length - 1);
   }
 
   _firstNonBlank(row) {
@@ -6364,20 +9325,94 @@ export class VimEngine {
     return false;
   }
 
+  _rot13(str) {
+    return str.replace(/[a-zA-Z]/g, c => {
+      const base = c <= 'Z' ? 65 : 97;
+      return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
+    });
+  }
+
+  _cindent(startRow, endRow) {
+    const sw = this._settings.shiftwidth || 8;
+    const ts = this._settings.tabstop || 8;
+    const et = this._settings.expandtab;
+    let level = 0;
+    // Scan from start of file to determine indent level at startRow
+    for (let r = 0; r < startRow; r++) {
+      const line = this.buffer.lines[r];
+      for (const ch of line) {
+        if (ch === '{') level++;
+        else if (ch === '}') level = Math.max(0, level - 1);
+      }
+    }
+    // Track previous trimmed line for continuation detection
+    let prevTrimmed = startRow > 0 ? this.buffer.lines[startRow - 1].trim() : '';
+    // Apply indent to range
+    for (let r = startRow; r <= endRow; r++) {
+      const line = this.buffer.lines[r];
+      const trimmed = line.trimStart();
+      // Line starting with } decreases level first
+      if (trimmed.startsWith('}')) level = Math.max(0, level - 1);
+      // Continuation: previous line doesn't end with { } or ;
+      let continuation = false;
+      if (prevTrimmed.length > 0 && !trimmed.startsWith('}')) {
+        const lastChar = prevTrimmed[prevTrimmed.length - 1];
+        if (lastChar !== '{' && lastChar !== '}' && lastChar !== ';') {
+          continuation = true;
+        }
+      }
+      const virtIndent = level * sw + (continuation ? sw : 0);
+      let indentStr;
+      if (et) {
+        indentStr = ' '.repeat(virtIndent);
+      } else {
+        const tabs = Math.floor(virtIndent / ts);
+        const spaces = virtIndent % ts;
+        indentStr = '\t'.repeat(tabs) + ' '.repeat(spaces);
+      }
+      this.buffer.lines[r] = indentStr + trimmed;
+      // Count { and } to update level for next line
+      for (const ch of trimmed) {
+        if (ch === '{') level++;
+        else if (ch === '}') level = Math.max(0, level - 1);
+      }
+      prevTrimmed = trimmed;
+    }
+  }
+
   _updateStatus() {
     const r = this.cursor.row + 1, c = this.cursor.col + 1, total = this.buffer.lineCount;
-    const pos = `${r},${c}`;
+    // Virtual column display: show "bytecol-virtcol" when they differ (tabs)
+    const byteCol = c;
+    const virtCol = this._virtColEnd(this.cursor.row, this.cursor.col) + 1;
+    const colStr = byteCol === virtCol ? `${byteCol}` : `${byteCol}-${virtCol}`;
+    const pos = `${r},${colStr}`;
     const pct = total <= this._textRows ? 'All' : r === 1 ? 'Top' : r === total ? 'Bot' : `${Math.round((r / total) * 100)}%`;
-    const right = `${pos}          ${pct}`;
-    this.statusLine = ' '.repeat(Math.max(0, this.cols - right.length)) + right;
+    const right = pos.padEnd(14) + ' ' + pct;
+    // Left side: filename + modified flag
+    let left = '';
+    if (this._fileName) {
+      left = this._fileName;
+      if (this._changeCount > 0) left += ' [+]';
+    }
+    // Build status line: left-padded right, with filename on left
+    const gap = Math.max(1, this.cols - left.length - right.length);
+    this.statusLine = left + ' '.repeat(gap) + right;
     if (this.mode === Mode.INSERT) this.commandLine = '-- INSERT --';
     else if (this.mode === Mode.REPLACE) this.commandLine = '-- REPLACE --';
     else if (this.mode === Mode.VISUAL) this.commandLine = '-- VISUAL --';
     else if (this.mode === Mode.VISUAL_LINE) this.commandLine = '-- VISUAL LINE --';
+    else if (this.mode === Mode.VISUAL_BLOCK) this.commandLine = '-- VISUAL BLOCK --';
     else if (this.mode === Mode.NORMAL && this._macroRecording) {
       this.commandLine = 'recording @' + this._macroRecording;
+    } else if (this.mode === Mode.NORMAL && this._insertOneShot) {
+      this.commandLine = '-- (insert) --';
     } else if (this.mode === Mode.NORMAL && !this._stickyCommandLine) {
-      this.commandLine = '';
+      if (this._echoMessage != null) {
+        this.commandLine = this._echoMessage;
+      } else {
+        this.commandLine = '';
+      }
     }
   }
 }

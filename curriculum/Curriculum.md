@@ -904,6 +904,12 @@ _Tmux is the perfect partner for Vim. Learn to split your terminal, manage windo
 | 514 | Break Pane to Window | `Ctrl-B !` | Move the current pane into its own new window. |
 | 515 | Pane Numbers | `Ctrl-B q` | Show pane number overlays; press `0`–`9` to jump to that pane. |
 
+> **Note:** `h`/`j`/`k`/`l` pane navigation is not a tmux default — it requires
+> `bind h select-pane -L` (etc.) in `~/.tmux.conf`. Binding `l` shadows the
+> default "last window" key, so most people remap last-window to another key.
+> `Tab` is the most popular choice: `bind Tab last-window`. In our simulator,
+> last-window is on uppercase `L` (`Prefix + Shift-L`).
+
 ### Windows
 
 | #   | Title | Keys | Description |
@@ -1360,23 +1366,30 @@ help / vimrc / completion
 
 ## Appendix F — Simulator Coverage
 
-The VimFu simulator supports a curated subset of Vim, tmux, and shell features — enough to
-practice the entire foundational curriculum (Parts 1–4) and the tmux section (Part 19), plus
-many features from the reference parts. Features not in the simulator can be practiced in
+The VimFu simulator supports a comprehensive subset of Vim, tmux, and shell features —
+enough to practice the entire foundational curriculum (Parts 1–4), the tmux section (Part 19),
+and nearly all of the reference parts. Features not in the simulator can be practiced in
 real Neovim.
 
 ### Fully Supported in Simulator
 
-- **Parts 1–3** (Lessons 1–90): All features except `Ctrl-V` block visual mode (Lessons 66–67)
-- **Part 4** (Lessons 91–135): All features except global marks (`m{A-Z}`), auto-indent (`=`),
-  system clipboard (`"+`, `"*`), and nvim window splits (`:sp`, `:vs`, `Ctrl-W`). Use tmux
-  panes instead of nvim splits! Special marks (`` '. `` `` `' `` `< `>`), append registers
-  (`"A-Z`), small delete (`"-`), numbered registers (`"0`–`"9`), and `:reg` are now supported.
+- **Parts 1–3** (Lessons 1–90): **All features** including `Ctrl-V` block visual mode
+- **Part 4** (Lessons 91–135): **All features** including auto-indent (`=`/`==`), window
+  splits (`:sp`, `:vsp`, `Ctrl-W`), `&`/`g&` repeat substitution, `U` undo line,
+  `!{motion}` filter operator, special marks, append registers (`"A-Z`), small delete
+  (`"-`), numbered registers (`"0`–`"9`), `:reg`, and `Ctrl-O` insert-normal mode.
+  Only system clipboard (`"+`, `"*`) and global marks (`m{A-Z}`) are not supported.
+- **Part 5–6** (Scrolling & g/z commands): **All features** including `z.`/`z+`/`z-`/`z^`
+  scroll, folds (`zf`/`zo`/`zc`/`zd`/`zR`/`zM`/`za`/`zA`/`zj`/`zk`/`zE`),
+  `gD` global declaration, `g8` hex display, `K` keyword lookup, bracket commands
+  (`[(`, `])`, `[{`, `]}`, `[[`, `]]`, `[]`, `][`)
 - **Part 19** (Lessons 501–545): All tmux and shell features fully supported
-- **Part 22** (Lessons 800–895): All ex commands fully supported in the simulator — ranges,
-  `:d`, `:y`, `:m`, `:co`/`:t`, `:j`, `:pu`, `:sort`, `:s` (with `g`/`i`/`c`/`n` flags),
-  `:norm`, `:g`, `:v`, `:marks`, `:reg`, `:p`/`:nu`/`:#`, `:=`, `:jumps`, `:changes`,
-  `:[range]>`, `:[range]<`, `:set` (10 options), `:!`, and all file operations.
+- **Part 22** (Lessons 800–895): All ex commands fully supported — ranges,
+  `:d`, `:y`, `:m`, `:co`/`:t`, `:j`, `:pu`, `:sort`, `:s` (with `g`/`i`/`c`/`n` flags
+  and backreferences), `:norm`, `:g`, `:v`, `:marks`, `:reg`, `:p`/`:nu`/`:#`, `:=`,
+  `:jumps`, `:changes`, `:[range]>`, `:[range]<`, `:set` (17 options), `:!`,
+  `:{range}!{filter}`, `:retab`, `:qa`/`:wa`/`:wqa`/`:xa`, `:new`/`:enew`,
+  `:delmarks`, `:undolist`, `:pwd`, `:file`, and all file operations.
 
 ### Not in Simulator
 
@@ -1385,29 +1398,16 @@ not available in the VimFu simulator. Practice these in real Neovim.
 
 | Feature | Lessons | Notes |
 |---------|---------|-------|
-| `Ctrl-V` block visual | 66, 67, 232, 433, 443, 444, 469 | Use `v` and `V` instead |
 | Global marks `m{A-Z}` | 100 | Local marks `m{a-z}` work fine |
-| Auto-indent `=` / `==` | 110, 206 | `>` and `<` indent/dedent work |
-| System clipboard `"+` `"*` | 122 | |
-| Nvim window splits | 131–135, 334–365 | Use tmux panes instead |
-| `K` keyword lookup | 172 | |
-| `U` undo line | 182 | `u` undo works |
-| `!{motion}{filter}` filter | 196, 421 | `:!cmd` works |
-| `&` repeat `:s` | 200 | |
-| `Ctrl-L` redraw | 231 | |
+| System clipboard `"+` `"*` | 122 | Named registers work |
+| `Ctrl-L` redraw | 231 | Screen is always current |
 | `Ctrl-C` | 233 | Use `Escape` instead |
-| `Ctrl-Z` suspend | 234 | |
-| `Ctrl-]` / `Ctrl-T` tags | 235, 236 | |
+| `Ctrl-Z` suspend | 234 | Not applicable in browser |
+| `Ctrl-]` / `Ctrl-T` tags | 235, 236 | No ctags support |
 | `Ctrl-^` alternate file | 237 | |
-| `z.` `z+` `z-` `z^` scroll | 245–248, 289 | `zz` `zt` `zb` work |
-| Most `g` commands | 254–265, 271–285 | `ga` `gd` `ge` `gE` `gi` `gI` `gJ` `gu` `gU` `g~` `gv` `g_` work |
-| Folds | 293–307 | |
-| Spelling | 308–314 | |
-| Bracket `[` / `]` commands | 317–333 | |
-| Insert `Ctrl-O` (insert-normal) | 368 | |
-| Insert `Ctrl-T` / `Ctrl-D` indent | 372, 373 | |
-| Buffers / `:ls` / `:b` | 410–414 | |
-| Tabs / `:tabnew` | 415–418 | |
-| `:{range}!{filter}` | 421 | |
-| `:terminal` | 422 | |
-| `q:` / `q/` history windows | 446, 447 | |
+| Spelling | 308–314 | No spell checking |
+| Insert `Ctrl-T` / `Ctrl-D` indent | 372, 373 | Use `>>`/`<<` in normal mode |
+| Buffers / `:ls` / `:b` | 410–414 | Single-buffer model |
+| Tabs / `:tabnew` | 415–418 | Use window splits instead |
+| `:terminal` | 422 | Use tmux shell instead |
+| `q:` / `q/` history windows | 446, 447 | Command history via `↑`/`↓` works |

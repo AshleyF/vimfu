@@ -17,6 +17,7 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { VimEngine } from '../src/engine.js';
 import { Screen } from '../src/screen.js';
+import { SessionManager } from '../src/session.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const LEGACY_PATH = resolve(__dirname, 'ground_truth.json');
@@ -64,6 +65,14 @@ function loadSuites() {
 
 // ── Helpers ──
 function feedKeys(engine, keys) {
+  _feedKeysImpl(key => engine.feedKey(key), keys);
+}
+
+function feedKeysViaSession(session, keys) {
+  _feedKeysImpl(key => session.feedKey(key), keys);
+}
+
+function _feedKeysImpl(feedFn, keys) {
   let i = 0;
   while (i < keys.length) {
     const ch = keys[i];
@@ -72,17 +81,19 @@ function feedKeys(engine, keys) {
       // Check for escape sequences (arrow keys, Delete, etc.)
       if (i + 2 < keys.length && keys[i + 1] === '[') {
         const code = keys[i + 2];
-        if (code === 'A') { engine.feedKey('ArrowUp'); i += 3; continue; }
-        if (code === 'B') { engine.feedKey('ArrowDown'); i += 3; continue; }
-        if (code === 'C') { engine.feedKey('ArrowRight'); i += 3; continue; }
-        if (code === 'D') { engine.feedKey('ArrowLeft'); i += 3; continue; }
+        if (code === 'A') { feedFn('ArrowUp'); i += 3; continue; }
+        if (code === 'B') { feedFn('ArrowDown'); i += 3; continue; }
+        if (code === 'C') { feedFn('ArrowRight'); i += 3; continue; }
+        if (code === 'D') { feedFn('ArrowLeft'); i += 3; continue; }
         if (code === '3' && i + 3 < keys.length && keys[i + 3] === '~') {
-          engine.feedKey('Delete'); i += 4; continue;
+          feedFn('Delete'); i += 4; continue;
         }
       }
       key = 'Escape';
     }
-    else if (ch === '\r' || ch === '\n') key = 'Enter';
+    else if (ch === '\r') key = 'Enter';
+    else if (ch === '\n') key = 'Ctrl-J';
+    else if (ch === '\x03') key = 'Ctrl-C';
     else if (ch === '\x08' || ch === '\x7f') key = 'Backspace';
     else if (ch === '\x01') key = 'Ctrl-A';
     else if (ch === '\x02') key = 'Ctrl-B';
@@ -91,13 +102,18 @@ function feedKeys(engine, keys) {
     else if (ch === '\x06') key = 'Ctrl-F';
     else if (ch === '\x07') key = 'Ctrl-G';
     else if (ch === '\x09') key = 'Tab';
+    else if (ch === '\x0c') key = 'Ctrl-L';
+    else if (ch === '\x0e') key = 'Ctrl-N';
     else if (ch === '\x0f') key = 'Ctrl-O';
+    else if (ch === '\x10') key = 'Ctrl-P';
+    else if (ch === '\x14') key = 'Ctrl-T';
     else if (ch === '\x12') key = 'Ctrl-R';
     else if (ch === '\x15') key = 'Ctrl-U';
+    else if (ch === '\x16') key = 'Ctrl-V';
     else if (ch === '\x17') key = 'Ctrl-W';
     else if (ch === '\x18') key = 'Ctrl-X';
     else if (ch === '\x19') key = 'Ctrl-Y';
-    engine.feedKey(key);
+    feedFn(key);
     i++;
   }
 }
@@ -190,12 +206,25 @@ for (const [suiteName, cases] of Object.entries(suites)) {
       continue;
     }
 
-    // Run through sim engine
-    const engine = new VimEngine({ rows: ROWS, cols: COLS });
-    if (gt.initialContent) {
-      engine.loadFile(gt.initialContent, gt.fileName || null);
+    // Run through sim engine (or session for shell-filter tests)
+    const needsSession = gt.keys && /[!]/.test(gt.keys) && suiteName === 'filter';
+    let engine;
+    if (needsSession) {
+      const session = new SessionManager({ rows: ROWS, cols: COLS, persist: false });
+      const fname = gt.fileName || 'test.txt';
+      if (gt.initialContent) session.fs.write(fname, gt.initialContent);
+      for (const ch of `vim ${fname}`) session.feedKey(ch);
+      session.feedKey('Enter');
+      // Feed keys through session (not engine) so shell commands are processed
+      feedKeysViaSession(session, gt.keys);
+      engine = session.engine;
+    } else {
+      engine = new VimEngine({ rows: ROWS, cols: COLS });
+      if (gt.initialContent) {
+        engine.loadFile(gt.initialContent, gt.fileName || null);
+      }
+      feedKeys(engine, gt.keys);
     }
-    feedKeys(engine, gt.keys);
 
     const screen = new Screen(ROWS, COLS, 'monokai');
     const frame = screen.render(engine);

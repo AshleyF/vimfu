@@ -400,6 +400,31 @@ class TmuxWindow {
       }
     }
 
+    if (!best) {
+      // Wrap around: find the farthest pane in the opposite direction
+      // (real tmux wraps when navigating past the edge)
+      for (const p of panes) {
+        if (p === cur) continue;
+        const px = p.left + p.width / 2;
+        const py = p.top + p.height / 2;
+
+        let valid = false;
+        switch (direction) {
+          case 'Up':    valid = py > cy; break;  // wrap: find bottom-most
+          case 'Down':  valid = py < cy; break;  // wrap: find top-most
+          case 'Left':  valid = px > cx; break;  // wrap: find right-most
+          case 'Right': valid = px < cx; break;  // wrap: find left-most
+        }
+        if (!valid) continue;
+
+        const dist = Math.abs(px - cx) + Math.abs(py - cy);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = p;
+        }
+      }
+    }
+
     if (best) {
       this.lastActivePane = this.activePane;
       this.activePane = best;
@@ -980,7 +1005,7 @@ export class Tmux {
       case 'ArrowUp':    case 'k': if (win._zoomed) win.toggleZoom(); win.navigatePane('Up');    break;
       case 'ArrowDown':  case 'j': if (win._zoomed) win.toggleZoom(); win.navigatePane('Down');  break;
       case 'ArrowLeft':  case 'h': if (win._zoomed) win.toggleZoom(); win.navigatePane('Left');  break;
-      case 'ArrowRight': if (win._zoomed) win.toggleZoom(); win.navigatePane('Right'); break;
+      case 'ArrowRight': case 'l': if (win._zoomed) win.toggleZoom(); win.navigatePane('Right'); break;
       case 'o':  if (win._zoomed) win.toggleZoom(); win.nextPane();  break;
       case ';':  // last pane
         if (win.lastActivePane && win.getPanes().includes(win.lastActivePane)) {
@@ -1069,7 +1094,7 @@ export class Tmux {
         break;
 
       // ── Last window ──
-      case 'l':
+      case 'L':
         sess.lastWindow();
         break;
 
@@ -1814,7 +1839,10 @@ export class Tmux {
       const w = sess.windows[i];
       const marker = i === sess.activeWindowIndex ? '*' : '-';
       const zoomFlag = (i === sess.activeWindowIndex && w._zoomed) ? 'Z' : '';
-      windowParts.push(`${i}:${w.name}${marker}${zoomFlag}`);
+      // Real tmux changes the active window name to "[tmux]" in copy mode
+      const wName = (this._mode === TmuxMode.COPY && i === sess.activeWindowIndex)
+        ? '[tmux]' : w.name;
+      windowParts.push(`${i}:${wName}${marker}${zoomFlag}`);
     }
     const windowStr = windowParts.join(' ');
 
@@ -2018,6 +2046,7 @@ export class Tmux {
       '  n     Next window',
       '  p     Previous window',
       '  0-9   Switch to window N',
+      '  L     Last window',
       '  ,     Rename window',
       '  &     Close window',
       '  w     Window list (chooser)',

@@ -154,11 +154,10 @@ function assertNotIncludes(str, substr, msg) {
 // ═══════════════════════════════════════════════════════════════════
 
 tests.behavior_fresh_launch_status_bar = () => {
-  // Real tmux: "0 | 0:zsh* | HH:MM | DD-Mon-YY"
+  // Real tmux default: "[0] 0:zsh*   \"hostname\" HH:MM DD-Mon-YY"
   const t = newTmux();
   const status = getStatusBar(t);
-  assertIncludes(status, '0 ', 'session name "0 "');
-  assertIncludes(status, '| ', 'pipe separator');
+  assertIncludes(status, '[0]', 'session name "[0]"');
   assertIncludes(status, '0:zsh', 'window name');
   assertIncludes(status, '*', 'active marker');
 };
@@ -1106,16 +1105,20 @@ tests.behavior_layout_odd_cols_vsplit = () => {
 tests.behavior_status_session_name = () => {
   const t = newTmux();
   const status = getStatusBar(t);
-  // Should start with "0 " (session name)
-  assert(status.startsWith('0 '), `status starts with "0 ": ${JSON.stringify(status.slice(0, 10))}`);
+  // Default tmux: "[0] 0:zsh*" — session name in brackets
+  assert(status.startsWith('[0]'), `status starts with "[0]": ${JSON.stringify(status.slice(0, 10))}`);
 };
 
 tests.behavior_status_pipe_separators = () => {
+  // Default tmux: "[0] 0:zsh*   \"hostname\" HH:MM DD-Mon-YY"
+  // No pipe separators — sections separated by spaces
   const t = newTmux();
   const status = getStatusBar(t);
-  // Should have pipe separators between sections
-  const pipes = (status.match(/\|/g) || []).length;
-  assert(pipes >= 3, `at least 3 pipe separators, got ${pipes}`);
+  // Should contain session, window list, hostname, time, date
+  assertIncludes(status, '[0]', 'session name');
+  assertIncludes(status, '0:zsh*', 'window list');
+  assertIncludes(status, '"vimfu"', 'hostname');
+  assert(status.match(/\d{2}:\d{2}/), 'time HH:MM present');
 };
 
 tests.behavior_status_time_format = () => {

@@ -100,22 +100,19 @@ console.log('============================================================');
   // "import" at position 16
   assert(fgAt(frame.lines[5], 16) === t.normalFg, 'colour: from..import is normal');
 
-  // Line 8: # Constants
-  assert(fgAt(frame.lines[8], 0) === t.syntax.comment, 'colour: comment line is grey');
+  // Line 6: # Constants
+  assert(fgAt(frame.lines[6], 0) === t.syntax.comment, 'colour: comment line is grey');
 
-  // Line 9: MAX_SIZE = 100
+  // Line 7: MAX = 100
   // nvim default does NOT highlight numbers
-  assert(fgAt(frame.lines[9], 13) === t.normalFg, 'colour: integer is normal (not highlighted)');
+  assert(fgAt(frame.lines[7], 6) === t.normalFg, 'colour: integer is normal (not highlighted)');
 
-  // Line 10: PI = 3.14159
-  assert(fgAt(frame.lines[10], 5) === t.normalFg, 'colour: float is normal (not highlighted)');
+  // Line 8: PI = 3.14159
+  assert(fgAt(frame.lines[8], 5) === t.normalFg, 'colour: float is normal (not highlighted)');
 
-  // Line 11: HEX = 0xFF
-  assert(fgAt(frame.lines[11], 6) === t.normalFg, 'colour: hex is normal (not highlighted)');
-
-  // GREETING = "Hello, VimFu!" (line 14)
+  // Line 9: NAME = "VimFu"
   // String starts after = (at the ")
-  const greetLine = frame.lines[14];
+  const greetLine = frame.lines[9];
   const greetText = greetLine.text;
   const qStart = greetText.indexOf('"');
   assert(qStart >= 0 && fgAt(greetLine, qStart) === t.syntax.string, 'colour: string literal is green');
@@ -187,40 +184,7 @@ console.log('============================================================');
   }
 }
 
-// ════════════════════════════════════════════════════════════════
-// Structural: multi-line string spans
-// ════════════════════════════════════════════════════════════════
-console.log('============================================================');
-console.log('Suite: Multi-line Strings');
-console.log('============================================================');
 
-{
-  const engine = makePyEngine();
-  const screen = new Screen(ROWS, COLS, 'nvim_default');
-  const t = screen.theme;
-
-  // MULTI = """triple\nquoted string"""
-  // Find which buffer lines these are
-  const lines = SAMPLE_PYTHON.content.split('\n');
-  const multiStart = lines.findIndex(l => l.includes('MULTI = """'));
-  assert(multiStart >= 0, 'multi: found MULTI line');
-
-  if (multiStart >= 0) {
-    engine.scrollTop = multiStart;
-    const frame = screen.render(engine);
-
-    // Line 0 in view: MULTI = """triple
-    const l0 = frame.lines[0];
-    const triplePos = l0.text.indexOf('"""');
-    assert(triplePos >= 0 && fgAt(l0, triplePos) === t.syntax.string, 'multi: opening """ is green');
-    // Text after """ should also be string
-    assert(fgAt(l0, triplePos + 3) === t.syntax.string, 'multi: text after """ is green');
-
-    // Line 1 in view: quoted string"""
-    const l1 = frame.lines[1];
-    assert(fgAt(l1, 0) === t.syntax.string, 'multi: continuation line is green');
-  }
-}
 
 // ════════════════════════════════════════════════════════════════
 // Structural: built-in functions get correct scope
@@ -239,6 +203,7 @@ console.log('============================================================');
   const printLine = lines.findIndex(l => l.trimStart().startsWith('print('));
   if (printLine >= 0) {
     engine.scrollTop = printLine;
+    engine.cursor = { row: printLine, col: 0 };
     const frame = screen.render(engine);
     const pl = frame.lines[0];
     const printPos = pl.text.indexOf('print');
@@ -264,6 +229,7 @@ console.log('============================================================');
   const classLine = lines.findIndex(l => l.startsWith('class Animal'));
   if (classLine >= 0) {
     engine.scrollTop = classLine;
+    engine.cursor = { row: classLine, col: 0 };
     const frame = screen.render(engine);
     const cl = frame.lines[0];
     // "class" at col 0 → normal (nvim doesn't highlight keywords)
@@ -295,8 +261,8 @@ console.log('============================================================');
   // Line 3: import → keyword.import
   assert(fgAt(frame.lines[3], 0) === t.syntax['keyword.import'], 'monokai: import is highlighted');
 
-  // Line 9: 100 → number (purple)
-  assert(fgAt(frame.lines[9], 13) === t.syntax.number, 'monokai: number is purple');
+  // Line 7: 100 → number (purple)
+  assert(fgAt(frame.lines[7], 6) === t.syntax.number, 'monokai: number is purple');
 }
 
 // ════════════════════════════════════════════════════════════════

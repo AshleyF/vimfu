@@ -493,6 +493,61 @@ export class SessionManager {
       }
       return;
     }
+    // :{range}!cmd — filter lines through shell command
+    // This handles both:
+    //   1. Commands from !{motion} operator (engine sets _filterRange + '!cmd')
+    //   2. Direct ex commands like :%!sort, :1,5!sort, :.!cmd
+    {
+      let filterSr = null, filterEr = null, shellCmd = null;
+
+      if (this.engine._filterRange) {
+        // From !{motion} operator — range already computed
+        const { sr, er } = this.engine._filterRange;
+        this.engine._filterRange = null;
+        filterSr = sr;
+        filterEr = er;
+        // The command string is the pre-filled range+!cmd, extract just the shell command
+        const bangIdx = trimmed.indexOf('!');
+        if (bangIdx >= 0) shellCmd = trimmed.slice(bangIdx + 1).trim();
+        else if (trimmed.startsWith('!')) shellCmd = trimmed.slice(1).trim();
+      } else {
+        // Parse range from the command string using engine's parser
+        const parsed = this.engine._parseExRange(trimmed);
+        if (parsed.hasRange && parsed.rest.startsWith('!')) {
+          filterSr = parsed.sr;
+          filterEr = parsed.er;
+          shellCmd = parsed.rest.slice(1).trim();
+        }
+      }
+
+      if (filterSr !== null && filterEr !== null && shellCmd) {
+        const inputLines = [];
+        for (let r = filterSr; r <= filterEr; r++) {
+          inputLines.push(this.engine.buffer.lines[r]);
+        }
+        const stdin = inputLines.join('\n');
+        const output = this._execShellForOutput(shellCmd, stdin);
+        // Replace lines with output
+        this.engine._saveSnapshot();
+        this.engine._redoStack = [];
+        this.engine.buffer.lines.splice(filterSr, filterEr - filterSr + 1, ...output);
+        if (this.engine.buffer.lines.length === 0) this.engine.buffer.lines.push('');
+        // Position cursor at first filtered line, first non-blank
+        this.engine.cursor.row = Math.min(filterSr, this.engine.buffer.lineCount - 1);
+        this.engine.cursor.col = this.engine._firstNonBlank(this.engine.cursor.row);
+        this.engine._clampCursor();
+        this.engine._updateDesiredCol();
+        const nOld = filterEr - filterSr + 1;
+        const nNew = output.length;
+        if (nNew !== nOld) {
+          this.engine.commandLine = `${nNew} fewer line${nNew !== 1 ? 's' : ''}; ${nOld} line${nOld !== 1 ? 's' : ''} filtered`;
+        } else {
+          this.engine.commandLine = `${nNew} line${nNew !== 1 ? 's' : ''} filtered`;
+        }
+        this.engine._stickyCommandLine = true;
+        return;
+      }
+    }
     // :! command – shell command
     if (trimmed.startsWith('!')) {
       const shellCmd = trimmed.slice(1).trim();
@@ -603,7 +658,7 @@ export class SessionManager {
   // ── :! shell command support ──
 
   /** @private – execute a shell command and return output lines */
-  _execShellForOutput(cmd) {
+  _execShellForOutput(cmd, stdin = null) {
     const lines = [];
     const args = this._tokenize(cmd);
     if (args.length === 0) return lines;
@@ -618,12 +673,17 @@ export class SessionManager {
         break;
       }
       case 'cat': {
-        for (const name of rest) {
-          const contents = this.fs.read(name);
-          if (contents === null) {
-            lines.push(`cat: ${name}: No such file or directory`);
-          } else {
-            lines.push(...contents.split('\n'));
+        if (rest.length === 0 && stdin !== null) {
+          // cat with stdin: pass through
+          lines.push(...stdin.split('\n'));
+        } else {
+          for (const name of rest) {
+            const contents = this.fs.read(name);
+            if (contents === null) {
+              lines.push(`cat: ${name}: No such file or directory`);
+            } else {
+              lines.push(...contents.split('\n'));
+            }
           }
         }
         break;
@@ -733,7 +793,26 @@ export class SessionManager {
             }
           } else positional.push(arg);
         }
-        if (positional.length < 2) {
+        if (positional.length < 1) {
+          lines.push('Usage: grep [options] pattern file');
+        } else if (positional.length === 1 && stdin !== null) {
+          // grep pattern from stdin
+          let re;
+          try { re = new RegExp(positional[0], ignoreCase ? 'i' : ''); }
+          catch (e) { lines.push(`grep: invalid regex: ${positional[0]}`); break; }
+          const flines = stdin.split('\n');
+          let count = 0;
+          for (let i = 0; i < flines.length; i++) {
+            if (re.test(flines[i])) {
+              count++;
+              if (!countOnly) {
+                const ln = showNums ? `${i + 1}:` : '';
+                lines.push(`${ln}${flines[i]}`);
+              }
+            }
+          }
+          if (countOnly) lines.push(`${count}`);
+        } else if (positional.length < 2) {
           lines.push('Usage: grep [options] pattern file');
         } else {
           let re;
@@ -772,20 +851,29 @@ export class SessionManager {
         break;
       }
       case 'sort': {
-        if (rest.length === 0) {
+        let reverse = false, numeric = false, unique = false;
+        const files = [];
+        for (const arg of rest) {
+          if (arg.startsWith('-')) {
+            for (const ch of arg.slice(1)) {
+              if (ch === 'r') reverse = true;
+              else if (ch === 'n') numeric = true;
+              else if (ch === 'u') unique = true;
+            }
+          } else files.push(arg);
+        }
+        if (files.length === 0 && stdin !== null) {
+          // sort from stdin
+          let sorted = stdin.split('\n');
+          if (sorted.length > 0 && sorted[sorted.length - 1] === '') sorted.pop();
+          if (numeric) sorted.sort((a, b) => (parseFloat(a) || 0) - (parseFloat(b) || 0));
+          else sorted.sort();
+          if (reverse) sorted.reverse();
+          if (unique) sorted = [...new Set(sorted)];
+          lines.push(...sorted);
+        } else if (files.length === 0) {
           lines.push('sort: missing file operand');
         } else {
-          let reverse = false, numeric = false, unique = false;
-          const files = [];
-          for (const arg of rest) {
-            if (arg.startsWith('-')) {
-              for (const ch of arg.slice(1)) {
-                if (ch === 'r') reverse = true;
-                else if (ch === 'n') numeric = true;
-                else if (ch === 'u') unique = true;
-              }
-            } else files.push(arg);
-          }
           for (const name of files) {
             const contents = this.fs.read(name);
             if (contents === null) {
@@ -803,12 +891,239 @@ export class SessionManager {
         }
         break;
       }
+
+      case 'uniq': {
+        // Remove consecutive duplicate lines
+        let inputLines;
+        if (rest.length === 0 && stdin !== null) {
+          inputLines = stdin.split('\n');
+        } else if (rest.length > 0) {
+          const contents = this.fs.read(rest[0]);
+          if (contents === null) {
+            lines.push(`uniq: ${rest[0]}: No such file or directory`);
+            break;
+          }
+          inputLines = contents.split('\n');
+        } else {
+          lines.push('uniq: missing operand');
+          break;
+        }
+        if (inputLines.length > 0 && inputLines[inputLines.length - 1] === '') inputLines.pop();
+        const result = [];
+        for (let i = 0; i < inputLines.length; i++) {
+          if (i === 0 || inputLines[i] !== inputLines[i - 1]) {
+            result.push(inputLines[i]);
+          }
+        }
+        lines.push(...result);
+        break;
+      }
+
+      case 'tr': {
+        // tr 'set1' 'set2' — translate characters
+        if (rest.length < 2) {
+          lines.push('tr: missing operand');
+        } else {
+          const set1 = this._expandTrSet(rest[0]);
+          const set2 = this._expandTrSet(rest[1]);
+          const input = stdin !== null ? stdin : '';
+          let output = '';
+          for (const ch of input) {
+            const idx = set1.indexOf(ch);
+            if (idx >= 0 && idx < set2.length) {
+              output += set2[idx];
+            } else if (idx >= 0) {
+              output += set2[set2.length - 1] || ch;
+            } else {
+              output += ch;
+            }
+          }
+          lines.push(...output.split('\n'));
+        }
+        break;
+      }
+
+      case 'rev': {
+        // Reverse each line
+        let inputLines;
+        if (rest.length === 0 && stdin !== null) {
+          inputLines = stdin.split('\n');
+        } else if (rest.length > 0) {
+          const contents = this.fs.read(rest[0]);
+          if (contents === null) {
+            lines.push(`rev: ${rest[0]}: No such file or directory`);
+            break;
+          }
+          inputLines = contents.split('\n');
+        } else {
+          inputLines = [];
+        }
+        for (const line of inputLines) {
+          lines.push(line.split('').reverse().join(''));
+        }
+        break;
+      }
+
+      case 'tac': {
+        // Reverse line order
+        let inputLines;
+        if (rest.length === 0 && stdin !== null) {
+          inputLines = stdin.split('\n');
+        } else if (rest.length > 0) {
+          const contents = this.fs.read(rest[0]);
+          if (contents === null) {
+            lines.push(`tac: ${rest[0]}: No such file or directory`);
+            break;
+          }
+          inputLines = contents.split('\n');
+        } else {
+          inputLines = [];
+        }
+        if (inputLines.length > 0 && inputLines[inputLines.length - 1] === '') inputLines.pop();
+        lines.push(...inputLines.reverse());
+        break;
+      }
+
+      case 'head': {
+        // head -n N — first N lines (default 10)
+        let n = 10;
+        const files = [];
+        for (let i = 0; i < rest.length; i++) {
+          if (rest[i] === '-n' && i + 1 < rest.length) {
+            n = parseInt(rest[i + 1], 10) || 10;
+            i++;
+          } else if (rest[i].startsWith('-') && rest[i] !== '-') {
+            // -N shorthand
+            const num = parseInt(rest[i].slice(1), 10);
+            if (!isNaN(num)) n = num;
+          } else {
+            files.push(rest[i]);
+          }
+        }
+        let inputLines;
+        if (files.length === 0 && stdin !== null) {
+          inputLines = stdin.split('\n');
+        } else if (files.length > 0) {
+          const contents = this.fs.read(files[0]);
+          if (contents === null) {
+            lines.push(`head: ${files[0]}: No such file or directory`);
+            break;
+          }
+          inputLines = contents.split('\n');
+        } else {
+          break;
+        }
+        lines.push(...inputLines.slice(0, n));
+        break;
+      }
+
+      case 'tail': {
+        // tail -n N — last N lines (default 10)
+        let n = 10;
+        const files = [];
+        for (let i = 0; i < rest.length; i++) {
+          if (rest[i] === '-n' && i + 1 < rest.length) {
+            n = parseInt(rest[i + 1], 10) || 10;
+            i++;
+          } else if (rest[i].startsWith('-') && rest[i] !== '-') {
+            const num = parseInt(rest[i].slice(1), 10);
+            if (!isNaN(num)) n = num;
+          } else {
+            files.push(rest[i]);
+          }
+        }
+        let inputLines;
+        if (files.length === 0 && stdin !== null) {
+          inputLines = stdin.split('\n');
+        } else if (files.length > 0) {
+          const contents = this.fs.read(files[0]);
+          if (contents === null) {
+            lines.push(`tail: ${files[0]}: No such file or directory`);
+            break;
+          }
+          inputLines = contents.split('\n');
+        } else {
+          break;
+        }
+        if (inputLines.length > 0 && inputLines[inputLines.length - 1] === '') inputLines.pop();
+        lines.push(...inputLines.slice(-n));
+        break;
+      }
+
+      case 'sed': {
+        // Basic sed 's/pat/rep/[flags]' support
+        let inputLines;
+        // Collect flags and positional args
+        const sedFlags = [];
+        const sedPositional = [];
+        for (const arg of rest) {
+          if (arg.startsWith('-') && arg.length > 1) {
+            sedFlags.push(arg);
+          } else {
+            sedPositional.push(arg);
+          }
+        }
+        const sedExpr = sedPositional[0] || '';
+        const sedFiles = sedPositional.slice(1);
+        if (sedFiles.length === 0 && stdin !== null) {
+          inputLines = stdin.split('\n');
+        } else if (sedFiles.length > 0) {
+          const contents = this.fs.read(sedFiles[0]);
+          if (contents === null) {
+            lines.push(`sed: ${sedFiles[0]}: No such file or directory`);
+            break;
+          }
+          inputLines = contents.split('\n');
+        } else {
+          inputLines = [];
+        }
+        // Parse s/pat/rep/flags
+        const sedMatch = sedExpr.match(/^s(.)(.+?)\1(.*?)\1([gi]*)$/);
+        if (sedMatch) {
+          const [, , pat, rep, flags] = sedMatch;
+          const isGlobal = flags.includes('g');
+          const isIcase = flags.includes('i');
+          let re;
+          try {
+            re = new RegExp(pat, (isGlobal ? 'g' : '') + (isIcase ? 'i' : ''));
+          } catch (e) {
+            lines.push(`sed: invalid regex: ${pat}`);
+            break;
+          }
+          for (const line of inputLines) {
+            lines.push(line.replace(re, rep));
+          }
+        } else {
+          // Unsupported sed expression — pass through
+          lines.push(...inputLines);
+        }
+        break;
+      }
+
       default:
         lines.push(`zsh: command not found: ${command}`);
         break;
     }
 
     return lines;
+  }
+
+  /** @private – expand tr character set ranges like a-z */
+  _expandTrSet(s) {
+    let result = '';
+    for (let i = 0; i < s.length; i++) {
+      if (i + 2 < s.length && s[i + 1] === '-') {
+        const start = s.charCodeAt(i);
+        const end = s.charCodeAt(i + 2);
+        for (let c = start; c <= end; c++) {
+          result += String.fromCharCode(c);
+        }
+        i += 2;
+      } else {
+        result += s[i];
+      }
+    }
+    return result;
   }
 
   /** @private */

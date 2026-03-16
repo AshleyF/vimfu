@@ -55,6 +55,9 @@ const THEMES = {
     cursorLineNrFg: 'e0e2ea', // CursorLineNr (bright white)
     cursorLineNrBg: null,      // CursorLineNr bg (inherits normalBg)
     cursorLineBg: '2c2e33',    // CursorLine background (verified nvim default)
+    // Folded lines
+    foldedFg: '9b9ea4',        // Folded fg (grey)
+    foldedBg: '2c2e33',        // Folded bg (dark)
     // MatchParen – default nvim uses bold + guibg=NvimDarkGrey4
     matchParenBg: '4f5258',
     // Syntax highlighting – verified against nvim -u NONE + syntax on + termguicolors
@@ -87,6 +90,8 @@ const THEMES = {
     tildeBg: '000000',
     statusFg: 'b1b1b1',
     statusBg: '2e323c',
+    statusNcFg: '8f908a',       // StatusLineNC fg (dimmed, matches Folded)
+    statusNcBg: '2e323c',       // StatusLineNC bg (same as StatusLine)
     cmdFg: 'd4d4d4',
     cmdBg: '000000',
     recordingFg: 'f8f8f0',     // ModeMsg
@@ -103,6 +108,9 @@ const THEMES = {
     cursorLineNrFg: 'fd971f',    // CursorLineNr (orange)
     cursorLineNrBg: '26292c',      // CursorLineNr bg (monokai)
     cursorLineBg: '2e323c',        // CursorLine background (monokai)
+    // Folded lines
+    foldedFg: '8f908a',        // Folded fg (monokai Folded)
+    foldedBg: '2e323c',        // Folded bg (dark)
     matchParenBg: null,              // MatchParen – monokai sets fg only, bg inherits Normal
     matchParenFg: 'f92672',        // MatchParen (pink)
     // Syntax highlighting – tanvirtin/monokai.nvim palette
@@ -145,6 +153,7 @@ export class Screen {
   constructor(rows = 20, cols = 40, themeName = 'monokai') {
     this.rows = rows;
     this.cols = cols;
+    this.themeName = themeName;
     this.theme = THEMES[themeName] || THEMES.monokai;
     // When false, mimics vim with laststatus=1 (single window):
     // no separate status line, ruler shown on command line.
@@ -174,6 +183,11 @@ export class Screen {
    * @returns {object} Frame dict per frame_format.md
    */
   render(engine) {
+    // If multiple windows, delegate to split rendering
+    if (engine._windows && engine._windows.length > 1) {
+      return this._renderSplit(engine);
+    }
+
     const t = this.theme;
     const buf = engine.buffer;
     const cursor = engine.cursor;
@@ -189,11 +203,20 @@ export class Screen {
 
     // ── Compute visual selection range (in buffer coordinates) ──
     let visSR = -1, visSC = -1, visER = -1, visEC = -1;
-    let visMode = null; // 'char' | 'line' | null
-    if (mode === 'visual' || mode === 'visual_line') {
+    let visMode = null; // 'char' | 'line' | 'block' | null
+    // Visual block: store left/right cols and dollar flag
+    let visBlockLeft = -1, visBlockRight = -1, visBlockDollar = false;
+    if (mode === 'visual' || mode === 'visual_line' || mode === 'visual_block') {
       const vs = engine._visualStart;
       const vc = cursor;
-      if (mode === 'visual_line') {
+      if (mode === 'visual_block') {
+        visMode = 'block';
+        visSR = Math.min(vs.row, vc.row);
+        visER = Math.max(vs.row, vc.row);
+        visBlockLeft = Math.min(vs.col, vc.col);
+        visBlockRight = Math.max(vs.col, vc.col);
+        visBlockDollar = engine._visualBlockDollar || false;
+      } else if (mode === 'visual_line') {
         visMode = 'line';
         visSR = Math.min(vs.row, vc.row);
         visER = Math.max(vs.row, vc.row);
@@ -252,7 +275,7 @@ export class Screen {
       if (engine._settings?.ignorecase) {
         caseFlag = (engine._settings.smartcase && /[A-Z]/.test(engine._searchPattern)) ? '' : 'i';
       }
-      try { searchRegex = new RegExp(engine._searchPattern, 'g' + caseFlag); } catch (e) { /* bad regex */ }
+      try { searchRegex = new RegExp(engine._vimPatternToJs(engine._searchPattern), 'g' + caseFlag); } catch (e) { /* bad regex */ }
     }
 
     // ── Syntax highlighting setup ──
@@ -271,7 +294,7 @@ export class Screen {
     // Neovim highlights the bracket under the cursor and its matching pair.
     let matchParenA = null; // bracket under cursor {row, col}
     let matchParenB = null; // matching bracket    {row, col}
-    if ((t.matchParenBg || t.matchParenFg) && (mode === 'normal' || mode === 'visual' || mode === 'visual_line' || mode === 'insert')) {
+    if ((t.matchParenBg || t.matchParenFg) && (mode === 'normal' || mode === 'visual' || mode === 'visual_line' || mode === 'visual_block' || mode === 'insert')) {
       const curLine = buf.lines[cursor.row] || '';
       const ch = curLine[cursor.col];
       if (ch && '([{)]}'.includes(ch)) {
@@ -298,6 +321,7 @@ export class Screen {
     // ── Helper: expand a raw buffer line into screen text and mappings ──
     const ts = engine._settings.tabstop || 8;
     const expandLine = (raw) => {
+      if (!raw) raw = '';
       let expanded = '';
       const bufToScreen = [];
       for (let i = 0; i < raw.length; i++) {
@@ -324,10 +348,25 @@ export class Screen {
       // First ensure the cursor's buffer row is at or below scrollTop
       if (cursor.row < scrollTopAdj) scrollTopAdj = cursor.row;
 
+      // If scrollTop is inside a closed fold (hidden row), snap to fold start
+      if (engine.getFoldHidingRow) {
+        const hidingFold = engine.getFoldHidingRow(scrollTopAdj);
+        if (hidingFold) scrollTopAdj = hidingFold.startRow;
+      }
+
       // Compute screen rows consumed from scrollTop to the cursor's row
       // and check if the cursor's wrapped position fits within textRows.
       let usedRows = 0;
       for (let br = scrollTopAdj; br < cursor.row && br < buf.lineCount; br++) {
+        // Skip rows hidden by closed folds
+        if (engine.getFoldHidingRow && engine.getFoldHidingRow(br)) continue;
+        // If this row starts a closed fold, count it as 1 screen row and skip to end
+        const closedFold = engine.getClosedFoldAt ? engine.getClosedFoldAt(br) : null;
+        if (closedFold) {
+          usedRows += 1;
+          br = closedFold.endRow; // loop will br++ to endRow+1
+          continue;
+        }
         const { expanded } = expandLine(buf.lines[br]);
         usedRows += wrapRows(expanded);
       }
@@ -340,9 +379,16 @@ export class Screen {
 
         // If cursor row is past the visible area, scroll down
         while (usedRows >= textRows && scrollTopAdj < cursor.row) {
-          const { expanded: topExpanded } = expandLine(buf.lines[scrollTopAdj]);
-          usedRows -= wrapRows(topExpanded);
-          scrollTopAdj++;
+          // Account for closed folds when scrolling past rows
+          const closedFoldTop = engine.getClosedFoldAt ? engine.getClosedFoldAt(scrollTopAdj) : null;
+          if (closedFoldTop) {
+            usedRows -= 1;
+            scrollTopAdj = closedFoldTop.endRow + 1;
+          } else {
+            const { expanded: topExpanded } = expandLine(buf.lines[scrollTopAdj]);
+            usedRows -= wrapRows(topExpanded);
+            scrollTopAdj++;
+          }
         }
         // Edge case: cursor's own wrapped line is taller than the screen
         // (scrollTopAdj === cursor.row but cursorWrapRow >= textRows).
@@ -360,6 +406,60 @@ export class Screen {
     let cursorScreenCol = -1;
 
     while (screenRow < textRows && bufRow < buf.lineCount) {
+      // Check for closed fold at this row
+      const closedFold = engine.getClosedFoldAt ? engine.getClosedFoldAt(bufRow) : null;
+      if (closedFold) {
+        // Render fold line (match nvim format: +--  N lines: text·····)
+        const foldedLines = closedFold.endRow - closedFold.startRow + 1;
+        const lineText = (buf.lines[bufRow] || '').trimStart();
+        const foldPrefix = '+--  ' + foldedLines + ' lines: ' + lineText;
+        const bodyText = foldPrefix.length >= textCols
+          ? foldPrefix.slice(0, textCols)
+          : foldPrefix + '\u00b7'.repeat(textCols - foldPrefix.length);
+
+        // Gutter for fold line
+        let gutterText = '';
+        const gutterRuns = [];
+        if (showGutter) {
+          const isCursorLine = (bufRow === cursor.row);
+          let numStr;
+          if (showNumber && showRelNumber) {
+            numStr = isCursorLine ? String(bufRow + 1) : String(Math.abs(bufRow - cursor.row));
+            gutterText = isCursorLine ? numStr + ' '.repeat(gutterWidth - numStr.length)
+                                      : numStr.padStart(gutterWidth - 1) + ' ';
+          } else if (showRelNumber) {
+            numStr = isCursorLine ? '0' : String(Math.abs(bufRow - cursor.row));
+            gutterText = numStr.padStart(gutterWidth - 1) + ' ';
+          } else {
+            numStr = String(bufRow + 1);
+            gutterText = numStr.padStart(gutterWidth - 1) + ' ';
+          }
+          const nrFg = (isCursorLine && engine._settings.cursorline)
+            ? (t.cursorLineNrFg || t.lineNrFg || t.normalFg)
+            : (t.lineNrFg || t.normalFg);
+          const nrBg = (isCursorLine && engine._settings.cursorline)
+            ? (t.cursorLineNrBg || t.normalBg) : t.normalBg;
+          gutterRuns.push({ n: gutterWidth, fg: nrFg, bg: nrBg });
+        }
+
+        // Fold line styling
+        const foldFg = t.foldedFg || t.normalFg;
+        const foldBg = t.foldedBg || t.normalBg;
+        const textRuns = [{ n: textCols, fg: foldFg, bg: foldBg }];
+
+        lines.push({ text: gutterText + bodyText, runs: [...gutterRuns, ...textRuns] });
+
+        // Track cursor on fold line
+        if (bufRow === cursor.row) {
+          cursorScreenRow = screenRow;
+          cursorScreenCol = gutterWidth;
+        }
+
+        screenRow++;
+        bufRow = closedFold.endRow + 1; // Skip to after the fold
+        continue;
+      }
+
       const raw = buf.lines[bufRow];
       const { expanded, bufToScreen } = expandLine(raw);
       const numWraps = wrapRows(expanded);
@@ -397,6 +497,9 @@ export class Screen {
           }
         }
 
+        // Track which columns are in visual selection (for search highlight priority)
+        const isVisualCol = new Array(textCols).fill(false);
+
         // Apply visual highlight
         if (visMode) {
           let hlStart = -1, hlEnd = -1; // in expanded-string coords (absolute)
@@ -404,6 +507,22 @@ export class Screen {
             if (bufRow >= visSR && bufRow <= visER) {
               hlStart = sliceStart;
               hlEnd = sliceStart + textCols - 1;
+            }
+          } else if (visMode === 'block') {
+            if (bufRow >= visSR && bufRow <= visER) {
+              // Block: highlight from leftCol to rightCol (or end of line if dollar)
+              const bLeft = bufToScreen[visBlockLeft] ?? visBlockLeft;
+              let bRight;
+              if (visBlockDollar) {
+                bRight = Math.max(expanded.length - 1, bLeft);
+              } else {
+                bRight = (visBlockRight < raw.length)
+                  ? (bufToScreen[visBlockRight + 1] ?? expanded.length) - 1
+                  : (bufToScreen[Math.min(visBlockRight, raw.length)] ?? expanded.length) - 1;
+                bRight = Math.max(bLeft, bRight);
+              }
+              hlStart = bLeft;
+              hlEnd = bRight;
             }
           } else { // char
             if (bufRow >= visSR && bufRow <= visER) {
@@ -436,12 +555,31 @@ export class Screen {
             const cEnd = Math.min(hlEnd, sliceStart + textCols - 1) - sliceStart;
             for (let c = cStart; c <= cEnd; c++) {
               colBg[c] = t.visualBg;
+              isVisualCol[c] = true;
+            }
+            // Cursor cell in visual modes: don't show visual highlight (cursor overlay takes priority)
+            if (bufRow === cursor.row && (mode === 'visual' || mode === 'visual_line' || mode === 'visual_block')) {
+              let curVirtCol = bufToScreen[Math.min(cursor.col, raw.length)] ?? 0;
+              // For tab under cursor, use the last visual column of the tab
+              if (cursor.col < raw.length && raw[cursor.col] === '\t') {
+                curVirtCol += ts - (curVirtCol % ts) - 1;
+              }
+              if (curVirtCol >= sliceStart && curVirtCol < sliceStart + textCols) {
+                const curIdx = curVirtCol - sliceStart;
+                const resetBg = (engine._settings.cursorline && t.cursorLineBg) ? t.cursorLineBg : t.normalBg;
+                colBg[curIdx] = resetBg;
+                isVisualCol[curIdx] = false;
+              }
             }
           }
         }
 
         // Apply search highlights
+        // Priority: CurSearch > Visual > Search
+        // - Regular Search does NOT override visual selection
+        // - CurSearch fg applies within visual, bg only at cursor position
         if (searchRegex) {
+          const cursorScreenCol = (bufRow === cursor.row) ? (bufToScreen[cursor.col] ?? 0) : -1;
           searchRegex.lastIndex = 0;
           let m;
           while ((m = searchRegex.exec(raw)) !== null) {
@@ -455,8 +593,20 @@ export class Screen {
             const sFg = isCursorMatch ? t.curSearchFg : t.searchFg;
             const sBg = isCursorMatch ? t.curSearchBg : t.searchBg;
             for (let sc = Math.max(matchStart, sliceStart); sc <= Math.min(matchEnd, sliceEnd - 1); sc++) {
-              colFg[sc - sliceStart] = sFg;
-              colBg[sc - sliceStart] = sBg;
+              const idx = sc - sliceStart;
+              if (isVisualCol[idx]) {
+                if (isCursorMatch) {
+                  // CurSearch fg applies in visual; bg only at cursor position
+                  colFg[idx] = sFg;
+                  if (sc === cursorScreenCol) {
+                    colBg[idx] = sBg;
+                  }
+                }
+                // Regular Search: skip (visual takes precedence)
+              } else {
+                colFg[idx] = sFg;
+                colBg[idx] = sBg;
+              }
             }
           }
         }
@@ -593,14 +743,14 @@ export class Screen {
           { n: this.cols - recLen, fg: t.cmdFg, bg: t.cmdBg },
         ],
       });
-    } else if (/^E\d{3}:/.test(engine.commandLine ?? '')) {
+    } else if (/^E\d{1,3}:/.test(engine.commandLine ?? '')) {
       // Error message in command line (red colored)
       const errLen = Math.min((engine.commandLine || '').length, this.cols);
       const errRuns = [];
       if (errLen > 0) errRuns.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg });
       if (errLen < this.cols) errRuns.push({ n: this.cols - errLen, fg: t.cmdFg, bg: t.cmdBg });
       lines.push({ text: cmdText, runs: errRuns });
-    } else if (t.modeMsgFg && /^-- (INSERT|VISUAL|VISUAL LINE|REPLACE) --$/.test((engine.commandLine ?? '').trim())) {
+    } else if (t.modeMsgFg && /^-- (INSERT|VISUAL|VISUAL BLOCK|VISUAL LINE|REPLACE) --$/.test((engine.commandLine ?? '').trim())) {
       // Mode indicator (ModeMsg) in green
       const modeLen = (engine.commandLine ?? '').replace(/\s+$/, '').length;
       lines.push({
@@ -630,6 +780,7 @@ export class Screen {
     // ── Message prompt overlay ("Press ENTER or type command to continue") ──
     if (engine._messagePrompt) {
       const mp = engine._messagePrompt;
+
       const prompt = 'Press ENTER or type command to continue';
 
       // Two modes: structured lines (mp.lines) or raw text (mp.error / mp.info)
@@ -717,17 +868,195 @@ export class Screen {
     for (const l of lines) if (l && l.runs) l.runs = Screen._mergeRuns(l.runs);
 
     // Cursor position was computed during rendering (accounting for wrapping).
+    // If _errorCmdLineCursor is set, cursor goes to end of error text on command line
+    let finalCursorRow = cursorScreenRow >= 0 ? cursorScreenRow : 0;
+    let finalCursorCol = cursorScreenCol >= 0 ? cursorScreenCol : gutterWidth;
+    if (engine._errorCmdLineCursor && engine.commandLine) {
+      finalCursorRow = this.rows - 1;
+      finalCursorCol = Math.min(engine.commandLine.length, this.cols);
+    }
+
     return {
       rows: this.rows,
       cols: this.cols,
       cursor: {
-        row: cursorScreenRow >= 0 ? cursorScreenRow : 0,
-        col: cursorScreenCol >= 0 ? cursorScreenCol : gutterWidth,
+        row: finalCursorRow,
+        col: finalCursorCol,
         visible: true,
       },
       defaultFg: t.normalFg,
       defaultBg: t.normalBg,
       lines,
+    };
+  }
+
+  /**
+   * Render multiple window splits into a single frame.
+   * Each window gets a portion of the screen rows, with a status line per window.
+   * The last row is the shared command line.
+   * @private
+   */
+  _renderSplit(engine) {
+    const t = this.theme;
+    const numWindows = engine._windows.length;
+    const totalRows = this.rows;
+    const cols = this.cols;
+
+    // Available for windows (minus 1 for shared command line at bottom)
+    const availableRows = totalRows - 1;
+    // Each window gets: text rows + 1 status line
+    const rowsPerWin = Math.floor(availableRows / numWindows);
+    const extraRows = availableRows - rowsPerWin * numWindows;
+
+    const allLines = [];
+    let finalCursorRow = -1;
+    let finalCursorCol = -1;
+    let screenRowOffset = 0;
+
+    // Save the real engine state
+    const savedBuf = engine.buffer;
+    const savedCur = { ...engine.cursor };
+    const savedST = engine.scrollTop;
+    const savedFolds = engine._folds;
+    const savedMode = engine.mode;
+    const savedVS = engine._visualStart ? { ...engine._visualStart } : null;
+    const savedDesiredCol = engine._desiredCol;
+
+    for (let wi = 0; wi < numWindows; wi++) {
+      const win = engine._windows[wi];
+      const isActive = (wi === engine._activeWin);
+      const winTotalRows = rowsPerWin + (wi < extraRows ? 1 : 0);
+
+      // Create a mini-screen for this window
+      // +1 because render() expects rows including command line, and we'll discard it
+      const miniScreen = new Screen(winTotalRows + 1, cols, this.themeName);
+      miniScreen.showStatusLine = true;
+
+      // Temporarily set engine state to this window's state
+      engine.buffer = win.buffer;
+      engine.cursor = isActive ? { ...savedCur } : { ...win.cursor };
+      engine.scrollTop = isActive ? savedST : win.scrollTop;
+      engine._folds = isActive ? savedFolds : win.folds;
+      engine._desiredCol = isActive ? savedDesiredCol : (win._desiredCol || 0);
+      // Set rows/textRows for this window's portion
+      const savedRows = engine.rows;
+      const savedTextRows = engine._textRows;
+      engine.rows = winTotalRows + 1;
+      engine._textRows = winTotalRows - 1; // text rows = total - status line
+      // Non-active windows show as normal mode (no visual selection)
+      if (!isActive) {
+        engine.mode = 'normal';
+        engine._visualStart = null;
+      } else {
+        engine.mode = savedMode;
+        engine._visualStart = savedVS;
+      }
+      // Update status line for this window's state
+      engine._updateStatus();
+
+      // Temporarily hide the _windows array so recursive render doesn't re-enter _renderSplit
+      const savedWindows = engine._windows;
+      engine._windows = [];
+
+      const frame = miniScreen.render(engine);
+
+      // Restore _windows
+      engine._windows = savedWindows;
+
+      // Restore rows/textRows
+      engine.rows = savedRows;
+      engine._textRows = savedTextRows;
+
+      // Update scrollTop back into the window state
+      if (isActive) {
+        // Engine's scrollTop may have been adjusted by render()'s scroll logic
+        win.scrollTop = engine.scrollTop;
+      } else {
+        win.scrollTop = engine.scrollTop;
+      }
+
+      // Take all lines except the last one (command line from mini render)
+      // We want: textRows + statusLine = winTotalRows lines
+      const windowLines = frame.lines.slice(0, winTotalRows);
+
+      // If not active, dim the status line (last line of this window)
+      if (!isActive && windowLines.length > 0) {
+        const statusLine = windowLines[windowLines.length - 1];
+        // Use StatusLineNC colors for non-active windows
+        const ncFg = t.statusNcFg || t.statusFg || t.normalFg;
+        const ncBg = t.statusNcBg || t.statusBg || t.normalBg;
+        statusLine.runs = [{ n: cols, fg: ncFg, bg: ncBg }];
+      }
+
+      allLines.push(...windowLines);
+
+      // Track cursor for active window
+      if (isActive && frame.cursor.visible) {
+        finalCursorRow = screenRowOffset + frame.cursor.row;
+        finalCursorCol = frame.cursor.col;
+      }
+
+      screenRowOffset += winTotalRows;
+    }
+
+    // Restore the real engine state
+    engine.buffer = savedBuf;
+    engine.cursor = savedCur;
+    engine.scrollTop = savedST;
+    engine._folds = savedFolds;
+    engine.mode = savedMode;
+    engine._visualStart = savedVS;
+    engine._desiredCol = savedDesiredCol;
+
+    // Add shared command line at the bottom
+    const cmdText = this._padOrTruncate(engine.commandLine || '', cols);
+    // Apply command line styling (recording, error, mode indicator)
+    let cmdRuns;
+    if (t.recordingFg && engine._macroRecording && engine.mode === 'normal'
+        && (engine.commandLine ?? '').startsWith('recording @')) {
+      const recLen = ('recording @' + engine._macroRecording).length;
+      cmdRuns = [
+        { n: recLen, fg: t.recordingFg, bg: t.cmdBg },
+        { n: cols - recLen, fg: t.cmdFg, bg: t.cmdBg },
+      ];
+    } else if (/^E\d{1,3}:/.test(engine.commandLine ?? '')) {
+      const errLen = Math.min((engine.commandLine || '').length, cols);
+      cmdRuns = [];
+      if (errLen > 0) cmdRuns.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg });
+      if (errLen < cols) cmdRuns.push({ n: cols - errLen, fg: t.cmdFg, bg: t.cmdBg });
+    } else if (t.modeMsgFg && /^-- (INSERT|VISUAL|VISUAL BLOCK|VISUAL LINE|REPLACE) --$/.test((engine.commandLine ?? '').trim())) {
+      const modeLen = (engine.commandLine ?? '').replace(/\s+$/, '').length;
+      cmdRuns = [
+        { n: modeLen, fg: t.modeMsgFg, bg: t.cmdBg },
+        { n: cols - modeLen, fg: t.cmdFg, bg: t.cmdBg },
+      ];
+    } else {
+      cmdRuns = [{ n: cols, fg: t.cmdFg || t.normalFg, bg: t.cmdBg || t.normalBg }];
+    }
+    allLines.push({ text: cmdText, runs: cmdRuns });
+
+    // Merge runs
+    for (const line of allLines) {
+      if (line && line.runs) line.runs = Screen._mergeRuns(line.runs);
+    }
+
+    // Handle command-line cursor position
+    if (engine.mode === 'command' && engine.commandLine) {
+      finalCursorRow = totalRows - 1;
+      finalCursorCol = Math.min(engine.commandLine.length, cols);
+    }
+
+    return {
+      rows: totalRows,
+      cols: cols,
+      cursor: {
+        row: finalCursorRow >= 0 ? finalCursorRow : 0,
+        col: finalCursorCol >= 0 ? finalCursorCol : 0,
+        visible: finalCursorRow >= 0,
+      },
+      defaultFg: t.normalFg,
+      defaultBg: t.normalBg,
+      lines: allLines,
     };
   }
 
