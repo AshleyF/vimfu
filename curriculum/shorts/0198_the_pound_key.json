@@ -1,0 +1,227 @@
+{
+  "title": "VimFu — The # Key",
+  "description": "Pound sign searches backward for the word under the cursor. The reverse of star. # for search word backward.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 339,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f trace.py .trace.py.swp .trace.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*trace.py*"
+    },
+    {
+      "comment": "Create demo file — 'gold' appears on lines 1, 4, 6, 8"
+    },
+    {
+      "writeFile": "trace.py",
+      "content": "loot = \"sword\"\nrare = \"gold\"\nshield = \"iron\"\nhelm = \"steel\"\nring = \"gold\"\nboots = \"leather\"\nchest = \"gold\"\namulet = \"ruby\"\ngrail = \"gold\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim trace.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The # Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Pound searches backward for the word under your cursor. No typing needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: # on gold from the bottom ---"
+    },
+    {
+      "say": "The word gold appears four times. Cursor is on gold at the bottom. Pound.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "#",
+      "overlay": "search word back"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the previous gold. Pound again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "#",
+      "overlay": "search word back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "#",
+      "overlay": "search word back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "All the way back to the first one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: n and N after pound ---"
+    },
+    {
+      "say": "Once you've searched, N repeats the same direction. Lowercase N goes the other way.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "N",
+      "overlay": "reverse search"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "N",
+      "overlay": "reverse search"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital N went forward, back toward the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "same direction"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Lowercase N went backward again, same as pound."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Pound. Search the word under the cursor backward. Star goes forward, pound goes back. N and capital N to keep going."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f trace.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "ZxWMekEz9eY",
+    "url": "https://youtube.com/watch?v=ZxWMekEz9eY"
+  }
+}

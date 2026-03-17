@@ -1,0 +1,221 @@
+{
+  "title": "VimFu — The % Key",
+  "description": "Percent jumps to the matching bracket. Parentheses, braces, or square brackets. % for match.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 333,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f code.py .code.py.swp .code.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*code.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "code.py",
+      "content": "total = sum(prices)\ndata = [1, [2, 3], 4]\nif (x > 0) {\n    print(x)\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim code.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The % Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Percent jumps to the matching bracket. Parentheses, braces, square brackets."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: % finds the first bracket on the line ---"
+    },
+    {
+      "say": "The cursor is at the start of line one. I'm not on a bracket. Percent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "%",
+      "overlay": "match bracket"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It found the opening paren on its own and jumped to the closing one. You don't have to be on the bracket first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Percent again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "%",
+      "overlay": "match bracket"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the opening paren. Now it bounces."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: outer brackets skip nested ones ---"
+    },
+    {
+      "say": "Line two has nested brackets. Jump down to the start of the line. Percent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "%",
+      "overlay": "match bracket"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Found the outer opening bracket and jumped to the outer closing bracket. Skipped right over the nested pair inside."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: % on curly brace across lines ---"
+    },
+    {
+      "say": "Curly braces work too, even across lines. Jump down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "%",
+      "overlay": "match bracket"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped from the opening brace on line three down to the closing brace on line five."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Percent. Jump to the matching bracket. It finds the first bracket on the line, skips over nested pairs, and works across lines."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f code.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "2hTMdUBa83g",
+    "url": "https://youtube.com/watch?v=2hTMdUBa83g"
+  }
+}

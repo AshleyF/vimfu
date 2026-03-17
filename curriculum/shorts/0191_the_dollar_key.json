@@ -1,0 +1,208 @@
+{
+  "title": "VimFu — The $ Key",
+  "description": "Dollar sign moves the cursor to the end of the line. The opposite of zero.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 332,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f score.py .score.py.swp .score.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*score.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "score.py",
+      "content": "player = \"ace\"\npoints = 9999\nstreak = 42\nbonus = 100"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim score.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The $ Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Dollar sign moves to the end of the line. The last character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: $ from start ---"
+    },
+    {
+      "say": "Cursor at the start. Dollar.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "End of line one. On the closing quote."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: d$ to delete to end ---"
+    },
+    {
+      "say": "D dollar deletes from cursor to end. Move to the equals on line two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jw",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d$",
+      "overlay": "delete to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything from equals to the end, deleted. D dollar is the same as capital D."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: $ with count ---"
+    },
+    {
+      "say": "Two dollar. End of the next line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "2$",
+      "overlay": "end of 2nd line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the end of line two. The count says which line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Dollar sign. End of line. Zero goes to the start, dollar goes to the end."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f score.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "fm0b8b9YnaE",
+    "url": "https://youtube.com/watch?v=fm0b8b9YnaE"
+  }
+}

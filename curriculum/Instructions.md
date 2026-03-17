@@ -43,7 +43,12 @@ Every video goes through a generate → inspect → fix cycle:
      - A visual selection is one line too many or too few because the cursor was on the wrong row after a previous demo.
      - A delete, change, or paste produces malformed code that a viewer would instantly spot as wrong.
      - **If a human would look at the resulting screen and say "that's wrong", the video is wrong.** Fix it.
-4. **Fix and regenerate** if anything is off. This isn't just about fixing errors — it's about **improving the demo**. A log that works but feels inefficient or cluttered is not done yet. Repeat until the log reads like a crisp, polished tutorial.
+4. **Check the duration.** Shorts must be **under 60 seconds**. After generating, run:
+   ```
+   python -c "import subprocess; r = subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0','shellpilot/videos/<NAME>/<NAME>.mp4'], capture_output=True, text=True); print(f'{float(r.stdout.strip()):.1f}s')"
+   ```
+   If it's over 60 seconds, tighten narration (shorter sentences, cut filler words) and trim waits before re-generating. Don't cut demos — cut words. Longs have no hard limit but should stay focused.
+5. **Fix and regenerate** if anything is off. This isn't just about fixing errors — it's about **improving the demo**. A log that works but feels inefficient or cluttered is not done yet. Repeat until the log reads like a crisp, polished tutorial.
 
 ---
 
@@ -130,6 +135,7 @@ The best way to have efficient navigation is to **design the demo file so the cu
 ## Narration Rules
 
 - **Spell out key names** in narration for TTS clarity: say "D W" not "dw", "capital X" not "shift-x".
+- **Say "capital" before uppercase key names.** TTS reads "U" as "you" — the viewer can't tell if you mean `u` or `U`. Always say "capital U", "capital G", "capital X" when referring to an uppercase key. Lowercase is assumed and doesn't need a qualifier — just say the letter. Only add "lowercase" when directly contrasting with the capital version in the same sentence (e.g., "capital U uppercases, lowercase u lowercases").
 - **Narration must match the screen.** If you say "the main function" while navigating to a line, that line had better contain a main function. If you say "dollar sign next", the next lesson had better actually be about `$`.
 - **Narration must match screen position.** Don't say "let me scroll to the top" when the file just opened and you're already at the top. Don't say "let me scroll down" when the content is already visible. Check cursor position and line numbers in the log before writing positional narration.
 - **Narration must match direction of movement.** If you say "select down and right", verify in the log that the cursor column actually increases. Cursor column often carries over between demos — after Demo 2 leaves the cursor at column 10, Demo 3's `gg` + `j` will inherit that column. Add `Keys("0")` or similar to reset before starting a new selection if needed.
@@ -162,6 +168,22 @@ A typical lesson follows this arc:
 6. **Closing sentence** — restate the key and what it does. Strong and memorable.
 
 After destructive operations (delete, change), **show undo** (`u`) to restore the file — it reinforces that Vim is safe to experiment in.
+
+### Don't Undo Between Demos Unnecessarily
+
+**Do NOT reflexively undo** every demo step before moving to the next one. If a demo shows a useful edit (e.g., copying a value and pasting it where it belongs), that's a *correction* — it should stay. Undoing it makes the video feel like a toy demo instead of real editing.
+
+**When to undo:**
+- The lesson is *about* undo (e.g., lesson 11).
+- You're demonstrating a destructive command (like `dd`) and want to show that Vim is safe — undo once to make the point, then move on.
+- Leaving the change would genuinely confuse the next demo (e.g., a line you need to operate on again is now gone).
+
+**When NOT to undo:**
+- The edit was a logical improvement to the file (fixing a typo, filling in a value, removing junk). Keep it — it looks like real editing.
+- You're about to move to a *different* line for the next demo. The previous edit doesn't interfere.
+- You just want a "clean slate" out of habit. Don't. The viewer sees undo-redo-undo-redo as pointless busywork.
+
+**Design files so demos build on each other** rather than resetting between each one. If Demo 1 fixes line 1 and Demo 2 fixes line 3, there's no conflict — just leave Demo 1's result in place and move on. The video should feel like a series of real edits, not isolated experiments.
 
 ---
 

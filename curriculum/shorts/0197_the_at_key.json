@@ -1,0 +1,226 @@
+{
+  "title": "VimFu — The @ Key (Execute Macro)",
+  "description": "At-sign plus a register letter executes the macro stored in that register. @@ repeats the last played macro.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 338,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f todo.py .todo.py.swp .todo.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*todo.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "todo.py",
+      "content": "task = \"buy milk\"\ntask = \"fix bug\"\ntask = \"read book\"\ntask = \"run tests\"\ntask = \"clean desk\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim todo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The @ Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "At-sign plus a register letter plays the macro stored in that register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: record and play macro ---"
+    },
+    {
+      "say": "Record a macro to add done in front of each task. Q A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "qa",
+      "overlay": "record into a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I",
+      "overlay": ""
+    },
+    {
+      "type": "done_"
+    },
+    "escape",
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "q",
+      "overlay": "stop recording"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Play it. At A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@a",
+      "overlay": "play macro a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line two now says done underscore task. The macro replayed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: @@ to repeat ---"
+    },
+    {
+      "say": "At at. Repeat the last played macro.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@@",
+      "overlay": "repeat last macro"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line three done. At at is a shortcut. No need to remember the register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: counted @ ---"
+    },
+    {
+      "say": "Two at A. Play the macro twice.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2@a",
+      "overlay": "play 2 times"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two more lines done. Counts work with macros too."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "The at key. Play a macro from a register. At at repeats the last one. Add a count to repeat multiple times."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f todo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "1AjRCC9oD2Y",
+    "url": "https://youtube.com/watch?v=1AjRCC9oD2Y"
+  }
+}

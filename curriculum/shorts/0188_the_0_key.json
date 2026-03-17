@@ -1,0 +1,222 @@
+{
+  "title": "VimFu — The 0 Key",
+  "description": "Zero moves the cursor to the first column of the line. Column one, always. No matter where you are.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 329,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f indent.py .indent.py.swp .indent.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*indent.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "indent.py",
+      "content": "def play():\n    hero = \"knight\"\n        hp = 100\n    attack()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim indent.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The 0 Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Zero moves your cursor to the very first column of the line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: 0 from end of line ---"
+    },
+    {
+      "say": "Cursor at the end of line two. Press zero.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0",
+      "overlay": "first column"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Column one. That's the space character. Zero goes to the absolute start, including whitespace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: 0 vs caret ---"
+    },
+    {
+      "say": "Compare with caret. Caret goes to the first non-blank. Zero goes to column one. Different.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "^",
+      "overlay": "first non-blank"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "0",
+      "overlay": "first column"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Caret landed on H P. Zero went further left to column one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: d0 to delete to start ---"
+    },
+    {
+      "say": "Use d zero to delete from cursor to the start of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d0",
+      "overlay": "delete to start"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything before the cursor is gone. D zero wipes from column one to the cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Zero. First column. Hard left. Combine with operators like D for powerful line editing."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f indent.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "_62_hiMPx9s",
+    "url": "https://youtube.com/watch?v=_62_hiMPx9s"
+  }
+}

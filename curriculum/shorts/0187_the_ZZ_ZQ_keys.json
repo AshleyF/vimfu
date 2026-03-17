@@ -1,0 +1,249 @@
+{
+  "title": "VimFu — ZZ and ZQ",
+  "description": "ZZ saves and quits. ZQ quits without saving. Two quick ways to exit Neovim.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 328,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f exit.py .exit.py.swp .exit.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*exit.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "exit.py",
+      "content": "status = \"ready\"\nmission = \"go\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim exit.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "ZZ and ZQ",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z Z saves and quits. Z Q quits without saving. Two keystrokes, no colon needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: ZZ to save and quit ---"
+    },
+    {
+      "say": "Make a change first. Change ready to done.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ci\"",
+      "overlay": "change inner \""
+    },
+    {
+      "type": "done"
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z Z. Save and quit.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ZZ",
+      "overlay": "save + quit"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Gone. File saved. Let's check.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "line": "cat exit.py"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Done. The change was saved."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ZQ to quit without saving ---"
+    },
+    {
+      "say": "Open it again. Make a change. Then Z Q to discard.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "line": "nvim exit.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ci\"",
+      "overlay": "change inner \""
+    },
+    {
+      "type": "ABORT"
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z Q. Quit without saving.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ZQ",
+      "overlay": "quit no save"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Check the file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "line": "cat exit.py"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Still says go. The ABORT change was discarded."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z Z to save and quit. Z Q to quit without saving. Faster than colon W Q or colon Q bang."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f exit.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "UpIl_Unfmbc",
+    "url": "https://youtube.com/watch?v=UpIl_Unfmbc"
+  }
+}

@@ -1,0 +1,243 @@
+{
+  "title": "VimFu — The ' Key (Apostrophe Mark)",
+  "description": "Apostrophe plus a mark letter jumps to the first non-blank character of the marked line. Line-level mark navigation.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 336,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f world.py .world.py.swp .world.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*world.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "world.py",
+      "content": "biome1 = \"plains\"\nbiome2 = \"jungle\"\nbiome3 = \"tundra\"\nbiome4 = \"desert\"\nbiome5 = \"ocean\"\nbiome6 = \"volcano\"\nbiome7 = \"swamp\"\nbiome8 = \"sky\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim world.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The ' Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Apostrophe plus a mark letter jumps to the first non-blank character of the marked line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: set mark, jump, return ---"
+    },
+    {
+      "say": "Mark line three as A. M A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ma",
+      "overlay": "set mark a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Go to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Apostrophe A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'a",
+      "overlay": "mark line a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to line three. At the first non-blank character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: apostrophe apostrophe ---"
+    },
+    {
+      "say": "Apostrophe apostrophe. Jump to your last position.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "''",
+      "overlay": "last position"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to where you just were. Apostrophe apostrophe bounces between your last two locations."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: d'a to delete to mark ---"
+    },
+    {
+      "say": "Apostrophe works with operators too. D apostrophe A. Delete from here to mark A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d'a",
+      "overlay": "delete to mark a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Deleted all lines from here back to mark A. Powerful with operators."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Apostrophe. Jump to the marked line. Set marks with M, jump back with apostrophe."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f world.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "2EthwUKyUZk",
+    "url": "https://youtube.com/watch?v=2EthwUKyUZk"
+  }
+}

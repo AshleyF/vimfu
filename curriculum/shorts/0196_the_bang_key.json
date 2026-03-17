@@ -1,0 +1,285 @@
+{
+  "title": "VimFu — The ! Key (Filter)",
+  "description": "Exclamation mark filters lines through an external command. Send text out, get transformed text back. ! for filter.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 337,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f list.py .list.py.swp .list.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*list.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "list.py",
+      "content": "zebra\napple\nmango\nbanana\ncherry"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim list.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The ! Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Bang filters text through an external shell command. Select lines, type a command, and the result replaces your selection."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: sort the whole file with visual selection ---"
+    },
+    {
+      "say": "Select all five lines. Capital V, capital G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ggV",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "G",
+      "overlay": "select to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now bang. Watch the bottom.",
+      "wait": true
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "!"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Vim filled in the selection range. Now type the shell command. Sort.",
+      "wait": true
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "s"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "type": "o"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "type": "r"
+    },
+    {
+      "wait": 0.15
+    },
+    {
+      "type": "t"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Sorted. Five lines went to the sort command and came back alphabetical."
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "comment": "--- Demo 2: reverse sort to show flags work ---"
+    },
+    {
+      "say": "Undo. Now reverse sort.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ggV",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "G",
+      "overlay": "select to end"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "!"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "s"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "o"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "r"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "t"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": " "
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "-"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "r"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Reversed. Any command that reads standard input works. Sort, uniq, awk, whatever."
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Bang. Select lines, type a shell command, enter. Vim meets the pipeline."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f list.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "Ji1SA-rjCDg",
+    "url": "https://youtube.com/watch?v=Ji1SA-rjCDg"
+  }
+}

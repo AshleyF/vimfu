@@ -1,0 +1,248 @@
+{
+  "title": "VimFu — The ` Key (Backtick Mark)",
+  "description": "Backtick plus a mark letter jumps to the exact cursor position where the mark was set. Precise mark navigation.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 335,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f map.py .map.py.swp .map.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*map.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "map.py",
+      "content": "town = \"haven\"\nforest = \"darkwood\"\ncave = \"crystal\"\nriver = \"silver\"\npeak = \"thunder\"\nlake = \"mirror\"\nruins = \"ancient\"\nfort = \"iron\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim map.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The ` Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Backtick plus a mark letter jumps to the exact line and column where the mark was set."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: set a mark, jump away, backtick back ---"
+    },
+    {
+      "say": "Set mark A on the D of darkwood. M A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf\"l",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ma",
+      "overlay": "set mark a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Jump somewhere else. Go to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Backtick A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "`a",
+      "overlay": "exact mark a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Right back on the D of darkwood. Exact line and column."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: backtick vs apostrophe ---"
+    },
+    {
+      "say": "Compare. Set mark B on silver. The V in silver.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "fv",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "mb",
+      "overlay": "set mark b"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Apostrophe B goes to the line. Backtick B goes to the exact column.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "'b",
+      "overlay": "mark line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "`b",
+      "overlay": "exact column"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Backtick went to the V. Apostrophe went to the first non-blank of that line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Backtick. Exact mark position. Line and column. Apostrophe goes to the line only."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f map.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "M7jmkyFj1Iw",
+    "url": "https://youtube.com/watch?v=M7jmkyFj1Iw"
+  }
+}

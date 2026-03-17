@@ -1,0 +1,194 @@
+{
+  "title": "VimFu — The * Key",
+  "description": "Star searches forward for the word under the cursor. Instant word search without typing. * for search word forward.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 340,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f find.py .find.py.swp .find.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*find.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "find.py",
+      "content": "cat = \"whiskers\"\ndog = \"rex\"\ncat = \"mittens\"\nbird = \"tweety\"\ncat = \"shadow\"\ndog = \"spot\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim find.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The * Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Star searches forward for the word under your cursor. No slash, no typing. Just star."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: * on cat ---"
+    },
+    {
+      "say": "Cursor on cat. Star.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "*",
+      "overlay": "search word fwd"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the next cat on line three."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: * again ---"
+    },
+    {
+      "say": "Star again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "*",
+      "overlay": "search word fwd"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line five. The third cat. Star keeps jumping forward through matches."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: star then n/N ---"
+    },
+    {
+      "say": "After star, N and capital N work too. N forward, capital N backward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "N",
+      "overlay": "prev match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "N",
+      "overlay": "prev match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the first cat. Star sets up the search, then N navigates."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Star. Search the word under the cursor forward. The fastest way to find occurrences. Pound goes backward."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f find.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "t8dVn7m82QY",
+    "url": "https://youtube.com/watch?v=t8dVn7m82QY"
+  }
+}

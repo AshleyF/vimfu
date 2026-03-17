@@ -1,0 +1,222 @@
+{
+  "title": "VimFu — The & Key",
+  "description": "Ampersand repeats the last substitution command on the current line. A quick way to apply the same replacement again.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 341,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f fix.py .fix.py.swp .fix.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*fix.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "fix.py",
+      "content": "old = \"foo\"\nold = \"foo bar foo\"\nold = \"foo baz\"\nold = \"no match\"\nold = \"foo end\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim fix.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The & Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "The ampersand key repeats the last substitution on the current line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: substitute then & ---"
+    },
+    {
+      "say": "First, do a substitution on line one. Colon S slash foo slash bar.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":s/foo/bar"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Foo became bar on line one. Now move to line three. Ampersand.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "&",
+      "overlay": "repeat :s"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same substitution, applied to line three. Foo became bar."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: & on line with no match ---"
+    },
+    {
+      "say": "Line four has no foo. Ampersand.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "&",
+      "overlay": "repeat :s"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "No match, nothing changed. Safe to use on any line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: & on line five ---"
+    },
+    {
+      "say": "Line five has foo. Ampersand.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "&",
+      "overlay": "repeat :s"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Done. Foo to bar on line five. Ampersand replays the substitution one line at a time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Ampersand. Repeat the last substitution on the current line. Quick redo without retyping the command."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f fix.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "gKQunGeEsLM",
+    "url": "https://youtube.com/watch?v=gKQunGeEsLM"
+  }
+}

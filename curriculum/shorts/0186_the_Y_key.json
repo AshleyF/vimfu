@@ -1,0 +1,234 @@
+{
+  "title": "VimFu — The Y Key",
+  "description": "In Neovim, capital Y yanks from the cursor to the end of the line. Same as y$. Neovim changed this from classic Vim.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 327,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f stats.py .stats.py.swp .stats.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*stats.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "stats.py",
+      "content": "hp = 100\nmp = \nspeed = 42\nxp = \nlives = 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim stats.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The Y Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "In Neovim, capital Y yanks from the cursor to the end of the line. Same as Y dollar."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Y copies 100 to mp ---"
+    },
+    {
+      "say": "HP is 100. MP needs the same value. Find the 1. Capital Y.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f1",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Y",
+      "overlay": "yank to end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Yanked 100 — everything from the cursor to the end of the line. Jump down to MP.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "put after"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "MP is 100. Capital Y grabbed the tail of the line. P pasted it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Y copies 42 to xp ---"
+    },
+    {
+      "say": "Speed has 42. XP needs it. Jump down. Find the 4. Capital Y.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f4",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Y",
+      "overlay": "yank to end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Yanked 42. Jump down to XP.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "put after"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "XP is 42. Same move. Capital Y, then P."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital Y. Yank to end of line. In classic Vim Y copied the whole line like Y Y. Neovim made it Y dollar — consistent with D and C."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f stats.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "iAtIhaZGgI8",
+    "url": "https://youtube.com/watch?v=iAtIhaZGgI8"
+  }
+}

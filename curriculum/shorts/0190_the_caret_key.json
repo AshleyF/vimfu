@@ -1,0 +1,215 @@
+{
+  "title": "VimFu — The ^ Key",
+  "description": "Caret moves the cursor to the first non-blank character of the line. Smarter than zero.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 331,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f nest.py .nest.py.swp .nest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*nest.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "nest.py",
+      "content": "def quest():\n    gold = 50\n        gem = 10\n            key = 1"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim nest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The ^ Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Caret moves to the first non-blank character of the line. It skips leading whitespace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: ^ on indented line ---"
+    },
+    {
+      "say": "Line two is indented. Cursor at the end. Caret.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "^",
+      "overlay": "first non-blank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Landed on the G of gold. Skipped the four spaces of indentation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ^ on deeper indentation ---"
+    },
+    {
+      "say": "Line four. Twelve spaces of indent. Caret.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "^",
+      "overlay": "first non-blank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped straight to K. No matter how deep the indent, caret finds the first real character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: d^ to delete indent ---"
+    },
+    {
+      "say": "D caret deletes from cursor back to the first non-blank. Useful for fixing indentation.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d^",
+      "overlay": "delete to first non-blank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Removed the leading whitespace. D caret cleaned up the extra indentation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Caret. First non-blank character. Zero goes to column one, caret goes to the first real character."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f nest.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "BoYxL8x5kb0",
+    "url": "https://youtube.com/watch?v=BoYxL8x5kb0"
+  }
+}
