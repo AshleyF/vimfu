@@ -206,7 +206,7 @@ _Registers, macros, marks, windows, replace mode, and more motions. Now Vim feel
 | 098 | Jumping to a Mark (Line) | `'{a-z}` | Jump to the line of mark. |
 | 099 | Jumping to a Mark (Exact) | `` `{a-z} `` | Jump to the exact position of mark. |
 | 100 | Global Marks | `m{A-Z}` | Uppercase marks work across files. |
-| 101 | Special Marks | `''` ` `` ` `'.` `'^` | Last jump position, last change, last insert. |
+| 101 | Special Marks | `''` ` `` ` `'.` `'^` `'<` `'>` | Last jump position, last change, last insert, start/end of last visual selection. |
 
 ### The Jump List
 
@@ -260,6 +260,7 @@ _Registers, macros, marks, windows, replace mode, and more motions. Now Vim feel
 | 122 | The System Clipboard | `"+` `"*` | Yank to / put from the system clipboard. |
 | 123 | Small Delete Register | `"-` | Last delete smaller than a line. |
 | 124 | Numbered Registers | `"0` through `"9` | `"0` = last yank. `"1`–`"9` = last 9 deletes. |
+| 124a | 🆕 The Black Hole Register | `"_` | Discard deleted text completely — nothing goes to any register. `"_dd` deletes a line without overwriting your yank. |
 | 125 | View Registers | `:reg` | List all register contents. |
 
 ### Macros
@@ -553,7 +554,7 @@ _The `g` prefix is a second entire keyboard of commands._
 | 318 | `[{` / `]}` — Unmatched Braces | `[{` `]}` | Jump to previous/next unmatched `{` / `}`. |
 | 319 | `[[` / `]]` — Sections Forward/Back | `[[` `]]` | Jump by sections (function boundaries in C). |
 | 320 | `[]` / `][` — SECTIONS | `[]` `][` | Jump by SECTIONS. |
-| 321 | `[m` / `]m` — Member Functions | `[m` `]m` | Jump to start/end of member functions (Java/C). |
+| 321 | `[m` / `]m` / `[M` / `]M` — Methods | `[m` `]m` `[M` `]M` | Jump to start (`[m`/`]m`) or end (`[M`/`]M`) of method `{`/`}` pairs. |
 | 322 | `[c` / `]c` — Diff Changes | `[c` `]c` | Jump to previous/next diff change. |
 | 323 | `[s` / `]s` — Misspelled Words | `[s` `]s` | Jump to previous/next misspelled word. |
 | 324 | `[#` / `]#` — Preprocessor | `[#` `]#` | Jump to previous/next unmatched `#if`/`#endif`. |
@@ -756,9 +757,22 @@ _The colon commands you'll use most often._
 | 425 | `:set hlsearch` — Highlight | `:set hls` `:set nohls` | Toggle search highlighting. |
 | 426 | `:set incsearch` — Incremental | `:set is` | Highlight matches as you type. |
 | 427 | `:set ignorecase` / `smartcase` | `:set ic` `:set scs` | Case-insensitive / smart-case search. |
-| 428 | `:set wrap` / `nowrap` | `:set wrap` `:set nowrap` | Toggle line wrapping. |
+| 428 | `:set wrap` / `nowrap` | `:set wrap` `:set nowrap` | Toggle line wrapping. Off enables horizontal scrolling. |
 | 429 | `:noh` — Clear Highlight | `:noh` | Clear current search highlighting. |
 | 430 | `:set list` — Show Invisible | `:set list` `:set nolist` | Show tabs, trailing spaces, etc. |
+| 430a | `:set splitbelow` / `splitright` | `:set sb` `:set spr` | New splits open below/right of current window. `:set nosb` / `:set nospr` to disable. |
+| 430b | `:set spell` — Spell Check | `:set spell` `:set nospell` | Enable spell checking. Misspelled words are highlighted. Use `]s`/`[s` to navigate, `z=` for suggestions. |
+| 430c | `:set fileformat` | `:set ff=unix` `:set ff=dos` | Line ending format. Affects byte count in `Ctrl-G`. |
+| 430d | `:qa` — Quit All | `:qa` `:qa!` | Quit all windows. With `!`, discard all changes. |
+| 430e | `:wa` — Write All | `:wa` | Save all modified buffers. |
+| 430f | `:wqa` / `:xa` — Write All + Quit | `:wqa` `:xa` | Save all buffers and quit. |
+| 430g | `:new` — New Window | `:new` | Open a new empty buffer in a horizontal split. |
+| 430h | `:enew` — New Empty Buffer | `:enew` | Clear the current window and edit a new unnamed buffer. |
+| 430i | `:retab` — Fix Tabs | `:[range]retab[!] [N]` | Convert between tabs and spaces. With `expandtab`, converts tabs to spaces. |
+| 430j | `:delmarks` — Delete Marks | `:delm a` `:delm!` | Delete specific marks, or `!` to delete all lowercase marks. |
+| 430k | `:undolist` — Undo Info | `:undolist` | Show the number of undo entries in the buffer. |
+| 430l | `:pwd` — Print Directory | `:pwd` | Display the current working directory. |
+| 430m | `:file` — File Info | `:file` | Show the current filename, modified status, and line count. |
 
 ---
 
@@ -791,8 +805,10 @@ _The colon commands you'll use most often._
 | 440 | `v_J` — Join Selection | `J` | Join selected lines. |
 | 441 | `v_u` / `v_U` / `v_~` — Case | `u` `U` `~` | Lowercase / uppercase / toggle selection. |
 | 442 | `v_>` / `v_<` / `v_=` — Indent | `>` `<` `=` | Indent / unindent / auto-indent selection. |
+| 442a | `v_p` — Replace Selection | `p` | Replace the visual selection with register contents. The replaced text goes to the unnamed register. |
 | 443 | Block Insert | `Ctrl-V` → select → `I` | Insert text at the start of each line in block. |
 | 444 | Block Append | `Ctrl-V` → select → `A` | Append text at the end of each line in block. |
+| 444a | Block `$` — Extend to EOL | `Ctrl-V` → `$` | Extend block selection to the end of every line, even if lines have different lengths. |
 | 445 | `:'<,'>` — Visual Range | `:'<,'>` | After visual selection, `:` automatically adds the range. |
 
 ---
@@ -835,7 +851,7 @@ _Real-world editing patterns that combine what you've learned._
 | 468 | `:%normal ^x` | `:%norm ^x` | Delete first char of every line. |
 | 469 | Visual Block Comment | `Ctrl-V` → select → `I//Esc` | Comment a block of lines. |
 | 470 | `Ctrl-A` / `Ctrl-X` Incrementing | `Ctrl-A` `Ctrl-X` | Increment/decrement numbers. Works with counts! |
-| 471 | `g Ctrl-A` in Visual | `g Ctrl-A` | Create incrementing number sequences in visual block. |
+| 471 | `g Ctrl-A` / `g Ctrl-X` in Visual | `g Ctrl-A` `g Ctrl-X` | Create incrementing/decrementing number sequences in visual block. |
 | 472 | Align Text with `:norm` | `:'<,'>norm 20\|r\|` | Align text to a column using `:norm`. |
 | 473 | The Useless `_` Key | `_` | Remap it! It's basically `+` but for the current line. |
 | 474 | Record-and-Apply Macro | `qa...q` then `:%norm @a` | Record a macro and apply it to every line. |
@@ -939,7 +955,28 @@ _Tmux is the perfect partner for Vim. Learn to split your terminal, manage windo
 | 528 | Copy Mode Navigation | `h/j/k/l` `0/$` `w/b` `g/G` | Navigate with all the Vim motions you already know. `Ctrl-F/B/D/U` for page/half-page scrolling. |
 | 529 | Copy Mode Visual Selection | `v` | Toggle visual selection in copy mode — highlight text as you navigate. |
 | 530 | Clock Mode | `Ctrl-B t` | Show a fullscreen ASCII art clock (press any key to exit). |
+| 530a | 🆕 Send Literal Prefix | `Ctrl-B Ctrl-B` | Send a literal `Ctrl-B` keystroke to the active pane (for programs that use `Ctrl-B`). |
+| 530b | 🆕 Auto-Unzoom | — | Splitting, navigating, or swapping panes automatically unzooms a zoomed pane. You don't have to manually `Ctrl-B z` first. |
+| 530c | 🆕 Pane Auto-Close | — | When a shell exits (`exit` or `Ctrl-D`), its pane closes automatically. If it was the last pane, the window closes. Last window → tmux detaches. |
 | 531 | The Status Bar | — | Reading the tmux status bar: session name, window list (`*` = active), time, date. |
+
+### tmux Command-Prompt Commands
+
+_Entered via `Ctrl-B :`. Type a command and press Enter. Backspace to delete, `Ctrl-U` to clear, `Escape` to cancel._
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 531a | 🆕 `split-window` | `:split-window [-h]` | Split pane (default: top/bottom; `-h`: left/right). Short form: `splitw`. |
+| 531b | 🆕 `new-window` | `:new-window` | Create new window. Short form: `neww`. |
+| 531c | 🆕 `rename-window` | `:rename-window name` | Rename active window. Short form: `renamew`. |
+| 531d | 🆕 `select-window` | `:select-window -t N` | Switch to window N. Short form: `selectw`. |
+| 531e | 🆕 `select-pane` | `:select-pane -t N` | Switch to pane N. Short form: `selectp`. |
+| 531f | 🆕 `resize-pane` | `:resize-pane -U/-D/-L/-R [n]` | Resize active pane in direction by n cells. Short form: `resizep`. |
+| 531g | 🆕 `kill-pane` / `kill-window` | `:kill-pane` `:kill-window` | Close active pane or window. Short forms: `killp`, `killw`. |
+| 531h | 🆕 `swap-pane` | `:swap-pane -U/-D` | Swap active pane up or down. Short form: `swapp`. |
+| 531i | 🆕 `next-layout` | `:next-layout` | Cycle to next layout preset. Short form: `nextl`. |
+| 531j | 🆕 `display-panes` | `:display-panes` | Show pane number overlay. Short form: `displayp`. |
+| 531k | 🆕 `list-keys` | `:list-keys` | Show key bindings help. Short form: `lsk`. |
 
 ### Shell Essentials
 
@@ -1108,8 +1145,8 @@ _**Installing in Neovim:** Neovim ships with [lazy.nvim](https://github.com/folk
 | 828 | `:[range]m {address}` — Move Lines | `:3m 7` `:5,10m $` | Move lines to after the target address. `:3m 0` moves line 3 to the very top. |
 | 829 | `:[range]co {address}` — Copy Lines | `:3co 7` `:5,10co $` | Copy (duplicate) lines to after the target address. `:co` and `:t` are synonyms. |
 | 830 | `:[range]t {address}` — Copy (Synonym) | `:3t 7` `:t$` | Same as `:co`. The `t` stands for "to". Shorter to type and very common in practice. |
-| 831 | `:[range]j` — Join Lines | `:3,5j` `:%j` | Join a range of lines into one, adding spaces between. `:%j` joins the entire file into one line. |
-| 832 | `:pu {reg}` — Put Register | `:pu a` `:pu` | Insert the contents of a register below the current line. Without a register, puts the unnamed register. |
+| 831 | `:[range]j` — Join Lines | `:3,5j` `:%j` `:j!` | Join a range of lines into one, adding spaces between. `:%j` joins the entire file. Add `!` for no spaces (like `gJ`). |
+| 832 | `:pu {reg}` — Put Register | `:pu a` `:pu` `:pu!` | Insert the contents of a register below the current line (or above with `!`). Without a register, puts the unnamed register. |
 | 833 | `:[range]sort` — Sort Lines | `:%sort` `:3,10sort` | Sort lines alphabetically. Works on a range or the whole file. |
 | 834 | `:[range]sort!` — Reverse Sort | `:%sort!` | Sort in reverse (descending) order. The `!` flips the sort direction. |
 | 835 | `:[range]sort` Options | `:sort n` `:sort u` `:sort i` | Flags: `n` = numeric sort, `u` = remove duplicates, `i` = ignore case. Combine them: `:sort niu`. |
@@ -1133,9 +1170,9 @@ _**Installing in Neovim:** Neovim ships with [lazy.nvim](https://github.com/folk
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
 | 845 | `:marks` — Show All Marks | `:marks` | Display a table of all active marks — their name, line number, column, and the text on that line. |
-| 846 | `:reg` — Show All Registers | `:reg` | Display the contents of all registers — unnamed, numbered, named, small delete, search, and more. Also available as `:di` (`:display`). |
+| 846 | `:reg` / `:di` — Show All Registers | `:reg` `:display` | Display the contents of all registers — unnamed, numbered, named, small delete, search, and more. `:di` (`:display`) is an alias for `:reg`. |
 | 847 | `:[range]p` — Print Lines | `:3p` `:5,10p` | Print (display) lines in the status area. Without a range, prints the current line. The cursor moves to the last printed line. |
-| 848 | `:[range]nu` — Print with Line Numbers | `:3nu` `:5,10nu` | Like `:p` but each line is prefixed with its line number. Also available as `:#`. |
+| 848 | `:[range]nu` / `:#` — Print with Numbers | `:3nu` `:5,10nu` `:#` | Like `:p` but each line is prefixed with its line number. `:#` is a short alias for `:number`. |
 | 849 | `:=` — Show Line Count | `:=` | Without a range, shows the total number of lines in the file. |
 | 850 | `:{range}=` — Show Line Number | `:.=` `:$=` | With an address, shows the line number of that address. `:.=` shows the current line number, `:$=` shows the last. |
 | 851 | `:jumps` — Show Jump List | `:jumps` | Display the jump list — a history of cursor positions you've jumped between. Navigate with `Ctrl-O` (back) and `Ctrl-I` / `Tab` (forward). |
@@ -1182,12 +1219,66 @@ _**Installing in Neovim:** Neovim ships with [lazy.nvim](https://github.com/folk
 | 877 | Toggling Settings with `no` Prefix | `:set noX` | Any boolean setting can be turned off by prefixing `no`. `:set number` → `:set nonumber`. Works with all aliases too: `:set nonu`. |
 | 878 | Querying Settings with `?` | `:set number?` `:set ts?` | Append `?` to check a setting's current value without changing it. Boolean settings show `number` or `nonumber`. Numeric settings show the value. |
 | 879 | Setting Numeric Values with `=` | `:set scrolloff=3` `:set ts=2` | Numeric settings use `=` to assign a value. `:set sw=4` sets shiftwidth to 4. |
+| 879a | `:set wrap` / `nowrap` | `:set wrap` `:set nowrap` | Wrap long lines (default: on). When off, long lines are truncated and you scroll horizontally with `zl`/`zh`/`zL`/`zH`/`zs`/`ze`. |
+| 879b | `:set list` / `nolist` | `:set list` `:set nolist` | Show whitespace characters — tabs as `>-------`, trailing spaces as `·`. Great for spotting invisible formatting issues. |
+| 879c | `:set splitbelow` | `:set splitbelow` `:set sb` | New horizontal splits open below the current window instead of above. `:set nosplitbelow` to restore default. |
+| 879d | `:set splitright` | `:set splitright` `:set spr` | New vertical splits open to the right instead of left. `:set nosplitright` to restore default. |
+| 879e | `:set spell` / `nospell` | `:set spell` `:set nospell` | Enable spell checking. Misspelled words are highlighted in red. Navigate with `]s`/`[s`, suggest with `z=`, mark good/bad with `zg`/`zw`. |
+| 879f | `:set fileformat` | `:set ff=unix` `:set ff=dos` | Line ending format (`dos` = `\r\n`, `unix` = `\n`). Affects byte count shown by `Ctrl-G`. |
 
 ## Shell Commands
 
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
 | 880 | `:!{cmd}` — Run Shell Command | `:!ls` `:!python %` | Execute an external shell command. Output is displayed but doesn't affect the buffer. Press Enter to return. |
+| 880a | `:{range}!{filter}` — Filter Lines | `:%!sort` `:2,5!sort` | Pipe lines through an external command and replace them with the output. Supported: `sort`, `grep`, `cat`, `uniq`, `tr`, `rev`, `tac`, `head`, `tail`, `sed`, `wc`. |
+
+## Buffers and Tabs
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 880b | `:ls` / `:buffers` — List Buffers | `:ls` `:buffers` | Show all open buffers with indicators: `%` (current), `#` (alternate), `a` (active), `+` (modified). |
+| 880c | `:bn` / `:bp` — Cycle Buffers | `:bnext` `:bprev` | Switch to the next or previous buffer in the buffer list. |
+| 880d | `:b N` / `:b name` — Switch Buffer | `:b 3` `:b foo` | Switch to buffer N or the buffer matching a partial name. |
+| 880e | `:bd` — Delete Buffer | `:bd` `:bd!` | Remove the current buffer from the list. With `!`, discard unsaved changes. |
+| 880f | `:enew` — New Unnamed Buffer | `:enew` `:enew!` | Clear the window and start editing a new unnamed buffer. |
+| 880g | `Ctrl-^` — Alternate Buffer | `Ctrl-^` / `Ctrl-6` | Toggle between the current and alternate (`#`) buffer. |
+| 880h | `:tabnew` / `:tabe` — New Tab | `:tabnew` `:tabedit` | Open a new tab with an empty buffer. |
+| 880i | `:tabn` / `:tabp` — Cycle Tabs | `:tabnext` `:tabprev` | Switch to the next or previous tab. Also `gt` / `gT` in normal mode. |
+| 880j | `:tabc` — Close Tab | `:tabclose` | Close the current tab. Cannot close the last remaining tab. |
+| 880k | `:tabo` — Only Tab | `:tabonly` | Close all tabs except the current one. |
+| 880l | `Ctrl-W T` — Window to Tab | `Ctrl-W T` | Move the current window to a new tab page. |
+
+## Window Splits
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 880m | `:sp` — Horizontal Split | `:split` `:sp` | Split the current window horizontally. `Ctrl-W s` does the same. |
+| 880n | `:vs` — Vertical Split | `:vsplit` `:vs` | Split the current window vertically. `Ctrl-W v` does the same. |
+| 880o | `:new` — New Window | `:new` | Open a new empty buffer in a horizontal split. |
+| 880p | `:close` / `:only` — Close Windows | `:close` `:only` | Close current window / close all other windows. `Ctrl-W c` / `Ctrl-W o` are the key equivalents. |
+
+## Additional File Commands
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 880q | `:qa` — Quit All | `:qa` `:qa!` | Quit all windows. With `!`, discard all unsaved changes. |
+| 880r | `:wa` — Write All | `:wa` | Save all modified buffers at once. |
+| 880s | `:wqa` / `:xa` — Write All + Quit | `:wqa` `:xa` | Save all buffers and quit. |
+| 880t | `:retab` — Fix Tabs | `:[range]retab[!] [N]` | Convert between tabs and spaces based on `expandtab`. With `!`, forces conversion. |
+| 880u | `:delmarks` — Delete Marks | `:delm a` `:delm ab` `:delm!` | Delete specific marks. `:delm!` deletes all lowercase marks (`a`–`z`). |
+| 880v | `:undolist` — Undo Info | `:undolist` | Show the number of undo entries in the current buffer. |
+| 880w | `:pwd` — Current Directory | `:pwd` | Display the current working directory. |
+| 880x | `:file` — File Info | `:file` | Show current filename, modified status, and line count — same info as `Ctrl-G`. |
+
+## Substitution Details
+
+| #   | Title | Keys | Description |
+|-----|-------|------|-------------|
+| 880y | `:s` Alternate Delimiters | `:s!old!new!g` `:s#old#new#g` | Any single character can serve as the delimiter — not just `/`. Useful when the pattern contains slashes. |
+| 880z | `:s` Backreference `&` | `:%s/word/[&]/g` | In the replacement, `&` refers to the entire matched text. `:%s/word/[&]/g` wraps every match in brackets. Use `\&` for a literal ampersand. |
+| 880aa | `:s` Captured Groups | `:%s/\(\w\+\)/[\1]/g` | `\(\)` captures groups; `\1`–`\9` refer to them in the replacement. Vim regex uses escaped parens (unlike JS). |
+| 880ab | Vim Regex Syntax | `\+` `\?` `\(\)` `\|` `\<\>` | Vim regex requires escaping `+`, `?`, `()`, `|`. `\<`/`\>` are word boundaries. These map to JS regex `+`, `?`, `()`, `|`, `\b`. |
 
 ## Putting It All Together
 
@@ -1381,14 +1472,27 @@ real Neovim.
   Only system clipboard (`"+`, `"*`) and global marks (`m{A-Z}`) are not supported.
 - **Part 5–6** (Scrolling & g/z commands): **All features** including `z.`/`z+`/`z-`/`z^`
   scroll, folds (`zf`/`zo`/`zc`/`zd`/`zR`/`zM`/`za`/`zA`/`zj`/`zk`/`zE`),
-  `gD` global declaration, `g8` hex display, `K` keyword lookup, bracket commands
-  (`[(`, `])`, `[{`, `]}`, `[[`, `]]`, `[]`, `][`)
+  horizontal scroll (`zl`/`zh`/`zL`/`zH`/`zs`/`ze` with `:set nowrap`),
+  spell checking (`z=`/`zg`/`zw`/`zug`/`zuw` with `:set spell`; `]s`/`[s` navigation),
+  `gD` global declaration, `g8` hex display, `K` keyword lookup, `gt`/`gT` tab pages,
+  bracket commands (`[(`, `])`, `[{`, `]}`, `[[`, `]]`, `[]`, `][`)
+- **Part 13** (Insert mode keys): **All features** including `Ctrl-T` indent,
+  `Ctrl-D` unindent, `Ctrl-E` copy from below, `Ctrl-Y` copy from above,
+  `Ctrl-O` insert-normal, `Ctrl-R` register insert, `Ctrl-A` re-insert,
+  `Ctrl-W` delete word, `Ctrl-U` delete to start
+- **Part 14** (Ex commands essentials): **All features** including buffers
+  (`:ls`, `:bn`, `:bp`, `:b`, `:bd`, `:enew`, `Ctrl-^`), tab pages
+  (`:tabnew`, `:tabedit`, `:tabnext`, `:tabprev`, `:tabclose`, `:tabonly`),
+  settings (`:set spell`, `:set wrap`/`nowrap`, all 15 boolean + 3 numeric options)
 - **Part 19** (Lessons 501–545): All tmux and shell features fully supported
-- **Part 22** (Lessons 800–895): All ex commands fully supported — ranges,
-  `:d`, `:y`, `:m`, `:co`/`:t`, `:j`, `:pu`, `:sort`, `:s` (with `g`/`i`/`c`/`n` flags
-  and backreferences), `:norm`, `:g`, `:v`, `:marks`, `:reg`, `:p`/`:nu`/`:#`, `:=`,
-  `:jumps`, `:changes`, `:[range]>`, `:[range]<`, `:set` (17 options), `:!`,
-  `:{range}!{filter}`, `:retab`, `:qa`/`:wa`/`:wqa`/`:xa`, `:new`/`:enew`,
+- **Part 22** (Lessons 800–895+): All ex commands fully supported — ranges,
+  `:d`, `:y`, `:m`, `:co`/`:t`, `:j`/`:j!`, `:pu`/`:pu!`, `:sort`, `:s` (with `g`/`i`/`c`/`n` flags,
+  alternate delimiters, `&` backreference, `\1`–`\9` captured groups), `:norm`, `:g`, `:v`,
+  `:marks`, `:reg`/`:di`, `:p`/`:nu`/`:#`, `:=`, `:jumps`, `:changes`,
+  `:[range]>`, `:[range]<`, `:set` (15 boolean + 3 numeric + 1 string option),
+  `:!`, `:{range}!{filter}`, `:retab`, `:qa`/`:wa`/`:wqa`/`:xa`, `:new`/`:enew`,
+  `:sp`/`:vs`/`:close`/`:only`, `:ls`/`:bn`/`:bp`/`:b`/`:bd`,
+  `:tabnew`/`:tabedit`/`:tabnext`/`:tabprev`/`:tabclose`/`:tabonly`,
   `:delmarks`, `:undolist`, `:pwd`, `:file`, and all file operations.
 
 ### Not in Simulator
@@ -1404,10 +1508,86 @@ not available in the VimFu simulator. Practice these in real Neovim.
 | `Ctrl-C` | 233 | Use `Escape` instead |
 | `Ctrl-Z` suspend | 234 | Not applicable in browser |
 | `Ctrl-]` / `Ctrl-T` tags | 235, 236 | No ctags support |
-| `Ctrl-^` alternate file | 237 | |
-| Spelling | 308–314 | No spell checking |
-| Insert `Ctrl-T` / `Ctrl-D` indent | 372, 373 | Use `>>`/`<<` in normal mode |
-| Buffers / `:ls` / `:b` | 410–414 | Single-buffer model |
-| Tabs / `:tabnew` | 415–418 | Use window splits instead |
 | `:terminal` | 422 | Use tmux shell instead |
 | `q:` / `q/` history windows | 446, 447 | Command history via `↑`/`↓` works |
+
+---
+
+## Appendix G — Shorts Generation Tracking
+
+_Tracks which lessons have generated shorts (JSON files in `curriculum/shorts/`). Updated manually._
+
+### Status by Part
+
+| Part | Lessons | Shorts Status |
+|------|---------|---------------|
+| Part 1 — Survival | 001–015 | ✅ All 15 generated |
+| Part 2 — Basic Editing | 016–045 | ✅ All 30 generated |
+| Part 3 — Becoming Productive | 046–090 | ✅ All 45 generated |
+| Part 4 — Intermediate Power | 091–135 | ✅ 44 generated — 🆕 **124a** needs short |
+| Part 5 — Lowercase Keys | 136–161 | ✅ All 26 generated |
+| Part 6 — Uppercase Keys | 162–187 | ✅ All 26 generated |
+| Part 7 — Symbols & Numbers | 188–218 | ⚠️ 188–200 generated (13); **201–218 not yet** (18) |
+| Part 8 — Ctrl Keys | 219–248 | ⬜ Not yet generated (30) |
+| Part 9 — g Commands | 249–285 | ⬜ Not yet generated (37) |
+| Part 10 — z Commands | 286–316 | ⬜ Not yet generated (31) |
+| Part 11 — Bracket Commands | 317–333 | ⬜ Not yet generated (17) |
+| Part 12 — Window Commands | 334–365 | ⬜ Not yet generated (32) |
+| Part 13 — Insert Mode | 366–395 | ⬜ Not yet generated (30) |
+| Part 14 — Ex Commands Essentials | 396–430m | ⬜ Not yet generated (35 + 13 new) |
+| Part 15 — Visual Mode in Depth | 431–445 | ⬜ Not yet generated (15 + 2 new) |
+| Part 16 — Command-Line Tips | 446–460 | ⬜ Not yet generated (15) |
+| Part 17 — Practical Patterns | 461–480 | ⬜ Not yet generated (20) |
+| Part 18 — Advanced Topics | 481–500 | ⬜ Not yet generated (20) |
+| Part 19 — Tmux & Shell | 501–544 | ✅ 44 generated — 🆕 **530a–c, 531a–k** need shorts (14) |
+| Part 20 — Advanced | 600–601 | ⬜ Not yet generated (2) |
+| Part 21 — Surround | 700–742 | ⬜ Not yet generated (43) |
+| Part 22 — Ex Commands | 800–895 | ⬜ Not yet generated (96 + 14 new) |
+
+**Total generated:** 244 shorts (lessons 1–200 + 501–544)
+**Total curriculum lessons:** ~570+
+
+### 🆕 New Lessons Interleaved Into Generated Sections
+
+These were added **after** shorts were generated for their surrounding sections. **They need new shorts created:**
+
+| # | Title | Between |
+|---|-------|---------|
+| 124a | The Black Hole Register | 124 ✅ ← **here** → 125 ✅ |
+| 530a | Send Literal Prefix | 530 ✅ ← **here** → 531 ✅ |
+| 530b | Auto-Unzoom | 530 ✅ ← **here** → 531 ✅ |
+| 530c | Pane Auto-Close | 530 ✅ ← **here** → 531 ✅ |
+| 531a | `split-window` | 531 ✅ ← **here** → 532 ✅ |
+| 531b | `new-window` | 531 ✅ ← **here** → 532 ✅ |
+| 531c | `rename-window` | 531 ✅ ← **here** → 532 ✅ |
+| 531d | `select-window` | 531 ✅ ← **here** → 532 ✅ |
+| 531e | `select-pane` | 531 ✅ ← **here** → 532 ✅ |
+| 531f | `resize-pane` | 531 ✅ ← **here** → 532 ✅ |
+| 531g | `kill-pane` / `kill-window` | 531 ✅ ← **here** → 532 ✅ |
+| 531h | `swap-pane` | 531 ✅ ← **here** → 532 ✅ |
+| 531i | `next-layout` | 531 ✅ ← **here** → 532 ✅ |
+| 531j | `display-panes` | 531 ✅ ← **here** → 532 ✅ |
+| 531k | `list-keys` | 531 ✅ ← **here** → 532 ✅ |
+
+### 📝 Modified Lessons (existing shorts may need updating)
+
+These lessons already have shorts but their descriptions were expanded this session:
+
+| # | What Changed |
+|---|--------------|
+| 101 | Added `'<` `'>` visual selection marks |
+| 321 | Added `[M`/`]M` method end jumps |
+| 471 | Added `g Ctrl-X` visual decrement |
+| 831 | Added `:j!` no-space variant |
+| 832 | Added `:pu!` above variant |
+| 846 | Added `:di` alias for `:reg` |
+| 848 | Added `:#` alias for `:number` |
+
+### 🆕 New Lessons in Non-Generated Sections
+
+These are new entries in sections that don't have shorts yet. They'll be generated along with their entire section — no risk of being missed.
+
+- **Part 14** (430a–430m): splitbelow, splitright, spell, fileformat, :qa, :wa, :wqa/:xa, :new, :enew, :retab, :delmarks, :undolist, :pwd, :file
+- **Part 15** (442a, 444a): visual `p` replace, block `$` extend to EOL
+- **Part 22** (879a–879f): wrap, list, splitbelow, splitright, spell, fileformat
+- **Part 22** (880a–880ab): filter, buffers/tabs, splits, additional file cmds, substitution details

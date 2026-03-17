@@ -745,6 +745,8 @@ of the full command name is valid (e.g. `:wri` → `:write`, `:qui` → `:quit`)
 | `Ctrl-W` | Delete word backward (word-class aware) |
 | `Ctrl-R {reg}` | Insert register contents into command line (`"`, `a`–`z`, `/`, `:`, `%`) |
 | `Up` / `Down` | Browse command/search history |
+| `Tab` | Tab-complete commands, `:set` options, and filenames |
+| `Ctrl-D` | Show all possible completions |
 | `Escape` | Cancel command |
 | `Enter` | Execute command |
 
@@ -1266,13 +1268,12 @@ the buffer has been modified (dirty). Both quit after writing.
 | `autoindent` | `ai` | `noautoindent` / `noai` | **on** | Copy indent from current line on `Enter`/`o`/`O` |
 | `cursorline` | `cul` | `nocursorline` / `nocul` | off | Highlight the screen line of the cursor |
 | `hlsearch` | `hls` | `nohlsearch` / `nohls` | on | Highlight all search matches |
-| `wrap` | | `nowrap` | **on** | Wrap long lines (visual only) |
+| `wrap` | | `nowrap` | **on** | Wrap long lines (off enables horizontal scroll) |
 | `incsearch` | `is` | `noincsearch` / `nois` | off | Show incremental search matches while typing |
 | `list` | | `nolist` | off | Show whitespace characters (tabs, trailing spaces) |
 | `splitbelow` | `sb` | `nosplitbelow` / `nosb` | off | New horizontal splits open below current window |
 | `splitright` | `spr` | `nosplitright` / `nospr` | off | New vertical splits open to the right |
 | `spell` | | `nospell` | off | Enable spell checking (highlights misspelled words) |
-| `wrap` | | `nowrap` | on | Wrap long lines (off = horizontal scroll) |
 
 #### Numeric Options
 
@@ -1281,6 +1282,12 @@ the buffer has been modified (dirty). Both quit after writing.
 | `tabstop` | `ts` | 8 | Number of spaces a tab character displays as |
 | `shiftwidth` | `sw` | 8 | Spaces per indent level (`>>`, `<<`, `:>`, `:<`) |
 | `scrolloff` | `so` | 0 | Minimum lines to keep above/below cursor |
+
+#### String Options
+
+| Option | Short | Default | Values | Description |
+|---|---|---|---|---|
+| `fileformat` | `ff` | `dos` | `dos`, `unix` | Line ending format (affects byte count in `Ctrl-G`) |
 
 Numeric options use `=` syntax: `:set ts=4`, `:set sw=2`, `:set so=5`.
 All short aliases work everywhere: `:set nu`, `:set noic`, `:set sw=2`.
@@ -1324,12 +1331,21 @@ and enter command mode). All other keys are ignored.
 | `Escape` | Cancel |
 | `Enter` | Execute |
 | `Backspace` | Delete char (or cancel if empty) |
-| `Tab` | Tab-complete filename (for `:e`, `:w`, `:r`, `:sav`); cycles through matches |
+| `Ctrl-U` | Delete to start of command (after the `:`) |
+| `Ctrl-W` | Delete word backward |
+| `Ctrl-R {reg}` | Insert register contents (`"`, `a`–`z`, `/`, `:`, `%`) |
+| `Up` / `Down` | Browse command/search history |
+| `Tab` | Tab-complete: commands, `:set` options, filenames; cycles through matches |
+| `Ctrl-D` | Show all possible completions (wildmenu-style list) |
 | Any printable | Append to command |
 
-Tab completion matches filenames from the VFS, cycling through matches with
-repeated `Tab` presses (nvim `wildmode=full` behavior). The cycle resets on
-`Escape` or `Enter`.
+Tab completion works for:
+- **Commands**: on the first word (`:ta` → `:tabclose`, `:tabedit`, …)
+- **`:set` options**: after `:set ` (`:set sp` → `:set spell`, `:set splitbelow`, …)
+- **Filenames**: for `:e`, `:w`, `:r`, `:sav` (cycles through VFS matches)
+
+Repeated `Tab` cycles through matches (`wildmode=full` behavior). `Ctrl-D`
+lists all matches below the command line. The cycle resets on `Escape` or `Enter`.
 
 ### Message Truncation
 
