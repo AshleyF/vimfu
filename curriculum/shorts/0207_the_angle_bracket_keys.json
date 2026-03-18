@@ -1,0 +1,194 @@
+{
+  "title": "VimFu — The Angle Bracket Keys",
+  "description": "Angle brackets indent and unindent lines. Greater-than shifts right, less-than shifts left. Use with a motion or in visual mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 348,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f indent.py .indent.py.swp .indent.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*indent.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "indent.py",
+      "content": "def attack(hero):\n    damage = hero.atk\n    crit = damage * 2\n    return crit"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim indent.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The < and > Keys",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Greater-than indents lines to the right. Less-than unindents to the left."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: >> to indent current line ---"
+    },
+    {
+      "say": "Go to the damage line. Double greater-than.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": ">>",
+      "overlay": ">>  indent line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Shifted one tab stop to the right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: << to unindent ---"
+    },
+    {
+      "say": "Double less-than to undo that.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "<<",
+      "overlay": "<<  unindent line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to where it was."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: >j to indent with motion ---"
+    },
+    {
+      "say": "Greater-than with a motion. Greater-than J indents this line and the next.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">j",
+      "overlay": ">j  indent 2 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two lines indented. Works with any motion. Greater-than I P for a whole paragraph, greater-than G to the end of file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Greater-than indents, less-than unindents. Double for one line, or add a motion."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f indent.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "e4H2_XUwEI8",
+    "url": "https://youtube.com/watch?v=e4H2_XUwEI8"
+  }
+}

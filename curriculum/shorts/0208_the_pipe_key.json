@@ -1,0 +1,183 @@
+{
+  "title": "VimFu — The | Key",
+  "description": "Pipe (bar) with a count jumps to that column number on the current line. 20| goes to column 20.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 349,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f table.py .table.py.swp .table.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*table.py*"
+    },
+    {
+      "comment": "Create demo file with a wide line"
+    },
+    {
+      "writeFile": "table.py",
+      "content": "# name     class    level  hp\n# ----     -----    -----  --\n# kai      warrior  12     340\n# luna     mage     15     180\n# rex      rogue    10     220"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim table.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The | Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Count then pipe jumps to that column number. Great for columnar data."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to specific columns ---"
+    },
+    {
+      "say": "Jump to column 12. Twelve pipe.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "12|",
+      "overlay": "12|  column 12"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Right on the class column header. Now 21 pipe.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "21|",
+      "overlay": "21|  column 21"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The level column. Now 28 pipe.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "28|",
+      "overlay": "28|  column 28"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The HP column. Pipe without a count goes to column one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "|",
+      "overlay": "|  column 1"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the start."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Pipe. Jump to any column by number. Useful for tables and fixed-width data."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f table.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "vKQ7W-71OYg",
+    "url": "https://youtube.com/watch?v=vKQ7W-71OYg"
+  }
+}

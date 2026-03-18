@@ -1,0 +1,187 @@
+{
+  "title": "VimFu — Ctrl-U",
+  "description": "Ctrl-U scrolls half a page up. Smoother than Ctrl-B for reading code — you keep more context on screen.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 364,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spells.py .spells.py.swp .spells.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*spells.py*"
+    },
+    {
+      "comment": "Create a long demo file"
+    },
+    {
+      "writeFile": "spells.py",
+      "content": "# Spell Book\n\ndef fireball(target):\n    damage = 40\n    print(f\"{target} takes {damage}\")\n    return damage\n\ndef ice_wall(duration):\n    print(f\"Wall lasts {duration}s\")\n    return True\n\ndef heal(target, amount):\n    target.hp += amount\n    print(f\"Healed {amount} HP\")\n\ndef lightning(targets):\n    for t in targets:\n        print(f\"Zap! {t} stunned\")\n\ndef shield(caster):\n    caster.armor += 10\n    print(\"Shield up!\")\n\ndef teleport(x, y):\n    print(f\"Warped to ({x}, {y})\")\n    return (x, y)\n\ndef summon(creature):\n    print(f\"{creature} appears!\")\n    return creature\n\ndef curse(target):\n    target.speed -= 5\n    print(f\"{target} slowed!\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim at bottom"
+    },
+    {
+      "line": "nvim -c 'normal G' spells.py"
+    },
+    {
+      "waitForScreen": "Bot",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-U",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control U scrolls half a page up. Smoother than control B because you keep more context on screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: half page up ---"
+    },
+    {
+      "say": "We're at the bottom. Press control U.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "u",
+      "overlay": "half page up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Half a page up. The bottom half of the old screen is still visible at the top."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: again ---"
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "u",
+      "overlay": "half page up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Another half page. Easy to keep your place."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: one more ---"
+    },
+    {
+      "say": "One more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "u",
+      "overlay": "half page up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Near the top now. U for up, D for down. Half page at a time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control U. Half page up. The most popular way to scroll in Vim."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f spells.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "-nthRHhLKH8",
+    "url": "https://youtube.com/watch?v=-nthRHhLKH8"
+  }
+}

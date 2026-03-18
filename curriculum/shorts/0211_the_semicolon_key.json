@@ -1,0 +1,169 @@
+{
+  "title": "VimFu — The ; Key",
+  "description": "Semicolon repeats the last f, t, F, or T in the same direction. Jump to the next match without retyping the search character.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 352,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f path.py .path.py.swp .path.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*path.py*"
+    },
+    {
+      "comment": "Create demo file with repeated characters"
+    },
+    {
+      "writeFile": "path.py",
+      "content": "route = \"/home/user/docs/work/notes\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim path.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The ; Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Semicolon repeats the last F or T search in the same direction."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: f/ then ; to hop through slashes ---"
+    },
+    {
+      "say": "This path has four slashes. F slash to find the first one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f/",
+      "overlay": "f/  find /"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now semicolon to repeat. Jump to the next slash.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ";",
+      "overlay": ";  repeat find"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": ";",
+      "overlay": ";  repeat find"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": ";",
+      "overlay": ";  repeat find"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Hopped through every slash without typing F slash again. Semicolon remembers the last find."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Semicolon. Repeat the last F, T, capital F, or capital T. Same direction, no retyping."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f path.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "TLn_wGc0w7w",
+    "url": "https://youtube.com/watch?v=TLn_wGc0w7w"
+  }
+}

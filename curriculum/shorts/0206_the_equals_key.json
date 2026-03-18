@@ -1,0 +1,178 @@
+{
+  "title": "VimFu — The = Key",
+  "description": "Equals auto-indents lines. Use with a motion to fix indentation across a range of code.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 347,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f messy.c .messy.c.swp .messy.c.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*messy.c*"
+    },
+    {
+      "comment": "Create demo file with bad indentation"
+    },
+    {
+      "writeFile": "messy.c",
+      "content": "int main() {\nint x = 5;\nif (x > 0) {\nprintf(\"yes\");\n}\nreturn 0;\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim messy.c"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The = Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Equals auto-indents code. Give it a motion and it fixes the indentation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: == to indent current line ---"
+    },
+    {
+      "say": "This C code has no indentation. Go to line two. Double equals.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "==",
+      "overlay": "==  auto-indent line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "That line got proper indentation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: =G to fix the whole file ---"
+    },
+    {
+      "say": "Fix everything. Go to the top. Equals capital G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "=G",
+      "overlay": "=G  indent to end"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The whole file, properly indented. Two keystrokes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Equals. Auto-indent with a motion. Double equals for one line, equals capital G for the whole file."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f messy.c"
+    }
+  ],
+  "youtube": {
+    "videoId": "R4A-IlKPxq0",
+    "url": "https://youtube.com/watch?v=R4A-IlKPxq0"
+  }
+}

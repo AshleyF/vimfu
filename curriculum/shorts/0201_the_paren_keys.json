@@ -1,0 +1,185 @@
+{
+  "title": "VimFu — The ( and ) Keys",
+  "description": "Parentheses move by sentences. Close paren jumps forward, open paren jumps backward.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 342,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f story.py .story.py.swp .story.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*story.py*"
+    },
+    {
+      "comment": "Create demo file with sentences"
+    },
+    {
+      "writeFile": "story.py",
+      "content": "# The hero woke up. The sun was\n# bright. Birds were singing.\n#\n# She grabbed her sword. The\n# quest was urgent. No time to\n# waste. She ran toward the gate."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim story.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The ( and ) Keys",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close paren moves forward by one sentence. Open paren moves backward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: ) forward through sentences ---"
+    },
+    {
+      "say": "Cursor is at the top. Close paren.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ")",
+      "overlay": ")  next sentence"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": ")",
+      "overlay": ")  next sentence"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": ")",
+      "overlay": ")  next sentence"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Each close paren jumped to the start of the next sentence."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ( backward ---"
+    },
+    {
+      "say": "Now open paren to go back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "(",
+      "overlay": "(  prev sentence"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "(",
+      "overlay": "(  prev sentence"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back two sentences. Vim defines a sentence as text ending in a period, exclamation, or question mark followed by whitespace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Close paren forward, open paren backward. Move by sentences."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f story.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "hh8R3YyLaLk",
+    "url": "https://youtube.com/watch?v=hh8R3YyLaLk"
+  }
+}

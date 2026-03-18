@@ -1,0 +1,205 @@
+{
+  "title": "VimFu — Ctrl-^",
+  "description": "Ctrl-^ switches to the alternate (previous) file. Quick toggle between two files you're working on.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 378,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hero.py villain.py"
+    },
+    {
+      "line": "rm -f .hero.py.swp .villain.py.swp .hero.py.swo .villain.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*hero.py* ~/.local/state/nvim/swap/*villain.py*"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "hero.py",
+      "content": "name = \"Aria\"\nrole = \"knight\"\nhp = 100"
+    },
+    {
+      "writeFile": "villain.py",
+      "content": "name = \"Malachar\"\nrole = \"sorcerer\"\nhp = 80"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Open hero first, then villain"
+    },
+    {
+      "line": "nvim hero.py villain.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    },
+    {
+      "comment": "Switch to villain so hero becomes the alternate"
+    },
+    {
+      "type": ":bnext"
+    },
+    "enter",
+    {
+      "waitForScreen": "Malachar",
+      "timeout": 10.0
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-^",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control caret switches to the alternate file. That's the last file you were editing. Think of it as a quick toggle."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: toggle to hero ---"
+    },
+    {
+      "say": "We're in villain dot py. The alternate file is hero dot py. Control caret.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "^",
+      "overlay": "alternate file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now we're in hero dot py. Aria the knight."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: toggle back ---"
+    },
+    {
+      "say": "Control caret again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "^",
+      "overlay": "alternate file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to villain. Malachar the sorcerer. It flips between the two files instantly."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: one more ---"
+    },
+    {
+      "say": "One more flip.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "^",
+      "overlay": "alternate file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Hero again. No splits, no buffer commands. Just one keystroke to toggle."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control caret. Toggle between two files. The fastest file switch in Vim."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f hero.py villain.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "r6415wcZDao",
+    "url": "https://youtube.com/watch?v=r6415wcZDao"
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "title": "VimFu — Ctrl-Y",
+  "description": "Ctrl-Y scrolls the window one line down (viewport moves up). The cursor stays in place. Opposite of Ctrl-E.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 367,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f pizza.py .pizza.py.swp .pizza.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*pizza.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "pizza.py",
+      "content": "# Pizza Order System\n\ntoppings = [\n    \"pepperoni\",\n    \"mushrooms\",\n    \"onions\",\n    \"sausage\",\n    \"bell pepper\",\n    \"olives\",\n    \"pineapple\",\n]\n\nsizes = {\n    \"small\": 8.99,\n    \"medium\": 12.99,\n    \"large\": 15.99,\n    \"xl\": 19.99,\n}\n\ndef calculate_price(size, extras):\n    base = sizes[size]\n    extra_cost = len(extras) * 1.50\n    return base + extra_cost\n\ndef format_order(name, size, tops):\n    total = calculate_price(size, tops)\n    print(f\"Order for {name}\")\n    print(f\"Size: {size}\")\n    for t in tops:\n        print(f\"  + {t}\")\n    print(f\"Total: ${total:.2f}\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim at bottom so we can scroll up"
+    },
+    {
+      "line": "nvim -c 'normal G' pizza.py"
+    },
+    {
+      "waitForScreen": "Bot",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-Y",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control Y scrolls the window one line up. The viewport shifts but the cursor stays where it is."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: scroll up a few lines ---"
+    },
+    {
+      "comment": "Move cursor to middle of screen so scroll is visible"
+    },
+    {
+      "keys": "9k",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The cursor is in the middle. Press control Y three times.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "y",
+      "overlay": "scroll up"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "y",
+      "overlay": "scroll up"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "y",
+      "overlay": "scroll up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three more lines appeared at the top. The cursor stayed right where it was."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: with count ---"
+    },
+    {
+      "say": "Use a count. Five control Y scrolls five lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5",
+      "overlay": "count 5"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "y",
+      "overlay": "scroll up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Five more lines revealed. We can see the toppings list now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control Y scrolls up. Control E scrolls down. One line at a time, precise viewport control."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f pizza.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "pNv0q0WORSg",
+    "url": "https://youtube.com/watch?v=pNv0q0WORSg"
+  }
+}

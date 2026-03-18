@@ -1,0 +1,184 @@
+{
+  "title": "VimFu — Ctrl-Z",
+  "description": "Ctrl-Z suspends Vim and drops you to the shell. Type fg to come back. Your file is still there.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 375,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f task.py .task.py.swp .task.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*task.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "task.py",
+      "content": "# Quick Task\n\ndef run():\n    print(\"Running task\")\n    return True"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim task.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-Z",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control Z suspends Vim. It pauses the editor and gives you a shell prompt. Type F G and enter to come back. Everything is exactly where you left it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "This is a Unix signal, so it works on Linux and Mac. It doesn't work on Windows."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: :! as the cross-platform way to run shell commands ---"
+    },
+    {
+      "say": "A trick that works everywhere is colon exclamation mark. It runs a shell command without leaving Vim.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":!echo 'hello from the shell'\n"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "The command ran and printed its output. Press enter to get back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back in the editor. File untouched."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: run another command ---"
+    },
+    {
+      "say": "Try another. Check the file on disk.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":!cat task.py\n"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "There it is. Enter to return.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control Z suspends on Unix, F G resumes. Colon bang runs a shell command anywhere. Two ways to jump to the shell without quitting."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f task.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "Pp6jbDFxhnU",
+    "url": "https://youtube.com/watch?v=Pp6jbDFxhnU"
+  }
+}

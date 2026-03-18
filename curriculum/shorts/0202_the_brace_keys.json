@@ -1,0 +1,192 @@
+{
+  "title": "VimFu — The { and } Keys",
+  "description": "Curly braces move by paragraphs. Close brace jumps forward, open brace jumps backward. Paragraphs are separated by blank lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 343,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f blocks.py .blocks.py.swp .blocks.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*blocks.py*"
+    },
+    {
+      "comment": "Create demo file with paragraphs"
+    },
+    {
+      "writeFile": "blocks.py",
+      "content": "hp = 100\nmp = 50\nspeed = 12\n\nsword = \"iron\"\nshield = \"oak\"\nhelm = \"steel\"\n\nquest = \"dragon\"\nreward = \"gold\"\nstatus = \"active\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim blocks.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The { and } Keys",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close brace moves forward by one paragraph. Open brace moves backward. A paragraph is a block of text separated by blank lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: } forward ---"
+    },
+    {
+      "say": "Three blocks of code here. Close brace.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "}",
+      "overlay": "}  next paragraph"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jumped to the blank line after the first block. Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "}",
+      "overlay": "}  next paragraph"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "}",
+      "overlay": "}  next paragraph"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Past the last block, end of file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: { backward ---"
+    },
+    {
+      "say": "Open brace goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "{",
+      "overlay": "{  prev paragraph"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "{",
+      "overlay": "{  prev paragraph"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the top. Great for jumping between functions or config sections."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Close brace forward, open brace backward. Move by paragraphs."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f blocks.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "8h8lCQnCVo0",
+    "url": "https://youtube.com/watch?v=8h8lCQnCVo0"
+  }
+}

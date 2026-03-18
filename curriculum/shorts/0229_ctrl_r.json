@@ -1,0 +1,213 @@
+{
+  "title": "VimFu — Ctrl-R",
+  "description": "Ctrl-R is redo. It reverses an undo. If you undo too far, Ctrl-R brings it back.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 370,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f fix.py .fix.py.swp .fix.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*fix.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "fix.py",
+      "content": "score = 0\nlives = 3\nlevel = 1"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim fix.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-R",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control R is redo. It reverses an undo. Undo too far? Control R brings it back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: make edits, undo, redo ---"
+    },
+    {
+      "say": "Let's make some changes. Delete the first line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "dd  delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Delete the next line too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "dd  delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Two lines gone. Now undo both.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "u  undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "u",
+      "overlay": "u  undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Both lines are back. But what if we only wanted to undo one? Control R.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "r",
+      "overlay": "redo"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The first delete came back. Redo replays the change we just undid."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: redo again ---"
+    },
+    {
+      "say": "One more control R.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "r",
+      "overlay": "redo"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both deletes redone. Undo and redo are a perfect pair."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control R. Redo. U undoes, control R redoes. Simple."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f fix.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "GzdyASvY-2g",
+    "url": "https://youtube.com/watch?v=GzdyASvY-2g"
+  }
+}

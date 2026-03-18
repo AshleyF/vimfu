@@ -1,0 +1,201 @@
+{
+  "title": "VimFu — Ctrl-N / Ctrl-P",
+  "description": "Ctrl-N and Ctrl-P move down and up in normal mode, but the real reason to know them is the N=Next / P=Previous mnemonic carries into insert-mode autocomplete and command-line history.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 380,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f crew.py .crew.py.swp .crew.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*crew.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "crew.py",
+      "content": "pilot = \"Kai\"\ngunner = \"Rex\"\nmedic = \"Nova\"\nengineer = \"Bolt\"\ncaptain = \"Vex\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim crew.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-N / Ctrl-P",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control N moves down one line, just like J. Control P moves up one line, just like K."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Ctrl-N down ---"
+    },
+    {
+      "say": "We're on line one, pilot. Control N.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "n",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "ctrl": "n",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Down two lines. Cursor is on medic now. Same as pressing J twice."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Ctrl-P up ---"
+    },
+    {
+      "say": "Control P goes back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "p",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Up one line to gunner. Just like K."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: with count ---"
+    },
+    {
+      "say": "They take counts too. Three control N.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3",
+      "overlay": "count 3"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "n",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Down three lines to captain. N for next line, P for previous line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "So why not just use J and K? Because N means next and P means previous, and that same mnemonic shows up everywhere in Vim. In insert mode, control N and control P cycle through autocomplete suggestions. On the command line, they navigate your command history. J and K don't work in those contexts. Learn the N P pattern now, and it'll pay off later."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f crew.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "D8qtvpjAw7g",
+    "url": "https://youtube.com/watch?v=D8qtvpjAw7g"
+  }
+}

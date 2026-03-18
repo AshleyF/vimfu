@@ -1,0 +1,185 @@
+{
+  "title": "VimFu — The - and + Keys",
+  "description": "Minus moves up to the first non-blank of the previous line. Plus moves down to the first non-blank of the next line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 345,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*config.py*"
+    },
+    {
+      "comment": "Create demo file with indented lines"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "class Settings:\n    debug = True\n    volume = 80\n    lang = \"en\"\n    fps = 60\n    vsync = False"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim config.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The - and + Keys",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Plus moves down to the first non-blank of the next line. Minus moves up to the first non-blank of the previous line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: + to move down ---"
+    },
+    {
+      "say": "Cursor is on the class line. Plus.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "+",
+      "overlay": "+  next line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "+",
+      "overlay": "+  next line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "+",
+      "overlay": "+  next line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Each plus landed on the first non-blank character. Not column zero. The indent."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: - to move up ---"
+    },
+    {
+      "say": "Minus to go back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "-",
+      "overlay": "-  prev line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "-",
+      "overlay": "-  prev line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back up two lines, cursor on the first non-blank each time. Unlike J and K which keep your column, plus and minus always land at the start."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Plus goes down, minus goes up. Both land on the first non-blank."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "lOXY2RbiZJs",
+    "url": "https://youtube.com/watch?v=lOXY2RbiZJs"
+  }
+}

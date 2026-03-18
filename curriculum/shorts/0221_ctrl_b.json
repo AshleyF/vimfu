@@ -1,0 +1,193 @@
+{
+  "title": "VimFu — Ctrl-B",
+  "description": "Ctrl-B scrolls one full page backward (up). Same as Page Up. Use it to read through long files quickly.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 362,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create a long demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "# Quest Log\n\nhero = \"Aria\"\nlevel = 12\nhp = 85\nmp = 40\nxp = 0\ngold = 100\n\ndef enter_forest():\n    print(\"Shadows close in\")\n    enemies = [\"wolf\", \"bat\", \"troll\"]\n    for e in enemies:\n        print(f\"A wild {e} appears!\")\n    print(\"Forest cleared\")\n\ndef enter_cave():\n    print(\"Dripping water echoes\")\n    traps = [\"spike pit\", \"falling rocks\"]\n    for trap in traps:\n        print(f\"Watch out: {trap}!\")\n    print(\"Cave explored\")\n\ndef find_treasure():\n    gold = 500\n    gems = [\"ruby\", \"emerald\", \"diamond\"]\n    print(f\"Found {gold} gold\")\n    for g in gems:\n        print(f\"Found a {g}!\")\n    print(\"Inventory full\")\n\ndef boss_fight():\n    boss_hp = 200\n    boss_name = \"Dragon King\"\n    print(f\"{boss_name} attacks!\")\n    while boss_hp > 0:\n        boss_hp -= 25\n        print(f\"{boss_name}: {boss_hp} HP\")\n    print(\"Victory!\")\n\ndef level_up(hero):\n    hero[\"level\"] += 1\n    hero[\"hp\"] += 20\n    hero[\"mp\"] += 10\n    print(f\"Level {hero['level']}!\")\n\ndef save_game():\n    data = {\"hero\": hero, \"level\": level}\n    print(\"Game saved.\")\n    return True\n\ndef load_game():\n    print(\"Loading save...\")\n    return {\"hero\": \"Aria\", \"level\": 12}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim and jump to bottom so we can scroll up"
+    },
+    {
+      "line": "nvim -c 'normal G' quest.py"
+    },
+    {
+      "waitForScreen": "Bot",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-B",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control B scrolls one full page backward. That means up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: page up once ---"
+    },
+    {
+      "say": "We're at the bottom of this file. Press control B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "b",
+      "overlay": "page up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One full page up. The screen jumped to show earlier code."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: page up again ---"
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "b",
+      "overlay": "page up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Near the top now. Two presses scrolled through most of the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: contrast with Ctrl-F ---"
+    },
+    {
+      "say": "Control F does the opposite. It pages forward, meaning down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "f",
+      "overlay": "page down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back in the middle. B for backward, F for forward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "One gotcha. If you use T mux, control B is the T mux prefix key. T mux intercepts it before Vim sees it. Most people remap the T mux prefix to control space to fix that."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control B. Page up. A full screen at a time."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "KtGI1ggny88",
+    "url": "https://youtube.com/watch?v=KtGI1ggny88"
+  }
+}

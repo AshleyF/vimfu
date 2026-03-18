@@ -1,0 +1,127 @@
+{
+  "title": "VimFu — list-keys",
+  "description": "The list-keys tmux command shows all key bindings. Great for discovering what you can do.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 5320,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "list-keys",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "List-keys shows every tmux key binding. Same as control B question mark."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control B colon, list-keys, enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ":",
+      "overlay": ":  command"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "list-keys"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "All the bindings. Scroll with the arrow keys. Press Q to exit. Short form is lsk."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "q"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "List-keys. Your tmux cheat sheet, built in."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "exit"
+    }
+  ],
+  "youtube": {
+    "videoId": "kCCH2BlP2C4",
+    "url": "https://youtube.com/watch?v=kCCH2BlP2C4"
+  }
+}

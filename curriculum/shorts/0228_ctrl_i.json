@@ -1,0 +1,206 @@
+{
+  "title": "VimFu — Ctrl-I / Tab",
+  "description": "Ctrl-I (same as Tab) jumps to the newer position in the jump list. Opposite of Ctrl-O — go forward after going back.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 369,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f ship.py .ship.py.swp .ship.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*ship.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "ship.py",
+      "content": "# Starship Control\n\nclass Engine:\n    def __init__(self):\n        self.fuel = 100\n        self.speed = 0\n\n    def throttle(self, pct):\n        self.speed = pct\n        self.fuel -= pct * 0.1\n\n    def brake(self):\n        self.speed = 0\n\nclass Shields:\n    def __init__(self):\n        self.power = 100\n\n    def absorb(self, damage):\n        self.power -= damage\n\n    def recharge(self):\n        self.power = 100\n\ndef launch(ship):\n    ship.throttle(50)\n    print(\"Launched!\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' ship.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-I / Tab",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control I jumps forward in the jump list. It's the opposite of control O. Tab does the same thing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump around, then navigate back and forward ---"
+    },
+    {
+      "say": "First, let's create some jumps. Go to the bottom, then search for shields.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "G  go to bottom"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "/Shields"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now we have two jumps in history. Control O to go back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "o",
+      "overlay": "jump back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "ctrl": "o",
+      "overlay": "jump back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back at line one. Now control I to go forward again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "i",
+      "overlay": "jump forward"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Forward one jump. We're at the bottom where we pressed G."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: forward again ---"
+    },
+    {
+      "say": "One more control I.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "i",
+      "overlay": "jump forward"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Forward to the Shields search. Control O and control I bounce between all your jump points."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control I or tab. Jump forward. O goes back, I goes forward."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f ship.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "ruvBpcHkjoo",
+    "url": "https://youtube.com/watch?v=ruvBpcHkjoo"
+  }
+}

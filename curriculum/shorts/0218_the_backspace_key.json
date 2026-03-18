@@ -1,0 +1,165 @@
+{
+  "title": "VimFu — The Backspace Key",
+  "description": "Backspace moves the cursor one character to the left in normal mode. Same as h.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 359,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*demo.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "spell = \"fireball\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The Backspace Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "In normal mode, backspace moves the cursor one character to the left. Same as H. It does not delete anything."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: backspace across the line ---"
+    },
+    {
+      "say": "Move to the end first. Now backspace.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "backspace": 1
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "backspace": 1
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "backspace": 1
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "backspace": 1
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Moved left four times. Nothing deleted. In normal mode, backspace is just H. In insert mode, it deletes as expected."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Backspace. Move left in normal mode. Use H instead, your hands stay on home row."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "XVallJtlN1c",
+    "url": "https://youtube.com/watch?v=XVallJtlN1c"
+  }
+}

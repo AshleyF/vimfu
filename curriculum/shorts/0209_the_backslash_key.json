@@ -1,0 +1,261 @@
+{
+  "title": "VimFu — The \\ Key (Leader)",
+  "description": "Backslash is the default leader key in Vim. Map it to custom shortcuts with :nnoremap and build your own command palette.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 350,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "hero = \"Knight\"\nlevel = 12\nhp = 340\nweapon = \"sword\"\nshield = True"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The \\ Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Backslash is the leader key. It does nothing alone. It's a prefix for custom mappings you define."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: map \\w to save ---"
+    },
+    {
+      "say": "Map leader W to save the file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":nnoremap \\w :w<CR>\n"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now press backslash W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\\",
+      "overlay": "\\  leader"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "w  save (mapped)"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Saved. Two keys instead of colon W enter."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: map \\n to toggle line numbers ---"
+    },
+    {
+      "say": "Map leader N to toggle line numbers.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":nnoremap \\n :set nu!<CR>\n"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\\",
+      "overlay": "\\  leader"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "n",
+      "overlay": "n  numbers (mapped)"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Numbers on.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\\",
+      "overlay": "\\  leader"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "n",
+      "overlay": "n  numbers (mapped)"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Numbers off. Toggles every time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: map \\d to delete line ---"
+    },
+    {
+      "say": "One more. Leader D to delete a line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":nnoremap \\d dd\n"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\\",
+      "overlay": "\\  leader"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "d",
+      "overlay": "d  delete line (mapped)"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Gone. Your own shortcuts, your own workflow."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Most people remap leader to the space bar in their config file. But the idea is the same. Backslash is leader. Map it to anything."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "kJDoxCSNx74",
+    "url": "https://youtube.com/watch?v=kJDoxCSNx74"
+  }
+}

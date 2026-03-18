@@ -1,0 +1,203 @@
+{
+  "title": "VimFu — The \" Key",
+  "description": "Double-quote specifies a register for the next yank, delete, or put. Use named registers to store multiple clipboard entries.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 354,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f reg.py .reg.py.swp .reg.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*reg.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "reg.py",
+      "content": "sword = 10\nshield = 5\n\nloadout:"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim reg.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The \" Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Double-quote selects a register. Before any yank, delete, or put, press double-quote then a letter to choose which register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: yank line into register a ---"
+    },
+    {
+      "say": "Yank the sword line into register A. Double-quote A, yank yank.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"ayy",
+      "overlay": "yank line into a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Demo 2: yank line into register b ---"
+    },
+    {
+      "say": "Yank the shield line into register B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\"byy",
+      "overlay": "yank line into b"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Demo 3: paste from both registers ---"
+    },
+    {
+      "say": "Now go to the loadout line and paste them. Double-quote A, put.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\"ap",
+      "overlay": "put from a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Sword line from register A. Now double-quote B, put.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"bp",
+      "overlay": "put from b"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Shield line from register B. Two separate clipboards, used independently."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Double-quote. Pick a register. Twenty-six letters, twenty-six clipboards."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f reg.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "b6sigbwgwIA",
+    "url": "https://youtube.com/watch?v=b6sigbwgwIA"
+  }
+}

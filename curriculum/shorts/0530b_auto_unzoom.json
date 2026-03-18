@@ -1,0 +1,170 @@
+{
+  "title": "VimFu — Auto-Unzoom",
+  "description": "Splitting, navigating, or swapping panes automatically unzooms a zoomed pane. You don't have to manually unzoom first.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 5301,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux and create a split"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "echo 'pane 0'"
+    },
+    {
+      "comment": "Split horizontally"
+    },
+    {
+      "keys": "\u0002\"",
+      "overlay": ""
+    },
+    {
+      "waitForScreen": "~",
+      "timeout": 10.0
+    },
+    {
+      "line": "echo 'pane 1'"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Auto-Unzoom",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "When a pane is zoomed, you might think you need to unzoom before switching panes. You don't."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: zoom then navigate ---"
+    },
+    {
+      "say": "Two panes. Zoom the bottom one with control B, Z.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z",
+      "overlay": "z  zoom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Zoomed. Now navigate to the other pane. Control B, up arrow.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[A",
+      "overlay": "↑  pane up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Tmux unzoomed automatically and switched to the other pane. No need to unzoom first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Auto-unzoom. Navigating, splitting, or swapping panes all unzoom automatically."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Exit tmux"
+    },
+    {
+      "line": "exit"
+    },
+    {
+      "line": "exit"
+    }
+  ],
+  "youtube": {
+    "videoId": "P-w1ScBj9og",
+    "url": "https://youtube.com/watch?v=P-w1ScBj9og"
+  }
+}

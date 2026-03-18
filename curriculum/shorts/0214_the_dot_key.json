@@ -1,0 +1,197 @@
+{
+  "title": "VimFu — The . Key",
+  "description": "Dot repeats the last change. The most powerful single key in Vim.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 355,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f fix.py .fix.py.swp .fix.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*fix.py*"
+    },
+    {
+      "comment": "Create demo file with repeated word to change"
+    },
+    {
+      "writeFile": "fix.py",
+      "content": "color = \"red\"\nsize = \"big\"\ntone = \"red\"\nmood = \"calm\"\ntint = \"red\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim fix.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The . Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Dot repeats the last change. The most powerful key in Vim."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: change a word then dot ---"
+    },
+    {
+      "say": "Change red to blue. Change inner quotes, type blue, escape.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ci\"",
+      "overlay": "ci\"  change inner \""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "blue"
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now search for the next red. Star to find it. Then just dot.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/red\r",
+      "overlay": "/red  search"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ".",
+      "overlay": ".  repeat change"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Changed to blue again. One keystroke. Find next, dot again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "n  next match"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ".",
+      "overlay": ".  repeat change"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "All three reds are now blue. Search, dot, search, dot. That's the Vim way."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Dot. Repeat the last change. Learn to love it."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f fix.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "KsPOTBm6HzE",
+    "url": "https://youtube.com/watch?v=KsPOTBm6HzE"
+  }
+}

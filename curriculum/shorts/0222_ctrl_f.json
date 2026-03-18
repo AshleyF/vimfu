@@ -1,0 +1,187 @@
+{
+  "title": "VimFu — Ctrl-F",
+  "description": "Ctrl-F scrolls one full page forward (down). Same as Page Down. Paired with Ctrl-B for full-page navigation.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 363,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create a long demo file"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "# Dungeon Crawler\n\nclass Room:\n    def __init__(self, name):\n        self.name = name\n        self.items = []\n        self.enemies = []\n\n    def describe(self):\n        print(f\"You enter {self.name}\")\n        for item in self.items:\n            print(f\"  You see: {item}\")\n\n    def add_enemy(self, enemy):\n        self.enemies.append(enemy)\n        print(f\"{enemy} lurks here\")\n\nclass Player:\n    def __init__(self):\n        self.hp = 100\n        self.inventory = []\n        self.position = (0, 0)\n\n    def take_damage(self, amount):\n        self.hp -= amount\n        print(f\"Ouch! HP: {self.hp}\")\n\n    def heal(self, amount):\n        self.hp += amount\n        print(f\"Healed! HP: {self.hp}\")\n\n    def pickup(self, item):\n        self.inventory.append(item)\n        print(f\"Got {item}!\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim at top"
+    },
+    {
+      "line": "nvim dungeon.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-F",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control F scrolls one full page forward. That means down."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: page down once ---"
+    },
+    {
+      "say": "We're at the top. Press control F.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "f",
+      "overlay": "page down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One full page down. We jumped past the Room class into the Player class."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: page down again ---"
+    },
+    {
+      "say": "One more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "f",
+      "overlay": "page down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Bottom of the file. Two presses and we've read everything."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: go back with Ctrl-B ---"
+    },
+    {
+      "say": "Control B goes the other way. Backward, meaning up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "b",
+      "overlay": "page up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "F for forward, B for backward. Full page at a time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control F. Page down. Fast scrolling through long files."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "HRi2B4wDXMk",
+    "url": "https://youtube.com/watch?v=HRi2B4wDXMk"
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "title": "VimFu — Ctrl-O",
+  "description": "Ctrl-O jumps to the older position in the jump list. Go back to where you were before a search, G, or other jump.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 368,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f cats.py .cats.py.swp .cats.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*cats.py*"
+    },
+    {
+      "comment": "Create demo file with line numbers"
+    },
+    {
+      "writeFile": "cats.py",
+      "content": "# Cat Behavior Simulator\n\nclass Cat:\n    def __init__(self, name):\n        self.name = name\n        self.mood = \"sleepy\"\n        self.hunger = 50\n\n    def feed(self, food):\n        self.hunger -= 10\n        print(f\"{self.name} eats\")\n\n    def pet(self):\n        if self.mood == \"angry\":\n            print(\"Hiss!\")\n        else:\n            print(\"Purr...\")\n\n    def nap(self):\n        self.mood = \"sleepy\"\n        print(f\"{self.name} naps\")\n\n    def play(self, toy):\n        self.mood = \"happy\"\n        self.hunger += 5\n        print(f\"Chasing {toy}!\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' cats.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-O",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control O jumps to the older position in the jump list. It takes you back to where you were."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump with G, then go back ---"
+    },
+    {
+      "say": "We're on line one. Jump to the bottom with capital G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "G  go to bottom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now we're at the end. Control O goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "o",
+      "overlay": "jump back"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to line one. Vim remembered where we were."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: search creates a jump too ---"
+    },
+    {
+      "say": "Search also creates a jump. Search for play.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/play"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jumped to the play method. Control O goes back to where we searched from.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "o",
+      "overlay": "jump back"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to line one again. Every search, every G, every jump gets recorded."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control O. Jump backward through your history. Like a browser back button for code."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f cats.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "g8fz5_zL1kM",
+    "url": "https://youtube.com/watch?v=g8fz5_zL1kM"
+  }
+}

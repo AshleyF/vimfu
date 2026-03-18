@@ -1,0 +1,213 @@
+{
+  "title": "VimFu — Ctrl-C",
+  "description": "Ctrl-C interrupts the current command. Use it to cancel a half-typed command or exit insert mode (though Escape is preferred).",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 374,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f abort.py .abort.py.swp .abort.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*abort.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "abort.py",
+      "content": "mission = \"active\"\nstatus = \"go\"\nalert = \"none\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim abort.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-C",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control C cancels the current operation. It interrupts whatever Vim is doing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: cancel a partial command ---"
+    },
+    {
+      "say": "Start typing a command. D expects a motion, but we changed our mind. Control C.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d",
+      "overlay": "d  delete..."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "ctrl": "c",
+      "overlay": "cancel"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Cancelled. Nothing deleted. The pending D was abandoned."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: cancel insert mode ---"
+    },
+    {
+      "say": "Enter insert mode with I. Type something, then control C to leave.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i",
+      "overlay": "i  insert"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "# "
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "c",
+      "overlay": "cancel"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back in normal mode. Control C works like escape here, but escape is better because control C skips some autocommands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: cancel a colon command ---"
+    },
+    {
+      "say": "Start an ex command. Type colon, then change your mind.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set number"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "c",
+      "overlay": "cancel"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Command cancelled. Nothing changed. Use control C whenever you want to bail out."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control C. Cancel and interrupt. Your emergency exit."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f abort.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "0TxUuRvlylI",
+    "url": "https://youtube.com/watch?v=0TxUuRvlylI"
+  }
+}

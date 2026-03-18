@@ -1,0 +1,201 @@
+{
+  "title": "VimFu — Ctrl-G",
+  "description": "Ctrl-G shows file info: the file name, total lines, and your current position as a percentage.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 371,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f weather.py .weather.py.swp .weather.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*weather.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "weather.py",
+      "content": "# Weather Station\n\ntemp = 72\nhumidity = 45\nwind = 12\ncondition = \"sunny\"\n\ndef forecast():\n    if temp > 80:\n        return \"hot\"\n    if temp < 50:\n        return \"cold\"\n    return \"nice\"\n\ndef alert(msg):\n    print(f\"ALERT: {msg}\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim weather.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-G",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control G shows file info. The file name, how many lines, and where your cursor is."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: at top of file ---"
+    },
+    {
+      "say": "Press control G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "g",
+      "overlay": "file info"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The status line shows the file name, line one of sixteen, and the percentage through the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: move and check again ---"
+    },
+    {
+      "say": "Move to line eight. Control G again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "8G",
+      "overlay": "8G  go to line 8"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "g",
+      "overlay": "file info"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Line eight of sixteen. About fifty percent. Quick way to know where you are."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: at bottom ---"
+    },
+    {
+      "say": "Jump to the end. Control G one more time.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "G  go to bottom"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "g",
+      "overlay": "file info"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Line sixteen. One hundred percent. You always know exactly where you are."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control G. File info at a glance. Name, lines, position."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f weather.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "4-wYrhRLGSU",
+    "url": "https://youtube.com/watch?v=4-wYrhRLGSU"
+  }
+}

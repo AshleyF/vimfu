@@ -1,0 +1,146 @@
+{
+  "title": "VimFu — kill-pane / kill-window",
+  "description": "The kill-pane and kill-window tmux commands close the active pane or window forcefully.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 5316,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "echo 'pane 0'"
+    },
+    {
+      "keys": "\u0002\"",
+      "overlay": ""
+    },
+    {
+      "waitForScreen": "~",
+      "timeout": 10.0
+    },
+    {
+      "line": "echo 'pane 1'"
+    },
+    {
+      "keys": "\u0002\"",
+      "overlay": ""
+    },
+    {
+      "waitForScreen": "~",
+      "timeout": 10.0
+    },
+    {
+      "line": "echo 'pane 2'"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "kill-pane / kill-window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Kill-pane closes the active pane. No confirmation. Three panes here."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Kill this bottom pane.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ":",
+      "overlay": ":  command"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "kill-pane"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gone. Down to two panes. Kill-window closes the entire window and all its panes. Short forms: killp and killw."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Kill-pane. Kill-window. Close things fast."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "exit"
+    },
+    {
+      "line": "exit"
+    }
+  ],
+  "youtube": {
+    "videoId": "ubSW4cI3QpA",
+    "url": "https://youtube.com/watch?v=ubSW4cI3QpA"
+  }
+}

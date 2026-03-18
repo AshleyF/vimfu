@@ -1,0 +1,144 @@
+{
+  "title": "VimFu — Pane Auto-Close",
+  "description": "When a shell exits, its pane closes automatically. Last pane closes the window. Last window detaches tmux.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 5302,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux and create splits"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "echo 'pane 0'"
+    },
+    {
+      "comment": "Split horizontally"
+    },
+    {
+      "keys": "\u0002\"",
+      "overlay": ""
+    },
+    {
+      "waitForScreen": "~",
+      "timeout": 10.0
+    },
+    {
+      "line": "echo 'pane 1'"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Pane Auto-Close",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "When a shell exits, its pane closes automatically. You don't need to close panes manually."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: exit bottom pane ---"
+    },
+    {
+      "say": "Two panes here. Type exit in the bottom one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "line": "exit"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The bottom pane vanished. The top pane expanded to fill the space."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "If that was the last pane, the window would close. If that was the last window, tmux would detach."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Pane auto-close. Exit the shell, the pane disappears."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Exit tmux"
+    },
+    {
+      "line": "exit"
+    }
+  ],
+  "youtube": {
+    "videoId": "gq5WOdSEXFU",
+    "url": "https://youtube.com/watch?v=gq5WOdSEXFU"
+  }
+}

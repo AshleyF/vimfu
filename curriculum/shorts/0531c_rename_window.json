@@ -1,0 +1,121 @@
+{
+  "title": "VimFu — rename-window",
+  "description": "The rename-window tmux command renames the active window. Same as Control B comma.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 5312,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "rename-window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Rename-window gives the active window a custom name. Control B colon, rename-window, then the name."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Rename this window to editor.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ":",
+      "overlay": ":  command"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "rename-window editor"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The status bar now shows editor instead of zsh. Short form is renamew. Same as control B comma."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Rename-window. Give your windows meaningful names."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "exit"
+    }
+  ],
+  "youtube": {
+    "videoId": "dZnPto7Jz3E",
+    "url": "https://youtube.com/watch?v=dZnPto7Jz3E"
+  }
+}

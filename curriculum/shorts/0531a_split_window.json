@@ -1,0 +1,167 @@
+{
+  "title": "VimFu — split-window",
+  "description": "The split-window tmux command splits a pane. Default splits top/bottom. Add -h for left/right.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 5310,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "comment": "Set TERM for proper color support"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch tmux"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "split-window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control B colon opens the tmux command prompt. Type split-window to split a pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Split-window with no flags splits top and bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ":",
+      "overlay": ":  command"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "split-window"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Horizontal split. Now add dash H for a vertical split.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ":",
+      "overlay": ":  command"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "split-window -h"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Vertical split. Short form is splitw. Same as control B percent and control B double-quote, but from the command prompt."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Split-window. The command behind the keybinding."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "exit"
+    },
+    {
+      "line": "exit"
+    },
+    {
+      "line": "exit"
+    }
+  ],
+  "youtube": {
+    "videoId": "ONFRMYcoID4",
+    "url": "https://youtube.com/watch?v=ONFRMYcoID4"
+  }
+}

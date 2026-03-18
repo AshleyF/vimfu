@@ -1,0 +1,240 @@
+{
+  "title": "VimFu — Ctrl-V",
+  "description": "Ctrl-V starts visual block mode. Select a rectangular block of text to edit columns independently.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 373,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*config.py*"
+    },
+    {
+      "comment": "Create demo file with aligned columns"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "host  = \"localhost\"\nport  = \"8080\"\nmode  = \"debug\"\nlang  = \"python\"\nteam  = \"alpha\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim config.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-V",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control V starts visual block mode. Instead of selecting lines, you select a rectangle."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: select a column ---"
+    },
+    {
+      "say": "Move to the first quote. Start block select and go down four lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "v",
+      "overlay": "visual block"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j",
+      "overlay": "4j  down 4"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A vertical column is highlighted. One character wide, five rows tall. This is block mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: delete a block ---"
+    },
+    {
+      "say": "Now delete all the values at once. Go to the first value, block select down, then delete.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "0",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "v",
+      "overlay": "visual block"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j",
+      "overlay": "4j  down 4"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "$  end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d",
+      "overlay": "d  delete"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every value gone in one shot. Block mode lets you edit columns like a spreadsheet."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "u  undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "If your terminal intercepts control V for paste, use control Q instead. It does the exact same thing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control V. Visual block mode. Select rectangles, edit columns."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "5RTdQmQsREw",
+    "url": "https://youtube.com/watch?v=5RTdQmQsREw"
+  }
+}

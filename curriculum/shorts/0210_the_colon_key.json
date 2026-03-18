@@ -1,0 +1,187 @@
+{
+  "title": "VimFu — The : Key",
+  "description": "Colon enters command-line mode. From here you can run Ex commands: save, quit, substitute, set options, and much more.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 351,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f cmd.py .cmd.py.swp .cmd.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*cmd.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "cmd.py",
+      "content": "name = \"hero\"\nhp = 100\nmp = 50\nlevel = 1\nname = \"hero\"\ngold = 0"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim cmd.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The : Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon enters command-line mode. You've seen colon W to save and colon Q to quit. But it does much more."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: :set number ---"
+    },
+    {
+      "say": "Colon set number.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set number"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line numbers appeared. Colon commands configure Vim on the fly."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: :s substitution ---"
+    },
+    {
+      "say": "Colon S to substitute. Change hero to knight on this line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":s/hero/knight"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "First hero became knight."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: :5 to jump to a line ---"
+    },
+    {
+      "say": "Colon five goes to line five.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":5"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "On line five. Colon is your gateway to everything in Vim. Save, quit, search, replace, set options, run commands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "The colon key. Command-line mode. The power behind the editor."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f cmd.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "bvdJtbfvaQI",
+    "url": "https://youtube.com/watch?v=bvdJtbfvaQI"
+  }
+}

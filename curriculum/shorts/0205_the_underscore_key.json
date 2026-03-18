@@ -1,0 +1,184 @@
+{
+  "title": "VimFu — The _ Key",
+  "description": "Underscore moves to the first non-blank of the current line, or with a count, N-1 lines down. Like plus but off by one.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 346,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f items.py .items.py.swp .items.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*items.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "items.py",
+      "content": "inventory = [\n    \"sword\",\n    \"shield\",\n    \"potion\",\n    \"scroll\",\n    \"ring\",\n]"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim items.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The _ Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Underscore goes to the first non-blank of the current line. With a count, it goes count minus one lines down."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: _ without count ---"
+    },
+    {
+      "say": "Cursor is in the middle of the line. Underscore.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "_",
+      "overlay": "_  first non-blank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the I in inventory. First non-blank, same as caret."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: _ with count ---"
+    },
+    {
+      "say": "Now three underscore. That goes two lines down to the first non-blank.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3_",
+      "overlay": "3_  2 lines down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Landed on shield, two lines down. The count is offset by one. Three underscore means current line plus two."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4_",
+      "overlay": "4_  3 lines down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Four underscore, three lines down. The ring item."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Underscore. First non-blank of current line, or count minus one lines down."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f items.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "7iBBk5hRhxE",
+    "url": "https://youtube.com/watch?v=7iBBk5hRhxE"
+  }
+}

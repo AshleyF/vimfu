@@ -1,0 +1,239 @@
+{
+  "title": "VimFu — The / Key",
+  "description": "Forward slash starts a forward search. Type a pattern and press Enter to jump to the first match.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 356,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "town = \"haven\"\nforest = \"darkwood\"\ncave = \"crystal\"\nriver = \"silver\"\npeak = \"thunder\"\nlake = \"mirror\"\nruins = \"ancient\"\nfort = \"dragon\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The / Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Slash starts a forward search. Type what you're looking for, press enter."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: search for dragon ---"
+    },
+    {
+      "say": "Find the dragon. Slash, dragon, enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "d"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "r"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "a"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "g"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "o"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "n"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped straight to dragon on the last line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: search for 'er' partial match ---"
+    },
+    {
+      "say": "Search for a partial match. Slash, E R.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "e"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "r"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Found silver. N for next match.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "n  next match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "n",
+      "overlay": "n  next match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Cycles through every match. Slash searches forward, N continues forward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Slash. Search forward. Type a pattern, enter, then N to keep going."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "44pU0ZJJF3o",
+    "url": "https://youtube.com/watch?v=44pU0ZJJF3o"
+  }
+}

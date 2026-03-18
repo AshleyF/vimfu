@@ -1,0 +1,194 @@
+{
+  "title": "VimFu — Ctrl-D",
+  "description": "Ctrl-D scrolls half a page down. Paired with Ctrl-U for smooth half-page navigation.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 365,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f loot.py .loot.py.swp .loot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*loot.py*"
+    },
+    {
+      "comment": "Create a long demo file"
+    },
+    {
+      "writeFile": "loot.py",
+      "content": "# Loot Table\n\ncommon = [\n    \"wooden sword\",\n    \"cloth hat\",\n    \"torn map\",\n    \"rusty key\",\n]\n\nuncommon = [\n    \"silver dagger\",\n    \"leather boots\",\n    \"health potion\",\n    \"fire scroll\",\n]\n\nrare = [\n    \"enchanted bow\",\n    \"mithril shield\",\n    \"dragon scale\",\n    \"void crystal\",\n]\n\nlegendary = [\n    \"excalibur\",\n    \"phoenix feather\",\n    \"time amulet\",\n    \"shadow cloak\",\n]\n\ndef roll_loot(luck):\n    if luck > 90:\n        return legendary\n    if luck > 60:\n        return rare\n    return common"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim at top"
+    },
+    {
+      "line": "nvim loot.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-D",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control D scrolls half a page down. Paired with control U for smooth scrolling."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: half page down ---"
+    },
+    {
+      "say": "We're at the top. Control D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "d",
+      "overlay": "half page down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Half a page down. We can still see some of the previous screen at the top."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: again ---"
+    },
+    {
+      "say": "Again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "d",
+      "overlay": "half page down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Into the rare items now. One more."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: one more, then back ---"
+    },
+    {
+      "ctrl": "d",
+      "overlay": "half page down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Near the bottom. Control U goes back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "u",
+      "overlay": "half page up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "D for down, U for up. Half page at a time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control D. Half page down. Scroll smoothly through any file."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f loot.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "R8XFKptxicU",
+    "url": "https://youtube.com/watch?v=R8XFKptxicU"
+  }
+}

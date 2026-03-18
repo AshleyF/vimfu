@@ -1,0 +1,249 @@
+{
+  "title": "VimFu — The ? Key",
+  "description": "Question mark starts a backward search. Like slash but searches in the opposite direction.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 357,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "town = \"haven\"\nforest = \"darkwood\"\ncave = \"crystal\"\nriver = \"silver\"\npeak = \"thunder\"\nlake = \"mirror\"\nruins = \"ancient\"\nfort = \"dragon\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The ? Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Question mark searches backward. Same as slash, but in the other direction."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: go to bottom, search backward ---"
+    },
+    {
+      "say": "Go to the bottom. Question mark, crystal, enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "?"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "c"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "r"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "y"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "s"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "t"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "a"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "l"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Found crystal, searching backward from the bottom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: N to continue backward ---"
+    },
+    {
+      "say": "Question mark, haven, enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "?"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "h"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "a"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "v"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "e"
+    },
+    {
+      "wait": 0.12
+    },
+    {
+      "type": "n"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Found haven at the top. Slash goes forward, question mark goes backward. Use whichever is closer."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Question mark. Search backward. The reverse of slash."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "319VsiEqPmk",
+    "url": "https://youtube.com/watch?v=319VsiEqPmk"
+  }
+}

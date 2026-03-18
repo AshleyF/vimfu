@@ -1,0 +1,227 @@
+{
+  "title": "VimFu — Ctrl-T",
+  "description": "Ctrl-T jumps back to the older entry in the tag stack. After Ctrl-] takes you to a definition, Ctrl-T returns you to where you were.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 377,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tower.py .tower.py.swp .tower.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*tower.py*"
+    },
+    {
+      "line": "rm -f tags"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "tower.py",
+      "content": "def aim():\n    print(\"Targeting...\")\n\ndef fire():\n    aim()\n    print(\"BOOM!\")\n\ndef reload():\n    print(\"Reloading...\")\n\ndef defend():\n    fire()\n    reload()"
+    },
+    {
+      "comment": "Create tags file with printf to preserve tabs"
+    },
+    {
+      "line": "printf 'aim\\ttower.py\\t1\\ndefend\\ttower.py\\t10\\nfire\\ttower.py\\t4\\nreload\\ttower.py\\t7\\n' > tags"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' tower.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-T",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control T pops back in the tag stack. After control right bracket jumps to a definition, control T brings you back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: make multiple tag jumps ---"
+    },
+    {
+      "say": "Let's chain some jumps. Go to the defend function. Cursor on fire.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "G  go to bottom"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Jump to fire's definition.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "]",
+      "overlay": "jump to definition"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Inside fire. Jump to aim's definition.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j^",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "]",
+      "overlay": "jump to definition"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Two jumps deep. Now control T to pop back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "t",
+      "overlay": "jump back (tag)"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back in fire. One more control T.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "t",
+      "overlay": "jump back (tag)"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back in defend. Each control T pops one level off the tag stack."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control T. Pop the tag stack. Control right bracket dives in, control T climbs out."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f tower.py tags"
+    }
+  ],
+  "youtube": {
+    "videoId": "_-bYCfTCct0",
+    "url": "https://youtube.com/watch?v=_-bYCfTCct0"
+  }
+}

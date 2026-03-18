@@ -1,0 +1,225 @@
+{
+  "title": "VimFu — Ctrl-E",
+  "description": "Ctrl-E scrolls the window one line up. The cursor stays put while the viewport moves. Fine-grained scrolling.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 366,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f robot.py .robot.py.swp .robot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*robot.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "robot.py",
+      "content": "# Robot Controller\n\nname = \"T-800\"\nmodel = \"Series 800\"\ncpu = \"Neural Net\"\n\ndef boot():\n    print(\"Systems online\")\n    calibrate_sensors()\n    load_mission()\n\ndef calibrate_sensors():\n    sensors = [\"lidar\", \"camera\"]\n    for s in sensors:\n        print(f\"{s}: OK\")\n\ndef load_mission():\n    target = \"protect\"\n    priority = \"high\"\n    print(f\"Mission: {target}\")\n\ndef patrol(area):\n    print(f\"Scanning {area}\")\n    threats = detect_threats()\n    return len(threats)\n\ndef detect_threats():\n    return [\"intruder\", \"drone\"]\n\ndef shutdown():\n    print(\"Powering down...\")\n    save_state()\n\ndef save_state():\n    print(\"State saved.\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim robot.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-E",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control E scrolls the window one line down. The file moves up, but your cursor stays put."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: scroll a few lines ---"
+    },
+    {
+      "comment": "Move cursor to middle of screen so scroll is visible"
+    },
+    {
+      "keys": "9j",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Watch. The cursor is in the middle. Press control E three times.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "e",
+      "overlay": "scroll down"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "e",
+      "overlay": "scroll down"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "e",
+      "overlay": "scroll down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines scrolled off the top. The cursor stayed in place. The viewport moved under it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: with count ---"
+    },
+    {
+      "say": "Use a count. Five control E scrolls five lines at once.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5",
+      "overlay": "count 5"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "e",
+      "overlay": "scroll down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Five more lines. Precise control over the viewport."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: contrast with Ctrl-Y ---"
+    },
+    {
+      "say": "Control Y does the opposite. It scrolls the viewport up, revealing earlier lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5",
+      "overlay": "count 5"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "y",
+      "overlay": "scroll up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back up five lines. E scrolls down, Y scrolls up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control E. Scroll one line at a time. Fine-tuned viewport control."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f robot.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "b_i97ehG17Y",
+    "url": "https://youtube.com/watch?v=b_i97ehG17Y"
+  }
+}

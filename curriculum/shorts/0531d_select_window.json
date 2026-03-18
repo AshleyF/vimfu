@@ -1,0 +1,133 @@
+{
+  "title": "VimFu — select-window",
+  "description": "The select-window tmux command switches to a specific window by number.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 5313,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "tmux rename-window 'code'"
+    },
+    {
+      "line": "tmux new-window -n 'test'"
+    },
+    {
+      "line": "tmux new-window -n 'logs'"
+    },
+    {
+      "line": "clear"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "select-window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Select-window switches to a window by number. Three windows here: code, test, and logs."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Switch to window zero, the code window.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ":",
+      "overlay": ":  command"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "select-window -t 0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now on the code window. The star moved in the status bar. Short form is selectw. Same as control B then the number."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select-window. Jump to any window by number."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "exit"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    }
+  ],
+  "youtube": {
+    "videoId": "M6cwNQkQizA",
+    "url": "https://youtube.com/watch?v=M6cwNQkQizA"
+  }
+}

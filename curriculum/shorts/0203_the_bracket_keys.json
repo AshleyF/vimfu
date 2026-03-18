@@ -1,0 +1,178 @@
+{
+  "title": "VimFu — The [ and ] Keys",
+  "description": "Square brackets are a prefix for bracket commands. They jump to previous or next of various things like methods and braces.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 344,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f code.c .code.c.swp .code.c.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*code.c*"
+    },
+    {
+      "comment": "Create demo file with curly braces"
+    },
+    {
+      "writeFile": "code.c",
+      "content": "void attack() {\n    int dmg = 10;\n}\n\nvoid defend() {\n    int armor = 5;\n}\n\nvoid heal() {\n    int hp = 20;\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim code.c"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "The [ and ] Keys",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Square brackets are a prefix key. They pair with another character to jump to things."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: ]] to jump between function starts ---"
+    },
+    {
+      "say": "Close bracket close bracket jumps to the next opening brace. Three functions here.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]]",
+      "overlay": "]]  next {"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]]",
+      "overlay": "]]  next {"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jumped through attack, defend, and heal. One section at a time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: [[ to go backward ---"
+    },
+    {
+      "say": "Open bracket open bracket goes backward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[[",
+      "overlay": "[[  prev {"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "[[",
+      "overlay": "[[  prev {"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to attack. Great for jumping between functions or sections."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Square brackets plus a letter. Open bracket goes backward, close bracket goes forward. Explore them."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f code.c"
+    }
+  ],
+  "youtube": {
+    "videoId": "SsfBgxniRy8",
+    "url": "https://youtube.com/watch?v=SsfBgxniRy8"
+  }
+}

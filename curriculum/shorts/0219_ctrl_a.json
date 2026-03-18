@@ -1,0 +1,206 @@
+{
+  "title": "VimFu — Ctrl-A",
+  "description": "Ctrl-A increments the number at or after the cursor. Use a count to increment by more.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 360,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*demo.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "hp = 50\nlevel = 3\nspeed = 10"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim before recording"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-A",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control A increments the number at or after the cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: simple increment ---"
+    },
+    {
+      "say": "The cursor is on line one. Press control A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "a",
+      "overlay": "increment"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "H P went from fifty to fifty one. One press, plus one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: increment with count ---"
+    },
+    {
+      "say": "Now go to line two. Type five, then control A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5",
+      "overlay": "count 5"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "a",
+      "overlay": "increment"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Level jumped from three to eight. The count adds five instead of one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: cursor finds next number ---"
+    },
+    {
+      "say": "Go to the start of line three. Control A finds the next number on the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "a",
+      "overlay": "increment"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Speed went from ten to eleven. Cursor was on S, but Vim found the number automatically."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control A. Increment a number. Add a count to bump by more than one."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "3bLGAGSpbBI",
+    "url": "https://youtube.com/watch?v=3bLGAGSpbBI"
+  }
+}

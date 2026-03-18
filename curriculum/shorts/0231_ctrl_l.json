@@ -1,0 +1,170 @@
+{
+  "title": "VimFu — Ctrl-L",
+  "description": "Ctrl-L redraws the screen. Clears visual glitches without quitting Vim.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 372,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f glitch.py .glitch.py.swp .glitch.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*glitch.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "glitch.py",
+      "content": "# Display Manager\n\ndef refresh():\n    print(\"Redrawing screen\")\n    clear_buffer()\n    render_frame()\n\ndef clear_buffer():\n    print(\"Buffer cleared\")\n\ndef render_frame():\n    print(\"Frame rendered\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim glitch.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-L",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control L redraws the screen. If your terminal ever looks garbled or glitchy, this fixes it without quitting Vim."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: simple redraw ---"
+    },
+    {
+      "say": "The screen looks fine now, but let's press control L anyway.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "l",
+      "overlay": "redraw"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The entire screen refreshed. Everything re-rendered cleanly. You might not notice anything when the display is already correct."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- When to use it ---"
+    },
+    {
+      "say": "You'll need this when a background process prints to your terminal and messes up Vim's display. Or when you resize your terminal window and things look off."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Some people also use colon redraw exclamation mark, which does the same thing from command mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "l",
+      "overlay": "redraw"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Clean again. No need to quit and reopen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control L. Redraw the screen. Your panic button for display glitches."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f glitch.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "JLdk73EUyfw",
+    "url": "https://youtube.com/watch?v=JLdk73EUyfw"
+  }
+}

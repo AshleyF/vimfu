@@ -1,0 +1,135 @@
+{
+  "title": "VimFu — select-pane",
+  "description": "The select-pane tmux command switches to a specific pane by number.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 5314,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "tmux"
+  ],
+  "setup": [
+    {
+      "comment": "Kill any stale tmux sessions"
+    },
+    {
+      "line": "tmux kill-server 2>/dev/null; true"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "tmux"
+    },
+    {
+      "waitForScreen": "0:zsh",
+      "timeout": 30.0
+    },
+    {
+      "line": "echo 'pane 0'"
+    },
+    {
+      "keys": "\u0002\"",
+      "overlay": ""
+    },
+    {
+      "waitForScreen": "~",
+      "timeout": 10.0
+    },
+    {
+      "line": "echo 'pane 1'"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "select-pane",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Select-pane switches to a pane by number. Two panes here."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Switch to pane zero.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0002",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ":",
+      "overlay": ":  command"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "select-pane -t 0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now in pane zero. Short form is selectp. Use control B Q to see pane numbers first if you're not sure."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select-pane. Jump to any pane by number."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "exit"
+    },
+    {
+      "line": "exit"
+    }
+  ],
+  "youtube": {
+    "videoId": "6YG5pr3ivWU",
+    "url": "https://youtube.com/watch?v=6YG5pr3ivWU"
+  }
+}

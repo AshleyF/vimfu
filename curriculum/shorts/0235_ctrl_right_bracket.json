@@ -1,0 +1,201 @@
+{
+  "title": "VimFu — Ctrl-]",
+  "description": "Ctrl-] jumps to the tag definition under the cursor. Works with ctags or LSP for navigating to function and class definitions.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 376,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f engine.py .engine.py.swp .engine.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*engine.py*"
+    },
+    {
+      "line": "rm -f tags"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "engine.py",
+      "content": "def start():\n    print(\"Engine started\")\n\ndef stop():\n    print(\"Engine stopped\")\n\ndef main():\n    start()\n    stop()"
+    },
+    {
+      "comment": "Create tags file with printf to preserve tabs"
+    },
+    {
+      "line": "printf 'main\\tengine.py\\t7\\nstart\\tengine.py\\t1\\nstop\\tengine.py\\t4\\n' > tags"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' engine.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-]",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control right bracket jumps to the definition of the word under the cursor. It uses tags to find where functions and classes are defined."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to start() definition ---"
+    },
+    {
+      "say": "The cursor is at the top. Go to the main function where start is called.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "G  go to bottom"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The cursor is on start. Press control right bracket.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "]",
+      "overlay": "jump to definition"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to line one, where start is defined. Vim found it through the tags file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: go back with Ctrl-T ---"
+    },
+    {
+      "say": "Control T goes back to where you jumped from.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "t",
+      "overlay": "jump back (tag)"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back in main. Control right bracket to jump, control T to come back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control right bracket. Jump to definition. Navigate code like an I D E."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f engine.py tags"
+    }
+  ],
+  "youtube": {
+    "videoId": "me0SOIYjwC0",
+    "url": "https://youtube.com/watch?v=me0SOIYjwC0"
+  }
+}
