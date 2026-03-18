@@ -205,7 +205,7 @@ _Registers, macros, marks, windows, replace mode, and more motions. Now Vim feel
 | 097 | Setting a Mark | `m{a-z}` | Set a local mark at the cursor position. |
 | 098 | Jumping to a Mark (Line) | `'{a-z}` | Jump to the line of mark. |
 | 099 | Jumping to a Mark (Exact) | `` `{a-z} `` | Jump to the exact position of mark. |
-| 100 | Global Marks | `m{A-Z}` | Uppercase marks work across files. |
+| 100 | Global Marks | `m{A-Z}` | Uppercase marks work across files — mark key classes, functions, and config files across your whole project and jump to them instantly with `'{letter}`, even when you're in a completely different file. A killer way to navigate a codebase. |
 | 101 | Special Marks | `''` ` `` ` `'.` `'^` `'<` `'>` | Last jump position, last change, last insert, start/end of last visual selection. |
 
 ### The Jump List
@@ -397,7 +397,7 @@ _Every key on the keyboard does something in normal mode. Learn them one at a ti
 |-----|-------|------|-------------|
 | 219 | `Ctrl-A` | `Ctrl-A` | Increment the number at/after the cursor. |
 | 220 | `Ctrl-X` | `Ctrl-X` | Decrement the number at/after the cursor. |
-| 221 | `Ctrl-B` | `Ctrl-B` | Scroll one full page backward. |
+| 221 | `Ctrl-B` | `Ctrl-B` | Scroll one full page backward. ⚠️ Conflicts with tmux prefix — see note below. |
 | 222 | `Ctrl-F` | `Ctrl-F` | Scroll one full page forward. |
 | 223 | `Ctrl-U` | `Ctrl-U` | Scroll half page up. |
 | 224 | `Ctrl-D` | `Ctrl-D` | Scroll half page down. |
@@ -415,7 +415,7 @@ _Every key on the keyboard does something in normal mode. Learn them one at a ti
 | 236 | `Ctrl-T` | `Ctrl-T` | Jump to older tag in tag stack. |
 | 237 | `Ctrl-^` | `Ctrl-^` | Edit alternate (previous) file. |
 | 238 | `Ctrl-W` Prefix | `Ctrl-W` | Window command prefix (covered in depth later). |
-| 239 | `Ctrl-N` / `Ctrl-P` | `Ctrl-N` `Ctrl-P` | Same as `j` / `k` in normal mode. |
+| 239 | `Ctrl-N` / `Ctrl-P` | `Ctrl-N` `Ctrl-P` | Same as `j`/`k` in normal mode — but the N=Next / P=Previous mnemonic carries into insert-mode autocomplete and command-line history. |
 | 240 | `Ctrl-H` | `Ctrl-H` | Same as `h` (left). |
 | 241 | `Ctrl-J` / `Ctrl-M` | `Ctrl-J` `Ctrl-M` | Same as `j` / `Enter`. |
 
@@ -901,8 +901,10 @@ _Tmux is the perfect partner for Vim. Learn to split your terminal, manage windo
 |-----|-------|------|-------------|
 | 501 | What Is tmux? | — | Terminal multiplexer: one terminal, many sessions, windows, and panes. |
 | 502 | Starting tmux | `tmux` | Launch tmux from the shell. Notice the green status bar at the bottom. |
-| 503 | The Prefix Key | `Ctrl-B` | All tmux commands start with the prefix key. Press `Ctrl-B`, release, then press the command key. |
+| 503 | The Prefix Key | `Ctrl-B` | All tmux commands start with the prefix key. Press `Ctrl-B`, release, then press the command key. ⚠️ Conflicts with Vim's page-up — see note below. |
 | 504 | tmux Help | `Ctrl-B ?` | Show all key bindings in a scrollable list. The ultimate cheat sheet — always one keystroke away. |
+
+> **📖 Book note — `Ctrl-B` tmux conflict:** `Ctrl-B` is Vim's full-page-backward scroll *and* tmux's default prefix key. When running Vim inside tmux, tmux intercepts `Ctrl-B` before Vim sees it — so page-up stops working. Common solutions: (1) Remap tmux prefix to `Ctrl-Space` or `Ctrl-A` (most popular fix), (2) press `Ctrl-B Ctrl-B` to send a raw `Ctrl-B` through to Vim (tmux passes the prefix key on double-press), (3) just use `Ctrl-U` (half-page up) or `PageUp` instead. Note that `Ctrl-A` as tmux prefix introduces its *own* conflict — it shadows Vim's increment-number command. `Ctrl-Space` is the cleanest option. Mention this in both the Ctrl-B lesson (221) and the tmux prefix lesson (503).
 
 ### Panes
 
@@ -1325,6 +1327,69 @@ Many keys do the same thing. Knowing synonyms helps you recognize them in the wi
 | `Ctrl-B` | `PageUp`, `Shift-Up` | Page backward |
 | `Esc` | `Ctrl-[` | Escape |
 
+### Redundant Keys — Truly Interchangeable
+
+These pairs do the exact same thing in normal mode. One of them is dead weight:
+
+| Redundant Key | Same As | Why It's Redundant |
+|---|---|---|
+| `_` | `^` | First non-blank of current line. With a count, `3_` goes down 2 lines to first non-blank — but `+` already does that. `_` is just `^` with a worse count model. Prime remap candidate (see lesson 601). |
+| `Space` | `l` | Moves right one character. Most people remap `Space` to Leader for custom shortcuts. Nobody misses `l`. |
+| `Backspace` / `Ctrl-H` | `h` | Moves left one character. In insert mode `Ctrl-H` acts as backspace, but in normal mode it's just `h`. |
+| `+` | `Enter` | Both go to the first non-blank of the next line. With a count, `3+` = `3Enter`. Identical. |
+| `0` | `|` (no count) | Both go to column 1. But `0` can't take a count (it's consumed as part of the number), while `25|` goes to column 25 — so `|` is the more powerful key. `0` survives on ergonomics alone. |
+
+### Shortcut Keys — One Key Does What Two Could
+
+These are single-key shortcuts for common two-key combos. Not truly redundant — they exist for speed:
+
+| Shortcut | Expands To | Why It Exists |
+|---|---|---|
+| `s` | `cl` | Delete char + enter insert. Saves one keystroke. |
+| `S` | `cc` | Substitute entire line. Common enough to deserve its own key. |
+| `C` | `c$` | Change to end of line. Parallels `D`. |
+| `D` | `d$` | Delete to end of line. Very frequently used. |
+| `x` | `dl` | Delete character under cursor. Classic Vim bread-and-butter. |
+| `X` | `dh` | Delete character before cursor. The backspace of normal mode. |
+| `ZZ` | `:wq` | Save and quit in two keystrokes. |
+| `ZQ` | `:q!` | Quit without saving in two keystrokes. |
+
+### The `Y` Inconsistency
+
+`D` does `d$`. `C` does `c$`. You'd expect `Y` to do `y$` — but it doesn't. `Y` does `yy` (yank the whole line). This is a long-standing inconsistency inherited from vi. Most Neovim distributions (and the default Neovim config since 0.6) remap `Y` to `y$` to match the `D`/`C` pattern:
+
+```vim
+nnoremap Y y$
+```
+
+> **Callout:** If you use stock Vim without a config, `Y` = `yy`. If you use Neovim or any modern Vim config, `Y` probably = `y$`. Know which world you're in.
+
+### The `Q` Key — Ex Mode vs. Replay
+
+In classic Vim, `Q` enters **Ex mode** — a line-oriented editing mode that dates back to the original `ex` editor. Almost nobody uses Ex mode intentionally; most people hit `Q` by accident and then panic trying to get out (type `visual` + Enter).
+
+**Neovim changed `Q`** to replay the last recorded macro (equivalent to `@@`). This is far more useful. The old Ex mode is still available via `gQ` if you really want it.
+
+| Key | Classic Vim | Neovim (default) |
+|---|---|---|
+| `Q` | Enter Ex mode | Replay last recorded macro (`@@`) |
+| `gQ` | Enter Ex mode (verbose) | Enter Ex mode (verbose) |
+
+> **Callout:** If you're in classic Vim and `Q` drops you into a `:` prompt that won't go away, type `visual` and press Enter.
+
+### Best Remap Candidates
+
+Keys that are safe to remap because their default behavior is redundant or rarely used:
+
+| Key | Default | Popular Remap |
+|---|---|---|
+| `Space` | `l` (move right) | `<Leader>` — the universal choice |
+| `_` | `^` (first non-blank) | `:map _ i <Esc>` — insert a space |
+| `s` | `cl` (substitute char) | Flash/Leap/Lightspeed (jump anywhere) |
+| `S` | `cc` (substitute line) | Surround add (nvim-surround uses `ys` instead) |
+| `+` | Next line first non-blank | Custom mapping — `Enter` already does this |
+| `Q` | Ex mode (classic Vim only) | Already remapped in Neovim to `@@` |
+
 ---
 
 ## Appendix B — The Vim Grammar
@@ -1524,11 +1589,11 @@ _Tracks which lessons have generated shorts (JSON files in `curriculum/shorts/`)
 | Part 1 — Survival | 001–015 | ✅ All 15 generated |
 | Part 2 — Basic Editing | 016–045 | ✅ All 30 generated |
 | Part 3 — Becoming Productive | 046–090 | ✅ All 45 generated |
-| Part 4 — Intermediate Power | 091–135 | ✅ 44 generated — 🆕 **124a** needs short |
+| Part 4 — Intermediate Power | 091–135 | ✅ All 45 generated (incl. 124a) |
 | Part 5 — Lowercase Keys | 136–161 | ✅ All 26 generated |
 | Part 6 — Uppercase Keys | 162–187 | ✅ All 26 generated |
-| Part 7 — Symbols & Numbers | 188–218 | ⚠️ 188–200 generated (13); **201–218 not yet** (18) |
-| Part 8 — Ctrl Keys | 219–248 | ⬜ Not yet generated (30) |
+| Part 7 — Symbols & Numbers | 188–218 | ✅ All 31 generated |
+| Part 8 — Ctrl Keys | 219–248 | ⚠️ 219–240 generated (22); **241–248 not yet** (8) |
 | Part 9 — g Commands | 249–285 | ⬜ Not yet generated (37) |
 | Part 10 — z Commands | 286–316 | ⬜ Not yet generated (31) |
 | Part 11 — Bracket Commands | 317–333 | ⬜ Not yet generated (17) |
@@ -1539,35 +1604,35 @@ _Tracks which lessons have generated shorts (JSON files in `curriculum/shorts/`)
 | Part 16 — Command-Line Tips | 446–460 | ⬜ Not yet generated (15) |
 | Part 17 — Practical Patterns | 461–480 | ⬜ Not yet generated (20) |
 | Part 18 — Advanced Topics | 481–500 | ⬜ Not yet generated (20) |
-| Part 19 — Tmux & Shell | 501–544 | ✅ 44 generated — 🆕 **530a–c, 531a–k** need shorts (14) |
+| Part 19 — Tmux & Shell | 501–544 | ✅ All 58 generated (incl. 530a–c, 531a–k) |
 | Part 20 — Advanced | 600–601 | ⬜ Not yet generated (2) |
 | Part 21 — Surround | 700–742 | ⬜ Not yet generated (43) |
 | Part 22 — Ex Commands | 800–895 | ⬜ Not yet generated (96 + 14 new) |
 
-**Total generated:** 244 shorts (lessons 1–200 + 501–544)
+**Total generated:** 299 shorts (lessons 1–240 + 501–544 + 15 interleaved)
 **Total curriculum lessons:** ~570+
 
-### 🆕 New Lessons Interleaved Into Generated Sections
+### ✅ Interleaved Lessons — All Generated
 
-These were added **after** shorts were generated for their surrounding sections. **They need new shorts created:**
+These were added **after** shorts were generated for their surrounding sections. **All 15 now have shorts.**
 
-| # | Title | Between |
-|---|-------|---------|
-| 124a | The Black Hole Register | 124 ✅ ← **here** → 125 ✅ |
-| 530a | Send Literal Prefix | 530 ✅ ← **here** → 531 ✅ |
-| 530b | Auto-Unzoom | 530 ✅ ← **here** → 531 ✅ |
-| 530c | Pane Auto-Close | 530 ✅ ← **here** → 531 ✅ |
-| 531a | `split-window` | 531 ✅ ← **here** → 532 ✅ |
-| 531b | `new-window` | 531 ✅ ← **here** → 532 ✅ |
-| 531c | `rename-window` | 531 ✅ ← **here** → 532 ✅ |
-| 531d | `select-window` | 531 ✅ ← **here** → 532 ✅ |
-| 531e | `select-pane` | 531 ✅ ← **here** → 532 ✅ |
-| 531f | `resize-pane` | 531 ✅ ← **here** → 532 ✅ |
-| 531g | `kill-pane` / `kill-window` | 531 ✅ ← **here** → 532 ✅ |
-| 531h | `swap-pane` | 531 ✅ ← **here** → 532 ✅ |
-| 531i | `next-layout` | 531 ✅ ← **here** → 532 ✅ |
-| 531j | `display-panes` | 531 ✅ ← **here** → 532 ✅ |
-| 531k | `list-keys` | 531 ✅ ← **here** → 532 ✅ |
+| # | Title | Status |
+|---|-------|--------|
+| 124a | The Black Hole Register | ✅ Generated |
+| 530a | Send Literal Prefix | ✅ Generated |
+| 530b | Auto-Unzoom | ✅ Generated |
+| 530c | Pane Auto-Close | ✅ Generated |
+| 531a | `split-window` | ✅ Generated |
+| 531b | `new-window` | ✅ Generated |
+| 531c | `rename-window` | ✅ Generated |
+| 531d | `select-window` | ✅ Generated |
+| 531e | `select-pane` | ✅ Generated |
+| 531f | `resize-pane` | ✅ Generated |
+| 531g | `kill-pane` / `kill-window` | ✅ Generated |
+| 531h | `swap-pane` | ✅ Generated |
+| 531i | `next-layout` | ✅ Generated |
+| 531j | `display-panes` | ✅ Generated |
+| 531k | `list-keys` | ✅ Generated |
 
 ### 📝 Modified Lessons (existing shorts may need updating)
 

@@ -305,6 +305,26 @@ Not every multi-key sequence belongs in a single `keys` step. The rule: **group 
 
 **Rule of thumb:** If you would explain the keys with "and then" between them, they should be separate steps. "Go down *and then* go to the start of the line *and then* find the angle bracket" = three steps. "Delete inner word" = one step.
 
+### Key Overlay Captions: Don't Repeat the Keys
+
+The key overlay display has two parts: the **keys** (shown prominently) and the **caption** (shown beside them as explanation). The viewer already sees what keys were pressed — the caption's job is to explain *what they mean*, not echo them.
+
+**Bad (repeating the keys in the caption):**
+```python
+Keys("diw", overlay="diw  delete inner word")
+Keys("\"ayy", overlay="\"ayy  yank line into a")
+Keys("ci{", overlay="ci{  change inner braces")
+```
+
+**Good (caption explains, doesn't repeat):**
+```python
+Keys("diw", overlay="delete inner word")
+Keys("\"ayy", overlay="yank line into a")
+Keys("ci{", overlay="change inner braces")
+```
+
+The keys are right there on screen. Repeating them in the caption wastes space and looks redundant. Just write the meaning.
+
 ### Wait Timing Conventions
 
 | Context | Value |
