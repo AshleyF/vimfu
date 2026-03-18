@@ -259,6 +259,17 @@ function computeGridSize() {
 
 const initSize = computeGridSize();
 
+// ── ?reset query param: wipe VFS localStorage to re-seed files ──
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has('reset')) {
+  localStorage.removeItem('vimfu:files');
+  // Strip ?reset from the URL so a page refresh doesn't re-clear
+  urlParams.delete('reset');
+  const clean = urlParams.toString();
+  const newUrl = window.location.pathname + (clean ? '?' + clean : '');
+  window.history.replaceState(null, '', newUrl);
+}
+
 const session = new SessionManager({
   rows: initSize.rows,
   cols: initSize.cols,
@@ -281,6 +292,55 @@ if (!session.fs.exists(SAMPLE_PYTHON.filename)) {
   session.fs.write(SAMPLE_PYTHON.filename, SAMPLE_PYTHON.content);
 }
 
+// Always ensure init.lua exists (even for returning users)
+if (!session.fs.exists('init.lua')) {
+  session.fs.write('init.lua', [
+    '-- Neovim config (init.lua)',
+    '-- Edit this file to customize VimFu.',
+    '-- Changes take effect the next time you open nvim.',
+    '',
+    '-- Leader key (default is backslash)',
+    '-- vim.g.mapleader = " "',
+    '',
+    '-- Common settings',
+    'vim.opt.number = true          -- line numbers',
+    '-- vim.opt.relativenumber = true -- relative line numbers',
+    '-- vim.opt.cursorline = true    -- highlight current line',
+    'vim.opt.ignorecase = true      -- case-insensitive search',
+    'vim.opt.smartcase = true       -- ...unless uppercase used',
+    'vim.opt.scrolloff = 4          -- keep 4 lines visible above/below cursor',
+    'vim.opt.expandtab = true       -- spaces instead of tabs',
+    'vim.opt.tabstop = 4            -- tab width',
+    'vim.opt.shiftwidth = 4         -- indent width',
+    '',
+    '-- Key mappings',
+    '-- vim.keymap.set("n", "Y", "y$")              -- Y yanks to end of line',
+    '-- vim.keymap.set("n", "<leader>w", ":w<CR>")   -- Space-w to save',
+  ].join('\n'));
+}
+
+// Always ensure .tmux.conf exists (even for returning users)
+if (!session.fs.exists('.tmux.conf')) {
+  session.fs.write('.tmux.conf', [
+    '# tmux config (.tmux.conf)',
+    '# Edit this file to customize tmux.',
+    '# Reload with:  tmux source-file .tmux.conf',
+    '',
+    '# Prefix key (default: Ctrl-B)',
+    '# set -g prefix C-Space',
+    '',
+    '# Pane splitting',
+    '# bind v split-window -h   # vertical split',
+    '# bind s split-window -v   # horizontal split',
+    '',
+    '# Vim-style pane navigation (already default)',
+    '# bind h select-pane -L',
+    '# bind j select-pane -D',
+    '# bind k select-pane -U',
+    '# bind l select-pane -R',
+  ].join('\n'));
+}
+
 // Always ensure welcome.md exists (even for returning users)
 if (!session.fs.exists('welcome.md')) {
   session.fs.write('welcome.md', [
@@ -295,6 +355,12 @@ if (!session.fs.exists('welcome.md')) {
     '- Type `:w` to save',
     '- Type `:q` to quit',
     '',
+    '## Browser Tip',
+    '',
+    '`Ctrl-W` is Vim\'s window prefix key, but browsers',
+    'intercept it to close the tab. Use `Ctrl-Q` instead —',
+    'it does exactly the same thing and works in the browser.',
+    '',
     '## Explore',
     '',
     'Try editing this file!',
@@ -303,6 +369,9 @@ if (!session.fs.exists('welcome.md')) {
     '- `:q!` — quit without saving',
     '',
     '> Tip: `help` at the shell',
+    '',
+    '> Reset: add `?reset` to the URL to restore',
+    '> default files and pick up new content.',
   ].join('\n'));
 }
 

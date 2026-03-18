@@ -227,6 +227,23 @@ export class VimEngine {
     this._spellGoodWords = new Set(); // words added with zg
     this._spellBadWords = new Set();  // words marked bad with zw
 
+    // Key mappings: { n: Map(lhs → {rhs, noremap}), i: Map(...), v: Map(...), ... }
+    // lhs/rhs are arrays of key strings (e.g. ['Y'] → ['y', '$'])
+    this._mappings = {
+      n: new Map(),  // normal mode
+      i: new Map(),  // insert mode
+      v: new Map(),  // visual + select mode
+      x: new Map(),  // visual only
+      o: new Map(),  // operator-pending
+      c: new Map(),  // command-line
+    };
+    // Leader key (default backslash, commonly remapped to space)
+    this._leaderKey = '\\';
+    // Pending mapping match state (for multi-key lhs sequences)
+    this._mapPending = [];       // keys buffered while matching a multi-key lhs
+    this._mapResolving = false;  // true while feeding rhs keys (prevent infinite recursion)
+    this._mapNoRemap = false;    // true while feeding noremap rhs keys (skip mapping lookup)
+
     this._updateStatus();
 
     // Initialize default window (must be after all other state init)
@@ -323,6 +340,63 @@ export class VimEngine {
   feedKey(key) {
     // Ctrl-[ is the terminal equivalent of Escape
     if (key === 'Ctrl-[') key = 'Escape';
+
+    // ── Key mapping resolution ──
+    // Skip mapping lookup when feeding rhs of a noremap, or during macro playback of noremap
+    if (!this._mapNoRemap) {
+      const modeKey = this._mapModeKey();
+      if (modeKey) {
+        const modeMap = this._mappings[modeKey];
+        if (modeMap && modeMap.size > 0) {
+          // Check if this key (or buffered keys + this key) match a mapping lhs
+          this._mapPending.push(key);
+          const pending = this._mapPending.join('\x00');
+
+          // Look for exact match
+          let exactMatch = null;
+          let prefixMatch = false;
+          for (const [lhs, mapping] of modeMap) {
+            const lhsStr = lhs;
+            if (lhsStr === pending) {
+              exactMatch = mapping;
+            } else if (lhsStr.startsWith(pending + '\x00') || lhsStr.startsWith(pending)) {
+              // Check if pending is a proper prefix of some lhs
+              if (lhsStr.length > pending.length && lhsStr.startsWith(pending)) {
+                // Only count as prefix if pending ends at a key boundary
+                const nextChar = lhsStr[pending.length];
+                if (nextChar === '\x00') prefixMatch = true;
+              }
+            }
+          }
+
+          if (exactMatch && !prefixMatch) {
+            // Complete match — feed the rhs keys
+            this._mapPending = [];
+            const wasNoRemap = this._mapNoRemap;
+            if (exactMatch.noremap) this._mapNoRemap = true;
+            for (const rhsKey of exactMatch.rhs) {
+              this.feedKey(rhsKey);
+            }
+            this._mapNoRemap = wasNoRemap;
+            return;
+          } else if (prefixMatch) {
+            // Could still match a longer lhs — buffer and wait
+            return;
+          } else if (this._mapPending.length > 1) {
+            // No match at all — flush buffered keys, feed them normally
+            const flushed = [...this._mapPending];
+            this._mapPending = [];
+            this._mapNoRemap = true;
+            for (const k of flushed) this.feedKey(k);
+            this._mapNoRemap = false;
+            return;
+          } else {
+            // Single key, no match — proceed normally
+            this._mapPending = [];
+          }
+        }
+      }
+    }
 
     // If in message prompt mode, any key dismisses it
     if (this._messagePrompt) {
@@ -4794,6 +4868,101 @@ export class VimEngine {
       return;
     }
 
+    // :let mapleader — set the leader key
+    {
+      const letMatch = cmd.match(/^let\s+(?:g:)?mapleader\s*=\s*['"](.)['"]\s*$/);
+      if (letMatch) {
+        this._leaderKey = letMatch[1];
+        this.commandLine = '';
+        return;
+      }
+    }
+
+    // ── Key mapping commands ──
+    // :map, :nmap, :imap, :vmap, :xmap, :omap, :cmap (recursive)
+    // :noremap, :nnoremap, :inoremap, :vnoremap, :xnoremap, :onoremap, :cnoremap (non-recursive)
+    // :unmap, :nunmap, :iunmap, :vunmap, :xunmap, :ounmap, :cunmap
+    // :mapc[lear], :nmapc[lear], etc.
+    {
+      const mapMatch = cmd.match(
+        /^(n|i|v|x|o|c)?(nore|un)?map(!\s|\s|$)(.*)/
+      );
+      if (mapMatch) {
+        const modePrefix = mapMatch[1] || '';
+        const variant = mapMatch[2] || '';  // 'nore', 'un', or ''
+        const bangAndRest = (mapMatch[3] + mapMatch[4]).trim();
+
+        // Determine mode character
+        let modeChar = modePrefix;
+        // :map (no prefix, no bang) = nvo; :map! = ic
+        if (!modePrefix) {
+          if (bangAndRest.startsWith('!')) {
+            // :map! / :noremap! / :unmap! — insert + command-line
+            modeChar = '!';
+          }
+        }
+
+        const argStr = bangAndRest.replace(/^!\s*/, '');
+
+        if (variant === 'un') {
+          // :unmap / :nunmap etc.
+          if (argStr) {
+            if (modeChar === '!') {
+              this.removeMapping('i', argStr);
+              this.removeMapping('c', argStr);
+            } else {
+              this.removeMapping(modeChar, argStr);
+            }
+          }
+          this.commandLine = '';
+          return;
+        }
+
+        if (!argStr) {
+          // :map / :nmap with no args — list mappings
+          this._displayMappings(modeChar || '');
+          return;
+        }
+
+        // Split argStr into lhs and rhs
+        const parts = argStr.match(/^(\S+)\s+(.+)$/);
+        if (parts) {
+          const lhs = parts[1];
+          const rhs = parts[2];
+          const noremap = variant === 'nore';
+          if (modeChar === '!') {
+            this.addMapping('i', lhs, rhs, noremap);
+            this.addMapping('c', lhs, rhs, noremap);
+          } else {
+            this.addMapping(modeChar, lhs, rhs, noremap);
+          }
+          this.commandLine = '';
+          return;
+        } else {
+          // Single arg — display mapping for that key
+          this._displayMappings(modeChar || '', argStr);
+          return;
+        }
+      }
+
+      // :mapclear / :nmapclear etc.
+      const clearMatch = cmd.match(/^(n|i|v|x|o|c)?mapc(l(e(a(r)?)?)?)?(!)?$/);
+      if (clearMatch) {
+        const mode = clearMatch[1] || '';
+        const bang = clearMatch[6];
+        if (bang || !mode) {
+          // Clear all modes
+          for (const m of Object.keys(this._mappings)) {
+            this._mappings[m].clear();
+          }
+        } else {
+          this._mappings[mode]?.clear();
+        }
+        this.commandLine = '';
+        return;
+      }
+    }
+
     // ── Parse range and dispatch ex commands ──
     const parsed = this._parseExRange(cmd);
     let { sr, er, hasRange } = parsed;
@@ -5666,6 +5835,182 @@ export class VimEngine {
     if (rest) {
       this._messagePrompt = { error: 'E492: Not an editor command: ' + cmd };
     }
+    this.commandLine = '';
+  }
+
+  // ── Key Mapping Helpers ──
+
+  /**
+   * Returns the mapping mode key for the current engine mode.
+   * Returns null if no mapping should apply (e.g. during tag input).
+   */
+  _mapModeKey() {
+    if (this._pendingTagInput) return null;
+    switch (this.mode) {
+      case Mode.NORMAL: return 'n';
+      case Mode.INSERT: return 'i';
+      case Mode.VISUAL: case Mode.VISUAL_LINE: case Mode.VISUAL_BLOCK: return 'x';
+      case Mode.COMMAND: return 'c';
+      default: return null;
+    }
+  }
+
+  /**
+   * Parse a Vim-notation key sequence string into an array of key strings.
+   * Handles <CR>, <Esc>, <Space>, <C-x>, <Leader>, <BS>, <Tab>, <lt>, <Bar>, etc.
+   * Regular characters are returned as single-char strings.
+   *
+   * @param {string} seq — e.g. 'jk', '<Space>w', '<C-w>s', 'Y', '<Leader>ff'
+   * @param {string} [leader='\\'] — the leader key character
+   * @returns {string[]} — e.g. ['j', 'k'], [' ', 'w'], ['Ctrl-W', 's'], ['Y'], ['\\', 'f', 'f']
+   */
+  static parseKeySequence(seq, leader = '\\') {
+    const keys = [];
+    let i = 0;
+    while (i < seq.length) {
+      if (seq[i] === '<') {
+        const end = seq.indexOf('>', i);
+        if (end === -1) {
+          // No closing > — treat as literal <
+          keys.push('<');
+          i++;
+          continue;
+        }
+        const notation = seq.slice(i + 1, end);
+        const lower = notation.toLowerCase();
+
+        if (lower === 'cr' || lower === 'enter' || lower === 'return') {
+          keys.push('Enter');
+        } else if (lower === 'esc' || lower === 'escape') {
+          keys.push('Escape');
+        } else if (lower === 'space') {
+          keys.push(' ');
+        } else if (lower === 'bs' || lower === 'backspace') {
+          keys.push('Backspace');
+        } else if (lower === 'tab') {
+          keys.push('Tab');
+        } else if (lower === 'del' || lower === 'delete') {
+          keys.push('Delete');
+        } else if (lower === 'up') {
+          keys.push('ArrowUp');
+        } else if (lower === 'down') {
+          keys.push('ArrowDown');
+        } else if (lower === 'left') {
+          keys.push('ArrowLeft');
+        } else if (lower === 'right') {
+          keys.push('ArrowRight');
+        } else if (lower === 'lt') {
+          keys.push('<');
+        } else if (lower === 'bar') {
+          keys.push('|');
+        } else if (lower === 'bslash') {
+          keys.push('\\');
+        } else if (lower === 'leader') {
+          // <Leader> expands to the leader key
+          keys.push(leader);
+        } else if (lower.startsWith('c-') && lower.length === 3) {
+          // <C-x> → 'Ctrl-X' (uppercase letter after Ctrl-)
+          keys.push('Ctrl-' + notation.slice(2).toUpperCase());
+        } else {
+          // Unknown notation — push as literal chars
+          keys.push('<');
+          for (const ch of notation) keys.push(ch);
+          keys.push('>');
+        }
+        i = end + 1;
+      } else {
+        keys.push(seq[i]);
+        i++;
+      }
+    }
+    return keys;
+  }
+
+  /**
+   * Add a key mapping.
+   * @param {string} modeChar — 'n', 'i', 'v', 'x', 'o', 'c', or '' for all normal+visual+op
+   * @param {string} lhs — key sequence in Vim notation (e.g. 'Y', '<Space>w', 'jk')
+   * @param {string} rhs — replacement key sequence in Vim notation
+   * @param {boolean} noremap — if true, rhs is not recursively mapped
+   */
+  addMapping(modeChar, lhs, rhs, noremap = false) {
+    // Determine which mode maps to update
+    const modes = modeChar === '' ? ['n', 'v', 'x', 'o'] : [modeChar];
+    const lhsKeys = VimEngine.parseKeySequence(lhs, this._getLeader());
+    const rhsKeys = VimEngine.parseKeySequence(rhs, this._getLeader());
+    const lhsStr = lhsKeys.join('\x00');
+    for (const m of modes) {
+      if (this._mappings[m]) {
+        this._mappings[m].set(lhsStr, { rhs: rhsKeys, noremap, lhsDisplay: lhs, rhsDisplay: rhs });
+      }
+    }
+  }
+
+  /**
+   * Remove a key mapping.
+   * @param {string} modeChar — 'n', 'i', 'v', 'x', 'o', 'c', or '' for all
+   * @param {string} lhs — key sequence in Vim notation
+   */
+  removeMapping(modeChar, lhs) {
+    const modes = modeChar === '' ? ['n', 'v', 'x', 'o'] : [modeChar];
+    const lhsKeys = VimEngine.parseKeySequence(lhs, this._getLeader());
+    const lhsStr = lhsKeys.join('\x00');
+    for (const m of modes) {
+      if (this._mappings[m]) this._mappings[m].delete(lhsStr);
+    }
+  }
+
+  /**
+   * Get the current leader key character.
+   * @returns {string}
+   */
+  _getLeader() {
+    return this._leaderKey || '\\';
+  }
+
+  /**
+   * Display key mappings in a message prompt.
+   * @param {string} modeChar — 'n', 'i', 'v', 'x', 'o', 'c', or '' for all
+   * @param {string} [filterLhs] — if provided, only show mappings starting with this
+   */
+  _displayMappings(modeChar, filterLhs) {
+    const normalFg = 'd4d4d4', normalBg = '000000';
+    const cols = this.cols;
+    const mkLine = (text, runs) => ({ text, runs });
+    const mkFullLine = (text) => mkLine(
+      (text + ' '.repeat(cols)).slice(0, cols),
+      [{ n: cols, fg: normalFg, bg: normalBg }]
+    );
+
+    const promptLines = [];
+    const modes = modeChar && modeChar !== '!'
+      ? [modeChar]
+      : Object.keys(this._mappings);
+
+    let anyShown = false;
+    for (const m of modes) {
+      const modeMap = this._mappings[m];
+      if (!modeMap) continue;
+      for (const [lhsStr, mapping] of modeMap) {
+        if (filterLhs) {
+          const filterKeys = VimEngine.parseKeySequence(filterLhs, this._getLeader());
+          const filterStr = filterKeys.join('\x00');
+          if (!lhsStr.startsWith(filterStr)) continue;
+        }
+        const modeLabel = m === 'n' ? 'n' : m === 'i' ? 'i' : m === 'v' ? 'v'
+          : m === 'x' ? 'x' : m === 'o' ? 'o' : m === 'c' ? 'c' : ' ';
+        const noremapFlag = mapping.noremap ? '*' : ' ';
+        const line = `${modeLabel}  ${noremapFlag} ${mapping.lhsDisplay.padEnd(12)} ${mapping.rhsDisplay}`;
+        promptLines.push(mkFullLine(line));
+        anyShown = true;
+      }
+    }
+
+    if (!anyShown) {
+      promptLines.push(mkFullLine('No mapping found'));
+    }
+
+    this._messagePrompt = { lines: promptLines };
     this.commandLine = '';
   }
 

@@ -186,7 +186,18 @@ export class SessionController {
     // Ctrl combos — needed by both shell (Ctrl-C/L/A/E/U/K/W)
     // and engine (Ctrl-R/D/U/F/B/G)
     if (e.ctrlKey && !e.altKey && !e.metaKey && /^[a-z]$/i.test(e.key)) {
-      return 'Ctrl-' + e.key.toUpperCase();
+      const letter = e.key.toUpperCase();
+      // Ctrl-Q → Ctrl-W alias: browsers reserve Ctrl-W ("close tab") and
+      // intercept it before JavaScript can capture it.  Ctrl-Q is unused
+      // by both Vim and by browsers, so it serves as a safe alternative
+      // that reaches the engine as Ctrl-W.
+      if (letter === 'Q') return 'Ctrl-W';
+      return 'Ctrl-' + letter;
+    }
+
+    // Ctrl-Space (e.key is ' ' with ctrlKey — used as tmux prefix)
+    if (e.ctrlKey && !e.altKey && !e.metaKey && e.key === ' ') {
+      return 'Ctrl-Space';
     }
 
     // Ctrl + arrow keys (for tmux resize)

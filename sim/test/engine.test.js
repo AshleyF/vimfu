@@ -8,6 +8,7 @@
 import { describe, test, expect, beforeEach } from '@jest/globals';
 import { VimEngine, Mode } from '../src/engine.js';
 import { Screen } from '../src/screen.js';
+import { SessionController } from '../src/session_controller.js';
 
 const ROWS = 20;
 const COLS = 40;
@@ -331,5 +332,215 @@ describe('scrolling', () => {
     const engine = run(keys, lines.join('\n'));
     expect(engine.scrollTop).toBe(0);
     expect(engine.cursor.row).toBe(0);
+  });
+});
+
+// ─────────────────────────────────────────
+// Key Mappings
+// ─────────────────────────────────────────
+
+describe('key mappings', () => {
+  // ── parseKeySequence ──
+
+  test('parseKeySequence: simple chars', () => {
+    expect(VimEngine.parseKeySequence('jk')).toEqual(['j', 'k']);
+  });
+
+  test('parseKeySequence: <CR> <Esc> <Space>', () => {
+    expect(VimEngine.parseKeySequence('<CR>')).toEqual(['Enter']);
+    expect(VimEngine.parseKeySequence('<Esc>')).toEqual(['Escape']);
+    expect(VimEngine.parseKeySequence('<Space>')).toEqual([' ']);
+  });
+
+  test('parseKeySequence: <C-x> ctrl keys', () => {
+    expect(VimEngine.parseKeySequence('<C-w>')).toEqual(['Ctrl-W']);
+    expect(VimEngine.parseKeySequence('<C-r>')).toEqual(['Ctrl-R']);
+  });
+
+  test('parseKeySequence: <Leader> expands to leader char', () => {
+    expect(VimEngine.parseKeySequence('<Leader>w', ' ')).toEqual([' ', 'w']);
+    expect(VimEngine.parseKeySequence('<Leader>ff', '\\')).toEqual(['\\', 'f', 'f']);
+  });
+
+  test('parseKeySequence: mixed sequence', () => {
+    expect(VimEngine.parseKeySequence(':w<CR>')).toEqual([':', 'w', 'Enter']);
+  });
+
+  test('parseKeySequence: <BS> <Tab> <Del>', () => {
+    expect(VimEngine.parseKeySequence('<BS>')).toEqual(['Backspace']);
+    expect(VimEngine.parseKeySequence('<Tab>')).toEqual(['Tab']);
+    expect(VimEngine.parseKeySequence('<Del>')).toEqual(['Delete']);
+  });
+
+  test('parseKeySequence: <lt> <Bar> <Bslash>', () => {
+    expect(VimEngine.parseKeySequence('<lt>')).toEqual(['<']);
+    expect(VimEngine.parseKeySequence('<Bar>')).toEqual(['|']);
+    expect(VimEngine.parseKeySequence('<Bslash>')).toEqual(['\\']);
+  });
+
+  // ── addMapping / removeMapping ──
+
+  test('addMapping and removeMapping', () => {
+    const e = new VimEngine({ rows: ROWS, cols: COLS });
+    e.addMapping('n', 'Y', 'y$', true);
+    expect(e._mappings.n.size).toBe(1);
+    e.removeMapping('n', 'Y');
+    expect(e._mappings.n.size).toBe(0);
+  });
+
+  // ── Single-key noremap ──
+
+  test('nnoremap Y y$ — yank to end of line', () => {
+    const e = new VimEngine({ rows: ROWS, cols: COLS });
+    e.loadFile('hello world');
+    e.addMapping('n', 'Y', 'y$', true);
+    // Cursor at col 0. Y should yank "hello world" (y$), not the whole line (yy).
+    e.feedKey('Y');
+    // After y$, cursor stays at col 0, unnamed register has "hello world"
+    expect(e._unnamedReg).toBe('hello world');
+    expect(e._regType).toBe('char');
+  });
+
+  test('nnoremap without noremap — recursive mapping', () => {
+    const e = new VimEngine({ rows: ROWS, cols: COLS });
+    e.loadFile('abcdef');
+    // Map X → x (recursive), so X will do x (delete char under cursor)
+    e.addMapping('n', 'X', 'x', false);
+    e.feedKey('X');
+    expect(e.buffer.lines[0]).toBe('bcdef');
+  });
+
+  // ── Multi-key lhs ──
+
+  test('nnoremap jk to Escape (insert mode exit)', () => {
+    const e = new VimEngine({ rows: ROWS, cols: COLS });
+    e.loadFile('test');
+    e.addMapping('i', 'jk', '<Esc>', true);
+    // Enter insert mode
+    e.feedKey('i');
+    expect(e.mode).toBe(Mode.INSERT);
+    // Type j then k — should trigger the mapping and exit insert
+    e.feedKey('j');
+    e.feedKey('k');
+    expect(e.mode).toBe(Mode.NORMAL);
+  });
+
+  // ── :nmap / :nnoremap via command ──
+
+  test(':nnoremap Y y$ via ex command', () => {
+    const e = new VimEngine({ rows: ROWS, cols: COLS });
+    e.loadFile('hello world');
+    // Enter command mode and type the mapping command
+    for (const ch of ':nnoremap Y y$') e.feedKey(ch);
+    e.feedKey('Enter');
+    // Now Y should yank to end
+    e.feedKey('Y');
+    expect(e._unnamedReg).toBe('hello world');
+    expect(e._regType).toBe('char');
+  });
+
+  test(':nmap via ex command', () => {
+    const e = new VimEngine({ rows: ROWS, cols: COLS });
+    e.loadFile('abcdef');
+    for (const ch of ':nmap X x') e.feedKey(ch);
+    e.feedKey('Enter');
+    e.feedKey('X');
+    expect(e.buffer.lines[0]).toBe('bcdef');
+  });
+
+  test(':nunmap removes mapping', () => {
+    const e = new VimEngine({ rows: ROWS, cols: COLS });
+    e.loadFile('abcdef');
+    e.addMapping('n', 'X', 'x', false);
+    // Verify mapping works
+    e.feedKey('X');
+    expect(e.buffer.lines[0]).toBe('bcdef');
+    // Undo
+    e.feedKey('u');
+    expect(e.buffer.lines[0]).toBe('abcdef');
+    // Remove mapping
+    for (const ch of ':nunmap X') e.feedKey(ch);
+    e.feedKey('Enter');
+    // X should now do its default (delete char before cursor = dh)
+    e.feedKey('$'); // go to end
+    e.feedKey('X'); // default X = delete char before cursor
+    expect(e.buffer.lines[0]).toBe('abcdf');
+  });
+
+  // ── Leader key ──
+
+  test('leader mapping via addMapping', () => {
+    const e = new VimEngine({ rows: ROWS, cols: COLS });
+    e.loadFile('test line');
+    e._leaderKey = ' ';
+    // Map <Space>d to dd (delete line)
+    e.addMapping('n', '<Leader>d', 'dd', true);
+    e.feedKey(' ');
+    e.feedKey('d');
+    // Line should be deleted
+    expect(e.buffer.lines[0]).toBe('');
+    expect(e.buffer.lineCount).toBe(1);
+  });
+
+  test(':let mapleader via ex command', () => {
+    const e = new VimEngine({ rows: ROWS, cols: COLS });
+    for (const ch of ":let mapleader = ' '") e.feedKey(ch);
+    e.feedKey('Enter');
+    expect(e._leaderKey).toBe(' ');
+  });
+
+  // ── noremap prevents recursion ──
+
+  test('noremap does not recursively resolve', () => {
+    const e = new VimEngine({ rows: ROWS, cols: COLS });
+    e.loadFile('abc');
+    // Map a→b and b→x (both noremap). Pressing 'a' should do 'b' (NOT 'x')
+    e.addMapping('n', 'a', 'j', true);  // a → j (down)
+    e.addMapping('n', 'j', 'k', true);  // j → k (up) — but noremap, so pressing a→j should NOT chain to k
+    // Start at row 0, add lines
+    e.loadFile('line1\nline2\nline3');
+    e.feedKey('a'); // should do j (down), NOT k (up)
+    expect(e.cursor.row).toBe(1);
+  });
+});
+
+// ── Ctrl-Q → Ctrl-W browser alias ──
+
+describe('Ctrl-Q → Ctrl-W alias (SessionController)', () => {
+  /** Create a fake DOM KeyboardEvent-like object. */
+  function fakeEvent(key, { ctrlKey = false, altKey = false, metaKey = false } = {}) {
+    return { key, ctrlKey, altKey, metaKey };
+  }
+
+  /** We only need _translateKey, which has no session dependency. */
+  function translate(key, mods) {
+    const ctrl = new SessionController(/** @type {any} */(null));
+    return ctrl._translateKey(fakeEvent(key, mods));
+  }
+
+  test('Ctrl-Q translates to Ctrl-W', () => {
+    expect(translate('q', { ctrlKey: true })).toBe('Ctrl-W');
+  });
+
+  test('Ctrl-Q (uppercase) translates to Ctrl-W', () => {
+    expect(translate('Q', { ctrlKey: true })).toBe('Ctrl-W');
+  });
+
+  test('Ctrl-W still translates to Ctrl-W (unchanged)', () => {
+    expect(translate('w', { ctrlKey: true })).toBe('Ctrl-W');
+  });
+
+  test('other Ctrl keys are unaffected', () => {
+    expect(translate('r', { ctrlKey: true })).toBe('Ctrl-R');
+    expect(translate('d', { ctrlKey: true })).toBe('Ctrl-D');
+    expect(translate('a', { ctrlKey: true })).toBe('Ctrl-A');
+  });
+
+  test('plain q is not remapped', () => {
+    expect(translate('q', {})).toBe('q');
+  });
+
+  test('Ctrl-Space translates to Ctrl-Space', () => {
+    expect(translate(' ', { ctrlKey: true })).toBe('Ctrl-Space');
   });
 });

@@ -36,7 +36,7 @@
 
 // ── Constants ──
 
-const PREFIX_KEY = 'Ctrl-B';
+const DEFAULT_PREFIX_KEY = 'Ctrl-B';
 
 /** Border drawing characters */
 const BORDER = {
@@ -697,17 +697,25 @@ export class Tmux {
    * @param {number} [opts.rows=20] – total screen rows
    * @param {number} [opts.cols=80] – screen width
    * @param {function} opts.createPaneSession – (cols, rows) => SessionManager
+   * @param {object} [opts.fs] – virtual filesystem (for .tmux.conf)
    */
-  constructor({ rows = 20, cols = 80, createPaneSession } = {}) {
+  constructor({ rows = 20, cols = 80, createPaneSession, fs } = {}) {
     this.rows = rows;
     this.cols = cols;
     this._createPaneSession = createPaneSession;
+    this._fs = fs || null;
 
     /** Pane area = total rows minus 1 (status bar at bottom) */
     this._paneRows = rows - 1;
 
     /** Current interaction mode */
     this._mode = TmuxMode.NORMAL;
+
+    /** Configurable prefix key (default Ctrl-B) */
+    this._prefixKey = DEFAULT_PREFIX_KEY;
+
+    /** Key bindings: Map of key → { action: string, args?: any } */
+    this._bindings = new Map();
 
     /** All sessions */
     this.sessions = [];
@@ -755,6 +763,12 @@ export class Tmux {
 
     // Create first session
     this._createSession('0');
+
+    // Initialize default key bindings
+    this._initDefaultBindings();
+
+    // Load .tmux.conf from VFS (if available)
+    this._loadTmuxConf();
   }
 
   // ── Public API ──
@@ -929,7 +943,7 @@ export class Tmux {
 
   /** Normal mode: forward keys to active pane, watch for prefix */
   _handleNormal(key) {
-    if (key === PREFIX_KEY) {
+    if (key === this._prefixKey) {
       this._mode = TmuxMode.PREFIX;
       return;
     }
@@ -978,36 +992,55 @@ export class Tmux {
     }
   }
 
-  /** Prefix mode: handle tmux commands after Ctrl-b */
+  /** Prefix mode: handle tmux commands after prefix key */
   _handlePrefix(key) {
     this._mode = TmuxMode.NORMAL; // most commands return to normal
 
+    // Send-prefix: if the pressed key IS the prefix key, send it to the pane
+    if (key === this._prefixKey) {
+      if (this.activePane) {
+        this.activePane.feedKey(this._prefixKey);
+      }
+      return;
+    }
+
+    // Look up the binding
+    const binding = this._bindings.get(key);
+    if (binding) {
+      this._executePrefixAction(binding.action, binding.args);
+    }
+    // Unknown prefix key — ignore (mode already set to NORMAL)
+  }
+
+  /**
+   * Execute a prefix binding action by name.
+   * This is the single dispatch point for all prefix-key actions.
+   * @param {string} action – action identifier
+   * @param {*} [args] – optional arguments
+   */
+  _executePrefixAction(action, args) {
     const win = this.activeWindow;
     const sess = this.activeSession;
     if (!win || !sess) return;
 
-    switch (key) {
+    switch (action) {
       // ── Pane splitting ──
-      case '"':  // horizontal split (top/bottom)
+      case 'split-h':
         if (win._zoomed) win.toggleZoom();
-        if (!win.splitPane('h')) {
-          this._message = 'pane too small';
-        }
+        if (!win.splitPane('h')) this._message = 'pane too small';
         break;
-      case '%':  // vertical split (left/right)
+      case 'split-v':
         if (win._zoomed) win.toggleZoom();
-        if (!win.splitPane('v')) {
-          this._message = 'pane too small';
-        }
+        if (!win.splitPane('v')) this._message = 'pane too small';
         break;
 
       // ── Pane navigation ──
-      case 'ArrowUp':    case 'k': if (win._zoomed) win.toggleZoom(); win.navigatePane('Up');    break;
-      case 'ArrowDown':  case 'j': if (win._zoomed) win.toggleZoom(); win.navigatePane('Down');  break;
-      case 'ArrowLeft':  case 'h': if (win._zoomed) win.toggleZoom(); win.navigatePane('Left');  break;
-      case 'ArrowRight': case 'l': if (win._zoomed) win.toggleZoom(); win.navigatePane('Right'); break;
-      case 'o':  if (win._zoomed) win.toggleZoom(); win.nextPane();  break;
-      case ';':  // last pane
+      case 'nav-up':    if (win._zoomed) win.toggleZoom(); win.navigatePane('Up');    break;
+      case 'nav-down':  if (win._zoomed) win.toggleZoom(); win.navigatePane('Down');  break;
+      case 'nav-left':  if (win._zoomed) win.toggleZoom(); win.navigatePane('Left');  break;
+      case 'nav-right': if (win._zoomed) win.toggleZoom(); win.navigatePane('Right'); break;
+      case 'next-pane': if (win._zoomed) win.toggleZoom(); win.nextPane(); break;
+      case 'last-pane':
         if (win.lastActivePane && win.getPanes().includes(win.lastActivePane)) {
           if (win._zoomed) win.toggleZoom();
           const tmp = win.activePane;
@@ -1016,34 +1049,31 @@ export class Tmux {
         }
         break;
 
-      // ── Pane resize (Ctrl + arrow) ──
-      case 'Ctrl-Up':    win.resizePane('Up', 1);    break;
-      case 'Ctrl-Down':  win.resizePane('Down', 1);  break;
-      case 'Ctrl-Left':  win.resizePane('Left', 1);  break;
-      case 'Ctrl-Right': win.resizePane('Right', 1); break;
+      // ── Pane resize ──
+      case 'resize-up':    win.resizePane('Up', 1);    break;
+      case 'resize-down':  win.resizePane('Down', 1);  break;
+      case 'resize-left':  win.resizePane('Left', 1);  break;
+      case 'resize-right': win.resizePane('Right', 1); break;
 
       // ── Pane zoom ──
-      case 'z':
-        win.toggleZoom();
-        break;
+      case 'zoom': win.toggleZoom(); break;
 
       // ── Close pane ──
-      case 'x':
+      case 'close-pane':
         this._confirmTarget = win.activePane;
         this._mode = TmuxMode.CONFIRM;
         break;
 
       // ── Swap panes ──
-      case '{': if (win._zoomed) win.toggleZoom(); win.swapPanePrev(); break;
-      case '}': if (win._zoomed) win.toggleZoom(); win.swapPaneNext(); break;
+      case 'swap-prev': if (win._zoomed) win.toggleZoom(); win.swapPanePrev(); break;
+      case 'swap-next': if (win._zoomed) win.toggleZoom(); win.swapPaneNext(); break;
 
-      // ── Break pane to new window ──
-      case '!': {
+      // ── Break pane ──
+      case 'break-pane': {
         if (win._zoomed) win.toggleZoom();
         const pane = win.breakPane();
         if (pane) {
           const newWin = new TmuxWindow('zsh', win.rows, win.cols, this.activeSession._createPaneSession);
-          // Replace new window's default pane with the broken-out pane
           newWin.layout = new LayoutNode('leaf', pane);
           newWin.activePane = pane;
           newWin.layout.computeLayout(0, 0, newWin.cols, newWin.rows);
@@ -1057,90 +1087,328 @@ export class Tmux {
       }
 
       // ── Display pane numbers ──
-      case 'q':
+      case 'pane-numbers':
         this._mode = TmuxMode.PANE_NUMBERS;
         this._paneNumberTimer = Date.now();
         break;
 
       // ── Window management ──
-      case 'c':  // create window
-        sess.createWindow('zsh');
-        break;
-      case 'n':  // next window
-        sess.nextWindow();
-        break;
-      case 'p':  // previous window
-        sess.prevWindow();
-        break;
-      case ',':  // rename window
+      case 'new-window':   sess.createWindow('zsh');    break;
+      case 'next-window':  sess.nextWindow();           break;
+      case 'prev-window':  sess.prevWindow();           break;
+      case 'rename-window':
         this._renameInput = win.name;
         this._mode = TmuxMode.RENAME;
         break;
-      case '&':  // close window (with confirmation)
+      case 'close-window':
         this._confirmTarget = 'window';
         this._mode = TmuxMode.CONFIRM;
         break;
-      case 'w':  // window list (tree view)
-        // Flat list: index 0 = session row, 1+ = window rows
-        // Start with the active window highlighted
+      case 'window-list':
         this._windowListCursor = sess.activeWindowIndex + 1;
         this._mode = TmuxMode.WINDOW_LIST;
         break;
 
       // ── Window by number ──
-      case '0': case '1': case '2': case '3': case '4':
-      case '5': case '6': case '7': case '8': case '9':
-        sess.switchWindow(parseInt(key, 10));
+      case 'select-window':
+        if (args !== undefined) sess.switchWindow(args);
         break;
 
       // ── Last window ──
-      case 'L':
-        sess.lastWindow();
-        break;
+      case 'last-window': sess.lastWindow(); break;
 
       // ── Detach ──
-      case 'd':
-        this.detached = true;
-        break;
+      case 'detach': this.detached = true; break;
 
       // ── Copy mode ──
-      case '[':
-      case 'PageUp':   // PageUp also enters copy mode (common shortcut)
-        this._enterCopyMode();
-        break;
+      case 'copy-mode': this._enterCopyMode(); break;
 
       // ── Command prompt ──
-      case ':':
+      case 'command':
         this._commandInput = '';
         this._mode = TmuxMode.COMMAND;
         break;
 
       // ── Clock ──
-      case 't':
-        this._mode = TmuxMode.CLOCK;
-        break;
+      case 'clock': this._mode = TmuxMode.CLOCK; break;
 
       // ── Cycle layout ──
-      case ' ':
-        win.cycleLayout();
-        break;
+      case 'cycle-layout': win.cycleLayout(); break;
 
       // ── Help ──
-      case '?':
+      case 'help':
         this._helpScroll = 0;
         this._mode = TmuxMode.HELP;
         break;
 
-      // ── Send prefix key to pane (Ctrl-b Ctrl-b) ──
-      case PREFIX_KEY:
-        if (this.activePane) {
-          this.activePane.feedKey(PREFIX_KEY);
-        }
-        break;
-
       default:
-        // Unknown prefix command — ignore
         break;
+    }
+  }
+
+  /**
+   * Initialize the default tmux key bindings.
+   * These match standard tmux defaults (plus hjkl pane navigation).
+   */
+  _initDefaultBindings() {
+    const b = this._bindings;
+    b.clear();
+
+    // Pane splitting
+    b.set('"',  { action: 'split-h',   desc: 'Split pane horizontally' });
+    b.set('%',  { action: 'split-v',   desc: 'Split pane vertically' });
+
+    // Pane navigation
+    b.set('ArrowUp',    { action: 'nav-up',    desc: 'Navigate pane up' });
+    b.set('ArrowDown',  { action: 'nav-down',  desc: 'Navigate pane down' });
+    b.set('ArrowLeft',  { action: 'nav-left',  desc: 'Navigate pane left' });
+    b.set('ArrowRight', { action: 'nav-right', desc: 'Navigate pane right' });
+    b.set('k', { action: 'nav-up',    desc: 'Navigate pane up' });
+    b.set('j', { action: 'nav-down',  desc: 'Navigate pane down' });
+    b.set('h', { action: 'nav-left',  desc: 'Navigate pane left' });
+    b.set('l', { action: 'nav-right', desc: 'Navigate pane right' });
+    b.set('o', { action: 'next-pane', desc: 'Next pane' });
+    b.set(';', { action: 'last-pane', desc: 'Last pane' });
+
+    // Pane resize
+    b.set('Ctrl-Up',    { action: 'resize-up',    desc: 'Resize pane up' });
+    b.set('Ctrl-Down',  { action: 'resize-down',  desc: 'Resize pane down' });
+    b.set('Ctrl-Left',  { action: 'resize-left',  desc: 'Resize pane left' });
+    b.set('Ctrl-Right', { action: 'resize-right', desc: 'Resize pane right' });
+
+    // Pane zoom
+    b.set('z', { action: 'zoom',       desc: 'Zoom/unzoom pane' });
+
+    // Pane close/swap/break
+    b.set('x', { action: 'close-pane', desc: 'Close pane (confirm)' });
+    b.set('{', { action: 'swap-prev',  desc: 'Swap pane up' });
+    b.set('}', { action: 'swap-next',  desc: 'Swap pane down' });
+    b.set('!', { action: 'break-pane', desc: 'Break pane to new window' });
+    b.set('q', { action: 'pane-numbers', desc: 'Display pane numbers' });
+
+    // Window management
+    b.set('c', { action: 'new-window',    desc: 'Create new window' });
+    b.set('n', { action: 'next-window',   desc: 'Next window' });
+    b.set('p', { action: 'prev-window',   desc: 'Previous window' });
+    b.set(',', { action: 'rename-window', desc: 'Rename window' });
+    b.set('&', { action: 'close-window',  desc: 'Close window (confirm)' });
+    b.set('w', { action: 'window-list',   desc: 'Window list (chooser)' });
+
+    // Window by number
+    for (let i = 0; i <= 9; i++) {
+      b.set(String(i), { action: 'select-window', args: i, desc: `Switch to window ${i}` });
+    }
+
+    // Last window
+    b.set('L', { action: 'last-window', desc: 'Last window' });
+
+    // Detach
+    b.set('d', { action: 'detach', desc: 'Detach' });
+
+    // Copy mode
+    b.set('[',      { action: 'copy-mode', desc: 'Copy mode' });
+    b.set('PageUp', { action: 'copy-mode', desc: 'Copy mode (page up)' });
+
+    // Command prompt
+    b.set(':', { action: 'command', desc: 'Command prompt' });
+
+    // Clock, layout, help
+    b.set('t',     { action: 'clock',        desc: 'Clock' });
+    b.set(' ',     { action: 'cycle-layout', desc: 'Cycle layout' });
+    b.set('?',     { action: 'help',         desc: 'This help' });
+  }
+
+  /**
+   * Load and parse .tmux.conf from VFS.
+   * Supports a subset of tmux config:
+   *   - set -g prefix C-a          (change prefix key)
+   *   - bind x split-window -h     (bind key to command)
+   *   - unbind x                   (remove binding)
+   *   - bind h select-pane -L      (bind key to pane nav)
+   *   - set -g status-style ...    (ignored — styling not supported yet)
+   */
+  _loadTmuxConf() {
+    if (!this._fs) return;
+    const content = this._fs.read('.tmux.conf');
+    if (!content) return;
+
+    const lines = content.split('\n');
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line || line.startsWith('#')) continue;
+
+      // set -g prefix C-x  /  set-option -g prefix C-x
+      {
+        const m = line.match(/^set(?:-option)?\s+(?:-g\s+)?prefix\s+(\S+)/);
+        if (m) {
+          this._prefixKey = this._parseTmuxKey(m[1]);
+          continue;
+        }
+      }
+
+      // bind[-key] [-n] key command [args...]
+      {
+        const m = line.match(/^bind(?:-key)?\s+(.*)/);
+        if (m) {
+          this._parseBind(m[1]);
+          continue;
+        }
+      }
+
+      // unbind[-key] key
+      {
+        const m = line.match(/^unbind(?:-key)?\s+(\S+)/);
+        if (m) {
+          const key = this._parseTmuxKey(m[1]);
+          this._bindings.delete(key);
+          continue;
+        }
+      }
+    }
+  }
+
+  /**
+   * Parse a tmux key notation to internal key format.
+   * C-a → Ctrl-A,  C-Space → Ctrl-Space,  M-x → Alt-x, etc.
+   * @param {string} raw – tmux key notation
+   * @returns {string} – internal key name
+   */
+  _parseTmuxKey(raw) {
+    if (!raw) return raw;
+    // C-x notation → Ctrl-X
+    const cm = raw.match(/^C-(\S+)$/i);
+    if (cm) {
+      const k = cm[1];
+      if (k.toLowerCase() === 'space') return 'Ctrl-Space';
+      // Single letter: Ctrl-A, Ctrl-B, etc.
+      return 'Ctrl-' + k.toUpperCase();
+    }
+    // M-x notation → Alt-x (pass through as-is for now)
+    const mm = raw.match(/^M-(\S+)$/i);
+    if (mm) {
+      return 'Alt-' + mm[1];
+    }
+    // Named keys
+    const namedKeys = {
+      'Space': ' ',
+      'Enter': 'Enter',
+      'Escape': 'Escape',
+      'BSpace': 'Backspace',
+      'Tab': 'Tab',
+      'Up': 'ArrowUp',
+      'Down': 'ArrowDown',
+      'Left': 'ArrowLeft',
+      'Right': 'ArrowRight',
+      'PageUp': 'PageUp',
+      'PageDown': 'PageDown',
+    };
+    if (namedKeys[raw]) return namedKeys[raw];
+    // Bare single character
+    return raw;
+  }
+
+  /**
+   * Parse a bind command's arguments and add the binding.
+   * Format: [-n] key command [args...]
+   * -n means bind in root table (no prefix needed) — we don't support
+   * root-table bindings, so -n is accepted but the bind goes into prefix table.
+   * @param {string} argStr – everything after "bind "
+   */
+  _parseBind(argStr) {
+    const parts = argStr.trim().split(/\s+/);
+    let idx = 0;
+
+    // Skip -n / -T flags (we only support prefix table)
+    while (idx < parts.length && parts[idx].startsWith('-')) {
+      if (parts[idx] === '-T' || parts[idx] === '-t') idx++; // skip flag arg too
+      idx++;
+    }
+
+    if (idx >= parts.length) return;
+    const key = this._parseTmuxKey(parts[idx]);
+    idx++;
+
+    if (idx >= parts.length) return;
+    const command = parts[idx];
+    const cmdArgs = parts.slice(idx + 1);
+
+    // Map tmux commands to our internal actions
+    const action = this._tmuxCommandToAction(command, cmdArgs);
+    if (action) {
+      this._bindings.set(key, action);
+    }
+  }
+
+  /**
+   * Map a tmux command + args to an internal action descriptor.
+   * @param {string} cmd – tmux command name
+   * @param {string[]} args – arguments
+   * @returns {object|null} – { action, desc, args? } or null if unsupported
+   */
+  _tmuxCommandToAction(cmd, args) {
+    switch (cmd) {
+      case 'split-window':
+      case 'splitw': {
+        const horiz = args.includes('-h');
+        return { action: horiz ? 'split-v' : 'split-h', desc: horiz ? 'Split pane vertically' : 'Split pane horizontally' };
+      }
+      case 'select-pane':
+      case 'selectp': {
+        if (args.includes('-U')) return { action: 'nav-up',    desc: 'Navigate pane up' };
+        if (args.includes('-D')) return { action: 'nav-down',  desc: 'Navigate pane down' };
+        if (args.includes('-L')) return { action: 'nav-left',  desc: 'Navigate pane left' };
+        if (args.includes('-R')) return { action: 'nav-right', desc: 'Navigate pane right' };
+        return null;
+      }
+      case 'resize-pane':
+      case 'resizep': {
+        if (args.includes('-U')) return { action: 'resize-up',    desc: 'Resize pane up' };
+        if (args.includes('-D')) return { action: 'resize-down',  desc: 'Resize pane down' };
+        if (args.includes('-L')) return { action: 'resize-left',  desc: 'Resize pane left' };
+        if (args.includes('-R')) return { action: 'resize-right', desc: 'Resize pane right' };
+        return null;
+      }
+      case 'next-pane':         return { action: 'next-pane',     desc: 'Next pane' };
+      case 'last-pane':         return { action: 'last-pane',     desc: 'Last pane' };
+      case 'swap-pane': {
+        if (args.includes('-U')) return { action: 'swap-prev', desc: 'Swap pane up' };
+        if (args.includes('-D')) return { action: 'swap-next', desc: 'Swap pane down' };
+        return { action: 'swap-next', desc: 'Swap pane' };
+      }
+      case 'break-pane':        return { action: 'break-pane',    desc: 'Break pane to window' };
+      case 'display-panes':     return { action: 'pane-numbers',  desc: 'Display pane numbers' };
+      case 'new-window':
+      case 'neww':              return { action: 'new-window',    desc: 'Create new window' };
+      case 'next-window':
+      case 'next':              return { action: 'next-window',   desc: 'Next window' };
+      case 'previous-window':
+      case 'prev':              return { action: 'prev-window',   desc: 'Previous window' };
+      case 'rename-window':
+      case 'renamew':           return { action: 'rename-window', desc: 'Rename window' };
+      case 'kill-window':
+      case 'killw':             return { action: 'close-window',  desc: 'Close window' };
+      case 'choose-tree':
+      case 'choose-window':     return { action: 'window-list',   desc: 'Window list' };
+      case 'last-window':       return { action: 'last-window',   desc: 'Last window' };
+      case 'detach-client':
+      case 'detach':            return { action: 'detach',        desc: 'Detach' };
+      case 'copy-mode':         return { action: 'copy-mode',     desc: 'Copy mode' };
+      case 'command-prompt':    return { action: 'command',       desc: 'Command prompt' };
+      case 'clock-mode':        return { action: 'clock',         desc: 'Clock' };
+      case 'next-layout':       return { action: 'cycle-layout',  desc: 'Cycle layout' };
+      case 'list-keys':         return { action: 'help',          desc: 'Help' };
+      case 'resize-pane':
+        if (args.includes('-Z')) return { action: 'zoom',         desc: 'Zoom/unzoom pane' };
+        return null;
+      case 'confirm-before':
+      case 'confirm': {
+        // confirm-before -p "..." kill-pane → close-pane
+        if (args.some(a => a.includes('kill-pane')))   return { action: 'close-pane', desc: 'Close pane (confirm)' };
+        if (args.some(a => a.includes('kill-window'))) return { action: 'close-window', desc: 'Close window (confirm)' };
+        return null;
+      }
+      case 'send-prefix':      return null; // handled separately by _handlePrefix
+      default:                  return null;
     }
   }
 
@@ -1530,6 +1798,32 @@ export class Tmux {
       case 'lsk':
         this._helpScroll = 0;
         this._mode = TmuxMode.HELP;
+        break;
+      case 'bind':
+      case 'bind-key':
+        this._parseBind(args.join(' '));
+        break;
+      case 'unbind':
+      case 'unbind-key': {
+        if (args[0]) {
+          const key = this._parseTmuxKey(args[0]);
+          this._bindings.delete(key);
+        }
+        break;
+      }
+      case 'set':
+      case 'set-option': {
+        // set [-g] prefix C-x
+        const filtered = args.filter(a => a !== '-g');
+        if (filtered[0] === 'prefix' && filtered[1]) {
+          this._prefixKey = this._parseTmuxKey(filtered[1]);
+        }
+        break;
+      }
+      case 'source':
+      case 'source-file':
+        // Reload .tmux.conf
+        this._loadTmuxConf();
         break;
       default:
         this._message = `unknown command: ${command}`;
@@ -2032,38 +2326,30 @@ export class Tmux {
 
   /** Render help overlay */
   _renderHelpOverlay(frameLines, t) {
+    // Build help lines dynamically from current bindings
+    const prefixLabel = this._prefixKey === DEFAULT_PREFIX_KEY ? 'Ctrl-b' : this._prefixKey;
     const helpLines = [
-      'tmux key bindings (prefix: Ctrl-b)',
+      `tmux key bindings (prefix: ${prefixLabel})`,
       '───────────────────────────────────',
-      '  %     Split pane vertically',
-      '  "     Split pane horizontally',
-      '  h/j/k/l Navigate panes (←↓↑→)',
-      '  ←↑↓→  Navigate panes',
-      '  o     Next pane',
-      '  ;     Last pane',
-      '  z     Zoom/unzoom pane',
-      '  x     Close pane (confirm)',
-      '  {     Swap pane up',
-      '  }     Swap pane down',
-      '  !     Break pane to new window',
-      '  q     Display pane numbers',
-      '  c     Create new window',
-      '  n     Next window',
-      '  p     Previous window',
-      '  0-9   Switch to window N',
-      '  L     Last window',
-      '  ,     Rename window',
-      '  &     Close window',
-      '  w     Window list (chooser)',
-      '  Space Cycle layout',
-      '  d     Detach',
-      '  [     Copy mode',
-      '  t     Clock',
-      '  :     Command prompt',
-      '  ?     This help',
-      '',
-      '  Press q to exit help',
     ];
+
+    // Group bindings by category for readable output
+    const entries = [...this._bindings.entries()];
+    for (const [key, binding] of entries) {
+      // Format the key for display
+      let displayKey = key;
+      if (key === ' ') displayKey = 'Space';
+      else if (key === 'ArrowUp') displayKey = '↑';
+      else if (key === 'ArrowDown') displayKey = '↓';
+      else if (key === 'ArrowLeft') displayKey = '←';
+      else if (key === 'ArrowRight') displayKey = '→';
+
+      const line = `  ${displayKey.padEnd(8)} ${binding.desc || binding.action}`;
+      helpLines.push(line);
+    }
+
+    helpLines.push('');
+    helpLines.push('  Press q to exit help');
 
     const maxWidth = Math.min(this.cols - 2, 40);
     const boxLeft = Math.floor((this.cols - maxWidth) / 2);

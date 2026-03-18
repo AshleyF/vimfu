@@ -1005,6 +1005,10 @@ export class Screen {
     const savedMode = engine.mode;
     const savedVS = engine._visualStart ? { ...engine._visualStart } : null;
     const savedDesiredCol = engine._desiredCol;
+    const savedCommandLine = engine.commandLine;
+    const savedStickyCmd = engine._stickyCommandLine;
+    const savedCmdLineNrLen = engine._commandLineLineNrLen;
+    const savedEchoMessage = engine._echoMessage;
 
     for (let wi = 0; wi < numWindows; wi++) {
       const win = engine._windows[wi];
@@ -1091,6 +1095,10 @@ export class Screen {
     engine.mode = savedMode;
     engine._visualStart = savedVS;
     engine._desiredCol = savedDesiredCol;
+    engine.commandLine = savedCommandLine;
+    engine._stickyCommandLine = savedStickyCmd;
+    engine._commandLineLineNrLen = savedCmdLineNrLen;
+    engine._echoMessage = savedEchoMessage;
 
     // Add shared command line at the bottom
     const cmdText = this._padOrTruncate(engine.commandLine || '', cols);

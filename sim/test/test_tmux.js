@@ -58,6 +58,7 @@ function newTmux(opts = {}) {
   return new Tmux({
     rows: opts.rows || ROWS,
     cols: opts.cols || COLS,
+    fs: vfs,
     createPaneSession: createPaneSessionFactory(vfs),
   });
 }
@@ -1235,6 +1236,232 @@ tests.prefix_escape_returns_to_normal = () => {
   assertEqual(t._mode, TmuxMode.PREFIX, 'in prefix mode');
   t.feedKey('Escape');
   assertEqual(t._mode, TmuxMode.NORMAL, 'back to normal');
+};
+
+// ── Key Binding Tests ──
+
+tests.default_bindings_populated = () => {
+  const t = newTmux();
+  // Should have default bindings for common keys
+  assert(t._bindings.has('"'), 'should have " binding');
+  assert(t._bindings.has('%'), 'should have % binding');
+  assert(t._bindings.has('d'), 'should have d binding');
+  assert(t._bindings.has('c'), 'should have c binding');
+  assert(t._bindings.has('z'), 'should have z binding');
+  assert(t._bindings.has(':'), 'should have : binding');
+  assert(t._bindings.has('?'), 'should have ? binding');
+  assertEqual(t._bindings.get('"').action, 'split-h', '" action');
+  assertEqual(t._bindings.get('%').action, 'split-v', '% action');
+  assertEqual(t._bindings.get('d').action, 'detach', 'd action');
+};
+
+tests.default_prefix_key = () => {
+  const t = newTmux();
+  assertEqual(t._prefixKey, 'Ctrl-B', 'default prefix is Ctrl-B');
+  // Ctrl-B should enter prefix mode
+  t.feedKey('Ctrl-B');
+  assertEqual(t._mode, TmuxMode.PREFIX, 'Ctrl-B enters prefix mode');
+};
+
+tests.change_prefix_via_command = () => {
+  const t = newTmux();
+  // Change prefix to Ctrl-A via command prompt
+  t.feedKey('Ctrl-B');
+  t.feedKey(':');
+  feedString(t, 'set -g prefix C-a');
+  t.feedKey('Enter');
+  assertEqual(t._prefixKey, 'Ctrl-A', 'prefix changed to Ctrl-A');
+
+  // Old prefix should no longer trigger prefix mode
+  t.feedKey('Ctrl-B');
+  assertEqual(t._mode, TmuxMode.NORMAL, 'Ctrl-B no longer triggers prefix');
+
+  // New prefix should work
+  t.feedKey('Ctrl-A');
+  assertEqual(t._mode, TmuxMode.PREFIX, 'Ctrl-A enters prefix mode');
+};
+
+tests.change_prefix_via_tmux_conf = () => {
+  const vfs = new VirtualFS({ persist: false });
+  vfs.write('.tmux.conf', 'set -g prefix C-Space\n');
+  const t = newTmux({ vfs });
+
+  assertEqual(t._prefixKey, 'Ctrl-Space', 'prefix loaded from .tmux.conf');
+  // Ctrl-Space should enter prefix mode
+  t.feedKey('Ctrl-Space');
+  assertEqual(t._mode, TmuxMode.PREFIX, 'Ctrl-Space enters prefix mode');
+};
+
+tests.bind_key_via_command = () => {
+  const t = newTmux();
+  // Bind 'e' to next-window via command prompt
+  assert(!t._bindings.has('e'), 'e should not be bound initially');
+
+  t.feedKey('Ctrl-B');
+  t.feedKey(':');
+  feedString(t, 'bind e next-window');
+  t.feedKey('Enter');
+
+  assert(t._bindings.has('e'), 'e should now be bound');
+  assertEqual(t._bindings.get('e').action, 'next-window', 'e action');
+};
+
+tests.unbind_key_via_command = () => {
+  const t = newTmux();
+  assert(t._bindings.has('"'), '" should be bound initially');
+
+  t.feedKey('Ctrl-B');
+  t.feedKey(':');
+  feedString(t, 'unbind "');
+  t.feedKey('Enter');
+
+  assert(!t._bindings.has('"'), '" should be unbound');
+};
+
+tests.bind_key_via_tmux_conf = () => {
+  const vfs = new VirtualFS({ persist: false });
+  vfs.write('.tmux.conf', [
+    '# Custom bindings',
+    'bind v split-window -h',
+    'bind s split-window',
+    'bind e next-window',
+  ].join('\n'));
+  const t = newTmux({ vfs });
+
+  // Custom bindings should be present
+  assert(t._bindings.has('v'), 'v should be bound');
+  assertEqual(t._bindings.get('v').action, 'split-v', 'v = vertical split');
+  assert(t._bindings.has('s'), 's should be bound');
+  assertEqual(t._bindings.get('s').action, 'split-h', 's = horizontal split');
+  assert(t._bindings.has('e'), 'e should be bound');
+  assertEqual(t._bindings.get('e').action, 'next-window', 'e = next window');
+};
+
+tests.unbind_key_via_tmux_conf = () => {
+  const vfs = new VirtualFS({ persist: false });
+  vfs.write('.tmux.conf', 'unbind "\n');
+  const t = newTmux({ vfs });
+
+  assert(!t._bindings.has('"'), '" should be unbound by .tmux.conf');
+  // Other defaults should still be present
+  assert(t._bindings.has('%'), '% should still be bound');
+};
+
+tests.send_prefix_on_double_press = () => {
+  const t = newTmux();
+  // Split so we can verify the key goes through to the pane
+  t.feedKey('Ctrl-B');
+  t.feedKey('"');
+
+  // Enter prefix then press prefix again — should send Ctrl-B to pane
+  t.feedKey('Ctrl-B');
+  assertEqual(t._mode, TmuxMode.PREFIX, 'in prefix mode');
+  t.feedKey('Ctrl-B');
+  assertEqual(t._mode, TmuxMode.NORMAL, 'back to normal after double prefix');
+};
+
+tests.tmux_conf_with_select_pane_bindings = () => {
+  const vfs = new VirtualFS({ persist: false });
+  vfs.write('.tmux.conf', [
+    'bind h select-pane -L',
+    'bind j select-pane -D',
+    'bind k select-pane -U',
+    'bind l select-pane -R',
+  ].join('\n'));
+  const t = newTmux({ vfs });
+
+  assertEqual(t._bindings.get('h').action, 'nav-left', 'h = nav left');
+  assertEqual(t._bindings.get('j').action, 'nav-down', 'j = nav down');
+  assertEqual(t._bindings.get('k').action, 'nav-up', 'k = nav up');
+  assertEqual(t._bindings.get('l').action, 'nav-right', 'l = nav right');
+};
+
+tests.tmux_conf_comments_and_blank_lines = () => {
+  const vfs = new VirtualFS({ persist: false });
+  vfs.write('.tmux.conf', [
+    '# This is a comment',
+    '',
+    '  # Indented comment',
+    'set -g prefix C-a',
+    '',
+    '# Another comment',
+  ].join('\n'));
+  const t = newTmux({ vfs });
+
+  assertEqual(t._prefixKey, 'Ctrl-A', 'should parse past comments/blanks');
+};
+
+tests.parse_tmux_key_notation = () => {
+  const t = newTmux();
+
+  // Test _parseTmuxKey
+  assertEqual(t._parseTmuxKey('C-a'), 'Ctrl-A', 'C-a');
+  assertEqual(t._parseTmuxKey('C-b'), 'Ctrl-B', 'C-b');
+  assertEqual(t._parseTmuxKey('C-Space'), 'Ctrl-Space', 'C-Space');
+  assertEqual(t._parseTmuxKey('Up'), 'ArrowUp', 'Up');
+  assertEqual(t._parseTmuxKey('Down'), 'ArrowDown', 'Down');
+  assertEqual(t._parseTmuxKey('Left'), 'ArrowLeft', 'Left');
+  assertEqual(t._parseTmuxKey('Right'), 'ArrowRight', 'Right');
+  assertEqual(t._parseTmuxKey('x'), 'x', 'plain char');
+  assertEqual(t._parseTmuxKey('"'), '"', 'double quote');
+  assertEqual(t._parseTmuxKey('Space'), ' ', 'Space');
+};
+
+tests.source_file_reloads_conf = () => {
+  const vfs = new VirtualFS({ persist: false });
+  const t = newTmux({ vfs });
+
+  assertEqual(t._prefixKey, 'Ctrl-B', 'default prefix before source');
+
+  // Write a config after tmux started
+  vfs.write('.tmux.conf', 'set -g prefix C-a\n');
+
+  // Source it via command prompt
+  t.feedKey('Ctrl-B');
+  t.feedKey(':');
+  feedString(t, 'source .tmux.conf');
+  t.feedKey('Enter');
+
+  assertEqual(t._prefixKey, 'Ctrl-A', 'prefix updated after source');
+};
+
+tests.help_overlay_shows_prefix = () => {
+  const vfs = new VirtualFS({ persist: false });
+  vfs.write('.tmux.conf', 'set -g prefix C-Space\n');
+  const t = newTmux({ vfs });
+
+  // Open help
+  t.feedKey('Ctrl-Space');
+  t.feedKey('?');
+  assertEqual(t._mode, TmuxMode.HELP, 'in help mode');
+
+  const frame = t.renderFrame();
+  const allText = getFrameText(frame).join('\n');
+  assertIncludes(allText, 'Ctrl-Space', 'help shows custom prefix');
+};
+
+tests.bound_key_executes_action = () => {
+  const t = newTmux();
+  assertEqual(t.activeSession.windows.length, 1, 'start with 1 window');
+
+  // Use prefix + c to create window (via binding)
+  t.feedKey('Ctrl-B');
+  t.feedKey('c');
+  assertEqual(t.activeSession.windows.length, 2, 'should have 2 windows');
+};
+
+tests.rebound_key_executes_new_action = () => {
+  const vfs = new VirtualFS({ persist: false });
+  // Rebind 'c' from new-window to detach
+  vfs.write('.tmux.conf', 'bind c detach-client\n');
+  const t = newTmux({ vfs });
+
+  assertEqual(t.detached, false, 'not detached initially');
+  t.feedKey('Ctrl-B');
+  t.feedKey('c');
+  assertEqual(t.detached, true, 'c now detaches');
+  // Should NOT have created a new window
+  assertEqual(t.activeSession.windows.length, 1, 'still 1 window');
 };
 
 // ── Run ──

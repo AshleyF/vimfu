@@ -205,6 +205,7 @@ export class SessionManager {
       this._tmux = new Tmux({
         rows: this.rows,
         cols: this.cols,
+        fs,
         createPaneSession: (cols, rows) => {
           const sm = new SessionManager({
             rows,
@@ -272,7 +273,106 @@ export class SessionManager {
       this.engine._stickyCommandLine = true;
     }
 
+    // Load init.lua config from VFS (if it exists)
+    this._loadInitLua();
+
     this.mode = 'vim';
+  }
+
+  /**
+   * @private – Load and parse init.lua from VFS.
+   * Supports a subset of Neovim Lua config:
+   *   - vim.g.mapleader = " "
+   *   - vim.keymap.set("n", "Y", "y$", { noremap = true })
+   *   - vim.keymap.set("n", "<leader>w", ":w<CR>")
+   *   - vim.keymap.set({"n", "v"}, ...)
+   *   - vim.opt.number = true / vim.o.scrolloff = 8
+   *   - vim.cmd("nnoremap Y y$") / vim.cmd("set number")
+   */
+  _loadInitLua() {
+    if (!this.engine || !this.fs) return;
+    const content = this.fs.read('init.lua');
+    if (!content) return;
+
+    const lines = content.split('\n');
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line || line.startsWith('--')) continue; // skip blank/comment lines
+
+      // vim.g.mapleader = "x" or vim.g.mapleader = 'x'
+      {
+        const m = line.match(/^vim\.g\.mapleader\s*=\s*['"](.)['"]/);
+        if (m) {
+          this.engine._leaderKey = m[1];
+          continue;
+        }
+      }
+
+      // vim.keymap.set("n", "lhs", "rhs") or with opts { noremap = true }
+      // Also: vim.keymap.set({"n", "v"}, "lhs", "rhs", { ... })
+      {
+        const m = line.match(
+          /^vim\.keymap\.set\(\s*(\{[^}]*\}|"[^"]*"|'[^']*')\s*,\s*("[^"]*"|'[^']*')\s*,\s*("[^"]*"|'[^']*')(?:\s*,\s*(\{[^}]*\}))?\s*\)/
+        );
+        if (m) {
+          // Parse mode(s)
+          let modesRaw = m[1].trim();
+          let modes;
+          if (modesRaw.startsWith('{')) {
+            // {"n", "v"} → ['n', 'v']
+            modes = [...modesRaw.matchAll(/["']([^"']+)["']/g)].map(x => x[1]);
+          } else {
+            modes = [modesRaw.replace(/^["']|["']$/g, '')];
+          }
+          const lhs = m[2].replace(/^["']|["']$/g, '');
+          const rhs = m[3].replace(/^["']|["']$/g, '');
+          const optsStr = m[4] || '';
+          // Default: noremap=true in Neovim's vim.keymap.set (it's the default behavior)
+          // unless { remap = true } is specified
+          let noremap = true;
+          if (optsStr.includes('remap') && optsStr.match(/remap\s*=\s*true/)) {
+            noremap = false;
+          }
+          for (const mode of modes) {
+            this.engine.addMapping(mode, lhs, rhs, noremap);
+          }
+          continue;
+        }
+      }
+
+      // vim.opt.X = Y or vim.o.X = Y — proxy to :set
+      {
+        const m = line.match(/^vim\.(?:opt|o)\.(\w+)\s*=\s*(.+)/);
+        if (m) {
+          const opt = m[1];
+          let val = m[2].trim();
+          // Boolean: true/false → set X / set noX
+          if (val === 'true') {
+            this.engine._executeSet('set ' + opt);
+          } else if (val === 'false') {
+            this.engine._executeSet('set no' + opt);
+          } else {
+            // Numeric or string
+            val = val.replace(/^["']|["']$/g, '');
+            this.engine._executeSet('set ' + opt + '=' + val);
+          }
+          continue;
+        }
+      }
+
+      // vim.cmd("...") — execute as ex command
+      {
+        const m = line.match(/^vim\.cmd\(\s*["'](.+)["']\s*\)/);
+        if (m) {
+          const exCmd = m[1];
+          // Feed it through the engine's command execution
+          this.engine._searchInput = exCmd;
+          this.engine.commandLine = ':' + exCmd;
+          this.engine._executeCommand();
+          continue;
+        }
+      }
+    }
   }
 
   /**

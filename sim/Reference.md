@@ -106,7 +106,17 @@ Exhaustive reference of every key, command, and feature supported.
 | `Ctrl-A` | ✅ | Increment number at/after cursor |
 | `Ctrl-X` | ✅ | Decrement number at/after cursor |
 | `Ctrl-G` | ✅ | Show file info (name, lines, bytes) |
+| `Ctrl-Z` | ❌ | Suspend Vim (Unix only — not implemented, see note below) |
 | `ga` | ✅ | Show ASCII/hex/octal of char under cursor |
+
+> **`Ctrl-Z` note:** In real Vim on Unix (Linux/macOS), `Ctrl-Z` sends SIGTSTP to
+> suspend the editor and return to the shell. Typing `fg` at the shell prompt
+> resumes Vim exactly where you left off. This is a Unix job control feature —
+> it does not work on Windows. The simulator does not implement `Ctrl-Z` because
+> the project was developed on Windows (ConPTY) where ground truth captures for
+> suspend/resume could not be generated. The cross-platform alternative is `:!cmd`
+> which runs a shell command from within Vim without suspending.
+
 | `gd` | ✅ | Go to local declaration of word under cursor |
 | `gD` | ✅ | Go to global declaration (first occurrence of word in file) |
 | `g8` | ✅ | Show hex value of character under cursor |
@@ -192,7 +202,7 @@ linewise text (e.g. from `yy`, `dd`), the cursor lands at the **beginning**
 | `Ctrl-D` | ✅ | Half-page down (sticky count) |
 | `Ctrl-U` | ✅ | Half-page up (sticky count) |
 | `Ctrl-F` | ✅ | Full page forward |
-| `Ctrl-B` | ✅ | Full page backward |
+| `Ctrl-B` | ✅ | Full page backward (⚠️ conflicts with tmux prefix — see Tmux section) |
 | `Ctrl-E` | ✅ | Scroll viewport down 1 line |
 | `Ctrl-Y` | ✅ | Scroll viewport up 1 line |
 | `zz` | ✅ | Center current line |
@@ -268,6 +278,16 @@ or different buffers with independent cursor and scroll positions.
 | `Ctrl-W o` | Close all other windows |
 | `Ctrl-W q` | Close current window |
 | `Ctrl-W T` | Move current window to a new tab |
+
+> **Browser limitation:** Desktop browsers reserve `Ctrl-W` as "close tab" and
+> intercept the keystroke before JavaScript can capture it. The simulator's
+> `preventDefault()` call is ignored for this browser-reserved shortcut.
+>
+> **Workaround:** Use `Ctrl-Q` as a drop-in replacement — the simulator maps
+> `Ctrl-Q` → `Ctrl-W` so every command in the table above works by pressing
+> `Ctrl-Q` instead (e.g. `Ctrl-Q s` to split, `Ctrl-Q w` to cycle). All
+> commands also work via the **virtual keyboard** (touch/mobile) or through
+> their ex-command equivalents (`:sp`, `:vsp`, `:close`, `:only`).
 
 ### Buffer List
 
@@ -350,15 +370,25 @@ Misspelled words are highlighted with `SpellBad` (red foreground).
 
 | Key | Description |
 |---|---|
-| `m{a-z}` | Set mark |
+| `m{a-z}` | Set local mark (buffer-scoped) |
+| `m{A-Z}` | Set global mark (cross-file) — ❌ not in simulator |
 | `'{a-z}` | Jump to mark line (first non-blank) |
+| `'{A-Z}` | Jump to global mark line, switching files — ❌ not in simulator |
 | `` `{a-z} `` | Jump to exact mark position |
+| `` `{A-Z} `` | Jump to exact global mark position, switching files — ❌ not in simulator |
 | `` `. `` / `'.` | Jump to last change position |
 | ` `` ` `` ` / `''` | Jump to position before last jump |
 | `` `< `` / `'<` | Jump to start of last visual selection |
 | `` `> `` / `'>` | Jump to end of last visual selection |
 
 Works with operators: `d'a` (linewise), `` d`a `` (charwise), `d'.` (delete to last change), etc.
+
+> **Global marks (`m{A-Z}`)** are one of Vim's best navigation tools for real
+> codebases. Mark key classes, functions, and config files with uppercase letters
+> (`mA`, `mB`, …) and jump to them from any file with `'A`, `'B`, etc. They
+> persist across `:e` file switches and across sessions (saved in ShaDa/viminfo).
+> The simulator only supports local marks (`a`–`z`) because it operates on a
+> single buffer; practice global marks in real Neovim.
 
 ### Jump List
 
@@ -443,6 +473,40 @@ Wraps around file. Supports operator + search: `d/foo↵` deletes to match.
 | Key | Equivalent | Description |
 |---|---|---|
 | `Ctrl-H` | `h` | Move left |
+
+### Redundant & Shortcut Keys
+
+Some normal mode keys are truly redundant (identical to another key) or are shortcut aliases for common two-key combos:
+
+**Truly redundant (interchangeable):**
+
+| Key | Same As | Notes |
+|---|---|---|
+| `_` | `^` | First non-blank. With count, same as `+`. Prime remap target. |
+| `Space` | `l` | Move right. Universally remapped to Leader. |
+| `BS`/`Ctrl-H` | `h` | Move left (in normal mode). |
+| `+` | `Enter` | Next line, first non-blank. |
+| `0` | `|` (no count) | Column 1. But `|` also takes a count (`25|`). |
+
+**Shortcut aliases (single key for a two-key combo):**
+
+| Key | Expands To |
+|---|---|
+| `s` | `cl` |
+| `S` | `cc` |
+| `C` | `c$` |
+| `D` | `d$` |
+| `x` | `dl` |
+| `X` | `dh` |
+| `ZZ` | `:wq` |
+| `ZQ` | `:q!` |
+
+**Neovim-specific changes:**
+
+| Key | Classic Vim | Neovim |
+|---|---|---|
+| `Y` | `yy` (inconsistent with `D`/`C`) | Remapped to `y$` by default since 0.6 |
+| `Q` | Enter Ex mode | Replay last recorded macro (`@@`) |
 | `Ctrl-J` | `j` | Move down |
 | `Ctrl-M` | `+` | Next line, first non-blank |
 | `Ctrl-N` | `j` | Move down |
@@ -1324,6 +1388,93 @@ Output shown in a "Press ENTER or type command to continue" prompt.
 Dismissal keys: `Enter` or `Escape` (return to normal mode), or `:` (dismiss
 and enter command mode). All other keys are ignored.
 
+### Key Mappings
+
+The simulator supports Vim key mappings — both via ex commands and `init.lua`.
+
+#### Ex Commands
+
+| Command | Description |
+|---|---|
+| `:map {lhs} {rhs}` | Map `{lhs}` → `{rhs}` in normal, visual, operator-pending (recursive) |
+| `:nmap {lhs} {rhs}` | Map in normal mode (recursive) |
+| `:imap {lhs} {rhs}` | Map in insert mode (recursive) |
+| `:vmap {lhs} {rhs}` | Map in visual mode (recursive) |
+| `:xmap {lhs} {rhs}` | Map in visual-only mode (recursive) |
+| `:noremap {lhs} {rhs}` | Map in normal+visual+op (non-recursive) |
+| `:nnoremap {lhs} {rhs}` | Map in normal mode (non-recursive) |
+| `:inoremap {lhs} {rhs}` | Map in insert mode (non-recursive) |
+| `:vnoremap {lhs} {rhs}` | Map in visual mode (non-recursive) |
+| `:unmap {lhs}` | Remove mapping from normal+visual+op |
+| `:nunmap {lhs}` | Remove normal mode mapping |
+| `:iunmap {lhs}` | Remove insert mode mapping |
+| `:mapclear` | Remove all mappings |
+| `:nmapclear` | Remove all normal mode mappings |
+| `:map` | List all mappings |
+| `:nmap` | List normal mode mappings |
+| `:let mapleader = ' '` | Set the leader key |
+
+**Recursive vs non-recursive:** `:nmap` mappings allow the `{rhs}` to trigger
+other mappings. `:nnoremap` mappings execute `{rhs}` literally, bypassing
+further mapping resolution. Always prefer `noremap` unless you specifically
+need chaining.
+
+#### Key Notation
+
+Key sequences in `{lhs}` and `{rhs}` support Vim-style angle-bracket notation:
+
+| Notation | Key |
+|---|---|
+| `<CR>` / `<Enter>` | Enter |
+| `<Esc>` / `<Escape>` | Escape |
+| `<Space>` | Space |
+| `<BS>` / `<Backspace>` | Backspace |
+| `<Tab>` | Tab |
+| `<Del>` / `<Delete>` | Delete |
+| `<Up>` `<Down>` `<Left>` `<Right>` | Arrow keys |
+| `<C-x>` | Ctrl + x (e.g. `<C-w>` = Ctrl-W) |
+| `<Leader>` | Expands to the `mapleader` value (default `\`) |
+| `<lt>` | Literal `<` |
+| `<Bar>` | Literal `\|` |
+| `<Bslash>` | Literal `\` |
+
+#### init.lua Config File
+
+If an `init.lua` file exists in the virtual filesystem, it is loaded
+automatically when vim starts. The simulator parses a subset of Neovim Lua:
+
+```lua
+-- Set leader key
+vim.g.mapleader = " "
+
+-- Key mappings (noremap by default, like real Neovim)
+vim.keymap.set("n", "Y", "y$")
+vim.keymap.set("n", "<Leader>w", ":w<CR>")
+vim.keymap.set("i", "jk", "<Esc>")
+vim.keymap.set({"n", "v"}, "<Leader>y", '"+y')
+
+-- Use { remap = true } for recursive mappings
+vim.keymap.set("n", "X", "x", { remap = true })
+
+-- Settings (proxied to :set)
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.o.scrolloff = 8
+vim.o.shiftwidth = 2
+
+-- Execute ex commands directly
+vim.cmd("set wrap")
+vim.cmd("nnoremap Q @@")
+```
+
+**Supported `init.lua` constructs:**
+- `vim.g.mapleader = "x"` — set leader key
+- `vim.keymap.set(mode, lhs, rhs [, opts])` — key mapping (noremap by default)
+- `vim.opt.X = value` / `vim.o.X = value` — proxy to `:set`
+- `vim.cmd("...")` — execute an ex command
+- `-- comments` — ignored
+- Lines not matching any pattern are silently ignored
+
 ### Command-Line Keys
 
 | Key | Description |
@@ -1529,6 +1680,14 @@ panes, and the standard prefix-key interface.
 All tmux commands are triggered by pressing `Ctrl-B` (the prefix key) followed
 by a command key. Pressing `Escape` in prefix mode cancels back to normal mode.
 
+> **`Ctrl-B` conflict:** This is the same key as Vim's full-page-backward scroll.
+> When running Vim inside tmux, tmux intercepts `Ctrl-B` first — Vim never receives
+> it. Workarounds: (1) Remap tmux prefix to `Ctrl-Space` (cleanest — no Vim
+> conflicts), (2) use `Ctrl-A` as prefix (but shadows Vim's increment-number),
+> (3) double-tap `Ctrl-B Ctrl-B` to pass it through to Vim, (4) use `Ctrl-U` or
+> `PageUp` instead of `Ctrl-B` in Vim. Almost nobody keeps the default prefix
+> when using Vim inside tmux.
+
 ### Pane Management
 
 | Prefix + Key | Description |
@@ -1663,6 +1822,10 @@ Entered via `Ctrl-B :`. Type a command and press `Enter`.
 | `display-panes` | `displayp` | Show pane number overlay |
 | `clock-mode` | `clock` | Show ASCII art clock |
 | `list-keys` | `lsk` | Show key bindings help |
+| `bind[-key] key command [args]` | `bind` | Bind a key in the prefix table |
+| `unbind[-key] key` | `unbind` | Remove a prefix key binding |
+| `set[-option] [-g] prefix key` | `set` | Change the prefix key |
+| `source[-file] path` | `source` | Reload `.tmux.conf` from VFS |
 
 Unknown commands display: `unknown command: …`
 
@@ -1756,6 +1919,84 @@ before performing their action: `"`, `%`, `↑`/`↓`/`←`/`→`, `h`/`j`/`k`/`
 When a pane's shell process exits (via `exit` or `Ctrl-D`), tmux automatically
 closes that pane. If it was the last pane in the window, the window closes. If
 it was the last window in the session, tmux detaches.
+
+### Key Binding Configuration
+
+All prefix-key bindings are fully configurable at runtime via the command prompt
+or on startup via `.tmux.conf`.
+
+#### Changing the Prefix Key
+
+```
+set -g prefix C-Space
+```
+
+Accepted key notations:
+
+| Notation | Internal Key |
+|---|---|
+| `C-a` | `Ctrl-A` |
+| `C-Space` | `Ctrl-Space` |
+| `C-b` | `Ctrl-B` |
+| `Up` / `Down` / `Left` / `Right` | `ArrowUp` / `ArrowDown` / `ArrowLeft` / `ArrowRight` |
+| `Space` | ` ` (space character) |
+| `M-x` | `Alt-x` |
+| Single character | Itself (`x`, `"`, `%`, etc.) |
+
+#### Binding and Unbinding Keys
+
+```
+bind v split-window -h       # bind Prefix+v to vertical split
+bind s split-window           # bind Prefix+s to horizontal split
+bind e next-window            # bind Prefix+e to next window
+unbind "                      # remove the " binding
+```
+
+Supported tmux commands for `bind`:
+
+| Command | Action |
+|---|---|
+| `split-window [-h]` | Split (default: horizontal; `-h`: vertical) |
+| `select-pane -U/-D/-L/-R` | Navigate pane in direction |
+| `resize-pane -U/-D/-L/-R` | Resize pane in direction |
+| `next-pane` | Cycle to next pane |
+| `last-pane` | Toggle to last-active pane |
+| `swap-pane -U/-D` | Swap pane up/down |
+| `break-pane` | Break pane to new window |
+| `display-panes` | Show pane numbers |
+| `new-window` | Create new window |
+| `next-window` / `previous-window` | Switch windows |
+| `rename-window` | Enter rename mode |
+| `kill-window` | Close window |
+| `choose-tree` | Window list chooser |
+| `last-window` | Toggle last window |
+| `detach-client` | Detach from tmux |
+| `copy-mode` | Enter copy mode |
+| `command-prompt` | Open command prompt |
+| `clock-mode` | Clock display |
+| `next-layout` | Cycle layout |
+| `list-keys` | Show help |
+
+#### `.tmux.conf`
+
+On tmux startup, the simulator reads `.tmux.conf` from the VFS (if it exists)
+and executes each line. Supported directives:
+
+```bash
+# Comments start with #
+set -g prefix C-Space             # change prefix key
+bind v split-window -h            # add a binding
+bind h select-pane -L             # remap h to nav left
+unbind "                          # remove a binding
+```
+
+To reload the config at runtime: `:source .tmux.conf`
+
+#### Dynamic Help Overlay
+
+The `?` help overlay dynamically reflects the current bindings. If you remap
+keys or change the prefix, the help screen updates to show the actual
+configuration.
 
 ---
 

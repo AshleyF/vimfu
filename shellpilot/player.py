@@ -114,9 +114,10 @@ class Backspace:
 class Ctrl:
     """Send a control character (e.g., Ctrl+C)."""
     char: str
+    overlay: str = None
 
     def execute(self, demo):
-        demo.send_ctrl(self.char)
+        demo.send_ctrl(self.char, caption=self.overlay)
 
 
 @dataclass
@@ -400,7 +401,7 @@ def _parse_step(item):
     if "backspace" in item:
         return Backspace(item["backspace"])
     if "ctrl" in item:
-        return Ctrl(item["ctrl"])
+        return Ctrl(item["ctrl"], overlay=item.get("overlay", None))
     if "pause" in item:
         return Pause(item["pause"])
     if "ifScreen" in item:

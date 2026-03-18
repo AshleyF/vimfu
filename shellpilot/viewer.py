@@ -1304,10 +1304,10 @@ class ScriptedDemo:
         self.log.screen_snapshot()
         return self
     
-    def send_ctrl(self, char: str, delay: float = None) -> 'ScriptedDemo':
+    def send_ctrl(self, char: str, delay: float = None, caption: str = None) -> 'ScriptedDemo':
         """Send a control character with key display."""
         self.log.action('CTRL', char)
-        self._show_key(char, ['ctrl'])
+        self._show_key(char, ['ctrl'], caption=caption)
         # Log what the overlay actually showed
         if self.viewer and self.log._enabled:
             displayed = self.viewer._current_keys[0] if self.viewer._current_keys else ''
