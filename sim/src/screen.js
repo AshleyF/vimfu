@@ -92,6 +92,13 @@ const THEMES = {
     statusBg: '2e323c',
     statusNcFg: '8f908a',       // StatusLineNC fg (dimmed, matches Folded)
     statusNcBg: '2e323c',       // StatusLineNC bg (same as StatusLine)
+    // Tab line
+    tabSelFg: 'd4d4d4',        // TabLineSel fg (active tab)
+    tabSelBg: '333842',        // TabLineSel bg (active tab)
+    tabFg: 'd4d4d4',           // TabLine fg (inactive tab)
+    tabBg: '000000',           // TabLine bg (inactive tab)
+    tabFillFg: 'd4d4d4',       // TabLineFill fg (remainder)
+    tabFillBg: '000000',       // TabLineFill bg (remainder)
     cmdFg: 'd4d4d4',
     cmdBg: '000000',
     recordingFg: 'f8f8f0',     // ModeMsg
@@ -210,18 +217,22 @@ export class Screen {
       for (const tab of tabInfo) {
         const label = ' ' + tab.label + ' ';
         if (tab.active) {
-          tabRuns.push({ n: label.length, fg: t.normalFg, bg: t.normalBg });
+          tabRuns.push({ n: label.length, fg: t.tabSelFg || t.normalFg, bg: t.tabSelBg || t.normalBg });
         } else {
-          tabRuns.push({ n: label.length, fg: t.statusFg || t.normalFg, bg: t.statusBg || t.normalBg });
+          tabRuns.push({ n: label.length, fg: t.tabFg || t.statusFg || t.normalFg, bg: t.tabBg || t.statusBg || t.normalBg });
         }
         tabText += label;
       }
-      // Fill remainder with tabline fill color
-      const remaining = this.cols - tabText.length;
-      if (remaining > 0) {
-        tabText += ' '.repeat(remaining);
-        tabRuns.push({ n: remaining, fg: t.statusFg || t.normalFg, bg: t.statusBg || t.normalBg });
-      } else if (tabText.length > this.cols) {
+      // Add X close button at the far right
+      const xLabel = 'X';
+      const fillBefore = this.cols - tabText.length - xLabel.length;
+      if (fillBefore > 0) {
+        tabText += ' '.repeat(fillBefore);
+        tabRuns.push({ n: fillBefore, fg: t.tabFillFg || t.normalFg, bg: t.tabFillBg || t.normalBg });
+      }
+      tabText += xLabel;
+      tabRuns.push({ n: xLabel.length, fg: t.tabFillFg || t.normalFg, bg: t.tabFillBg || t.normalBg });
+      if (tabText.length > this.cols) {
         tabText = tabText.slice(0, this.cols);
       }
       lines.push({ text: tabText, runs: Screen._mergeRuns(tabRuns) });
@@ -952,8 +963,9 @@ export class Screen {
     for (const l of lines) if (l && l.runs) l.runs = Screen._mergeRuns(l.runs);
 
     // Cursor position was computed during rendering (accounting for wrapping).
+    // Adjust for tab line if present (cursorScreenRow is relative to text area)
     // If _errorCmdLineCursor is set, cursor goes to end of error text on command line
-    let finalCursorRow = cursorScreenRow >= 0 ? cursorScreenRow : 0;
+    let finalCursorRow = cursorScreenRow >= 0 ? cursorScreenRow + (hasTabLine ? 1 : 0) : 0;
     let finalCursorCol = cursorScreenCol >= 0 ? cursorScreenCol : gutterWidth;
     if (engine._errorCmdLineCursor && engine.commandLine) {
       finalCursorRow = this.rows - 1;
@@ -992,6 +1004,17 @@ export class Screen {
     const rowsPerWin = Math.floor(availableRows / numWindows);
     const extraRows = availableRows - rowsPerWin * numWindows;
 
+    // Compute per-window height: use stored _height if set, else use formula
+    const winHeights = [];
+    for (let i = 0; i < numWindows; i++) {
+      const win = engine._windows[i];
+      if (win._height && win._height > 0) {
+        winHeights.push(win._height);
+      } else {
+        winHeights.push(rowsPerWin + (i < extraRows ? 1 : 0));
+      }
+    }
+
     const allLines = [];
     let finalCursorRow = -1;
     let finalCursorCol = -1;
@@ -1013,7 +1036,7 @@ export class Screen {
     for (let wi = 0; wi < numWindows; wi++) {
       const win = engine._windows[wi];
       const isActive = (wi === engine._activeWin);
-      const winTotalRows = rowsPerWin + (wi < extraRows ? 1 : 0);
+      const winTotalRows = winHeights[wi];
 
       // Create a mini-screen for this window
       // +1 because render() expects rows including command line, and we'll discard it

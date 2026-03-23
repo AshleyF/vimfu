@@ -60,6 +60,7 @@ export class VimEngine {
     // Window management (splits)
     this._windows = [];
     this._activeWin = 0;
+    this._prevWin = 0; // last accessed window index (for Ctrl-W p)
 
     // Pending state
     this._pendingCtrlW = false;
@@ -266,6 +267,7 @@ export class VimEngine {
     // ── Tab pages ──
     this._tabs = [{ windows: this._windows, activeWin: this._activeWin }];
     this._activeTab = 0;
+    this._lastTab = -1; // last accessed tab index (for g<Tab>)
   }
 
   // ── Public API ──
@@ -3167,6 +3169,15 @@ export class VimEngine {
         break;
       }
 
+      // g<Tab> — go to last accessed tab
+      case 'Tab': {
+        if (this._lastTab >= 0 && this._lastTab < this._tabs.length && this._lastTab !== this._activeTab) {
+          this._switchToTab(this._lastTab);
+        }
+        this._pendingCount = '';
+        break;
+      }
+
       default:
         this._pendingCount = '';
         break;
@@ -3595,6 +3606,7 @@ export class VimEngine {
   _switchToWindow(idx) {
     if (idx < 0 || idx >= this._windows.length || idx === this._activeWin) return;
     this._saveWindowState();
+    this._prevWin = this._activeWin;
     this._activeWin = idx;
     this._restoreWindowState();
   }
@@ -3633,6 +3645,25 @@ export class VimEngine {
     this._restoreWindowState();
   }
 
+  /**
+   * After rotating or exchanging windows, swap the stored _height properties
+   * so that each window position keeps its original size. This matches nvim
+   * behavior where window heights travel with the window content.
+   * Must be called BEFORE rearranging the windows array.
+   */
+  _storeWindowHeights() {
+    // Compute positional heights using the same formula as _renderSplit
+    const availableRows = this.rows - 1;
+    const numWindows = this._windows.length;
+    const rowsPerWin = Math.floor(availableRows / numWindows);
+    const extraRows = availableRows - rowsPerWin * numWindows;
+    for (let i = 0; i < numWindows; i++) {
+      if (!this._windows[i]._height) {
+        this._windows[i]._height = rowsPerWin + (i < extraRows ? 1 : 0);
+      }
+    }
+  }
+
   // ── Tab page helpers ──
 
   /**
@@ -3662,6 +3693,7 @@ export class VimEngine {
   _switchToTab(idx) {
     if (idx < 0 || idx >= this._tabs.length || idx === this._activeTab) return;
     this._saveTabState();
+    this._lastTab = this._activeTab;
     this._activeTab = idx;
     this._restoreTabState();
   }
@@ -3671,6 +3703,7 @@ export class VimEngine {
    */
   _doTabNew() {
     this._saveTabState();
+    this._lastTab = this._activeTab; // track for g<Tab>
     // Save current buffer state
     this._saveCurrentBufState();
     this._alternateBufId = this._currentBufId;
@@ -3707,9 +3740,16 @@ export class VimEngine {
    */
   _doTabClose() {
     if (this._tabs.length <= 1) return;
+    const closedIdx = this._activeTab;
     this._tabs.splice(this._activeTab, 1);
     if (this._activeTab >= this._tabs.length) {
       this._activeTab = this._tabs.length - 1;
+    }
+    // Adjust _lastTab after tab removal
+    if (this._lastTab === closedIdx) {
+      this._lastTab = -1;
+    } else if (this._lastTab > closedIdx) {
+      this._lastTab--;
     }
     this._restoreTabState();
   }
@@ -3771,11 +3811,58 @@ export class VimEngine {
         // For now, vertical split behaves same as horizontal (flat model)
         this._doSplit();
         break;
+      case 'n': case 'Ctrl-N':
+        // Ctrl-W n: open new window with empty buffer (like :new)
+        this._doSplit();
+        // Replace the new window's buffer with a fresh empty one
+        this.buffer = new Buffer(['']);
+        this.cursor = { row: 0, col: 0 };
+        this.scrollTop = 0;
+        this.scrollLeft = 0;
+        this._fileName = null;
+        this._undoStack = [];
+        this._redoStack = [];
+        this._changeCount = 0;
+        this._marks = {};
+        this._folds = [];
+        this._desiredCol = 0;
+        this._currentBufId = this._registerBuffer(this.buffer, null);
+        this._windows[this._activeWin].buffer = this.buffer;
+        this._windows[this._activeWin].cursor = { ...this.cursor };
+        this._windows[this._activeWin].scrollTop = 0;
+        this._windows[this._activeWin].scrollLeft = 0;
+        this._windows[this._activeWin].folds = [];
+        break;
       case 'w': case 'Ctrl-W':
         // Cycle to next window
         if (this._windows.length > 1) {
           const next = (this._activeWin + 1) % this._windows.length;
           this._switchToWindow(next);
+        }
+        break;
+      case 'W':
+        // Cycle to previous window (backwards)
+        if (this._windows.length > 1) {
+          const prev = (this._activeWin - 1 + this._windows.length) % this._windows.length;
+          this._switchToWindow(prev);
+        }
+        break;
+      case 'p':
+        // Move to previously accessed window
+        if (this._windows.length > 1 && this._prevWin >= 0 && this._prevWin < this._windows.length && this._prevWin !== this._activeWin) {
+          this._switchToWindow(this._prevWin);
+        }
+        break;
+      case 't':
+        // Move to top-left (first) window
+        if (this._activeWin !== 0) {
+          this._switchToWindow(0);
+        }
+        break;
+      case 'b':
+        // Move to bottom-right (last) window
+        if (this._activeWin !== this._windows.length - 1) {
+          this._switchToWindow(this._windows.length - 1);
         }
         break;
       case 'j': case 'Ctrl-J': case 'ArrowDown':
@@ -3802,6 +3889,58 @@ export class VimEngine {
           this._switchToWindow(this._activeWin + 1);
         }
         break;
+      case 'H': case 'J': case 'K': case 'L':
+        // Move window to far left/bottom/top/right — in flat model, swap positions
+        // H/K = move toward top, J/L = move toward bottom
+        if (this._windows.length > 1) {
+          const win = this._windows.splice(this._activeWin, 1)[0];
+          let newIdx;
+          if (key === 'H' || key === 'K') {
+            newIdx = 0;
+          } else {
+            newIdx = this._windows.length; // append at end
+          }
+          this._windows.splice(newIdx, 0, win);
+          this._activeWin = newIdx;
+        }
+        break;
+      case 'r':
+        // Rotate windows downward/rightward
+        if (this._windows.length > 1) {
+          this._saveWindowState();
+          this._storeWindowHeights();
+          const last = this._windows.pop();
+          this._windows.unshift(last);
+          // Active window follows its content
+          this._activeWin = (this._activeWin + 1) % this._windows.length;
+          this._restoreWindowState();
+        }
+        break;
+      case 'R':
+        // Rotate windows upward/leftward
+        if (this._windows.length > 1) {
+          this._saveWindowState();
+          this._storeWindowHeights();
+          const first = this._windows.shift();
+          this._windows.push(first);
+          // Active window follows its content
+          this._activeWin = (this._activeWin - 1 + this._windows.length) % this._windows.length;
+          this._restoreWindowState();
+        }
+        break;
+      case 'x':
+        // Exchange current window with next
+        if (this._windows.length > 1) {
+          this._saveWindowState();
+          this._storeWindowHeights();
+          const nextIdx = (this._activeWin + 1) % this._windows.length;
+          const tmp = this._windows[this._activeWin];
+          this._windows[this._activeWin] = this._windows[nextIdx];
+          this._windows[nextIdx] = tmp;
+          // Cursor stays at current window index (now showing swapped content)
+          this._restoreWindowState();
+        }
+        break;
       case 'c': case 'q':
         // Close current window
         this._doCloseWindow();
@@ -3821,6 +3960,15 @@ export class VimEngine {
         break;
       case '-':
         // Decrease window height (no-op for now)
+        break;
+      case '<':
+        // Decrease window width (no-op for flat horizontal model)
+        break;
+      case '>':
+        // Increase window width (no-op for flat horizontal model)
+        break;
+      case '|':
+        // Set window width to N or maximize (no-op for flat horizontal model)
         break;
       case 'T':
         // Ctrl-W T — move current window to a new tab
@@ -9156,15 +9304,100 @@ export class VimEngine {
         }
         break;
       }
+      case '[z': {
+        // [z — go to start of current open fold
+        let best = null;
+        for (const f of this._folds) {
+          if (this.cursor.row > f.startRow && this.cursor.row <= f.endRow) {
+            if (!best || (f.endRow - f.startRow) < (best.endRow - best.startRow)) {
+              best = f;
+            }
+          }
+        }
+        if (best) {
+          this.cursor.row = best.startRow;
+          this.cursor.col = 0;
+          this._updateDesiredCol();
+        }
+        break;
+      }
+      case ']z': {
+        // ]z — go to end of current open fold
+        let best = null;
+        for (const f of this._folds) {
+          if (this.cursor.row >= f.startRow && this.cursor.row < f.endRow) {
+            if (!best || (f.endRow - f.startRow) < (best.endRow - best.startRow)) {
+              best = f;
+            }
+          }
+        }
+        if (best) {
+          this.cursor.row = best.endRow;
+          this.cursor.col = 0;
+          this._updateDesiredCol();
+        }
+        break;
+      }
+      case '[/': case '[*': {
+        // [/ and [* — go to start of previous C comment (/* ... */)
+        for (let r = this.cursor.row; r >= 0; r--) {
+          const line = this.buffer.lines[r];
+          const searchEnd = (r === this.cursor.row) ? this.cursor.col : line.length;
+          const idx = line.lastIndexOf('/*', Math.max(0, searchEnd - 1));
+          if (idx >= 0 && (r < this.cursor.row || idx < this.cursor.col)) {
+            this.cursor.row = r;
+            this.cursor.col = idx;
+            this._updateDesiredCol();
+            return;
+          }
+        }
+        break;
+      }
+      case ']/': case ']*': {
+        // ]/ and ]* — go to end of next C comment (/* ... */)
+        for (let r = this.cursor.row; r < this.buffer.lineCount; r++) {
+          const line = this.buffer.lines[r];
+          const searchStart = (r === this.cursor.row) ? this.cursor.col + 1 : 0;
+          const idx = line.indexOf('*/', searchStart);
+          if (idx >= 0) {
+            this.cursor.row = r;
+            this.cursor.col = idx + 1; // position on the /
+            this._updateDesiredCol();
+            return;
+          }
+        }
+        break;
+      }
+      case '[#': {
+        // [# — go to previous unmatched #if/#ifdef/#ifndef
+        for (let r = this.cursor.row - 1; r >= 0; r--) {
+          const line = this.buffer.lines[r].trimStart();
+          if (/^#\s*(if|ifdef|ifndef)\b/.test(line)) {
+            this.cursor.row = r;
+            this.cursor.col = 0;
+            this._updateDesiredCol();
+            return;
+          }
+        }
+        break;
+      }
+      case ']#': {
+        // ]# — go to next unmatched #endif
+        for (let r = this.cursor.row + 1; r < this.buffer.lineCount; r++) {
+          const line = this.buffer.lines[r].trimStart();
+          if (/^#\s*endif\b/.test(line)) {
+            this.cursor.row = r;
+            this.cursor.col = 0;
+            this._updateDesiredCol();
+            return;
+          }
+        }
+        break;
+      }
       default:
         break;
     }
   }
-
-  /**
-   * Go to previous unmatched `open` character, searching backward from cursor.
-   * Used by [( and [{
-   */
   _gotoPrevUnmatched(open, close) {
     let depth = 0;
     for (let r = this.cursor.row; r >= 0; r--) {
@@ -10724,11 +10957,13 @@ export class VimEngine {
 
   _updateStatus() {
     const r = this.cursor.row + 1, c = this.cursor.col + 1, total = this.buffer.lineCount;
+    // Special case: empty buffer with a single empty line — nvim shows 0,0-1
+    const isEmptyBuffer = total === 1 && this.buffer.lines[0].length === 0;
     // Virtual column display: show "bytecol-virtcol" when they differ (tabs)
-    const byteCol = c;
-    const virtCol = this._virtColEnd(this.cursor.row, this.cursor.col) + 1;
+    const byteCol = isEmptyBuffer ? 0 : c;
+    const virtCol = isEmptyBuffer ? 1 : this._virtColEnd(this.cursor.row, this.cursor.col) + 1;
     const colStr = byteCol === virtCol ? `${byteCol}` : `${byteCol}-${virtCol}`;
-    const pos = `${r},${colStr}`;
+    const pos = isEmptyBuffer ? `0,${colStr}` : `${r},${colStr}`;
     const pct = total <= this._textRows ? 'All' : r === 1 ? 'Top' : r === total ? 'Bot' : `${Math.round((r / total) * 100)}%`;
     const right = pos.padEnd(14) + ' ' + pct;
     // Left side: filename + modified flag
@@ -10736,6 +10971,9 @@ export class VimEngine {
     if (this._fileName) {
       left = this._fileName;
       if (this._changeCount > 0) left += ' [+]';
+    } else if (this._windows.length > 1) {
+      // Show [No Name] for unnamed buffers when in split view
+      left = '[No Name]';
     }
     // Build status line: left-padded right, with filename on left
     const gap = Math.max(1, this.cols - left.length - right.length);

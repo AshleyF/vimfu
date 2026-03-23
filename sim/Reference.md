@@ -270,13 +270,28 @@ or different buffers with independent cursor and scroll positions.
 | `Ctrl-W s` | Same as `:sp` |
 | `Ctrl-W v` | Same as `:vsp` |
 | `Ctrl-W w` | Cycle to next window |
+| `Ctrl-W W` | Cycle to previous window (backwards) |
 | `Ctrl-W j` | Move to window below |
 | `Ctrl-W k` | Move to window above |
 | `Ctrl-W h` | Move to window left |
 | `Ctrl-W l` | Move to window right |
+| `Ctrl-W t` | Move to top-left window |
+| `Ctrl-W b` | Move to bottom-right window |
+| `Ctrl-W p` | Move to previous (last accessed) window |
+| `Ctrl-W n` | New window with empty buffer |
 | `Ctrl-W c` | Close current window |
 | `Ctrl-W o` | Close all other windows |
 | `Ctrl-W q` | Close current window |
+| `Ctrl-W r` | Rotate windows downward/rightward |
+| `Ctrl-W R` | Rotate windows upward/leftward |
+| `Ctrl-W x` | Exchange current window with next |
+| `Ctrl-W H` | Move window to far left (no-op in flat model) |
+| `Ctrl-W J` | Move window to bottom (no-op in flat model) |
+| `Ctrl-W K` | Move window to top (no-op in flat model) |
+| `Ctrl-W L` | Move window to far right (no-op in flat model) |
+| `Ctrl-W <` | Decrease window width (no-op) |
+| `Ctrl-W >` | Increase window width (no-op) |
+| `Ctrl-W \|` | Set window width (no-op) |
 | `Ctrl-W T` | Move current window to a new tab |
 
 > **Browser limitation:** Desktop browsers reserve `Ctrl-W` as "close tab" and
@@ -326,6 +341,7 @@ contains its own set of windows. A tab line appears when ≥2 tabs exist.
 | `:tabo[nly]` | Close all other tabs |
 | `gt` | Go to next tab (with count: go to tab N) |
 | `gT` | Go to previous tab |
+| `g<Tab>` | Go to last accessed tab |
 | `Ctrl-W T` | Move current window to new tab |
 
 ### Spell Checking
@@ -361,6 +377,14 @@ Misspelled words are highlighted with `SpellBad` (red foreground).
 | `]m` | ✅ | Go to next `{` (method start) |
 | `[M` | ✅ | Go to previous `}` (method end) |
 | `]M` | ✅ | Go to next `}` (method end) |
+| `[/` | ✅ | Go to start of previous C-style comment |
+| `]/` | ✅ | Go to end of next C-style comment |
+| `[*` | ✅ | Go to start of previous `/*` comment |
+| `]*` | ✅ | Go to end of next `*/` comment |
+| `[#` | ✅ | Go to previous unmatched `#if`/`#ifdef` |
+| `]#` | ✅ | Go to next unmatched `#endif` |
+| `[z` | ✅ | Go to start of current open fold |
+| `]z` | ✅ | Go to end of current open fold |
 | `[p` | ✅ | Put before with indent adjustment |
 | `]p` | ✅ | Put after with indent adjustment |
 | `['` | ✅ | Go to previous line with a lowercase mark |
@@ -2041,3 +2065,106 @@ Canvas-based HTML renderer:
 - Bold support
 - Block cursor (dark red `#800000`) for vim and shell vi-normal/replace modes
 - Beam cursor (thin 2px vertical bar, `#cccccc`) for shell insert/emacs modes
+
+---
+
+## Not Yet Implemented
+
+Features demonstrated in VimFu tutorial videos that are **not yet supported**
+by the simulator. These work in real Neovim (so the videos are correct), but
+students using the browser simulator to practice will not be able to use them.
+
+### Window Commands (`Ctrl-W`)
+
+| Key | Description | Video(s) |
+|---|---|---|
+| `Ctrl-W d` | Split and jump to definition | 0353 |
+| `Ctrl-W f` | Split and open file under cursor | 0354 |
+| `Ctrl-W F` | Split and open file:line under cursor | 0354 |
+| `Ctrl-W i` | Split and jump to declaration | 0355 |
+| `Ctrl-W gf` | Open file under cursor in new tab | 0356 |
+| `Ctrl-W gF` | Open file:line under cursor in new tab | 0356 |
+| `Ctrl-W ^` | Split and open alternate file | 0357 |
+
+### g-Prefix Commands
+
+| Key | Description | Video(s) |
+|---|---|---|
+| `gf` | Open file under cursor | 0267 |
+| `gF` | Open file under cursor at line number | 0267 |
+| `gr` | Virtual replace mode | 0268 |
+| `gs` | Sleep N seconds (not useful in sim) | 0270 |
+| `gx` | Open URL/file under cursor externally | 0498 |
+| `gh` | Enter Select mode | 0271 |
+| `gH` | Enter Select Line mode | 0271 |
+| `gQ` | Enter Ex mode | 0272 |
+| `gR` | Enter Virtual Replace mode | 0268 |
+| `g@{motion}` | Apply `operatorfunc` over motion | 0497 |
+
+### Insert Mode
+
+| Key | Description | Video(s) |
+|---|---|---|
+| `Ctrl-@` | Insert last inserted text and exit insert mode | 0376 |
+| `Ctrl-N` | Keyword completion (next match) | 0379 |
+| `Ctrl-P` | Keyword completion (previous match) | 0380 |
+| `Ctrl-K {c1}{c2}` | Insert digraph | 0381 |
+| `Ctrl-V {char}` | Insert literal character / unicode | 0382 |
+| `Ctrl-G j` / `Ctrl-G k` | Move cursor down/up (stay in insert) | 0385 |
+| `Ctrl-X Ctrl-L` | Line completion | 0386 |
+| `Ctrl-X Ctrl-F` | Filename completion | 0387 |
+| `Ctrl-X Ctrl-K` | Dictionary completion | 0388 |
+| `Ctrl-X Ctrl-T` | Thesaurus completion | 0389 |
+| `Ctrl-X Ctrl-I` | Path pattern completion | 0390 |
+| `Ctrl-X Ctrl-D` | Definition completion | 0391 |
+| `Ctrl-X Ctrl-S` | Spelling suggestion completion | 0394 |
+| `Ctrl-X Ctrl-V` | Vim command completion | 0395 |
+| `Ctrl-R =` | Expression register (insert result of expression) | 0491 |
+| `Ctrl-G s` / `Ctrl-G S` | Surround in insert mode (nvim-surround) | 0742 |
+
+### Command-Line Mode
+
+| Key | Description | Video(s) |
+|---|---|---|
+| `q:` | Open command-line window (editable history) | 0449 |
+| `q/` / `q?` | Open search history window | 0449 |
+| `Ctrl-R Ctrl-W` | Insert word under cursor into command line | 0452 |
+| `Ctrl-F` | Open command-line window from `:` prompt | 0454 |
+
+### Advanced / Miscellaneous
+
+| Key | Description | Video(s) |
+|---|---|---|
+| `g-` | Go to older text state (undo branch) | 0481 |
+| `g+` | Go to newer text state (undo branch) | 0481 |
+| `:earlier {N}` | Go to text state N changes/seconds/minutes ago | 0482 |
+| `:later {N}` | Go to text state N changes/seconds/minutes forward | 0482 |
+| `".` register | Last inserted text register (put only) | 0484 |
+| `"/` register | Last search pattern register (put only) | 0484 |
+| `":` register | Last command register (put only) | 0484 |
+| `"%` register | Current filename register (put only) | 0485 |
+| `"#` register | Alternate filename register (put only) | 0485 |
+| `:mkview` | Save view (folds, cursor, options) | 0494 |
+| `:loadview` | Restore saved view | 0494 |
+| `:help {topic}` | Open help (read-only help text) | 0499 |
+| `:cd {dir}` | Change working directory | 0806 |
+| `do` / `:diffget` | Diff obtain (get change from other buffer) | 0480 |
+| `dp` / `:diffput` | Diff put (send change to other buffer) | 0480 |
+| `\={expr}` | Expression in `:s` replacement (e.g. `\=submatch(0)+1`) | 0894 |
+| Numbered register auto-advance | `.` repeats with next numbered register (`"1p` then `.` uses `"2`) | 0464 |
+
+### Surround (nvim-surround) — Advanced
+
+| Key | Description | Video(s) |
+|---|---|---|
+| `{count}ds{char}` | Delete Nth surrounding pair (e.g. `2ds)`) | 0703 |
+| `cS{target}{repl}` | Change surround, placing content on new line | 0720 |
+| `csw{char}` / `csW{char}` | Change surround using word/WORD motion | — |
+| `yS{motion}{char}` | Surround, placing content on new line | 0725 |
+| `ySS{char}` | Surround entire line, content on new line | 0725 |
+| `gS{char}` (visual) | Visual surround, content on new line | 0726 |
+| `f`/`F`/`<C-f>` delimiter | Function-style surround (`print(...)`) | 0727–0730 |
+| `<C-T>` delimiter | Tag on separate lines | 0732 |
+| `<C-]>` delimiter | Code block (`{` on first line, `}` on last) | 0733 |
+| `l` delimiter | LaTeX `\begin{env}` / `\end{env}` | 0734 |
+| `s` delimiter | Leading space before delimiter | 0735 |
