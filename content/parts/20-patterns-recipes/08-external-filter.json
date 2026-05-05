@@ -1,0 +1,46 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "patterns.external-filter",
+  "title": "External Filter Tricks",
+  "subtitle": "!{motion}cmd — let any Unix tool transform your text.",
+  "part": "patterns-recipes",
+  "summary": "Vim's filter command !{motion} sends the text covered by motion as stdin to a shell command, replacing it with stdout. Sort, dedup, format, encode, decode — any tool works.",
+  "keys": ["!"],
+  "lessons": [476, 480],
+  "see_also": ["ex.shell"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "External Filter Tricks" },
+
+    { "type": "prose", "text": "Vim's filter operator (Normal-mode {key:!}) sends a chunk of the buffer through a shell command and replaces it with the result. Combined with Unix tools, you have unlimited transforms." },
+
+    {
+      "type": "table",
+      "headers": ["Sequence",         "Effect"],
+      "rows": [
+        ["{key:!}{key:!}sort",        "Sort current line through `sort` (no-op for one line, but legal)"],
+        ["{key:!}{key:i}{key:p}sort", "Sort the inner paragraph"],
+        ["{key:!}{key:G}sort",        "Sort from cursor to end of file"],
+        [":%!sort",                   "Sort the whole file"],
+        [":%!sort -u",                "Sort + dedup"],
+        [":%!jq .",                   "Pretty-print JSON in place"],
+        [":%!python -m json.tool",    "Same, with Python"],
+        [":%!xmllint --format -",     "Pretty-print XML"],
+        [":%!fmt -w 80",              "Reflow to 80-column lines"],
+        [":'<,'>!base64",             "Base64-encode the visual selection"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "How Filter Mode Works",
+      "text": "From Normal mode, {key:!}{motion} prompts for a shell command on the command line. When you press {key:Enter}:\n\n  1. The lines covered by `motion` are written to a temp file.\n  2. The shell command is run with that file as stdin.\n  3. The motion's lines are replaced in the buffer with the command's stdout.\n\n{key:!}{key:!} (doubled bang) targets the current line. From Ex, `:[range]!cmd` does the same with an explicit range.\n\nThe filter is *line-oriented* even from Normal mode — {key:!}{key:i}{key:w} doesn't filter just a word; the entire line(s) containing the word are sent. (Use the substitute command for sub-line transforms.)"
+    },
+
+    { "type": "tip", "text": "Make a habit of using filters for one-shot needs (sort, format, encode). It's faster than alt-tabbing to a shell and back." },
+
+    { "type": "qr", "topic": "patterns.external-filter" },
+    { "type": "buy-prompt" }
+  ]
+}

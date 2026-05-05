@@ -1,0 +1,41 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "windows.move-resize",
+  "title": "Move and Resize Windows",
+  "subtitle": "Ctrl-W H/J/K/L moves the window. Ctrl-W +/-/</> resizes.",
+  "part": "windows",
+  "summary": "Capital direction keys after Ctrl-W move the *window* to that side of the layout. Ctrl-W + and - resize vertically; < and > horizontally. Ctrl-W = balances all windows.",
+  "keys": ["Ctrl-W H", "Ctrl-W J", "Ctrl-W K", "Ctrl-W L", "Ctrl-W +", "Ctrl-W -", "Ctrl-W ="],
+  "lessons": [],
+  "see_also": ["windows.navigate", "windows.splits"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Move and Resize Windows" },
+
+    { "type": "prose", "text": "Once you have splits, you'll want to rearrange them. The capital direction keys move the current window to the edge of the layout, replacing the surrounding splits with a clean side-by-side or top/bottom configuration." },
+
+    { "type": "keys", "sequence": ["Ctrl-W","H"], "label": "Move window to far left (full height)" },
+    { "type": "keys", "sequence": ["Ctrl-W","J"], "label": "Move window to bottom (full width)" },
+    { "type": "keys", "sequence": ["Ctrl-W","K"], "label": "Move window to top" },
+    { "type": "keys", "sequence": ["Ctrl-W","L"], "label": "Move window to far right" },
+    { "type": "keys", "sequence": ["Ctrl-W","+"], "label": "Increase height by 1" },
+    { "type": "keys", "sequence": ["Ctrl-W","-"], "label": "Decrease height by 1" },
+    { "type": "keys", "sequence": ["Ctrl-W",">"], "label": "Increase width by 1" },
+    { "type": "keys", "sequence": ["Ctrl-W","<"], "label": "Decrease width by 1" },
+    { "type": "keys", "sequence": ["Ctrl-W","="], "label": "Equalize all windows" },
+    { "type": "keys", "sequence": ["Ctrl-W","_"], "label": "Maximize current window's height" },
+    { "type": "keys", "sequence": ["Ctrl-W","|"], "label": "Maximize current window's width" },
+
+    {
+      "type": "internals",
+      "title": "Counts on Resize",
+      "text": "All resize commands accept counts. {key:1}{key:0}{key:Ctrl-W}{key:+} grows the window 10 rows. {key:5}{key:Ctrl-W}{key:>} grows 5 columns.\n\n{key:Ctrl-W}{key:_} with a count sets the window's height to *exactly* that count. {key:2}{key:0}{key:Ctrl-W}{key:_} → 20 rows tall. Without a count, it maxes out (using all available height, with `'winminheight'` left for the others).\n\nSplit layouts in Vim are tree-structured: vertical splits within horizontal splits within vertical splits. {key:Ctrl-W}{key:H}/{key:J}/{key:K}/{key:L} flatten the tree from the current window's perspective by promoting it to a top-level split."
+    },
+
+    { "type": "tip", "text": "{key:Ctrl-W}{key:=} is the magic equalizer. After fiddling with sizes, {key:Ctrl-W}{key:=} makes everything proportional again." },
+
+    { "type": "qr", "topic": "windows.move-resize" },
+    { "type": "buy-prompt" }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "appendix.grammar-matrix",
+  "title": "The Grammar Matrix",
+  "subtitle": "Every operator × every text object = the table that makes Vim click.",
+  "part": "appendices",
+  "summary": "A reference matrix showing operators (rows) × text objects/motions (columns). Use it to think 'operator first, motion second' instead of memorizing combinations.",
+  "keys": [],
+  "lessons": [],
+  "see_also": ["operators-textobjects.grammar"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "The Grammar Matrix" },
+
+    { "type": "prose", "text": "Vim's productivity comes from a tiny *grammar*: pick an **operator**, then pick a **text object** or **motion**. The two combine into N×M commands without you having to memorize each one." },
+
+    { "type": "heading", "level": 2, "text": "Operators (the verbs)" },
+
+    {
+      "type": "table",
+      "headers": ["Op",  "Action"],
+      "rows": [
+        ["{key:d}",  "Delete (cut to register)"],
+        ["{key:c}",  "Change (delete + Insert)"],
+        ["{key:y}",  "Yank (copy to register)"],
+        ["{key:>}, {key:<}",  "Indent / outdent"],
+        ["{key:=}",  "Reindent (per `'indentexpr'`)"],
+        ["{key:g}{key:U}, {key:g}{key:u}, {key:g}{key:~}", "Upper / lower / toggle case"],
+        ["{key:g}{key:q}", "Reformat (line-wrap)"],
+        ["{key:!}", "Filter through shell command"],
+        ["{key:g}{key:?}", "ROT13"]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "Text objects (the nouns)" },
+
+    {
+      "type": "table",
+      "headers": ["Object",                 "Selects"],
+      "rows": [
+        ["{key:i}{key:w} / {key:a}{key:w}",  "Inner / a word"],
+        ["{key:i}{key:W} / {key:a}{key:W}",  "Inner / a WORD"],
+        ["{key:i}{key:s} / {key:a}{key:s}",  "Inner / a sentence"],
+        ["{key:i}{key:p} / {key:a}{key:p}",  "Inner / a paragraph"],
+        ["{key:i}{key:t} / {key:a}{key:t}",  "Inner / a tag (HTML/XML)"],
+        ["{key:i}{key:\"} / {key:a}{key:\"}", "Inner / a double-quoted string"],
+        ["{key:i}{key:'} / {key:a}{key:'}",  "Inner / a single-quoted string"],
+        ["{key:i}{key:`} / {key:a}{key:`}",  "Inner / a backtick string"],
+        ["{key:i}{key:(} / {key:a}{key:(}",  "Inner / a parenthesized region (also {key:i}{key:b})"],
+        ["{key:i}{key:[} / {key:a}{key:[}",  "Inner / a bracketed region"],
+        ["{key:i}{key:{} / {key:a}{key:{}",  "Inner / a brace block (also {key:i}{key:B})"],
+        ["{key:i}{key:<} / {key:a}{key:<}",  "Inner / an angle-bracket region"]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "Motions (also act as ranges)" },
+
+    {
+      "type": "table",
+      "headers": ["Motion",       "Range"],
+      "rows": [
+        ["{key:w}, {key:b}, {key:e}",  "Next/prev word boundary"],
+        ["{key:0}, {key:^}, {key:$}",  "Line endpoints"],
+        ["{key:f}{c}, {key:t}{c}",     "To/till char on line"],
+        ["{key:%}",                    "Match bracket"],
+        ["{key:G}, {key:g}{key:g}",    "Last / first line"],
+        ["{key:n}{key:G}",             "Line n"],
+        ["{key:H}, {key:M}, {key:L}",  "Top/middle/bottom of viewport"],
+        ["{key:/pat}, {key:?pat}",     "Search forward/back"],
+        ["{key:g}{key:n}",             "Next search match (text-object-like)"],
+        ["{key:`}{m}",                 "To mark m"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "How to Read the Matrix",
+      "text": "Think *operator → object/motion*. {key:d}{key:i}{key:p} is read \"delete inner paragraph,\" {key:y}{key:a}{key:t} is \"yank a tag,\" {key:c}{key:f}{key:;} is \"change up to and including the next semicolon.\"\n\nThe combinations are *generated*, not memorized. Once you've internalized 8 operators × 12 text objects × 20 motions, you have hundreds of expressive commands available."
+    },
+
+    { "type": "qr", "topic": "appendix.grammar-matrix" },
+    { "type": "buy-prompt" }
+  ]
+}

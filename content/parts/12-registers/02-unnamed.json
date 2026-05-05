@@ -1,0 +1,32 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "registers.unnamed",
+  "title": "The Unnamed Register",
+  "subtitle": "\"\" — where every yank and delete lands by default.",
+  "part": "registers",
+  "summary": "Every yank and delete writes the unnamed register. p and P read from it. It is the implicit clipboard of every Vim editing session.",
+  "keys": ["\"\""],
+  "lessons": [119],
+  "see_also": ["registers.overview", "registers.numbered", "registers.named", "editing.delete"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "The Unnamed Register" },
+
+    { "type": "prose", "text": "When you press {key:y}, {key:d}, {key:c}, or {key:x}, the affected text goes into the **unnamed register**. When you press {key:p} or {key:P}, the unnamed register comes back. Unless you say otherwise, this is *the* register your editing uses." },
+
+    { "type": "embed", "lesson": 119, "caption": "Yank, delete, paste — all use the unnamed register" },
+
+    {
+      "type": "internals",
+      "title": "It Has a Name: \"\"",
+      "text": "Despite the name, the unnamed register is reachable: {key:\"}{key:\"}{key:p} explicitly pastes from it. So `\"\"` is a register name like any other; \"unnamed\" just means it's the *default*.\n\nEvery one of these commands writes it:\n\n  • Yank: {key:y}{motion}, {key:y}{key:y}, {key:Y}.\n  • Delete: {key:d}{motion}, {key:d}{key:d}, {key:D}, {key:x}, {key:X}.\n  • Change: {key:c}{motion}, {key:c}{key:c}, {key:C}, {key:s}, {key:S}.\n  • Substitute: {key:r}{c} *does not* write the unnamed register (the original character is in the small-delete register {key:\"}{key:-} instead).\n\nAnd these read it: {key:p}, {key:P}, {key:g}{key:p}, {key:g}{key:P}, {key:]}{key:p}, {key:[}{key:p}.\n\nKnowing this is useful because it explains *why* paste sometimes shows you the wrong text — you yanked something, then deleted something, and the delete clobbered the unnamed. The yank is preserved in {key:\"}{key:0} (the yank register); the latest delete is in {key:\"}{key:-} (small-delete) or {key:\"}{key:1} (numbered)."
+    },
+
+    { "type": "tip", "text": "If you want pasting to use the system clipboard instead, set `:set clipboard=unnamedplus` (Linux) or `unnamed` (macOS). That makes the unnamed register *be* the clipboard. See [`registers.clipboard`](#registers.clipboard)." },
+
+    { "type": "example", "ref": "registers.yank-and-paste" },
+    { "type": "qr", "topic": "registers.unnamed" },
+    { "type": "buy-prompt" }
+  ]
+}

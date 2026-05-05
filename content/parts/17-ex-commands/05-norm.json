@@ -1,0 +1,41 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "ex.norm",
+  "title": "Normal (:norm)",
+  "subtitle": "Run Normal-mode keystrokes from Ex.",
+  "part": "ex-commands",
+  "summary": ":norm runs a sequence of Normal-mode keystrokes on each line in a range. Combine with :g for surgical bulk edits — anything you can do with keys, you can do over thousands of lines.",
+  "keys": [":norm"],
+  "lessons": [426, 427],
+  "see_also": ["ex.global", "ex.ranges", "macros.record-play"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Normal" },
+
+    { "type": "prose", "text": "{key::}{key:n}{key:o}{key:r}{key:m} (or `:normal`) runs a string of Normal-mode keys on every line in the range. It's the bridge between *Ex's bulk processing* and *Normal mode's surgical edits*." },
+
+    {
+      "type": "table",
+      "headers": ["Command",                 "Effect"],
+      "rows": [
+        [":%norm A;",                        "Append `;` to every line in file"],
+        [":'<,'>norm I// ",                  "Comment out the visual selection"],
+        [":g/TODO/norm dd",                  "Delete every line containing TODO (= :g/TODO/d)"],
+        [":5,10norm @q",                     "Run macro q on lines 5–10"],
+        [":%norm! 0xx",                      "Strip 2 chars from start of every line, ignoring user mappings"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Why It Pairs So Well With :g",
+      "text": "{key::}{key:g}/pattern/{key::}{key:n}{key:o}{key:r}{key:m} {keys} = \"on every line matching pattern, execute these Normal-mode keys.\"\n\nThe {keys} can be **anything** you'd type in Normal mode: motions, operators, text-object combos, even macro invocations ({key:@}{reg}). It's faster to read than a substitute regex with backreferences, and infinitely more powerful for non-trivial transforms.\n\n**The `!` matters here too.** `:norm!` ignores user-defined mappings — important if you've remapped {key:I} or {key:o} and want the *built-in* behavior. As a rule, scripts always use `:norm!`."
+    },
+
+    { "type": "tip", "text": "Recorded a macro into register q? `:%norm @q` runs it on every line. It's how Vim does bulk transformations." },
+
+    { "type": "qr", "topic": "ex.norm" },
+    { "type": "buy-prompt" }
+  ]
+}

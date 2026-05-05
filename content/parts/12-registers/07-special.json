@@ -1,0 +1,52 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "registers.special",
+  "title": "Special Registers",
+  "subtitle": "\"/ \": \". \"% \"# \"= \"_ — the read-only and weird ones.",
+  "part": "registers",
+  "summary": "Vim provides several read-only registers that contain useful state: \"/ is the last search, \": the last Ex command, \". the last inserted text, \"% the current filename, \"# the alternate file, \"= the expression register, and \"_ the black hole.",
+  "keys": ["\"/", "\":", "\".", "\"%", "\"#", "\"=", "\"_"],
+  "lessons": [483, 484, 485, 486, 487, 488],
+  "see_also": ["registers.overview", "advanced.special-registers", "search.pattern", "ex.substitute"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Special Registers" },
+
+    { "type": "prose", "text": "Beyond the alphabetic and numbered registers, Vim has a small zoo of *special* registers. Most are read-only — Vim writes to them automatically as you work, and you read from them when useful." },
+
+    {
+      "type": "table",
+      "headers": ["Register", "Holds",                                  "Useful for"],
+      "rows": [
+        ["{key:\"}{key:/}",   "Last search pattern",                    "Reusing search in {key::}{key:s}"],
+        ["{key:\"}{key::}",   "Last Ex command",                        "Pasting it to edit and re-run"],
+        ["{key:\"}{key:.}",   "Last inserted text",                     "Re-typing the last Insert content"],
+        ["{key:\"}{key:%}",   "Current filename",                       "Inserting it in commands or buffer"],
+        ["{key:\"}{key:#}",   "Alternate (previous) filename",          "Switch-to-other-file shortcut"],
+        ["{key:\"}{key:=}",   "Expression register (interactive)",      "Insert computed values"],
+        ["{key:\"}{key:_}",   "Black hole — write-only, discards text", "Delete without clobbering registers"]
+      ]
+    },
+
+    { "type": "embed", "lesson": 483, "caption": "\"/ — last search" },
+    { "type": "embed", "lesson": 484, "caption": "\": — last Ex command" },
+    { "type": "embed", "lesson": 485, "caption": "\". — last insert" },
+    { "type": "embed", "lesson": 486, "caption": "\"% / \"# — filenames" },
+    { "type": "embed", "lesson": 487, "caption": "\"= — expression register" },
+    { "type": "embed", "lesson": 488, "caption": "\"_ — black hole" },
+
+    {
+      "type": "internals",
+      "title": "The Two Most Useful: \"_ and \"=",
+      "text": "**{key:\"}{key:_} (black hole)**. Anything written here disappears. Anything read from it is empty. Use it to delete *without affecting any other register*:\n\n  • {key:\"}{key:_}{key:d}{key:d} — delete this line, but don't update unnamed/numbered.\n  • {key:\"}{key:_}{key:c}{key:i}{key:w} — change this word, but keep the previous yank ready to paste.\n  • Visual select something, then {key:\"}{key:_}{key:d}{key:p} — replace selection with the unnamed register's content (delete to black hole, then put).\n\n**{key:\"}{key:=} (expression)**. In Insert mode, {key:Ctrl-R}{key:=} pops up a `=` prompt. Type any Vim expression, hit Enter, and the result is inserted as text. Examples:\n\n  • {key:Ctrl-R}{key:=}`5*7+1`{key:Enter} → inserts `36`.\n  • {key:Ctrl-R}{key:=}`strftime('%Y-%m-%d')`{key:Enter} → today's date.\n  • {key:Ctrl-R}{key:=}`getreg('a')`{key:Enter} → contents of register a (programmatic access).\n\nThis is Vim as a calculator inside its editor."
+    },
+
+    { "type": "tip", "text": "{key:\"}{key:%}{key:p} pastes the current filename into the buffer — useful in commit messages, comments, or generated boilerplate. {key:\"}{key:#}{key:p} pastes the previous file's name." },
+
+    { "type": "tip", "text": "{key:\"}{key:/}{key:p} pastes the last search pattern as text. Combined with {key::}{key:s}, you can reuse a complex pattern: {key::}{key:s}{key:/}{key:Ctrl-R}{key:/}{key:/}{replacement}{key:/}{key:g}." },
+
+    { "type": "qr", "topic": "registers.special" },
+    { "type": "buy-prompt" }
+  ]
+}

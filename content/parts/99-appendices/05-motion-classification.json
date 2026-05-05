@@ -1,0 +1,58 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "appendix.motion-classification",
+  "title": "Motion Classification",
+  "subtitle": "Char-wise vs line-wise vs block, inclusive vs exclusive.",
+  "part": "appendices",
+  "summary": "Every motion has two attributes: shape (char/line/block) and inclusivity (does it include the endpoint?). These attributes change how operators behave.",
+  "keys": [],
+  "lessons": [],
+  "see_also": ["operators-textobjects.grammar"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Motion Classification" },
+
+    { "type": "prose", "text": "Every motion in Vim has two characteristics that determine how operators interact with it. Understanding these explains a lot of \"surprising\" Vim behavior." },
+
+    { "type": "heading", "level": 2, "text": "Shape: char-wise / line-wise / block-wise" },
+
+    {
+      "type": "table",
+      "headers": ["Motion",                            "Shape"],
+      "rows": [
+        ["{key:h}, {key:l}, {key:f}{c}, {key:t}{c}, {key:w}, {key:e}, {key:b}", "Char-wise"],
+        ["{key:j}, {key:k}, {key:G}, {key:g}{key:g}, {key:H}, {key:L}",         "Line-wise"],
+        ["{key:Ctrl-V} only",                                                   "Block-wise"]
+      ]
+    },
+
+    { "type": "prose", "text": "Char-wise motion + delete = delete a range of characters. Line-wise motion + delete = delete whole lines (even partial coverage). This is why {key:d}{key:j} deletes *two whole lines* — {key:j} is line-wise." },
+
+    { "type": "heading", "level": 2, "text": "Inclusivity: does the motion include the destination character?" },
+
+    {
+      "type": "table",
+      "headers": ["Motion",                "Inclusive?"],
+      "rows": [
+        ["{key:f}{c}",                     "Inclusive (includes the {c})"],
+        ["{key:t}{c}",                     "Exclusive (stops *before* {c})"],
+        ["{key:e}, {key:E}",               "Inclusive"],
+        ["{key:w}, {key:b}, {key:W}, {key:B}", "Exclusive"],
+        ["{key:$}",                        "Inclusive"],
+        ["{key:G}, {key:g}{key:g}",        "Linewise (inclusivity moot)"],
+        ["{key:%}",                        "Inclusive"],
+        ["Search ({key:/}, {key:?})",      "Exclusive"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Why It Matters",
+      "text": "{key:d}{key:f}{key:x} deletes from cursor *through* the next x. {key:d}{key:t}{key:x} deletes from cursor *up to* the next x (leaving x in place).\n\n{key:d}{key:e} deletes through the end of the word (the last char of the word IS deleted). {key:d}{key:w} deletes through the *start* of the next word, which often leaves you with a hanging space.\n\n**Force overrides** with {key:v}, {key:V}, {key:Ctrl-V} after the operator:\n\n  • {key:d}{key:v}{key:j} — delete *characterwise* down (instead of the default linewise behavior of `dj`).\n  • {key:d}{key:V}{key:f}{key:x} — delete *linewise* through next x."
+    },
+
+    { "type": "qr", "topic": "appendix.motion-classification" },
+    { "type": "buy-prompt" }
+  ]
+}

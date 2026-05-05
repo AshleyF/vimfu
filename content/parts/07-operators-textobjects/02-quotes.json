@@ -1,0 +1,53 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "operators-textobjects.quotes",
+  "title": "Quote Text Objects",
+  "subtitle": "i\" / a\" / i' / a' — operate on a quoted string without finding its boundaries.",
+  "part": "operators-textobjects",
+  "summary": "i\" is the contents of the surrounding double-quoted string. a\" includes the quotes themselves. Same for ' and `.",
+  "keys": ["i\"", "a\"", "i'", "a'", "i`", "a`"],
+  "lessons": [75, 76, 77],
+  "see_also": ["operators-textobjects.iw-aw", "operators-textobjects.brackets", "operators-textobjects.grammar"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Quote Text Objects" },
+
+    { "type": "prose", "text": "Editing a string literal? Cursor anywhere inside it. {key:c}{key:i}{key:\"} blanks the contents and drops you in to type the new ones. {key:d}{key:a}{key:\"} removes the quotes and contents together." },
+
+    { "type": "keys", "sequence": ["c","i","\""], "label": "Change inside double quotes" },
+    { "type": "keys", "sequence": ["d","a","\""], "label": "Delete the quoted string AND the quotes" },
+    { "type": "keys", "sequence": ["v","i","'"], "label": "Visual-select inside single quotes" },
+    { "type": "keys", "sequence": ["y","i","`"], "label": "Yank inside backticks" },
+
+    { "type": "embed", "lesson": 75, "caption": "i\" / a\" — double quotes" },
+    { "type": "embed", "lesson": 76, "caption": "i' / a' — single quotes" },
+    { "type": "embed", "lesson": 77, "caption": "i` / a` — backticks" },
+
+    {
+      "type": "internals",
+      "title": "How Vim Finds the Quotes",
+      "text": "Quote objects use a different search heuristic from bracket objects. For a quote character `q`, Vim:\n\n  1. Counts the q-characters from the start of the line up to the cursor.\n  2. If the count is **odd**, the cursor is *inside* a quoted region: the matching pair is the most recent q-pair containing the cursor.\n  3. If the count is **even**, the cursor is *outside*: the matching pair is the *next* one to the right.\n\nThis is why you can press {key:c}{key:i}{key:\"} from outside a string and still hit the right one — Vim looks rightward. It also means quote objects don't span multiple lines (the count restarts each line) and they don't understand backslash-escaping inside the string."
+    },
+
+    { "type": "tip", "text": "The three quote characters are {key:\"}, {key:'}, and {key:`} (backtick). All three behave identically — the object character matches the literal quote you typed. You don't need a separate object per language." },
+
+    { "type": "tip", "text": "{key:i}{key:\"} and {key:a}{key:\"} are charwise — the cursor stays on the line. So {key:d}{key:a}{key:\"} doesn't delete the line; it deletes the quoted span and leaves the rest of the line intact." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Object",                "Range"],
+      "rows": [
+        ["{key:i}{key:\"}",                 "Contents of \"…\" (excluding quotes)"],
+        ["{key:a}{key:\"}",                 "\"…\" including the quotes"],
+        ["{key:i}{key:'} / {key:a}{key:'}", "Same for '…'"],
+        ["{key:i}{key:`} / {key:a}{key:`}", "Same for `…`"]
+      ]
+    },
+
+    { "type": "qr", "topic": "operators-textobjects.quotes" },
+    { "type": "buy-prompt" }
+  ]
+}

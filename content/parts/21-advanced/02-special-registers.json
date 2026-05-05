@@ -1,0 +1,49 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "advanced.special-registers",
+  "title": "Special Registers Deep Dive",
+  "subtitle": "%, #, :, ., /, =, _ — the read-only and computed ones.",
+  "part": "advanced",
+  "summary": "Beyond the named and numbered registers, Vim has a set of special registers that hold computed or context-dependent values: filename (%), alternate file (#), last command (:), last insert (.), last search (/), expression (=), and the black hole (_).",
+  "keys": ["%", "#", ":", ".", "/", "=", "_"],
+  "lessons": [484, 486],
+  "see_also": ["registers.special", "insert.from-register"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Special Registers Deep Dive" },
+
+    { "type": "prose", "text": "Beyond {key:a}–{key:z} and {key:0}–{key:9}, Vim has a handful of *special* registers that hold computed values. Most are read-only." },
+
+    {
+      "type": "table",
+      "headers": ["Register", "Holds",                         "Common use"],
+      "rows": [
+        ["{key:%}",  "Current filename",                       "{key:\"}{key:%}{key:p} to paste filename"],
+        ["{key:#}",  "Alternate filename",                     "Reference last edited file"],
+        ["{key::}",  "Last Ex command",                        "{key:@}{key::} replays it"],
+        ["{key:.}",  "Last inserted text",                     "{key:\"}{key:.}{key:p} to paste what you just typed"],
+        ["{key:/}",  "Last search pattern",                    "{key:\"}{key:/}{key:p} to see the regex"],
+        ["{key:=}",  "Expression evaluator",                   "{key:\"}{key:=}{key:1}{key:+}{key:1}{key:Enter}{key:p} pastes `2`"],
+        ["{key:_}",  "Black hole — writes vanish",             "{key:\"}{key:_}{key:d}{key:d} delete without affecting any other register"],
+        ["{key:+}",  "System clipboard",                       "Cross-app cut/paste"],
+        ["{key:*}",  "X11 selection clipboard",                "Linux selection (middle-click)"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "The Black Hole Register",
+      "text": "{key:\"}{key:_} is the *delete-without-yanking* register. Writes go in; reads return nothing.\n\n  • {key:\"}{key:_}{key:d}{key:d} deletes a line *without* clobbering the unnamed register or rotating the numbered registers.\n  • {key:\"}{key:_}{key:d}{key:i}{key:w} deletes a word; your previous yank is preserved for {key:p}.\n\nIndispensable when refactoring: yank some text, then delete other text without losing your yank."
+    },
+
+    {
+      "type": "internals",
+      "title": "The Expression Register",
+      "text": "{key:\"}{key:=} opens a prompt for any Vim expression. The result is stored as the register contents.\n\n  • {key:\"}{key:=}{key:s}{key:t}{key:r}{key:f}{key:t}{key:i}{key:m}{key:e}{key:(}{key:'}{key:%}{key:c}{key:'}{key:)}{key:Enter}{key:p} → pastes the current date.\n  • {key:\"}{key:=}{key:l}{key:i}{key:n}{key:e}{key:(}{key:'}{key:.}{key:'}{key:)}{key:Enter}{key:p} → pastes the current line number.\n  • {key:\"}{key:=}{key:5}{key:*}{key:7}{key:Enter}{key:p} → pastes 35.\n\nFrom Insert mode, {key:Ctrl-R}{key:=} does the same. From the command line, {key:Ctrl-R}{key:=} too."
+    },
+
+    { "type": "qr", "topic": "advanced.special-registers" },
+    { "type": "buy-prompt" }
+  ]
+}

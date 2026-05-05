@@ -1,0 +1,36 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "transform.join",
+  "title": "Joining Lines",
+  "subtitle": "J joins the next line to the current. gJ joins without a space.",
+  "part": "transform",
+  "summary": "J joins the line below to the current line, replacing leading whitespace with a single space (and removing comment leaders intelligently). gJ joins literally, with no whitespace fixup.",
+  "keys": ["J", "gJ"],
+  "lessons": [117, 118],
+  "see_also": ["editing.line-motions"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Joining Lines" },
+
+    { "type": "prose", "text": "{key:J} joins the line below to the current line. By default it inserts a single space and trims leading whitespace from the joined line — almost always what you want for prose and code." },
+
+    { "type": "keys", "sequence": ["J"],     "label": "Join next line (smart: replaces whitespace with space)" },
+    { "type": "keys", "sequence": ["g","J"], "label": "Join next line (literal: no whitespace handling)" },
+    { "type": "keys", "sequence": ["3","J"], "label": "Join 3 lines into one" },
+
+    { "type": "embed", "lesson": 117, "caption": "J — join lines" },
+    { "type": "embed", "lesson": 118, "caption": "gJ — literal join" },
+
+    {
+      "type": "internals",
+      "title": "What J Actually Does",
+      "text": "{key:J}'s rules:\n\n  1. Remove the trailing newline of the current line.\n  2. Strip leading whitespace from the joined-in line.\n  3. Strip any comment leader (`//`, `#`, `*`) if `'formatoptions'` includes `j` and the line being absorbed is in the same comment block.\n  4. Insert *one space* between the joined parts (zero spaces if joining to a line that ended in `(`, or if the next line started with `)`).\n\n{key:g}{key:J}: take *only* step 1. Pure newline removal — useful for joining lines that are intentionally adjacent without whitespace, like splitting a long URL or hex string back together.\n\nWith a count, {key:{n}}{key:J} joins n lines (the current plus n-1 below). The count is *number of lines involved*, not number of joins — so {key:2}{key:J} = {key:J} (joins one line into the current)."
+    },
+
+    { "type": "tip", "text": "In Visual mode, {key:J} joins all selected lines. {key:V}-select-3-lines-{key:J} joins them all into one." },
+
+    { "type": "qr", "topic": "transform.join" },
+    { "type": "buy-prompt" }
+  ]
+}

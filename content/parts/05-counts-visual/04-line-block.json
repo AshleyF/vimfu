@@ -1,0 +1,54 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "counts-visual.line-block",
+  "title": "Line and Block Visual",
+  "subtitle": "V selects whole lines. Ctrl-V selects rectangles.",
+  "part": "counts-visual",
+  "summary": "V enters linewise Visual: motions extend the selection by whole lines. Ctrl-V enters blockwise Visual: the selection is a rectangle, useful for column edits.",
+  "keys": ["V", "Ctrl-V"],
+  "lessons": [65, 66, 67],
+  "see_also": ["counts-visual.char-visual", "visual.block-insert-append", "transform.indent"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Line and Block Visual" },
+
+    { "type": "prose", "text": "{key:v} selects characters. Two more visual modes select differently-shaped regions: {key:V} for whole lines, {key:Ctrl-V} for rectangles." },
+
+    { "type": "keys", "sequence": ["V"],       "label": "Linewise Visual" },
+    { "type": "keys", "sequence": ["Ctrl-V"],  "label": "Blockwise Visual (rectangular)" },
+
+    { "type": "embed", "lesson": 65, "caption": "V — linewise Visual" },
+    { "type": "embed", "lesson": 66, "caption": "Ctrl-V — blockwise Visual" },
+    { "type": "embed", "lesson": 67, "caption": "Block edits in action" },
+
+    { "type": "tip", "text": "From any Visual mode, press {key:v}, {key:V}, or {key:Ctrl-V} to *switch* to that mode while keeping the selection." },
+
+    {
+      "type": "internals",
+      "title": "Three Modes, Three Selection Shapes",
+      "text": "Internally Vim represents selections as (anchor, cursor, *type*) where type is `char`, `line`, or `block`. The type changes how operators behave:\n\n  • **Charwise** ({key:v}) — operators see a contiguous span of bytes from anchor to cursor.\n  • **Linewise** ({key:V}) — operators see whole lines containing anchor and cursor. Column position doesn't matter.\n  • **Blockwise** ({key:Ctrl-V}) — operators see a *rectangle*. Yanks come back blockwise, paste back as rectangles, and {key:I} / {key:A} work on every line of the block (see [`visual.block-insert-append`](#visual.block-insert-append))."
+    },
+
+    {
+      "type": "internals",
+      "title": "Block Mode Is the Killer Feature for Columns",
+      "text": "Block-visual on a column lets you insert, append, change, or delete *down a column* across many lines. Common uses:\n\n  • Add `// ` to many lines: {key:Ctrl-V}-select-down-{key:I}{key:/}{key:/}{key:Space}{key:Esc}. The prefix is duplicated to every line of the block.\n  • Replace a column of values: {key:Ctrl-V}-select-rectangle-{key:c}-type-replacement-{key:Esc}.\n  • Delete a column of leading whitespace: {key:Ctrl-V}-select-the-leading-spaces-{key:d}.\n\nThe {key:I}/{key:A}-replicates-to-every-line trick happens *only* in block mode and *only* with capital {key:I} / {key:A} (not lowercase {key:i} / {key:a})."
+    },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",          "Selection shape"],
+      "rows": [
+        ["{key:v}",                "Characters from anchor to cursor"],
+        ["{key:V}",                "Whole lines"],
+        ["{key:Ctrl-V}",           "Rectangle (block)"]
+      ]
+    },
+
+    { "type": "qr", "topic": "counts-visual.line-block" },
+    { "type": "buy-prompt" }
+  ]
+}

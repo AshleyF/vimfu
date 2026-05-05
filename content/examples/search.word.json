@@ -1,0 +1,63 @@
+{
+  "format": "vimfu-content-example",
+  "version": 1,
+  "id": "search.word",
+  "title": "* on a word",
+  "summary": "Search for the current word, no typing required.",
+  "topic": "search.word",
+  "frames": [
+    {
+      "compact": {
+        "rows": 10,
+        "cols": 40,
+        "lines": [
+          "foo bar foo baz",
+          "foo qux"
+        ],
+        "cursor": [
+          0,
+          8
+        ]
+      },
+      "caption": "Cursor on second 'foo'."
+    },
+    {
+      "compact": {
+        "rows": 10,
+        "cols": 40,
+        "lines": [
+          "foo bar foo baz",
+          "foo qux",
+          "/\\<foo\\>"
+        ],
+        "cursor": [
+          1,
+          0
+        ],
+        "highlights": [
+          {
+            "row": 0,
+            "col": 0,
+            "len": 3,
+            "bg": "666666"
+          },
+          {
+            "row": 0,
+            "col": 8,
+            "len": 3,
+            "bg": "666666"
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "len": 3,
+            "bg": "666666"
+          }
+        ]
+      },
+      "caption": "* \u2014 searched for \\<foo\\>; jumped to the next.",
+      "narration": "* turns the cursor word into a search pattern with word boundaries (\\<...\\>) so 'foobar' won't match. # is the same backward.",
+      "keys": "*"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "cmdline.repeat-ex",
+  "title": "Repeat Last Ex (@:)",
+  "subtitle": "@: replays your last :command. Then @@ repeats again.",
+  "part": "command-line-power",
+  "summary": "@: replays the last Ex command. After running it once, @@ does it again. The same as macro replay — because Ex history is essentially a macro of one command.",
+  "keys": ["@:", "@@"],
+  "lessons": [448, 448],
+  "see_also": ["cmdline.history-window", "macros.record-play"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Repeat Last Ex" },
+
+    { "type": "prose", "text": "Most operators have a repeat key ({key:.}). Ex commands have their own: {key:@}{key::}." },
+
+    {
+      "type": "keys",
+      "label": "Replay the last :command",
+      "sequence": [
+        { "key": "@:",    "note": "Re-runs the last Ex command" },
+        { "key": "@@",    "note": "Repeats whatever @: just ran" }
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Why It's @ and Not .",
+      "text": "{key:.} replays the last *change* — the last edit that modified the buffer through Normal-mode editing. Ex commands aren't part of that history; they're a separate, parallel stream.\n\n{key:@}{reg} runs the contents of register `reg` as keystrokes. The colon register `:` always holds the last Ex command typed. So {key:@}{key::} just runs that register — the same mechanism as macro playback ({key:@}{key:q}).\n\nAfter {key:@}{key::}, the macro-replay register becomes `:`, so {key:@}{key:@} (replay last macro) runs the same Ex command again. This is why bulk operations chain naturally: `:s/foo/bar/` then `nnn` (search next) `@:` `@:` `@:`."
+    },
+
+    { "type": "qr", "topic": "cmdline.repeat-ex" },
+    { "type": "buy-prompt" }
+  ]
+}

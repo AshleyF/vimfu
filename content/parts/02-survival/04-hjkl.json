@@ -1,0 +1,76 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "survival.hjkl",
+  "title": "Move with hjkl",
+  "subtitle": "Left, down, up, right — without leaving home row",
+  "part": "survival",
+  "summary": "h j k l move the cursor one cell at a time. Hands stay on the home row. Arrow keys also work but defeat the purpose.",
+  "keys": ["h", "j", "k", "l", "Left", "Down", "Up", "Right"],
+  "lessons": [13, 14],
+  "see_also": ["editing.word-motions", "editing.line-motions", "editing.file-motions", "wider-motions.WORD"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Move with hjkl" },
+
+    { "type": "prose", "text": "Four keys to move the cursor one cell at a time:" },
+
+    {
+      "type": "table",
+      "headers": ["Key",      "Direction", "Mnemonic"],
+      "rows": [
+        ["{key:h}",            "Left",      "h is on the left of the home row"],
+        ["{key:j}",            "Down",      "j has a hook that points down"],
+        ["{key:k}",            "Up",        "k is right next to j; the one above"],
+        ["{key:l}",            "Right",     "l is the last of the four"]
+      ]
+    },
+
+    { "type": "embed", "lesson": 13, "caption": "Moving with hjkl" },
+
+    { "type": "prose", "text": "Counts work: {key:5}{key:j} moves down five lines, {key:1}{key:0}{key:l} moves right ten characters." },
+
+    { "type": "heading", "level": 2, "text": "Why not arrow keys?" },
+
+    { "type": "prose", "text": "The arrow keys also work. Vim accepts them. But they live a few inches away from the home row. Every time your fingers leave home row, you spend a beat finding it again. Over a day of editing, those beats add up." },
+
+    { "type": "prose", "text": "More importantly, {key:hjkl} are right under your fingers when you are *about to issue a command*. {key:d}{key:j} deletes a line down. {key:y}{key:5}{key:k} yanks five lines up. The cursor keys can't combine like this — they aren't part of the grammar." },
+
+    { "type": "embed", "lesson": 14, "caption": "Why not arrow keys?" },
+
+    { "type": "tip", "text": "Some Vimmers turn off the arrow keys to break the habit. You don't have to be that strict. Just notice when you reach for them; that's when {key:hjkl} would be faster." },
+
+    {
+      "type": "internals",
+      "title": "Why hjkl?",
+      "text": "Bill Joy wrote vi on an ADM-3A terminal at UC Berkeley in 1976. The ADM-3A keyboard had no dedicated arrow keys — instead, the {key:h}, {key:j}, {key:k}, {key:l} keys were physically labeled with left/down/up/right arrows. Joy reused the existing terminal control codes those keys produced. The ADM-3A is long dead; the convention lives.\n\nIt turns out to be a real ergonomic win: those four keys are on the home row of the dominant hand for most touch-typists. If Joy had been working on a different terminal — one with arrow keys somewhere else — modern Vim would feel different. As it stands, the right hand never leaves the home row to navigate."
+    },
+
+    {
+      "type": "internals",
+      "title": "Sticky Column",
+      "text": "When you move {key:k} or {key:j} up and down, the cursor tries to stay in the same *column* — even across lines that are too short to reach that column. If you're at column 30 and you press {key:j} onto a line of length 10, the cursor lands at column 10 (the end). Press {key:j} again onto a line of length 50: the cursor returns to column 30, not column 10. Vim remembers your *intended* column.\n\nHorizontal motions ({key:h}, {key:l}, {key:w}, {key:f}, etc.) reset the sticky column. So a right-moving motion in the middle of vertical navigation will cost you the original column.\n\nThis is the cause of the frequent \"I pressed {key:j} a few times and the cursor walked left\" surprise — you crossed a short line. The cursor is following the rules; the rules just don't match terminal-emulator intuition."
+    },
+
+    { "type": "divider" },
+
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key", "Action"],
+      "rows": [
+        ["{key:h}",            "One character left"],
+        ["{key:j}",            "One line down"],
+        ["{key:k}",            "One line up"],
+        ["{key:l}",            "One character right"],
+        ["{key:{n}}{key:j}",   "*n* lines down (etc.)"],
+        ["{key:Backspace}",    "One character left, wrapping to previous line at column 0"],
+        ["{key:Space}",        "One character right, wrapping to next line at end of line"],
+        ["{key:gj}, {key:gk}", "By *visual* line — useful when wrap is on (deeper dive in `wider-motions.line-start`)"]
+      ]
+    },
+
+    { "type": "qr", "topic": "survival.hjkl" },
+    { "type": "buy-prompt" }
+  ]
+}

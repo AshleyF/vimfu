@@ -1,0 +1,192 @@
+{
+  "title": "VimFu — zz Center Cursor",
+  "description": "zz scrolls the screen so the cursor line is at the vertical center. Essential for keeping context visible while editing.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 383,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scrolling"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tower.py .tower.py.swp .tower.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*tower.py*"
+    },
+    {
+      "comment": "Create demo file — needs enough lines to scroll"
+    },
+    {
+      "writeFile": "tower.py",
+      "content": "# Tower Defense\nimport math\n\nclass Tower:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n        self.level = 1\n        self.range = 5\n        self.damage = 10\n\n    def upgrade(self):\n        self.level += 1\n        self.range += 2\n        self.damage *= 1.5\n\n    def can_hit(self, enemy):\n        dist = math.sqrt(\n            (self.x - enemy.x) ** 2 +\n            (self.y - enemy.y) ** 2\n        )\n        return dist <= self.range\n\n    def fire(self, enemy):\n        if self.can_hit(enemy):\n            enemy.hp -= self.damage\n            return True\n        return False\n\nclass Enemy:\n    def __init__(self, hp, speed):\n        self.hp = hp\n        self.speed = speed\n        self.x = 0\n        self.y = 0\n\n    def move(self, path):\n        self.x += self.speed\n\n    def is_alive(self):\n        return self.hp > 0"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' tower.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zz Center Cursor",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z Z scrolls the screen so your cursor line is in the center. It doesn't move the cursor, it moves the viewport."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: cursor near top, center it ---"
+    },
+    {
+      "say": "The cursor is on line one. Jump to line fifteen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "15G",
+      "overlay": "go to line 15"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Line fifteen is near the bottom. Z Z to center it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zz",
+      "overlay": "center cursor"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now line fifteen is in the middle of the screen. Code above and below is visible."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump to bottom area ---"
+    },
+    {
+      "say": "Jump to line thirty.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "30G",
+      "overlay": "go to line 30"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The cursor is at the very bottom. Z Z.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zz",
+      "overlay": "center cursor"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Centered again. You can see both the function above and below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z Z. Center the cursor line. Use it whenever you want more context around your code."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f tower.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "ss-UEr1dsLI",
+    "url": "https://youtube.com/watch?v=ss-UEr1dsLI"
+  }
+}

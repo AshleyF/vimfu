@@ -1,0 +1,49 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "insert.from-register",
+  "title": "Inserting from a Register",
+  "subtitle": "Ctrl-R is paste — but with a twist.",
+  "part": "insert-mode-power",
+  "summary": "Ctrl-R{reg} pastes a register contents from inside Insert mode. Ctrl-R Ctrl-O pastes literally (no formatting); Ctrl-R Ctrl-P pastes and re-indents.",
+  "keys": ["Ctrl-R"],
+  "lessons": [379, 381],
+  "see_also": ["registers.unnamed", "registers.special", "insert.literal-digraph"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Inserting from a Register" },
+
+    { "type": "prose", "text": "{key:Ctrl-R}{reg} from Insert mode pastes the contents of any register. Unlike Normal-mode {key:p}, this works *inline*: characters appear at the cursor as if you'd typed them." },
+
+    {
+      "type": "keys",
+      "label": "Sequence",
+      "sequence": [
+        { "key": "Ctrl-R", "note": "Vim shows a `\"` prompt, waits for register name" },
+        { "key": "reg",    "note": "Any register: a-z, 0-9, +, *, /, :, %, .…" }
+      ]
+    },
+
+    {
+      "type": "table",
+      "headers": ["Variant",                   "Behavior"],
+      "rows": [
+        ["{key:Ctrl-R}{key:a}",                "Insert register a, processed normally"],
+        ["{key:Ctrl-R}{key:Ctrl-O}{key:a}",    "Insert register a *literally* (no autoindent, no abbreviations)"],
+        ["{key:Ctrl-R}{key:Ctrl-P}{key:a}",    "Insert register a and re-indent"],
+        ["{key:Ctrl-R}{key:=}{expr}{key:Enter}", "Evaluate an expression, insert the result"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "What Does Each Variant Do",
+      "text": "Plain {key:Ctrl-R}{reg} processes the inserted text as if you'd typed it: special characters like {key:<CR>} or {key:<Tab>} act like real keypresses, autoindent triggers, abbreviations expand. That's good for plain text; bad if your register contains code with leading whitespace.\n\n{key:Ctrl-R}{key:Ctrl-O}{reg} is the literal version — paste exactly the bytes, no interpretation. Use this for code with significant indentation.\n\n{key:Ctrl-R}{key:Ctrl-P}{reg} pastes and re-indents per current `'indentexpr'`. Useful for moving code between contexts.\n\n{key:Ctrl-R}{key:=} opens the *expression register* prompt — type any Vim expression (math, function call, variable) and the result is inserted. {key:Ctrl-R}{key:=}{key:5}{key:*}{key:7}{key:Enter} inserts `35`."
+    },
+
+    { "type": "tip", "text": "{key:Ctrl-R}{key:\"} pastes the unnamed register. {key:Ctrl-R}{key:0} pastes the last yank. {key:Ctrl-R}{key:+} pastes the system clipboard." },
+
+    { "type": "qr", "topic": "insert.from-register" },
+    { "type": "buy-prompt" }
+  ]
+}

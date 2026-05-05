@@ -1,0 +1,47 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "appendix.synonyms",
+  "title": "Synonyms and Shortcuts",
+  "subtitle": "Equivalent commands you'll see in different vimrcs.",
+  "part": "appendices",
+  "summary": "Many Vim commands have multiple keystroke spellings — D = d$, C = c$, S = cc, x = dl, X = dh, etc. Knowing the synonyms helps you read other people's code and your own old macros.",
+  "keys": [],
+  "lessons": [],
+  "see_also": ["appendix.complete-key-reference"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Synonyms and Shortcuts" },
+
+    { "type": "prose", "text": "Vim has many *single-key shortcuts* that compress an operator+motion pair. Knowing them helps you type faster and read other people's keystrokes." },
+
+    {
+      "type": "table",
+      "headers": ["Shortcut", "Equivalent",       "Meaning"],
+      "rows": [
+        ["{key:D}",    "d$",                       "Delete to end of line"],
+        ["{key:C}",    "c$",                       "Change to end of line"],
+        ["{key:Y}",    "yy (NOT y$ — historical wart)", "Yank line"],
+        ["{key:S}",    "cc",                       "Change whole line"],
+        ["{key:s}",    "cl",                       "Substitute one char"],
+        ["{key:x}",    "dl",                       "Delete char forward"],
+        ["{key:X}",    "dh",                       "Delete char backward"],
+        ["{key:&}",    ":s",                       "Repeat last substitute (current line)"],
+        ["{key:Z}{key:Z}",   ":x",                 "Save if changed, quit"],
+        ["{key:Z}{key:Q}",   ":q!",                "Quit, discard changes"],
+        ["{key:U}",    "(per-line undo, rarely used)", ""],
+        ["{key:.}",    "(repeat last change)",     ""],
+        ["{key:&}",    ":&",                       "Repeat last :s"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "The Y Wart",
+      "text": "Logically {key:Y} should be {key:y}{key:$} (yank to end of line) — that's the pattern set by {key:D} and {key:C}. But for historical reasons {key:Y} is {key:y}{key:y} (yank whole line).\n\nMany users add `nnoremap Y y$` to their vimrc to fix this. Neovim made this the default in 0.6+."
+    },
+
+    { "type": "qr", "topic": "appendix.synonyms" },
+    { "type": "buy-prompt" }
+  ]
+}

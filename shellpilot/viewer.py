@@ -129,10 +129,11 @@ class TerminalViewer:
         'DELETE': '⌦',
         'INSERT': '⎀',
         # Control characters (Ctrl+letter) — display as ⌃ + letter
+        # \x08=\b(⌫), \x09=\t(⇥), \x0a=\n(⏎), \x0d=\r(⏎) are mapped above
+        # with friendly symbols; Ctrl steps use the modifier path instead.
         '\x01': '⌃a', '\x02': '⌃b', '\x03': '⌃c', '\x04': '⌃d',
         '\x05': '⌃e', '\x06': '⌃f', '\x07': '⌃g',
-        '\x08': '⌃h', '\x09': '⌃i', '\x0a': '⌃j',
-        '\x0b': '⌃k', '\x0c': '⌃l', '\x0d': '⌃m',
+        '\x0b': '⌃k', '\x0c': '⌃l',
         '\x0e': '⌃n', '\x0f': '⌃o', '\x10': '⌃p',
         '\x11': '⌃q', '\x12': '⌃r', '\x13': '⌃s', '\x14': '⌃t',
         '\x15': '⌃u', '\x16': '⌃v', '\x17': '⌃w',

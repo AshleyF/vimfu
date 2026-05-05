@@ -1,0 +1,39 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "transform.case",
+  "title": "Case Changing",
+  "subtitle": "~ flips one character. gU/gu/g~ are operators.",
+  "part": "transform",
+  "summary": "~ toggles the case of the character under the cursor. gU is an uppercase operator; gu is lowercase; g~ toggles. Each takes a motion: gUiw uppercases the inner word.",
+  "keys": ["~", "gU", "gu", "g~"],
+  "lessons": [112, 113, 114, 115, 116],
+  "see_also": ["foundations.universal-grammar", "operators-textobjects.grammar"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Case Changing" },
+
+    { "type": "prose", "text": "Three operators for case: {key:g}{key:U} uppercases, {key:g}{key:u} lowercases, {key:g}{key:~} toggles. Each takes a motion, just like {key:d} and {key:y}. {key:~} alone is a one-shot toggle of the character under the cursor." },
+
+    { "type": "keys", "sequence": ["~"],         "label": "Toggle case of cursor character" },
+    { "type": "keys", "sequence": ["g","U","i","w"], "label": "Uppercase inner word" },
+    { "type": "keys", "sequence": ["g","u","i","w"], "label": "Lowercase inner word" },
+    { "type": "keys", "sequence": ["g","~","i","w"], "label": "Toggle inner word" },
+    { "type": "keys", "sequence": ["g","U","U"],     "label": "Uppercase whole line" },
+
+    { "type": "embed", "lesson": 112, "caption": "~ — toggle case" },
+    { "type": "embed", "lesson": 113, "caption": "gU — uppercase operator" },
+    { "type": "embed", "lesson": 114, "caption": "gu — lowercase operator" },
+    { "type": "embed", "lesson": 115, "caption": "g~ — toggle case operator" },
+    { "type": "embed", "lesson": 116, "caption": "Doubled forms (gUU, guu, g~~)" },
+
+    {
+      "type": "internals",
+      "title": "More Grammar Showing Through",
+      "text": "{key:g}{key:U}, {key:g}{key:u}, {key:g}{key:~} are operators by the same pattern as {key:d}, {key:c}, {key:y}, {key:>}. Every motion or text object pairs:\n\n  • {key:g}{key:U}{key:G} — uppercase to end of file.\n  • {key:g}{key:U}{key:a}{key:p} — uppercase a paragraph.\n  • {key:g}{key:U}{key:a}{key:'} — uppercase the contents of a single-quoted string (including the quotes).\n  • {key:g}{key:U}{key:U} — uppercase the line (the doubled form).\n\n{key:~} (single tilde) is one-shot like {key:x}: it works on a character and accepts a count. {key:5}{key:~} toggles the case of the next 5 chars.\n\n`'tildeop'` makes {key:~} *itself* into an operator (so {key:~}{key:i}{key:w} would toggle inner word). Off by default — {key:g}{key:~}{key:i}{key:w} is the consistent way."
+    },
+
+    { "type": "qr", "topic": "transform.case" },
+    { "type": "buy-prompt" }
+  ]
+}

@@ -1,0 +1,1 @@
+"""VimFu content rendering library."""

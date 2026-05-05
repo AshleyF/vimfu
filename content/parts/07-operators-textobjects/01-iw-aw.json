@@ -1,0 +1,55 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "operators-textobjects.iw-aw",
+  "title": "Inner Word vs A Word",
+  "subtitle": "iw and aw — the first text objects.",
+  "part": "operators-textobjects",
+  "summary": "Text objects produce a (start, end) range *without* using the cursor. iw is the word the cursor is in. aw is that word plus surrounding whitespace.",
+  "keys": ["iw", "aw"],
+  "lessons": [74],
+  "see_also": ["operators-textobjects.grammar", "operators-textobjects.quotes", "operators-textobjects.brackets", "editing.word-motions"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Inner Word vs A Word" },
+
+    { "type": "prose", "text": "Up to now, the noun in operator+motion has been a *motion* — a path from where you are to where you'll end up. **Text objects** change that. They name a chunk of text directly, no path required. The first one to learn is the word." },
+
+    { "type": "keys", "sequence": ["d","i","w"], "label": "Delete the word the cursor is on (no spaces)" },
+    { "type": "keys", "sequence": ["d","a","w"], "label": "Delete the word AND the surrounding space" },
+    { "type": "keys", "sequence": ["c","i","w"], "label": "Change just the word" },
+    { "type": "keys", "sequence": ["y","a","w"], "label": "Yank the word and a space" },
+
+    { "type": "embed", "lesson": 74, "caption": "iw vs aw — inner vs around" },
+
+    {
+      "type": "internals",
+      "title": "i Means \"Inner.\" a Means \"Around.\"",
+      "text": "Every text object comes in two flavors:\n\n  • {key:i}{noun} — **inner**: the noun itself, *without* delimiters or surrounding whitespace.\n  • {key:a}{noun} — **around**: the noun *with* its delimiters or trailing whitespace.\n\nFor a word ({key:i}{key:w} / {key:a}{key:w}), there are no delimiters — just whitespace. So:\n\n  • {key:i}{key:w} = the keyword characters under the cursor.\n  • {key:a}{key:w} = the word + the trailing space (or leading space if at end of line).\n\nFor a quoted string, {key:i}{key:\"} is what's between the quotes; {key:a}{key:\"} includes the quotes. For parens, {key:i}{key:(} is the contents; {key:a}{key:(} includes the parens themselves. Same `i`/`a` rule everywhere."
+    },
+
+    {
+      "type": "internals",
+      "title": "Why Text Objects Aren't Motions",
+      "text": "A motion takes you from the cursor *to* somewhere else. So {key:d}{key:w} deletes from the cursor *forward* to the start of the next word. The cursor's position matters.\n\nA text object is **cursor-position-tolerant**: if the cursor is anywhere inside the chunk, the chunk is the chunk. {key:d}{key:i}{key:w} on any character of `foo` deletes `foo`. You don't need to be at the start.\n\nThis is why text objects are easier on your fingers than motions for in-place edits. Combined with {key:c}{key:i}{key:w} for \"change-this-word-no-matter-where-the-cursor-is,\" they're the workhorse of Vim editing."
+    },
+
+    { "type": "tip", "text": "Word objects use the same {key:'iskeyword'} setting as {key:w}. So in `foo->bar`, {key:c}{key:i}{key:w} on `foo` changes just `foo`. WORD objects ({key:i}{key:W}, {key:a}{key:W}) treat anything-not-whitespace as the word — change the whole `foo->bar`." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Object",                  "Range"],
+      "rows": [
+        ["{key:i}{key:w}",                   "Word (keyword chars only)"],
+        ["{key:a}{key:w}",                   "Word + surrounding whitespace"],
+        ["{key:i}{key:W}",                   "WORD (whitespace boundaries)"],
+        ["{key:a}{key:W}",                   "WORD + surrounding whitespace"]
+      ]
+    },
+
+    { "type": "qr", "topic": "operators-textobjects.iw-aw" },
+    { "type": "buy-prompt" }
+  ]
+}

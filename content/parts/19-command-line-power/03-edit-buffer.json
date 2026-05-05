@@ -1,0 +1,44 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "cmdline.edit-buffer",
+  "title": "Editing the Command Line",
+  "subtitle": "Ctrl-B, Ctrl-E, Ctrl-W, Ctrl-U — readline-flavored.",
+  "part": "command-line-power",
+  "summary": "Inside the : prompt you have a small editing keyset: Ctrl-B/Ctrl-E for line ends, Ctrl-W to delete word, Ctrl-U to clear, arrow keys, and Ctrl-Left/Ctrl-Right for word jumps.",
+  "keys": ["Ctrl-B", "Ctrl-E", "Ctrl-W", "Ctrl-U", "Ctrl-H"],
+  "lessons": [449, 450],
+  "see_also": ["insert.editing-keys", "cmdline.completion"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Editing the Command Line" },
+
+    { "type": "prose", "text": "The {key::} prompt is its own mini-editor. The keys are familiar from Insert mode and from readline." },
+
+    {
+      "type": "table",
+      "headers": ["Key",            "Action"],
+      "rows": [
+        ["{key:Ctrl-B}",             "Beginning of command line"],
+        ["{key:Ctrl-E}",             "End of command line"],
+        ["{key:Ctrl-Left} / {key:Ctrl-Right}", "Word back / forward"],
+        ["{key:Ctrl-H} / {key:Backspace}", "Delete previous char"],
+        ["{key:Ctrl-W}",             "Delete previous word"],
+        ["{key:Ctrl-U}",             "Delete to start of line"],
+        ["{key:Ctrl-R}{reg}",        "Insert register contents (as in Insert mode)"],
+        ["{key:Ctrl-R}{key:=}{expr}",   "Insert expression result"],
+        ["{key:Ctrl-F}",             "Open command-line *window* for full editing"],
+        ["{key:Esc}",                "Cancel"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "The Word Under Cursor — Ctrl-R Ctrl-W",
+      "text": "{key:Ctrl-R}{key:Ctrl-W} from the command line inserts the **word under the cursor in the buffer**. Combine with substitute: position cursor on a name, then `:%s/<Ctrl-R><Ctrl-W>/newname/g` — type once, get the word inserted automatically.\n\nVariants:\n\n  • {key:Ctrl-R}{key:Ctrl-A} — WORD under cursor.\n  • {key:Ctrl-R}{key:Ctrl-F} — filename under cursor.\n  • {key:Ctrl-R}{key:Ctrl-L} — entire current line.\n\nAll save typing when the thing you want to type is already in the buffer."
+    },
+
+    { "type": "qr", "topic": "cmdline.edit-buffer" },
+    { "type": "buy-prompt" }
+  ]
+}

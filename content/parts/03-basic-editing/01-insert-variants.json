@@ -1,0 +1,60 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "editing.insert-variants",
+  "title": "More Ways into Insert",
+  "subtitle": "Five doors into Insert mode — pick the one that lands the cursor where you want.",
+  "part": "editing",
+  "summary": "i and a are the two basic doors into Insert mode. I, A, o, O are the convenience doors that combine a motion with the entry.",
+  "keys": ["i", "a", "I", "A", "o", "O"],
+  "lessons": [16, 17, 18, 19, 20],
+  "see_also": ["survival.insert-and-back", "editing.line-motions", "foundations.universal-grammar"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "More Ways into Insert" },
+
+    { "type": "prose", "text": "{key:i} inserts *before* the cursor. {key:a} appends *after*. That covers most of life — but Vim gives you four more doors that do a useful little motion on the way in." },
+
+    { "type": "keys", "sequence": ["i"], "label": "Insert before cursor" },
+    { "type": "keys", "sequence": ["a"], "label": "Append after cursor" },
+    { "type": "keys", "sequence": ["I"], "label": "Insert at first non-blank of line" },
+    { "type": "keys", "sequence": ["A"], "label": "Append at end of line" },
+    { "type": "keys", "sequence": ["o"], "label": "Open new line below, insert" },
+    { "type": "keys", "sequence": ["O"], "label": "Open new line above, insert" },
+
+    { "type": "embed", "lesson": 16, "caption": "a — append after cursor" },
+    { "type": "embed", "lesson": 17, "caption": "I — insert at first non-blank" },
+    { "type": "embed", "lesson": 18, "caption": "A — append at end of line" },
+    { "type": "embed", "lesson": 19, "caption": "o — open line below" },
+    { "type": "embed", "lesson": 20, "caption": "O — open line above" },
+
+    { "type": "tip", "text": "Notice the pattern: the lowercase letter does the obvious thing at the cursor; the uppercase letter does the *bigger* version (start/end of line, or line above/below)." },
+
+    {
+      "type": "internals",
+      "title": "These Are Just Motions + i",
+      "text": "Internally, {key:I} is exactly {key:^}{key:i} — jump to first non-blank, then enter Insert mode. {key:A} is {key:$}{key:a}. {key:o} and {key:O} create a new line (respecting `'autoindent'` and `'indentexpr'`) and drop you into Insert mode at column 0 of it.\n\nThis matters because Vim doesn't really have six \"insert commands.\" It has *one* (the mode transition), composed with motions you already know. Once you internalize that, the keyboard stops feeling arbitrary."
+    },
+
+    { "type": "tip", "text": "All six are *changes*. {key:.} repeats whatever you typed in Insert mode (along with the entry command). So {key:o}-type-a-line, then {key:.}, opens another line below and types the same line again." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key", "Where the cursor lands", "Equivalent"],
+      "rows": [
+        ["{key:i}", "Before cursor", "—"],
+        ["{key:a}", "After cursor", "—"],
+        ["{key:I}", "First non-blank of line", "{key:^}{key:i}"],
+        ["{key:A}", "End of line", "{key:$}{key:a}"],
+        ["{key:o}", "New line below current", "{key:$}{key:a}{key:Enter}"],
+        ["{key:O}", "New line above current", "{key:0}{key:i}{key:Enter}{key:Up}"],
+        ["{key:gi}", "Last place you left Insert mode", "—"]
+      ]
+    },
+
+    { "type": "qr", "topic": "editing.insert-variants" },
+    { "type": "buy-prompt" }
+  ]
+}

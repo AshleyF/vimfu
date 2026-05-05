@@ -1,0 +1,41 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "visual.gv",
+  "title": "gv — Re-Select",
+  "subtitle": "Bring back the last visual selection.",
+  "part": "visual-depth",
+  "summary": "gv re-enters Visual mode with the same selection you last had — same shape, same endpoints. Essential for re-applying an operator to the same region.",
+  "keys": ["gv"],
+  "lessons": [444, 445],
+  "see_also": ["visual.range", "visual.ops"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "gv — Re-Select" },
+
+    { "type": "prose", "text": "{key:g}{key:v} re-enters Visual mode with the *exact same selection* you last had — same shape, same lines, same characters." },
+
+    {
+      "type": "keys",
+      "label": "Re-indent without re-selecting",
+      "sequence": [
+        { "key": "V5j",   "note": "Select 6 lines" },
+        { "key": ">",     "note": "Indent — selection lost" },
+        { "key": "gv",    "note": "Bring it back" },
+        { "key": ">",     "note": "Indent again" },
+        { "key": "gv>",   "note": "Or just `gv>` repeatedly" }
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Where the Selection Is Stored",
+      "text": "{key:g}{key:v} reads the special marks {key:`}{key:<} and {key:`}{key:>} (start and end of last visual) plus an internal record of the *visual mode shape* (character/line/block) that was active. Together those three things are enough to recreate any visual selection.\n\nThe selection persists across:\n\n  • Mode changes (Normal/Insert/Ex)\n  • Cursor moves\n  • Most edits — though if your edit *removes* the selected text, gv may select an empty or unexpected region.\n\n{key:g}{key:v} doesn't survive `:e` (re-edit). The marks are buffer-local: each buffer has its own last-visual."
+    },
+
+    { "type": "tip", "text": "After a {key::}{key:s} substitution that you ran on a visual selection, {key:g}{key:v} brings the (modified) selection back so you can re-substitute or re-indent." },
+
+    { "type": "qr", "topic": "visual.gv" },
+    { "type": "buy-prompt" }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "ex.set",
+  "title": "Setting Options (:set)",
+  "subtitle": "How options work, and the conventions you'll see in every vimrc.",
+  "part": "ex-commands",
+  "summary": ":set toggles or assigns options. :set option turns it on; :set nooption turns it off; :set option! toggles; :set option=value assigns; :set option? queries.",
+  "keys": [":set"],
+  "lessons": [430, 430],
+  "see_also": ["advanced.config"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Setting Options" },
+
+    { "type": "prose", "text": "Options are Vim's settings — there are over 300. Every vimrc is mostly `:set` calls. The syntax is consistent once you learn the conventions." },
+
+    {
+      "type": "table",
+      "headers": ["Form",                       "Effect"],
+      "rows": [
+        [":set",                                "Show options that differ from defaults"],
+        [":set all",                            "Show all options"],
+        [":set nu",                             "Turn ON option `nu` (number)"],
+        [":set nonu",                           "Turn OFF (prefix `no`)"],
+        [":set nu!",                            "Toggle"],
+        [":set nu?",                            "Query current value"],
+        [":set ts=4",                           "Assign 4 to numeric option `ts`"],
+        [":set fo+=t",                          "Append `t` to option `fo`"],
+        [":set fo-=t",                          "Remove `t`"],
+        [":set fo&",                            "Reset to default"],
+        [":setlocal nu",                        "Set for THIS buffer/window only"],
+        [":verbose set ts?",                    "Show value AND where it was last set"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Three Kinds of Options",
+      "text": "**Boolean** — on/off. Set with `:set name`, unset with `:set noname`, toggle with `:set name!`.\n\n**Numeric** — integer value. Set with `:set name=N`.\n\n**String** — text value. Set with `:set name=text`. Some are *flag lists* (`'formatoptions'`, `'complete'`) — use `+=` / `-=` / `^=` to add/remove/prepend without clobbering.\n\n**Scope:** options are *global*, *buffer-local*, *window-local*, or *both* (with `setlocal` and `setglobal` versions). `:set` on a both-local option sets *both* the global default and the local copy. `:setlocal` sets only the local. `:verbose set X?` tells you where the current value was last assigned — invaluable for debugging mystery vimrc behavior.\n\n**Short names** — most options have a 2-3 letter alias: `nu` = `number`, `ts` = `tabstop`, `sw` = `shiftwidth`, `et` = `expandtab`, `ic` = `ignorecase`. Vim docs use full names; vimrcs often use short."
+    },
+
+    { "type": "tip", "text": "When something behaves weirdly, run `:verbose set whatever?` — it tells you the script and line where the option was last set." },
+
+    { "type": "qr", "topic": "ex.set" },
+    { "type": "buy-prompt" }
+  ]
+}

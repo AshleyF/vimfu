@@ -1,0 +1,209 @@
+{
+  "title": "VimFu — z{height} Enter",
+  "description": "z{height} Enter sets the current split window height. Split first, then resize exactly how you want.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 389,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scrolling"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f guild.py .guild.py.swp .guild.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*guild.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "guild.py",
+      "content": "# Guild System\nimport json\n\nclass Member:\n    def __init__(self, name, rank):\n        self.name = name\n        self.rank = rank\n        self.xp = 0\n\n    def promote(self):\n        self.rank += 1\n\nclass Guild:\n    def __init__(self, name):\n        self.name = name\n        self.members = []\n        self.treasury = 0\n\n    def recruit(self, name):\n        m = Member(name, rank=1)\n        self.members.append(m)\n        return m\n\n    def deposit(self, amount):\n        self.treasury += amount\n\n    def top_members(self, n=5):\n        ranked = sorted(\n            self.members,\n            key=lambda m: m.xp,\n            reverse=True\n        )\n        return ranked[:n]\n\n    def save(self, path):\n        data = {\n            'name': self.name,\n            'treasury': self.treasury,\n            'members': len(self.members)\n        }\n        with open(path, 'w') as f:\n            json.dump(data, f)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' guild.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "z{height}⏎",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z followed by a number and Enter sets the current window height. This only works when you have splits."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: split then resize ---"
+    },
+    {
+      "say": "Split the window first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "w",
+      "overlay": ""
+    },
+    {
+      "keys": "s",
+      "overlay": "split"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two equal panes. Now type Z twelve Enter to make this pane twelve lines tall.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z12\r",
+      "overlay": "12 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The top pane grew to twelve lines. The bottom pane shrank to fit."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: make it smaller ---"
+    },
+    {
+      "say": "Z four Enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z4\r",
+      "overlay": "4 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Just four lines. The bottom pane got most of the space."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 3: equalize ---"
+    },
+    {
+      "say": "Control W equals to even them out.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "w",
+      "overlay": ""
+    },
+    {
+      "keys": "=",
+      "overlay": "equalize"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Equal again."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z height Enter. Resize any split pane to exactly the height you want."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f guild.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "liuQPpv1Np8",
+    "url": "https://youtube.com/watch?v=liuQPpv1Np8"
+  }
+}

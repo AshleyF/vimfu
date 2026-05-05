@@ -1,0 +1,206 @@
+{
+  "title": "VimFu — zb Cursor to Bottom",
+  "description": "zb scrolls the screen so the cursor line is at the bottom. Useful when you want to see everything above the current line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 385,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scrolling"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*quest.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "# Quest Tracker\nimport json\n\nclass Quest:\n    def __init__(self, name, reward):\n        self.name = name\n        self.reward = reward\n        self.done = False\n\n    def complete(self):\n        self.done = True\n        return self.reward\n\nclass Hero:\n    def __init__(self, name):\n        self.name = name\n        self.gold = 0\n        self.quests = []\n\n    def accept(self, quest):\n        self.quests.append(quest)\n\n    def finish(self, quest):\n        gold = quest.complete()\n        self.gold += gold\n\n    def active_quests(self):\n        return [q for q in self.quests\n                if not q.done]\n\n    def completed_quests(self):\n        return [q for q in self.quests\n                if q.done]\n\ndef load_quests(path):\n    with open(path) as f:\n        data = json.load(f)\n    return [Quest(q['name'], q['reward'])\n            for q in data]"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' quest.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zb Cursor to Bottom",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z B scrolls the screen so your cursor line is at the bottom. Use it when you want to see everything above."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to a line, scroll to bottom ---"
+    },
+    {
+      "say": "Jump to line twenty three. The finish method.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "23G",
+      "overlay": "go to line 23"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z B. Push the cursor to the bottom of the screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zb",
+      "overlay": "cursor to bottom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now you can see the Hero class above and all the methods that lead up to this one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: compare with zz and zt ---"
+    },
+    {
+      "say": "Compare. Z Z centers it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zz",
+      "overlay": "center"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z T moves it to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zt",
+      "overlay": "top"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "And Z B back to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zb",
+      "overlay": "bottom"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Same cursor line, three different viewports."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z B. Cursor line to the bottom. Z Z for center, Z T for top, Z B for bottom."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f quest.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "5ePOvMOcNwg",
+    "url": "https://youtube.com/watch?v=5ePOvMOcNwg"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "search.find-on-line",
+  "title": "Find on Line",
+  "subtitle": "f, F, t, T — jump to a character without leaving the line.",
+  "part": "search",
+  "summary": "f{c} jumps to the next {c} on the line; F{c} jumps to the previous one. t{c} stops one character before; T{c} stops one character after. ; and , repeat in the same and opposite directions.",
+  "keys": ["f", "F", "t", "T", ";", ","],
+  "lessons": [52, 53, 54, 55, 56, 57],
+  "see_also": ["search.pattern", "editing.delete", "editing.change"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Find on Line" },
+
+    { "type": "prose", "text": "{key:/} is overkill for jumping to a paren on the same line. {key:f}{c} jumps to the *next* {c} without ever leaving the line. {key:F} jumps backward. {key:t} (\"till\") stops one short. Then {key:;} repeats the jump." },
+
+    { "type": "keys", "sequence": ["f","{c}"], "label": "To next occurrence of {c}" },
+    { "type": "keys", "sequence": ["F","{c}"], "label": "To previous occurrence of {c}" },
+    { "type": "keys", "sequence": ["t","{c}"], "label": "Up to (but not on) next {c}" },
+    { "type": "keys", "sequence": ["T","{c}"], "label": "Up to (but not on) previous {c}" },
+    { "type": "keys", "sequence": [";"], "label": "Repeat last f/F/t/T in same direction" },
+    { "type": "keys", "sequence": [","], "label": "Repeat last f/F/t/T in opposite direction" },
+
+    { "type": "embed", "lesson": 52, "caption": "f — find character forward" },
+    { "type": "embed", "lesson": 53, "caption": "F — find character backward" },
+    { "type": "embed", "lesson": 54, "caption": "t — till character forward" },
+    { "type": "embed", "lesson": 55, "caption": "T — till character backward" },
+    { "type": "embed", "lesson": 56, "caption": "; — repeat" },
+    { "type": "embed", "lesson": 57, "caption": ", — reverse repeat" },
+
+    { "type": "tip", "text": "{key:t} is the operator-friendly variant. {key:d}{key:t}{key:)} deletes everything up to the next `)` *without* eating it. {key:d}{key:f}{key:)} eats it too. Choose based on whether you want to keep the delimiter." },
+
+    {
+      "type": "internals",
+      "title": "Why ; Is So Useful",
+      "text": "{key:f}, {key:F}, {key:t}, {key:T} all stash *two pieces of state*: the last character you searched for, and the direction (or modality — `t` vs `f`). {key:;} replays both. {key:,} replays the character but flips the direction.\n\nSo {key:f}{key:,}-then-jump-to-some-other-thing-then-{key:;} re-finds the next comma. You don't have to retype it; the keyboard remembers. This is one of those rare cases where two pieces of remembered state make a one-key motion enormously useful.\n\nThis state is **per-window**, not per-buffer. Switching files keeps your last find."
+    },
+
+    { "type": "tip", "text": "{key:f} only sees the *current line* — it never crosses a newline. For cross-line jumps, use search ({key:/})." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",            "Lands on",                       "Type"],
+      "rows": [
+        ["{key:f}{c}",              "Next {c} on line",               "Inclusive"],
+        ["{key:F}{c}",              "Previous {c} on line",           "Exclusive"],
+        ["{key:t}{c}",              "Char *before* next {c}",          "Inclusive"],
+        ["{key:T}{c}",              "Char *after* previous {c}",       "Exclusive"],
+        ["{key:;}",                 "Repeat last find (same direction)", "Same as original"],
+        ["{key:,}",                 "Repeat last find (opposite)",    "—"]
+      ]
+    },
+
+    { "type": "qr", "topic": "search.find-on-line" },
+    { "type": "buy-prompt" }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "foundations.you-dont-need-vim",
+  "title": "You Don't Need Vim",
+  "subtitle": "Vim keybindings work in almost every editor and IDE",
+  "part": "foundations",
+  "summary": "This is a book about an editing language, not an editor. The grammar is the same in Neovim, VS Code, JetBrains, Emacs, and a dozen other places.",
+  "keys": [],
+  "lessons": [],
+  "see_also": ["foundations.modal-editing", "foundations.vi-vim-neovim", "appendix.vim-in-other-editors"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "You Don't Need Vim" },
+
+    { "type": "prose", "text": "The demos in this book use Neovim — a modern, community-driven fork of Vim with clean defaults and a fast UI. We use it because it photographs well and ships sane defaults. But here is the secret: **you do not have to use Neovim. You do not even have to use Vim.**" },
+
+    { "type": "prose", "text": "Vim keybindings — the *editing language* — are available almost everywhere. Most readers of this book will use them inside a tool they already love." },
+
+    {
+      "type": "table",
+      "headers": ["Editor / Environment", "What to install"],
+      "rows": [
+        ["VS Code",                  "Vim extension (`vscodevim.vim`)"],
+        ["JetBrains IDEs (IntelliJ, PyCharm, GoLand, Rider, …)", "IdeaVim plugin"],
+        ["Visual Studio",            "VsVim extension"],
+        ["Sublime Text",             "Vintage / NeoVintageous"],
+        ["Emacs",                    "Evil mode (or Doom Emacs / Spacemacs)"],
+        ["Xcode",                    "Xvim2 plugin"],
+        ["Eclipse",                  "Vrapper"],
+        ["Atom (RIP)",               "vim-mode-plus"],
+        ["Chrome / Firefox / Safari", "Vimium / Tridactyl / Vimari"],
+        ["Obsidian",                 "Built-in Vim mode (Settings → Editor)"],
+        ["JupyterLab",               "jupyterlab-vim"],
+        ["Bash / Zsh shell",         "`set -o vi` (or `bindkey -v`)"],
+        ["readline (everywhere it is used)", "`set editing-mode vi` in `~/.inputrc`"]
+      ]
+    },
+
+    { "type": "prose", "text": "{key:d}{key:i}{key:w} deletes a word in Vim, in Neovim, in VS Code with the Vim extension, in IntelliJ with IdeaVim, and at the Bash prompt with `set -o vi`. The grammar is universal. This book teaches the grammar — not any specific editor." },
+
+    { "type": "tip", "text": "If you are already productive in VS Code or a JetBrains IDE and would rather not switch, do not switch. Install the Vim keybinding extension and learn the editing language inside the tool you already know. You get the best of both worlds: full IDE features (debugger, refactoring, LSP) plus the Vim edit grammar." },
+
+    {
+      "type": "internals",
+      "title": "How Faithful Are the Plugins?",
+      "text": "Most Vim emulators implement a subset. The core grammar — operators, motions, text objects, registers, marks, visual mode, the dot command, basic Ex commands — is in essentially every plugin. The long tail is where they diverge: macros (`q`/`@`) work in some but not others; the more obscure registers (`\".`, `\"=`, `\":`) are often missing; folding, the jumplist, and `Ctrl-W` window commands vary widely.\n\nThe hierarchy from most to least faithful (rough): vanilla Vim → Neovim → IdeaVim → VsVim → vscodevim → Vintage. If you live deep in the long tail, you will eventually feel friction. For everything in this book up through Part 7 (Operators and Text Objects), every emulator handles it. The advanced material (registers, macros, the undo tree, folding) is where you start checking the plugin's docs for caveats."
+    },
+
+    { "type": "prose", "text": "From here on, when this book says \"Vim,\" we mean *the editing language*. The simulator demos run on real Neovim, but the keys you learn work in whatever you use." },
+
+    { "type": "qr", "topic": "foundations.you-dont-need-vim" },
+    { "type": "buy-prompt" }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "scroll.center-top-bottom",
+  "title": "Centering the Cursor",
+  "subtitle": "zz, zt, zb — move the viewport, not the cursor.",
+  "part": "scroll",
+  "summary": "zz centers the cursor's line on screen. zt scrolls so the cursor's line is at the top. zb scrolls so the cursor's line is at the bottom.",
+  "keys": ["zz", "zt", "zb"],
+  "lessons": [90, 242, 243, 244],
+  "see_also": ["scroll.first-non-blank-z", "wider-motions.screen-positions", "scroll.height"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Centering the Cursor" },
+
+    { "type": "prose", "text": "After a search jump or function navigation, the cursor often ends up at the top or bottom edge of the visible window — too little context. Three commands fix that without moving the cursor: {key:z}{key:z}, {key:z}{key:t}, {key:z}{key:b}." },
+
+    { "type": "keys", "sequence": ["z","z"], "label": "Center cursor's line on screen" },
+    { "type": "keys", "sequence": ["z","t"], "label": "Scroll cursor's line to top" },
+    { "type": "keys", "sequence": ["z","b"], "label": "Scroll cursor's line to bottom" },
+
+    { "type": "embed", "lesson": 90,  "caption": "zz — center the cursor" },
+    { "type": "embed", "lesson": 242, "caption": "zz revisited" },
+    { "type": "embed", "lesson": 243, "caption": "zt — cursor to top" },
+    { "type": "embed", "lesson": 244, "caption": "zb — cursor to bottom" },
+
+    {
+      "type": "internals",
+      "title": "These Are Inverse to H/M/L",
+      "text": "{key:H}/{key:M}/{key:L} move *the cursor* to a screen position. {key:z}{key:t}/{key:z}{key:z}/{key:z}{key:b} move *the screen* to put the cursor at a position. They're complementary:\n\n  • {key:H} = teleport cursor to top of screen.\n  • {key:z}{key:t} = scroll the screen so the cursor (still on the same buffer line) is at the top.\n\nNeither changes the cursor's *file* line — but {key:H}/{key:M}/{key:L} do change which file line the cursor is on, while {key:z}{key:z}/{key:z}{key:t}/{key:z}{key:b} do not.\n\nA classic flow: search ({key:/}foo{key:Enter}), {key:z}{key:z} to recenter, keep reading. Or after a {key:G}, {key:z}{key:t} to push the bottom of the file to the top of the screen so you have room above the cursor."
+    },
+
+    { "type": "tip", "text": "These are part of the {key:z} prefix — see [`prefixes.z-overview`](#prefixes.z-overview) for the full family. The other variants ({key:z}{key:.}, {key:z}{key:+}, {key:z}{key:-}) also land the cursor on the first non-blank — see [`scroll.first-non-blank-z`](#scroll.first-non-blank-z)." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",          "Action"],
+      "rows": [
+        ["{key:z}{key:z}",         "Cursor's line → middle of screen"],
+        ["{key:z}{key:t}",         "Cursor's line → top of screen"],
+        ["{key:z}{key:b}",         "Cursor's line → bottom of screen"]
+      ]
+    },
+
+    { "type": "qr", "topic": "scroll.center-top-bottom" },
+    { "type": "buy-prompt" }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "title": "VimFu — z- Bottom First Non-Blank",
+  "description": "z- scrolls the screen so the cursor line is at the bottom and moves the cursor to the first non-blank character.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 388,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scrolling"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f potion.py .potion.py.swp .potion.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*potion.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "potion.py",
+      "content": "# Potion Brewery\nimport random\n\nclass Ingredient:\n    def __init__(self, name, potency):\n        self.name = name\n        self.potency = potency\n        self.toxic = False\n\nclass Recipe:\n    def __init__(self, name):\n        self.name = name\n        self.ingredients = []\n        self.brew_time = 0\n\n    def add(self, ingredient, qty):\n        self.ingredients.append(\n            (ingredient, qty))\n        self.brew_time += qty\n\n    def potency(self):\n        total = sum(\n            i.potency * q\n            for i, q in self.ingredients\n        )\n        return total\n\nclass Brewery:\n    def __init__(self):\n        self.recipes = {}\n        self.stock = []\n\n    def register(self, recipe):\n        self.recipes[recipe.name] = recipe\n\n    def brew(self, name):\n        recipe = self.recipes[name]\n        potion = recipe.potency()\n        self.stock.append(potion)\n        return potion"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' potion.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "z- Bottom + First Non-Blank",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z minus scrolls the screen so the cursor line is at the bottom, and moves the cursor to the first non-blank character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump and use z- ---"
+    },
+    {
+      "say": "Jump to line twenty eight, the Brewery class. End of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "28G$",
+      "overlay": "line 28, end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z minus. The line moves to the bottom, and the cursor jumps to the first non-blank.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z-",
+      "overlay": "bottom + align"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The cursor is now on the C of class, at the bottom of the screen. Everything above is visible."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: compare with zb ---"
+    },
+    {
+      "say": "Jump to line twenty two, end of line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "22G$",
+      "overlay": "line 22, end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z B first. The line goes to the bottom, cursor stays at the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zb",
+      "overlay": "stays at end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now Z minus. The cursor moves to the first non-blank.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z-",
+      "overlay": "first non-blank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Z B keeps the cursor, Z minus aligns it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z minus. Cursor line to the bottom, cursor to the first non-blank. The counterpart to Z Enter."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f potion.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "_LV48cLkTNk",
+    "url": "https://youtube.com/watch?v=_LV48cLkTNk"
+  }
+}

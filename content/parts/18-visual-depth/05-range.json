@@ -1,0 +1,40 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "visual.range",
+  "title": "Visual + Ex Range",
+  "subtitle": "Pressing : from Visual auto-fills the range.",
+  "part": "visual-depth",
+  "summary": "When you press : while in Visual mode, Vim drops you to the command line with `:'<,'>` already typed — the range covering the selection. Just type your command after.",
+  "keys": [":"],
+  "lessons": [443, 443],
+  "see_also": ["ex.ranges", "ex.substitute", "marks.special"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Visual + Ex Range" },
+
+    { "type": "prose", "text": "Visual mode and Ex commands plug right into each other. Press {key::} from any Visual selection and Vim pre-types the range." },
+
+    {
+      "type": "keys",
+      "label": "From Visual to substitute",
+      "sequence": [
+        { "key": "V",       "note": "Line Visual" },
+        { "key": "5j",      "note": "Extend down 5 lines" },
+        { "key": ":",       "note": "Vim shows `:'<,'>`" },
+        { "key": "s/foo/bar/g", "note": "Operate on those lines only" }
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "What '< and '> Are",
+      "text": "{key:'}{key:<} and {key:'}{key:>} are *special marks* — they always point at the **first** and **last** line of the **most recent visual selection**. They persist until you make another selection.\n\nThis means:\n\n  • Even after exiting Visual, you can do `:'<,'>s/foo/bar/g` from Normal mode and operate on the last selection.\n  • You can move elsewhere, do other work, then come back with {key:g}{key:v} or use `'<` and `'>` as marks in motions ({key:`}{key:<}, {key:`}{key:>})."
+    },
+
+    { "type": "tip", "text": "Block Visual + {key::} also gets `:'<,'>` — but most Ex commands are line-oriented and don't honor the column boundaries." },
+
+    { "type": "qr", "topic": "visual.range" },
+    { "type": "buy-prompt" }
+  ]
+}

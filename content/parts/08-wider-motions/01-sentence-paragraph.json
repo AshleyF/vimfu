@@ -1,0 +1,50 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "wider-motions.sentence-paragraph",
+  "title": "Sentence and Paragraph Motions",
+  "subtitle": "( ) — sentences. { } — paragraphs.",
+  "part": "wider-motions",
+  "summary": "( and ) jump to the previous and next sentence. { and } jump by paragraph (blank-line separated).",
+  "keys": ["(", ")", "{", "}"],
+  "lessons": [91, 92],
+  "see_also": ["operators-textobjects.sentence-paragraph", "wider-motions.match-bracket"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Sentence and Paragraph Motions" },
+
+    { "type": "prose", "text": "When you're navigating prose, words and lines are too small. Vim offers two larger units: sentences (delimited by `.`/`!`/`?`) and paragraphs (delimited by blank lines)." },
+
+    { "type": "keys", "sequence": [")"], "label": "Forward to next sentence" },
+    { "type": "keys", "sequence": ["("], "label": "Back to previous sentence" },
+    { "type": "keys", "sequence": ["}"], "label": "Forward to next paragraph" },
+    { "type": "keys", "sequence": ["{"], "label": "Back to previous paragraph" },
+
+    { "type": "embed", "lesson": 91, "caption": "( ) — sentence motion" },
+    { "type": "embed", "lesson": 92, "caption": "{ } — paragraph motion" },
+
+    { "type": "tip", "text": "These pair with operators just like every other motion. {key:d}{key:}{key:}} deletes from the cursor to the next blank line. {key:c}{key:)}-type-replacement-{key:Esc} changes the rest of the current sentence." },
+
+    {
+      "type": "internals",
+      "title": "What Counts as a Sentence / Paragraph",
+      "text": "**Sentence** boundary: `.`, `!`, or `?`, optionally followed by closing brackets/quotes ({key:)}, {key:]}, {key:\"}, {key:'}), then whitespace or end-of-line.\n\n**Paragraph** boundary: a blank line. The `'paragraphs'` option also lets nroff-style macros count, but that's vintage stuff.\n\nIn code, paragraph motion is *surprisingly* useful: function bodies are usually surrounded by blank lines, so {key:}{key:}} jumps function-by-function in well-formatted code. Sentence motion is less useful in code because `.` appears in method calls, but in markdown it's perfect."
+    },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",  "Action"],
+      "rows": [
+        ["{key:)}", "Forward to next sentence"],
+        ["{key:(}", "Back to previous sentence"],
+        ["{key:}}", "Forward to next paragraph (blank line)"],
+        ["{key:{}", "Back to previous paragraph"]
+      ]
+    },
+
+    { "type": "qr", "topic": "wider-motions.sentence-paragraph" },
+    { "type": "buy-prompt" }
+  ]
+}

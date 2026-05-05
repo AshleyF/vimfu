@@ -1,0 +1,185 @@
+{
+  "title": "VimFu — zt Cursor to Top",
+  "description": "zt scrolls the screen so the cursor line is at the top. Useful when you want to see what comes after the current line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 384,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scrolling"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f arena.py .arena.py.swp .arena.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*arena.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "arena.py",
+      "content": "# Battle Arena\nimport random\n\nclass Fighter:\n    def __init__(self, name, hp, atk):\n        self.name = name\n        self.hp = hp\n        self.atk = atk\n        self.alive = True\n\n    def attack(self, target):\n        dmg = random.randint(1, self.atk)\n        target.hp -= dmg\n        if target.hp <= 0:\n            target.alive = False\n        return dmg\n\nclass Arena:\n    def __init__(self):\n        self.fighters = []\n        self.round = 0\n\n    def add(self, fighter):\n        self.fighters.append(fighter)\n\n    def battle(self):\n        self.round += 1\n        alive = [f for f in self.fighters\n                 if f.alive]\n        if len(alive) < 2:\n            return alive[0] if alive else None\n        a, b = random.sample(alive, 2)\n        a.attack(b)\n        return None\n\n    def champion(self):\n        alive = [f for f in self.fighters\n                 if f.alive]\n        return alive[0].name if alive else None"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' arena.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zt Cursor to Top",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z T scrolls the screen so your cursor line is at the top. Use it when you want to see everything below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to a function, scroll to top ---"
+    },
+    {
+      "say": "Jump to line eighteen, the Arena class.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "18G",
+      "overlay": "go to line 18"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "It's at the bottom of the screen. Z T pushes it to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zt",
+      "overlay": "cursor to top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now the Arena class is at the top, and all its methods are visible below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: another jump ---"
+    },
+    {
+      "say": "Jump to line four, the Fighter class. Z T.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4G",
+      "overlay": "go to line 4"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zt",
+      "overlay": "cursor to top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The entire Fighter class is now visible from top to bottom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z T. Cursor line to the top. Perfect for reading a function from its definition downward."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f arena.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "bIPL3t_8NY0",
+    "url": "https://youtube.com/watch?v=bIPL3t_8NY0"
+  }
+}

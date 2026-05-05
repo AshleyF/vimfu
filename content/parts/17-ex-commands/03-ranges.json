@@ -1,0 +1,49 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "ex.ranges",
+  "title": "Ex Ranges",
+  "subtitle": "Every Ex command takes a range. Learn to speak it fluently.",
+  "part": "ex-commands",
+  "summary": "Ranges precede Ex commands and tell them which lines to act on. They can be line numbers (5,10), marks ('a,'b), patterns (/foo/,/bar/), or shortcuts (%, .).",
+  "keys": [":"],
+  "lessons": [416, 422],
+  "see_also": ["ex.substitute", "ex.global", "marks.local-global"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Ex Ranges" },
+
+    { "type": "prose", "text": "An *Ex range* tells the command **which lines** to operate on. It comes before the command name, separated by no space: `:5,10s/foo/bar/g` runs `:s` on lines 5 through 10." },
+
+    {
+      "type": "table",
+      "headers": ["Range",       "Meaning"],
+      "rows": [
+        [".",        "Current line"],
+        ["$",        "Last line"],
+        ["%",        "All lines (= 1,$)"],
+        ["*",        "Last visual selection"],
+        ["5",        "Just line 5"],
+        ["5,10",     "Lines 5 through 10"],
+        [".,+5",     "Current line and 5 below"],
+        [".,$",      "Current line to end of file"],
+        ["1,.",      "Start of file to current line"],
+        ["'a,'b",    "From mark a to mark b"],
+        ["'<,'>",    "Last visual selection (auto-inserted when you press `:` from Visual)"],
+        ["/foo/,/bar/", "From next line matching /foo/ to next line matching /bar/"],
+        ["?foo?,/bar/", "From previous line matching /foo/ to next /bar/"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "How Ranges Are Parsed",
+      "text": "Vim parses the range left-to-right, building two line numbers (start, end). Each piece can be:\n\n  • An absolute line number (`5`, `$`, `42`)\n  • A symbol (`.` = current, `'a` = mark a)\n  • A search (`/foo/` or `?foo?`)\n  • An offset added to any of the above (`.+5`, `'a-3`, `/foo/+1`)\n\nThe two halves are separated by `,` or `;`. The difference: with `;` the cursor *moves* to the first part's line before evaluating the second — useful when the second uses `/pattern/` and you want the search to start from the first match.\n\n**Backward ranges (`:10,5`) error out** unless you confirm with the `?` prompt that comes up."
+    },
+
+    { "type": "tip", "text": "After a visual selection, pressing {key::} auto-inserts `:'<,'>`. Type your command after — `:'<,'>s/foo/bar/g` is generated for you." },
+
+    { "type": "qr", "topic": "ex.ranges" },
+    { "type": "buy-prompt" }
+  ]
+}

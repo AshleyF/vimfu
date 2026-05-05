@@ -1,0 +1,70 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "foundations.modes-overview",
+  "title": "The Modes",
+  "subtitle": "A small finite state machine you carry in your head",
+  "part": "foundations",
+  "summary": "Normal, Insert, Visual, Replace, Command-line, Operator-pending, Terminal. What each is for and how to move between them.",
+  "keys": ["Esc", "Ctrl-[", "Ctrl-C", "i", "v", "V", "Ctrl-V", "R", ":", "Ctrl-O"],
+  "lessons": [3, 15],
+  "see_also": ["foundations.modal-editing", "foundations.universal-grammar", "visual.modes", "transform.replace-mode", "insert.one-shot-normal"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "The Modes" },
+
+    { "type": "prose", "text": "Vim has seven modes. You will spend essentially all your time in two of them — Normal and Insert. The other five matter for specific jobs. Knowing they exist, and how the transitions work, is more important than memorizing every command in each." },
+
+    {
+      "type": "table",
+      "headers": ["Mode", "Status line", "What it's for"],
+      "rows": [
+        ["Normal", "*(empty)*", "The default. Keys are commands."],
+        ["Insert", "`-- INSERT --`", "Keys type text."],
+        ["Visual", "`-- VISUAL --` / `-- V-LINE --` / `-- V-BLOCK --`", "Select text, then act on it."],
+        ["Replace", "`-- REPLACE --`", "Overtype existing characters."],
+        ["Command-line", "shows typed `:` / `/` / `?`", "Run an Ex command or search."],
+        ["Operator-pending", "*(empty, but last key was an operator)*", "Waiting for a motion or text object."],
+        ["Terminal", "`-- TERMINAL --`", "An interactive shell inside Vim."]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "Getting Out" },
+
+    { "type": "prose", "text": "From any mode except Normal, {key:Esc} returns to Normal. From Insert and Visual, {key:Ctrl-[} does the same. Build the {key:Esc} reflex: after every thought, escape." },
+
+    { "type": "prose", "text": "Terminal mode is the exception — {key:Esc} is forwarded to the shell. Use {key:Ctrl-\\}{key:Ctrl-N} to escape from a Vim terminal." },
+
+    { "type": "tip", "text": "If you want a visual cue for what mode you're in, configure your status line to show it. Most users learn the mode by feel — but for the first week, having `[INSERT]` or `[NORMAL]` in the corner removes a lot of confusion." },
+
+    { "type": "divider" },
+
+    { "type": "heading", "level": 2, "text": "Operator-pending: the secret seventh mode" },
+
+    { "type": "prose", "text": "When you press an operator like {key:d}, {key:c}, {key:y}, or {key:>}, Vim enters *operator-pending mode* and waits for a motion or text object. You're in Normal mode no longer — keys do different things in this state. {key:i} no longer enters Insert; it begins a text object (inner ...). {key:a} no longer appends; it begins around-text-objects. The operator and motion together form a single change, which is what {key:.} repeats." },
+
+    { "type": "keys", "sequence": ["d", "i", "w"], "label": "Operator d → operator-pending → text object iw → execute" },
+
+    {
+      "type": "internals",
+      "title": "The State Machine, Drawn",
+      "text": "The transition graph is small enough to memorize. From Normal you can reach Insert ({key:i}, {key:a}, {key:o}, …), Visual ({key:v}, {key:V}, {key:Ctrl-V}), Replace ({key:R}), Command-line ({key::}, {key:/}, {key:?}), Operator-pending (any operator), or Terminal (`:term`). From everywhere else, {key:Esc} returns you to Normal.\n\nVisual has three sub-modes (char, line, block); pressing {key:v}/{key:V}/{key:Ctrl-V} while already in Visual switches between them. Insert has a sub-state called *Replace-Insert* (toggle with {key:Insert}) — you almost never want it.\n\nThe deepest transition is {key:Ctrl-O} from Insert mode: it pops you into Normal *for exactly one command*, then automatically returns. So {key:Ctrl-O}{key:dd} from Insert mode deletes the current line and continues typing where the new cursor lands."
+    },
+
+    {
+      "type": "internals",
+      "title": "Per-Mode State",
+      "text": "Each mode carries its own state. Normal mode tracks the count being typed (`5` then `j` is two keystrokes; the `5` is buffered). Insert mode buffers the inserted text so it can be repeated with {key:.} and so {key:Ctrl-O} can briefly leave and return. Visual mode tracks the *anchor* (where you started) and the *cursor* (where you are now); the selection is the range between them, recomputed every keystroke. Operator-pending tracks which operator is pending, plus its count and any selected register.\n\nWhen the mode ends, this state is either committed (Insert → Normal commits the typed text and the count's repetitions; operator-pending → Normal applies the operator to the motion's range) or discarded (Visual → Normal without an operator just throws the selection away, though {key:gv} can recover it from the {key:'<} / {key:'>} marks)."
+    },
+
+    { "type": "divider" },
+
+    { "type": "heading", "level": 2, "text": "Why this matters" },
+
+    { "type": "prose", "text": "When something surprises you in Vim — a key doesn't do what you expected — nine times out of ten you misjudged the current mode. \"I pressed {key:dd} and it just typed two d's\" → you were in Insert. \"I pressed {key:i} and a word disappeared\" → you were in operator-pending after {key:d}. The fix is always the same: press {key:Esc} (sometimes twice) and start over from Normal." },
+
+    { "type": "example", "ref": "modes.normal-to-insert" },
+    { "type": "qr", "topic": "foundations.modes-overview" },
+    { "type": "buy-prompt" }
+  ]
+}

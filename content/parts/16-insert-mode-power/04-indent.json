@@ -1,0 +1,40 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "insert.indent",
+  "title": "Indent in Insert Mode",
+  "subtitle": "Ctrl-T and Ctrl-D, plus 0Ctrl-D and ^Ctrl-D.",
+  "part": "insert-mode-power",
+  "summary": "Ctrl-T indents, Ctrl-D outdents — both by one shiftwidth. The 0Ctrl-D variant kills all indent on the current line; ^Ctrl-D kills indent for this line only.",
+  "keys": ["Ctrl-T", "Ctrl-D", "0", "^"],
+  "lessons": [376, 378],
+  "see_also": ["insert.editing-keys", "transform.indent"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Indent in Insert Mode" },
+
+    { "type": "prose", "text": "Indenting from inside Insert mode keeps you in flow. {key:Ctrl-T} and {key:Ctrl-D} are the bread-and-butter; two special prefixes give finer control." },
+
+    {
+      "type": "table",
+      "headers": ["Sequence",                "Action"],
+      "rows": [
+        ["{key:Ctrl-T}",                     "Indent current line one shiftwidth"],
+        ["{key:Ctrl-D}",                     "Outdent current line one shiftwidth"],
+        ["{key:0}{key:Ctrl-D}",              "Remove ALL indent on this line"],
+        ["{key:^}{key:Ctrl-D}",              "Remove indent on this line only (restore on next)"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Why Two Variants",
+      "text": "Vim's autoindent often guesses the right indent for the next line. The {key:0}{key:Ctrl-D} variant says \"strip indent from THIS line — typically used to flush a label/preprocessor line to column 0,\" while {key:^}{key:Ctrl-D} says \"only this line; resume indent on the next.\" These are leftovers from the days of writing labels in C and assembly that *had* to be at column 0. They still work."
+    },
+
+    { "type": "tip", "text": "{key:Ctrl-T}/{key:Ctrl-D} respect `'shiftwidth'` (or `'tabstop'` if shiftwidth is 0). They're not the same as {key:Tab} — Tab inserts a literal tab character." },
+
+    { "type": "qr", "topic": "insert.indent" },
+    { "type": "buy-prompt" }
+  ]
+}

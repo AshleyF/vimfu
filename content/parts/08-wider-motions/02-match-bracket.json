@@ -1,0 +1,48 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "wider-motions.match-bracket",
+  "title": "Match Bracket",
+  "subtitle": "% — jump to the matching paren, brace, or bracket.",
+  "part": "wider-motions",
+  "summary": "% jumps from one bracket to its mate. The cursor needs to be on a bracket (or before one on the line). It's also a motion, so d% deletes a paired block.",
+  "keys": ["%"],
+  "lessons": [93],
+  "see_also": ["operators-textobjects.brackets", "counts-visual.percent-bar"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Match Bracket" },
+
+    { "type": "prose", "text": "Cursor on `(`? Press {key:%}. You're on the matching `)`. Press it again — back. {key:%} works for `()`, `[]`, `{}`, and (with plugins) tag pairs and language constructs." },
+
+    { "type": "keys", "sequence": ["%"], "label": "Jump to matching bracket" },
+    { "type": "keys", "sequence": ["d","%"], "label": "Delete from here through the matching bracket" },
+    { "type": "keys", "sequence": ["v","%"], "label": "Visual-select to the matching bracket" },
+
+    { "type": "embed", "lesson": 93, "caption": "% — match bracket" },
+
+    {
+      "type": "internals",
+      "title": "How % Finds the Match",
+      "text": "If the cursor is on a bracket character ({key:(}, {key:)}, {key:[}, {key:]}, {key:{}, {key:}}, plus anything in `'matchpairs'`), {key:%} jumps to its mate, respecting nesting.\n\nIf the cursor is *not* on a bracket, Vim searches forward on the current line for the *first* bracket and jumps from there. So you can be at the start of a line and press {key:%} to jump to the matching bracket of whichever pair starts the line.\n\n**With a count**, {key:%} changes meaning entirely — see [`counts-visual.percent-bar`](#counts-visual.percent-bar). This is one of the few overloaded motions in Vim.\n\nThe `matchit` plugin (ships with Vim) extends {key:%} to also match `if`/`else`/`endif` in many languages, HTML/XML tags, and more. Most distros enable it by default."
+    },
+
+    { "type": "tip", "text": "{key:d}{key:%} on a `(` deletes the parens *and everything between them, inclusive* — fast way to remove a guard or a function call. Compare with {key:d}{key:i}{key:(} (contents only) and {key:d}{key:a}{key:(} (parens + contents)." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",   "Action"],
+      "rows": [
+        ["{key:%}", "Jump to matching bracket"],
+        ["{key:d}{key:%}", "Delete from here to match (inclusive)"],
+        ["{key:y}{key:%}", "Yank to match"],
+        ["{key:c}{key:%}", "Change to match"]
+      ]
+    },
+
+    { "type": "qr", "topic": "wider-motions.match-bracket" },
+    { "type": "buy-prompt" }
+  ]
+}

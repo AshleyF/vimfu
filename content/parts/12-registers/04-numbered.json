@@ -1,0 +1,35 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "registers.numbered",
+  "title": "Numbered Registers",
+  "subtitle": "\"0 = last yank. \"1–\"9 = the last nine deletes.",
+  "part": "registers",
+  "summary": "\"0 holds your most recent yank; it never updates on delete. \"1 holds your most recent multi-character delete; \"2 the one before, and so on through \"9. They shift on every delete.",
+  "keys": ["\"0", "\"1", "\"9"],
+  "lessons": [122],
+  "see_also": ["registers.overview", "registers.unnamed", "registers.small-delete", "recipes.numbered-paste"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Numbered Registers" },
+
+    { "type": "prose", "text": "Vim quietly keeps a backlog of your recent yanks and deletes. {key:\"}{key:0} is your most recent yank. {key:\"}{key:1} through {key:\"}{key:9} are the last nine deletes — they shift down on each new one." },
+
+    { "type": "embed", "lesson": 122, "caption": "The numbered registers" },
+
+    {
+      "type": "internals",
+      "title": "The Two Different Update Rules",
+      "text": "**{key:\"}{key:0}** — only updated on **yank**. Stays untouched by delete and change. So if you yank, then delete, then paste, you get the *delete*. To get your yank back: {key:\"}{key:0}{key:p}.\n\n**{key:\"}{key:1}–{key:\"}{key:9}** — a sliding window of the last nine **deletes** (and changes), not yanks. On each new delete:\n\n  • Old `\"9` falls off.\n  • `\"8` → `\"9`.\n  • `\"7` → `\"8`. … `\"1` → `\"2`. New delete → `\"1`.\n\nException: small charwise deletes (less than a line, no newline) go into `\"-`, the small-delete register, and *don't* shift the numbered registers. So {key:x} doesn't bump anything off — only multi-character or line deletes do.\n\nWith both rules in mind, the entire register layout becomes navigable: you can paste the most recent yank, the most recent delete, or the delete before that — all by name."
+    },
+
+    {
+      "type": "internals",
+      "title": "The .  Trick (Numbered Register + Dot)",
+      "text": "Combine numbered registers with the dot command and you get a power move:\n\n  1. Delete a line with {key:d}{key:d}. It goes to `\"1`.\n  2. Move somewhere else.\n  3. {key:\"}{key:1}{key:p} pastes the deleted line.\n  4. {key:.} repeats — but here's the surprise: {key:.} *increments* the numbered-register reference. So the next {key:.} pastes from `\"2`, then `\"3`, etc.\n\nThis lets you walk back through your delete history one paste at a time. See [`recipes.numbered-paste`](#recipes.numbered-paste)."
+    },
+
+    { "type": "qr", "topic": "registers.numbered" },
+    { "type": "buy-prompt" }
+  ]
+}

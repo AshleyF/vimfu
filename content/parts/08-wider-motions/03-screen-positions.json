@@ -1,0 +1,49 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "wider-motions.screen-positions",
+  "title": "Screen Position Jumps",
+  "subtitle": "H, M, L — High, Middle, Low on the visible screen.",
+  "part": "wider-motions",
+  "summary": "H jumps to the top of the visible screen, M to the middle, L to the bottom. They're motions to a *screen* position, not a *file* position — they don't scroll.",
+  "keys": ["H", "M", "L"],
+  "lessons": [94],
+  "see_also": ["scroll.center-top-bottom", "scroll.first-non-blank-z"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Screen Position Jumps" },
+
+    { "type": "prose", "text": "Three single-key jumps to positions on the *current screen*: top, middle, bottom. They don't scroll — they move the cursor to where you can already see." },
+
+    { "type": "keys", "sequence": ["H"], "label": "High — top of visible screen" },
+    { "type": "keys", "sequence": ["M"], "label": "Middle — middle of visible screen" },
+    { "type": "keys", "sequence": ["L"], "label": "Low — bottom of visible screen" },
+
+    { "type": "embed", "lesson": 94, "caption": "H / M / L — screen jumps" },
+
+    {
+      "type": "internals",
+      "title": "These Are Window-Local",
+      "text": "{key:H}, {key:M}, {key:L} operate on the *visible* lines of the current window. They have nothing to do with file lines or absolute positions. So they behave the same in a small split as in a full-screen window.\n\nThey respect `'scrolloff'` — if you have `:set scrolloff=5`, {key:H} lands on the 6th visible line (5 lines below the actual top), and {key:L} lands 5 above the actual bottom. This keeps context visible.\n\nWith a count, {key:5}{key:H} means \"5 lines below the top of the screen\"; {key:5}{key:L} means \"5 lines above the bottom.\" Useful for jumping into a known-position landmark on screen.\n\nThese are *jumps* — they push the previous position onto the jumplist. {key:Ctrl-O} returns."
+    },
+
+    { "type": "tip", "text": "{key:H}/{key:M}/{key:L} are paired with {key:z}{key:t}/{key:z}{key:z}/{key:z}{key:b} (which scroll the cursor's *current* line to the top/middle/bottom of the screen, see [`scroll.center-top-bottom`](#scroll.center-top-bottom)). Together they let you reposition either the cursor or the viewport without thinking." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key", "Lands on"],
+      "rows": [
+        ["{key:H}", "Top visible line"],
+        ["{key:M}", "Middle visible line"],
+        ["{key:L}", "Bottom visible line"],
+        ["{key:{n}}{key:H}", "{n} lines below top"],
+        ["{key:{n}}{key:L}", "{n} lines above bottom"]
+      ]
+    },
+
+    { "type": "qr", "topic": "wider-motions.screen-positions" },
+    { "type": "buy-prompt" }
+  ]
+}

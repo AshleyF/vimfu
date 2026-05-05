@@ -1,0 +1,42 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "windows.buffers",
+  "title": "Buffers",
+  "subtitle": "Files in memory, navigated with :ls and :b.",
+  "part": "windows",
+  "summary": "Vim loads each file into a buffer. :ls lists all buffers. :b switches to one by name or number. :bn / :bp step through them. :bd unloads a buffer.",
+  "keys": [":ls", ":b", ":bn", ":bp", ":bd"],
+  "lessons": [],
+  "see_also": ["windows.splits", "windows.tabs", "windows.buffers-vs-windows-vs-tabs"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Buffers" },
+
+    { "type": "prose", "text": "Every file you open in Vim becomes a *buffer* — an in-memory copy. You may have ten buffers loaded but only one window showing one of them. Navigating buffers, not windows, is how you move between files." },
+
+    { "type": "keys", "sequence": [":","l","s","Enter"],     "label": "List buffers" },
+    { "type": "keys", "sequence": [":","b"," ","{name}","Enter"], "label": "Switch to buffer matching {name}" },
+    { "type": "keys", "sequence": [":","b","n","Enter"],     "label": "Next buffer" },
+    { "type": "keys", "sequence": [":","b","p","Enter"],     "label": "Previous buffer" },
+    { "type": "keys", "sequence": [":","b","d","Enter"],     "label": "Delete buffer (unload from memory)" },
+    { "type": "keys", "sequence": ["Ctrl-^"],                "label": "Switch to alternate (previous) buffer" },
+
+    {
+      "type": "internals",
+      "title": "What :ls Shows You",
+      "text": "{key::}{key:l}{key:s} (alias {key::}{key:b}{key:u}{key:f}{key:f}{key:e}{key:r}{key:s}) lists every buffer Vim knows about, with flags:\n\n  • `%` — current buffer.\n  • `#` — alternate (previous) buffer.\n  • `+` — modified.\n  • `a` — active (loaded and shown in some window).\n  • `h` — hidden (loaded but not shown).\n  • `-` — modifiable off.\n  • `=` — read-only.\n\nYou can switch by buffer number ({key::}{key:b}{key: }{key:5}) or by name fragment ({key::}{key:b}{key: }{key:f}{key:o}{key:o}). Tab-complete works."
+    },
+
+    {
+      "type": "internals",
+      "title": "The 'hidden' Option Is Worth Setting",
+      "text": "By default Vim refuses to switch buffers if the current one is modified. Set `:set hidden` (it's on by default in Neovim) and Vim will *hide* the modified buffer instead — keeping the changes in memory while you work on another file.\n\nWithout `'hidden'`, you'll constantly hit \"E37: No write since last change\" and end up using {key::}{key:b}{key:!} (force) or aborting. With `'hidden'`, buffers behave like the tabs in any modern editor — switch freely, save when ready.\n\nThe trade-off is that you can {key::}{key:q} a window with unsaved buffers in the background. {key::}{key:q}{key:a}{key:l}{key:l} will warn you about them when exiting Vim."
+    },
+
+    { "type": "tip", "text": "{key:Ctrl-^} swaps to the *alternate* buffer (the one you were just in). It's the buffer-level version of {key:`}{key:`}. Most people use this dozens of times a day." },
+
+    { "type": "qr", "topic": "windows.buffers" },
+    { "type": "buy-prompt" }
+  ]
+}

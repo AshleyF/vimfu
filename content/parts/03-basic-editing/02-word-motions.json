@@ -1,0 +1,55 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "editing.word-motions",
+  "title": "Word Motions",
+  "subtitle": "Move a word at a time. The grammar's first real noun.",
+  "part": "editing",
+  "summary": "w/b/e/ge move forward and backward by word. They're motions, so they pair with operators: dw deletes a word, cw changes one, yw yanks one.",
+  "keys": ["w", "b", "e", "ge"],
+  "lessons": [21, 22, 23, 24],
+  "see_also": ["editing.delete", "editing.change", "wider-motions.WORD", "foundations.universal-grammar"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Word Motions" },
+
+    { "type": "prose", "text": "Moving one character at a time with {key:h}{key:j}{key:k}{key:l} is fine for surgery. For everything else you want to move *a word at a time*. That's what {key:w}, {key:b}, {key:e}, and {key:ge} do — and because they're motions, they double as the noun half of every editing command." },
+
+    { "type": "keys", "sequence": ["w"],  "label": "Forward to the start of the next word" },
+    { "type": "keys", "sequence": ["b"],  "label": "Back to the start of the current/previous word" },
+    { "type": "keys", "sequence": ["e"],  "label": "Forward to the end of the current/next word" },
+    { "type": "keys", "sequence": ["g","e"], "label": "Back to the end of the previous word" },
+
+    { "type": "embed", "lesson": 21, "caption": "w — next word" },
+    { "type": "embed", "lesson": 22, "caption": "b — previous word" },
+    { "type": "embed", "lesson": 23, "caption": "e — end of word" },
+    { "type": "embed", "lesson": 24, "caption": "ge — back-end" },
+
+    { "type": "tip", "text": "Counts work: {key:5}{key:w} jumps five words forward. So does {key:d}{key:5}{key:w} — delete five words. The grammar is consistent." },
+
+    {
+      "type": "internals",
+      "title": "What Counts as a \"Word\"?",
+      "text": "Vim's notion of a word is governed by the `'iskeyword'` option (`:set iskeyword?` to see it). By default it includes letters, digits, and `_` — the things that look like an identifier in most languages.\n\nA \"word\" is a maximal run of *keyword* characters, *or* a maximal run of *non-keyword non-whitespace* characters. So in `foo->bar`, the words are `foo`, `->`, and `bar`. {key:w} skips between all three.\n\nIf that's too granular for you, **WORD** ({key:W}, {key:B}, {key:E}, {key:gE}) treats anything not whitespace as part of the word. In `foo->bar`, that's a single WORD. See [`wider-motions.WORD`](#wider-motions.WORD)."
+    },
+
+    { "type": "tip", "text": "Mnemonic: lowercase = stops at punctuation; uppercase = whitespace only." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",        "Direction", "Lands on",          "Counts"],
+      "rows": [
+        ["{key:w}",              "Forward",  "Start of next word", "Yes"],
+        ["{key:b}",              "Back",     "Start of word",      "Yes"],
+        ["{key:e}",              "Forward",  "End of word",        "Yes"],
+        ["{key:g}{key:e}",       "Back",     "End of previous word","Yes"],
+        ["{key:W}{key:B}{key:E}{key:g}{key:E}", "Same, but WORD-wise (whitespace boundaries)", "—", "Yes"]
+      ]
+    },
+
+    { "type": "qr", "topic": "editing.word-motions" },
+    { "type": "buy-prompt" }
+  ]
+}

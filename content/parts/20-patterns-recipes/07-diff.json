@@ -1,0 +1,42 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "patterns.diff",
+  "title": "Diff Mode",
+  "subtitle": "vimdiff and :diffthis — visualize and edit changes side-by-side.",
+  "part": "patterns-recipes",
+  "summary": "Vim has a built-in diff view: `vimdiff a b` opens two files in vertical splits with synchronized scrolling and highlighted differences. ]c and [c jump between hunks; do and dp pull and push changes.",
+  "keys": ["]c", "[c", "do", "dp"],
+  "lessons": [473, 475],
+  "see_also": ["prefixes.bracket-pairs"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Diff Mode" },
+
+    { "type": "prose", "text": "Vim has a real diff tool baked in. Launch with `vimdiff a b` from the shell, or `:diffsplit other.txt` to compare with the current buffer." },
+
+    {
+      "type": "table",
+      "headers": ["Key",      "Action"],
+      "rows": [
+        ["{key:]}{key:c}",     "Jump to next change"],
+        ["{key:[}{key:c}",     "Jump to previous change"],
+        ["{key:d}{key:o}",     "Diff Obtain — pull change FROM the other file"],
+        ["{key:d}{key:p}",     "Diff Put — push change TO the other file"],
+        [":diffupdate",        "Re-scan for changes after edits"],
+        [":diffoff",           "Exit diff mode for current buffer"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "How Diff Mode Works",
+      "text": "Diff mode is a buffer-local *view* setting. When you `:diffthis` on a buffer, Vim:\n\n  1. Marks the buffer as `'diff'`.\n  2. Sets `'scrollbind'` and `'cursorbind'` so windows scroll together.\n  3. Sets `'foldmethod=diff'` so unchanged regions fold away.\n  4. Runs an external diff (default: the system `diff` program; `'diffexpr'` overrides) to find changed/added/removed lines.\n  5. Highlights changes with the `DiffAdd`, `DiffChange`, `DiffDelete`, `DiffText` colorgroups.\n\nThe `vimdiff` shell command is just `vim -d` — opens files in vertical splits and runs `:diffthis` on each.\n\n{key:d}{key:o} and {key:d}{key:p} actually edit buffers — they replace lines in one with lines from the other. Save afterwards to persist."
+    },
+
+    { "type": "tip", "text": "Comparing with the version on disk? `:w !diff % -` pipes the buffer to diff against the saved file." },
+
+    { "type": "qr", "topic": "patterns.diff" },
+    { "type": "buy-prompt" }
+  ]
+}

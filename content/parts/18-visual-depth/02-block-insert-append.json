@@ -1,0 +1,47 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "visual.block-insert-append",
+  "title": "Block Insert and Append",
+  "subtitle": "I and A in block mode = insert/append on every selected line.",
+  "part": "visual-depth",
+  "summary": "After Ctrl-V selecting a column-rectangle, I types text inserted at the start of every line in the block; A appends it. The text is inserted on all lines after Esc.",
+  "keys": ["Ctrl-V", "I", "A"],
+  "lessons": [434, 436],
+  "see_also": ["visual.modes", "visual.endpoints"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Block Insert and Append" },
+
+    { "type": "prose", "text": "This is the trick most people don't know exists — and once you know it, you'll use it constantly." },
+
+    {
+      "type": "keys",
+      "label": "Insert prefix on N lines",
+      "sequence": [
+        { "key": "Ctrl-V", "note": "Enter block Visual" },
+        { "key": "j",      "note": "Extend down (or count + j)" },
+        { "key": "I",      "note": "Insert at the LEFT edge of the block" },
+        { "key": "// ",    "note": "Type your prefix" },
+        { "key": "Esc",    "note": "Now the prefix appears on every selected line" }
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "The Magic Trick",
+      "text": "While you're typing in Insert mode, the prefix **only appears on the top line**. It's after you hit {key:Esc} that Vim *replays* the insertion on every other line in the original block. The replay only happens for inserts started with capital {key:I} or {key:A} from block Visual — lowercase {key:i}/{key:a} from block mode just enter normal Insert.\n\n**{key:I}** inserts at the **left edge** of the block. **{key:A}** inserts past the **right edge** of the block.\n\n**{key:c}** (change) replaces the block's contents on every line — start typing once, on Esc all rows get the new text.\n\n**{key:r}{c}** fills the block with character `c`."
+    },
+
+    {
+      "type": "internals",
+      "title": "Ragged Right Edges",
+      "text": "When you select a block past the end of a short line, those rows have a *virtual* right edge. {key:A} can still append there — Vim pads with spaces as needed, but only on rows where you actually inserted text. If `'virtualedit'` is set to `block`, you can extend the cursor anywhere on screen, even past line ends, and the math just works."
+    },
+
+    { "type": "tip", "text": "Need to comment out a block of code? {key:Ctrl-V}{count}{key:j}{key:I}{key://}{key: }{key:Esc} — five keystrokes." },
+
+    { "type": "qr", "topic": "visual.block-insert-append" },
+    { "type": "buy-prompt" }
+  ]
+}

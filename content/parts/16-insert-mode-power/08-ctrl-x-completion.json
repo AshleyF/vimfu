@@ -1,0 +1,48 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "insert.ctrl-x-completion",
+  "title": "The Ctrl-X Sub-Completions",
+  "subtitle": "Specialized completion: filenames, lines, dictionary, omni.",
+  "part": "insert-mode-power",
+  "summary": "Ctrl-X enters a sub-mode where the next key picks a completion source: Ctrl-F for filenames, Ctrl-L for whole lines, Ctrl-K for dictionary, Ctrl-O for omni-complete (language-aware), and more.",
+  "keys": ["Ctrl-X"],
+  "lessons": [389, 393],
+  "see_also": ["insert.completion"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "The Ctrl-X Sub-Completions" },
+
+    { "type": "prose", "text": "Plain {key:Ctrl-N} pulls from buffers. The {key:Ctrl-X} prefix opens a *sub-menu* where the next key chooses a more specific source." },
+
+    {
+      "type": "table",
+      "headers": ["Sequence",          "Source"],
+      "rows": [
+        ["{key:Ctrl-X}{key:Ctrl-F}",  "Filenames (in cwd)"],
+        ["{key:Ctrl-X}{key:Ctrl-L}",  "Whole lines"],
+        ["{key:Ctrl-X}{key:Ctrl-N}",  "Keywords from current file only"],
+        ["{key:Ctrl-X}{key:Ctrl-K}",  "Dictionary words (`'dictionary'`)"],
+        ["{key:Ctrl-X}{key:Ctrl-T}",  "Thesaurus (`'thesaurus'`)"],
+        ["{key:Ctrl-X}{key:Ctrl-I}",  "Included files (e.g. `#include`)"],
+        ["{key:Ctrl-X}{key:Ctrl-]}",  "Tags"],
+        ["{key:Ctrl-X}{key:Ctrl-D}",  "Macro definitions"],
+        ["{key:Ctrl-X}{key:Ctrl-V}",  "Vim command-line"],
+        ["{key:Ctrl-X}{key:Ctrl-U}",  "User-defined function (`'completefunc'`)"],
+        ["{key:Ctrl-X}{key:Ctrl-O}",  "Omni-complete (language-aware, `'omnifunc'`)"],
+        ["{key:Ctrl-X}{key:s}",       "Spelling suggestions"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "How Omni-Complete Works",
+      "text": "{key:Ctrl-X}{key:Ctrl-O} calls the function set in the buffer-local `'omnifunc'` option. Filetype plugins set this for you: `pythoncomplete#Complete` for Python, `csscomplete#CompleteCSS` for CSS, `htmlcomplete#CompleteTags` for HTML, etc. The function is called twice — once to find the start column of the match, once to return matches.\n\nThis is the hook modern LSP plugins use to inject smart completions. If you've installed an LSP plugin like coc.nvim or vim-lsp, {key:Ctrl-X}{key:Ctrl-O} is what fires it."
+    },
+
+    { "type": "tip", "text": "{key:Ctrl-X}{key:Ctrl-F} is genuinely magical for typing paths — `./src/` then {key:Ctrl-X}{key:Ctrl-F} starts cycling the actual files in that directory." },
+
+    { "type": "qr", "topic": "insert.ctrl-x-completion" },
+    { "type": "buy-prompt" }
+  ]
+}

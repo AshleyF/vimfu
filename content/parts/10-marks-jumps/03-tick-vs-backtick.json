@@ -1,0 +1,31 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "marks.tick-vs-backtick",
+  "title": "Tick vs Backtick",
+  "subtitle": "' jumps to the line of a mark. ` jumps to the exact position.",
+  "part": "marks",
+  "summary": "' (apostrophe) is linewise: jumps to the line of the mark, lands on first non-blank. ` (backtick) is charwise: jumps to the exact stored line and column.",
+  "keys": ["'", "`"],
+  "lessons": [],
+  "see_also": ["marks.local-global", "marks.special"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Tick vs Backtick" },
+
+    { "type": "prose", "text": "Every mark has *two* ways to jump to it:\n\n  • {key:'}{m} — jump to the **line** of mark m, cursor on first non-blank. Linewise.\n  • {key:`}{m} — jump to the **exact position** of mark m. Charwise." },
+
+    { "type": "tip", "text": "Mnemonic: tick (`'`) = top of column on the line. Backtick (`` ` ``) = back to the precise byte." },
+
+    {
+      "type": "internals",
+      "title": "Which to Use Depends on the Operator",
+      "text": "When *jumping*, the difference is small: tick lands on first non-blank, backtick lands at the original column. Either is fine for navigation.\n\nWhen used as a *motion* with an operator, the difference is huge:\n\n  • {key:d}{key:'}{key:a} deletes from the current line through the line of mark `a`, **linewise**. Both lines and everything between them go in their entirety.\n  • {key:d}{key:`}{key:a} deletes from the cursor to the exact position of mark `a`, **charwise**. Partial lines.\n\nFor copying chunks of code: tick. For surgical deletes: backtick. For navigation: whichever your finger reaches."
+    },
+
+    { "type": "tip", "text": "Backtick is awkward to type on most keyboards. Many users remap with `nnoremap ' `` ` `` and `nnoremap `` ` `` '` to swap them — backtick (the more useful one) becomes the easier key. Try it for a week." },
+
+    { "type": "qr", "topic": "marks.tick-vs-backtick" },
+    { "type": "buy-prompt" }
+  ]
+}

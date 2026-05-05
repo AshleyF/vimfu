@@ -1,0 +1,47 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "dot.repeat",
+  "title": "Repeat Last Change",
+  "subtitle": ". — replay the last change. The single most useful key.",
+  "part": "dot",
+  "summary": "The . command repeats the last *change* — exactly what you did, including any inserted text. It is what makes Vim feel like Vim.",
+  "keys": ["."],
+  "lessons": [71],
+  "see_also": ["dot.with-counts", "dot.patterns", "recipes.cgn-dot", "survival.undo-redo"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Repeat Last Change" },
+
+    { "type": "prose", "text": "If Vim has a single most-loved key, this is it. {key:.} replays the last change. Not the last keystroke, not the last motion — the last *change*. That distinction is the whole reason {key:.} feels magical." },
+
+    { "type": "keys", "sequence": ["."], "label": "Repeat last change" },
+
+    { "type": "embed", "lesson": 71, "caption": "The dot command" },
+
+    {
+      "type": "internals",
+      "title": "What Counts as \"a Change\"",
+      "text": "Vim has a precise definition of *change* (and only changes can be dotted):\n\n  • An entire Insert-mode session, from {key:i}/{key:a}/{key:o}/etc. through {key:Esc}, is **one change**. The text you typed is part of it.\n  • Every operator+motion ({key:d}{key:w}, {key:c}{key:i}{key:p}, {key:>}{key:i}{key:p}) is **one change**.\n  • Every single-shot edit ({key:x}, {key:r}{c}, {key:p}, {key:~}) is **one change**.\n  • Pure motions and searches are **not changes**. {key:j}, {key:G}, {key:/}, {key:n} don't update the dot register.\n\nVim records the *commands and any typed text* of the last change in the **dot register** ({key:\"}{key:.}). Pressing {key:.} replays them at the current cursor position.\n\nSo {key:c}{key:w}-type-`hello`-{key:Esc} is one change. {key:.} on a different word will change-word-to-`hello` again. {key:o}-type-a-line-{key:Esc} is one change. {key:.} opens another line and types the same content."
+    },
+
+    { "type": "tip", "text": "Search ({key:/}) is *not* a change, but it pairs with {key:.} beautifully: {key:/}{key:foo}{key:Enter}-{key:c}{key:w}-`bar`-{key:Esc} → {key:n}{key:.} {key:n}{key:.} {key:n}{key:.} walks you through every match. Find next; repeat the change. Two keys to refactor each occurrence." },
+
+    { "type": "tip", "text": "{key:u} undoes one change. {key:.} repeats one change. Together they let you preview-and-undo refactors: do it once, see if you like it, {key:u} if not, {key:n}{key:.} if yes. Confidence at speed." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",                "Action"],
+      "rows": [
+        ["{key:.}",                     "Repeat last change at cursor"],
+        ["{key:{n}}{key:.}",            "Repeat last change with new count {n}"],
+        ["{key:\"}{key:.}{key:p}",      "Paste the actual recorded change as text"]
+      ]
+    },
+
+    { "type": "qr", "topic": "dot.repeat" },
+    { "type": "buy-prompt" }
+  ]
+}

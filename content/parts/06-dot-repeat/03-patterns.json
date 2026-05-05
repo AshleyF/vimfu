@@ -1,0 +1,52 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "dot.patterns",
+  "title": "Dot Patterns",
+  "subtitle": "Search + change + dot. The two main refactor idioms.",
+  "part": "dot",
+  "summary": "The two best refactor patterns in Vim both pair search with the dot command. *cw…<Esc>n. is the classic; cgn. is the smoother modern version that lets you skip without thinking.",
+  "keys": ["*", "cw", "n", ".", "cgn"],
+  "lessons": [73],
+  "see_also": ["dot.repeat", "search.word", "recipes.star-cw-dot", "recipes.cgn-dot"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Dot Patterns" },
+
+    { "type": "prose", "text": "Two idioms make Vim feel like a refactoring tool. Both compose search with the dot command. They look almost identical, but the second one is much more pleasant to use." },
+
+    { "type": "heading", "level": 2, "text": "The classic: *cw…<Esc>n." },
+
+    { "type": "prose", "text": "Cursor on `foo`. {key:*} jumps to the next `foo` and stashes it as the search pattern. {key:c}{key:w} changes the word. Type the replacement. {key:Esc}. Now {key:n} jumps to the next match; {key:.} repeats the change. {key:n} {key:.} {key:n} {key:.} … walks you through, with the option to skip with {key:n} alone." },
+
+    { "type": "embed", "lesson": 73, "caption": "*cw…Esc n. pattern" },
+
+    { "type": "heading", "level": 2, "text": "The smoother: cgn." },
+
+    { "type": "prose", "text": "Same setup, but use {key:c}{key:g}{key:n} instead of {key:c}{key:w}. The {key:g}{key:n} motion means \"the next search match.\" So {key:c}{key:g}{key:n} = change the next match. After the first one, you can just press {key:.} repeatedly — each {key:.} jumps *and* changes. Skip an occurrence by pressing {key:n} once before {key:.}." },
+
+    {
+      "type": "internals",
+      "title": "Why cgn. Is Better",
+      "text": "{key:g}{key:n}'s genius is that it bakes the *jump* into the motion. So {key:c}{key:g}{key:n} doesn't need a separate {key:n} between repetitions — the motion finds the next match and selects it as part of the change.\n\nResult: pure {key:.} {key:.} {key:.} repeats. Mental load goes from two-key cadence ({key:n}{key:.} {key:n}{key:.}) to one-key cadence ({key:.} {key:.}).\n\nThe analogous yank/delete forms exist: {key:y}{key:g}{key:n}, {key:d}{key:g}{key:n}. But change is the common one because refactor = change.\n\n{key:g}{key:N} is the same idea but for the *previous* match, in case you want to walk backward."
+    },
+
+    { "type": "tip", "text": "These patterns are why {key:.} is called \"the most important key in Vim.\" Combined with {key:*} and {key:c}{key:g}{key:n}, every grep-and-replace becomes a guided walk: you can preview each change, undo with {key:u}, skip with {key:n}, accept with {key:.}." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Sequence",                          "What happens"],
+      "rows": [
+        ["{key:*}{key:c}{key:w}…{key:Esc}{key:n}{key:.}", "Classic: change-then-walk with {key:n}{key:.}"],
+        ["{key:*}{key:c}{key:g}{key:n}…{key:Esc}{key:.}", "Smooth: change next match, then pure {key:.} repeats"],
+        ["{key:c}{key:g}{key:N}",                       "Same but operates on previous match"],
+        ["{key:n}{key:.}",                             "Skip this match, repeat at the next"]
+      ]
+    },
+
+    { "type": "qr", "topic": "dot.patterns" },
+    { "type": "buy-prompt" }
+  ]
+}

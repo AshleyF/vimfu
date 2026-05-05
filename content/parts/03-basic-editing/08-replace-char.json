@@ -1,0 +1,50 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "editing.replace-char",
+  "title": "Replace a Character",
+  "subtitle": "r{char} — overwrite one character without entering Insert mode.",
+  "part": "editing",
+  "summary": "r{char} replaces the character under the cursor with {char} and stays in Normal mode. Perfect for fixing a typo without an i…Esc dance.",
+  "keys": ["r"],
+  "lessons": [45],
+  "see_also": ["transform.replace-mode", "editing.change"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Replace a Character" },
+
+    { "type": "prose", "text": "Typo? Cursor on the wrong letter? {key:r}{c} swaps it for {c} and leaves you in Normal mode. No Insert-mode round-trip, no {key:Esc}. One change, one keystroke past the new character." },
+
+    { "type": "keys", "sequence": ["r","x"], "label": "Replace the character under cursor with x" },
+    { "type": "keys", "sequence": ["3","r","-"], "label": "Replace the next 3 characters with ---" },
+
+    { "type": "embed", "lesson": 45, "caption": "r{char} — replace one character" },
+
+    { "type": "tip", "text": "{key:r}{key:Enter} replaces the character with a newline — a sneaky way to break a line at the cursor without entering Insert mode." },
+
+    {
+      "type": "internals",
+      "title": "Why r Doesn't Enter Insert Mode",
+      "text": "{key:r} is a *one-shot* operation: it consumes exactly one keystroke as its argument and applies it as a literal replacement. Internally it's not the same as {key:s} (substitute), which deletes the character and switches to Insert mode. {key:r} stays in Normal mode the entire time and produces a single change in the undo tree.\n\nWith a count, {key:{n}}{key:r}{c} replaces {n} characters with the same {c} repeated. Useful for `--------` style separators."
+    },
+
+    { "type": "tip", "text": "If you need to overwrite many characters with different ones, use Replace mode ({key:R}) — it's like Insert mode but each typed character overwrites instead of pushing. See [`transform.replace-mode`](#transform.replace-mode)." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",                "Action"],
+      "rows": [
+        ["{key:r}{c}",                  "Replace one character with c"],
+        ["{key:{n}}{key:r}{c}",         "Replace next n characters with c (repeated)"],
+        ["{key:r}{key:Enter}",          "Replace with a newline (split line)"],
+        ["{key:R}",                     "Enter Replace mode (continuous overwrite)"],
+        ["{key:g}{key:r}{c}",           "Replace virtually (don't extend short lines)"]
+      ]
+    },
+
+    { "type": "qr", "topic": "editing.replace-char" },
+    { "type": "buy-prompt" }
+  ]
+}

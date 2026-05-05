@@ -1,0 +1,63 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "editing.delete",
+  "title": "Delete",
+  "subtitle": "d is the verb. Pair it with any motion.",
+  "part": "editing",
+  "summary": "d is the delete operator. It takes a motion: dw deletes a word, d$ deletes to end of line. Doubling the operator (dd) makes it linewise. x and X are convenience deletes for single characters.",
+  "keys": ["x", "X", "d", "dw", "D", "dd"],
+  "lessons": [31, 32, 33, 34, 35],
+  "see_also": ["foundations.universal-grammar", "editing.change", "editing.yank-put", "registers.unnamed"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Delete" },
+
+    { "type": "prose", "text": "{key:d} is the *delete operator*. It's a verb that needs a noun. The noun is any motion or text object. {key:d}{key:w} deletes a word. {key:d}{key:$} deletes to end of line. {key:d}{key:i}{key:p} deletes the inner paragraph. The grammar carries you here." },
+
+    { "type": "keys", "sequence": ["x"],          "label": "Delete character under cursor" },
+    { "type": "keys", "sequence": ["X"],          "label": "Delete character before cursor" },
+    { "type": "keys", "sequence": ["d","w"],      "label": "Delete a word" },
+    { "type": "keys", "sequence": ["d","$"],      "label": "Delete to end of line" },
+    { "type": "keys", "sequence": ["D"],          "label": "= d$  (delete to end of line)" },
+    { "type": "keys", "sequence": ["d","d"],      "label": "Delete the current line" },
+
+    { "type": "embed", "lesson": 31, "caption": "x — delete a character" },
+    { "type": "embed", "lesson": 32, "caption": "X — backspace-delete" },
+    { "type": "embed", "lesson": 33, "caption": "dw — delete a word" },
+    { "type": "embed", "lesson": 34, "caption": "D — delete to end of line" },
+    { "type": "embed", "lesson": 35, "caption": "dd — delete a line" },
+
+    { "type": "tip", "text": "Counts compose multiplicatively. {key:3}{key:d}{key:2}{key:w} deletes six words. The {key:3} multiplies the {key:2} multiplies the motion. Read it as \"three times: delete two words.\"" },
+
+    {
+      "type": "internals",
+      "title": "Delete Doesn't Delete — It *Moves to a Register*",
+      "text": "When you press {key:d}{key:w}, Vim cuts the deleted text and stores it in **two** registers:\n\n  1. The **unnamed register** ({key:\"}{key:\"}) — your most-recent yank-or-delete.\n  2. A **numbered register** ({key:\"}{key:1}–{key:\"}{key:9}) — a rolling buffer of the last nine deletes.\n\nSo {key:p} after {key:d}{key:w} pastes the word back. {key:\"}{key:1}{key:p} pastes the most-recent delete. {key:\"}{key:2}{key:p} the one before. **Delete is just \"cut.\"** This is also why deleting and then pasting elsewhere is the standard Vim move-text idiom.\n\nThe one register *not* touched by delete is the **yank register** ({key:\"}{key:0}), which only updates on actual yanks. So if you yank, then delete, then paste, you get the *delete*. Use {key:\"}{key:0}{key:p} to get the yank back. Full treatment: [`registers.numbered`](#registers.numbered) and [`registers.unnamed`](#registers.unnamed)."
+    },
+
+    { "type": "tip", "text": "{key:D} = {key:d}{key:$}. {key:dd} (linewise delete) is the doubled-operator form. *Every* operator follows that pattern: a doubled operator means \"act on this whole line.\" {key:c}{key:c}, {key:y}{key:y}, {key:>}{key:>}, {key:=}{key:=}, etc." },
+
+    { "type": "tip", "text": "Curiosity: {key:x} and {key:X} are essentially {key:d}{key:l} and {key:d}{key:h} respectively. They exist for ergonomics — single-character deletes happen so often that they get one-key shortcuts." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",                "Action"],
+      "rows": [
+        ["{key:x}",                     "Delete char under cursor"],
+        ["{key:X}",                     "Delete char before cursor"],
+        ["{key:d}{motion}",             "Delete what {motion} covers"],
+        ["{key:d}{key:d}",              "Delete current line (linewise)"],
+        ["{key:D}",                     "Delete to end of line (= {key:d}{key:$})"],
+        ["{key:d}{key:i}{key:w}",       "Delete inner word"],
+        ["{key:d}{key:a}{key:p}",       "Delete around paragraph"],
+        ["{key:{n}}{key:d}{key:d}",     "Delete {n} lines"]
+      ]
+    },
+
+    { "type": "qr", "topic": "editing.delete" },
+    { "type": "buy-prompt" }
+  ]
+}

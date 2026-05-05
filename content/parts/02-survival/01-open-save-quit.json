@@ -1,0 +1,108 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "survival.open-save-quit",
+  "title": "Open, Save, Quit",
+  "subtitle": "Launch Neovim, write your work, and get out — three ways each",
+  "part": "survival",
+  "summary": "Open a file with `nvim`. Write with `:w`. Quit with `:q`. Combine with `:wq`, `:x`, or `ZZ`. Discard with `:q!` or `ZQ`.",
+  "keys": [":w", ":q", ":wq", ":x", "ZZ", ":q!", "ZQ"],
+  "lessons": [2, 7, 8, 9, 10],
+  "see_also": ["survival.insert-and-back", "survival.undo-redo", "ex.file-ops", "windows.buffers"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Open, Save, Quit" },
+
+    { "type": "prose", "text": "The single most-googled question about Vim is \"how do I exit?\" Let's get that out of the way first, then make it a real skill." },
+
+    { "type": "heading", "level": 2, "text": "Opening a file" },
+
+    { "type": "keys", "sequence": ["@nvim hello.txt", "Enter"], "label": "Launch Neovim editing hello.txt" },
+
+    { "type": "prose", "text": "If the file exists, you see its contents. If it doesn't, you see an empty buffer that *will* be saved as `hello.txt` the first time you write. Vim doesn't create the file on disk until you save." },
+
+    { "type": "embed", "lesson": 2, "caption": "Opening a file" },
+
+    { "type": "heading", "level": 2, "text": "Saving" },
+
+    { "type": "keys", "sequence": [":", "w", "Enter"], "label": "Write the buffer to its file" },
+
+    { "type": "prose", "text": "{key::}{key:w} \"writes\" — Vim's word for save. {key::}{key:w} {filename} writes to a different filename (Save As). {key::}{key:w}{key:!} forces a write through read-only flags." },
+
+    { "type": "embed", "lesson": 7, "caption": "Saving with :w" },
+
+    { "type": "heading", "level": 2, "text": "Quitting" },
+
+    { "type": "keys", "sequence": [":", "q", "Enter"], "label": "Quit (only if no unsaved changes)" },
+
+    { "type": "prose", "text": "{key::}{key:q} quits — *if* the buffer is clean. If there are unsaved changes, Vim refuses and tells you to save or force-quit. Force-quit with {key::}{key:q}{key:!} discards changes and exits." },
+
+    { "type": "embed", "lesson": 8, "caption": "Quitting Vim" },
+
+    { "type": "heading", "level": 2, "text": "Save and quit" },
+
+    {
+      "type": "table",
+      "headers": ["Command", "Behavior"],
+      "rows": [
+        ["{key::}{key:w}{key:q}", "Write, then quit. Always writes (even if nothing changed)."],
+        ["{key::}{key:x}",        "Write *if changed*, then quit. Quieter than `:wq`."],
+        ["{key:Z}{key:Z}",        "Same as `:x` — write-if-changed, then quit. Normal-mode shortcut."]
+      ]
+    },
+
+    { "type": "tip", "text": "Use {key:Z}{key:Z} as your default \"done\" key — no colon, no Enter, just two capital Zs. It's also the most ergonomic of the bunch." },
+
+    { "type": "embed", "lesson": 9, "caption": "Save-and-quit: :wq, :x, ZZ" },
+
+    { "type": "heading", "level": 2, "text": "Quit without saving" },
+
+    {
+      "type": "table",
+      "headers": ["Command", "Behavior"],
+      "rows": [
+        ["{key::}{key:q}{key:!}", "Discard changes and quit."],
+        ["{key:Z}{key:Q}",        "Same — Normal-mode shortcut."]
+      ]
+    },
+
+    { "type": "embed", "lesson": 10, "caption": "Quit without saving" },
+
+    { "type": "tip", "text": "If you ever quit with {key::}{key:q}{key:!} and regret it, remember: Vim writes a per-session swapfile. The next time you open the file, Vim may offer to recover. The undo *file* (if you have `'undofile'` set) survives quit, so you can even reopen and undo back to a state before the changes you discarded." },
+
+    { "type": "divider" },
+
+    { "type": "heading", "level": 2, "text": "Reference" },
+
+    {
+      "type": "table",
+      "headers": ["Goal", "Command"],
+      "rows": [
+        ["Open a file",                        "{key:`}nvim file{key:`} from the shell"],
+        ["Save",                               "{key::}{key:w}"],
+        ["Save as",                            "{key::}{key:w} new-name"],
+        ["Save (force, e.g. read-only)",       "{key::}{key:w}{key:!}"],
+        ["Quit (clean buffer)",                "{key::}{key:q} or {key::}{key:q}{key:a} for all"],
+        ["Save then quit (always writes)",     "{key::}{key:w}{key:q}"],
+        ["Save then quit (only if changed)",   "{key::}{key:x} or {key:Z}{key:Z}"],
+        ["Quit, discarding changes",           "{key::}{key:q}{key:!} or {key:Z}{key:Q}"],
+        ["Reload from disk (lose changes)",    "{key::}{key:e}{key:!}"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Buffers, Files, and What :w Actually Does",
+      "text": "When you open a file, Vim copies it into memory as a *buffer* — an in-memory list of lines. Your edits change the buffer, not the file. {key::}{key:w} (write) flushes the buffer to disk; until then, the on-disk file is unchanged.\n\nVim also creates a *swapfile* (`.<filename>.swp`) next to the buffer's file. The swapfile is a periodic snapshot of unsaved changes; if Vim or your machine crashes, the swapfile lets the next `nvim <file>` invocation recover. This is also what causes the \"swap file already exists\" prompt — usually Vim was killed without exiting cleanly, and the swap is still on disk.\n\nThe *undofile* (separate from the swap, controlled by `'undofile'`) persists the undo *tree* across sessions: open a file tomorrow and {key:u} can still walk back through today's edits.\n\nQuitting with {key:Z}{key:Z} (or {key::}{key:x}) writes the buffer if it's modified and exits. Quitting with {key:Z}{key:Q} (or {key::}{key:q}{key:!}) deletes the swapfile and exits without writing — your unsaved buffer changes are gone, but the on-disk file is intact (it never got written this session)."
+    },
+
+    {
+      "type": "internals",
+      "title": "Multiple Files",
+      "text": "Vim can hold many buffers at once. {key::}{key:e} {file} opens *another* file in a new buffer, leaving the previous one in memory. {key::}{key:l}{key:s} lists all loaded buffers. {key::}{key:b} {n} switches to buffer N.\n\nThis matters for quitting: {key::}{key:q} closes the current *window*; if other windows or buffers are open, Vim is still running. {key::}{key:q}{key:a} (quit-all) closes everything. {key::}{key:w}{key:q}{key:a} writes-all-then-quits-all. If you've ever pressed {key::}{key:q} expecting Vim to exit and gotten \"E37: No write since last change\" or seen it switch to another buffer instead — it's because the buffer/window distinction matters even at this level.\n\nFull treatment in `windows.buffers`."
+    },
+
+    { "type": "qr", "topic": "survival.open-save-quit" },
+    { "type": "buy-prompt" }
+  ]
+}

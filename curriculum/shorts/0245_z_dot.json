@@ -1,0 +1,206 @@
+{
+  "title": "VimFu — z. Center First Non-Blank",
+  "description": "z. works like zz but also moves the cursor to the first non-blank character on the line. Combines scrolling with cursor positioning.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 386,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scrolling"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f forge.py .forge.py.swp .forge.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*forge.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "forge.py",
+      "content": "# Weapon Forge\nimport random\n\nclass Material:\n    def __init__(self, name, strength):\n        self.name = name\n        self.strength = strength\n\nclass Weapon:\n    def __init__(self, name, material):\n        self.name = name\n        self.material = material\n        self.enchant = None\n        self.durability = 100\n\n    def apply_enchant(self, spell):\n        self.enchant = spell\n        self.durability -= 10\n\n    def repair(self):\n        self.durability = 100\n\nclass Forge:\n    def __init__(self):\n        self.fuel = 100\n        self.queue = []\n\n    def smelt(self, material):\n        self.fuel -= 20\n        return material.strength * 2\n\n    def craft(self, name, material):\n        power = self.smelt(material)\n        weapon = Weapon(name, material)\n        return weapon\n\n    def batch_craft(self, orders):\n        results = []\n        for name, mat in orders:\n            w = self.craft(name, mat)\n            results.append(w)\n        return results"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' forge.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "z. Center + First Non-Blank",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z dot is like Z Z, but it also moves the cursor to the first non-blank character. Center and align in one move."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump, position cursor at end, use z. ---"
+    },
+    {
+      "say": "Jump to line twenty three, the Forge class. Move to the end of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "23G$",
+      "overlay": "line 23, end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z dot. The line centers, and the cursor jumps to the first non-blank character.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z.",
+      "overlay": "center + first non-blank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The cursor jumped from the end of the line to the C in class. That is the first non-blank character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: compare with zz ---"
+    },
+    {
+      "say": "Jump to line thirty four, end of line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "34G$",
+      "overlay": "line 34, end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z Z first. The line centers, but the cursor stays at the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zz",
+      "overlay": "stays at end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now Z dot. The line stays centered, but the cursor moves to the first non-blank.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z.",
+      "overlay": "first non-blank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "That's the difference. Z Z keeps the cursor position, Z dot aligns it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z dot. Center the line and snap to the first non-blank character."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f forge.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "Y6YyL_-w3Zg",
+    "url": "https://youtube.com/watch?v=Y6YyL_-w3Zg"
+  }
+}

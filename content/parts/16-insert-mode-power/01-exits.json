@@ -1,0 +1,45 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "insert.exits",
+  "title": "Exiting Insert Mode",
+  "subtitle": "Three ways out, and why people remap.",
+  "part": "insert-mode-power",
+  "summary": "Esc, Ctrl-[, and Ctrl-C all exit Insert mode — but they're not identical. Esc and Ctrl-[ trigger InsertLeave; Ctrl-C bypasses it.",
+  "keys": ["Esc", "Ctrl-[", "Ctrl-C"],
+  "lessons": [366, 368],
+  "see_also": ["insert.one-shot-normal", "intro.modes"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Exiting Insert Mode" },
+
+    { "type": "prose", "text": "There are three ways out of Insert mode. Two are equivalent, one is subtly different — and that subtle difference matters." },
+
+    {
+      "type": "keys",
+      "label": "The three exits",
+      "sequence": [
+        { "key": "Esc",    "note": "The canonical exit." },
+        { "key": "Ctrl-[", "note": "Identical to {key:Esc} (terminal heritage)." },
+        { "key": "Ctrl-C", "note": "Exits, but skips InsertLeave." }
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Why Ctrl-[ Exists",
+      "text": "On old terminals, {key:Esc} sent the byte `0x1b` — same byte produced by {key:Ctrl-[}. Vim never had to distinguish them; both still trigger the same exit logic. The {key:Ctrl-[} alias survives because (a) {key:Esc} is far away on modern keyboards, and (b) {key:Ctrl-[} is more comfortable for fast typists with Caps Lock remapped to Ctrl."
+    },
+
+    {
+      "type": "internals",
+      "title": "Ctrl-C Is NOT the Same",
+      "text": "{key:Ctrl-C} exits Insert mode but **skips the `InsertLeave` autocommand**. Plugins that auto-format, save, or update status on Insert-leave will not fire. It also doesn't abbreviate: typed `:abbreviate` expansions don't trigger. For everyday text editing, prefer {key:Esc} or {key:Ctrl-[}."
+    },
+
+    { "type": "tip", "text": "Many users remap {key:Caps Lock} → {key:Ctrl} at the OS level, then use {key:Ctrl-[} as their exit. It's the single biggest ergonomic win for Vim." },
+
+    { "type": "qr", "topic": "insert.exits" },
+    { "type": "buy-prompt" }
+  ]
+}

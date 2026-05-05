@@ -1,0 +1,41 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "visual.endpoints",
+  "title": "Swap and Adjust Endpoints",
+  "subtitle": "o jumps to the other end. O switches corners in block mode.",
+  "part": "visual-depth",
+  "summary": "While in Visual mode, o swaps the cursor between the start and end of the selection — letting you adjust either endpoint without restarting. In block mode, O swaps the diagonal corner.",
+  "keys": ["o", "O"],
+  "lessons": [437, 438],
+  "see_also": ["visual.modes", "visual.gv"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Swap and Adjust Endpoints" },
+
+    { "type": "prose", "text": "Once in Visual mode, the cursor sits at one end of the selection — and that's the *only* end you can extend. The {key:o} key swaps which end is active." },
+
+    {
+      "type": "keys",
+      "label": "Adjust the start of a selection",
+      "sequence": [
+        { "key": "v",     "note": "Enter Visual" },
+        { "key": "j",     "note": "Extend down past where you want" },
+        { "key": "j",     "note": "Too far?" },
+        { "key": "o",     "note": "Hop to the OTHER end" },
+        { "key": "k",     "note": "Now adjust the start with motions" }
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Why Two Anchors in Block Mode",
+      "text": "A character or line Visual selection has only two endpoints (start and end), so {key:o} has just one place to send the cursor. A *block* Visual selection has **four corners** — top-left, top-right, bottom-left, bottom-right.\n\n  • {key:o} swaps the cursor to the **opposite corner** (diagonal swap).\n  • {key:O} swaps to the corner on the **same row but other column** (horizontal swap).\n\nBetween them you can land on any of the four corners and extend in any direction."
+    },
+
+    { "type": "tip", "text": "Mnemonic: lowercase {key:o} = *opposite* corner; capital {key:O} = *Other* side of the same row." },
+
+    { "type": "qr", "topic": "visual.endpoints" },
+    { "type": "buy-prompt" }
+  ]
+}

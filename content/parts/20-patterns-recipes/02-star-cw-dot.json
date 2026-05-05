@@ -1,0 +1,44 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "patterns.star-cw-dot",
+  "title": "*, cw, then . . . — The Replace Loop",
+  "subtitle": "Search a word, change one, repeat with dot.",
+  "part": "patterns-recipes",
+  "summary": "*cwNEW Esc, then n.n.n. — change every occurrence of a word, one at a time, with confirmation. The most-loved Vim refactoring loop.",
+  "keys": ["*", "c", "w", "n", "."],
+  "lessons": [463, 464],
+  "see_also": ["search.word", "dot-repeat.repeat", "patterns.cgn-dot"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "*, cw, then . . . — The Replace Loop" },
+
+    { "type": "prose", "text": "The classic Vim refactoring loop. Searches for a word, changes one instance, then jumps to each next match where you decide whether to dot-repeat (apply) or skip." },
+
+    {
+      "type": "keys",
+      "label": "Step by step",
+      "sequence": [
+        { "key": "*",     "note": "Cursor on word: search next exact match" },
+        { "key": "cw",    "note": "Change word — Vim drops you in Insert" },
+        { "key": "NEW",   "note": "Type replacement" },
+        { "key": "Esc",   "note": "Back to Normal — change is saved as the dot-target" },
+        { "key": "n",     "note": "Jump to next match" },
+        { "key": ".",     "note": "Apply the same change" },
+        { "key": "n",     "note": "Skip this one — just move to next" },
+        { "key": ".",     "note": "Apply…" }
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Why It's Better Than :%s",
+      "text": "{key::}{key:%}{key:s}{key:/old/new/gc} also works — but you have to type both `old` and `new`, and you confirm at the *line level* (yes/no). The {key:*}{key:c}{key:w} loop is faster:\n\n  • {key:*} **fills in the search pattern for you** (the word under cursor with `\\<...\\>` boundaries).\n  • {key:c}{key:w} drops you straight into Insert at the word's position.\n  • Esc commits the change. The {key:.} register now holds *the entire change*, including motion and inserted text.\n  • {key:n} + {key:.} cycle through matches, applying or skipping at each.\n\nThe loop also handles cases where the matches differ slightly (different surrounding context, decision per-match) — much more flexible than substitute."
+    },
+
+    { "type": "tip", "text": "Need word boundaries to be loose? Use {key:g}{key:*} instead of {key:*} — finds the word as a substring, not just whole-word matches." },
+
+    { "type": "qr", "topic": "patterns.star-cw-dot" },
+    { "type": "buy-prompt" }
+  ]
+}

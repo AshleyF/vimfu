@@ -1,0 +1,42 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "cmdline.paste-from-buffer",
+  "title": "Paste from Buffer (Ctrl-R)",
+  "subtitle": "Same Ctrl-R as Insert mode — inject any register.",
+  "part": "command-line-power",
+  "summary": "From the command line, Ctrl-R{reg} inserts the register contents — exactly like in Insert mode. Lets you build commands from the unnamed register, search history, last yank, expression results, etc.",
+  "keys": ["Ctrl-R"],
+  "lessons": [451, 451],
+  "see_also": ["insert.from-register", "registers.special"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Paste from Buffer" },
+
+    { "type": "prose", "text": "{key:Ctrl-R} on the command line works exactly like in Insert mode: it injects register contents into the line you're building." },
+
+    {
+      "type": "table",
+      "headers": ["Sequence",                "Inserts"],
+      "rows": [
+        ["{key:Ctrl-R}{key:\"}",             "Unnamed register"],
+        ["{key:Ctrl-R}{key:0}",              "Last yank"],
+        ["{key:Ctrl-R}{key:+}",              "System clipboard"],
+        ["{key:Ctrl-R}{key:/}",              "Last search pattern"],
+        ["{key:Ctrl-R}{key::}",              "Last Ex command"],
+        ["{key:Ctrl-R}{key:%}",              "Current filename"],
+        ["{key:Ctrl-R}{key:Ctrl-W}",         "Word under cursor in buffer"],
+        ["{key:Ctrl-R}{key:=}{expr}",        "Expression result"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Common Pattern: Substitute Last Search",
+      "text": "Searched for something with {key:/}? Now you want to substitute it. Two options:\n\n  1. Use the empty pattern shortcut: `:%s//newtext/g` — Vim reuses the last search.\n  2. Insert it explicitly: `:%s/<Ctrl-R>/` — Vim pastes the actual pattern, which you can edit before completing the command.\n\nOption 2 is useful when you want to *modify* the search pattern slightly before substituting.\n\nThe {key:Ctrl-R}{key:=} expression register is also magical here — `:e <Ctrl-R>=expand('%:h')<CR>/foo` builds a path relative to the current file."
+    },
+
+    { "type": "qr", "topic": "cmdline.paste-from-buffer" },
+    { "type": "buy-prompt" }
+  ]
+}

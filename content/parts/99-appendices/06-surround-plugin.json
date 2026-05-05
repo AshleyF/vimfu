@@ -1,0 +1,43 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "appendix.surround-plugin",
+  "title": "Surround (the Plugin That Should Be Built In)",
+  "subtitle": "ds, cs, ys — operate on surroundings as a first-class concept.",
+  "part": "appendices",
+  "summary": "Tim Pope's vim-surround adds three operators: ys (add surrounding), ds (delete surrounding), cs (change surrounding). Once you have it, it feels like core Vim.",
+  "keys": ["ds", "cs", "ys"],
+  "lessons": [],
+  "see_also": ["operators-textobjects.quotes", "operators-textobjects.brackets"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Surround" },
+
+    { "type": "prose", "text": "Tim Pope's [vim-surround](https://github.com/tpope/vim-surround) is the plugin most often cited as \"this should ship with Vim.\" It adds three operators that treat *surroundings* (quotes, brackets, tags) as first-class targets." },
+
+    {
+      "type": "table",
+      "headers": ["Sequence",                  "Effect"],
+      "rows": [
+        ["{key:d}{key:s}{key:'}",               "Delete surrounding single quotes"],
+        ["{key:d}{key:s}{key:t}",               "Delete surrounding HTML tag"],
+        ["{key:c}{key:s}{key:'}{key:\"}",       "Change surrounding ' to \""],
+        ["{key:c}{key:s}{key:[}{key:(}",        "Change [ ] to ( )"],
+        ["{key:c}{key:s}{key:t}",               "Change surrounding tag (prompts for new tag name)"],
+        ["{key:y}{key:s}{key:i}{key:w}{key:'}", "Surround inner word with single quotes"],
+        ["{key:y}{key:s}{key:s}{key:}}",         "Surround whole line with braces"],
+        ["{key:y}{key:s}{key:i}{key:p}{key:<}{key:p}{key:>}", "Wrap paragraph in <p> tags"],
+        ["Visual mode + {key:S}{key:'}",        "Surround selection with quotes"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Why It Belongs in Core",
+      "text": "Vim's grammar already understands the *content* inside surroundings — `i\"`, `i(`, `it`, etc. select the inner content. Surround completes the grammar by treating the *delimiters themselves* as a first-class concept that can be deleted, changed, or added.\n\nThe operator names are mnemonic: **d**elete-**s**urrounding, **c**hange-**s**urrounding, **y**ank-**s**urrounding (\"surround with\"). The plugin makes surroundings as natural to manipulate as words or lines — which is why most Vim users add it day one.\n\nNeovim has discussed adding similar functionality to core; for now, install vim-surround."
+    },
+
+    { "type": "qr", "topic": "appendix.surround-plugin" },
+    { "type": "buy-prompt" }
+  ]
+}

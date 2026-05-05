@@ -1,0 +1,33 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "marks.changelist",
+  "title": "The Change List",
+  "subtitle": "g; / g, — walk through the places you've been editing.",
+  "part": "marks",
+  "summary": "Like the jump list, but for *changes*: g; jumps back to your previous edit position; g, walks forward.",
+  "keys": ["g;", "g,", ":changes"],
+  "lessons": [],
+  "see_also": ["marks.jumplist", "marks.special", "dot.repeat"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "The Change List" },
+
+    { "type": "prose", "text": "Every *change* you make sets a position in a per-buffer list. {key:g}{key:;} walks back through it; {key:g}{key:,} walks forward. Different from the jump list — changes only, this buffer only." },
+
+    { "type": "keys", "sequence": ["g",";"], "label": "Go to previous edit position" },
+    { "type": "keys", "sequence": ["g",","], "label": "Go to next edit position" },
+    { "type": "keys", "sequence": [":","c","h","a","n","g","e","s","Enter"], "label": "Show the change list" },
+
+    {
+      "type": "internals",
+      "title": "Change List vs Jump List",
+      "text": "**Jump list** — per-window. Records *positions you've been*, regardless of whether you edited there. Used for navigating with {key:Ctrl-O}/{key:Ctrl-I}.\n\n**Change list** — per-buffer. Records *positions where you actually changed text*. Used for revisiting your edits with {key:g}{key:;}/{key:g}{key:,}.\n\nThe special mark {key:'}{key:.}/{key:`}{key:.} is just \"the most-recent entry of this buffer's change list.\" {key:g}{key:;}{key:g}{key:;}{key:g}{key:;} walks deeper into history, two-then-three-then-four edits ago.\n\nEspecially useful when you've been editing in many places in one file and want to revisit each spot to verify."
+    },
+
+    { "type": "tip", "text": "Combined with {key:Ctrl-O}/{key:Ctrl-I}, you have two complementary trails: places you've *been* and places you've *changed*. Different muscle memory; both invaluable." },
+
+    { "type": "qr", "topic": "marks.changelist" },
+    { "type": "buy-prompt" }
+  ]
+}

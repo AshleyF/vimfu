@@ -1,0 +1,45 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "macros.record-play",
+  "title": "Recording and Playing Macros",
+  "subtitle": "qa records into register a. q stops. @a plays.",
+  "part": "macros",
+  "summary": "qa starts recording into register a; press q again to stop. @a plays back. @@ replays the most recent macro.",
+  "keys": ["qa", "q", "@a", "@@"],
+  "lessons": [126, 127, 128, 129],
+  "see_also": ["macros.counted", "macros.editing", "registers.macros-as-text"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Recording and Playing Macros" },
+
+    { "type": "prose", "text": "Macros are Vim's loop. Record a sequence of keystrokes once; replay it with one key. They're how you turn 100 lines of repetitive editing into 4 keystrokes." },
+
+    { "type": "keys", "sequence": ["q","a"],          "label": "Start recording into register a" },
+    { "type": "keys", "sequence": ["q"],              "label": "Stop recording" },
+    { "type": "keys", "sequence": ["@","a"],          "label": "Play macro a" },
+    { "type": "keys", "sequence": ["@","@"],          "label": "Repeat last macro" },
+
+    { "type": "embed", "lesson": 126, "caption": "qa — start recording" },
+    { "type": "embed", "lesson": 127, "caption": "q — stop recording" },
+    { "type": "embed", "lesson": 128, "caption": "@a — play macro" },
+    { "type": "embed", "lesson": 129, "caption": "@@ — repeat last macro" },
+
+    { "type": "tip", "text": "While recording, the status line shows `recording @a`. Don't worry — the recording is just keystrokes-into-a-register; nothing is locked, nothing is precious. If you mess up, press {key:q} to stop, then {key:q}{key:a} to start fresh." },
+
+    {
+      "type": "internals",
+      "title": "How Recording Works",
+      "text": "{key:q}{key:a}: Vim *opens register `a` for writing* and tags every subsequent keypress to be appended to it. Each key still does its normal job — you're editing as usual.\n\n{key:q}: Closes the register. The recorded keystrokes (including all the {key:Esc}, motion, and operator keys) sit in `\"a` as a string.\n\n{key:@}{key:a}: Reads `\"a` and feeds the contents back into Vim's input buffer. They run as if you typed them. Errors abort playback.\n\nThis is **just** *type-then-replay*. There's no \"macro language.\" Anything you can type, you can record."
+    },
+
+    {
+      "type": "internals",
+      "title": "Idiom: Make Your Macro Idempotent",
+      "text": "A reliable macro starts with a *stable anchor* — usually {key:0} (start of line) or a search. That way, no matter where the cursor is, the macro begins at a known position.\n\nIt usually ends with a *forward step* — typically {key:j} or {key:n} — so successive plays move down through the buffer.\n\nExample: \"add a semicolon to end of every line.\" Record: {key:q}{key:a}, {key:A}{key:;}{key:Esc}, {key:j}, {key:0}, {key:q}. Now {key:1}{key:0}{key:0}{key:@}{key:a} adds semicolons to 100 lines.\n\nIf the macro fails (e.g. no more lines, or no match for a search), playback aborts. That's why \"do it 100 times\" is safe — it stops when there's nothing left to do."
+    },
+
+    { "type": "qr", "topic": "macros.record-play" },
+    { "type": "buy-prompt" }
+  ]
+}

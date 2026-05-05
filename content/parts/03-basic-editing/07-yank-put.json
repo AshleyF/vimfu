@@ -1,0 +1,67 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "editing.yank-put",
+  "title": "Yank and Put",
+  "subtitle": "Yank is copy. Put is paste. The register knows whether it's a line or a span.",
+  "part": "editing",
+  "summary": "y is the yank (copy) operator. p puts after the cursor; P puts before. The register remembers whether it holds characters or whole lines, and that decides where the put lands.",
+  "keys": ["y", "yy", "Y", "yw", "y$", "p", "P"],
+  "lessons": [40, 41, 42, 43, 44],
+  "see_also": ["editing.delete", "registers.unnamed", "registers.named", "foundations.universal-grammar"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Yank and Put" },
+
+    { "type": "prose", "text": "{key:y} is *yank* — Vim's word for copy. It's an operator, like {key:d} and {key:c}, so it takes a motion: {key:y}{key:w} yanks a word, {key:y}{key:$} yanks to end of line, {key:y}{key:y} yanks the whole line." },
+
+    { "type": "prose", "text": "Whatever you yanked sits in the unnamed register, ready to be put with {key:p} (after the cursor) or {key:P} (before)." },
+
+    { "type": "keys", "sequence": ["y","y"], "label": "Yank current line (linewise)" },
+    { "type": "keys", "sequence": ["Y"],     "label": "Yank current line (= yy by tradition; some configs map to y$)" },
+    { "type": "keys", "sequence": ["y","w"], "label": "Yank a word" },
+    { "type": "keys", "sequence": ["y","$"], "label": "Yank to end of line" },
+    { "type": "keys", "sequence": ["p"],     "label": "Put after cursor / below line" },
+    { "type": "keys", "sequence": ["P"],     "label": "Put before cursor / above line" },
+
+    { "type": "embed", "lesson": 40, "caption": "yy — yank a line" },
+    { "type": "embed", "lesson": 41, "caption": "Y — yank line" },
+    { "type": "embed", "lesson": 42, "caption": "p — put after" },
+    { "type": "embed", "lesson": 43, "caption": "P — put before" },
+    { "type": "embed", "lesson": 44, "caption": "yw / y$ — yank a span" },
+
+    {
+      "type": "internals",
+      "title": "Why p Sometimes Goes Below the Line and Sometimes After the Cursor",
+      "text": "Every register holds **(text, type)** where `type` is `char`, `line`, or `block`. The type is set by *how the text got into the register*:\n\n  • {key:y}{key:w}, {key:y}{key:$}, {key:y}{key:i}{key:w} → type = `char` (a span of characters).\n  • {key:y}{key:y}, {key:y}{key:j}, {key:y}{key:G} → type = `line` (one or more whole lines).\n  • {key:Ctrl-V}-then-{key:y} → type = `block` (a rectangle).\n\nWhen you put:\n\n  • A `char`-typed register goes *after the cursor* (just past the current character).\n  • A `line`-typed register goes *on the next line below*.\n  • A `block`-typed register goes *as a rectangle starting one column right of the cursor*.\n\nThis is why {key:y}{key:y}{key:p} \"duplicates the line\" (the line-typed register lands as a new line below) and {key:y}{key:w}{key:p} \"appends a word after the cursor.\" It's not magic; it's the type tag.\n\n{key:P} (capital) does the mirror: charwise = before cursor; linewise = above current line; blockwise = at the cursor column (no shift)."
+    },
+
+    {
+      "type": "internals",
+      "title": "The Y Wart",
+      "text": "By symmetry with {key:D} = {key:d}{key:$} and {key:C} = {key:c}{key:$}, you'd expect {key:Y} = {key:y}{key:$}. It isn't.\n\nIn classic Vim, {key:Y} is just another way to say {key:y}{key:y}. This is a deliberate compatibility choice — vi behaved that way, so Vim did too. It's the most common single complaint about Vim's grammar.\n\nNeovim 0.6+ changed the default: in Neovim, {key:Y} is now {key:y}{key:$} (matching {key:D} and {key:C}). In Vim you can opt in with `:nnoremap Y y$`. The video lessons show classic Y; Neovim users get the new behavior for free."
+    },
+
+    { "type": "tip", "text": "Move text without using a separate buffer: {key:d}{key:d} (cut a line), navigate, {key:p} (paste below). It's exactly the cut-and-paste you already know, just expressed in operator+motion." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",            "Action",                                "Type"],
+      "rows": [
+        ["{key:y}{motion}",         "Yank range",                            "Inherits from motion"],
+        ["{key:y}{key:y}",          "Yank current line",                     "Linewise"],
+        ["{key:Y}",                 "Yank line (vi) or to end-of-line (nvim default)", "Linewise / charwise"],
+        ["{key:p}",                 "Put after cursor / below line",         "—"],
+        ["{key:P}",                 "Put before cursor / above line",        "—"],
+        ["{key:g}{key:p}",          "Like p but leave cursor *after* pasted text", "—"],
+        ["{key:]}{key:p}",          "Put + adjust indent to context",        "—"],
+        ["{key:\"}{r}{key:p}",      "Put from register {r}",                 "—"]
+      ]
+    },
+
+    { "type": "qr", "topic": "editing.yank-put" },
+    { "type": "buy-prompt" }
+  ]
+}

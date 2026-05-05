@@ -1,0 +1,37 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "windows.splits",
+  "title": "Creating Splits",
+  "subtitle": "Ctrl-W s — horizontal split. Ctrl-W v — vertical.",
+  "part": "windows",
+  "summary": "Ctrl-W s splits the current window horizontally; Ctrl-W v splits vertically. :sp and :vs do the same and can take a filename to open in the new split.",
+  "keys": ["Ctrl-W s", "Ctrl-W v", ":sp", ":vs"],
+  "lessons": [131, 132],
+  "see_also": ["windows.navigate", "windows.move-resize", "windows.buffers-vs-windows-vs-tabs"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Creating Splits" },
+
+    { "type": "prose", "text": "A *window* is a viewport. Splits give you more than one. {key:Ctrl-W} {key:s} stacks two viewports vertically (a horizontal split). {key:Ctrl-W} {key:v} puts them side by side (a vertical split)." },
+
+    { "type": "keys", "sequence": ["Ctrl-W","s"],            "label": "Horizontal split (top/bottom)" },
+    { "type": "keys", "sequence": ["Ctrl-W","v"],            "label": "Vertical split (left/right)" },
+    { "type": "keys", "sequence": [":","s","p"," ","{file}","Enter"], "label": "Horizontal split, open {file}" },
+    { "type": "keys", "sequence": [":","v","s"," ","{file}","Enter"], "label": "Vertical split, open {file}" },
+
+    { "type": "embed", "lesson": 131, "caption": "Ctrl-W s — horizontal split" },
+    { "type": "embed", "lesson": 132, "caption": "Ctrl-W v — vertical split" },
+
+    {
+      "type": "internals",
+      "title": "Splits Show Buffers; They Don't Open Files",
+      "text": "{key:Ctrl-W}{key:s}/{key:Ctrl-W}{key:v} make a *new window showing the current buffer*. Both windows show the same file. Edit in one; the other updates immediately — same buffer.\n\n{key::}{key:s}{key:p} {file} (or {key::}{key:v}{key:s} {file}) creates the split *and* edits a different file in the new window. Equivalent to: {key:Ctrl-W}{key:s} then {key::}{key:e} {file}.\n\nThis distinction (window vs buffer) is the single most important thing to internalize about Vim's window model. See [`windows.buffers-vs-windows-vs-tabs`](#windows.buffers-vs-windows-vs-tabs)."
+    },
+
+    { "type": "tip", "text": "{key::}{key:n}{key:e}{key:w} creates a horizontal split with an empty buffer. {key::}{key:v}{key:n}{key:e}{key:w} the vertical equivalent. Useful for scratch space without creating a file." },
+
+    { "type": "qr", "topic": "windows.splits" },
+    { "type": "buy-prompt" }
+  ]
+}

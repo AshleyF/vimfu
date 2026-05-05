@@ -1,0 +1,52 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "scroll.half-full-page",
+  "title": "Half- and Full-Page Scrolling",
+  "subtitle": "Ctrl-D / Ctrl-U / Ctrl-F / Ctrl-B — scroll without losing place.",
+  "part": "scroll",
+  "summary": "Ctrl-D scrolls down half a page; Ctrl-U scrolls up half. Ctrl-F is forward a full page; Ctrl-B is back a page.",
+  "keys": ["Ctrl-D", "Ctrl-U", "Ctrl-F", "Ctrl-B"],
+  "lessons": [86, 87, 88, 89],
+  "see_also": ["scroll.center-top-bottom", "scroll.line-by-line"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Half- and Full-Page Scrolling" },
+
+    { "type": "prose", "text": "Two ways to fly through a file: half-page and full-page scrolls. Half-page is gentler — your cursor and the surrounding context move together. Full-page is faster and good for jumping past large regions you don't care about." },
+
+    { "type": "keys", "sequence": ["Ctrl-D"], "label": "Down half a page" },
+    { "type": "keys", "sequence": ["Ctrl-U"], "label": "Up half a page" },
+    { "type": "keys", "sequence": ["Ctrl-F"], "label": "Forward a full page" },
+    { "type": "keys", "sequence": ["Ctrl-B"], "label": "Back a full page" },
+
+    { "type": "embed", "lesson": 86, "caption": "Ctrl-D — half page down" },
+    { "type": "embed", "lesson": 87, "caption": "Ctrl-U — half page up" },
+    { "type": "embed", "lesson": 88, "caption": "Ctrl-F — full page forward" },
+    { "type": "embed", "lesson": 89, "caption": "Ctrl-B — full page back" },
+
+    {
+      "type": "internals",
+      "title": "These Move the Cursor *and* the Viewport",
+      "text": "Vim doesn't have a separate scroll position from the cursor. The viewport's top line is just `getline(1) … (top + winheight - 1)`. When you scroll, both the *visible top line* and the *cursor* move. The two stay in step so the cursor never goes off-screen.\n\nThe distance for {key:Ctrl-D}/{key:Ctrl-U} comes from the `'scroll'` option (default: half the window height). You can change it with `:set scroll=10` or with a count: {key:1}{key:0}{key:Ctrl-D} sets `'scroll'` to 10 *and* scrolls 10. So the count is sticky for next time.\n\n{key:Ctrl-F}/{key:Ctrl-B} are full page. They're slightly less smooth than the half-page ones because the cursor and visible region jump farther in one keystroke."
+    },
+
+    { "type": "tip", "text": "If your terminal eats {key:Ctrl-F} (some shells use it for forward-search history), try the alternative bindings or remap. {key:Ctrl-D}/{key:Ctrl-U} are nearly always free." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Key",     "Action"],
+      "rows": [
+        ["{key:Ctrl-D}", "Down half a screen (and update `'scroll'`)"],
+        ["{key:Ctrl-U}", "Up half a screen"],
+        ["{key:Ctrl-F}", "Forward a full screen"],
+        ["{key:Ctrl-B}", "Back a full screen"]
+      ]
+    },
+
+    { "type": "qr", "topic": "scroll.half-full-page" },
+    { "type": "buy-prompt" }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "title": "VimFu — z+ Top First Non-Blank",
+  "description": "z+ (z Enter) scrolls the screen so the cursor line is at the top and moves the cursor to the first non-blank character.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 387,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scrolling"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*dungeon.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "# Dungeon Generator\nimport random\n\nclass Room:\n    def __init__(self, w, h):\n        self.w = w\n        self.h = h\n        self.monsters = []\n        self.loot = []\n\n    def spawn_monster(self, name):\n        self.monsters.append(name)\n\n    def add_loot(self, item):\n        self.loot.append(item)\n\nclass Corridor:\n    def __init__(self, start, end):\n        self.start = start\n        self.end = end\n        self.trapped = False\n\n    def set_trap(self):\n        self.trapped = True\n\nclass Dungeon:\n    def __init__(self, depth):\n        self.depth = depth\n        self.rooms = []\n        self.corridors = []\n\n    def gen_room(self):\n        w = random.randint(3, 10)\n        h = random.randint(3, 8)\n        room = Room(w, h)\n        self.rooms.append(room)\n        return room\n\n    def connect(self, a, b):\n        c = Corridor(a, b)\n        self.corridors.append(c)\n        return c"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' dungeon.py"
+    },
+    {
+      "waitForScreen": "Top",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "z Enter — Top + First Non-Blank",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z Enter scrolls the screen so the cursor line is at the top, and moves the cursor to the first non-blank character. It combines Z T with caret."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump, position cursor at end, use z Enter ---"
+    },
+    {
+      "say": "Jump to line twenty six, the Dungeon class. Move to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "26G$",
+      "overlay": "line 26, end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z Enter. The line goes to the top, and the cursor jumps to the first non-blank.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z\r",
+      "overlay": "top + align"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The cursor is now on the C of class, at the top of the screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: compare with zt ---"
+    },
+    {
+      "say": "Jump to line thirty seven, end of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "37G$",
+      "overlay": "line 37, end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Z T first. The line goes to the top, but the cursor stays at the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zt",
+      "overlay": "stays at end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now Z Enter. The cursor moves to the first non-blank character.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z\r",
+      "overlay": "first non-blank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Z T keeps the cursor, Z Enter aligns it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z Enter. Cursor line to the top, cursor to the first non-blank."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "sPOIxSdQRhY",
+    "url": "https://youtube.com/watch?v=sPOIxSdQRhY"
+  }
+}

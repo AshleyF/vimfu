@@ -1,0 +1,243 @@
+{
+  "title": "VimFu — Ctrl-J / Ctrl-M",
+  "description": "Ctrl-J moves down like j. Ctrl-M moves to the first non-blank of the next line, like Enter. Why they matter: remapping and terminal compatibility.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 382,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "keyboard"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f bot.py .bot.py.swp .bot.py.swo"
+    },
+    {
+      "line": "rm -f ~/.local/state/nvim/swap/*bot.py*"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "bot.py",
+      "content": "class Robot:\n    name = \"Spark\"\n    speed = 88\n    fuel = 100\n    armed = True\n\ndef launch(bot):\n    if bot.fuel > 0:\n        print(\"Go!\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim bot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-J / Ctrl-M",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control J moves down like J. Control M moves to the next line first non-blank, like Enter. Why care? You can remap J to something else and still move down with Control J."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Ctrl-J moves down ---"
+    },
+    {
+      "say": "Control J. Down one line, same column.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three lines down. Column zero stays at zero, just like J."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Ctrl-M ---"
+    },
+    {
+      "say": "Back to the top. Now Control M.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top of file"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "m",
+      "overlay": "next line start"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "m",
+      "overlay": "next line start"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "ctrl": "m",
+      "overlay": "next line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control M lands on the first non-blank. Indented lines start at the variable name, not the spaces."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: why this matters ---"
+    },
+    {
+      "say": "Why does this matter? Some people remap J to join lines or move text down. Control J still moves the cursor down. It is built into the terminal layer, not the mapping system.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg$",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "j",
+      "overlay": "down (keeps column)"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "k",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "ctrl": "m",
+      "overlay": "next line start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control J kept the column. Control M jumped to the text."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control J equals J. Control M equals Enter. Remap-proof ways to move down."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f bot.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "CxLRftTfFPg",
+    "url": "https://youtube.com/watch?v=CxLRftTfFPg"
+  }
+}

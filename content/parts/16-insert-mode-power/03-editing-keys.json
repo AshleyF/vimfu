@@ -1,0 +1,42 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "insert.editing-keys",
+  "title": "Editing Inside Insert Mode",
+  "subtitle": "Ctrl-W, Ctrl-U, Ctrl-H — readline survivors.",
+  "part": "insert-mode-power",
+  "summary": "Insert mode has its own tiny set of editing shortcuts inherited from readline: Ctrl-W (kill word), Ctrl-U (kill to start), Ctrl-H (backspace), Ctrl-T/Ctrl-D (indent/outdent).",
+  "keys": ["Ctrl-W", "Ctrl-U", "Ctrl-H", "Ctrl-T", "Ctrl-D"],
+  "lessons": [371, 375],
+  "see_also": ["insert.indent", "insert.one-shot-normal"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Editing Inside Insert Mode" },
+
+    { "type": "prose", "text": "Insert mode has a small built-in vocabulary of editing shortcuts inherited from old Unix line editors. They're worth memorizing — they're faster than {key:Ctrl-O} for tiny corrections." },
+
+    {
+      "type": "table",
+      "headers": ["Key",         "Action"],
+      "rows": [
+        ["{key:Ctrl-H}",          "Backspace one character (same as {key:Backspace})"],
+        ["{key:Ctrl-W}",          "Delete previous word"],
+        ["{key:Ctrl-U}",          "Delete to start of line (or start of insertion)"],
+        ["{key:Ctrl-T}",          "Indent current line one shiftwidth"],
+        ["{key:Ctrl-D}",          "Outdent current line one shiftwidth"],
+        ["{key:Ctrl-J}",          "Insert a newline (like {key:Enter})"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Heritage Note",
+      "text": "{key:Ctrl-W}, {key:Ctrl-U}, {key:Ctrl-H} are *line discipline* characters from Unix terminals (the kernel's `termios` would erase a word/line/char before the program ever saw the input). Vim provides them inside Insert mode for muscle-memory continuity.\n\nThe deletions respect `'backspace'` setting — by default, modern Vim allows backspacing past where you started inserting, past the start of the line, even past indent. With `set backspace=` (empty), {key:Ctrl-U} would only delete back to the start of the *current* insertion."
+    },
+
+    { "type": "tip", "text": "{key:Ctrl-W} for typo-on-last-word is faster than {key:Esc}{key:b}{key:c}{key:w} or {key:Ctrl-O}{key:d}{key:b}." },
+
+    { "type": "qr", "topic": "insert.editing-keys" },
+    { "type": "buy-prompt" }
+  ]
+}

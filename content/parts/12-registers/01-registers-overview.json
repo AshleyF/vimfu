@@ -1,0 +1,126 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "registers.overview",
+  "title": "Registers",
+  "subtitle": "A dictionary of named clipboards built from one primitive",
+  "part": "registers",
+  "summary": "A register is a named slot. Yank/delete writes; put reads. The unnamed, named, numbered, clipboard, and special registers are all the same thing — different keys.",
+  "keys": ["\"a", "\"A", "\"0", "\"-", "\"+", "\"*", "\"/", "\":", "\".", "\"%", "\"#", "\"=", "\"_", "p", "P", "y", "d"],
+  "lessons": [119, 121, 125],
+  "see_also": ["registers.unnamed", "registers.named", "registers.numbered", "registers.special", "registers.macros-as-text", "editing.yank-put", "macros.record-play", "advanced.special-registers"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Registers" },
+
+    { "type": "prose", "text": "Most editors have one clipboard. Vim has *fifty-something* — and they're all the same thing. Once you see the model, every command that touches yanked or deleted text becomes obvious. This is the single most leveraged piece of Vim's design to understand." },
+
+    { "type": "heading", "level": 2, "text": "The model" },
+
+    { "type": "prose", "text": "A **register** is a named slot. Each register holds a piece of text plus a *type* (charwise, linewise, or blockwise). Vim has a fixed set of registers, identified by a single character — a–z, plus numbers, plus a handful of special punctuation. To address one, type {key:\"} followed by the register name." },
+
+    {
+      "type": "keys",
+      "sequence": ["\"", "a", "y", "y"],
+      "label": "Yank this line into register a"
+    },
+    {
+      "type": "keys",
+      "sequence": ["\"", "a", "p"],
+      "label": "Put register a after the cursor"
+    },
+
+    { "type": "prose", "text": "That's it. {key:\"}{key:a} *selects* register `a` for the next operation. {key:y}{key:y} writes a line into it. {key:p} reads from the most recently selected register and inserts. The whole register interface is built from those three pieces: select, write, read." },
+
+    { "type": "tip", "text": "If you don't say {key:\"}{key:a}, Vim picks for you — the *unnamed* register `\"\"`, which is the default destination of every yank and delete. So plain {key:y}{key:y} {key:p} works because both ops use the unnamed register implicitly." },
+
+    { "type": "heading", "level": 2, "text": "Looking inside" },
+
+    { "type": "prose", "text": "Run {key::}{key:r}{key:e}{key:g} to see every register's contents. This is one of the most useful debugging commands in Vim — most \"why did that paste do *that*\" mysteries get solved by reading {key::}{key:reg}." },
+
+    { "type": "embed", "lesson": 125, "caption": "Inspecting registers with :reg" },
+
+    { "type": "divider" },
+
+    { "type": "heading", "level": 2, "text": "The full set" },
+
+    {
+      "type": "table",
+      "headers": ["Register",       "Name",                  "Written by",                                  "Notes"],
+      "rows": [
+        ["{key:\"}{key:\"}",        "Unnamed",               "Every yank, delete, change",                  "The implicit default for {key:y}, {key:d}, {key:c}, {key:p}"],
+        ["{key:\"}{key:a}–{key:\"}{key:z}",  "Named (lowercase)",     "Explicit selection only",                     "Yours to use; never overwritten implicitly"],
+        ["{key:\"}{key:A}–{key:\"}{key:Z}",  "Named (append)",        "Explicit selection (uppercase)",              "Appends to the lowercase counterpart"],
+        ["{key:\"}{key:0}",         "Last yank",             "Yank only — never delete",                    "Survives between deletes"],
+        ["{key:\"}{key:1}–{key:\"}{key:9}",  "Numbered (deletes)",    "Each multi-line delete shifts entries down",  "{key:\"}{key:1} = most recent delete"],
+        ["{key:\"}{key:-}",         "Small delete",          "Sub-line deletes that don't specify a register", "{key:x}, {key:dw}, {key:di\"}"],
+        ["{key:\"}{key:+}",         "System clipboard",      "Yank/delete with explicit selection",         "Cross-application paste"],
+        ["{key:\"}{key:*}",         "Selection clipboard",   "Same; X11 primary selection",                 "On macOS/Windows, often aliased to `\"+`"],
+        ["{key:\"}{key:/}",         "Last search",           "Every search ({key:/}, {key:?}, {key:*}, {key:#})", "Read-only effect from searches; writable"],
+        ["{key:\"}{key::}",         "Last Ex command",       "Every {key::}-command",                       "{key:@}{key::} re-runs it"],
+        ["{key:\"}{key:.}",         "Last inserted text",    "Each Insert-mode session",                    "Read-only; useful in mappings"],
+        ["{key:\"}{key:%}",         "Current filename",      "Vim",                                         "Read-only"],
+        ["{key:\"}{key:#}",         "Alternate filename",    "Vim",                                         "Read-only; the previously-edited file"],
+        ["{key:\"}{key:=}",         "Expression",            "When you read it",                            "Prompts for a Vimscript expression"],
+        ["{key:\"}{key:_}",         "Black hole",            "Throws writes away; reads as empty",          "Use to delete *without* polluting other registers"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Registers Are a Dictionary",
+      "text": "Internally, registers are a single key→(text, type) dictionary. The lowercase letters give you 26 slots you control. The uppercase forms aren't extra slots — they're *append* aliases for the same lowercase slot ({key:\"}{key:A} writes to register `a` in append mode). The numbered registers shift on each delete: when a new big delete arrives, it becomes `1`, the old `1` becomes `2`, and so on, dropping `9`. The yank register `0` is special — it only updates on yank, not delete, which is why `\"0p` reliably gives you the last *thing you yanked* even after a few deletes have moved through.\n\nSpecial registers like `\"/`, `\":`, `\".`, `\"%`, `\"#` are read by Vim itself for searches, the last command, the last insert, the filenames. They are *the same data structure* as the clipboard — Vim just exposes its internal state through the register namespace.\n\nThe black-hole register `\"_` is a convenient null sink: writes go nowhere. This is the canonical way to delete without disturbing the unnamed register, e.g. `\"_dd` to delete a line without overwriting your last yank."
+    },
+
+    {
+      "type": "internals",
+      "title": "The Type Field",
+      "text": "Every register stores not just text but a *type*: `char` (charwise), `line` (linewise), or `block` (blockwise). The type is set by the operation that wrote the register: {key:y}{key:y} writes linewise; {key:y}{key:w} writes charwise; {key:Ctrl-V}-then-{key:y} writes blockwise.\n\nThe type changes how {key:p} behaves. A linewise put inserts the text on its own line(s), below the current line. A charwise put inserts inline, after the cursor. A blockwise put inserts a rectangular block to the right of the cursor. So the same key, {key:p}, dispatches on the type of the current register.\n\nThis is why it matters that {key:x} (a charwise delete) overwrites the unnamed register's type. If your last yank was {key:y}{key:y} (linewise), then a single {key:x} flips the unnamed register to charwise containing one character, and your next {key:p} pastes one character inline rather than a whole line. The fix: yank the line into a named register (`\"ayy`) before you start deleting."
+    },
+
+    {
+      "type": "internals",
+      "title": "Macros Are Just Register Contents",
+      "text": "Recording a macro into register `a` writes the keystrokes — as text — into register `a`. Playing it back reads the text and feeds it to the input buffer.\n\nThis means you can:\n\n  • Paste a macro: `\"ap` shows the keystrokes as plain text on the page.\n  • Edit a macro by hand: paste, edit, then yank back into the register: `\"ap`, edit the line, `0\"ay$` to put the modified text into register `a`.\n  • Build a macro from text: type the keystrokes you want, yank them into a register, then `@` plays them.\n  • Save a macro to your config: `let @a = 'iHello\\<Esc>'`. Same data structure as a yanked register — just initialized from Vimscript.\n\nThe dual nature of register-as-text and register-as-keystrokes is one of Vim's most elegant design decisions. A clipboard, a search history, a macro store, and a filename cache — all the same primitive."
+    },
+
+    { "type": "divider" },
+
+    { "type": "heading", "level": 2, "text": "Common patterns" },
+
+    {
+      "type": "table",
+      "headers": ["Pattern", "Why it works"],
+      "rows": [
+        ["{key:\"}{key:0}{key:p}",                 "Paste the last *yank*, ignoring intervening deletes."],
+        ["{key:\"}{key:_}{key:d}{key:d}",          "Delete a line without overwriting the unnamed register."],
+        ["{key:\"}{key:+}{key:y}{key:i}{key:w}",   "Yank a word to the system clipboard."],
+        ["{key:\"}{key:A}{key:y}{key:y}",          "Append this line to register `a` (collect lines)."],
+        ["{key:\"}{key:1}{key:p}{key:.}{key:.}",   "Paste deletes 1, 2, 3 in order — by repeating {key:.}, the numbered register paste increments."],
+        ["{key:\"}{key:/}{key:p}",                 "Insert the last search pattern as text."],
+        ["{key:Ctrl-R}{key:0}",                    "(Insert mode) paste the last yank into the buffer you're typing in."],
+        ["{key:Ctrl-R}{key:=}{key:1}{key:+}{key:1}{key:Enter}", "(Insert mode) compute and insert. Expression register live."]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "When to use which" },
+
+    { "type": "prose", "text": "**Default**: just don't say a register. Yank, delete, and paste with the unnamed register. Most edits are too short-lived to bother." },
+
+    { "type": "prose", "text": "**Holding a clip across deletes**: yank into a named register ({key:\"}{key:a}{key:y}) so your subsequent deletes don't clobber it." },
+
+    { "type": "prose", "text": "**System clipboard**: prefix with {key:\"}{key:+} to bridge to and from other apps." },
+
+    { "type": "prose", "text": "**Throwaway delete**: prefix with {key:\"}{key:_} when you're deleting junk you don't want to paste later." },
+
+    { "type": "prose", "text": "**Recovering a recent delete**: {key:\"}{key:1}{key:p} pastes the most recent line-delete; press {key:.} repeatedly to walk back through `\"1`, `\"2`, `\"3`, …" },
+
+    { "type": "tip", "text": "If you find yourself wanting \"more clipboards,\" you already have 26. The hard part isn't capacity — it's remembering what's in `\"a` versus `\"b`. {key::}{key:reg} is your friend." },
+
+    { "type": "embed", "lesson": 119, "caption": "Yank into a named register" },
+    { "type": "embed", "lesson": 121, "caption": "Append with uppercase registers" },
+
+    { "type": "qr", "topic": "registers.overview" },
+    { "type": "buy-prompt", "section": "Registers — and how Vim builds 50 clipboards from one primitive" }
+  ]
+}

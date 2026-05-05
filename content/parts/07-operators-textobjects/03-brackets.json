@@ -1,0 +1,56 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "operators-textobjects.brackets",
+  "title": "Bracket Text Objects",
+  "subtitle": "i( i{ i[ i< — operate on the contents of any bracket pair.",
+  "part": "operators-textobjects",
+  "summary": "i( / a( for parens, i{ / a{ for braces, i[ / a[ for square brackets, i< / a< for angle brackets. ib and iB are aliases for parens and braces.",
+  "keys": ["i(", "a(", "i{", "a{", "i[", "a[", "i<", "a<", "ib", "iB"],
+  "lessons": [78, 79, 80, 81],
+  "see_also": ["operators-textobjects.quotes", "wider-motions.match-bracket", "operators-textobjects.grammar"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Bracket Text Objects" },
+
+    { "type": "prose", "text": "Bracket objects are the most-used text objects in real code. They're how you yank arguments, change function bodies, and delete array literals without ever counting characters." },
+
+    { "type": "keys", "sequence": ["c","i","("], "label": "Change inside parens" },
+    { "type": "keys", "sequence": ["d","a","{"], "label": "Delete a brace block including the braces" },
+    { "type": "keys", "sequence": ["v","i","["], "label": "Visual-select inside brackets" },
+    { "type": "keys", "sequence": ["y","i","<"], "label": "Yank inside angle brackets" },
+
+    { "type": "embed", "lesson": 78, "caption": "i( / a( — parens" },
+    { "type": "embed", "lesson": 79, "caption": "i{ / a{ — braces" },
+    { "type": "embed", "lesson": 80, "caption": "i[ / a[ — square brackets" },
+    { "type": "embed", "lesson": 81, "caption": "i< / a< — angle brackets" },
+
+    { "type": "tip", "text": "{key:i}{key:b} = {key:i}{key:(}. {key:i}{key:B} = {key:i}{key:{}. The letter aliases exist because some keyboards make `(` and `{` painful to type repeatedly. Pick whichever you prefer." },
+
+    {
+      "type": "internals",
+      "title": "How Bracket Matching Works",
+      "text": "Bracket objects walk *outward* from the cursor looking for an unbalanced opener of the requested type. They respect nesting — {key:i}{key:(} on the inner of `f(g(x))` selects `g(x)`; from outside the inner parens it selects `g(x)` if you're inside the outer pair.\n\nMatching uses the `'matchpairs'` option (default `(:),{:},[:],<:>`). It does **not** understand language syntax — strings and comments don't shield brackets, which is occasionally surprising in code with mismatched brackets in comments.\n\nBracket objects are *charwise*. Even {key:i}{key:{} on a multi-line block selects character-by-character — meaning the leading and trailing newlines are part of the range. That's usually what you want for change/delete, but it surprises people the first time {key:y}{key:i}{key:{} pastes back as a multi-line span starting in the middle of a line."
+    },
+
+    { "type": "tip", "text": "Pair these with the grammar's other halves: {key:>}{key:i}{key:{} indents inside braces, {key:=}{key:a}{key:(} re-indents the entire parenthesised expression, {key:g}{key:U}{key:i}{key:[} uppercases everything inside the brackets." },
+
+    { "type": "divider" },
+    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "table",
+      "headers": ["Object",       "Range"],
+      "rows": [
+        ["{key:i}{key:(} / {key:i}{key:b}", "Inside ( … )"],
+        ["{key:a}{key:(} / {key:a}{key:b}", "Including ( … )"],
+        ["{key:i}{key:{} / {key:i}{key:B}", "Inside { … }"],
+        ["{key:a}{key:{} / {key:a}{key:B}", "Including { … }"],
+        ["{key:i}{key:[} / {key:a}{key:[}", "Inside / including [ … ]"],
+        ["{key:i}{key:<} / {key:a}{key:<}", "Inside / including < … >"]
+      ]
+    },
+
+    { "type": "qr", "topic": "operators-textobjects.brackets" },
+    { "type": "buy-prompt" }
+  ]
+}
