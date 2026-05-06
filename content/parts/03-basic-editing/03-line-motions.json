@@ -3,50 +3,131 @@
   "version": 1,
   "id": "editing.line-motions",
   "title": "Line Motions",
-  "subtitle": "0 / ^ / $ — the three places that matter on a line.",
+  "subtitle": "0 / ^ / $ \u2014 the three places that matter on a line.",
   "part": "editing",
   "summary": "0 jumps to column 0. ^ jumps to the first non-blank character. $ jumps to the end of the line. They're motions, so d$ deletes to end of line, c0 changes to start.",
-  "keys": ["0", "^", "$"],
-  "lessons": [25, 26, 27],
-  "see_also": ["editing.delete", "editing.change", "editing.insert-variants"],
-
+  "keys": [
+    "0",
+    "^",
+    "$"
+  ],
+  "lessons": [
+    25,
+    26,
+    27
+  ],
+  "see_also": [
+    "editing.delete",
+    "editing.change",
+    "editing.insert-variants"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Line Motions" },
-
-    { "type": "prose", "text": "A line has three interesting positions: the actual start (column 0), the first non-blank character (where the code begins), and the end. Vim gives them three keys." },
-
-    { "type": "keys", "sequence": ["0"], "label": "Jump to column 0" },
-    { "type": "keys", "sequence": ["^"], "label": "Jump to first non-blank" },
-    { "type": "keys", "sequence": ["$"], "label": "Jump to end of line" },
-
-    { "type": "embed", "lesson": 25, "caption": "0 — column 0" },
-    { "type": "embed", "lesson": 26, "caption": "^ — first non-blank" },
-    { "type": "embed", "lesson": 27, "caption": "$ — end of line" },
-
-    { "type": "tip", "text": "{key:^} is what you almost always want. {key:0} is for when the leading whitespace itself is the target — for example, {key:d}{key:0} to delete the indentation." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Line Motions"
+    },
+    {
+      "type": "prose",
+      "text": "A line has three interesting positions: the actual start (column 0), the first non-blank character (where the code begins), and the end. Vim gives them three keys."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "0"
+      ],
+      "label": "Jump to column 0"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "^"
+      ],
+      "label": "Jump to first non-blank"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "$"
+      ],
+      "label": "Jump to end of line"
+    },
+    {
+      "type": "embed",
+      "lesson": 25,
+      "caption": "0 \u2014 column 0"
+    },
+    {
+      "type": "embed",
+      "lesson": 26,
+      "caption": "^ \u2014 first non-blank"
+    },
+    {
+      "type": "embed",
+      "lesson": 27,
+      "caption": "$ \u2014 end of line"
+    },
+    {
+      "type": "tip",
+      "text": "{key:^} is what you almost always want. {key:0} is for when the leading whitespace itself is the target \u2014 for example, {key:d}{key:0} to delete the indentation."
+    },
     {
       "type": "internals",
-      "title": "Inclusive vs Exclusive — Why $ Behaves Subtly",
-      "text": "Motions in Vim have a *type* that decides what an operator does with them:\n\n  • **Exclusive** motions don't include the character under the destination cursor. {key:w} is exclusive: {key:d}{key:w} deletes up to but not including the next word's first character.\n  • **Inclusive** motions do include it. {key:e} is inclusive: {key:d}{key:e} deletes through the end of the word.\n  • **Linewise** motions act on whole lines. {key:j} is linewise: {key:d}{key:j} deletes two whole lines.\n\n{key:0} is exclusive; {key:^} is exclusive; {key:$} is **inclusive** — that's why {key:d}{key:$} deletes through end-of-line *including* the last character. The Universal Grammar (operator + motion) keeps working, but the precise byte ranges depend on the motion's type. Full classification: [`appendix.motion-classification`](#appendix.motion-classification)."
+      "title": "Inclusive vs Exclusive \u2014 Why $ Behaves Subtly",
+      "text": "Motions in Vim have a *type* that decides what an operator does with them:\n\n  \u2022 **Exclusive** motions don't include the character under the destination cursor. {key:w} is exclusive: {key:d}{key:w} deletes up to but not including the next word's first character.\n  \u2022 **Inclusive** motions do include it. {key:e} is inclusive: {key:d}{key:e} deletes through the end of the word.\n  \u2022 **Linewise** motions act on whole lines. {key:j} is linewise: {key:d}{key:j} deletes two whole lines.\n\n{key:0} is exclusive; {key:^} is exclusive; {key:$} is **inclusive** \u2014 that's why {key:d}{key:$} deletes through end-of-line *including* the last character. The Universal Grammar (operator + motion) keeps working, but the precise byte ranges depend on the motion's type. Full classification: [`appendix.motion-classification`](#appendix.motion-classification)."
     },
-
-    { "type": "tip", "text": "There's a shortcut: {key:D} = {key:d}{key:$} (delete to end of line). {key:C} = {key:c}{key:$}. {key:Y} *should* be {key:y}{key:$} but historically isn't — see the wart in [`editing.yank-put`](#editing.yank-put)." },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "tip",
+      "text": "There's a shortcut: {key:D} = {key:d}{key:$} (delete to end of line). {key:C} = {key:c}{key:$}. {key:Y} *should* be {key:y}{key:$} but historically isn't \u2014 see the wart in [`editing.yank-put`](#editing.yank-put)."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Key", "Lands on", "Type"],
+      "headers": [
+        "Key",
+        "Lands on",
+        "Type"
+      ],
       "rows": [
-        ["{key:0}", "Column 0 (the actual start)", "Exclusive"],
-        ["{key:^}", "First non-blank character", "Exclusive"],
-        ["{key:$}", "End of line", "Inclusive"],
-        ["{key:g}{key:_}", "Last non-blank character", "Inclusive"]
+        [
+          "{key:0}",
+          "Column 0 (the actual start)",
+          "Exclusive"
+        ],
+        [
+          "{key:^}",
+          "First non-blank character",
+          "Exclusive"
+        ],
+        [
+          "{key:$}",
+          "End of line",
+          "Inclusive"
+        ],
+        [
+          "{key:g}{key:_}",
+          "Last non-blank character",
+          "Inclusive"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "editing.line-motions" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "editing.line-motions"
+    },
+    {
+      "type": "qr",
+      "topic": "editing.line-motions"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

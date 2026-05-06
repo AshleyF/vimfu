@@ -3,44 +3,106 @@
   "version": 1,
   "id": "operators-textobjects.tags",
   "title": "HTML/XML Tag Objects",
-  "subtitle": "it / at — operate inside an HTML or XML tag pair.",
+  "subtitle": "it / at \u2014 operate inside an HTML or XML tag pair.",
   "part": "operators-textobjects",
-  "summary": "it is the inner range between matching <tag>…</tag> pairs. at includes the tags themselves.",
-  "keys": ["it", "at"],
-  "lessons": [84],
-  "see_also": ["operators-textobjects.brackets", "operators-textobjects.grammar"],
-
+  "summary": "it is the inner range between matching <tag>\u2026</tag> pairs. at includes the tags themselves.",
+  "keys": [
+    "it",
+    "at"
+  ],
+  "lessons": [
+    84
+  ],
+  "see_also": [
+    "operators-textobjects.brackets",
+    "operators-textobjects.grammar"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "HTML/XML Tag Objects" },
-
-    { "type": "prose", "text": "If you spend any time in markup, {key:i}{key:t} and {key:a}{key:t} pay rent. They jump out from the cursor to the nearest enclosing tag pair." },
-
-    { "type": "keys", "sequence": ["c","i","t"], "label": "Change the contents of the surrounding tag" },
-    { "type": "keys", "sequence": ["d","a","t"], "label": "Delete the entire tag pair (open + content + close)" },
-    { "type": "keys", "sequence": ["v","a","t"], "label": "Visual-select the whole tag pair" },
-
-    { "type": "embed", "lesson": 84, "caption": "it / at — tag objects" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "HTML/XML Tag Objects"
+    },
+    {
+      "type": "prose",
+      "text": "If you spend any time in markup, {key:i}{key:t} and {key:a}{key:t} pay rent. They jump out from the cursor to the nearest enclosing tag pair."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "c",
+        "i",
+        "t"
+      ],
+      "label": "Change the contents of the surrounding tag"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "d",
+        "a",
+        "t"
+      ],
+      "label": "Delete the entire tag pair (open + content + close)"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "v",
+        "a",
+        "t"
+      ],
+      "label": "Visual-select the whole tag pair"
+    },
+    {
+      "type": "embed",
+      "lesson": 84,
+      "caption": "it / at \u2014 tag objects"
+    },
     {
       "type": "internals",
       "title": "How Tag Matching Works",
-      "text": "Vim walks outward from the cursor looking for `<tagname …>` and the matching `</tagname>`. Matching is *name-based* — Vim reads the tag name and finds the corresponding closer at the same nesting level.\n\nIt understands self-closing tags (`<br/>`) and attribute-rich openers, but it's a regex match — not an HTML parser. It can be fooled by:\n\n  • Comments containing tag-like text.\n  • Quoted strings containing `<` or `>`.\n  • Truly broken markup.\n\nFor 95% of real-world code it does the right thing. For the other 5%, fix the markup.\n\n{key:i}{key:t} excludes the opening and closing tags; {key:a}{key:t} includes both."
+      "text": "Vim walks outward from the cursor looking for `<tagname \u2026>` and the matching `</tagname>`. Matching is *name-based* \u2014 Vim reads the tag name and finds the corresponding closer at the same nesting level.\n\nIt understands self-closing tags (`<br/>`) and attribute-rich openers, but it's a regex match \u2014 not an HTML parser. It can be fooled by:\n\n  \u2022 Comments containing tag-like text.\n  \u2022 Quoted strings containing `<` or `>`.\n  \u2022 Truly broken markup.\n\nFor 95% of real-world code it does the right thing. For the other 5%, fix the markup.\n\n{key:i}{key:t} excludes the opening and closing tags; {key:a}{key:t} includes both."
     },
-
-    { "type": "tip", "text": "JSX, Vue, and other HTML-in-code templates: {key:i}{key:t} and {key:a}{key:t} usually still work — Vim doesn't know JSX, but `<Component>` and `</Component>` look the same to the regex matcher." },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "tip",
+      "text": "JSX, Vue, and other HTML-in-code templates: {key:i}{key:t} and {key:a}{key:t} usually still work \u2014 Vim doesn't know JSX, but `<Component>` and `</Component>` look the same to the regex matcher."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Object",     "Range"],
+      "headers": [
+        "Object",
+        "Range"
+      ],
       "rows": [
-        ["{key:i}{key:t}",       "Inside <tag>…</tag>"],
-        ["{key:a}{key:t}",       "Including <tag>…</tag>"]
+        [
+          "{key:i}{key:t}",
+          "Inside <tag>\u2026</tag>"
+        ],
+        [
+          "{key:a}{key:t}",
+          "Including <tag>\u2026</tag>"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "operators-textobjects.tags" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "textobj.tags"
+    },
+    {
+      "type": "qr",
+      "topic": "operators-textobjects.tags"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

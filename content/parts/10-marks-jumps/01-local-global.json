@@ -6,51 +6,149 @@
   "subtitle": "m{a-z} sets a mark. '{a-z} jumps to its line. `{a-z} jumps to its exact spot.",
   "part": "marks",
   "summary": "Marks are named bookmarks. Lowercase marks are buffer-local; uppercase marks are global across files.",
-  "keys": ["m{a-z}", "'{a-z}", "`{a-z}", "m{A-Z}"],
-  "lessons": [97, 98, 99, 100],
-  "see_also": ["marks.special", "marks.tick-vs-backtick", "marks.jumplist"],
-
+  "keys": [
+    "m{a-z}",
+    "'{a-z}",
+    "`{a-z}",
+    "m{A-Z}"
+  ],
+  "lessons": [
+    97,
+    98,
+    99,
+    100
+  ],
+  "see_also": [
+    "marks.special",
+    "marks.tick-vs-backtick",
+    "marks.jumplist"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Setting and Jumping to Marks" },
-
-    { "type": "prose", "text": "Marks are persistent bookmarks. {key:m}{key:a} sets mark `a` at the cursor. {key:'}{key:a} or {key:`}{key:a} jumps back to it. The whole alphabet is at your disposal — 26 lowercase marks per buffer plus 26 uppercase that work across files." },
-
-    { "type": "keys", "sequence": ["m","a"], "label": "Set mark a at cursor" },
-    { "type": "keys", "sequence": ["'","a"], "label": "Jump to line of mark a" },
-    { "type": "keys", "sequence": ["`","a"], "label": "Jump to exact position of mark a" },
-    { "type": "keys", "sequence": ["m","A"], "label": "Set global mark A (works across files)" },
-
-    { "type": "embed", "lesson": 97,  "caption": "ma — set a mark" },
-    { "type": "embed", "lesson": 98,  "caption": "'a — jump to mark line" },
-    { "type": "embed", "lesson": 99,  "caption": "`a — jump to exact mark" },
-    { "type": "embed", "lesson": 100, "caption": "Global marks (mA)" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Setting and Jumping to Marks"
+    },
+    {
+      "type": "prose",
+      "text": "Marks are persistent bookmarks. {key:m}{key:a} sets mark `a` at the cursor. {key:'}{key:a} or {key:`}{key:a} jumps back to it. The whole alphabet is at your disposal \u2014 26 lowercase marks per buffer plus 26 uppercase that work across files."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "m",
+        "a"
+      ],
+      "label": "Set mark a at cursor"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "'",
+        "a"
+      ],
+      "label": "Jump to line of mark a"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "`",
+        "a"
+      ],
+      "label": "Jump to exact position of mark a"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "m",
+        "A"
+      ],
+      "label": "Set global mark A (works across files)"
+    },
+    {
+      "type": "embed",
+      "lesson": 97,
+      "caption": "ma \u2014 set a mark"
+    },
+    {
+      "type": "embed",
+      "lesson": 98,
+      "caption": "'a \u2014 jump to mark line"
+    },
+    {
+      "type": "embed",
+      "lesson": 99,
+      "caption": "`a \u2014 jump to exact mark"
+    },
+    {
+      "type": "embed",
+      "lesson": 100,
+      "caption": "Global marks (mA)"
+    },
     {
       "type": "internals",
       "title": "Marks Are a Per-Buffer Dictionary",
-      "text": "Each buffer has a `mark → (line, col)` dictionary. `{a–z}` are local to that buffer. `{A–Z}` are stored in *Vim's* shared mark table along with the file path — that's why uppercase marks can jump you to *another file*.\n\nGlobal marks survive across sessions if `'shada'` (Neovim) / `'viminfo'` (Vim) is enabled. So {key:m}{key:Q} on a file you reread weekly takes you straight back, even after a restart.\n\nMarks update automatically when you edit *above* them — Vim shifts their line number to track the same logical position. They don't update when you delete the line they're on; the mark just disappears.\n\n{key::}{key:m}{key:a}{key:r}{key:k}{key:s} shows the full list."
+      "text": "Each buffer has a `mark \u2192 (line, col)` dictionary. `{a\u2013z}` are local to that buffer. `{A\u2013Z}` are stored in *Vim's* shared mark table along with the file path \u2014 that's why uppercase marks can jump you to *another file*.\n\nGlobal marks survive across sessions if `'shada'` (Neovim) / `'viminfo'` (Vim) is enabled. So {key:m}{key:Q} on a file you reread weekly takes you straight back, even after a restart.\n\nMarks update automatically when you edit *above* them \u2014 Vim shifts their line number to track the same logical position. They don't update when you delete the line they're on; the mark just disappears.\n\n{key::}{key:m}{key:a}{key:r}{key:k}{key:s} shows the full list."
     },
-
-    { "type": "tip", "text": "{key:'} and {key:`} are also *jumps* — they push the previous position to the jumplist. {key:Ctrl-O} returns. So you can mark a spot, wander, jump back, then {key:Ctrl-O} to where you were before the jump." },
-
-    { "type": "tip", "text": "{key:d}{key:'}{key:a} deletes from the cursor to the line of mark `a`, linewise. {key:d}{key:`}{key:a} deletes to the exact position. They're motions like everything else in Vim." },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "tip",
+      "text": "{key:'} and {key:`} are also *jumps* \u2014 they push the previous position to the jumplist. {key:Ctrl-O} returns. So you can mark a spot, wander, jump back, then {key:Ctrl-O} to where you were before the jump."
+    },
+    {
+      "type": "tip",
+      "text": "{key:d}{key:'}{key:a} deletes from the cursor to the line of mark `a`, linewise. {key:d}{key:`}{key:a} deletes to the exact position. They're motions like everything else in Vim."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Key",                          "Action"],
+      "headers": [
+        "Key",
+        "Action"
+      ],
       "rows": [
-        ["{key:m}{a}",                            "Set lowercase mark (local)"],
-        ["{key:m}{A}",                            "Set uppercase mark (global)"],
-        ["{key:'}{a}",                            "Jump to line of mark"],
-        ["{key:`}{a}",                            "Jump to exact position of mark"],
-        ["{key::}{key:m}{key:a}{key:r}{key:k}{key:s}", "List all marks"],
-        ["{key::}{key:d}{key:e}{key:l}{key:m} {a}", "Delete a mark"]
+        [
+          "{key:m}{a}",
+          "Set lowercase mark (local)"
+        ],
+        [
+          "{key:m}{A}",
+          "Set uppercase mark (global)"
+        ],
+        [
+          "{key:'}{a}",
+          "Jump to line of mark"
+        ],
+        [
+          "{key:`}{a}",
+          "Jump to exact position of mark"
+        ],
+        [
+          "{key::}{key:m}{key:a}{key:r}{key:k}{key:s}",
+          "List all marks"
+        ],
+        [
+          "{key::}{key:d}{key:e}{key:l}{key:m} {a}",
+          "Delete a mark"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "marks.local-global" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "marks.set-jump"
+    },
+    {
+      "type": "qr",
+      "topic": "marks.local-global"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

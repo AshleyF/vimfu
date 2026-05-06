@@ -6,70 +6,177 @@
   "subtitle": "The most powerful single command in Vim.",
   "part": "ex-commands",
   "summary": ":s/pattern/replacement/flags is the workhorse for text transformation. Combine with ranges (% for whole file) and flags (g for global, c for confirm, i for case-insensitive).",
-  "keys": [":s", ":%s"],
-  "lessons": [406, 415],
-  "see_also": ["ex.ranges", "ex.global", "search.pattern"],
-
+  "keys": [
+    ":s",
+    ":%s"
+  ],
+  "lessons": [
+    406,
+    415
+  ],
+  "see_also": [
+    "ex.ranges",
+    "ex.global",
+    "search.pattern"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Substitute" },
-
-    { "type": "prose", "text": "{key::}{key:s} is Vim's find-and-replace. The full form is `:[range]s/pattern/replacement/flags`. Master it and you can rewrite a file in one keystroke." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Substitute"
+    },
+    {
+      "type": "prose",
+      "text": "{key::}{key:s} is Vim's find-and-replace. The full form is `:[range]s/pattern/replacement/flags`. Master it and you can rewrite a file in one keystroke."
+    },
     {
       "type": "table",
-      "headers": ["Form",                            "Meaning"],
+      "headers": [
+        "Form",
+        "Meaning"
+      ],
       "rows": [
-        [":s/foo/bar/",                              "First match on current line"],
-        [":s/foo/bar/g",                             "All matches on current line"],
-        [":%s/foo/bar/g",                            "All matches in whole file"],
-        [":%s/foo/bar/gc",                           "…with confirmation per match"],
-        [":'<,'>s/foo/bar/g",                        "All matches in last visual selection"],
-        [":5,10s/foo/bar/g",                         "Lines 5-10"],
-        [":.,$s/foo/bar/g",                          "Cursor line to EOF"],
-        [":g/TODO/s/foo/bar/g",                      "Only on lines matching `TODO`"]
+        [
+          ":s/foo/bar/",
+          "First match on current line"
+        ],
+        [
+          ":s/foo/bar/g",
+          "All matches on current line"
+        ],
+        [
+          ":%s/foo/bar/g",
+          "All matches in whole file"
+        ],
+        [
+          ":%s/foo/bar/gc",
+          "\u2026with confirmation per match"
+        ],
+        [
+          ":'<,'>s/foo/bar/g",
+          "All matches in last visual selection"
+        ],
+        [
+          ":5,10s/foo/bar/g",
+          "Lines 5-10"
+        ],
+        [
+          ":.,$s/foo/bar/g",
+          "Cursor line to EOF"
+        ],
+        [
+          ":g/TODO/s/foo/bar/g",
+          "Only on lines matching `TODO`"
+        ]
       ]
     },
-
-    { "type": "heading", "level": 2, "text": "Flags" },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Flags"
+    },
     {
       "type": "table",
-      "headers": ["Flag", "Effect"],
+      "headers": [
+        "Flag",
+        "Effect"
+      ],
       "rows": [
-        ["g",   "Replace **all** matches on each line (not just first)"],
-        ["c",   "**Confirm** each match (y/n/a/q/l)"],
-        ["i",   "Case-insensitive for this command"],
-        ["I",   "Case-sensitive for this command"],
-        ["e",   "**Errors** suppressed (no \"pattern not found\")"],
-        ["n",   "Don't substitute — just **count** matches"],
-        ["&",   "Reuse flags from last :s"]
+        [
+          "g",
+          "Replace **all** matches on each line (not just first)"
+        ],
+        [
+          "c",
+          "**Confirm** each match (y/n/a/q/l)"
+        ],
+        [
+          "i",
+          "Case-insensitive for this command"
+        ],
+        [
+          "I",
+          "Case-sensitive for this command"
+        ],
+        [
+          "e",
+          "**Errors** suppressed (no \"pattern not found\")"
+        ],
+        [
+          "n",
+          "Don't substitute \u2014 just **count** matches"
+        ],
+        [
+          "&",
+          "Reuse flags from last :s"
+        ]
       ]
     },
-
-    { "type": "heading", "level": 2, "text": "Replacement magic" },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Replacement magic"
+    },
     {
       "type": "table",
-      "headers": ["In replacement",  "Means"],
+      "headers": [
+        "In replacement",
+        "Means"
+      ],
       "rows": [
-        ["&",    "The whole match"],
-        ["\\0",  "Same as &"],
-        ["\\1, \\2…", "Capture groups from `\\(...\\)`"],
-        ["\\u",  "Uppercase next character"],
-        ["\\U",  "Uppercase until \\E"],
-        ["\\l, \\L", "Lowercase versions"],
-        ["\\r",  "Newline (for splitting lines)"],
-        ["~",    "Reuse previous replacement"]
+        [
+          "&",
+          "The whole match"
+        ],
+        [
+          "\\0",
+          "Same as &"
+        ],
+        [
+          "\\1, \\2\u2026",
+          "Capture groups from `\\(...\\)`"
+        ],
+        [
+          "\\u",
+          "Uppercase next character"
+        ],
+        [
+          "\\U",
+          "Uppercase until \\E"
+        ],
+        [
+          "\\l, \\L",
+          "Lowercase versions"
+        ],
+        [
+          "\\r",
+          "Newline (for splitting lines)"
+        ],
+        [
+          "~",
+          "Reuse previous replacement"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "What :s Actually Does",
-      "text": "`:s` runs the regex engine over each line in `[range]` exactly once (unless `g` flag), substituting matches in place. The buffer's lines are rewritten line-by-line; the cursor lands on the last line changed.\n\n  • Without `[range]`, the range is the **current line only** (this trips up beginners — they expect file-wide and get one line).\n  • The `%` range is shorthand for `1,$` (whole file).\n  • The `c` flag enters an interactive prompt — `y` = yes, `n` = no, `a` = all (rest), `q` = quit, `l` = last (do this then quit).\n\n**Re-running:** {key::}{key:&} repeats the last substitute on the current line. {key::}{key:%}{key:&} repeats on the whole file. {key:&} in Normal mode = same as {key::}{key:&}."
+      "text": "`:s` runs the regex engine over each line in `[range]` exactly once (unless `g` flag), substituting matches in place. The buffer's lines are rewritten line-by-line; the cursor lands on the last line changed.\n\n  \u2022 Without `[range]`, the range is the **current line only** (this trips up beginners \u2014 they expect file-wide and get one line).\n  \u2022 The `%` range is shorthand for `1,$` (whole file).\n  \u2022 The `c` flag enters an interactive prompt \u2014 `y` = yes, `n` = no, `a` = all (rest), `q` = quit, `l` = last (do this then quit).\n\n**Re-running:** {key::}{key:&} repeats the last substitute on the current line. {key::}{key:%}{key:&} repeats on the whole file. {key:&} in Normal mode = same as {key::}{key:&}."
     },
-
-    { "type": "tip", "text": "{key::}{key:%}{key:s}{key://}{key:bar}{key:/}{key:g} reuses the last search pattern as the substitute pattern. Pair with {key:*} (search word under cursor) for a 5-keystroke replace-all." },
-
-    { "type": "qr", "topic": "ex.substitute" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "{key::}{key:%}{key:s}{key://}{key:bar}{key:/}{key:g} reuses the last search pattern as the substitute pattern. Pair with {key:*} (search word under cursor) for a 5-keystroke replace-all."
+    },
+    {
+      "type": "example",
+      "ref": "ex.substitute"
+    },
+    {
+      "type": "qr",
+      "topic": "ex.substitute"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

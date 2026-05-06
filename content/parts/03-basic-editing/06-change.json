@@ -6,54 +6,174 @@
   "subtitle": "c is delete-then-insert, atomically.",
   "part": "editing",
   "summary": "c is the change operator. cw changes a word; cc changes a line; C changes to end of line. S and s are short forms that change a whole line and a single character respectively.",
-  "keys": ["c", "cw", "C", "cc", "S", "s"],
-  "lessons": [36, 37, 38, 39],
-  "see_also": ["editing.delete", "editing.insert-variants", "dot.repeat", "foundations.universal-grammar"],
-
+  "keys": [
+    "c",
+    "cw",
+    "C",
+    "cc",
+    "S",
+    "s"
+  ],
+  "lessons": [
+    36,
+    37,
+    38,
+    39
+  ],
+  "see_also": [
+    "editing.delete",
+    "editing.insert-variants",
+    "dot.repeat",
+    "foundations.universal-grammar"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Change" },
-
-    { "type": "prose", "text": "{key:c} is what {key:d}-then-{key:i} would be if you didn't have to think. It deletes the same range {key:d} would, *and* drops you straight into Insert mode at that spot. Then {key:Esc} closes the change as one undoable, dot-repeatable unit." },
-
-    { "type": "keys", "sequence": ["c","w"], "label": "Change a word" },
-    { "type": "keys", "sequence": ["C"],     "label": "= c$  (change to end of line)" },
-    { "type": "keys", "sequence": ["c","c"], "label": "Change current line (linewise)" },
-    { "type": "keys", "sequence": ["S"],     "label": "= cc (change whole line)" },
-    { "type": "keys", "sequence": ["s"],     "label": "Substitute character (= cl)" },
-
-    { "type": "embed", "lesson": 36, "caption": "cw — change a word" },
-    { "type": "embed", "lesson": 37, "caption": "C — change to end of line" },
-    { "type": "embed", "lesson": 38, "caption": "cc / S — change a line" },
-    { "type": "embed", "lesson": 39, "caption": "s — substitute a char" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Change"
+    },
+    {
+      "type": "prose",
+      "text": "{key:c} is what {key:d}-then-{key:i} would be if you didn't have to think. It deletes the same range {key:d} would, *and* drops you straight into Insert mode at that spot. Then {key:Esc} closes the change as one undoable, dot-repeatable unit."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "c",
+        "w"
+      ],
+      "label": "Change a word"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "C"
+      ],
+      "label": "= c$  (change to end of line)"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "c",
+        "c"
+      ],
+      "label": "Change current line (linewise)"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "S"
+      ],
+      "label": "= cc (change whole line)"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "s"
+      ],
+      "label": "Substitute character (= cl)"
+    },
+    {
+      "type": "embed",
+      "lesson": 36,
+      "caption": "cw \u2014 change a word"
+    },
+    {
+      "type": "embed",
+      "lesson": 37,
+      "caption": "C \u2014 change to end of line"
+    },
+    {
+      "type": "embed",
+      "lesson": 38,
+      "caption": "cc / S \u2014 change a line"
+    },
+    {
+      "type": "embed",
+      "lesson": 39,
+      "caption": "s \u2014 substitute a char"
+    },
     {
       "type": "internals",
       "title": "Change Is Delete + Insert as One Atomic \"Change\"",
-      "text": "Internally, {key:c}{motion} does three things:\n\n  1. Cuts the range covered by {motion} into the unnamed and numbered registers (just like {key:d}).\n  2. Switches to Insert mode at the start of the cut range.\n  3. Marks an undo boundary that closes when you press {key:Esc}.\n\nStep 3 is the important one. The whole episode — delete, type, leave Insert — becomes **one** entry in the undo tree. {key:u} reverts all of it. {key:.} replays all of it.\n\nThat's why {key:c}{key:w}-type-something-{key:Esc}-{key:n}-{key:.} is one of the most useful patterns in Vim: jump to next match, change-the-word, repeat. Each repeat is one undoable operation, not many. See [`recipes.cgn-dot`](#recipes.cgn-dot) for the polished form."
+      "text": "Internally, {key:c}{motion} does three things:\n\n  1. Cuts the range covered by {motion} into the unnamed and numbered registers (just like {key:d}).\n  2. Switches to Insert mode at the start of the cut range.\n  3. Marks an undo boundary that closes when you press {key:Esc}.\n\nStep 3 is the important one. The whole episode \u2014 delete, type, leave Insert \u2014 becomes **one** entry in the undo tree. {key:u} reverts all of it. {key:.} replays all of it.\n\nThat's why {key:c}{key:w}-type-something-{key:Esc}-{key:n}-{key:.} is one of the most useful patterns in Vim: jump to next match, change-the-word, repeat. Each repeat is one undoable operation, not many. See [`recipes.cgn-dot`](#recipes.cgn-dot) for the polished form."
     },
-
-    { "type": "tip", "text": "Watch out: {key:cw} *behaves like* {key:ce} (change to end of word) — not what {key:dw} does. This is a deliberate, ancient quirk. The change operator with a word motion changes *just the word*, not the trailing whitespace. Most people prefer it that way." },
-
-    { "type": "tip", "text": "Synonyms to memorize: {key:C} = {key:c}{key:$}. {key:S} = {key:c}{key:c}. {key:s} = {key:c}{key:l}. {key:s} doesn't get a lot of love — it's a one-character substitute, useful when you want to type a replacement immediately and skip the explicit {key:r}-then-look-around." },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "tip",
+      "text": "Watch out: {key:cw} *behaves like* {key:ce} (change to end of word) \u2014 not what {key:dw} does. This is a deliberate, ancient quirk. The change operator with a word motion changes *just the word*, not the trailing whitespace. Most people prefer it that way."
+    },
+    {
+      "type": "tip",
+      "text": "Synonyms to memorize: {key:C} = {key:c}{key:$}. {key:S} = {key:c}{key:c}. {key:s} = {key:c}{key:l}. {key:s} doesn't get a lot of love \u2014 it's a one-character substitute, useful when you want to type a replacement immediately and skip the explicit {key:r}-then-look-around."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Key",                "Action",                          "Equivalent"],
+      "headers": [
+        "Key",
+        "Action",
+        "Equivalent"
+      ],
       "rows": [
-        ["{key:c}{motion}",             "Change range",                    "{key:d}{motion} + {key:i}"],
-        ["{key:c}{key:c}",              "Change line",                     "—"],
-        ["{key:C}",                     "Change to end of line",           "{key:c}{key:$}"],
-        ["{key:S}",                     "Change line",                     "{key:c}{key:c}"],
-        ["{key:s}",                     "Substitute one char",             "{key:c}{key:l}"],
-        ["{key:c}{key:w}",              "Change word (note: like {key:c}{key:e})", "—"],
-        ["{key:c}{key:i}{key:w}",       "Change inner word",               "—"],
-        ["{key:c}{key:a}{key:'}",       "Change around quotes",            "—"]
+        [
+          "{key:c}{motion}",
+          "Change range",
+          "{key:d}{motion} + {key:i}"
+        ],
+        [
+          "{key:c}{key:c}",
+          "Change line",
+          "\u2014"
+        ],
+        [
+          "{key:C}",
+          "Change to end of line",
+          "{key:c}{key:$}"
+        ],
+        [
+          "{key:S}",
+          "Change line",
+          "{key:c}{key:c}"
+        ],
+        [
+          "{key:s}",
+          "Substitute one char",
+          "{key:c}{key:l}"
+        ],
+        [
+          "{key:c}{key:w}",
+          "Change word (note: like {key:c}{key:e})",
+          "\u2014"
+        ],
+        [
+          "{key:c}{key:i}{key:w}",
+          "Change inner word",
+          "\u2014"
+        ],
+        [
+          "{key:c}{key:a}{key:'}",
+          "Change around quotes",
+          "\u2014"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "editing.change" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "editing.change"
+    },
+    {
+      "type": "qr",
+      "topic": "editing.change"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

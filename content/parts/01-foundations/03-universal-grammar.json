@@ -6,96 +6,240 @@
   "subtitle": "[count] [register] operator [count] motion",
   "part": "foundations",
   "summary": "Vim is a tiny language: verbs (operators) compose with nouns (motions and text objects). Once you see the grammar, every key falls into place.",
-  "keys": ["d", "c", "y", ">", "<", "=", "gU", "gu", "g~", "w", "iw", "ip", "$", "%"],
-  "lessons": [85],
-  "see_also": ["operators-textobjects.grammar", "editing.delete", "editing.change", "editing.yank-put", "operators-textobjects.iw-aw"],
-
+  "keys": [
+    "d",
+    "c",
+    "y",
+    ">",
+    "<",
+    "=",
+    "gU",
+    "gu",
+    "g~",
+    "w",
+    "iw",
+    "ip",
+    "$",
+    "%"
+  ],
+  "lessons": [
+    85
+  ],
+  "see_also": [
+    "operators-textobjects.grammar",
+    "editing.delete",
+    "editing.change",
+    "editing.yank-put",
+    "operators-textobjects.iw-aw"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "The Universal Grammar" },
-
-    { "type": "prose", "text": "Almost every command in Vim follows one shape:" },
-
-    { "type": "keys", "sequence": ["[count]", "[\"reg]", "operator", "[count]", "motion"], "label": "The full grammar" },
-
-    { "type": "prose", "text": "Read it as a sentence: *do this thing*, optionally *to register r*, *this many times*, *to this stretch of text*. Concrete examples:" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "The Universal Grammar"
+    },
+    {
+      "type": "prose",
+      "text": "Almost every command in Vim follows one shape:"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "[count]",
+        "[\"reg]",
+        "operator",
+        "[count]",
+        "motion"
+      ],
+      "label": "The full grammar"
+    },
+    {
+      "type": "prose",
+      "text": "Read it as a sentence: *do this thing*, optionally *to register r*, *this many times*, *to this stretch of text*. Concrete examples:"
+    },
     {
       "type": "table",
-      "headers": ["Command", "Reads as"],
+      "headers": [
+        "Command",
+        "Reads as"
+      ],
       "rows": [
-        ["{key:d}{key:w}", "Delete one word forward"],
-        ["{key:3}{key:d}{key:w}", "Delete three words forward"],
-        ["{key:d}{key:3}{key:w}", "Delete three words forward (counts multiply, but here one of them is 1)"],
-        ["{key:c}{key:i}{key:w}", "Change the inner word the cursor is on"],
-        ["{key:y}{key:$}", "Yank from cursor to end of line"],
-        ["{key:>}{key:i}{key:p}", "Indent inner paragraph"],
-        ["{key:\"}{key:a}{key:y}{key:y}", "Yank this line into register *a*"],
-        ["{key:g}{key:U}{key:i}{key:w}", "Uppercase the inner word"]
+        [
+          "{key:d}{key:w}",
+          "Delete one word forward"
+        ],
+        [
+          "{key:3}{key:d}{key:w}",
+          "Delete three words forward"
+        ],
+        [
+          "{key:d}{key:3}{key:w}",
+          "Delete three words forward (counts multiply, but here one of them is 1)"
+        ],
+        [
+          "{key:c}{key:i}{key:w}",
+          "Change the inner word the cursor is on"
+        ],
+        [
+          "{key:y}{key:$}",
+          "Yank from cursor to end of line"
+        ],
+        [
+          "{key:>}{key:i}{key:p}",
+          "Indent inner paragraph"
+        ],
+        [
+          "{key:\"}{key:a}{key:y}{key:y}",
+          "Yank this line into register *a*"
+        ],
+        [
+          "{key:g}{key:U}{key:i}{key:w}",
+          "Uppercase the inner word"
+        ]
       ]
     },
-
-    { "type": "heading", "level": 2, "text": "The verbs (operators)" },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The verbs (operators)"
+    },
     {
       "type": "table",
-      "headers": ["Operator", "Meaning"],
+      "headers": [
+        "Operator",
+        "Meaning"
+      ],
       "rows": [
-        ["{key:d}", "Delete (cut)"],
-        ["{key:c}", "Change (delete then enter Insert)"],
-        ["{key:y}", "Yank (copy)"],
-        ["{key:>}", "Indent right"],
-        ["{key:<}", "Indent left"],
-        ["{key:=}", "Auto-indent / format"],
-        ["{key:g}{key:U}", "Uppercase"],
-        ["{key:g}{key:u}", "Lowercase"],
-        ["{key:g}{key:~}", "Toggle case"],
-        ["{key:g}{key:q}", "Format (line-wrap)"],
-        ["{key:!}", "Filter through external command"]
+        [
+          "{key:d}",
+          "Delete (cut)"
+        ],
+        [
+          "{key:c}",
+          "Change (delete then enter Insert)"
+        ],
+        [
+          "{key:y}",
+          "Yank (copy)"
+        ],
+        [
+          "{key:>}",
+          "Indent right"
+        ],
+        [
+          "{key:<}",
+          "Indent left"
+        ],
+        [
+          "{key:=}",
+          "Auto-indent / format"
+        ],
+        [
+          "{key:g}{key:U}",
+          "Uppercase"
+        ],
+        [
+          "{key:g}{key:u}",
+          "Lowercase"
+        ],
+        [
+          "{key:g}{key:~}",
+          "Toggle case"
+        ],
+        [
+          "{key:g}{key:q}",
+          "Format (line-wrap)"
+        ],
+        [
+          "{key:!}",
+          "Filter through external command"
+        ]
       ]
     },
-
-    { "type": "heading", "level": 2, "text": "The nouns (motions and text objects)" },
-
-    { "type": "prose", "text": "Anything that moves the cursor in Normal mode is a motion. After an operator, the same motion describes the *range* the operator acts on. So {key:w} alone moves the cursor a word forward; {key:d}{key:w} deletes the same span." },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The nouns (motions and text objects)"
+    },
+    {
+      "type": "prose",
+      "text": "Anything that moves the cursor in Normal mode is a motion. After an operator, the same motion describes the *range* the operator acts on. So {key:w} alone moves the cursor a word forward; {key:d}{key:w} deletes the same span."
+    },
     {
       "type": "table",
-      "headers": ["Noun kind", "Examples"],
+      "headers": [
+        "Noun kind",
+        "Examples"
+      ],
       "rows": [
-        ["Word / WORD",        "{key:w}, {key:b}, {key:e}, {key:W}, {key:B}, {key:E}"],
-        ["Line",               "{key:0}, {key:^}, {key:$}, {key:_}, {key:g_}"],
-        ["File",               "{key:gg}, {key:G}, {key:{n}G}"],
-        ["Find on line",       "{key:f}{char}, {key:F}{char}, {key:t}{char}, {key:T}{char}, {key:;}, {key:,}"],
-        ["Search",             "{key:/}pattern, {key:?}pattern, {key:n}, {key:N}, {key:*}, {key:#}"],
-        ["Sentence / paragraph", "{key:(}, {key:)}, {key:{}, {key:}}"],
-        ["Bracket match",      "{key:%}"],
-        ["Inner / around text object", "{key:i}{key:w}, {key:a}{key:w}, {key:i}{key:\"}, {key:a}{key:(}, {key:i}{key:p}, {key:a}{key:t}"]
+        [
+          "Word / WORD",
+          "{key:w}, {key:b}, {key:e}, {key:W}, {key:B}, {key:E}"
+        ],
+        [
+          "Line",
+          "{key:0}, {key:^}, {key:$}, {key:_}, {key:g_}"
+        ],
+        [
+          "File",
+          "{key:gg}, {key:G}, {key:{n}G}"
+        ],
+        [
+          "Find on line",
+          "{key:f}{char}, {key:F}{char}, {key:t}{char}, {key:T}{char}, {key:;}, {key:,}"
+        ],
+        [
+          "Search",
+          "{key:/}pattern, {key:?}pattern, {key:n}, {key:N}, {key:*}, {key:#}"
+        ],
+        [
+          "Sentence / paragraph",
+          "{key:(}, {key:)}, {key:{}, {key:}}"
+        ],
+        [
+          "Bracket match",
+          "{key:%}"
+        ],
+        [
+          "Inner / around text object",
+          "{key:i}{key:w}, {key:a}{key:w}, {key:i}{key:\"}, {key:a}{key:(}, {key:i}{key:p}, {key:a}{key:t}"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "Why It Composes",
-      "text": "Operators and motions live behind a clean interface. A motion is a function `cursor → (start, end, type)`, where *type* is `char`, `line`, or `block`. A text object is a function `cursor → (start, end, type)` that doesn't have to use the cursor as one of the endpoints. An operator is a function `(start, end, type) → effect-on-buffer`.\n\nThis is why every operator works with every motion and every text object. Vim's source code does not have a giant switch statement of \"if d, then handle w specially.\" It has *one* operator dispatch and *one* motion dispatch, and they meet through the `(start, end, type)` triple. When you learn a new operator, you've learned its combination with every motion you already know. When you learn a new text object, you've learned its combination with every operator. The grammar scales multiplicatively."
+      "text": "Operators and motions live behind a clean interface. A motion is a function `cursor \u2192 (start, end, type)`, where *type* is `char`, `line`, or `block`. A text object is a function `cursor \u2192 (start, end, type)` that doesn't have to use the cursor as one of the endpoints. An operator is a function `(start, end, type) \u2192 effect-on-buffer`.\n\nThis is why every operator works with every motion and every text object. Vim's source code does not have a giant switch statement of \"if d, then handle w specially.\" It has *one* operator dispatch and *one* motion dispatch, and they meet through the `(start, end, type)` triple. When you learn a new operator, you've learned its combination with every motion you already know. When you learn a new text object, you've learned its combination with every operator. The grammar scales multiplicatively."
     },
-
     {
       "type": "internals",
       "title": "The Doubled Form",
-      "text": "Every operator has a *doubled* form that means \"apply linewise to this line\": {key:d}{key:d} deletes the line, {key:y}{key:y} yanks the line, {key:c}{key:c} changes the line, {key:>}{key:>} indents the line, {key:g}{key:U}{key:g}{key:U} (or {key:g}{key:U}{key:U}) uppercases the line. This is a syntactic shortcut — internally, {key:d}{key:d} is processed as a special case where the motion is replaced by \"the current line, linewise.\""
+      "text": "Every operator has a *doubled* form that means \"apply linewise to this line\": {key:d}{key:d} deletes the line, {key:y}{key:y} yanks the line, {key:c}{key:c} changes the line, {key:>}{key:>} indents the line, {key:g}{key:U}{key:g}{key:U} (or {key:g}{key:U}{key:U}) uppercases the line. This is a syntactic shortcut \u2014 internally, {key:d}{key:d} is processed as a special case where the motion is replaced by \"the current line, linewise.\""
     },
-
     {
       "type": "internals",
       "title": "The Wart: Y, D, C, S",
-      "text": "Vi shipped before the doubled-form rule was systematic. {key:Y} is *not* {key:y}{key:$} — historically it was {key:y}{key:y} (yank line). Modern Neovim has finally fixed this default, but vanilla Vim still aliases {key:Y} to {key:y}{key:y}. {key:D}, on the other hand, *is* {key:d}{key:$} — it has always been the consistent form. {key:C} is {key:c}{key:$}. {key:S} is {key:c}{key:c}. {key:s} is {key:c}{key:l}. These shortcuts predate the unified grammar and are kept for muscle memory. Treat them as exceptions to learn, not principles to derive."
+      "text": "Vi shipped before the doubled-form rule was systematic. {key:Y} is *not* {key:y}{key:$} \u2014 historically it was {key:y}{key:y} (yank line). Modern Neovim has finally fixed this default, but vanilla Vim still aliases {key:Y} to {key:y}{key:y}. {key:D}, on the other hand, *is* {key:d}{key:$} \u2014 it has always been the consistent form. {key:C} is {key:c}{key:$}. {key:S} is {key:c}{key:c}. {key:s} is {key:c}{key:l}. These shortcuts predate the unified grammar and are kept for muscle memory. Treat them as exceptions to learn, not principles to derive."
     },
-
-    { "type": "tip", "text": "When you want to learn a new key, ask: is it a *verb* (operator), a *noun* (motion / text object), or a *complete command* (like {key:x} or {key:p})? If it's the first two, you've immediately doubled the size of your vocabulary by combining it with everything you already know." },
-
-    { "type": "embed", "lesson": 85, "caption": "The Vim Grammar in Action" },
-
-    { "type": "qr", "topic": "foundations.universal-grammar" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "When you want to learn a new key, ask: is it a *verb* (operator), a *noun* (motion / text object), or a *complete command* (like {key:x} or {key:p})? If it's the first two, you've immediately doubled the size of your vocabulary by combining it with everything you already know."
+    },
+    {
+      "type": "embed",
+      "lesson": 85,
+      "caption": "The Vim Grammar in Action"
+    },
+    {
+      "type": "example",
+      "ref": "foundations.grammar"
+    },
+    {
+      "type": "qr",
+      "topic": "foundations.universal-grammar"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

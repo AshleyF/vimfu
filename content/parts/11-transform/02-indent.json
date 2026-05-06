@@ -6,36 +6,121 @@
   "subtitle": ">> indents. << dedents. ={motion} re-indents using the language indenter.",
   "part": "transform",
   "summary": ">{motion} indents a range one shiftwidth. <{motion} dedents. ={motion} runs the language's indent function. Doubled forms (>>, <<, ==) act on the current line.",
-  "keys": [">", "<", "=", ">>", "<<", "=="],
-  "lessons": [107, 108, 109, 110, 111],
-  "see_also": ["foundations.universal-grammar", "operators-textobjects.grammar"],
-
+  "keys": [
+    ">",
+    "<",
+    "=",
+    ">>",
+    "<<",
+    "=="
+  ],
+  "lessons": [
+    107,
+    108,
+    109,
+    110,
+    111
+  ],
+  "see_also": [
+    "foundations.universal-grammar",
+    "operators-textobjects.grammar"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Indent and Auto-Indent" },
-
-    { "type": "prose", "text": "{key:>}, {key:<}, and {key:=} are all *operators*. They take a motion or text object, like {key:d} and {key:y}. {key:>}{key:i}{key:p} indents the inner paragraph. {key:=}{key:a}{key:{} re-indents the brace block." },
-
-    { "type": "keys", "sequence": [">",">"], "label": "Indent current line" },
-    { "type": "keys", "sequence": ["<","<"], "label": "Dedent current line" },
-    { "type": "keys", "sequence": [">","i","p"], "label": "Indent inner paragraph" },
-    { "type": "keys", "sequence": ["=","i","p"], "label": "Re-indent inner paragraph (use language indenter)" },
-    { "type": "keys", "sequence": ["=","="], "label": "Re-indent current line" },
-
-    { "type": "embed", "lesson": 107, "caption": ">> — indent line" },
-    { "type": "embed", "lesson": 108, "caption": "<< — dedent line" },
-    { "type": "embed", "lesson": 109, "caption": ">{motion} — indent range" },
-    { "type": "embed", "lesson": 110, "caption": "={motion} — auto-indent" },
-    { "type": "embed", "lesson": 111, "caption": "== — re-indent line" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Indent and Auto-Indent"
+    },
+    {
+      "type": "prose",
+      "text": "{key:>}, {key:<}, and {key:=} are all *operators*. They take a motion or text object, like {key:d} and {key:y}. {key:>}{key:i}{key:p} indents the inner paragraph. {key:=}{key:a}{key:{} re-indents the brace block."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        ">",
+        ">"
+      ],
+      "label": "Indent current line"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "<",
+        "<"
+      ],
+      "label": "Dedent current line"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        ">",
+        "i",
+        "p"
+      ],
+      "label": "Indent inner paragraph"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "=",
+        "i",
+        "p"
+      ],
+      "label": "Re-indent inner paragraph (use language indenter)"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "=",
+        "="
+      ],
+      "label": "Re-indent current line"
+    },
+    {
+      "type": "embed",
+      "lesson": 107,
+      "caption": ">> \u2014 indent line"
+    },
+    {
+      "type": "embed",
+      "lesson": 108,
+      "caption": "<< \u2014 dedent line"
+    },
+    {
+      "type": "embed",
+      "lesson": 109,
+      "caption": ">{motion} \u2014 indent range"
+    },
+    {
+      "type": "embed",
+      "lesson": 110,
+      "caption": "={motion} \u2014 auto-indent"
+    },
+    {
+      "type": "embed",
+      "lesson": 111,
+      "caption": "== \u2014 re-indent line"
+    },
     {
       "type": "internals",
-      "title": ">, <, = Are Operators — That's the Whole Insight",
-      "text": "Once you internalize that {key:>}, {key:<}, and {key:=} are operators (verbs), every motion you know becomes an indenter:\n\n  • {key:>}{key:G} — indent from here to end of file.\n  • {key:>}{key:i}{key:{} — indent inside the next brace block.\n  • {key:>}{key:%} — indent everything between this brace and its match.\n  • {key:=}{key:a}{key:p} — auto-indent the surrounding paragraph.\n  • {key:=}{key:G} — auto-indent the rest of the file.\n\nThe **shift width** (how much {key:>} indents) comes from `'shiftwidth'`. With `'expandtab'` set, tabs are expanded to spaces.\n\n{key:=} delegates to whatever `'indentexpr'` or `'cindent'` is configured. For most languages, ftplugin sets this up automatically — pressing {key:=}{key:i}{key:p} on Python or JavaScript does the right thing."
+      "title": ">, <, = Are Operators \u2014 That's the Whole Insight",
+      "text": "Once you internalize that {key:>}, {key:<}, and {key:=} are operators (verbs), every motion you know becomes an indenter:\n\n  \u2022 {key:>}{key:G} \u2014 indent from here to end of file.\n  \u2022 {key:>}{key:i}{key:{} \u2014 indent inside the next brace block.\n  \u2022 {key:>}{key:%} \u2014 indent everything between this brace and its match.\n  \u2022 {key:=}{key:a}{key:p} \u2014 auto-indent the surrounding paragraph.\n  \u2022 {key:=}{key:G} \u2014 auto-indent the rest of the file.\n\nThe **shift width** (how much {key:>} indents) comes from `'shiftwidth'`. With `'expandtab'` set, tabs are expanded to spaces.\n\n{key:=} delegates to whatever `'indentexpr'` or `'cindent'` is configured. For most languages, ftplugin sets this up automatically \u2014 pressing {key:=}{key:i}{key:p} on Python or JavaScript does the right thing."
     },
-
-    { "type": "tip", "text": "In Visual mode, {key:>} and {key:<} indent the selection. With a count: {key:3}{key:>} indents three times. {key:.} repeats the last indent." },
-
-    { "type": "qr", "topic": "transform.indent" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "In Visual mode, {key:>} and {key:<} indent the selection. With a count: {key:3}{key:>} indents three times. {key:.} repeats the last indent."
+    },
+    {
+      "type": "example",
+      "ref": "transform.indent"
+    },
+    {
+      "type": "qr",
+      "topic": "transform.indent"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

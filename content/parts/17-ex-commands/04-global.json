@@ -6,38 +6,84 @@
   "subtitle": "\"Run a command on every line that matches.\"",
   "part": "ex-commands",
   "summary": ":g/pattern/cmd runs cmd on every line matching pattern. :v inverts (every NON-matching line). Combine with :d to delete-by-pattern, with :s to substitute-by-pattern, with :norm to do anything.",
-  "keys": [":g", ":v"],
-  "lessons": [423, 425],
-  "see_also": ["ex.substitute", "ex.norm"],
-
+  "keys": [
+    ":g",
+    ":v"
+  ],
+  "lessons": [
+    423,
+    425
+  ],
+  "see_also": [
+    "ex.substitute",
+    "ex.norm"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Global and Vglobal" },
-
-    { "type": "prose", "text": "{key::}{key:g}/pattern/cmd is read as: *for every line matching pattern, run cmd*. It's how you do bulk operations gated by a search." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Global and Vglobal"
+    },
+    {
+      "type": "prose",
+      "text": "{key::}{key:g}/pattern/cmd is read as: *for every line matching pattern, run cmd*. It's how you do bulk operations gated by a search."
+    },
     {
       "type": "table",
-      "headers": ["Command",                  "Effect"],
+      "headers": [
+        "Command",
+        "Effect"
+      ],
       "rows": [
-        [":g/TODO/p",                         "Print every line containing TODO"],
-        [":g/TODO/d",                         "Delete every line containing TODO"],
-        [":v/TODO/d",                         "Delete every line NOT containing TODO"],
-        [":g/^$/d",                           "Delete all blank lines"],
-        [":g/^/m0",                           "Reverse the file (move every line to top)"],
-        [":g/foo/s//bar/g",                   "Substitute on matching lines"],
-        [":g/^class /norm o    pass",         "On every class declaration, open new line + insert `pass`"]
+        [
+          ":g/TODO/p",
+          "Print every line containing TODO"
+        ],
+        [
+          ":g/TODO/d",
+          "Delete every line containing TODO"
+        ],
+        [
+          ":v/TODO/d",
+          "Delete every line NOT containing TODO"
+        ],
+        [
+          ":g/^$/d",
+          "Delete all blank lines"
+        ],
+        [
+          ":g/^/m0",
+          "Reverse the file (move every line to top)"
+        ],
+        [
+          ":g/foo/s//bar/g",
+          "Substitute on matching lines"
+        ],
+        [
+          ":g/^class /norm o    pass",
+          "On every class declaration, open new line + insert `pass`"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "How :g Works",
-      "text": "Vim does a **two-pass** algorithm:\n\n  1. Scan the range, mark every line matching the pattern.\n  2. Run the command on each marked line, in order, *deleting marks as it goes*.\n\nThe two-pass design means a command that deletes lines (`:g/foo/d`) doesn't lose its place — the marks are set before any deletion happens.\n\n`:v/pat/cmd` is exactly `:g!/pat/cmd` — the inversion. Mnemonic: \"v = inVerse.\"\n\nThe command after the pattern can be anything: `:d`, `:s/.../.../`, `:m`, `:t`, even `:norm` to inject Normal-mode keys per matched line. That last form is wildly powerful."
+      "text": "Vim does a **two-pass** algorithm:\n\n  1. Scan the range, mark every line matching the pattern.\n  2. Run the command on each marked line, in order, *deleting marks as it goes*.\n\nThe two-pass design means a command that deletes lines (`:g/foo/d`) doesn't lose its place \u2014 the marks are set before any deletion happens.\n\n`:v/pat/cmd` is exactly `:g!/pat/cmd` \u2014 the inversion. Mnemonic: \"v = inVerse.\"\n\nThe command after the pattern can be anything: `:d`, `:s/.../.../`, `:m`, `:t`, even `:norm` to inject Normal-mode keys per matched line. That last form is wildly powerful."
     },
-
-    { "type": "tip", "text": "{key::}{key:g}{key:/^$/d} is the universally-useful blank-line stripper. {key::}{key:v}{key:/keyword/d} keeps only matching lines (poor man's grep)." },
-
-    { "type": "qr", "topic": "ex.global" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "{key::}{key:g}{key:/^$/d} is the universally-useful blank-line stripper. {key::}{key:v}{key:/keyword/d} keeps only matching lines (poor man's grep)."
+    },
+    {
+      "type": "example",
+      "ref": "ex.global"
+    },
+    {
+      "type": "qr",
+      "topic": "ex.global"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

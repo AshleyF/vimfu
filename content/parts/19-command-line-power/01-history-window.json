@@ -3,53 +3,106 @@
   "version": 1,
   "id": "cmdline.history-window",
   "title": "Command-Line History",
-  "subtitle": "↑/↓ for prefix-match, q: for the full window.",
+  "subtitle": "\u2191/\u2193 for prefix-match, q: for the full window.",
   "part": "command-line-power",
-  "summary": "From the : prompt, ↑ and ↓ scroll history filtered by what you've already typed. q: opens a full editable history window — every Ex command you've ever run, in a buffer you can edit and re-execute.",
-  "keys": ["↑", "↓", "q:", "q/", "q?"],
-  "lessons": [446, 447],
-  "see_also": ["cmdline.repeat-ex", "cmdline.edit-buffer"],
-
+  "summary": "From the : prompt, \u2191 and \u2193 scroll history filtered by what you've already typed. q: opens a full editable history window \u2014 every Ex command you've ever run, in a buffer you can edit and re-execute.",
+  "keys": [
+    "\u2191",
+    "\u2193",
+    "q:",
+    "q/",
+    "q?"
+  ],
+  "lessons": [
+    446,
+    447
+  ],
+  "see_also": [
+    "cmdline.repeat-ex",
+    "cmdline.edit-buffer"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Command-Line History" },
-
-    { "type": "prose", "text": "Vim remembers everything you type at the {key::} prompt. Two interfaces let you re-use it: arrow scrolling and the full *history window*." },
-
-    { "type": "heading", "level": 2, "text": "Arrow scrolling" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Command-Line History"
+    },
+    {
+      "type": "prose",
+      "text": "Vim remembers everything you type at the {key::} prompt. Two interfaces let you re-use it: arrow scrolling and the full *history window*."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Arrow scrolling"
+    },
     {
       "type": "table",
-      "headers": ["Key",                      "Effect"],
+      "headers": [
+        "Key",
+        "Effect"
+      ],
       "rows": [
-        ["{key:↑} / {key:↓}",                 "Scroll history filtered by current prefix"],
-        ["{key:Ctrl-P} / {key:Ctrl-N}",       "Same — without prefix filter"]
+        [
+          "{key:\u2191} / {key:\u2193}",
+          "Scroll history filtered by current prefix"
+        ],
+        [
+          "{key:Ctrl-P} / {key:Ctrl-N}",
+          "Same \u2014 without prefix filter"
+        ]
       ]
     },
-
-    { "type": "prose", "text": "If you've typed `:s` then press {key:↑}, only previous commands starting with `s` are shown. {key:Ctrl-P} ignores the prefix and walks plain history." },
-
-    { "type": "heading", "level": 2, "text": "The history window: q:" },
-
+    {
+      "type": "prose",
+      "text": "If you've typed `:s` then press {key:\u2191}, only previous commands starting with `s` are shown. {key:Ctrl-P} ignores the prefix and walks plain history."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The history window: q:"
+    },
     {
       "type": "keys",
       "label": "Open and reuse",
       "sequence": [
-        { "key": "q:",    "note": "Opens a buffer with full Ex command history" },
-        { "key": "k",     "note": "Move up to a previous command" },
-        { "key": "Enter", "note": "Execute that line" },
-        { "key": "C-c",   "note": "Or close the window without running anything" }
+        {
+          "key": "q:",
+          "note": "Opens a buffer with full Ex command history"
+        },
+        {
+          "key": "k",
+          "note": "Move up to a previous command"
+        },
+        {
+          "key": "Enter",
+          "note": "Execute that line"
+        },
+        {
+          "key": "C-c",
+          "note": "Or close the window without running anything"
+        }
       ]
     },
-
     {
       "type": "internals",
       "title": "Why q: Is Powerful",
-      "text": "{key:q}{key::} opens a *real Vim buffer* containing your command history. You can:\n\n  • Edit any line (fix a typo) before pressing {key:Enter} to run it.\n  • Yank/delete history lines.\n  • Search history with {key:/}.\n  • Use Visual mode to select a region and execute it as multiple commands (with `:@\"` after yanking).\n\n{key:q}{key:/} and {key:q}{key:?} do the same for **search history** — every {key:/} or {key:?} pattern you've used.\n\n**Common gotcha:** people accidentally hit {key:q}{key::} when intending {key::}{key:q} (quit). If a buffer pops up with old commands, you didn't break Vim — you opened the history window. Press {key::}{key:q} to close it."
+      "text": "{key:q}{key::} opens a *real Vim buffer* containing your command history. You can:\n\n  \u2022 Edit any line (fix a typo) before pressing {key:Enter} to run it.\n  \u2022 Yank/delete history lines.\n  \u2022 Search history with {key:/}.\n  \u2022 Use Visual mode to select a region and execute it as multiple commands (with `:@\"` after yanking).\n\n{key:q}{key:/} and {key:q}{key:?} do the same for **search history** \u2014 every {key:/} or {key:?} pattern you've used.\n\n**Common gotcha:** people accidentally hit {key:q}{key::} when intending {key::}{key:q} (quit). If a buffer pops up with old commands, you didn't break Vim \u2014 you opened the history window. Press {key::}{key:q} to close it."
     },
-
-    { "type": "tip", "text": "From the {key::} prompt, {key:Ctrl-F} also opens this window — so {key:q}{key::} is just a Normal-mode shortcut for the same thing." },
-
-    { "type": "qr", "topic": "cmdline.history-window" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "From the {key::} prompt, {key:Ctrl-F} also opens this window \u2014 so {key:q}{key::} is just a Normal-mode shortcut for the same thing."
+    },
+    {
+      "type": "example",
+      "ref": "cmdline.history"
+    },
+    {
+      "type": "qr",
+      "topic": "cmdline.history-window"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

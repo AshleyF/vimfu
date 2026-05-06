@@ -6,35 +6,73 @@
   "subtitle": "What is this character? Where am I?",
   "part": "advanced",
   "summary": "ga shows the codepoint of the character under cursor (decimal/hex/octal). g8 shows the UTF-8 byte sequence. g Ctrl-G gives a verbose location report (line/col/word count/byte position).",
-  "keys": ["ga", "g8", "g Ctrl-G", "Ctrl-G"],
-  "lessons": [491, 492],
-  "see_also": ["prefixes.g-overview"],
-
+  "keys": [
+    "ga",
+    "g8",
+    "g Ctrl-G",
+    "Ctrl-G"
+  ],
+  "lessons": [
+    491,
+    492
+  ],
+  "see_also": [
+    "prefixes.g-overview"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Character Info" },
-
-    { "type": "prose", "text": "Three diagnostic commands tell you what's actually in the file at the cursor — useful when something *looks* normal but isn't." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Character Info"
+    },
+    {
+      "type": "prose",
+      "text": "Three diagnostic commands tell you what's actually in the file at the cursor \u2014 useful when something *looks* normal but isn't."
+    },
     {
       "type": "table",
-      "headers": ["Key",            "Shows"],
+      "headers": [
+        "Key",
+        "Shows"
+      ],
       "rows": [
-        ["{key:g}{key:a}",           "Codepoint of char under cursor (Dec, Hex, Oct)"],
-        ["{key:g}{key:8}",           "UTF-8 byte sequence of char under cursor"],
-        ["{key:Ctrl-G}",             "Brief: filename, modified flag, position percentage"],
-        ["{key:g}{key:Ctrl-G}",      "Verbose: word/char/byte counts and cursor position"]
+        [
+          "{key:g}{key:a}",
+          "Codepoint of char under cursor (Dec, Hex, Oct)"
+        ],
+        [
+          "{key:g}{key:8}",
+          "UTF-8 byte sequence of char under cursor"
+        ],
+        [
+          "{key:Ctrl-G}",
+          "Brief: filename, modified flag, position percentage"
+        ],
+        [
+          "{key:g}{key:Ctrl-G}",
+          "Verbose: word/char/byte counts and cursor position"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "When These Save You",
       "text": "**Invisible characters.** Code that looks fine but breaks parsing? {key:g}{key:a} on the suspicious spot reveals zero-width spaces, BOMs, non-breaking spaces, smart quotes from copy-paste.\n\n**Encoding bugs.** A character displays as `?` or a box? {key:g}{key:8} shows the actual UTF-8 bytes. If they're wrong, your file's encoding may not match `'fileencoding'`.\n\n**Word counts.** Need to know how long a section is? Visual-select it, then {key:g}{key:Ctrl-G} reports words/chars/bytes for the selection. Same key in Normal mode reports for the whole file."
     },
-
-    { "type": "tip", "text": "{key:Ctrl-G} (no g) is the everyday \"where am I\" — show filename and position percentage. Quick and useful." },
-
-    { "type": "qr", "topic": "advanced.character-info" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "{key:Ctrl-G} (no g) is the everyday \"where am I\" \u2014 show filename and position percentage. Quick and useful."
+    },
+    {
+      "type": "example",
+      "ref": "advanced.character-info"
+    },
+    {
+      "type": "qr",
+      "topic": "advanced.character-info"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

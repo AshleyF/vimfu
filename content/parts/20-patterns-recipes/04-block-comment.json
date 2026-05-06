@@ -5,48 +5,98 @@
   "title": "Block Comment with Ctrl-V + I",
   "subtitle": "Add a comment marker to N consecutive lines.",
   "part": "patterns-recipes",
-  "summary": "Ctrl-V to enter block visual, j or count+j to select rows, I to insert at left edge, type the comment marker, Esc — the marker appears on every line.",
-  "keys": ["Ctrl-V", "I", "Esc"],
-  "lessons": [467, 467],
-  "see_also": ["visual.block-insert-append", "visual.modes"],
-
+  "summary": "Ctrl-V to enter block visual, j or count+j to select rows, I to insert at left edge, type the comment marker, Esc \u2014 the marker appears on every line.",
+  "keys": [
+    "Ctrl-V",
+    "I",
+    "Esc"
+  ],
+  "lessons": [
+    467,
+    467
+  ],
+  "see_also": [
+    "visual.block-insert-append",
+    "visual.modes"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Block Comment" },
-
-    { "type": "prose", "text": "Vim has no built-in \"comment this block\" command — but block-Visual + capital-{key:I} gives you a one-trick replacement that works in any language." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Block Comment"
+    },
+    {
+      "type": "prose",
+      "text": "Vim has no built-in \"comment this block\" command \u2014 but block-Visual + capital-{key:I} gives you a one-trick replacement that works in any language."
+    },
     {
       "type": "keys",
       "label": "Comment 5 lines with //",
       "sequence": [
-        { "key": "Ctrl-V", "note": "Enter block Visual" },
-        { "key": "4j",     "note": "Extend down 4 more lines (5 total)" },
-        { "key": "I",      "note": "Insert at left edge of block" },
-        { "key": "// ",    "note": "Type the marker" },
-        { "key": "Esc",    "note": "Marker appears on all 5 lines" }
+        {
+          "key": "Ctrl-V",
+          "note": "Enter block Visual"
+        },
+        {
+          "key": "4j",
+          "note": "Extend down 4 more lines (5 total)"
+        },
+        {
+          "key": "I",
+          "note": "Insert at left edge of block"
+        },
+        {
+          "key": "// ",
+          "note": "Type the marker"
+        },
+        {
+          "key": "Esc",
+          "note": "Marker appears on all 5 lines"
+        }
       ]
     },
-
-    { "type": "heading", "level": 2, "text": "Uncomment" },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Uncomment"
+    },
     {
       "type": "keys",
       "label": "Strip 3 chars (\"// \") from N lines",
       "sequence": [
-        { "key": "Ctrl-V", "note": "Block Visual" },
-        { "key": "4j",     "note": "Down 4 lines" },
-        { "key": "lll",    "note": "Right 3 columns to cover \"// \"" },
-        { "key": "d",      "note": "Delete the rectangle" }
+        {
+          "key": "Ctrl-V",
+          "note": "Block Visual"
+        },
+        {
+          "key": "4j",
+          "note": "Down 4 lines"
+        },
+        {
+          "key": "lll",
+          "note": "Right 3 columns to cover \"// \""
+        },
+        {
+          "key": "d",
+          "note": "Delete the rectangle"
+        }
       ]
     },
-
     {
       "type": "internals",
       "title": "Why This Beats Plugins for Most Cases",
-      "text": "Plugins like vim-commentary make this prettier ({key:g}{key:c}{key:c} comments a line). But the block-Visual approach:\n\n  • Has zero dependencies — works on any Vim, anywhere.\n  • Works on any prefix marker — `//`, `#`, `--`, `;`, `// TODO:`, anything.\n  • Composes with counts — {key:1}{key:0}{key:Ctrl-V}{key:j} for 11 lines.\n\nThe trick relies on the block-insert behavior: text typed after {key:I} from block Visual is *replayed* across all selected rows after {key:Esc}. See [`visual.block-insert-append`](#visual.block-insert-append)."
+      "text": "Plugins like vim-commentary make this prettier ({key:g}{key:c}{key:c} comments a line). But the block-Visual approach:\n\n  \u2022 Has zero dependencies \u2014 works on any Vim, anywhere.\n  \u2022 Works on any prefix marker \u2014 `//`, `#`, `--`, `;`, `// TODO:`, anything.\n  \u2022 Composes with counts \u2014 {key:1}{key:0}{key:Ctrl-V}{key:j} for 11 lines.\n\nThe trick relies on the block-insert behavior: text typed after {key:I} from block Visual is *replayed* across all selected rows after {key:Esc}. See [`visual.block-insert-append`](#visual.block-insert-append)."
     },
-
-    { "type": "qr", "topic": "patterns.block-comment" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "pattern.block-comment"
+    },
+    {
+      "type": "qr",
+      "topic": "patterns.block-comment"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

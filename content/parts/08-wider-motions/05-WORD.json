@@ -3,45 +3,119 @@
   "version": 1,
   "id": "wider-motions.WORD",
   "title": "WORD Motions",
-  "subtitle": "W, B, E, gE — like w/b/e/ge but bigger words.",
+  "subtitle": "W, B, E, gE \u2014 like w/b/e/ge but bigger words.",
   "part": "wider-motions",
   "summary": "Capital-letter word motions treat any non-whitespace character as part of the word. So foo->bar.baz is one WORD, three words.",
-  "keys": ["W", "B", "E", "gE"],
-  "lessons": [96],
-  "see_also": ["editing.word-motions", "operators-textobjects.iw-aw"],
-
+  "keys": [
+    "W",
+    "B",
+    "E",
+    "gE"
+  ],
+  "lessons": [
+    96
+  ],
+  "see_also": [
+    "editing.word-motions",
+    "operators-textobjects.iw-aw"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "WORD Motions" },
-
-    { "type": "prose", "text": "{key:w} skips between *keyword* runs. {key:W} skips between *whitespace*-separated chunks. The capital is bigger." },
-
-    { "type": "keys", "sequence": ["W"],      "label": "Forward to next WORD" },
-    { "type": "keys", "sequence": ["B"],      "label": "Back to start of WORD" },
-    { "type": "keys", "sequence": ["E"],      "label": "Forward to end of WORD" },
-    { "type": "keys", "sequence": ["g","E"],  "label": "Back to end of previous WORD" },
-
-    { "type": "embed", "lesson": 96, "caption": "W / B / E / gE — WORD motions" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "WORD Motions"
+    },
+    {
+      "type": "prose",
+      "text": "{key:w} skips between *keyword* runs. {key:W} skips between *whitespace*-separated chunks. The capital is bigger."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "W"
+      ],
+      "label": "Forward to next WORD"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "B"
+      ],
+      "label": "Back to start of WORD"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "E"
+      ],
+      "label": "Forward to end of WORD"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "g",
+        "E"
+      ],
+      "label": "Back to end of previous WORD"
+    },
+    {
+      "type": "embed",
+      "lesson": 96,
+      "caption": "W / B / E / gE \u2014 WORD motions"
+    },
     {
       "type": "internals",
       "title": "Word vs WORD",
-      "text": "**word** ({key:w} family) — bounded by `'iskeyword'` (default: letters, digits, underscore). In `foo->bar->baz`, the words are `foo`, `->`, `bar`, `->`, `baz`. Five words, lots of stops.\n\n**WORD** ({key:W} family) — bounded by *whitespace only*. Same string is one WORD.\n\nWhich do you want? Depends on the task:\n\n  • Editing inside an identifier with operators? word.\n  • Skipping past a URL or a long quoted argument? WORD.\n  • Operating on a complete shell-style argument? WORD.\n\nThere's a matching pair of text objects too: {key:i}{key:W} / {key:a}{key:W}. {key:c}{key:i}{key:W} on a long URL changes the whole URL; {key:c}{key:i}{key:w} would change just one segment of it."
+      "text": "**word** ({key:w} family) \u2014 bounded by `'iskeyword'` (default: letters, digits, underscore). In `foo->bar->baz`, the words are `foo`, `->`, `bar`, `->`, `baz`. Five words, lots of stops.\n\n**WORD** ({key:W} family) \u2014 bounded by *whitespace only*. Same string is one WORD.\n\nWhich do you want? Depends on the task:\n\n  \u2022 Editing inside an identifier with operators? word.\n  \u2022 Skipping past a URL or a long quoted argument? WORD.\n  \u2022 Operating on a complete shell-style argument? WORD.\n\nThere's a matching pair of text objects too: {key:i}{key:W} / {key:a}{key:W}. {key:c}{key:i}{key:W} on a long URL changes the whole URL; {key:c}{key:i}{key:w} would change just one segment of it."
     },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Key",        "Direction", "Lands on"],
+      "headers": [
+        "Key",
+        "Direction",
+        "Lands on"
+      ],
       "rows": [
-        ["{key:W}",              "Forward",  "Start of next WORD"],
-        ["{key:B}",              "Back",     "Start of previous WORD"],
-        ["{key:E}",              "Forward",  "End of WORD"],
-        ["{key:g}{key:E}",       "Back",     "End of previous WORD"]
+        [
+          "{key:W}",
+          "Forward",
+          "Start of next WORD"
+        ],
+        [
+          "{key:B}",
+          "Back",
+          "Start of previous WORD"
+        ],
+        [
+          "{key:E}",
+          "Forward",
+          "End of WORD"
+        ],
+        [
+          "{key:g}{key:E}",
+          "Back",
+          "End of previous WORD"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "wider-motions.WORD" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "motion.bigword"
+    },
+    {
+      "type": "qr",
+      "topic": "wider-motions.WORD"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

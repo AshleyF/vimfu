@@ -2,44 +2,96 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "patterns.cgn-dot",
-  "title": "cgn — Change-Next-Match Loop",
+  "title": "cgn \u2014 Change-Next-Match Loop",
   "subtitle": "Like *cw, but . jumps AND changes in one step.",
   "part": "patterns-recipes",
-  "summary": "After a /search, cgn changes the next match. Then . by itself jumps to the next match AND changes it — no need for separate n. The pinnacle of dot-repeat refactoring.",
-  "keys": ["c", "g", "n", "."],
-  "lessons": [465, 466],
-  "see_also": ["patterns.star-cw-dot", "dot-repeat.repeat", "operators-textobjects.grammar"],
-
+  "summary": "After a /search, cgn changes the next match. Then . by itself jumps to the next match AND changes it \u2014 no need for separate n. The pinnacle of dot-repeat refactoring.",
+  "keys": [
+    "c",
+    "g",
+    "n",
+    "."
+  ],
+  "lessons": [
+    465,
+    466
+  ],
+  "see_also": [
+    "patterns.star-cw-dot",
+    "dot-repeat.repeat",
+    "operators-textobjects.grammar"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "cgn" },
-
-    { "type": "prose", "text": "{key:c}{key:g}{key:n} is the *better* version of the {key:*}{key:c}{key:w} loop. It rolls *jump-to-next* and *change* into a single dot-repeatable action." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "cgn"
+    },
+    {
+      "type": "prose",
+      "text": "{key:c}{key:g}{key:n} is the *better* version of the {key:*}{key:c}{key:w} loop. It rolls *jump-to-next* and *change* into a single dot-repeatable action."
+    },
     {
       "type": "keys",
       "label": "The full workflow",
       "sequence": [
-        { "key": "/old", "note": "Search for the thing you want to change" },
-        { "key": "Enter", "note": "" },
-        { "key": "cgn",  "note": "Change next match" },
-        { "key": "NEW",  "note": "Type replacement" },
-        { "key": "Esc",  "note": "Commit" },
-        { "key": ".",    "note": "Jump to next match AND change it" },
-        { "key": ".",    "note": "Again" },
-        { "key": "n",    "note": "Skip a match — move to the one after" },
-        { "key": ".",    "note": "Change it" }
+        {
+          "key": "/old",
+          "note": "Search for the thing you want to change"
+        },
+        {
+          "key": "Enter",
+          "note": ""
+        },
+        {
+          "key": "cgn",
+          "note": "Change next match"
+        },
+        {
+          "key": "NEW",
+          "note": "Type replacement"
+        },
+        {
+          "key": "Esc",
+          "note": "Commit"
+        },
+        {
+          "key": ".",
+          "note": "Jump to next match AND change it"
+        },
+        {
+          "key": ".",
+          "note": "Again"
+        },
+        {
+          "key": "n",
+          "note": "Skip a match \u2014 move to the one after"
+        },
+        {
+          "key": ".",
+          "note": "Change it"
+        }
       ]
     },
-
     {
       "type": "internals",
       "title": "What gn Is",
-      "text": "{key:g}{key:n} is a **motion** that selects the next search match (forward; {key:g}{key:N} for backward). It works as both a Normal-mode motion *and* a text object — when used after an operator, it becomes the range to operate on.\n\nSo {key:c}{key:g}{key:n} = \"change the next search match.\" The dot-repeat record is *the whole thing*: \"find next match, delete it, insert NEW.\" Every {key:.} after that re-runs the entire sequence.\n\nThis is strictly better than the {key:*}{key:c}{key:w} loop because:\n\n  • {key:.} alone advances + changes (no separate {key:n}).\n  • Works when the match isn't a word (regex, multi-word, partial)."
+      "text": "{key:g}{key:n} is a **motion** that selects the next search match (forward; {key:g}{key:N} for backward). It works as both a Normal-mode motion *and* a text object \u2014 when used after an operator, it becomes the range to operate on.\n\nSo {key:c}{key:g}{key:n} = \"change the next search match.\" The dot-repeat record is *the whole thing*: \"find next match, delete it, insert NEW.\" Every {key:.} after that re-runs the entire sequence.\n\nThis is strictly better than the {key:*}{key:c}{key:w} loop because:\n\n  \u2022 {key:.} alone advances + changes (no separate {key:n}).\n  \u2022 Works when the match isn't a word (regex, multi-word, partial)."
     },
-
-    { "type": "tip", "text": "{key:d}{key:g}{key:n} for delete-next-match. {key:y}{key:g}{key:n} for yank-next-match. The motion is composable like any other." },
-
-    { "type": "qr", "topic": "patterns.cgn-dot" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "{key:d}{key:g}{key:n} for delete-next-match. {key:y}{key:g}{key:n} for yank-next-match. The motion is composable like any other."
+    },
+    {
+      "type": "example",
+      "ref": "pattern.cgn-dot"
+    },
+    {
+      "type": "qr",
+      "topic": "patterns.cgn-dot"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

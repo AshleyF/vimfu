@@ -3,41 +3,100 @@
   "version": 1,
   "id": "marks.jumplist",
   "title": "The Jump List",
-  "subtitle": "Ctrl-O / Ctrl-I — walk back and forward through your big jumps.",
+  "subtitle": "Ctrl-O / Ctrl-I \u2014 walk back and forward through your big jumps.",
   "part": "marks",
   "summary": "Vim records every \"big jump\" you make in a per-window jump list. Ctrl-O moves backward through it; Ctrl-I (Tab) moves forward.",
-  "keys": ["Ctrl-O", "Ctrl-I", ":jumps"],
-  "lessons": [102, 103, 104],
-  "see_also": ["marks.local-global", "marks.changelist", "search.pattern"],
-
+  "keys": [
+    "Ctrl-O",
+    "Ctrl-I",
+    ":jumps"
+  ],
+  "lessons": [
+    102,
+    103,
+    104
+  ],
+  "see_also": [
+    "marks.local-global",
+    "marks.changelist",
+    "search.pattern"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "The Jump List" },
-
-    { "type": "prose", "text": "Every time you make a *big jump* — a search, a {key:G}, a {key:%}, a mark jump — Vim pushes the position you came from onto a list. {key:Ctrl-O} walks back through it; {key:Ctrl-I} walks forward." },
-
-    { "type": "keys", "sequence": ["Ctrl-O"], "label": "Jump back" },
-    { "type": "keys", "sequence": ["Ctrl-I"], "label": "Jump forward (= Tab in most terminals)" },
-    { "type": "keys", "sequence": [":","j","u","m","p","s","Enter"], "label": "Show the jump list" },
-
-    { "type": "embed", "lesson": 102, "caption": "Ctrl-O — jump back" },
-    { "type": "embed", "lesson": 103, "caption": "Ctrl-I — jump forward" },
-    { "type": "embed", "lesson": 104, "caption": ":jumps — list jumps" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "The Jump List"
+    },
+    {
+      "type": "prose",
+      "text": "Every time you make a *big jump* \u2014 a search, a {key:G}, a {key:%}, a mark jump \u2014 Vim pushes the position you came from onto a list. {key:Ctrl-O} walks back through it; {key:Ctrl-I} walks forward."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-O"
+      ],
+      "label": "Jump back"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-I"
+      ],
+      "label": "Jump forward (= Tab in most terminals)"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        ":",
+        "j",
+        "u",
+        "m",
+        "p",
+        "s",
+        "Enter"
+      ],
+      "label": "Show the jump list"
+    },
+    {
+      "type": "embed",
+      "lesson": 102,
+      "caption": "Ctrl-O \u2014 jump back"
+    },
+    {
+      "type": "embed",
+      "lesson": 103,
+      "caption": "Ctrl-I \u2014 jump forward"
+    },
+    {
+      "type": "embed",
+      "lesson": 104,
+      "caption": ":jumps \u2014 list jumps"
+    },
     {
       "type": "internals",
       "title": "What Counts as a \"Big\" Jump",
-      "text": "Vim has a precise list. Pushed onto the jump list:\n\n  • Search: {key:/}, {key:?}, {key:n}, {key:N}, {key:*}, {key:#}.\n  • File jumps: {key:g}{key:g}, {key:G}, {key:H}/{key:M}/{key:L}, {key:{n}}{key:G}, {key::}{key:{n}}.\n  • Bracket: {key:%}.\n  • Marks: {key:'}, {key:`} (any mark, including special).\n  • Switching files: {key::}{key:e}, {key::}{key:b}, {key::}{key:t}{key:a}{key:g}.\n  • Several others (`(`, `)`, `{`, `}` are jumps; `+`, `-`, `Enter` are not).\n\nNot pushed: {key:h}/{key:j}/{key:k}/{key:l}, {key:w}/{key:b}/{key:e}, {key:0}/{key:^}/{key:$}, scroll commands.\n\nThe jump list is **per-window**, capped at 100 entries. {key:Ctrl-O} walks back; {key:Ctrl-I} walks forward. Making a *new* big jump from the middle of the list truncates everything ahead of you (like browser history)."
+      "text": "Vim has a precise list. Pushed onto the jump list:\n\n  \u2022 Search: {key:/}, {key:?}, {key:n}, {key:N}, {key:*}, {key:#}.\n  \u2022 File jumps: {key:g}{key:g}, {key:G}, {key:H}/{key:M}/{key:L}, {key:{n}}{key:G}, {key::}{key:{n}}.\n  \u2022 Bracket: {key:%}.\n  \u2022 Marks: {key:'}, {key:`} (any mark, including special).\n  \u2022 Switching files: {key::}{key:e}, {key::}{key:b}, {key::}{key:t}{key:a}{key:g}.\n  \u2022 Several others (`(`, `)`, `{`, `}` are jumps; `+`, `-`, `Enter` are not).\n\nNot pushed: {key:h}/{key:j}/{key:k}/{key:l}, {key:w}/{key:b}/{key:e}, {key:0}/{key:^}/{key:$}, scroll commands.\n\nThe jump list is **per-window**, capped at 100 entries. {key:Ctrl-O} walks back; {key:Ctrl-I} walks forward. Making a *new* big jump from the middle of the list truncates everything ahead of you (like browser history)."
     },
-
     {
       "type": "internals",
       "title": "Ctrl-I and Tab Are the Same Key",
-      "text": "Terminals send Tab and Ctrl-I as the *same* byte (0x09). Vim historically treats them as one keystroke. So if you remap Tab in Normal mode, you also remap {key:Ctrl-I} — including its jump-list-forward behavior. This catches a lot of plugin users by surprise.\n\nGUI Vim and Neovim with `tui-input` distinguish them. In a terminal, you usually can't."
+      "text": "Terminals send Tab and Ctrl-I as the *same* byte (0x09). Vim historically treats them as one keystroke. So if you remap Tab in Normal mode, you also remap {key:Ctrl-I} \u2014 including its jump-list-forward behavior. This catches a lot of plugin users by surprise.\n\nGUI Vim and Neovim with `tui-input` distinguish them. In a terminal, you usually can't."
     },
-
-    { "type": "tip", "text": "{key:Ctrl-O} is your safety net. After any sequence of jumps you can walk straight back to where you started. Combined with {key:'}{key:'} (line of last big jump), you have a two-key undo for navigation." },
-
-    { "type": "qr", "topic": "marks.jumplist" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "{key:Ctrl-O} is your safety net. After any sequence of jumps you can walk straight back to where you started. Combined with {key:'}{key:'} (line of last big jump), you have a two-key undo for navigation."
+    },
+    {
+      "type": "example",
+      "ref": "marks.jumplist"
+    },
+    {
+      "type": "qr",
+      "topic": "marks.jumplist"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

@@ -3,36 +3,74 @@
   "version": 1,
   "id": "registers.clipboard",
   "title": "System Clipboard Registers",
-  "subtitle": "\"+ and \"* — bridge to the OS clipboard.",
+  "subtitle": "\"+ and \"* \u2014 bridge to the OS clipboard.",
   "part": "registers",
   "summary": "\"+ is the system clipboard. \"* is the X11 selection (Linux) or another alias for the clipboard. Yank into them, paste from them, or set 'clipboard' to make Vim use them by default.",
-  "keys": ["\"+", "\"*"],
-  "lessons": [124],
-  "see_also": ["registers.overview", "registers.unnamed"],
-
+  "keys": [
+    "\"+",
+    "\"*"
+  ],
+  "lessons": [
+    124
+  ],
+  "see_also": [
+    "registers.overview",
+    "registers.unnamed"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "System Clipboard Registers" },
-
-    { "type": "prose", "text": "If you want text from Vim to land in your system clipboard — or vice versa — use {key:\"}{key:+}. {key:\"}{key:+}{key:y}{key:y} yanks a line into the clipboard. {key:\"}{key:+}{key:p} pastes from it." },
-
-    { "type": "keys", "sequence": ["\"","+","y","y"], "label": "Yank line to system clipboard" },
-    { "type": "keys", "sequence": ["\"","+","p"],     "label": "Paste from system clipboard" },
-
-    { "type": "embed", "lesson": 124, "caption": "Clipboard registers" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "System Clipboard Registers"
+    },
+    {
+      "type": "prose",
+      "text": "If you want text from Vim to land in your system clipboard \u2014 or vice versa \u2014 use {key:\"}{key:+}. {key:\"}{key:+}{key:y}{key:y} yanks a line into the clipboard. {key:\"}{key:+}{key:p} pastes from it."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "\"",
+        "+",
+        "y",
+        "y"
+      ],
+      "label": "Yank line to system clipboard"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "\"",
+        "+",
+        "p"
+      ],
+      "label": "Paste from system clipboard"
+    },
+    {
+      "type": "embed",
+      "lesson": 124,
+      "caption": "Clipboard registers"
+    },
     {
       "type": "internals",
       "title": "+ vs *",
-      "text": "Two clipboard registers exist on Linux/X11:\n\n  • **`\"+`** — the **CLIPBOARD** selection. The thing Ctrl-C/Ctrl-V uses in most apps. Use this one by default.\n  • **`\"*`** — the **PRIMARY** selection (X11). The thing middle-click pastes. Less universal; only matters in X11.\n\nOn macOS and Windows, both `\"+` and `\"*` map to the same system clipboard. On WSL, you may need extra setup (e.g. `xclip`, `win32yank`, or Neovim's clipboard provider).\n\nIf Vim was built without `+clipboard`, neither register exists. Check with {key::}{key:v}{key:e}{key:r}{key:s}{key:i}{key:o}{key:n}; look for `+clipboard`. Neovim ships with clipboard support that works wherever a provider exists."
+      "text": "Two clipboard registers exist on Linux/X11:\n\n  \u2022 **`\"+`** \u2014 the **CLIPBOARD** selection. The thing Ctrl-C/Ctrl-V uses in most apps. Use this one by default.\n  \u2022 **`\"*`** \u2014 the **PRIMARY** selection (X11). The thing middle-click pastes. Less universal; only matters in X11.\n\nOn macOS and Windows, both `\"+` and `\"*` map to the same system clipboard. On WSL, you may need extra setup (e.g. `xclip`, `win32yank`, or Neovim's clipboard provider).\n\nIf Vim was built without `+clipboard`, neither register exists. Check with {key::}{key:v}{key:e}{key:r}{key:s}{key:i}{key:o}{key:n}; look for `+clipboard`. Neovim ships with clipboard support that works wherever a provider exists."
     },
-
     {
       "type": "internals",
       "title": "Make Yank/Paste Use the Clipboard by Default",
       "text": "Add to your config:\n\n```\nset clipboard=unnamedplus\n```\n\nNow {key:y} writes to `\"+` (and `\"\"`); {key:p} reads from `\"+`. No more {key:\"}{key:+} prefix. The downside: you lose the ability to yank \"just to Vim\" without touching the system clipboard. Most people find that's a fine trade.\n\nOn macOS without X11, use `clipboard=unnamed` instead (writes to `\"*`, which equals the system clipboard there)."
     },
-
-    { "type": "qr", "topic": "registers.clipboard" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "registers.clipboard"
+    },
+    {
+      "type": "qr",
+      "topic": "registers.clipboard"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

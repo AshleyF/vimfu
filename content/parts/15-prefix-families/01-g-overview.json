@@ -6,63 +6,191 @@
   "subtitle": "30+ commands hide behind the g prefix.",
   "part": "prefixes",
   "summary": "g is a meta prefix: it gates a second, hidden keyboard of commands. From gd (go to definition) and gf (go to file) to gq (reformat) and gv (re-select), the g family covers everything that didn't fit elsewhere.",
-  "keys": ["gd", "gf", "gv", "gi", "gq", "g;", "g,", "g~", "gU", "gu"],
-  "lessons": [249, 285],
-  "see_also": ["prefixes.z-overview", "prefixes.bracket-pairs", "prefixes.ctrl-w", "appendix.complete-key-reference"],
-
+  "keys": [
+    "gd",
+    "gf",
+    "gv",
+    "gi",
+    "gq",
+    "g;",
+    "g,",
+    "g~",
+    "gU",
+    "gu"
+  ],
+  "lessons": [
+    249,
+    285
+  ],
+  "see_also": [
+    "prefixes.z-overview",
+    "prefixes.bracket-pairs",
+    "prefixes.ctrl-w",
+    "appendix.complete-key-reference"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "The g Family" },
-
-    { "type": "prose", "text": "The {key:g} prefix is Vim's *miscellaneous drawer* — and it's huge. Roughly thirty commands live behind it. The unifying theme is \"this didn't fit on a one-key shortcut, so it got the {key:g} prefix.\" Worth a flat reference table." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "The g Family"
+    },
+    {
+      "type": "prose",
+      "text": "The {key:g} prefix is Vim's *miscellaneous drawer* \u2014 and it's huge. Roughly thirty commands live behind it. The unifying theme is \"this didn't fit on a one-key shortcut, so it got the {key:g} prefix.\" Worth a flat reference table."
+    },
     {
       "type": "internals",
       "title": "Why So Many g Commands",
       "text": "Vim has more useful operations than there are unmodified keys. The {key:g} prefix gives a second keyboard's worth of room. Some of the {key:g} family are *operators* themselves ({key:g}{key:U}, {key:g}{key:u}, {key:g}{key:~}, {key:g}{key:q}, {key:g}{key:@}); some are *motions* ({key:g}{key:e}, {key:g}{key:E}, {key:g}{key:j}, {key:g}{key:k}, {key:g}{key:0}, {key:g}{key:^}, {key:g}{key:_}); some are *jumps* ({key:g}{key:d}, {key:g}{key:f}, {key:g}{key:;}, {key:g}{key:,}, {key:g}{key:i}); some are one-shot actions ({key:g}{key:v}, {key:g}{key:a}, {key:g}{key:x}, {key:g}{key:8})."
     },
-
-    { "type": "heading", "level": 2, "text": "Reference (most-used)" },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference (most-used)"
+    },
     {
       "type": "table",
-      "headers": ["Key",            "Action"],
+      "headers": [
+        "Key",
+        "Action"
+      ],
       "rows": [
-        ["{key:g}{key:d}",          "Go to local definition under cursor"],
-        ["{key:g}{key:D}",          "Go to global definition"],
-        ["{key:g}{key:f}",          "Open file under cursor"],
-        ["{key:g}{key:F}",          "Open file under cursor at line :{n}"],
-        ["{key:g}{key:v}",          "Re-select last visual"],
-        ["{key:g}{key:i}",          "Insert at last Insert position"],
-        ["{key:g}{key:;}",          "Previous change position"],
-        ["{key:g}{key:,}",          "Next change position"],
-        ["{key:g}{key:e}",          "Back to end of previous word"],
-        ["{key:g}{key:E}",          "Back to end of previous WORD"],
-        ["{key:g}{key:j} / {key:g}{key:k}", "Down/up by *display* line (matters with wrap)"],
-        ["{key:g}{key:0}",          "Display start of line"],
-        ["{key:g}{key:^}",          "Display first non-blank"],
-        ["{key:g}{key:_}",          "Last non-blank of line"],
-        ["{key:g}{key:U}{motion}",  "Uppercase operator"],
-        ["{key:g}{key:u}{motion}",  "Lowercase operator"],
-        ["{key:g}{key:~}{motion}",  "Toggle case operator"],
-        ["{key:g}{key:q}{motion}",  "Reformat (line-wrap) operator"],
-        ["{key:g}{key:@}{motion}",  "Call user `operatorfunc` (advanced)"],
-        ["{key:g}{key:a}",          "Show character info under cursor (also {key:g}{key:8})"],
-        ["{key:g}{key:x}",          "Open URL under cursor in browser"],
-        ["{key:g}{key:<}",          "Re-show last command-line output"],
-        ["{key:g}{key:n}",          "Visual-select next search match"],
-        ["{key:g}{key:N}",          "Visual-select previous search match"],
-        ["{key:g}{key:p} / {key:g}{key:P}", "Like p/P, but cursor lands AFTER pasted text"],
-        ["{key:g}{key:t} / {key:g}{key:T}", "Next / previous tab"],
-        ["{key:g}{key:r}{c}",       "Replace (virtual) — see [`transform.replace-mode`](#transform.replace-mode)"],
-        ["{key:g}{key:R}",          "Virtual replace mode"],
-        ["{key:g}{key:o}",          "Go to byte {n}"],
-        ["{key:g}{key:?}{motion}",  "ROT13 the range (yes, really)"]
+        [
+          "{key:g}{key:d}",
+          "Go to local definition under cursor"
+        ],
+        [
+          "{key:g}{key:D}",
+          "Go to global definition"
+        ],
+        [
+          "{key:g}{key:f}",
+          "Open file under cursor"
+        ],
+        [
+          "{key:g}{key:F}",
+          "Open file under cursor at line :{n}"
+        ],
+        [
+          "{key:g}{key:v}",
+          "Re-select last visual"
+        ],
+        [
+          "{key:g}{key:i}",
+          "Insert at last Insert position"
+        ],
+        [
+          "{key:g}{key:;}",
+          "Previous change position"
+        ],
+        [
+          "{key:g}{key:,}",
+          "Next change position"
+        ],
+        [
+          "{key:g}{key:e}",
+          "Back to end of previous word"
+        ],
+        [
+          "{key:g}{key:E}",
+          "Back to end of previous WORD"
+        ],
+        [
+          "{key:g}{key:j} / {key:g}{key:k}",
+          "Down/up by *display* line (matters with wrap)"
+        ],
+        [
+          "{key:g}{key:0}",
+          "Display start of line"
+        ],
+        [
+          "{key:g}{key:^}",
+          "Display first non-blank"
+        ],
+        [
+          "{key:g}{key:_}",
+          "Last non-blank of line"
+        ],
+        [
+          "{key:g}{key:U}{motion}",
+          "Uppercase operator"
+        ],
+        [
+          "{key:g}{key:u}{motion}",
+          "Lowercase operator"
+        ],
+        [
+          "{key:g}{key:~}{motion}",
+          "Toggle case operator"
+        ],
+        [
+          "{key:g}{key:q}{motion}",
+          "Reformat (line-wrap) operator"
+        ],
+        [
+          "{key:g}{key:@}{motion}",
+          "Call user `operatorfunc` (advanced)"
+        ],
+        [
+          "{key:g}{key:a}",
+          "Show character info under cursor (also {key:g}{key:8})"
+        ],
+        [
+          "{key:g}{key:x}",
+          "Open URL under cursor in browser"
+        ],
+        [
+          "{key:g}{key:<}",
+          "Re-show last command-line output"
+        ],
+        [
+          "{key:g}{key:n}",
+          "Visual-select next search match"
+        ],
+        [
+          "{key:g}{key:N}",
+          "Visual-select previous search match"
+        ],
+        [
+          "{key:g}{key:p} / {key:g}{key:P}",
+          "Like p/P, but cursor lands AFTER pasted text"
+        ],
+        [
+          "{key:g}{key:t} / {key:g}{key:T}",
+          "Next / previous tab"
+        ],
+        [
+          "{key:g}{key:r}{c}",
+          "Replace (virtual) \u2014 see [`transform.replace-mode`](#transform.replace-mode)"
+        ],
+        [
+          "{key:g}{key:R}",
+          "Virtual replace mode"
+        ],
+        [
+          "{key:g}{key:o}",
+          "Go to byte {n}"
+        ],
+        [
+          "{key:g}{key:?}{motion}",
+          "ROT13 the range (yes, really)"
+        ]
       ]
     },
-
-    { "type": "tip", "text": "If you only learn a handful: {key:g}{key:v}, {key:g}{key:i}, {key:g}{key:;}, {key:g}{key:U}{key:i}{key:w}, {key:g}{key:f}, {key:g}{key:x}, {key:g}{key:j}/{key:g}{key:k}. Those alone justify the prefix." },
-
-    { "type": "qr", "topic": "prefixes.g-overview" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "If you only learn a handful: {key:g}{key:v}, {key:g}{key:i}, {key:g}{key:;}, {key:g}{key:U}{key:i}{key:w}, {key:g}{key:f}, {key:g}{key:x}, {key:g}{key:j}/{key:g}{key:k}. Those alone justify the prefix."
+    },
+    {
+      "type": "example",
+      "ref": "prefix.g"
+    },
+    {
+      "type": "qr",
+      "topic": "prefixes.g-overview"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

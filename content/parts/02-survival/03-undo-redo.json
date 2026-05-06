@@ -5,55 +5,136 @@
   "title": "Undo and Redo",
   "subtitle": "u to undo. Ctrl-R to redo. You cannot lose work.",
   "part": "survival",
-  "summary": "u undoes the last change. Ctrl-R redoes it. Vim's undo is a tree, not a stack — you literally cannot lose work.",
-  "keys": ["u", "Ctrl-R", "U"],
-  "lessons": [11, 12],
-  "see_also": ["advanced.undo-tree", "dot.repeat", "survival.open-save-quit"],
-
+  "summary": "u undoes the last change. Ctrl-R redoes it. Vim's undo is a tree, not a stack \u2014 you literally cannot lose work.",
+  "keys": [
+    "u",
+    "Ctrl-R",
+    "U"
+  ],
+  "lessons": [
+    11,
+    12
+  ],
+  "see_also": [
+    "advanced.undo-tree",
+    "dot.repeat",
+    "survival.open-save-quit"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Undo and Redo" },
-
-    { "type": "prose", "text": "Vim is safe. Whatever you just did, you can undo. Whatever you just undid, you can redo. There is no \"oh no\" key — only {key:u}." },
-
-    { "type": "keys", "sequence": ["u"],         "label": "Undo last change" },
-    { "type": "keys", "sequence": ["Ctrl-R"],    "label": "Redo (the change you just undid)" },
-
-    { "type": "prose", "text": "Press {key:u} repeatedly to undo further. Press {key:Ctrl-R} repeatedly to redo. Counts work too: {key:5}{key:u} undoes the last five changes." },
-
-    { "type": "embed", "lesson": 11, "caption": "Undo with u" },
-    { "type": "embed", "lesson": 12, "caption": "Redo with Ctrl-R" },
-
-    { "type": "tip", "text": "What counts as \"a change\"? An entire Insert-mode session, from {key:i} to {key:Esc}, is one change. An operator+motion (like {key:d}{key:w}) is one change. A single {key:x} or {key:r} is one change. So {key:u} undoes the *last meaningful action*, not the last keystroke." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Undo and Redo"
+    },
+    {
+      "type": "prose",
+      "text": "Vim is safe. Whatever you just did, you can undo. Whatever you just undid, you can redo. There is no \"oh no\" key \u2014 only {key:u}."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "u"
+      ],
+      "label": "Undo last change"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-R"
+      ],
+      "label": "Redo (the change you just undid)"
+    },
+    {
+      "type": "prose",
+      "text": "Press {key:u} repeatedly to undo further. Press {key:Ctrl-R} repeatedly to redo. Counts work too: {key:5}{key:u} undoes the last five changes."
+    },
+    {
+      "type": "embed",
+      "lesson": 11,
+      "caption": "Undo with u"
+    },
+    {
+      "type": "embed",
+      "lesson": 12,
+      "caption": "Redo with Ctrl-R"
+    },
+    {
+      "type": "tip",
+      "text": "What counts as \"a change\"? An entire Insert-mode session, from {key:i} to {key:Esc}, is one change. An operator+motion (like {key:d}{key:w}) is one change. A single {key:x} or {key:r} is one change. So {key:u} undoes the *last meaningful action*, not the last keystroke."
+    },
     {
       "type": "internals",
       "title": "Vim's Undo Is a Tree",
-      "text": "In every other editor, undo is a stack. Undo pops; redo pushes. If you undo three steps and then make a new edit, the redo stack is destroyed — those three changes are gone forever.\n\nVim's undo is a *tree*. Every change creates a new node. Undo walks toward the root. Redo walks back the way you came. **Branching changes do not destroy history**: when you undo three steps and then make a new edit, you create a new branch from that point. The old branch is still there, and Vim can walk to it.\n\nThe practical consequences:\n\n  • {key:u} and {key:Ctrl-R} walk along the *current branch*.\n  • {key:g}{key:-} and {key:g}{key:+} walk *chronologically* — they can hop to a different branch if it was edited more recently.\n  • {key::}{key:earlier} {N}{m,s,h} jumps the buffer to its state N minutes/seconds/hours ago — across branches.\n  • {key::}{key:later} does the opposite.\n  • If you have `'undofile'` set, the undo tree is saved to disk between sessions. Reopen the file tomorrow and you can still undo today's edits.\n\nFull treatment in `advanced.undo-tree`. For now: you literally cannot lose work in Vim. If you make a change you regret, {key:u}. If you regret the undo, {key:Ctrl-R}. If hours have passed and you don't even remember the right sequence of presses, {key::}{key:earlier} {key:1}{key:0}{key:m} ({key:Enter})."
+      "text": "In every other editor, undo is a stack. Undo pops; redo pushes. If you undo three steps and then make a new edit, the redo stack is destroyed \u2014 those three changes are gone forever.\n\nVim's undo is a *tree*. Every change creates a new node. Undo walks toward the root. Redo walks back the way you came. **Branching changes do not destroy history**: when you undo three steps and then make a new edit, you create a new branch from that point. The old branch is still there, and Vim can walk to it.\n\nThe practical consequences:\n\n  \u2022 {key:u} and {key:Ctrl-R} walk along the *current branch*.\n  \u2022 {key:g}{key:-} and {key:g}{key:+} walk *chronologically* \u2014 they can hop to a different branch if it was edited more recently.\n  \u2022 {key::}{key:earlier} {N}{m,s,h} jumps the buffer to its state N minutes/seconds/hours ago \u2014 across branches.\n  \u2022 {key::}{key:later} does the opposite.\n  \u2022 If you have `'undofile'` set, the undo tree is saved to disk between sessions. Reopen the file tomorrow and you can still undo today's edits.\n\nFull treatment in `advanced.undo-tree`. For now: you literally cannot lose work in Vim. If you make a change you regret, {key:u}. If you regret the undo, {key:Ctrl-R}. If hours have passed and you don't even remember the right sequence of presses, {key::}{key:earlier} {key:1}{key:0}{key:m} ({key:Enter})."
     },
-
-    { "type": "heading", "level": 2, "text": "U — undo the line" },
-
-    { "type": "prose", "text": "{key:U} (capital) is a less-common command: it undoes *all changes on the current line* since you last moved off it. Useful occasionally; the regular {key:u} is what you'll use 99% of the time." },
-
-    { "type": "divider" },
-
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "U \u2014 undo the line"
+    },
+    {
+      "type": "prose",
+      "text": "{key:U} (capital) is a less-common command: it undoes *all changes on the current line* since you last moved off it. Useful occasionally; the regular {key:u} is what you'll use 99% of the time."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Key",            "Action"],
+      "headers": [
+        "Key",
+        "Action"
+      ],
       "rows": [
-        ["{key:u}",                  "Undo last change"],
-        ["{key:Ctrl-R}",             "Redo last undone change"],
-        ["{key:U}",                  "Undo all changes on the current line"],
-        ["{key:{n}}{key:u}",         "Undo last *n* changes"],
-        ["{key:g}{key:-}",           "Earlier in time (across branches)"],
-        ["{key:g}{key:+}",           "Later in time"],
-        ["{key::}{key:earlier} {N}m","Jump back N minutes"],
-        ["{key::}{key:later} {N}s",  "Jump forward N seconds"]
+        [
+          "{key:u}",
+          "Undo last change"
+        ],
+        [
+          "{key:Ctrl-R}",
+          "Redo last undone change"
+        ],
+        [
+          "{key:U}",
+          "Undo all changes on the current line"
+        ],
+        [
+          "{key:{n}}{key:u}",
+          "Undo last *n* changes"
+        ],
+        [
+          "{key:g}{key:-}",
+          "Earlier in time (across branches)"
+        ],
+        [
+          "{key:g}{key:+}",
+          "Later in time"
+        ],
+        [
+          "{key::}{key:earlier} {N}m",
+          "Jump back N minutes"
+        ],
+        [
+          "{key::}{key:later} {N}s",
+          "Jump forward N seconds"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "survival.undo-redo" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "survival.undo-redo"
+    },
+    {
+      "type": "qr",
+      "topic": "survival.undo-redo"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

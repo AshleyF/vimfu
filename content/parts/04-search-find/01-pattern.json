@@ -6,58 +6,159 @@
   "subtitle": "/ searches forward, ? searches back. n and N step through matches.",
   "part": "search",
   "summary": "/pattern searches forward; ?pattern searches backward. n repeats the search in the original direction; N reverses it. Search is one of Vim's most powerful motions.",
-  "keys": ["/", "?", "n", "N"],
-  "lessons": [46, 47, 48, 49],
-  "see_also": ["search.word", "ex.substitute", "registers.special", "marks.jumplist"],
-
+  "keys": [
+    "/",
+    "?",
+    "n",
+    "N"
+  ],
+  "lessons": [
+    46,
+    47,
+    48,
+    49
+  ],
+  "see_also": [
+    "search.word",
+    "ex.substitute",
+    "registers.special",
+    "marks.jumplist"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Pattern Search" },
-
-    { "type": "prose", "text": "Vim's search is two-stage: type {key:/} (or {key:?}) at the cursor's current line, type the pattern, press {key:Enter}. Cursor jumps to the first match. {key:n} for the next match, {key:N} for the previous." },
-
-    { "type": "keys", "sequence": ["/", "{pattern}", "Enter"], "label": "Search forward" },
-    { "type": "keys", "sequence": ["?", "{pattern}", "Enter"], "label": "Search backward" },
-    { "type": "keys", "sequence": ["n"], "label": "Repeat search in same direction" },
-    { "type": "keys", "sequence": ["N"], "label": "Repeat search in opposite direction" },
-
-    { "type": "embed", "lesson": 46, "caption": "/ — search forward" },
-    { "type": "embed", "lesson": 47, "caption": "? — search backward" },
-    { "type": "embed", "lesson": 48, "caption": "n — next match" },
-    { "type": "embed", "lesson": 49, "caption": "N — previous match" },
-
-    { "type": "tip", "text": "The pattern is a *regex*, not a literal string. {key:/}{key:f}{key:o}{key:o}{key:.}{key:Enter} matches `foo` followed by *any* character. To search for a literal `.`, escape it: {key:/}{key:f}{key:o}{key:o}{key:\\}{key:.}{key:Enter}. Or use the `\\V` (very nomagic) prefix to disable regex meaning altogether: {key:/}{key:\\}{key:V}{key:f}{key:o}{key:o}{key:.}{key:Enter}." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Pattern Search"
+    },
+    {
+      "type": "prose",
+      "text": "Vim's search is two-stage: type {key:/} (or {key:?}) at the cursor's current line, type the pattern, press {key:Enter}. Cursor jumps to the first match. {key:n} for the next match, {key:N} for the previous."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "/",
+        "{pattern}",
+        "Enter"
+      ],
+      "label": "Search forward"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "?",
+        "{pattern}",
+        "Enter"
+      ],
+      "label": "Search backward"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "n"
+      ],
+      "label": "Repeat search in same direction"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "N"
+      ],
+      "label": "Repeat search in opposite direction"
+    },
+    {
+      "type": "embed",
+      "lesson": 46,
+      "caption": "/ \u2014 search forward"
+    },
+    {
+      "type": "embed",
+      "lesson": 47,
+      "caption": "? \u2014 search backward"
+    },
+    {
+      "type": "embed",
+      "lesson": 48,
+      "caption": "n \u2014 next match"
+    },
+    {
+      "type": "embed",
+      "lesson": 49,
+      "caption": "N \u2014 previous match"
+    },
+    {
+      "type": "tip",
+      "text": "The pattern is a *regex*, not a literal string. {key:/}{key:f}{key:o}{key:o}{key:.}{key:Enter} matches `foo` followed by *any* character. To search for a literal `.`, escape it: {key:/}{key:f}{key:o}{key:o}{key:\\}{key:.}{key:Enter}. Or use the `\\V` (very nomagic) prefix to disable regex meaning altogether: {key:/}{key:\\}{key:V}{key:f}{key:o}{key:o}{key:.}{key:Enter}."
+    },
     {
       "type": "internals",
       "title": "Search Is a Motion",
-      "text": "{key:/}{pattern}{key:Enter} is a *motion*: it produces a (start, end) pair just like {key:w} or {key:G}. So every operator pairs with it.\n\n  • {key:d}{key:/}{key:E}{key:N}{key:D}{key:Enter} — delete from here through the next `END`.\n  • {key:c}{key:/}{key:fn}{key:Enter} — change from here to the next `fn`.\n  • {key:y}{key:?}{key:def}{key:Enter} — yank from here back to the previous `def`.\n\nSearch is also a *jump* — it pushes the previous position to the jumplist, so {key:Ctrl-O} returns you. And the pattern itself is stored in the **`/` register** ({key:\"}{key:/}), reusable in {key::}{key:s} commands."
+      "text": "{key:/}{pattern}{key:Enter} is a *motion*: it produces a (start, end) pair just like {key:w} or {key:G}. So every operator pairs with it.\n\n  \u2022 {key:d}{key:/}{key:E}{key:N}{key:D}{key:Enter} \u2014 delete from here through the next `END`.\n  \u2022 {key:c}{key:/}{key:fn}{key:Enter} \u2014 change from here to the next `fn`.\n  \u2022 {key:y}{key:?}{key:def}{key:Enter} \u2014 yank from here back to the previous `def`.\n\nSearch is also a *jump* \u2014 it pushes the previous position to the jumplist, so {key:Ctrl-O} returns you. And the pattern itself is stored in the **`/` register** ({key:\"}{key:/}), reusable in {key::}{key:s} commands."
     },
-
     {
       "type": "internals",
       "title": "Settings That Change How Search Feels",
-      "text": "  • `'incsearch'` — show matches as you type. On by default in Neovim.\n  • `'hlsearch'` — highlight all matches after Enter. {key::}{key:n}{key:o}{key:h}{key:Enter} clears the highlight without losing the search history.\n  • `'ignorecase'` — case-insensitive search.\n  • `'smartcase'` — combined with `ignorecase`, search is case-insensitive *unless* you typed a capital letter. The pragmatic default.\n  • `'wrapscan'` — when the search hits the end of file, wrap to the top. On by default; turn off if you want hard stops.\n\nThe pattern syntax has four \"magic\" levels: `\\v` (very magic — most regex chars are special), default `\\m`, `\\M` (nomagic), `\\V` (very nomagic — almost everything literal). For complex patterns prefer `\\v`."
+      "text": "  \u2022 `'incsearch'` \u2014 show matches as you type. On by default in Neovim.\n  \u2022 `'hlsearch'` \u2014 highlight all matches after Enter. {key::}{key:n}{key:o}{key:h}{key:Enter} clears the highlight without losing the search history.\n  \u2022 `'ignorecase'` \u2014 case-insensitive search.\n  \u2022 `'smartcase'` \u2014 combined with `ignorecase`, search is case-insensitive *unless* you typed a capital letter. The pragmatic default.\n  \u2022 `'wrapscan'` \u2014 when the search hits the end of file, wrap to the top. On by default; turn off if you want hard stops.\n\nThe pattern syntax has four \"magic\" levels: `\\v` (very magic \u2014 most regex chars are special), default `\\m`, `\\M` (nomagic), `\\V` (very nomagic \u2014 almost everything literal). For complex patterns prefer `\\v`."
     },
-
-    { "type": "tip", "text": "Empty pattern reuses the previous one: {key:/}{key:Enter} jumps to the next match of whatever you last searched for." },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "tip",
+      "text": "Empty pattern reuses the previous one: {key:/}{key:Enter} jumps to the next match of whatever you last searched for."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Key",                          "Action"],
+      "headers": [
+        "Key",
+        "Action"
+      ],
       "rows": [
-        ["{key:/}{pattern}{key:Enter}",            "Forward search"],
-        ["{key:?}{pattern}{key:Enter}",            "Backward search"],
-        ["{key:n} / {key:N}",                      "Next / previous (in original direction)"],
-        ["{key:/}{key:Enter}",                     "Repeat last search forward"],
-        ["{key:?}{key:Enter}",                     "Repeat last search backward"],
-        ["{key::}{key:n}{key:o}{key:h}",           "Clear highlights"],
-        ["{key:Ctrl-O} / {key:Ctrl-I}",            "Jump back / forward (search jumps land here)"]
+        [
+          "{key:/}{pattern}{key:Enter}",
+          "Forward search"
+        ],
+        [
+          "{key:?}{pattern}{key:Enter}",
+          "Backward search"
+        ],
+        [
+          "{key:n} / {key:N}",
+          "Next / previous (in original direction)"
+        ],
+        [
+          "{key:/}{key:Enter}",
+          "Repeat last search forward"
+        ],
+        [
+          "{key:?}{key:Enter}",
+          "Repeat last search backward"
+        ],
+        [
+          "{key::}{key:n}{key:o}{key:h}",
+          "Clear highlights"
+        ],
+        [
+          "{key:Ctrl-O} / {key:Ctrl-I}",
+          "Jump back / forward (search jumps land here)"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "search.pattern" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "search.pattern"
+    },
+    {
+      "type": "qr",
+      "topic": "search.pattern"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

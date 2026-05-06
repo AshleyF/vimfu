@@ -3,53 +3,145 @@
   "version": 1,
   "id": "editing.file-motions",
   "title": "File Motions",
-  "subtitle": "gg, G, {n}G — jump anywhere in the file.",
+  "subtitle": "gg, G, {n}G \u2014 jump anywhere in the file.",
   "part": "editing",
   "summary": "gg goes to line 1. G goes to the last line. {n}G or :{n} goes to line n.",
-  "keys": ["gg", "G", "{n}G", ":{n}"],
-  "lessons": [28, 29, 30],
-  "see_also": ["marks.jumplist", "ex.ranges"],
-
+  "keys": [
+    "gg",
+    "G",
+    "{n}G",
+    ":{n}"
+  ],
+  "lessons": [
+    28,
+    29,
+    30
+  ],
+  "see_also": [
+    "marks.jumplist",
+    "ex.ranges"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "File Motions" },
-
-    { "type": "prose", "text": "Three jumps cover most navigation across a file: top, bottom, and a specific line number." },
-
-    { "type": "keys", "sequence": ["g","g"], "label": "Go to first line" },
-    { "type": "keys", "sequence": ["G"],     "label": "Go to last line" },
-    { "type": "keys", "sequence": ["{n}","G"], "label": "Go to line {n}" },
-    { "type": "keys", "sequence": [":","{n}","Enter"], "label": "Go to line {n} (Ex form)" },
-
-    { "type": "embed", "lesson": 28, "caption": "gg — top of file" },
-    { "type": "embed", "lesson": 29, "caption": "G — bottom of file" },
-    { "type": "embed", "lesson": 30, "caption": "{n}G — go to line n" },
-
-    { "type": "tip", "text": "{key:5}{key:0}{key:G} goes to line 50. So does {key::}{key:5}{key:0}{key:Enter}. Pick whichever your fingers reach faster." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "File Motions"
+    },
+    {
+      "type": "prose",
+      "text": "Three jumps cover most navigation across a file: top, bottom, and a specific line number."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "g",
+        "g"
+      ],
+      "label": "Go to first line"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "G"
+      ],
+      "label": "Go to last line"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "{n}",
+        "G"
+      ],
+      "label": "Go to line {n}"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        ":",
+        "{n}",
+        "Enter"
+      ],
+      "label": "Go to line {n} (Ex form)"
+    },
+    {
+      "type": "embed",
+      "lesson": 28,
+      "caption": "gg \u2014 top of file"
+    },
+    {
+      "type": "embed",
+      "lesson": 29,
+      "caption": "G \u2014 bottom of file"
+    },
+    {
+      "type": "embed",
+      "lesson": 30,
+      "caption": "{n}G \u2014 go to line n"
+    },
+    {
+      "type": "tip",
+      "text": "{key:5}{key:0}{key:G} goes to line 50. So does {key::}{key:5}{key:0}{key:Enter}. Pick whichever your fingers reach faster."
+    },
     {
       "type": "internals",
       "title": "These Are All \"Big\" Jumps",
-      "text": "Vim distinguishes *small* movements ({key:h}, {key:j}, {key:w}) from *big* jumps ({key:gg}, {key:G}, search, {key:%}, mark-jumps, {key:`}). Big jumps push the *previous* cursor position onto the **jump list** before moving.\n\nThat means after {key:G}-then-edit-then-{key:gg}, you can press {key:Ctrl-O} to jump *back* to where you came from. Try it — it changes how you navigate.\n\nDeep dive: [`marks.jumplist`](#marks.jumplist)."
+      "text": "Vim distinguishes *small* movements ({key:h}, {key:j}, {key:w}) from *big* jumps ({key:gg}, {key:G}, search, {key:%}, mark-jumps, {key:`}). Big jumps push the *previous* cursor position onto the **jump list** before moving.\n\nThat means after {key:G}-then-edit-then-{key:gg}, you can press {key:Ctrl-O} to jump *back* to where you came from. Try it \u2014 it changes how you navigate.\n\nDeep dive: [`marks.jumplist`](#marks.jumplist)."
     },
-
-    { "type": "tip", "text": "{key:g}{key:g} and {key:G} are also operands. {key:d}{key:G} deletes from here to end of file (linewise). {key:y}{key:g}{key:g} yanks from here to top. {key:=}{key:g}{key:g} re-indents from cursor to top. Consistency, again." },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "tip",
+      "text": "{key:g}{key:g} and {key:G} are also operands. {key:d}{key:G} deletes from here to end of file (linewise). {key:y}{key:g}{key:g} yanks from here to top. {key:=}{key:g}{key:g} re-indents from cursor to top. Consistency, again."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Key",            "Action"],
+      "headers": [
+        "Key",
+        "Action"
+      ],
       "rows": [
-        ["{key:g}{key:g}",          "First line"],
-        ["{key:G}",                 "Last line"],
-        ["{key:{n}}{key:G}",        "Line {n}"],
-        ["{key:{n}}{key:g}{key:g}", "Line {n} (alternate)"],
-        ["{key::}{key:{n}}{key:Enter}", "Line {n} via Ex"],
-        ["{key:{p}}{key:%}",        "Line at {p} percent of file"]
+        [
+          "{key:g}{key:g}",
+          "First line"
+        ],
+        [
+          "{key:G}",
+          "Last line"
+        ],
+        [
+          "{key:{n}}{key:G}",
+          "Line {n}"
+        ],
+        [
+          "{key:{n}}{key:g}{key:g}",
+          "Line {n} (alternate)"
+        ],
+        [
+          "{key::}{key:{n}}{key:Enter}",
+          "Line {n} via Ex"
+        ],
+        [
+          "{key:{p}}{key:%}",
+          "Line at {p} percent of file"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "editing.file-motions" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "editing.file-motions"
+    },
+    {
+      "type": "qr",
+      "topic": "editing.file-motions"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

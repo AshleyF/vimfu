@@ -3,45 +3,94 @@
   "version": 1,
   "id": "dot.with-counts",
   "title": "Dot with Counts",
-  "subtitle": "{n}. — replay the change with a new count.",
+  "subtitle": "{n}. \u2014 replay the change with a new count.",
   "part": "dot",
   "summary": "Pressing a count before . replaces the count baked into the original change. So 5dw then 10. deletes 10 words, not 5.",
-  "keys": ["{n}."],
-  "lessons": [72],
-  "see_also": ["dot.repeat", "counts-visual.counts"],
-
+  "keys": [
+    "{n}."
+  ],
+  "lessons": [
+    72
+  ],
+  "see_also": [
+    "dot.repeat",
+    "counts-visual.counts"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Dot with Counts" },
-
-    { "type": "prose", "text": "The dot register stores the change *with* its count. When you press {key:{n}}{key:.}, the new count *replaces* the original. This is rarely the first thing people learn but it's a force multiplier." },
-
-    { "type": "keys", "sequence": ["{n}","."], "label": "Repeat last change with count {n}" },
-
-    { "type": "embed", "lesson": 72, "caption": "{n}. — counted dot" },
-
-    { "type": "prose", "text": "Example: {key:d}{key:w} deletes a word. {key:5}{key:.} deletes 5 words at the new cursor position. The original count (1, implicit) was discarded; 5 took its place." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Dot with Counts"
+    },
+    {
+      "type": "prose",
+      "text": "The dot register stores the change *with* its count. When you press {key:{n}}{key:.}, the new count *replaces* the original. This is rarely the first thing people learn but it's a force multiplier."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "{n}",
+        "."
+      ],
+      "label": "Repeat last change with count {n}"
+    },
+    {
+      "type": "embed",
+      "lesson": 72,
+      "caption": "{n}. \u2014 counted dot"
+    },
+    {
+      "type": "prose",
+      "text": "Example: {key:d}{key:w} deletes a word. {key:5}{key:.} deletes 5 words at the new cursor position. The original count (1, implicit) was discarded; 5 took its place."
+    },
     {
       "type": "internals",
       "title": "How the Count Substitution Works",
-      "text": "Internally the dot register holds the change as a sequence: optional count, optional register, the operator, the motion (with its own optional count), and any inserted text.\n\nWhen you press {key:.}, Vim replays the recorded sequence verbatim. When you press {key:{n}}{key:.}, the prefix you just typed becomes the *outer* count for the replay — the operator-side count, not the motion-side count. The motion's own internal count is preserved.\n\nSo if your original change was {key:d}{key:3}{key:w} (delete 3 words), {key:.} repeats it as 3 words; {key:5}{key:.} repeats it as 5 × 3 = 15 words. Counts multiply, just like in [`counts-visual.counts`](#counts-visual.counts)."
+      "text": "Internally the dot register holds the change as a sequence: optional count, optional register, the operator, the motion (with its own optional count), and any inserted text.\n\nWhen you press {key:.}, Vim replays the recorded sequence verbatim. When you press {key:{n}}{key:.}, the prefix you just typed becomes the *outer* count for the replay \u2014 the operator-side count, not the motion-side count. The motion's own internal count is preserved.\n\nSo if your original change was {key:d}{key:3}{key:w} (delete 3 words), {key:.} repeats it as 3 words; {key:5}{key:.} repeats it as 5 \u00d7 3 = 15 words. Counts multiply, just like in [`counts-visual.counts`](#counts-visual.counts)."
     },
-
-    { "type": "tip", "text": "{key:0}{key:.} is meaningless (counts can't be 0). Just use {key:.} for \"once.\"" },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "tip",
+      "text": "{key:0}{key:.} is meaningless (counts can't be 0). Just use {key:.} for \"once.\""
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Pattern",                  "Means"],
+      "headers": [
+        "Pattern",
+        "Means"
+      ],
       "rows": [
-        ["{key:.}",                           "Repeat last change as recorded"],
-        ["{key:{n}}{key:.}",                  "Repeat with count {n} (replaces outer count)"],
-        ["{key:{n}}{key:.}, {key:{m}}{key:.}", "Each dot can have its own count — they don't accumulate"]
+        [
+          "{key:.}",
+          "Repeat last change as recorded"
+        ],
+        [
+          "{key:{n}}{key:.}",
+          "Repeat with count {n} (replaces outer count)"
+        ],
+        [
+          "{key:{n}}{key:.}, {key:{m}}{key:.}",
+          "Each dot can have its own count \u2014 they don't accumulate"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "dot.with-counts" },
-    { "type": "buy-prompt" }
+    {
+      "type": "example",
+      "ref": "dot.with-counts"
+    },
+    {
+      "type": "qr",
+      "topic": "dot.with-counts"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }
