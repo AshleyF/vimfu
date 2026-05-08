@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vim Configuration — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Advanced</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="07-folding.html" rel="prev">← Folding</a></span>
+  <span class="pager-pos">118 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../22-tmux/01-what-is-tmux.html" rel="next">What Is tmux? →</a></span>
+</nav>
+<article>
+<h1>Vim Configuration</h1>
+<p class="subtitle">vimrc, runtime, plugins — where settings live.</p>
+<p class="meta"><code>id: advanced.config</code> &middot; part: <strong>advanced</strong> &middot; keys: <kbd>:source</kbd>, <kbd>:scriptnames</kbd> &middot; lessons: 498, 500</p>
+<blockquote class="summary">Vim reads ~/.vimrc (or ~/.config/nvim/init.vim for Neovim) on startup. Plugins go in plugin folders inside &#x27;runtimepath&#x27;. Filetype plugins, syntax files, indent files all auto-load by name.</blockquote>
+<p>Vim is configured by a startup script and an extensible <em>runtime path</em>. Knowing where files live makes debugging much easier.</p>
+<h3>The startup file</h3>
+<table>
+<thead><tr>
+<th>Editor</th>
+<th>Config file</th>
+</tr></thead><tbody>
+<tr>
+<td>Vim (Unix)</td>
+<td><code>~/.vimrc</code> or <code>~/.vim/vimrc</code></td>
+</tr>
+<tr>
+<td>Vim (Windows)</td>
+<td><code>%USERPROFILE%\_vimrc</code> or <code>%USERPROFILE%\vimfiles\vimrc</code></td>
+</tr>
+<tr>
+<td>Neovim</td>
+<td><code>~/.config/nvim/init.vim</code> (or <code>init.lua</code>)</td>
+</tr>
+</tbody></table>
+<h3>The runtime path</h3>
+<p><code>&#x27;runtimepath&#x27;</code> is a comma-separated list of directories Vim searches for plugins, syntax files, colorschemes, etc. By default it includes <code>~/.vim</code> and <code>$VIMRUNTIME</code>.</p>
+<table>
+<thead><tr>
+<th>Subfolder</th>
+<th>Auto-loads</th>
+</tr></thead><tbody>
+<tr>
+<td><code>plugin/</code></td>
+<td>Run on startup, every session</td>
+</tr>
+<tr>
+<td><code>autoload/</code></td>
+<td>Loaded on demand by name</td>
+</tr>
+<tr>
+<td><code>syntax/&lt;filetype&gt;.vim</code></td>
+<td>Loaded when buffer&#x27;s filetype matches</td>
+</tr>
+<tr>
+<td><code>ftplugin/&lt;filetype&gt;.vim</code></td>
+<td>Same — for buffer-local settings</td>
+</tr>
+<tr>
+<td><code>indent/&lt;filetype&gt;.vim</code></td>
+<td>Same — for indenting rules</td>
+</tr>
+<tr>
+<td><code>colors/&lt;name&gt;.vim</code></td>
+<td>Loaded by <code>:colorscheme name</code></td>
+</tr>
+<tr>
+<td><code>doc/</code></td>
+<td>Help files (run <code>:helptags ALL</code> after install)</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — Debugging Mystery Behavior</header>
+<p>When Vim does something unexpected:</p>
+<ul>
+<li><code>:scriptnames</code> — list every script that&#x27;s been loaded, in load order. Find out what set the option.</li>
+<li><code>:verbose set X?</code> — show value of option X <em>and</em> the file where it was last assigned. Top tool.</li>
+<li><code>:verbose imap &lt;C-J&gt;</code> — show what set a particular mapping (great for figuring out which plugin stole your binding).</li>
+<li><code>vim --noplugin</code> or <code>vim -u NONE</code> — start Vim without any vimrc or plugins. If the bug disappears, it&#x27;s in your config.</li>
+</ul>
+<p><strong>Plugin managers</strong> (vim-plug, packer, lazy.nvim) all work by adding plugin directories to <code>&#x27;runtimepath&#x27;</code>. The mechanism is the same; only the convenience wrapper differs.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> After editing your vimrc, <code>:source $MYVIMRC</code> reloads it without restarting Vim.</aside>
+<aside class="qr"><span>→ See also <a href="08-config.html">Vim Configuration</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0498 The vimrc / init.lua (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0500 What&#x27;s Next? (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../17-ex-commands/07-set.html">Setting Options (:set)</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="07-folding.html" rel="prev">← Folding</a></span>
+  <span class="pager-pos">118 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../22-tmux/01-what-is-tmux.html" rel="next">What Is tmux? →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

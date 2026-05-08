@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Match Bracket — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Wider Motions</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=arr%5Bi%5D+%3D+%28a+%2B+b%29%3B%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-sentence-paragraph.html" rel="prev">← Sentence and Paragraph Motions</a></span>
+  <span class="pager-pos">36 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-screen-positions.html" rel="next">Screen Position Jumps →</a></span>
+</nav>
+<article>
+<h1>Match Bracket</h1>
+<p class="subtitle">% — jump to the matching paren, brace, or bracket.</p>
+<p class="meta"><code>id: wider-motions.match-bracket</code> &middot; part: <strong>wider-motions</strong> &middot; keys: <kbd>%</kbd> &middot; lessons: 93</p>
+<blockquote class="summary">% jumps from one bracket to its mate. The cursor needs to be on a bracket (or before one on the line). It&#x27;s also a motion, so d% deletes a paired block.</blockquote>
+<p>Cursor on <code>(</code>? Press <kbd>%</kbd>. You&#x27;re on the matching <code>)</code>. Press it again — back. <kbd>%</kbd> works for <code>()</code>, <code>[]</code>, <code>{}</code>, and (with plugins) tag pairs and language constructs.</p>
+<figure class="keys">
+<figcaption>Jump to matching bracket</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>%</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Delete from here through the matching bracket</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>d</kbd></td><td></td></tr>
+<tr><td><kbd>%</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Visual-select to the matching bracket</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>v</kbd></td><td></td></tr>
+<tr><td><kbd>%</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="93"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/YuB6-fEAEfw?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Matching Bracket" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>% — match bracket</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — How % Finds the Match</header>
+<p>If the cursor is on a bracket character (<kbd>(</kbd>, <kbd>)</kbd>, <kbd>[</kbd>, <kbd>]</kbd>, <kbd>{</kbd>, {key:}}, plus anything in <code>&#x27;matchpairs&#x27;</code>), <kbd>%</kbd> jumps to its mate, respecting nesting.</p>
+<p>If the cursor is <em>not</em> on a bracket, Vim searches forward on the current line for the <em>first</em> bracket and jumps from there. So you can be at the start of a line and press <kbd>%</kbd> to jump to the matching bracket of whichever pair starts the line.</p>
+<p><strong>With a count</strong>, <kbd>%</kbd> changes meaning entirely — see <a href="../05-counts-visual/02-percent-bar.html">`counts-visual.percent-bar`</a>. This is one of the few overloaded motions in Vim.</p>
+<p>The <code>matchit</code> plugin (ships with Vim) extends <kbd>%</kbd> to also match <code>if</code>/<code>else</code>/<code>endif</code> in many languages, HTML/XML tags, and more. Most distros enable it by default.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>d</kbd><kbd>%</kbd> on a <code>(</code> deletes the parens <em>and everything between them, inclusive</em> — fast way to remove a guard or a function call. Compare with <kbd>d</kbd><kbd>i</kbd><kbd>(</kbd> (contents only) and <kbd>d</kbd><kbd>a</kbd><kbd>(</kbd> (parens + contents).</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>%</kbd></td>
+<td>Jump to matching bracket</td>
+</tr>
+<tr>
+<td><kbd>d</kbd><kbd>%</kbd></td>
+<td>Delete from here to match (inclusive)</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>%</kbd></td>
+<td>Yank to match</td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>%</kbd></td>
+<td>Change to match</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — % on different brackets</h3>
+<p class="example-summary">% picks the right pair automatically.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Cursor on &#x27;[&#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/motion.match/frame_01.color.svg" alt="Cursor on &#x27;[&#x27;."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>%</kbd> · <span class="step-cap">% — to &#x27;]&#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/motion.match/frame_02.color.svg" alt="% — to &#x27;]&#x27;."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>ww %</kbd> · <span class="step-cap">From &#x27;(&#x27;, % goes to &#x27;)&#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/motion.match/frame_03.color.svg" alt="From &#x27;(&#x27;, % goes to &#x27;)&#x27;."></div>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=arr%5Bi%5D+%3D+%28a+%2B+b%29%3B%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="02-match-bracket.html">Match Bracket</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../07-operators-textobjects/03-brackets.html">Bracket Text Objects</a>, <a href="../05-counts-visual/02-percent-bar.html">Percentage and Column Jumps</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-sentence-paragraph.html" rel="prev">← Sentence and Paragraph Motions</a></span>
+  <span class="pager-pos">36 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-screen-positions.html" rel="next">Screen Position Jumps →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

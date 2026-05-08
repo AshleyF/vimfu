@@ -1,0 +1,62 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "tmux.sessions",
+  "title": "Sessions, Detach, Reattach",
+  "subtitle": "The feature that survives SSH drops and laptop reboots",
+  "part": "tmux",
+  "summary": "Detach with Ctrl-B d, reattach with `tmux attach`, name sessions with `tmux new -s name`. Sessions outlive every terminal they run in.",
+  "keys": ["Ctrl-B d", "tmux attach", "tmux new -s", "tmux ls"],
+  "lessons": [524, 525, 526],
+  "see_also": ["tmux.windows", "tmux.what-is-tmux"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Sessions, Detach, Reattach" },
+
+    { "type": "prose", "text": "A session is the outermost tmux container — a named bag of windows that keeps running even when you walk away. Detach with {key:Ctrl-B}{key:d}: tmux closes its window, the session keeps running in the background, every shell inside stays alive. Come back hours or days later, type `tmux attach` (or `tmux a` for short), and you're back exactly where you left off." },
+
+    {
+      "type": "table",
+      "headers": ["Where",                                                   "Command"],
+      "rows": [
+        ["Inside tmux",                                                       "{key:Ctrl-B}{key:d} — detach"],
+        ["Outside tmux",                                                      "`tmux` — attach to default unnamed session, or create one"],
+        ["Outside tmux",                                                      "`tmux new -s work` — start a new session named *work*"],
+        ["Outside tmux",                                                      "`tmux attach` — attach to last-used session"],
+        ["Outside tmux",                                                      "`tmux attach -t work` — attach to session named *work*"],
+        ["Outside tmux",                                                      "`tmux ls` — list all sessions"],
+        ["Outside tmux",                                                      "`tmux kill-session -t work` — kill named session"],
+        ["Inside tmux",                                                       "{key:Ctrl-B}{key:s} — interactive session chooser"],
+        ["Inside tmux",                                                       "{key:Ctrl-B}{key::} `new-session` — create from inside"]
+      ]
+    },
+
+    { "type": "tip", "text": "If you SSH into a server, *immediately* run `tmux` (or `tmux attach`) before doing real work. SSH connections drop. tmux sessions don't. Anyone who has ever lost half an hour of work to a flaky network already knows why." },
+
+    { "type": "heading", "level": 2, "text": "The Three-Layer Hierarchy" },
+
+    { "type": "prose", "text": "Sessions, windows, and panes nest:" },
+
+    {
+      "type": "table",
+      "headers": ["Layer",   "Examples in a typical setup",                                        "Lives until"],
+      "rows": [
+        ["Session", "*work*, *side-project*, *server*",                                              "You explicitly kill it"],
+        ["Window",  "*editor*, *server*, *logs* (per session)",                                     "You close it ({key:Ctrl-B}{key:&}) or session ends"],
+        ["Pane",    "Editor + test runner side-by-side (per window)",                                 "Its shell exits or you kill it ({key:Ctrl-B}{key:x})"]
+      ]
+    },
+
+    { "type": "prose", "text": "The classic mistake is to use just one session for everything. Once you have more than five or six windows in one session, switching becomes a chore. Split into named sessions per project — `work`, `personal`, `experiments` — and use {key:Ctrl-B}{key:s} or `tmux switch-client` to hop between them. Each session has its own window list, its own scrollback, its own state." },
+
+    {
+      "type": "internals",
+      "audience": "book",
+      "title": "How Detach Actually Works",
+      "text": "tmux runs as a long-lived server process, separate from any terminal. When you start `tmux`, the binary spawns the server (if it isn't already running) and then connects to it as a client. Your keystrokes flow client → server → pane. The server sits in the kernel's process table, owns all the shells inside it, and outlives any individual client connection.\n\n*Detach* simply disconnects the client. The server keeps running. The shells inside the panes have no idea anything happened — their controlling terminal is the tmux server's pseudo-terminal device, which doesn't go away. *Attach* is just \"create a new client connection to the existing server.\"\n\nThis is why tmux sessions survive SSH drops and laptop sleeps: the SSH disconnect kills your client, but the server (running on the remote host, owned by your user account) doesn't care. Reconnect, run `tmux attach`, get a fresh client, see your work. The architecture is the entire feature."
+    },
+
+    { "type": "qr", "topic": "tmux.sessions" },
+    { "type": "buy-prompt" }
+  ]
+}

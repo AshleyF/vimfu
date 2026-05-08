@@ -50,7 +50,7 @@ def _index() -> dict[int, dict[str, Any]]:
             out[n] = {
                 "lesson": n,
                 "slug": slug,
-                "title": data.get("title", slug.replace("_", " ").title()),
+                "title": _strip_vimfu_prefix(data.get("title", slug.replace("_", " ").title())),
                 "description": data.get("description", ""),
                 "kind": "long" if d == LONGS_DIR else "short",
                 "videoId": video_id,
@@ -59,6 +59,13 @@ def _index() -> dict[int, dict[str, Any]]:
                 "source": str(p.relative_to(REPO_ROOT)).replace("\\", "/"),
             }
     return out
+
+
+import re as _re
+_VIMFU_PREFIX_RE = _re.compile(r"^\s*VimFu\s*[-–—:]\s*", _re.IGNORECASE)
+
+def _strip_vimfu_prefix(t: str) -> str:
+    return _VIMFU_PREFIX_RE.sub("", t).strip() if t else t
 
 
 def video_for_lesson(n: int) -> dict[str, Any] | None:

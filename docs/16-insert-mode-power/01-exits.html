@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Exiting Insert Mode — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Insert Mode Power</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../15-prefix-families/04-ctrl-w.html" rel="prev">← The Ctrl-W Family</a></span>
+  <span class="pager-pos">76 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-one-shot-normal.html" rel="next">One-Shot Normal Mode →</a></span>
+</nav>
+<article>
+<h1>Exiting Insert Mode</h1>
+<p class="subtitle">Three ways out, and why people remap.</p>
+<p class="meta"><code>id: insert.exits</code> &middot; part: <strong>insert-mode-power</strong> &middot; keys: <kbd>Esc</kbd>, <kbd>Ctrl-[</kbd>, <kbd>Ctrl-C</kbd> &middot; lessons: 366, 368</p>
+<blockquote class="summary">Esc, Ctrl-[, and Ctrl-C all exit Insert mode — but they&#x27;re not identical. Esc and Ctrl-[ trigger InsertLeave; Ctrl-C bypasses it.</blockquote>
+<p>There are three ways out of Insert mode. Two are equivalent, one is subtly different — and that subtle difference matters.</p>
+<figure class="keys">
+<figcaption>The three exits</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Esc</kbd></td><td>The canonical exit.</td></tr>
+<tr><td><kbd>Ctrl-[</kbd></td><td>Identical to <kbd>Esc</kbd> (terminal heritage).</td></tr>
+<tr><td><kbd>Ctrl-C</kbd></td><td>Exits, but skips InsertLeave.</td></tr>
+</tbody></table></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Why Ctrl-[ Exists</header>
+<p>On old terminals, <kbd>Esc</kbd> sent the byte <code>0x1b</code> — same byte produced by <kbd>Ctrl-[</kbd>. Vim never had to distinguish them; both still trigger the same exit logic. The <kbd>Ctrl-[</kbd> alias survives because (a) <kbd>Esc</kbd> is far away on modern keyboards, and (b) <kbd>Ctrl-[</kbd> is more comfortable for fast typists with Caps Lock remapped to Ctrl.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Ctrl-C Is NOT the Same</header>
+<p><kbd>Ctrl-C</kbd> exits Insert mode but <strong>skips the <code>InsertLeave</code> autocommand</strong>. Plugins that auto-format, save, or update status on Insert-leave will not fire. It also doesn&#x27;t abbreviate: typed <code>:abbreviate</code> expansions don&#x27;t trigger. For everyday text editing, prefer <kbd>Esc</kbd> or <kbd>Ctrl-[</kbd>.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Many users remap <kbd>Caps Lock</kbd> → <kbd>Ctrl</kbd> at the OS level, then use <kbd>Ctrl-[</kbd> as their exit. It&#x27;s the single biggest ergonomic win for Vim.</aside>
+<aside class="qr"><span>→ See also <a href="01-exits.html">Exiting Insert Mode</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0366 Escape / Ctrl-[ Leave Insert (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0368 Ctrl-O One Normal Command (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="02-one-shot-normal.html">One-Shot Normal Mode</a>, <span class="broken">intro.modes</span></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../15-prefix-families/04-ctrl-w.html" rel="prev">← The Ctrl-W Family</a></span>
+  <span class="pager-pos">76 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-one-shot-normal.html" rel="next">One-Shot Normal Mode →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

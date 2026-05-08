@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Centering the Cursor — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Scrolling Screen</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=1%0A2%0A3%0A4%0A5%0A6%0A7%0A8%0A9%0A10%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-half-full-page.html" rel="prev">← Half- and Full-Page Scrolling</a></span>
+  <span class="pager-pos">41 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-first-non-blank-z.html" rel="next">z. / z+ / z- — Scroll and Land on First Non-Blank →</a></span>
+</nav>
+<article>
+<h1>Centering the Cursor</h1>
+<p class="subtitle">zz, zt, zb — move the viewport, not the cursor.</p>
+<p class="meta"><code>id: scroll.center-top-bottom</code> &middot; part: <strong>scroll</strong> &middot; keys: <kbd>zz</kbd>, <kbd>zt</kbd>, <kbd>zb</kbd> &middot; lessons: 90, 242, 243, 244</p>
+<blockquote class="summary">zz centers the cursor&#x27;s line on screen. zt scrolls so the cursor&#x27;s line is at the top. zb scrolls so the cursor&#x27;s line is at the bottom.</blockquote>
+<p>After a search jump or function navigation, the cursor often ends up at the top or bottom edge of the visible window — too little context. Three commands fix that without moving the cursor: <kbd>z</kbd><kbd>z</kbd>, <kbd>z</kbd><kbd>t</kbd>, <kbd>z</kbd><kbd>b</kbd>.</p>
+<figure class="keys">
+<figcaption>Center cursor&#x27;s line on screen</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Scroll cursor&#x27;s line to top</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+<tr><td><kbd>t</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Scroll cursor&#x27;s line to bottom</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+<tr><td><kbd>b</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="90"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/8oWZ5IOHW8k?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Center / Top / Bottom" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>zz — center the cursor</figcaption></figure>
+<figure class="lesson-embed" data-lesson="242"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/ss-UEr1dsLI?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="zz Center Cursor" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>zz revisited</figcaption></figure>
+<figure class="lesson-embed" data-lesson="243"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/bIPL3t_8NY0?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="zt Cursor to Top" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>zt — cursor to top</figcaption></figure>
+<figure class="lesson-embed" data-lesson="244"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/5ePOvMOcNwg?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="zb Cursor to Bottom" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>zb — cursor to bottom</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — These Are Inverse to H/M/L</header>
+<p><kbd>H</kbd>/<kbd>M</kbd>/<kbd>L</kbd> move <em>the cursor</em> to a screen position. <kbd>z</kbd><kbd>t</kbd>/<kbd>z</kbd><kbd>z</kbd>/<kbd>z</kbd><kbd>b</kbd> move <em>the screen</em> to put the cursor at a position. They&#x27;re complementary:</p>
+<ul>
+<li><kbd>H</kbd> = teleport cursor to top of screen.</li>
+<li><kbd>z</kbd><kbd>t</kbd> = scroll the screen so the cursor (still on the same buffer line) is at the top.</li>
+</ul>
+<p>Neither changes the cursor&#x27;s <em>file</em> line — but <kbd>H</kbd>/<kbd>M</kbd>/<kbd>L</kbd> do change which file line the cursor is on, while <kbd>z</kbd><kbd>z</kbd>/<kbd>z</kbd><kbd>t</kbd>/<kbd>z</kbd><kbd>b</kbd> do not.</p>
+<p>A classic flow: search (<kbd>/</kbd>foo<kbd>Enter</kbd>), <kbd>z</kbd><kbd>z</kbd> to recenter, keep reading. Or after a <kbd>G</kbd>, <kbd>z</kbd><kbd>t</kbd> to push the bottom of the file to the top of the screen so you have room above the cursor.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> These are part of the <kbd>z</kbd> prefix — see <a href="../15-prefix-families/02-z-overview.html">`prefixes.z-overview`</a> for the full family. The other variants (<kbd>z</kbd><kbd>.</kbd>, <kbd>z</kbd><kbd>+</kbd>, <kbd>z</kbd><kbd>-</kbd>) also land the cursor on the first non-blank — see <a href="03-first-non-blank-z.html">`scroll.first-non-blank-z`</a>.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>z</kbd><kbd>z</kbd></td>
+<td>Cursor&#x27;s line → middle of screen</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>t</kbd></td>
+<td>Cursor&#x27;s line → top of screen</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>b</kbd></td>
+<td>Cursor&#x27;s line → bottom of screen</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — zz</h3>
+<p class="example-summary">Bring the current line to the center.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Cursor near the bottom of the visible viewport.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/scroll.center/frame_01.color.svg" alt="Cursor near the bottom of the visible viewport."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>zz</kbd> · <span class="step-cap">zz — line moved to center, screen scrolled.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/scroll.center/frame_02.color.svg" alt="zz — line moved to center, screen scrolled."></div>
+<p class="narration">zt puts the line at the top; zb at the bottom. The cursor doesn&#x27;t move in the buffer — only the viewport.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=1%0A2%0A3%0A4%0A5%0A6%0A7%0A8%0A9%0A10%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="02-center-top-bottom.html">Centering the Cursor</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="03-first-non-blank-z.html">z. / z+ / z- — Scroll and Land on First Non-Blank</a>, <a href="../08-wider-motions/03-screen-positions.html">Screen Position Jumps</a>, <a href="04-height.html">z{n}{Enter} — Set Window Height</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-half-full-page.html" rel="prev">← Half- and Full-Page Scrolling</a></span>
+  <span class="pager-pos">41 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-first-non-blank-z.html" rel="next">z. / z+ / z- — Scroll and Land on First Non-Blank →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

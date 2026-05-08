@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Replace a Character — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Basic Editing</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="07-yank-put.html" rel="prev">← Yank and Put</a></span>
+  <span class="pager-pos">17 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../04-search-find/01-pattern.html" rel="next">Pattern Search →</a></span>
+</nav>
+<article>
+<h1>Replace a Character</h1>
+<p class="subtitle">r{char} — overwrite one character without entering Insert mode.</p>
+<p class="meta"><code>id: editing.replace-char</code> &middot; part: <strong>editing</strong> &middot; keys: <kbd>r</kbd> &middot; lessons: 45</p>
+<blockquote class="summary">r{char} replaces the character under the cursor with {char} and stays in Normal mode. Perfect for fixing a typo without an i…Esc dance.</blockquote>
+<p>Typo? Cursor on the wrong letter? <kbd>r</kbd>{c} swaps it for {c} and leaves you in Normal mode. No Insert-mode round-trip, no <kbd>Esc</kbd>. One change, one keystroke past the new character.</p>
+<figure class="keys">
+<figcaption>Replace the character under cursor with x</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>r</kbd></td><td></td></tr>
+<tr><td><kbd>x</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Replace the next 3 characters with ---</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>3</kbd></td><td></td></tr>
+<tr><td><kbd>r</kbd></td><td></td></tr>
+<tr><td><kbd>-</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="45"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/PzgmxSXOlTk?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Replace a Character" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>r{char} — replace one character</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> <kbd>r</kbd><kbd>Enter</kbd> replaces the character with a newline — a sneaky way to break a line at the cursor without entering Insert mode.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Why r Doesn&#x27;t Enter Insert Mode</header>
+<p><kbd>r</kbd> is a <em>one-shot</em> operation: it consumes exactly one keystroke as its argument and applies it as a literal replacement. Internally it&#x27;s not the same as <kbd>s</kbd> (substitute), which deletes the character and switches to Insert mode. <kbd>r</kbd> stays in Normal mode the entire time and produces a single change in the undo tree.</p>
+<p>With a count, <kbd>{n</kbd>}<kbd>r</kbd>{c} replaces {n} characters with the same {c} repeated. Useful for <code>--------</code> style separators.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> If you need to overwrite many characters with different ones, use Replace mode (<kbd>R</kbd>) — it&#x27;s like Insert mode but each typed character overwrites instead of pushing. See <a href="../11-transform/01-replace-mode.html">`transform.replace-mode`</a>.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>r</kbd>{c}</td>
+<td>Replace one character with c</td>
+</tr>
+<tr>
+<td><kbd>{n</kbd>}<kbd>r</kbd>{c}</td>
+<td>Replace next n characters with c (repeated)</td>
+</tr>
+<tr>
+<td><kbd>r</kbd><kbd>Enter</kbd></td>
+<td>Replace with a newline (split line)</td>
+</tr>
+<tr>
+<td><kbd>R</kbd></td>
+<td>Enter Replace mode (continuous overwrite)</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>r</kbd>{c}</td>
+<td>Replace virtually (don&#x27;t extend short lines)</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — r x</h3>
+<p class="example-summary">Replace one character without entering Insert.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.replace-char/frame_01.color.svg" alt="editing.replace-char"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>rx</kbd> · <span class="step-cap">rx — &#x27;f&#x27; becomes &#x27;x&#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.replace-char/frame_02.color.svg" alt="rx — &#x27;f&#x27; becomes &#x27;x&#x27;."></div>
+<p class="narration">r waits for the next keystroke and writes that char in place. No mode change. R enters Replace mode for many chars.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="08-replace-char.html">Replace a Character</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../11-transform/01-replace-mode.html">Replace Mode</a>, <a href="06-change.html">Change</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="07-yank-put.html" rel="prev">← Yank and Put</a></span>
+  <span class="pager-pos">17 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../04-search-find/01-pattern.html" rel="next">Pattern Search →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

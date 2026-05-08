@@ -1,0 +1,63 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "tmux.panes",
+  "title": "Panes — Split, Navigate, Resize",
+  "subtitle": "One window, many shells, all visible at once",
+  "part": "tmux",
+  "summary": "Panes are independent shells inside one window. Split with %, \", navigate with arrows or hjkl, zoom one full-screen with z, close with x.",
+  "keys": ["Ctrl-B %", "Ctrl-B \"", "Ctrl-B o", "Ctrl-B z", "Ctrl-B x", "Ctrl-B q"],
+  "lessons": [505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515],
+  "see_also": ["tmux.prefix-key", "tmux.windows", "windows.splits"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Panes" },
+
+    { "type": "prose", "text": "A pane is one shell inside one rectangle. A window can hold any number of panes. The active pane is the one your keystrokes go to; tmux marks it with a brighter border (and a status-bar indicator). Splitting, navigating, zooming, and closing panes are the operations you'll do most often in tmux." },
+
+    {
+      "type": "table",
+      "headers": ["Keys",                              "Action"],
+      "rows": [
+        ["{key:Ctrl-B}{key:%}",                          "Split current pane left/right"],
+        ["{key:Ctrl-B}{key:\"}",                          "Split current pane top/bottom"],
+        ["{key:Ctrl-B}{key:o}",                          "Cycle to the next pane"],
+        ["{key:Ctrl-B}{key:;}",                          "Toggle to the previously-active pane"],
+        ["{key:Ctrl-B}{key:Up} {key:Down} {key:Left} {key:Right}", "Move focus in that direction"],
+        ["{key:Ctrl-B}{key:h} {key:j} {key:k} {key:l}",    "Same, if you remap (see below)"],
+        ["{key:Ctrl-B}{key:z}",                          "Toggle zoom — the pane fills the whole window"],
+        ["{key:Ctrl-B}{key:x}",                          "Kill the current pane (confirm with {key:y})"],
+        ["{key:Ctrl-B}{key:q}",                          "Show pane numbers; press {key:0}–{key:9} to jump"],
+        ["{key:Ctrl-B}{key:!}",                          "Break the pane out into its own window"],
+        ["{key:Ctrl-B}{key:Space}",                      "Cycle through preset layouts"],
+        ["{key:Ctrl-B}{key:{ }}",                          "Swap pane with previous"],
+        ["{key:Ctrl-B}{key:} }}",                         "Swap pane with next"]
+      ]
+    },
+
+    { "type": "tip", "text": "Zoom ({key:Ctrl-B}{key:z}) is the killer move when a pane is too cramped for what you're doing. The other panes stay running — the zoomed pane just gets the full window. Hit {key:Ctrl-B}{key:z} again to come back. Splitting, navigating, or swapping panes auto-unzooms." },
+
+    { "type": "heading", "level": 2, "text": "hjkl Navigation" },
+
+    { "type": "prose", "text": "Default tmux uses the arrow keys for pane navigation. Most Vim users prefer {key:hjkl} for the same reason they use {key:hjkl} in Vim — home row stays under your fingers. To enable, add to `~/.tmux.conf`:" },
+
+    {
+      "type": "prose",
+      "text": "```\nbind h select-pane -L\nbind j select-pane -D\nbind k select-pane -U\nbind l select-pane -R\n```"
+    },
+
+    { "type": "prose", "text": "Note that this shadows tmux's default {key:Ctrl-B}{key:l} (\"last window\"). The standard fix is to rebind last-window to a key tmux doesn't otherwise use:" },
+
+    { "type": "prose", "text": "```\nbind Tab last-window\n```" },
+
+    {
+      "type": "internals",
+      "audience": "book",
+      "title": "Vim-tmux-navigator",
+      "text": "There is a popular plugin pair — `vim-tmux-navigator` for Vim and a matching tmux config — that makes {key:Ctrl-h}, {key:Ctrl-j}, {key:Ctrl-k}, {key:Ctrl-l} navigate seamlessly *across* the Vim/tmux boundary: if your Vim has a window split to the right, {key:Ctrl-l} moves to it; if your Vim is at the rightmost split and tmux has a pane further right, {key:Ctrl-l} jumps into the tmux pane. The plumbing is straightforward — tmux checks whether the active pane is running Vim by inspecting the process name, and if so, sends the keystroke through to Vim instead of intercepting it.\n\nOnce installed, you forget which boundary you're crossing. The whole screen is one navigable grid of editing surfaces. This is the canonical example of vim+tmux being more than the sum of its parts: a primitive ({key:Ctrl-hjkl} for window navigation) shared across two tools that don't otherwise know about each other."
+    },
+
+    { "type": "qr", "topic": "tmux.panes" },
+    { "type": "buy-prompt" }
+  ]
+}

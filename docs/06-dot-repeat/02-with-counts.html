@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dot with Counts — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Dot Repeat</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=x%0Ax%0Ax%0Ax%0Ax%0Ax%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-repeat.html" rel="prev">← Repeat Last Change</a></span>
+  <span class="pager-pos">27 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-patterns.html" rel="next">Dot Patterns →</a></span>
+</nav>
+<article>
+<h1>Dot with Counts</h1>
+<p class="subtitle">{n}. — replay the change with a new count.</p>
+<p class="meta"><code>id: dot.with-counts</code> &middot; part: <strong>dot</strong> &middot; keys: <kbd>{n}.</kbd> &middot; lessons: 72</p>
+<blockquote class="summary">Pressing a count before . replaces the count baked into the original change. So 5dw then 10. deletes 10 words, not 5.</blockquote>
+<p>The dot register stores the change <em>with</em> its count. When you press <kbd>{n</kbd>}<kbd>.</kbd>, the new count <em>replaces</em> the original. This is rarely the first thing people learn but it&#x27;s a force multiplier.</p>
+<figure class="keys">
+<figcaption>Repeat last change with count {n}</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>{n}</kbd></td><td></td></tr>
+<tr><td><kbd>.</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="72"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/i2qTfhA9tf4?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Dot with Counts" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>{n}. — counted dot</figcaption></figure>
+<p>Example: <kbd>d</kbd><kbd>w</kbd> deletes a word. <kbd>5</kbd><kbd>.</kbd> deletes 5 words at the new cursor position. The original count (1, implicit) was discarded; 5 took its place.</p>
+<aside class="internals">
+<header>🔧 Under the Hood — How the Count Substitution Works</header>
+<p>Internally the dot register holds the change as a sequence: optional count, optional register, the operator, the motion (with its own optional count), and any inserted text.</p>
+<p>When you press <kbd>.</kbd>, Vim replays the recorded sequence verbatim. When you press <kbd>{n</kbd>}<kbd>.</kbd>, the prefix you just typed becomes the <em>outer</em> count for the replay — the operator-side count, not the motion-side count. The motion&#x27;s own internal count is preserved.</p>
+<p>So if your original change was <kbd>d</kbd><kbd>3</kbd><kbd>w</kbd> (delete 3 words), <kbd>.</kbd> repeats it as 3 words; <kbd>5</kbd><kbd>.</kbd> repeats it as 5 × 3 = 15 words. Counts multiply, just like in <a href="../05-counts-visual/01-counts.html">`counts-visual.counts`</a>.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>0</kbd><kbd>.</kbd> is meaningless (counts can&#x27;t be 0). Just use <kbd>.</kbd> for &quot;once.&quot;</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Pattern</th>
+<th>Means</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>.</kbd></td>
+<td>Repeat last change as recorded</td>
+</tr>
+<tr>
+<td><kbd>{n</kbd>}<kbd>.</kbd></td>
+<td>Repeat with count {n} (replaces outer count)</td>
+</tr>
+<tr>
+<td><kbd>{n</kbd>}<kbd>.</kbd>, <kbd>{m</kbd>}<kbd>.</kbd></td>
+<td>Each dot can have its own count — they don&#x27;t accumulate</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — 5.</h3>
+<p class="example-summary">Dot honors counts.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/dot.with-counts/frame_01.color.svg" alt="dot.with-counts"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>dd</kbd> · <span class="step-cap">dd — delete one line.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/dot.with-counts/frame_02.color.svg" alt="dd — delete one line."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>4.</kbd> · <span class="step-cap">4. — repeat dd four times.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/dot.with-counts/frame_03.color.svg" alt="4. — repeat dd four times."></div>
+<p class="narration">A count on dot replays the change that many times — even if the original change had a different count.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=x%0Ax%0Ax%0Ax%0Ax%0Ax%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="02-with-counts.html">Dot with Counts</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-repeat.html">Repeat Last Change</a>, <a href="../05-counts-visual/01-counts.html">Counts</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-repeat.html" rel="prev">← Repeat Last Change</a></span>
+  <span class="pager-pos">27 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-patterns.html" rel="next">Dot Patterns →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

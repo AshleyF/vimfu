@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Operator-Pending Mode — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Advanced</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-special-registers.html" rel="prev">← Special Registers Deep Dive</a></span>
+  <span class="pager-pos">113 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-terminal.html" rel="next">Terminal Inside Vim →</a></span>
+</nav>
+<article>
+<h1>Operator-Pending Mode</h1>
+<p class="subtitle">The fourth mode you didn&#x27;t know about.</p>
+<p class="meta"><code>id: advanced.op-pending</code> &middot; part: <strong>advanced</strong> &middot; keys: <kbd>d</kbd>, <kbd>c</kbd>, <kbd>y</kbd> &middot; lessons: 487, 488</p>
+<blockquote class="summary">Between pressing an operator (d/c/y/...) and pressing the motion, Vim is in operator-pending mode. It&#x27;s a real mode with its own status (&quot;-- OPERATOR --&quot;) and its own mappings.</blockquote>
+<p>Vim has four base modes, not three. Between an operator key like <kbd>d</kbd> and the motion that completes it, Vim is in <strong>operator-pending mode</strong> — waiting for a motion or text object.</p>
+<aside class="internals">
+<header>🔧 Under the Hood — Why It&#x27;s a Real Mode</header>
+<p>After you press <kbd>d</kbd>, Vim enters a state where it accepts only motions and text objects. The status line shows <code>-- OPERATOR --</code> (in many configurations) or remains blank, depending on your settings. <kbd>Esc</kbd> cancels and returns to Normal.</p>
+<p>The op-pending state is a real mode for two reasons:</p>
+<p>1. <strong>Custom mappings.</strong> You can define mappings that <em>only apply during operator-pending</em> with <code>onoremap</code>. For example, <code>:onoremap p i(</code> makes <kbd>d</kbd><kbd>p</kbd> mean &quot;delete inside parens&quot; — but <kbd>p</kbd> alone in Normal mode (which is paste) is unaffected.
+  2. <strong>Motion modifiers</strong> like <kbd>v</kbd>, <kbd>V</kbd>, <kbd>Ctrl-V</kbd> change the operator&#x27;s character/line/block flavor — so <kbd>d</kbd><kbd>v</kbd><kbd>G</kbd> forces character-wise delete to end of file even though <kbd>G</kbd> is normally line-wise.</p>
+<p>This is the mechanism Tim Pope&#x27;s vim-surround and other plugins use to add custom text objects.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — The Modifiers v / V / Ctrl-V</header>
+<p>After an operator, you can press <kbd>v</kbd>, <kbd>V</kbd>, or <kbd>Ctrl-V</kbd> <em>before</em> the motion to override the motion&#x27;s natural shape:</p>
+<ul>
+<li><kbd>d</kbd><kbd>V</kbd><kbd>f</kbd><kbd>x</kbd> — delete linewise from cursor through next <code>x</code> (whole lines, not character range).</li>
+<li><kbd>d</kbd><kbd>v</kbd><kbd>G</kbd> — delete character-wise to end of file (would normally be linewise).</li>
+<li><kbd>d</kbd><kbd>Ctrl-V</kbd><kbd>G</kbd><kbd>5</kbd><kbd>l</kbd> — delete a block.</li>
+</ul>
+<p>Useful when the default &quot;motion shape&quot; doesn&#x27;t match what you want.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Try <code>:onoremap il :&lt;C-u&gt;normal! ^v$&lt;CR&gt;</code> — defines a custom &quot;inner line&quot; text object so <kbd>d</kbd><kbd>i</kbd><kbd>l</kbd> deletes line content without the leading whitespace or trailing newline.</aside>
+<aside class="qr"><span>→ See also <a href="03-op-pending.html">Operator-Pending Mode</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0487 The # Register (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0488 The = Register (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../07-operators-textobjects/06-grammar.html">The Vim Grammar</a>, <span class="broken">intro.modes</span></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-special-registers.html" rel="prev">← Special Registers Deep Dive</a></span>
+  <span class="pager-pos">113 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-terminal.html" rel="next">Terminal Inside Vim →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

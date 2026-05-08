@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Command-Line History — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Command Line Power</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=%3Aw%0A%25s%2Ffoo%2Fbar%2Fg%0Amake%0APress+%3F+for+help%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../18-visual-depth/06-gv.html" rel="prev">← gv — Re-Select</a></span>
+  <span class="pager-pos">98 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-repeat-ex.html" rel="next">Repeat Last Ex (@:) →</a></span>
+</nav>
+<article>
+<h1>Command-Line History</h1>
+<p class="subtitle">↑/↓ for prefix-match, q: for the full window.</p>
+<p class="meta"><code>id: cmdline.history-window</code> &middot; part: <strong>command-line-power</strong> &middot; keys: <kbd>↑</kbd>, <kbd>↓</kbd>, <kbd>q:</kbd>, <kbd>q/</kbd>, <kbd>q?</kbd> &middot; lessons: 446, 447</p>
+<blockquote class="summary">From the : prompt, ↑ and ↓ scroll history filtered by what you&#x27;ve already typed. q: opens a full editable history window — every Ex command you&#x27;ve ever run, in a buffer you can edit and re-execute.</blockquote>
+<p>Vim remembers everything you type at the <kbd>:</kbd> prompt. Two interfaces let you re-use it: arrow scrolling and the full <em>history window</em>.</p>
+<h3>Arrow scrolling</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>↑</kbd> / <kbd>↓</kbd></td>
+<td>Scroll history filtered by current prefix</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-P</kbd> / <kbd>Ctrl-N</kbd></td>
+<td>Same — without prefix filter</td>
+</tr>
+</tbody></table>
+<p>If you&#x27;ve typed <code>:s</code> then press <kbd>↑</kbd>, only previous commands starting with <code>s</code> are shown. <kbd>Ctrl-P</kbd> ignores the prefix and walks plain history.</p>
+<h3>The history window: q:</h3>
+<figure class="keys">
+<figcaption>Open and reuse</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>q:</kbd></td><td>Opens a buffer with full Ex command history</td></tr>
+<tr><td><kbd>k</kbd></td><td>Move up to a previous command</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>Execute that line</td></tr>
+<tr><td><kbd>C-c</kbd></td><td>Or close the window without running anything</td></tr>
+</tbody></table></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Why q: Is Powerful</header>
+<p><kbd>q</kbd><kbd>:</kbd> opens a <em>real Vim buffer</em> containing your command history. You can:</p>
+<ul>
+<li>Edit any line (fix a typo) before pressing <kbd>Enter</kbd> to run it.</li>
+<li>Yank/delete history lines.</li>
+<li>Search history with <kbd>/</kbd>.</li>
+<li>Use Visual mode to select a region and execute it as multiple commands (with <code>:@&quot;</code> after yanking).</li>
+</ul>
+<p><kbd>q</kbd><kbd>/</kbd> and <kbd>q</kbd><kbd>?</kbd> do the same for <strong>search history</strong> — every <kbd>/</kbd> or <kbd>?</kbd> pattern you&#x27;ve used.</p>
+<p><strong>Common gotcha:</strong> people accidentally hit <kbd>q</kbd><kbd>:</kbd> when intending <kbd>:</kbd><kbd>q</kbd> (quit). If a buffer pops up with old commands, you didn&#x27;t break Vim — you opened the history window. Press <kbd>:</kbd><kbd>q</kbd> to close it.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> From the <kbd>:</kbd> prompt, <kbd>Ctrl-F</kbd> also opens this window — so <kbd>q</kbd><kbd>:</kbd> is just a Normal-mode shortcut for the same thing.</aside>
+<section class="example">
+<h3 class="example-title">Worked example — q:</h3>
+<p class="example-summary">Command-line history as an editable buffer.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">q: — opens the history window.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/cmdline.history/frame_01.color.svg" alt="q: — opens the history window."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>kk</kbd> · <span class="step-cap">Pick any line, edit it, Enter to run.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/cmdline.history/frame_02.color.svg" alt="Pick any line, edit it, Enter to run."></div>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=%3Aw%0A%25s%2Ffoo%2Fbar%2Fg%0Amake%0APress+%3F+for+help%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="01-history-window.html">Command-Line History</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0446 q: — Command History Window (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0447 q/ q? — Search History (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="02-repeat-ex.html">Repeat Last Ex (@:)</a>, <a href="03-edit-buffer.html">Editing the Command Line</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../18-visual-depth/06-gv.html" rel="prev">← gv — Re-Select</a></span>
+  <span class="pager-pos">98 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-repeat-ex.html" rel="next">Repeat Last Ex (@:) →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Substitute (:s) — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Ex Commands</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo+and+foo+and+foo%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-file-ops.html" rel="prev">← File Operations</a></span>
+  <span class="pager-pos">86 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-ranges.html" rel="next">Ex Ranges →</a></span>
+</nav>
+<article>
+<h1>Substitute (:s)</h1>
+<p class="subtitle">The most powerful single command in Vim.</p>
+<p class="meta"><code>id: ex.substitute</code> &middot; part: <strong>ex-commands</strong> &middot; keys: <kbd>:s</kbd>, <kbd>:%s</kbd> &middot; lessons: 406, 415</p>
+<blockquote class="summary">:s/pattern/replacement/flags is the workhorse for text transformation. Combine with ranges (% for whole file) and flags (g for global, c for confirm, i for case-insensitive).</blockquote>
+<h2>Substitute</h2>
+<p><kbd>:</kbd><kbd>s</kbd> is Vim&#x27;s find-and-replace. The full form is <code>:[range]s/pattern/replacement/flags</code>. Master it and you can rewrite a file in one keystroke.</p>
+<table>
+<thead><tr>
+<th>Form</th>
+<th>Meaning</th>
+</tr></thead><tbody>
+<tr>
+<td>:s/foo/bar/</td>
+<td>First match on current line</td>
+</tr>
+<tr>
+<td>:s/foo/bar/g</td>
+<td>All matches on current line</td>
+</tr>
+<tr>
+<td>:%s/foo/bar/g</td>
+<td>All matches in whole file</td>
+</tr>
+<tr>
+<td>:%s/foo/bar/gc</td>
+<td>…with confirmation per match</td>
+</tr>
+<tr>
+<td>:&#x27;&lt;,&#x27;&gt;s/foo/bar/g</td>
+<td>All matches in last visual selection</td>
+</tr>
+<tr>
+<td>:5,10s/foo/bar/g</td>
+<td>Lines 5-10</td>
+</tr>
+<tr>
+<td>:.,$s/foo/bar/g</td>
+<td>Cursor line to EOF</td>
+</tr>
+<tr>
+<td>:g/TODO/s/foo/bar/g</td>
+<td>Only on lines matching <code>TODO</code></td>
+</tr>
+</tbody></table>
+<h3>Flags</h3>
+<table>
+<thead><tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td>g</td>
+<td>Replace <strong>all</strong> matches on each line (not just first)</td>
+</tr>
+<tr>
+<td>c</td>
+<td><strong>Confirm</strong> each match (y/n/a/q/l)</td>
+</tr>
+<tr>
+<td>i</td>
+<td>Case-insensitive for this command</td>
+</tr>
+<tr>
+<td>I</td>
+<td>Case-sensitive for this command</td>
+</tr>
+<tr>
+<td>e</td>
+<td><strong>Errors</strong> suppressed (no &quot;pattern not found&quot;)</td>
+</tr>
+<tr>
+<td>n</td>
+<td>Don&#x27;t substitute — just <strong>count</strong> matches</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>Reuse flags from last :s</td>
+</tr>
+</tbody></table>
+<h3>Replacement magic</h3>
+<table>
+<thead><tr>
+<th>In replacement</th>
+<th>Means</th>
+</tr></thead><tbody>
+<tr>
+<td>&amp;</td>
+<td>The whole match</td>
+</tr>
+<tr>
+<td>\0</td>
+<td>Same as &amp;</td>
+</tr>
+<tr>
+<td>\1, \2…</td>
+<td>Capture groups from <code>\(...\)</code></td>
+</tr>
+<tr>
+<td>\u</td>
+<td>Uppercase next character</td>
+</tr>
+<tr>
+<td>\U</td>
+<td>Uppercase until \E</td>
+</tr>
+<tr>
+<td>\l, \L</td>
+<td>Lowercase versions</td>
+</tr>
+<tr>
+<td>\r</td>
+<td>Newline (for splitting lines)</td>
+</tr>
+<tr>
+<td>~</td>
+<td>Reuse previous replacement</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — What :s Actually Does</header>
+<p><code>:s</code> runs the regex engine over each line in <code>[range]</code> exactly once (unless <code>g</code> flag), substituting matches in place. The buffer&#x27;s lines are rewritten line-by-line; the cursor lands on the last line changed.</p>
+<ul>
+<li>Without <code>[range]</code>, the range is the <strong>current line only</strong> (this trips up beginners — they expect file-wide and get one line).</li>
+<li>The <code>%</code> range is shorthand for <code>1,$</code> (whole file).</li>
+<li>The <code>c</code> flag enters an interactive prompt — <code>y</code> = yes, <code>n</code> = no, <code>a</code> = all (rest), <code>q</code> = quit, <code>l</code> = last (do this then quit).</li>
+</ul>
+<p><strong>Re-running:</strong> <kbd>:</kbd><kbd>&amp;</kbd> repeats the last substitute on the current line. <kbd>:</kbd><kbd>%</kbd><kbd>&amp;</kbd> repeats on the whole file. <kbd>&amp;</kbd> in Normal mode = same as <kbd>:</kbd><kbd>&amp;</kbd>.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>:</kbd><kbd>%</kbd><kbd>s</kbd><kbd>//</kbd><kbd>bar</kbd><kbd>/</kbd><kbd>g</kbd> reuses the last search pattern as the substitute pattern. Pair with <kbd>*</kbd> (search word under cursor) for a 5-keystroke replace-all.</aside>
+<section class="example">
+<h3 class="example-title">Worked example — :s/foo/bar/g</h3>
+<p class="example-summary">Find and replace on the current line.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/ex.substitute/frame_01.color.svg" alt="ex.substitute"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <span class="step-cap">Type the substitute command.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/ex.substitute/frame_02.color.svg" alt="Type the substitute command."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>Enter</kbd> · <span class="step-cap">3 substitutions on this line.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/ex.substitute/frame_03.color.svg" alt="3 substitutions on this line."></div>
+<p class="narration">Range :%s/.../.../g applies to whole file. With c flag you confirm each.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo+and+foo+and+foo%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="02-substitute.html">Substitute (:s)</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0406 :s/old/new/g Substitute All (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0415 :tabnew New Tab (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="03-ranges.html">Ex Ranges</a>, <a href="04-global.html">Global (:g) and Vglobal (:v)</a>, <a href="../04-search-find/01-pattern.html">Pattern Search</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-file-ops.html" rel="prev">← File Operations</a></span>
+  <span class="pager-pos">86 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-ranges.html" rel="next">Ex Ranges →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

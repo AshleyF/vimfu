@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cgn — Change-Next-Match Loop — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Patterns Recipes</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo%28%29%0Afoo%28%29%0Afoo%28%29%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-star-cw-dot.html" rel="prev">← *, cw, then . . . — The Replace Loop</a></span>
+  <span class="pager-pos">105 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-block-comment.html" rel="next">Block Comment with Ctrl-V + I →</a></span>
+</nav>
+<article>
+<h1>cgn — Change-Next-Match Loop</h1>
+<p class="subtitle">Like *cw, but . jumps AND changes in one step.</p>
+<p class="meta"><code>id: patterns.cgn-dot</code> &middot; part: <strong>patterns-recipes</strong> &middot; keys: <kbd>c</kbd>, <kbd>g</kbd>, <kbd>n</kbd>, <kbd>.</kbd> &middot; lessons: 465, 466</p>
+<blockquote class="summary">After a /search, cgn changes the next match. Then . by itself jumps to the next match AND changes it — no need for separate n. The pinnacle of dot-repeat refactoring.</blockquote>
+<h2>cgn</h2>
+<p><kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> is the <em>better</em> version of the <kbd>*</kbd><kbd>c</kbd><kbd>w</kbd> loop. It rolls <em>jump-to-next</em> and <em>change</em> into a single dot-repeatable action.</p>
+<figure class="keys">
+<figcaption>The full workflow</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>/old</kbd></td><td>Search for the thing you want to change</td></tr>
+<tr><td><kbd>Enter</kbd></td><td></td></tr>
+<tr><td><kbd>cgn</kbd></td><td>Change next match</td></tr>
+<tr><td><kbd>NEW</kbd></td><td>Type replacement</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>Commit</td></tr>
+<tr><td><kbd>.</kbd></td><td>Jump to next match AND change it</td></tr>
+<tr><td><kbd>.</kbd></td><td>Again</td></tr>
+<tr><td><kbd>n</kbd></td><td>Skip a match — move to the one after</td></tr>
+<tr><td><kbd>.</kbd></td><td>Change it</td></tr>
+</tbody></table></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — What gn Is</header>
+<p><kbd>g</kbd><kbd>n</kbd> is a <strong>motion</strong> that selects the next search match (forward; <kbd>g</kbd><kbd>N</kbd> for backward). It works as both a Normal-mode motion <em>and</em> a text object — when used after an operator, it becomes the range to operate on.</p>
+<p>So <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> = &quot;change the next search match.&quot; The dot-repeat record is <em>the whole thing</em>: &quot;find next match, delete it, insert NEW.&quot; Every <kbd>.</kbd> after that re-runs the entire sequence.</p>
+<p>This is strictly better than the <kbd>*</kbd><kbd>c</kbd><kbd>w</kbd> loop because:</p>
+<ul>
+<li><kbd>.</kbd> alone advances + changes (no separate <kbd>n</kbd>).</li>
+<li>Works when the match isn&#x27;t a word (regex, multi-word, partial).</li>
+</ul>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>d</kbd><kbd>g</kbd><kbd>n</kbd> for delete-next-match. <kbd>y</kbd><kbd>g</kbd><kbd>n</kbd> for yank-next-match. The motion is composable like any other.</aside>
+<section class="example">
+<h3 class="example-title">Worked example — *  then  cgn  then  . . .</h3>
+<p class="example-summary">Change-next-match — fewer keystrokes than star-cw-dot.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_01.color.svg" alt="pattern.cgn-dot"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>*</kbd> · <span class="step-cap">* — pattern set.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_02.color.svg" alt="* — pattern set."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>cgnbar Esc</kbd> · <span class="step-cap">cgn — change next match.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_03.color.svg" alt="cgn — change next match."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>.</kbd> · <span class="step-cap">. — finds next AND changes it.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_04.color.svg" alt=". — finds next AND changes it."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 5</span> · <kbd>.</kbd> · <span class="step-cap">One key per replacement.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_05.color.svg" alt="One key per replacement."></div>
+<p class="narration">cgn = c + gn (motion: &#x27;next match&#x27;). Dot replays the whole thing — search-and-change in one keystroke.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo%28%29%0Afoo%28%29%0Afoo%28%29%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="03-cgn-dot.html">cgn — Change-Next-Match Loop</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0465 yyp — Duplicate Line (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0466 Star-Dot Pattern (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="02-star-cw-dot.html">*, cw, then . . . — The Replace Loop</a>, <span class="broken">dot-repeat.repeat</span>, <a href="../07-operators-textobjects/06-grammar.html">The Vim Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-star-cw-dot.html" rel="prev">← *, cw, then . . . — The Replace Loop</a></span>
+  <span class="pager-pos">105 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-block-comment.html" rel="next">Block Comment with Ctrl-V + I →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

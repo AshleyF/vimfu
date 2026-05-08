@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dot Patterns — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Dot Repeat</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-with-counts.html" rel="prev">← Dot with Counts</a></span>
+  <span class="pager-pos">28 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../07-operators-textobjects/01-iw-aw.html" rel="next">Inner Word vs A Word →</a></span>
+</nav>
+<article>
+<h1>Dot Patterns</h1>
+<p class="subtitle">Search + change + dot. The two main refactor idioms.</p>
+<p class="meta"><code>id: dot.patterns</code> &middot; part: <strong>dot</strong> &middot; keys: <kbd>*</kbd>, <kbd>cw</kbd>, <kbd>n</kbd>, <kbd>.</kbd>, <kbd>cgn</kbd> &middot; lessons: 73</p>
+<blockquote class="summary">The two best refactor patterns in Vim both pair search with the dot command. *cw…&lt;Esc&gt;n. is the classic; cgn. is the smoother modern version that lets you skip without thinking.</blockquote>
+<p>Two idioms make Vim feel like a refactoring tool. Both compose search with the dot command. They look almost identical, but the second one is much more pleasant to use.</p>
+<h3>The classic: *cw…&lt;Esc&gt;n.</h3>
+<p>Cursor on <code>foo</code>. <kbd>*</kbd> jumps to the next <code>foo</code> and stashes it as the search pattern. <kbd>c</kbd><kbd>w</kbd> changes the word. Type the replacement. <kbd>Esc</kbd>. Now <kbd>n</kbd> jumps to the next match; <kbd>.</kbd> repeats the change. <kbd>n</kbd> <kbd>.</kbd> <kbd>n</kbd> <kbd>.</kbd> … walks you through, with the option to skip with <kbd>n</kbd> alone.</p>
+<figure class="lesson-embed" data-lesson="73"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/wuiniomACrk?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Dot Patterns" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>*cw…Esc n. pattern</figcaption></figure>
+<h3>The smoother: cgn.</h3>
+<p>Same setup, but use <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> instead of <kbd>c</kbd><kbd>w</kbd>. The <kbd>g</kbd><kbd>n</kbd> motion means &quot;the next search match.&quot; So <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> = change the next match. After the first one, you can just press <kbd>.</kbd> repeatedly — each <kbd>.</kbd> jumps <em>and</em> changes. Skip an occurrence by pressing <kbd>n</kbd> once before <kbd>.</kbd>.</p>
+<aside class="internals">
+<header>🔧 Under the Hood — Why cgn. Is Better</header>
+<p><kbd>g</kbd><kbd>n</kbd>&#x27;s genius is that it bakes the <em>jump</em> into the motion. So <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> doesn&#x27;t need a separate <kbd>n</kbd> between repetitions — the motion finds the next match and selects it as part of the change.</p>
+<p>Result: pure <kbd>.</kbd> <kbd>.</kbd> <kbd>.</kbd> repeats. Mental load goes from two-key cadence (<kbd>n</kbd><kbd>.</kbd> <kbd>n</kbd><kbd>.</kbd>) to one-key cadence (<kbd>.</kbd> <kbd>.</kbd>).</p>
+<p>The analogous yank/delete forms exist: <kbd>y</kbd><kbd>g</kbd><kbd>n</kbd>, <kbd>d</kbd><kbd>g</kbd><kbd>n</kbd>. But change is the common one because refactor = change.</p>
+<p><kbd>g</kbd><kbd>N</kbd> is the same idea but for the <em>previous</em> match, in case you want to walk backward.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> These patterns are why <kbd>.</kbd> is called &quot;the most important key in Vim.&quot; Combined with <kbd>*</kbd> and <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd>, every grep-and-replace becomes a guided walk: you can preview each change, undo with <kbd>u</kbd>, skip with <kbd>n</kbd>, accept with <kbd>.</kbd>.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Sequence</th>
+<th>What happens</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>*</kbd><kbd>c</kbd><kbd>w</kbd>…<kbd>Esc</kbd><kbd>n</kbd><kbd>.</kbd></td>
+<td>Classic: change-then-walk with <kbd>n</kbd><kbd>.</kbd></td>
+</tr>
+<tr>
+<td><kbd>*</kbd><kbd>c</kbd><kbd>g</kbd><kbd>n</kbd>…<kbd>Esc</kbd><kbd>.</kbd></td>
+<td>Smooth: change next match, then pure <kbd>.</kbd> repeats</td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>g</kbd><kbd>N</kbd></td>
+<td>Same but operates on previous match</td>
+</tr>
+<tr>
+<td><kbd>n</kbd><kbd>.</kbd></td>
+<td>Skip this match, repeat at the next</td>
+</tr>
+</tbody></table>
+<aside class="qr"><span>→ See also <a href="03-patterns.html">Dot Patterns</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-repeat.html">Repeat Last Change</a>, <a href="../04-search-find/02-word.html">Word Search</a>, <span class="broken">recipes.star-cw-dot</span>, <span class="broken">recipes.cgn-dot</span></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-with-counts.html" rel="prev">← Dot with Counts</a></span>
+  <span class="pager-pos">28 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../07-operators-textobjects/01-iw-aw.html" rel="next">Inner Word vs A Word →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

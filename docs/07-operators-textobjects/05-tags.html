@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HTML/XML Tag Objects — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Operators Textobjects</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=%3Cp%3Ehello+world%3C%2Fp%3E%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="04-sentence-paragraph.html" rel="prev">← Sentence and Paragraph</a></span>
+  <span class="pager-pos">33 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="06-grammar.html" rel="next">The Vim Grammar →</a></span>
+</nav>
+<article>
+<h1>HTML/XML Tag Objects</h1>
+<p class="subtitle">it / at — operate inside an HTML or XML tag pair.</p>
+<p class="meta"><code>id: operators-textobjects.tags</code> &middot; part: <strong>operators-textobjects</strong> &middot; keys: <kbd>it</kbd>, <kbd>at</kbd> &middot; lessons: 84</p>
+<blockquote class="summary">it is the inner range between matching &lt;tag&gt;…&lt;/tag&gt; pairs. at includes the tags themselves.</blockquote>
+<p>If you spend any time in markup, <kbd>i</kbd><kbd>t</kbd> and <kbd>a</kbd><kbd>t</kbd> pay rent. They jump out from the cursor to the nearest enclosing tag pair.</p>
+<figure class="keys">
+<figcaption>Change the contents of the surrounding tag</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>c</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>t</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Delete the entire tag pair (open + content + close)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>d</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+<tr><td><kbd>t</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Visual-select the whole tag pair</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>v</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+<tr><td><kbd>t</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="84"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/hcWShKzeVSE?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Inner/Around Tag" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>it / at — tag objects</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — How Tag Matching Works</header>
+<p>Vim walks outward from the cursor looking for <code>&lt;tagname …&gt;</code> and the matching <code>&lt;/tagname&gt;</code>. Matching is <em>name-based</em> — Vim reads the tag name and finds the corresponding closer at the same nesting level.</p>
+<p>It understands self-closing tags (<code>&lt;br/&gt;</code>) and attribute-rich openers, but it&#x27;s a regex match — not an HTML parser. It can be fooled by:</p>
+<ul>
+<li>Comments containing tag-like text.</li>
+<li>Quoted strings containing <code>&lt;</code> or <code>&gt;</code>.</li>
+<li>Truly broken markup.</li>
+</ul>
+<p>For 95% of real-world code it does the right thing. For the other 5%, fix the markup.</p>
+<p><kbd>i</kbd><kbd>t</kbd> excludes the opening and closing tags; <kbd>a</kbd><kbd>t</kbd> includes both.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> JSX, Vue, and other HTML-in-code templates: <kbd>i</kbd><kbd>t</kbd> and <kbd>a</kbd><kbd>t</kbd> usually still work — Vim doesn&#x27;t know JSX, but <kbd>&lt;Component&gt;</kbd> and <code>&lt;/Component&gt;</code> look the same to the regex matcher.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Object</th>
+<th>Range</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>i</kbd><kbd>t</kbd></td>
+<td>Inside &lt;tag&gt;…&lt;/tag&gt;</td>
+</tr>
+<tr>
+<td><kbd>a</kbd><kbd>t</kbd></td>
+<td>Including &lt;tag&gt;…&lt;/tag&gt;</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — cit and cat</h3>
+<p class="example-summary">HTML/XML tag objects.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/textobj.tags/frame_01.color.svg" alt="textobj.tags"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>cit</kbd> · <span class="step-cap">cit — inner-tag content cleared.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/textobj.tags/frame_02.color.svg" alt="cit — inner-tag content cleared."></div>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=%3Cp%3Ehello+world%3C%2Fp%3E%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="05-tags.html">HTML/XML Tag Objects</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="03-brackets.html">Bracket Text Objects</a>, <a href="06-grammar.html">The Vim Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="04-sentence-paragraph.html" rel="prev">← Sentence and Paragraph</a></span>
+  <span class="pager-pos">33 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="06-grammar.html" rel="next">The Vim Grammar →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -22,10 +22,29 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from lib.videos import video_for_lesson, videos_for_topic  # noqa: E402
+from lib.audience import visible as _visible  # noqa: E402
+from lib.site_config import contact_email  # noqa: E402
+
+
+def _report_footer(prefix: str = "") -> str:
+    """Tiny shared footer with mailto + GitHub. ``prefix`` is the relative
+    path back to the site root (e.g. ``""``, ``"../"``)."""
+    from urllib.parse import quote
+    em = contact_email()
+    subj = quote("VimFu — issue report")
+    return (
+        '<footer class="site-footer">'
+        f'Found a problem? <a href="mailto:{em}?subject={subj}">{em}</a> '
+        f'· <a href="{prefix}r/github" rel="noopener">GitHub issues</a> '
+        f'· <a href="{prefix}r/errata" rel="noopener">Book errata</a>'
+        '</footer>'
+    )
+
+AUDIENCE = "web"
 
 PARTS_DIR = ROOT / "parts"
 EXAMPLES_DIR = ROOT / "examples"
-SCREENSHOTS_DIR = ROOT / "output" / "screenshots"
+SCREENSHOTS_DIR = ROOT / "output" / "html" / "screenshots"
 QRCODES_DIR = ROOT / "output" / "qrcodes"
 DEFAULT_OUT = ROOT / "output" / "html"
 
@@ -153,9 +172,10 @@ def _video_iframe(lesson, cap_html: str = "") -> str:
         vid = v["videoId"]
         title = escape(v.get("title", f"Lesson {lesson}"))
         embed = (f'<iframe class="lesson-iframe" '
-                 f'src="https://www.youtube.com/embed/{escape(vid)}" '
+                 f'src="https://www.youtube-nocookie.com/embed/{escape(vid)}?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" '
                  f'title="{title}" loading="lazy" allowfullscreen '
-                 f'referrerpolicy="strict-origin-when-cross-origin"></iframe>')
+                 f'referrerpolicy="no-referrer-when-downgrade" '
+                 f'allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>')
         cap = cap_html or title
         return (f'<figure class="lesson-embed" data-lesson="{escape(str(lesson))}">'
                 f'{embed}<figcaption>{cap}</figcaption></figure>')
@@ -180,9 +200,10 @@ def _videos_section(t: dict) -> str:
     for v in vids:
         if v.get("videoId"):
             iframe = (f'<iframe class="lesson-iframe" '
-                      f'src="https://www.youtube.com/embed/{escape(v["videoId"])}" '
+                      f'src="https://www.youtube-nocookie.com/embed/{escape(v["videoId"])}?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" '
                       f'title="{escape(v["title"])}" loading="lazy" allowfullscreen '
-                      f'referrerpolicy="strict-origin-when-cross-origin"></iframe>')
+                      f'referrerpolicy="no-referrer-when-downgrade" '
+                      f'allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>')
             link = (f'<a href="{escape(v["url"])}" target="_blank" rel="noopener">'
                     f'{escape(v["title"])}</a>')
             items.append(f'<li>{iframe}<span class="lesson-meta">'
@@ -193,6 +214,83 @@ def _videos_section(t: dict) -> str:
                          f'{escape(v["title"])} (not yet published)</div></li>')
     return ('<section class="watch"><h2>Watch</h2>'
             '<ul class="lesson-grid">' + "".join(items) + '</ul></section>')
+
+
+def _strip_vim_chrome(lines: list) -> list:
+    """Drop trailing vim ``~`` empty-buffer markers and the status line.
+
+    Vim renders unused buffer rows as ``~`` and the bottom row as a status
+    line (e.g. ``foo.txt   1,1``). Captured compact frames include those, but
+    when seeding a fresh file we only want the actual buffer contents.
+    """
+    out = list(lines)
+    # Drop status line (last non-empty line that contains the file name + a
+    # row,col indicator or large internal whitespace gap). Heuristic: a line
+    # whose stripped form is mostly spaces with a trailing "N,M" token.
+    if out:
+        last = out[-1].rstrip()
+        # Match e.g. "hi.txt                1,7" or "[No Name]   0,0-1   All"
+        if re.search(r"\s\d+,\d+(-\d+)?(\s+\S+)?\s*$", last):
+            out.pop()
+    # Drop trailing ~-only lines (vim's empty-buffer markers).
+    while out and out[-1].strip() == "~":
+        out.pop()
+    # Also collapse trailing blank lines.
+    while out and out[-1].strip() == "":
+        out.pop()
+    return out
+
+
+def _example_practice_query(ex: dict) -> str:
+    """Build a sim deep-link query for a single example's starting buffer."""
+    from urllib.parse import urlencode
+    frames = (ex or {}).get("frames") or []
+    if not frames:
+        return ""
+    compact = (frames[0].get("compact") or {})
+    lines = _strip_vim_chrome(compact.get("lines") or [])
+    if not lines:
+        return ""
+    return urlencode({"v": SIM_LINK_VERSION, "file": "practice.txt", "content": "\n".join(lines) + "\n"})
+
+
+# Bumping this forces every browser to re-fetch /sim/ instead of using a
+# cached copy. Bump whenever sim/index.html's preload semantics change.
+SIM_LINK_VERSION = "3"
+
+
+def _practice_query(t: dict, examples: dict) -> str:
+    """Build the query string for the topic's "Practice in the simulator" link.
+
+    For Vim topics, seed ``practice.txt`` with the first example's starting
+    buffer (if any) and open it in nvim. For tmux topics, drop straight into
+    a tmux session. For shell topics, just open the shell at a clean prompt.
+
+    Always includes a ``v=`` cache-buster so a stale cached sim/index.html
+    can't shadow the latest preload semantics.
+    """
+    from urllib.parse import urlencode
+
+    # tmux part takes precedence — sim simulates tmux directly.
+    part_dir = t.get("__part_dir") or ""
+    if "tmux" in part_dir:
+        return urlencode({"v": SIM_LINK_VERSION, "cmd": "tmux"})
+    # Try to seed from the first wired example.
+    for b in t.get("blocks") or []:
+        if b.get("type") == "example":
+            ex = examples.get(b.get("ref")) if isinstance(examples, dict) else None
+            if not ex:
+                continue
+            frames = ex.get("frames") or []
+            if not frames:
+                continue
+            compact = (frames[0].get("compact") or {})
+            lines = _strip_vim_chrome(compact.get("lines") or [])
+            if not lines:
+                continue
+            content = "\n".join(lines) + "\n"
+            return urlencode({"v": SIM_LINK_VERSION, "file": "practice.txt", "content": content})
+    return urlencode({"v": SIM_LINK_VERSION})
 
 
 _FENCE_RE = re.compile(r"```\s*\n?(.*?)\n?```", re.DOTALL)
@@ -244,7 +342,7 @@ def render_block(b, *, current_part, index, examples) -> str:
             cap = fr.get("caption", "")
             keys = fr.get("keys", "")
             narr = fr.get("narration", "")
-            rel = f"../../screenshots/{ex_id}/frame_{i:02d}.color.svg"
+            rel = f"../screenshots/{ex_id}/frame_{i:02d}.color.svg"
             exists = (SCREENSHOTS_DIR / ex_id / f"frame_{i:02d}.color.svg").exists()
             out.append('<figure class="example-step">')
             head = [f'<span class="step-n">Step {i}</span>']
@@ -259,6 +357,14 @@ def render_block(b, *, current_part, index, examples) -> str:
             if narr:
                 out.append(f'<p class="narration">{inl(narr)}</p>')
             out.append('</figure>')
+        # "Try it in the simulator" — preload the example's starting buffer.
+        try_qs = _example_practice_query(ex)
+        if try_qs:
+            out.append(
+                f'<p class="example-try"><a class="practice-link" '
+                f'href="../sim/?{try_qs}" target="_blank" rel="noopener">'
+                f'▶ Try this in the simulator</a></p>'
+            )
         out.append('</section>')
         return "\n".join(out)
 
@@ -297,6 +403,12 @@ def render_block(b, *, current_part, index, examples) -> str:
         rows = b.get("rows", [])
         if not headers:
             return ""
+        # Auto-style "Key"/"Keys" columns: if a cell doesn't already contain
+        # {key:...} markup, wrap the whole cell as one. Honors an explicit
+        # ``keyColumns`` list if the topic wants finer control.
+        key_cols = set(b.get("keyColumns") or
+                       [i for i, h in enumerate(headers)
+                        if str(h).strip().lower() in ("key", "keys")])
         out = ['<table>', '<thead><tr>']
         for h in headers:
             out.append(f"<th>{inl(h)}</th>")
@@ -304,8 +416,11 @@ def render_block(b, *, current_part, index, examples) -> str:
         for row in rows:
             cells = list(row) + [""] * (len(headers) - len(row))
             out.append("<tr>")
-            for c in cells:
-                out.append(f"<td>{inl(str(c))}</td>")
+            for i, c in enumerate(cells):
+                s = str(c)
+                if i in key_cols and s and "{key:" not in s:
+                    s = "{key:" + s + "}"
+                out.append(f"<td>{inl(s)}</td>")
             out.append("</tr>")
         out.append("</tbody></table>")
         return "\n".join(out)
@@ -343,17 +458,14 @@ def render_block(b, *, current_part, index, examples) -> str:
         info = index.get(tid)
         label = info["title"] if info else tid
         href = ""
-        qr_src = ""
         if info:
             href = (f"../{info['part_dir']}/{info['file_stem']}.html"
                     if info["part_dir"] != current_part else f"{info['file_stem']}.html")
-            # Reference the precomputed QR SVG (output/qrcodes/<part>/<stem>.svg).
-            qr_src = (f"../qrcodes/{info['part_dir']}/{info['file_stem']}.svg")
         link = f'<a href="{escape(href)}">{escape(label)}</a>' if href else escape(label)
-        img = (f'<img class="qr-img" src="{escape(qr_src)}" alt="QR code for {escape(label)}" '
-               f'width="96" height="96">' if qr_src else "")
-        return (f'<aside class="qr">{img}'
-                f'<span>📱 Scan or visit {link}</span></aside>')
+        # No QR image in HTML -- readers can just click the link. QR codes are
+        # generated for the printed book where scanning is the only path back
+        # to the site.
+        return f'<aside class="qr"><span>→ See also {link}</span></aside>'
 
     if bt == "buy-prompt":
         return '<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>'
@@ -368,26 +480,69 @@ PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <title>{title} — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="{root_index_dir}logo.svg">
 <link rel="stylesheet" href="{css}">
 </head>
 <body>
 <nav class="topnav">
   <a href="{root_index}">📚 All Parts</a>
   &middot; <a href="index.html">← {part_label}</a>
+  &middot; <a class="practice-link" href="../sim/?{practice_qs}" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev">{prev_link}</span>
+  <span class="pager-pos">{pos_label}</span>
+  <span class="pager-next">{next_link}</span>
 </nav>
 <article>
 {body}
 </article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev">{prev_link}</span>
+  <span class="pager-pos">{pos_label}</span>
+  <span class="pager-next">{next_link}</span>
+</nav>
 <nav class="bottomnav">
   <a href="index.html">← back to part</a>
   &middot; <a href="{root_index}">📚 all parts</a>
 </nav>
+{footer}
 </body>
 </html>
 """
 
 
-def render_topic_page(t, index, examples) -> str:
+def _pager_links(current_part: str, current_stem: str, ordered: list[tuple[str,str,str]]) -> tuple[str,str,str]:
+    """Return (prev_link_html, next_link_html, pos_label) for the topic.
+
+    `ordered` is a flat list of (part_dir, stem, title) for every web-visible
+    topic, in reading order.
+    """
+    idx = next((i for i, (p, s, _t) in enumerate(ordered)
+                if p == current_part and s == current_stem), None)
+    if idx is None:
+        return ("", "", "")
+
+    def _href(p: str, s: str) -> str:
+        return f"{s}.html" if p == current_part else f"../{p}/{s}.html"
+
+    if idx > 0:
+        p, s, t = ordered[idx - 1]
+        prev_html = f'<a class="pager-link" href="{escape(_href(p, s))}" rel="prev">← {escape(t)}</a>'
+    else:
+        prev_html = '<span class="pager-disabled">← start of book</span>'
+
+    if idx < len(ordered) - 1:
+        p, s, t = ordered[idx + 1]
+        next_html = f'<a class="pager-link" href="{escape(_href(p, s))}" rel="next">{escape(t)} →</a>'
+    else:
+        next_html = '<span class="pager-disabled">end of book →</span>'
+
+    pos = f"{idx + 1} / {len(ordered)}"
+    return (prev_html, next_html, pos)
+
+
+def render_topic_page(t, index, examples, ordered=None) -> str:
     current_part = t["__part_dir"]
     inl = lambda s: render_inline(s, current_part=current_part, index=index)
 
@@ -414,6 +569,8 @@ def render_topic_page(t, index, examples) -> str:
         body.append(f'<blockquote class="summary">{inl(summary)}</blockquote>')
 
     for b in t.get("blocks", []):
+        if not _visible(b, AUDIENCE):
+            continue
         if (b.get("type") == "heading" and int(b.get("level", 2)) == 1
                 and b.get("text", "").strip() == title.strip()):
             continue
@@ -436,12 +593,20 @@ def render_topic_page(t, index, examples) -> str:
         body.append('<p class="see-also"><strong>See also:</strong> ' + ", ".join(links) + "</p>")
 
     part_label = current_part.split("-", 1)[-1].replace("-", " ").title()
+    practice_qs = _practice_query(t, examples)
+    prev_link, next_link, pos_label = _pager_links(current_part, t["__file_stem"], ordered or [])
     return PAGE.format(
         title=escape(title),
         css="../style.css",
         root_index="../index.html",
+        root_index_dir="../",
         part_label=escape(part_label),
+        practice_qs=practice_qs,
+        prev_link=prev_link,
+        next_link=next_link,
+        pos_label=escape(pos_label),
         body="\n".join(body),
+        footer=_report_footer(prefix="../"),
     )
 
 
@@ -450,20 +615,32 @@ def render_topic_page(t, index, examples) -> str:
 PART_INDEX = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <title>{label} — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
 <link rel="stylesheet" href="../style.css">
 </head><body>
 <nav class="topnav"><a href="../index.html">📚 All Parts</a></nav>
+<nav class="pager pager-top">
+  <span class="pager-prev">{prev_link}</span>
+  <span class="pager-pos">Part {pos_label}</span>
+  <span class="pager-next">{next_link}</span>
+</nav>
 <article>
 <h1>{label}</h1>
 <ol class="topic-list">
 {items}
 </ol>
 </article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev">{prev_link}</span>
+  <span class="pager-pos">Part {pos_label}</span>
+  <span class="pager-next">{next_link}</span>
+</nav>
+{footer}
 </body></html>
 """
 
 
-def render_part_index(part_dir, topics_in_part) -> str:
+def render_part_index(part_dir, topics_in_part, all_parts=None) -> str:
     items = []
     for t in topics_in_part:
         stem = t["__file_stem"]
@@ -475,19 +652,45 @@ def render_part_index(part_dir, topics_in_part) -> str:
             + "</li>"
         )
     label = part_dir.split("-", 1)[-1].replace("-", " ").title()
-    return PART_INDEX.format(label=escape(label), items="\n".join(items))
+
+    # Prev / next part links — let part-index pages chain end to end like the
+    # topic pages do.
+    all_parts = all_parts or []
+    idx = next((i for i, p in enumerate(all_parts) if p == part_dir), None)
+    prev_link = '<span class="pager-disabled">← start</span>'
+    next_link = '<span class="pager-disabled">end →</span>'
+    pos_label = ""
+    if idx is not None:
+        pos_label = f"{idx + 1} / {len(all_parts)}"
+        if idx > 0:
+            p = all_parts[idx - 1]
+            plabel = p.split("-", 1)[-1].replace("-", " ").title()
+            prev_link = f'<a class="pager-link" href="../{escape(p)}/index.html" rel="prev">← {escape(plabel)}</a>'
+        if idx < len(all_parts) - 1:
+            p = all_parts[idx + 1]
+            plabel = p.split("-", 1)[-1].replace("-", " ").title()
+            next_link = f'<a class="pager-link" href="../{escape(p)}/index.html" rel="next">{escape(plabel)} →</a>'
+
+    return PART_INDEX.format(
+        label=escape(label), items="\n".join(items),
+        prev_link=prev_link, next_link=next_link, pos_label=escape(pos_label),
+        footer=_report_footer(prefix="../"),
+    )
 
 
 ROOT_INDEX = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <title>VimFu Content</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="stylesheet" href="style.css">
 </head><body>
 <article>
 <h1>VimFu Content</h1>
 <p class="meta">Auto-generated from <code>content/parts/**/*.json</code>.</p>
+<p class="hero-practice">▶ <a class="practice-link" href="sim/" target="_blank" rel="noopener">Open the VimFu simulator</a> — an in-browser Neovim+tmux to practice everything in this reference. Opens in a new tab so you can flip back and forth.</p>
 {sections}
 </article>
+{footer}
 </body></html>
 """
 
@@ -510,7 +713,10 @@ def render_root_index(parts_map) -> str:
                 + "</li>"
             )
         sections.append("</ul>")
-    return ROOT_INDEX.format(sections="\n".join(sections))
+    return ROOT_INDEX.format(
+        sections="\n".join(sections),
+        footer=_report_footer(prefix=""),
+    )
 
 
 # -------- stylesheet ------------------------------------------------------ #
@@ -543,6 +749,49 @@ nav.topnav, nav.bottomnav {
 }
 nav a { color: var(--accent); text-decoration: none; }
 nav a:hover { text-decoration: underline; }
+
+a.practice-link {
+  display: inline-block; background: var(--accent); color: #fff;
+  padding: 2px 10px; border-radius: 4px; font-weight: 600;
+  text-decoration: none;
+}
+a.practice-link:hover { background: #084; text-decoration: none; }
+p.example-try {
+  margin: 0.6rem 0 0; text-align: right; font-size: 0.92rem;
+}
+p.hero-practice {
+  background: #f0fdf6; border: 1px solid #c8eedc;
+  padding: 0.9rem 1.1rem; border-radius: 6px; margin: 1.2rem 0 2rem;
+  font-size: 1.05rem;
+}
+nav.pager {
+  max-width: 760px; margin: 0.5rem auto; padding: 0.6rem 1.25rem;
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; gap: 0.8rem;
+  font-size: 0.92rem;
+  border-top: 1px solid #eee; border-bottom: 1px solid #eee;
+}
+nav.pager .pager-prev { text-align: left; }
+nav.pager .pager-next { text-align: right; }
+nav.pager .pager-pos  { color: var(--muted); font-variant-numeric: tabular-nums; }
+nav.pager .pager-link {
+  display: inline-block; padding: 4px 10px; border-radius: 4px;
+  text-decoration: none; color: var(--accent);
+  border: 1px solid transparent;
+}
+nav.pager .pager-link:hover { background: #f0fdf6; border-color: #c8eedc; text-decoration: none; }
+nav.pager .pager-disabled { color: #bbb; font-style: italic; }
+nav.pager.pager-bottom { margin-top: 2rem; }
+
+footer.site-footer {
+  margin: 3rem 0 1rem;
+  padding: 0.8rem 0 0;
+  border-top: 1px solid #e5e5e5;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+footer.site-footer a { color: var(--muted); }
 
 h1 { font-size: 2rem; margin: 0.4rem 0 0.2rem; }
 h2 { font-size: 1.4rem; margin: 1.8rem 0 0.6rem; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
@@ -588,7 +837,7 @@ figure.keys figcaption, figure.lesson-embed figcaption {
   font-style: italic; color: var(--muted); font-size: 0.9rem; margin-bottom: 0.4rem;
 }
 figure.lesson-embed iframe.lesson-iframe {
-  width: 100%; aspect-ratio: 9/16; max-width: 360px; border: 0; border-radius: 6px;
+  width: 100%; aspect-ratio: 1/1; max-width: 480px; border: 0; border-radius: 6px;
   background: #000; display: block;
 }
 figure.lesson-embed .placeholder {
@@ -623,13 +872,13 @@ ul.lesson-grid {
 }
 ul.lesson-grid li { display: flex; flex-direction: column; gap: 0.4rem; }
 ul.lesson-grid iframe.lesson-iframe {
-  width: 100%; aspect-ratio: 9/16; border: 0; border-radius: 6px;
+  width: 100%; aspect-ratio: 1/1; border: 0; border-radius: 6px;
   background: #000; display: block;
 }
 ul.lesson-grid .lesson-meta { font-size: 0.85rem; color: var(--muted); }
 ul.lesson-grid .lesson-pending .placeholder {
   background: #f3f3f3; color: var(--muted); padding: 1.5rem 1rem;
-  text-align: center; border-radius: 6px; aspect-ratio: 9/16;
+  text-align: center; border-radius: 6px; aspect-ratio: 1/1;
   display: flex; align-items: center; justify-content: center;
 }
 aside.buy-prompt {
@@ -663,10 +912,10 @@ figure.example-step .step-n {
 figure.example-step .step-cap { color: #345; }
 figure.example-step .screenshot {
   background: #000; border-radius: 4px; padding: 4px;
-  display: flex; justify-content: center;
+  display: flex; justify-content: flex-start;
 }
 figure.example-step .screenshot img {
-  width: 100%; max-width: 640px; height: auto; display: block;
+  width: 100%; max-width: 380px; height: auto; display: block;
 }
 figure.example-step .screenshot.missing {
   background: #fee; color: #900; padding: 1rem; text-align: center;
@@ -707,16 +956,30 @@ def main() -> int:
     for k in parts_map:
         parts_map[k].sort(key=lambda x: x["__file_stem"])
 
+    # Build a flat web-visible reading order (part_dir, stem, title) for
+    # the prev/next pager. Filter audience BEFORE flattening so book-only
+    # topics don't appear in the website's pagination.
+    ordered: list[tuple[str, str, str]] = []
+    for part_dir in sorted(parts_map.keys()):
+        for t in parts_map[part_dir]:
+            if _visible(t, AUDIENCE):
+                ordered.append((part_dir, t["__file_stem"], t.get("title", t["__file_stem"])))
+
     written = 0
+    visible_parts = [p for p in sorted(parts_map.keys())
+                     if any(_visible(t, AUDIENCE) for t in parts_map[p])]
     for part_dir, plist in parts_map.items():
+        plist = [t for t in plist if _visible(t, AUDIENCE)]
+        if not plist:
+            continue
         pdir = out_dir / part_dir
         pdir.mkdir(parents=True, exist_ok=True)
         for t in plist:
             (pdir / f"{t['__file_stem']}.html").write_text(
-                render_topic_page(t, index, examples), encoding="utf-8")
+                render_topic_page(t, index, examples, ordered=ordered), encoding="utf-8")
             written += 1
         (pdir / "index.html").write_text(
-            render_part_index(part_dir, plist), encoding="utf-8")
+            render_part_index(part_dir, plist, all_parts=visible_parts), encoding="utf-8")
 
     (out_dir / "index.html").write_text(render_root_index(parts_map), encoding="utf-8")
     (out_dir / "style.css").write_text(STYLE_CSS, encoding="utf-8")

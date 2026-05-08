@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Vim Grammar — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Operators Textobjects</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="05-tags.html" rel="prev">← HTML/XML Tag Objects</a></span>
+  <span class="pager-pos">34 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../08-wider-motions/01-sentence-paragraph.html" rel="next">Sentence and Paragraph Motions →</a></span>
+</nav>
+<article>
+<h1>The Vim Grammar</h1>
+<p class="subtitle">[count] [register] operator [count] {motion | text-object}</p>
+<p class="meta"><code>id: operators-textobjects.grammar</code> &middot; part: <strong>operators-textobjects</strong> &middot; keys: <kbd>[count]</kbd>, <kbd>[reg]</kbd>, <kbd>op</kbd>, <kbd>motion</kbd>, <kbd>text-object</kbd> &middot; lessons: 85</p>
+<blockquote class="summary">Every editing command in Vim is one sentence: optional count, optional register, an operator (verb), then a motion or text object (noun). This is the grammar that makes Vim feel infinite from a small number of keys.</blockquote>
+<p>Most editors have <em>commands</em>: &quot;delete word,&quot; &quot;select to end of line,&quot; &quot;comment block.&quot; Vim doesn&#x27;t. Vim has a <strong>grammar</strong> — a small set of verbs and nouns that you compose into sentences. Once you see it, you stop memorizing keys.</p>
+<aside class="internals">
+<header>🔧 Under the Hood — The Grammar in One Line</header>
+<p>Every editing action in Normal mode follows the form:</p>
+<pre><code>[count] [&quot;register] operator [count] {motion | text-object}</code></pre>
+<p>All the brackets are optional. Concrete examples:</p>
+<ul>
+<li><kbd>d</kbd><kbd>w</kbd> — delete one word (no count, default register, motion).</li>
+<li><kbd>5</kbd><kbd>d</kbd><kbd>w</kbd> — delete five words.</li>
+<li><kbd>&quot;</kbd><kbd>a</kbd><kbd>5</kbd><kbd>d</kbd><kbd>w</kbd> — delete five words <em>into register a</em>.</li>
+<li><kbd>c</kbd><kbd>i</kbd><kbd>p</kbd> — change the inner paragraph (text object).</li>
+<li><kbd>&gt;</kbd><kbd>a</kbd><kbd>{</kbd> — indent the brace block including its braces.</li>
+<li><kbd>g</kbd><kbd>U</kbd><kbd>t</kbd><kbd>Z</kbd> — uppercase up to the next <code>Z</code>.</li>
+</ul>
+<p>There is no command list to memorize. There are operators. There are motions and text objects. Multiplication is the count. The register is <em>where the result goes</em>.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — The Operators</header>
+<p>The full operator set (the verbs):</p>
+<ul>
+<li><kbd>d</kbd> — delete (cut into a register).</li>
+<li><kbd>c</kbd> — change (delete + Insert).</li>
+<li><kbd>y</kbd> — yank (copy).</li>
+<li><kbd>&gt;</kbd> <kbd>&lt;</kbd> — indent / dedent.</li>
+<li><kbd>=</kbd> — re-indent (use language indenter).</li>
+<li><kbd>g</kbd><kbd>u</kbd> <kbd>g</kbd><kbd>U</kbd> <kbd>g</kbd><kbd>~</kbd> — lowercase / uppercase / toggle case.</li>
+<li><kbd>g</kbd><kbd>q</kbd> — reformat (text-wrap).</li>
+<li><kbd>!</kbd> — filter through external command.</li>
+<li><kbd>g</kbd><kbd>@</kbd> — call user-defined <code>operatorfunc</code> (advanced).</li>
+</ul>
+<p>That&#x27;s it. ~10 verbs. Each one takes any motion or text object. Pair them up: that&#x27;s the language.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Doubled Operators</header>
+<p>Every operator has a <em>doubled</em> form that means &quot;act on the current line&quot;:</p>
+<ul>
+<li><kbd>d</kbd><kbd>d</kbd> — delete line.</li>
+<li><kbd>c</kbd><kbd>c</kbd> — change line.</li>
+<li><kbd>y</kbd><kbd>y</kbd> — yank line.</li>
+<li><kbd>&gt;</kbd><kbd>&gt;</kbd> <kbd>&lt;</kbd><kbd>&lt;</kbd> — indent / dedent line.</li>
+<li><kbd>=</kbd><kbd>=</kbd> — re-indent line.</li>
+<li><kbd>g</kbd><kbd>U</kbd><kbd>U</kbd> or <kbd>g</kbd><kbd>U</kbd><kbd>u</kbd> — uppercase line.</li>
+</ul>
+<p>This is a special case in the grammar, not a separate command. The pattern <em>is</em> the rule: doubled operator = current line.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Synonyms (Single-Key Aliases)</header>
+<p>Some patterns are common enough to deserve a one-key shortcut:</p>
+<ul>
+<li><kbd>D</kbd> = <kbd>d</kbd><kbd>$</kbd></li>
+<li><kbd>C</kbd> = <kbd>c</kbd><kbd>$</kbd></li>
+<li><kbd>Y</kbd> = <kbd>y</kbd><kbd>y</kbd> <em>(classic vi)</em> / <kbd>y</kbd><kbd>$</kbd> <em>(Neovim default)</em></li>
+<li><kbd>S</kbd> = <kbd>c</kbd><kbd>c</kbd></li>
+<li><kbd>s</kbd> = <kbd>c</kbd><kbd>l</kbd></li>
+<li><kbd>x</kbd> = <kbd>d</kbd><kbd>l</kbd></li>
+<li><kbd>X</kbd> = <kbd>d</kbd><kbd>h</kbd></li>
+</ul>
+<p>These are sugar over the grammar. Knowing both forms helps when reading other people&#x27;s keystrokes — and explains why <kbd>Y</kbd> is a wart (broken symmetry, see <a href="../03-basic-editing/07-yank-put.html">`editing.yank-put`</a>).</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> If you can answer &quot;what&#x27;s the verb? what&#x27;s the noun?&quot; for a command you want to run, you can usually type it. That&#x27;s the test for whether you&#x27;ve internalized the grammar — and once you have, every new motion or text object is a free upgrade for <em>every</em> operator.</aside>
+<hr>
+<h3>Reference</h3>
+<p>See <a href="../99-appendices/03-grammar-matrix.html">`appendix.grammar-matrix`</a> for the full operator × motion table, and <a href="../99-appendices/02-synonyms.html">`appendix.synonyms`</a> for the complete list of single-key aliases.</p>
+<!-- example not found: grammar.dw-then-dot -->
+<aside class="qr"><span>→ See also <a href="06-grammar.html">The Vim Grammar</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/dwhaSnH-BT8?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The Vim Grammar" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0085 — <a href="https://youtube.com/watch?v=dwhaSnH-BT8" target="_blank" rel="noopener">The Vim Grammar</a></span></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a>, <a href="../99-appendices/03-grammar-matrix.html">The Grammar Matrix</a>, <a href="../99-appendices/02-synonyms.html">Synonyms and Shortcuts</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="05-tags.html" rel="prev">← HTML/XML Tag Objects</a></span>
+  <span class="pager-pos">34 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../08-wider-motions/01-sentence-paragraph.html" rel="next">Sentence and Paragraph Motions →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quote Text Objects — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Operators Textobjects</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=greeting+%3D+%22hello%2C+world%22%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-iw-aw.html" rel="prev">← Inner Word vs A Word</a></span>
+  <span class="pager-pos">30 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-brackets.html" rel="next">Bracket Text Objects →</a></span>
+</nav>
+<article>
+<h1>Quote Text Objects</h1>
+<p class="subtitle">i&quot; / a&quot; / i&#x27; / a&#x27; — operate on a quoted string without finding its boundaries.</p>
+<p class="meta"><code>id: operators-textobjects.quotes</code> &middot; part: <strong>operators-textobjects</strong> &middot; keys: <kbd>i&quot;</kbd>, <kbd>a&quot;</kbd>, <kbd>i&#x27;</kbd>, <kbd>a&#x27;</kbd>, <kbd>i`</kbd>, <kbd>a`</kbd> &middot; lessons: 75, 76, 77</p>
+<blockquote class="summary">i&quot; is the contents of the surrounding double-quoted string. a&quot; includes the quotes themselves. Same for &#x27; and `.</blockquote>
+<p>Editing a string literal? Cursor anywhere inside it. <kbd>c</kbd><kbd>i</kbd><kbd>&quot;</kbd> blanks the contents and drops you in to type the new ones. <kbd>d</kbd><kbd>a</kbd><kbd>&quot;</kbd> removes the quotes and contents together.</p>
+<figure class="keys">
+<figcaption>Change inside double quotes</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>c</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>&quot;</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Delete the quoted string AND the quotes</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>d</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+<tr><td><kbd>&quot;</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Visual-select inside single quotes</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>v</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>&#x27;</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Yank inside backticks</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>y</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>`</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="75"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/AVTzj4MI0Uw?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Inner/Around Quotes" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>i&quot; / a&quot; — double quotes</figcaption></figure>
+<figure class="lesson-embed" data-lesson="76"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/PC_lYiEgKGM?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Inner/Around Single Quotes" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>i&#x27; / a&#x27; — single quotes</figcaption></figure>
+<figure class="lesson-embed" data-lesson="77"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/VbE0JOMAnFM?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Inner/Around Backticks" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>i<code> / a</code> — backticks</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — How Vim Finds the Quotes</header>
+<p>Quote objects use a different search heuristic from bracket objects. For a quote character <code>q</code>, Vim:</p>
+<p>1. Counts the q-characters from the start of the line up to the cursor.
+  2. If the count is <strong>odd</strong>, the cursor is <em>inside</em> a quoted region: the matching pair is the most recent q-pair containing the cursor.
+  3. If the count is <strong>even</strong>, the cursor is <em>outside</em>: the matching pair is the <em>next</em> one to the right.</p>
+<p>This is why you can press <kbd>c</kbd><kbd>i</kbd><kbd>&quot;</kbd> from outside a string and still hit the right one — Vim looks rightward. It also means quote objects don&#x27;t span multiple lines (the count restarts each line) and they don&#x27;t understand backslash-escaping inside the string.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> The three quote characters are <kbd>&quot;</kbd>, <kbd>&#x27;</kbd>, and <kbd>`</kbd> (backtick). All three behave identically — the object character matches the literal quote you typed. You don&#x27;t need a separate object per language.</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>i</kbd><kbd>&quot;</kbd> and <kbd>a</kbd><kbd>&quot;</kbd> are charwise — the cursor stays on the line. So <kbd>d</kbd><kbd>a</kbd><kbd>&quot;</kbd> doesn&#x27;t delete the line; it deletes the quoted span and leaves the rest of the line intact.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Object</th>
+<th>Range</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>i</kbd><kbd>&quot;</kbd></td>
+<td>Contents of &quot;…&quot; (excluding quotes)</td>
+</tr>
+<tr>
+<td><kbd>a</kbd><kbd>&quot;</kbd></td>
+<td>&quot;…&quot; including the quotes</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>&#x27;</kbd> / <kbd>a</kbd><kbd>&#x27;</kbd></td>
+<td>Same for &#x27;…&#x27;</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>`</kbd> / <kbd>a</kbd><kbd>`</kbd></td>
+<td>Same for <code>…</code></td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — ci&quot; and ca&quot;</h3>
+<p class="example-summary">Operate on whatever is in the quotes.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Cursor inside the string.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/textobj.quotes/frame_01.color.svg" alt="Cursor inside the string."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>ci&quot;</kbd> · <span class="step-cap">ci&quot; — string contents gone.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/textobj.quotes/frame_02.color.svg" alt="ci&quot; — string contents gone."></div>
+<p class="narration">You don&#x27;t need to be on a quote — Vim finds the surrounding pair on the line. Same for &#x27;, `, (), [], {}, &lt;&gt;, t (tag).</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=greeting+%3D+%22hello%2C+world%22%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="02-quotes.html">Quote Text Objects</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-iw-aw.html">Inner Word vs A Word</a>, <a href="03-brackets.html">Bracket Text Objects</a>, <a href="06-grammar.html">The Vim Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-iw-aw.html" rel="prev">← Inner Word vs A Word</a></span>
+  <span class="pager-pos">30 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-brackets.html" rel="next">Bracket Text Objects →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Repeat Last Ex (@:) — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Command Line Power</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-history-window.html" rel="prev">← Command-Line History</a></span>
+  <span class="pager-pos">99 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-edit-buffer.html" rel="next">Editing the Command Line →</a></span>
+</nav>
+<article>
+<h1>Repeat Last Ex (@:)</h1>
+<p class="subtitle">@: replays your last :command. Then @@ repeats again.</p>
+<p class="meta"><code>id: cmdline.repeat-ex</code> &middot; part: <strong>command-line-power</strong> &middot; keys: <kbd>@:</kbd>, <kbd>@@</kbd> &middot; lessons: 448, 448</p>
+<blockquote class="summary">@: replays the last Ex command. After running it once, @@ does it again. The same as macro replay — because Ex history is essentially a macro of one command.</blockquote>
+<h2>Repeat Last Ex</h2>
+<p>Most operators have a repeat key (<kbd>.</kbd>). Ex commands have their own: <kbd>@</kbd><kbd>:</kbd>.</p>
+<figure class="keys">
+<figcaption>Replay the last :command</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>@:</kbd></td><td>Re-runs the last Ex command</td></tr>
+<tr><td><kbd>@@</kbd></td><td>Repeats whatever @: just ran</td></tr>
+</tbody></table></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Why It&#x27;s @ and Not .</header>
+<p><kbd>.</kbd> replays the last <em>change</em> — the last edit that modified the buffer through Normal-mode editing. Ex commands aren&#x27;t part of that history; they&#x27;re a separate, parallel stream.</p>
+<p><kbd>@</kbd>{reg} runs the contents of register <code>reg</code> as keystrokes. The colon register <code>:</code> always holds the last Ex command typed. So <kbd>@</kbd><kbd>:</kbd> just runs that register — the same mechanism as macro playback (<kbd>@</kbd><kbd>q</kbd>).</p>
+<p>After <kbd>@</kbd><kbd>:</kbd>, the macro-replay register becomes <code>:</code>, so <kbd>@</kbd><kbd>@</kbd> (replay last macro) runs the same Ex command again. This is why bulk operations chain naturally: <code>:s/foo/bar/</code> then <code>nnn</code> (search next) <kbd>@</kbd><kbd>:</kbd> <kbd>@</kbd><kbd>:</kbd> <kbd>@</kbd><kbd>:</kbd>.</p>
+</aside>
+<aside class="qr"><span>→ See also <a href="02-repeat-ex.html">Repeat Last Ex (@:)</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0448 Ctrl-D — Show Completions (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0448 Ctrl-D — Show Completions (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="01-history-window.html">Command-Line History</a>, <a href="../13-macros/01-record-play.html">Recording and Playing Macros</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-history-window.html" rel="prev">← Command-Line History</a></span>
+  <span class="pager-pos">99 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-edit-buffer.html" rel="next">Editing the Command Line →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

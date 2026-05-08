@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Horizontal Scroll — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Scrolling Screen</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="05-line-by-line.html" rel="prev">← Line-by-Line Scroll</a></span>
+  <span class="pager-pos">45 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../10-marks-jumps/01-local-global.html" rel="next">Setting and Jumping to Marks →</a></span>
+</nav>
+<article>
+<h1>Horizontal Scroll</h1>
+<p class="subtitle">zs, ze, zh, zl — scroll left/right when wrap is off.</p>
+<p class="meta"><code>id: scroll.horizontal</code> &middot; part: <strong>scroll</strong> &middot; keys: <kbd>zs</kbd>, <kbd>ze</kbd>, <kbd>zh</kbd>, <kbd>zl</kbd>, <kbd>zH</kbd>, <kbd>zL</kbd> &middot; lessons: 289</p>
+<blockquote class="summary">When &#x27;wrap&#x27; is off, long lines run off the screen. Horizontal scrolling commands let you see the rest. zs scrolls so the cursor is at the left edge; ze at the right.</blockquote>
+<p>Long single-line content (logs, JSON, CSV) runs off the right edge when <kbd>&#x27;wrap&#x27;</kbd> is off. The <kbd>z</kbd>-family includes a horizontal scroll group that mirrors the vertical one.</p>
+<figure class="keys">
+<figcaption>Scroll horizontally so cursor is at left edge</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+<tr><td><kbd>s</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Scroll so cursor is at right edge</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+<tr><td><kbd>e</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Scroll left one column (text moves right)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+<tr><td><kbd>l</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Scroll right one column</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+<tr><td><kbd>h</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Scroll left half a screen</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+<tr><td><kbd>L</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Scroll right half a screen</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+<tr><td><kbd>H</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="289"><div class="placeholder">📺 z. z+ z- z^ Scroll Variants (not yet published)</div><figcaption>Horizontal scrolling</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Only Useful When &#x27;wrap&#x27; Is Off</header>
+<p>By default, Vim wraps long lines (<code>:set wrap</code>). In wrap mode, horizontal scroll is meaningless — every character is visible somewhere on a continuation line.</p>
+<p>Set <code>:set nowrap</code> for working with logs, CSV, JSON, etc. — then horizontal scroll matters. <kbd>z</kbd><kbd>s</kbd> (start) and <kbd>z</kbd><kbd>e</kbd> (end) reposition the viewport so the cursor sits at the left or right edge. <kbd>z</kbd><kbd>l</kbd>/<kbd>z</kbd><kbd>h</kbd> are one-column nudges; <kbd>z</kbd><kbd>L</kbd>/<kbd>z</kbd><kbd>H</kbd> are half-screen jumps.</p>
+<p><code>&#x27;sidescroll&#x27;</code> controls the step size for automatic horizontal scrolling when the cursor moves off-screen. <code>&#x27;sidescrolloff&#x27;</code> is the horizontal counterpart to <code>&#x27;scrolloff&#x27;</code>.</p>
+</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>z</kbd><kbd>s</kbd></td>
+<td>Scroll cursor to left edge</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>e</kbd></td>
+<td>Scroll cursor to right edge</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>l</kbd></td>
+<td>Scroll one column right</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>h</kbd></td>
+<td>Scroll one column left</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>L</kbd></td>
+<td>Scroll half-screen right</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>H</kbd></td>
+<td>Scroll half-screen left</td>
+</tr>
+</tbody></table>
+<aside class="qr"><span>→ See also <a href="06-horizontal.html">Horizontal Scroll</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="02-center-top-bottom.html">Centering the Cursor</a>, <a href="../15-prefix-families/02-z-overview.html">The z Family</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="05-line-by-line.html" rel="prev">← Line-by-Line Scroll</a></span>
+  <span class="pager-pos">45 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../10-marks-jumps/01-local-global.html" rel="next">Setting and Jumping to Marks →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

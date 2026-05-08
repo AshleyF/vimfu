@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The g Family — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Prefix Families</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=hello%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../14-windows-buffers-tabs/06-buffers-vs-windows-vs-tabs.html" rel="prev">← Buffer vs Window vs Tab</a></span>
+  <span class="pager-pos">72 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-z-overview.html" rel="next">The z Family →</a></span>
+</nav>
+<article>
+<h1>The g Family</h1>
+<p class="subtitle">30+ commands hide behind the g prefix.</p>
+<p class="meta"><code>id: prefixes.g-overview</code> &middot; part: <strong>prefixes</strong> &middot; keys: <kbd>gd</kbd>, <kbd>gf</kbd>, <kbd>gv</kbd>, <kbd>gi</kbd>, <kbd>gq</kbd>, <kbd>g;</kbd>, <kbd>g,</kbd>, <kbd>g~</kbd>, <kbd>gU</kbd>, <kbd>gu</kbd> &middot; lessons: 249, 285</p>
+<blockquote class="summary">g is a meta prefix: it gates a second, hidden keyboard of commands. From gd (go to definition) and gf (go to file) to gq (reformat) and gv (re-select), the g family covers everything that didn&#x27;t fit elsewhere.</blockquote>
+<p>The <kbd>g</kbd> prefix is Vim&#x27;s <em>miscellaneous drawer</em> — and it&#x27;s huge. Roughly thirty commands live behind it. The unifying theme is &quot;this didn&#x27;t fit on a one-key shortcut, so it got the <kbd>g</kbd> prefix.&quot; Worth a flat reference table.</p>
+<aside class="internals">
+<header>🔧 Under the Hood — Why So Many g Commands</header>
+<p>Vim has more useful operations than there are unmodified keys. The <kbd>g</kbd> prefix gives a second keyboard&#x27;s worth of room. Some of the <kbd>g</kbd> family are <em>operators</em> themselves (<kbd>g</kbd><kbd>U</kbd>, <kbd>g</kbd><kbd>u</kbd>, <kbd>g</kbd><kbd>~</kbd>, <kbd>g</kbd><kbd>q</kbd>, <kbd>g</kbd><kbd>@</kbd>); some are <em>motions</em> (<kbd>g</kbd><kbd>e</kbd>, <kbd>g</kbd><kbd>E</kbd>, <kbd>g</kbd><kbd>j</kbd>, <kbd>g</kbd><kbd>k</kbd>, <kbd>g</kbd><kbd>0</kbd>, <kbd>g</kbd><kbd>^</kbd>, <kbd>g</kbd><kbd>_</kbd>); some are <em>jumps</em> (<kbd>g</kbd><kbd>d</kbd>, <kbd>g</kbd><kbd>f</kbd>, <kbd>g</kbd><kbd>;</kbd>, <kbd>g</kbd><kbd>,</kbd>, <kbd>g</kbd><kbd>i</kbd>); some are one-shot actions (<kbd>g</kbd><kbd>v</kbd>, <kbd>g</kbd><kbd>a</kbd>, <kbd>g</kbd><kbd>x</kbd>, <kbd>g</kbd><kbd>8</kbd>).</p>
+</aside>
+<h3>Reference (most-used)</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>g</kbd><kbd>d</kbd></td>
+<td>Go to local definition under cursor</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>D</kbd></td>
+<td>Go to global definition</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>f</kbd></td>
+<td>Open file under cursor</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>F</kbd></td>
+<td>Open file under cursor at line :{n}</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>v</kbd></td>
+<td>Re-select last visual</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>i</kbd></td>
+<td>Insert at last Insert position</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>;</kbd></td>
+<td>Previous change position</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>,</kbd></td>
+<td>Next change position</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>e</kbd></td>
+<td>Back to end of previous word</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>E</kbd></td>
+<td>Back to end of previous WORD</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>j</kbd> / <kbd>g</kbd><kbd>k</kbd></td>
+<td>Down/up by <em>display</em> line (matters with wrap)</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>0</kbd></td>
+<td>Display start of line</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>^</kbd></td>
+<td>Display first non-blank</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>_</kbd></td>
+<td>Last non-blank of line</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>U</kbd>{motion}</td>
+<td>Uppercase operator</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>u</kbd>{motion}</td>
+<td>Lowercase operator</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>~</kbd>{motion}</td>
+<td>Toggle case operator</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>q</kbd>{motion}</td>
+<td>Reformat (line-wrap) operator</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>@</kbd>{motion}</td>
+<td>Call user <code>operatorfunc</code> (advanced)</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>a</kbd></td>
+<td>Show character info under cursor (also <kbd>g</kbd><kbd>8</kbd>)</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>x</kbd></td>
+<td>Open URL under cursor in browser</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>&lt;</kbd></td>
+<td>Re-show last command-line output</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>n</kbd></td>
+<td>Visual-select next search match</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>N</kbd></td>
+<td>Visual-select previous search match</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>p</kbd> / <kbd>g</kbd><kbd>P</kbd></td>
+<td>Like p/P, but cursor lands AFTER pasted text</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>t</kbd> / <kbd>g</kbd><kbd>T</kbd></td>
+<td>Next / previous tab</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>r</kbd>{c}</td>
+<td>Replace (virtual) — see <a href="../11-transform/01-replace-mode.html">`transform.replace-mode`</a></td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>R</kbd></td>
+<td>Virtual replace mode</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>o</kbd></td>
+<td>Go to byte {n}</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>?</kbd>{motion}</td>
+<td>ROT13 the range (yes, really)</td>
+</tr>
+</tbody></table>
+<aside class="tip"><strong>Tip.</strong> If you only learn a handful: <kbd>g</kbd><kbd>v</kbd>, <kbd>g</kbd><kbd>i</kbd>, <kbd>g</kbd><kbd>;</kbd>, <kbd>g</kbd><kbd>U</kbd><kbd>i</kbd><kbd>w</kbd>, <kbd>g</kbd><kbd>f</kbd>, <kbd>g</kbd><kbd>x</kbd>, <kbd>g</kbd><kbd>j</kbd>/<kbd>g</kbd><kbd>k</kbd>. Those alone justify the prefix.</aside>
+<section class="example">
+<h3 class="example-title">Worked example — gU gu g~ ga</h3>
+<p class="example-summary">The &#x27;g&#x27; prefix is a grab-bag of useful commands.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/prefix.g/frame_01.color.svg" alt="prefix.g"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>gUiw</kbd> · <span class="step-cap">gUiw — uppercase inner word.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/prefix.g/frame_02.color.svg" alt="gUiw — uppercase inner word."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>u guiw</kbd> · <span class="step-cap">guiw — lowercase inner word.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/prefix.g/frame_03.color.svg" alt="guiw — lowercase inner word."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>ga</kbd> · <span class="step-cap">ga — character info under cursor.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/prefix.g/frame_04.color.svg" alt="ga — character info under cursor."></div>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=hello%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="01-g-overview.html">The g Family</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0249 ga ASCII Value (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0285 g@ Apply Operator (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="02-z-overview.html">The z Family</a>, <a href="03-bracket-pairs.html">The [ and ] Family</a>, <a href="04-ctrl-w.html">The Ctrl-W Family</a>, <a href="../99-appendices/08-complete-key-reference.html">Complete Key Reference</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../14-windows-buffers-tabs/06-buffers-vs-windows-vs-tabs.html" rel="prev">← Buffer vs Window vs Tab</a></span>
+  <span class="pager-pos">72 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-z-overview.html" rel="next">The z Family →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

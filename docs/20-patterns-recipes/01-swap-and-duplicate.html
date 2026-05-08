@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Swap and Duplicate Lines — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Patterns Recipes</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../19-command-line-power/05-completion.html" rel="prev">← Command-Line Completion</a></span>
+  <span class="pager-pos">103 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-star-cw-dot.html" rel="next">*, cw, then . . . — The Replace Loop →</a></span>
+</nav>
+<article>
+<h1>Swap and Duplicate Lines</h1>
+<p class="subtitle">ddp swaps two lines. yyp duplicates one.</p>
+<p class="meta"><code>id: patterns.swap-and-duplicate</code> &middot; part: <strong>patterns-recipes</strong> &middot; keys: <kbd>dd</kbd>, <kbd>p</kbd>, <kbd>yy</kbd> &middot; lessons: 461, 462</p>
+<blockquote class="summary">Two of the oldest Vim recipes: ddp moves the current line down past the next one (a swap); yyp duplicates the current line. Both compose primitives you already know.</blockquote>
+<p>Two recipes you&#x27;ll see in every &quot;Vim tricks&quot; list. They aren&#x27;t <em>features</em> — they&#x27;re compositions of primitives that happen to do something useful.</p>
+<table>
+<thead><tr>
+<th>Recipe</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>d</kbd><kbd>d</kbd><kbd>p</kbd></td>
+<td>Swap current line with the one below</td>
+</tr>
+<tr>
+<td><kbd>d</kbd><kbd>d</kbd><kbd>k</kbd><kbd>P</kbd></td>
+<td>Swap current line with the one above</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>y</kbd><kbd>p</kbd></td>
+<td>Duplicate current line below</td>
+</tr>
+<tr>
+<td><kbd>x</kbd><kbd>p</kbd></td>
+<td>Swap two characters</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — Why It Works</header>
+<p><kbd>d</kbd><kbd>d</kbd> cuts the current line into the unnamed register. The cursor lands on what was the <em>next</em> line. <kbd>p</kbd> pastes the line back — but <kbd>p</kbd> pastes a <em>line-wise</em> register <strong>below</strong> the cursor&#x27;s line, putting the cut line one position later than where it started. Net effect: swap.</p>
+<p><kbd>y</kbd><kbd>y</kbd> yanks the line; the cursor doesn&#x27;t move. <kbd>p</kbd> pastes below. Net effect: duplicate.</p>
+<p><kbd>x</kbd><kbd>p</kbd>: <kbd>x</kbd> deletes the character under the cursor (into unnamed reg) and the cursor moves to what was the <em>next</em> char. <kbd>p</kbd> pastes a character-wise register <strong>after</strong> the cursor — placing the cut character one position later. Swap.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Move multiple lines? <code>:m</code> is cleaner: <code>:m+1</code> moves current line down one. Visual + <code>:m</code> moves a block.</aside>
+<aside class="qr"><span>→ See also <a href="01-swap-and-duplicate.html">Swap and Duplicate Lines</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0461 xp — Transpose Characters (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0462 deep — A Vim Myth (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../03-basic-editing/05-delete.html">Delete</a>, <a href="../03-basic-editing/07-yank-put.html">Yank and Put</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../19-command-line-power/05-completion.html" rel="prev">← Command-Line Completion</a></span>
+  <span class="pager-pos">103 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-star-cw-dot.html" rel="next">*, cw, then . . . — The Replace Loop →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

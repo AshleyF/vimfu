@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Surround (the Plugin That Should Be Built In) — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Appendices</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="05-motion-classification.html" rel="prev">← Motion Classification</a></span>
+  <span class="pager-pos">130 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="07-vim-in-other-editors.html" rel="next">Vim in Other Editors →</a></span>
+</nav>
+<article>
+<h1>Surround (the Plugin That Should Be Built In)</h1>
+<p class="subtitle">ds, cs, ys — operate on surroundings as a first-class concept.</p>
+<p class="meta"><code>id: appendix.surround-plugin</code> &middot; part: <strong>appendices</strong> &middot; keys: <kbd>ds</kbd>, <kbd>cs</kbd>, <kbd>ys</kbd></p>
+<blockquote class="summary">Tim Pope&#x27;s vim-surround adds three operators: ys (add surrounding), ds (delete surrounding), cs (change surrounding). Once you have it, it feels like core Vim.</blockquote>
+<h2>Surround</h2>
+<p>Tim Pope&#x27;s [vim-surround](https://github.com/tpope/vim-surround) is the plugin most often cited as &quot;this should ship with Vim.&quot; It adds three operators that treat <em>surroundings</em> (quotes, brackets, tags) as first-class targets.</p>
+<table>
+<thead><tr>
+<th>Sequence</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>d</kbd><kbd>s</kbd><kbd>&#x27;</kbd></td>
+<td>Delete surrounding single quotes</td>
+</tr>
+<tr>
+<td><kbd>d</kbd><kbd>s</kbd><kbd>t</kbd></td>
+<td>Delete surrounding HTML tag</td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>s</kbd><kbd>&#x27;</kbd><kbd>&quot;</kbd></td>
+<td>Change surrounding &#x27; to &quot;</td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>s</kbd><kbd>[</kbd><kbd>(</kbd></td>
+<td>Change [ ] to ( )</td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>s</kbd><kbd>t</kbd></td>
+<td>Change surrounding tag (prompts for new tag name)</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd><kbd>i</kbd><kbd>w</kbd><kbd>&#x27;</kbd></td>
+<td>Surround inner word with single quotes</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd><kbd>s</kbd>{key:}}</td>
+<td>Surround whole line with braces</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd><kbd>i</kbd><kbd>p</kbd><kbd>&lt;</kbd><kbd>p</kbd><kbd>&gt;</kbd></td>
+<td>Wrap paragraph in &lt;p&gt; tags</td>
+</tr>
+<tr>
+<td>Visual mode + <kbd>S</kbd><kbd>&#x27;</kbd></td>
+<td>Surround selection with quotes</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — Why It Belongs in Core</header>
+<p>Vim&#x27;s grammar already understands the <em>content</em> inside surroundings — <code>i&quot;</code>, <code>i(</code>, <code>it</code>, etc. select the inner content. Surround completes the grammar by treating the <em>delimiters themselves</em> as a first-class concept that can be deleted, changed, or added.</p>
+<p>The operator names are mnemonic: <strong>d</strong>elete-<strong>s</strong>urrounding, <strong>c</strong>hange-<strong>s</strong>urrounding, <strong>y</strong>ank-<strong>s</strong>urrounding (&quot;surround with&quot;). The plugin makes surroundings as natural to manipulate as words or lines — which is why most Vim users add it day one.</p>
+<p>Neovim has discussed adding similar functionality to core; for now, install vim-surround.</p>
+</aside>
+<aside class="qr"><span>→ See also <a href="06-surround-plugin.html">Surround (the Plugin That Should Be Built In)</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../07-operators-textobjects/02-quotes.html">Quote Text Objects</a>, <a href="../07-operators-textobjects/03-brackets.html">Bracket Text Objects</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="05-motion-classification.html" rel="prev">← Motion Classification</a></span>
+  <span class="pager-pos">130 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="07-vim-in-other-editors.html" rel="next">Vim in Other Editors →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

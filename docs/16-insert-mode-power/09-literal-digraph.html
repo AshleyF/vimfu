@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Literal Insert and Digraphs — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Insert Mode Power</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="08-ctrl-x-completion.html" rel="prev">← The Ctrl-X Sub-Completions</a></span>
+  <span class="pager-pos">84 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../17-ex-commands/01-file-ops.html" rel="next">File Operations →</a></span>
+</nav>
+<article>
+<h1>Literal Insert and Digraphs</h1>
+<p class="subtitle">Ctrl-V for literals, Ctrl-K for digraphs — type the un-typeable.</p>
+<p class="meta"><code>id: insert.literal-digraph</code> &middot; part: <strong>insert-mode-power</strong> &middot; keys: <kbd>Ctrl-V</kbd>, <kbd>Ctrl-Q</kbd>, <kbd>Ctrl-K</kbd> &middot; lessons: 394, 395</p>
+<blockquote class="summary">Ctrl-V (or Ctrl-Q on Windows) inserts the next keystroke literally — including special keys and Unicode codepoints. Ctrl-K combines two characters into one via the digraph table.</blockquote>
+<p>Sometimes you need to type a character that isn&#x27;t on your keyboard, or you need to type a literal <kbd>Tab</kbd> that won&#x27;t be expanded by autoindent. <kbd>Ctrl-V</kbd> and <kbd>Ctrl-K</kbd> are the escape hatches.</p>
+<h3>Literal Insert: Ctrl-V</h3>
+<table>
+<thead><tr>
+<th>Sequence</th>
+<th>Inserts</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>Ctrl-V</kbd><kbd>Tab</kbd></td>
+<td>Literal tab character (no shiftwidth math)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-V</kbd><kbd>Esc</kbd></td>
+<td>Literal <kbd>Esc</kbd> (^[) into the buffer</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-V</kbd><kbd>Enter</kbd></td>
+<td>Literal CR (^M)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-V</kbd><kbd>0</kbd><kbd>6</kbd><kbd>5</kbd></td>
+<td>Decimal codepoint 65 → <code>A</code></td>
+</tr>
+<tr>
+<td><kbd>Ctrl-V</kbd><kbd>x</kbd><kbd>4</kbd><kbd>1</kbd></td>
+<td>Hex codepoint 0x41 → <code>A</code></td>
+</tr>
+<tr>
+<td><kbd>Ctrl-V</kbd><kbd>u</kbd><kbd>0</kbd><kbd>0</kbd><kbd>e</kbd><kbd>9</kbd></td>
+<td>Unicode U+00E9 → <code>é</code></td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — Ctrl-V vs Ctrl-Q on Windows</header>
+<p>On Windows GUI Vim, <kbd>Ctrl-V</kbd> is mapped to <em>paste</em> (to match Windows convention). The literal-insert key there is <kbd>Ctrl-Q</kbd> — same function, alternate binding. On any system, <kbd>Ctrl-Q</kbd> works as a fallback (unless your terminal is consuming it for flow control, in which case <code>stty -ixon</code> frees it).</p>
+</aside>
+<h3>Digraphs: Ctrl-K</h3>
+<table>
+<thead><tr>
+<th>Sequence</th>
+<th>Inserts</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>Ctrl-K</kbd><kbd>e</kbd><kbd>&#x27;</kbd></td>
+<td>é (e-acute)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-K</kbd><kbd>n</kbd><kbd>?</kbd></td>
+<td>ñ</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-K</kbd><kbd>O</kbd><kbd>K</kbd></td>
+<td>✓ (check mark)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-K</kbd><kbd>-&gt;|</kbd></td>
+<td>→ (right arrow)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-K</kbd><kbd>P</kbd><kbd>i</kbd></td>
+<td>π</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — The Digraph Table</header>
+<p>Vim ships with a built-in table of &quot;digraphs&quot; — two-character mnemonics for harder-to-type Unicode characters. Run <code>:digraphs</code> to see all ~1500 entries. Most follow RFC 1345 conventions (<code>e&#x27;</code> = é, <code>OK</code> = ✓). You can add your own with <code>:digraph mn 9837</code> (define <code>mn</code> as ♭ codepoint 9837).</p>
+<p>Using digraphs is faster than <kbd>Ctrl-V</kbd><kbd>u</kbd> for characters you reach for often.</p>
+</aside>
+<aside class="qr"><span>→ See also <a href="09-literal-digraph.html">Literal Insert and Digraphs</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0394 Ctrl-X Ctrl-S Spelling (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0395 Ctrl-X Ctrl-V Vim Command Complete (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="05-from-register.html">Inserting from a Register</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="08-ctrl-x-completion.html" rel="prev">← The Ctrl-X Sub-Completions</a></span>
+  <span class="pager-pos">84 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../17-ex-commands/01-file-ops.html" rel="next">File Operations →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

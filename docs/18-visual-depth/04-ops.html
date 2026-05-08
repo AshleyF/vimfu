@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Operators on Visual Selections — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Visual Depth</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-endpoints.html" rel="prev">← Swap and Adjust Endpoints</a></span>
+  <span class="pager-pos">95 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-range.html" rel="next">Visual + Ex Range →</a></span>
+</nav>
+<article>
+<h1>Operators on Visual Selections</h1>
+<p class="subtitle">Any operator works on a Visual range. Plus a few visual-only ones.</p>
+<p class="meta"><code>id: visual.ops</code> &middot; part: <strong>visual-depth</strong> &middot; keys: <kbd>d</kbd>, <kbd>c</kbd>, <kbd>y</kbd>, <kbd>gU</kbd>, <kbd>u</kbd>, <kbd>U</kbd>, <kbd>&gt;</kbd>, <kbd>&lt;</kbd>, <kbd>J</kbd>, <kbd>=</kbd> &middot; lessons: 439, 442</p>
+<blockquote class="summary">After selecting visually, any operator (d, c, y, gU, etc.) acts on the selection. A few operators are visual-only: u/U for case, J for join, &gt; / &lt; for indent.</blockquote>
+<p>After Visual selection, every operator key acts on the selection — no motion needed. The selection IS the range.</p>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Effect on selection</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>d</kbd></td>
+<td>Delete</td>
+</tr>
+<tr>
+<td><kbd>c</kbd></td>
+<td>Change (delete + Insert)</td>
+</tr>
+<tr>
+<td><kbd>y</kbd></td>
+<td>Yank</td>
+</tr>
+<tr>
+<td><kbd>p</kbd></td>
+<td>Replace selection with register contents</td>
+</tr>
+<tr>
+<td><kbd>&gt;</kbd>, <kbd>&lt;</kbd></td>
+<td>Indent / outdent</td>
+</tr>
+<tr>
+<td><kbd>=</kbd></td>
+<td>Reindent (per <code>&#x27;indentexpr&#x27;</code>)</td>
+</tr>
+<tr>
+<td><kbd>gU</kbd>, <kbd>gu</kbd>, <kbd>g~</kbd></td>
+<td>Uppercase / lowercase / toggle case</td>
+</tr>
+<tr>
+<td><kbd>U</kbd>, <kbd>u</kbd></td>
+<td>Same — but visual-only single-key shortcuts</td>
+</tr>
+<tr>
+<td><kbd>~</kbd></td>
+<td>Toggle case (visual-only single-key)</td>
+</tr>
+<tr>
+<td><kbd>J</kbd></td>
+<td>Join lines (with space)</td>
+</tr>
+<tr>
+<td><kbd>gJ</kbd></td>
+<td>Join lines (no space added)</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — Visual-Only Single-Key Operators</header>
+<p>In Normal mode, lowercase <kbd>u</kbd> is <em>undo</em>. In Visual mode, <kbd>u</kbd> is <em>lowercase the selection</em> — a single-key shortcut for <kbd>g</kbd><kbd>u</kbd>. Similarly:</p>
+<ul>
+<li><kbd>u</kbd> = lowercase</li>
+<li><kbd>U</kbd> = uppercase</li>
+<li><kbd>~</kbd> = toggle case</li>
+</ul>
+<p>These exist because the <kbd>g</kbd> prefix is awkward when you&#x27;ve already done the work of selecting. The same convenience: <kbd>&gt;</kbd> and <kbd>&lt;</kbd> act <em>once</em> in Visual without needing a motion (they need <kbd>&gt;</kbd><kbd>&gt;</kbd> to act on a line in Normal mode).</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> After indenting a Visual selection with <kbd>&gt;</kbd>, the selection is lost — but <kbd>g</kbd><kbd>v</kbd> brings it right back so you can <kbd>&gt;</kbd> again.</aside>
+<aside class="qr"><span>→ See also <a href="04-ops.html">Operators on Visual Selections</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0439 v_r — Replace Selection (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0442 v_&gt; / v_&lt; / v_= — Indent (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../07-operators-textobjects/06-grammar.html">The Vim Grammar</a>, <a href="../11-transform/03-case.html">Case Changing</a>, <a href="../11-transform/02-indent.html">Indent and Auto-Indent</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-endpoints.html" rel="prev">← Swap and Adjust Endpoints</a></span>
+  <span class="pager-pos">95 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-range.html" rel="next">Visual + Ex Range →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

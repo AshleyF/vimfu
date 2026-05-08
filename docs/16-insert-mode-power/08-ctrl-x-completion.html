@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Ctrl-X Sub-Completions — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Insert Mode Power</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="07-completion.html" rel="prev">← Word Completion (Ctrl-N / Ctrl-P)</a></span>
+  <span class="pager-pos">83 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="09-literal-digraph.html" rel="next">Literal Insert and Digraphs →</a></span>
+</nav>
+<article>
+<h1>The Ctrl-X Sub-Completions</h1>
+<p class="subtitle">Specialized completion: filenames, lines, dictionary, omni.</p>
+<p class="meta"><code>id: insert.ctrl-x-completion</code> &middot; part: <strong>insert-mode-power</strong> &middot; keys: <kbd>Ctrl-X</kbd> &middot; lessons: 389, 393</p>
+<blockquote class="summary">Ctrl-X enters a sub-mode where the next key picks a completion source: Ctrl-F for filenames, Ctrl-L for whole lines, Ctrl-K for dictionary, Ctrl-O for omni-complete (language-aware), and more.</blockquote>
+<p>Plain <kbd>Ctrl-N</kbd> pulls from buffers. The <kbd>Ctrl-X</kbd> prefix opens a <em>sub-menu</em> where the next key chooses a more specific source.</p>
+<table>
+<thead><tr>
+<th>Sequence</th>
+<th>Source</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-F</kbd></td>
+<td>Filenames (in cwd)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-L</kbd></td>
+<td>Whole lines</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-N</kbd></td>
+<td>Keywords from current file only</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-K</kbd></td>
+<td>Dictionary words (<code>&#x27;dictionary&#x27;</code>)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-T</kbd></td>
+<td>Thesaurus (<code>&#x27;thesaurus&#x27;</code>)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-I</kbd></td>
+<td>Included files (e.g. <code>#include</code>)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-]</kbd></td>
+<td>Tags</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-D</kbd></td>
+<td>Macro definitions</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-V</kbd></td>
+<td>Vim command-line</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-U</kbd></td>
+<td>User-defined function (<code>&#x27;completefunc&#x27;</code>)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>Ctrl-O</kbd></td>
+<td>Omni-complete (language-aware, <code>&#x27;omnifunc&#x27;</code>)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd><kbd>s</kbd></td>
+<td>Spelling suggestions</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — How Omni-Complete Works</header>
+<p><kbd>Ctrl-X</kbd><kbd>Ctrl-O</kbd> calls the function set in the buffer-local <code>&#x27;omnifunc&#x27;</code> option. Filetype plugins set this for you: <code>pythoncomplete#Complete</code> for Python, <code>csscomplete#CompleteCSS</code> for CSS, <code>htmlcomplete#CompleteTags</code> for HTML, etc. The function is called twice — once to find the start column of the match, once to return matches.</p>
+<p>This is the hook modern LSP plugins use to inject smart completions. If you&#x27;ve installed an LSP plugin like coc.nvim or vim-lsp, <kbd>Ctrl-X</kbd><kbd>Ctrl-O</kbd> is what fires it.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>Ctrl-X</kbd><kbd>Ctrl-F</kbd> is genuinely magical for typing paths — <code>./src/</code> then <kbd>Ctrl-X</kbd><kbd>Ctrl-F</kbd> starts cycling the actual files in that directory.</aside>
+<aside class="qr"><span>→ See also <a href="08-ctrl-x-completion.html">The Ctrl-X Sub-Completions</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0389 Ctrl-X Ctrl-T Thesaurus (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0393 Ctrl-X Ctrl-O Omni Completion (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="07-completion.html">Word Completion (Ctrl-N / Ctrl-P)</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="07-completion.html" rel="prev">← Word Completion (Ctrl-N / Ctrl-P)</a></span>
+  <span class="pager-pos">83 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="09-literal-digraph.html" rel="next">Literal Insert and Digraphs →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

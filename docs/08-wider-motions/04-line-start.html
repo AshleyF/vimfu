@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Line-Start Motions — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Wider Motions</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-screen-positions.html" rel="prev">← Screen Position Jumps</a></span>
+  <span class="pager-pos">38 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-WORD.html" rel="next">WORD Motions →</a></span>
+</nav>
+<article>
+<h1>Line-Start Motions</h1>
+<p class="subtitle">+, -, Enter — jump to first non-blank of next/previous line.</p>
+<p class="meta"><code>id: wider-motions.line-start</code> &middot; part: <strong>wider-motions</strong> &middot; keys: <kbd>+</kbd>, <kbd>-</kbd>, <kbd>Enter</kbd> &middot; lessons: 95</p>
+<blockquote class="summary">+ and Enter both move down to the first non-blank of the next line. - moves up. Useful for navigating indented code line-by-line without ending up mid-indent.</blockquote>
+<p><kbd>j</kbd> moves down a line but keeps your column. So in indented code you often land mid-indentation. <kbd>+</kbd> (and <kbd>Enter</kbd>) move down a line and <em>also</em> land on the first non-blank — exactly where the code starts.</p>
+<figure class="keys">
+<figcaption>Down a line, to first non-blank</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>+</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Same as +</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Enter</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Up a line, to first non-blank</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>-</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="95"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/7eAMkzqK6ZI?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Next/Previous Line Start" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>+ / - / Enter — line-start motions</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — These Are Linewise Motions to ^</header>
+<p>Internally, <kbd>+</kbd> = <kbd>j</kbd><kbd>^</kbd> and <kbd>-</kbd> = <kbd>k</kbd><kbd>^</kbd>. <kbd>Enter</kbd> is an alias for <kbd>+</kbd> for ergonomics — pressing <kbd>Enter</kbd> to advance to the next line is intuitive.</p>
+<p>They&#x27;re <em>linewise</em> motions, which means <kbd>d</kbd><kbd>+</kbd> deletes the current line <em>and</em> the next one (in linewise fashion), not just from cursor to next-line-start. Same with <kbd>y</kbd><kbd>+</kbd> — yanks two whole lines.</p>
+</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+<th>Type</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>+</kbd> / <kbd>Enter</kbd></td>
+<td>Down to first non-blank</td>
+<td>Linewise</td>
+</tr>
+<tr>
+<td><kbd>-</kbd></td>
+<td>Up to first non-blank</td>
+<td>Linewise</td>
+</tr>
+</tbody></table>
+<aside class="qr"><span>→ See also <a href="04-line-start.html">Line-Start Motions</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../03-basic-editing/03-line-motions.html">Line Motions</a>, <a href="../02-survival/04-hjkl.html">Move with hjkl</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-screen-positions.html" rel="prev">← Screen Position Jumps</a></span>
+  <span class="pager-pos">38 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-WORD.html" rel="next">WORD Motions →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

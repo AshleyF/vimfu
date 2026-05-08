@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pattern Search — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Search Find</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+cat%0Aran+past%0Athe+cat%0Aand+away%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../03-basic-editing/08-replace-char.html" rel="prev">← Replace a Character</a></span>
+  <span class="pager-pos">18 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-word.html" rel="next">Word Search →</a></span>
+</nav>
+<article>
+<h1>Pattern Search</h1>
+<p class="subtitle">/ searches forward, ? searches back. n and N step through matches.</p>
+<p class="meta"><code>id: search.pattern</code> &middot; part: <strong>search</strong> &middot; keys: <kbd>/</kbd>, <kbd>?</kbd>, <kbd>n</kbd>, <kbd>N</kbd> &middot; lessons: 46, 47, 48, 49</p>
+<blockquote class="summary">/pattern searches forward; ?pattern searches backward. n repeats the search in the original direction; N reverses it. Search is one of Vim&#x27;s most powerful motions.</blockquote>
+<p>Vim&#x27;s search is two-stage: type <kbd>/</kbd> (or <kbd>?</kbd>) at the cursor&#x27;s current line, type the pattern, press <kbd>Enter</kbd>. Cursor jumps to the first match. <kbd>n</kbd> for the next match, <kbd>N</kbd> for the previous.</p>
+<figure class="keys">
+<figcaption>Search forward</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>/</kbd></td><td></td></tr>
+<tr><td><kbd>{pattern}</kbd></td><td></td></tr>
+<tr><td><kbd>Enter</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Search backward</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>?</kbd></td><td></td></tr>
+<tr><td><kbd>{pattern}</kbd></td><td></td></tr>
+<tr><td><kbd>Enter</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Repeat search in same direction</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>n</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Repeat search in opposite direction</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>N</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="46"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/iwTAYjulO6E?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Search Forward" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>/ — search forward</figcaption></figure>
+<figure class="lesson-embed" data-lesson="47"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/wREPBS1FdjI?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Search Backward" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>? — search backward</figcaption></figure>
+<figure class="lesson-embed" data-lesson="48"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/Rn6a0DCHMRc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Next Match" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>n — next match</figcaption></figure>
+<figure class="lesson-embed" data-lesson="49"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/WKXbQ3jEl2A?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Previous Match" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>N — previous match</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> The pattern is a <em>regex</em>, not a literal string. <kbd>/</kbd><kbd>f</kbd><kbd>o</kbd><kbd>o</kbd><kbd>.</kbd><kbd>Enter</kbd> matches <code>foo</code> followed by <em>any</em> character. To search for a literal <code>.</code>, escape it: <kbd>/</kbd><kbd>f</kbd><kbd>o</kbd><kbd>o</kbd><kbd>\</kbd><kbd>.</kbd><kbd>Enter</kbd>. Or use the <code>\V</code> (very nomagic) prefix to disable regex meaning altogether: <kbd>/</kbd><kbd>\</kbd><kbd>V</kbd><kbd>f</kbd><kbd>o</kbd><kbd>o</kbd><kbd>.</kbd><kbd>Enter</kbd>.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Search Is a Motion</header>
+<p><kbd>/</kbd>{pattern}<kbd>Enter</kbd> is a <em>motion</em>: it produces a (start, end) pair just like <kbd>w</kbd> or <kbd>G</kbd>. So every operator pairs with it.</p>
+<ul>
+<li><kbd>d</kbd><kbd>/</kbd><kbd>E</kbd><kbd>N</kbd><kbd>D</kbd><kbd>Enter</kbd> — delete from here through the next <code>END</code>.</li>
+<li><kbd>c</kbd><kbd>/</kbd><kbd>fn</kbd><kbd>Enter</kbd> — change from here to the next <code>fn</code>.</li>
+<li><kbd>y</kbd><kbd>?</kbd><kbd>def</kbd><kbd>Enter</kbd> — yank from here back to the previous <code>def</code>.</li>
+</ul>
+<p>Search is also a <em>jump</em> — it pushes the previous position to the jumplist, so <kbd>Ctrl-O</kbd> returns you. And the pattern itself is stored in the <strong><code>/</code> register</strong> (<kbd>&quot;</kbd><kbd>/</kbd>), reusable in <kbd>:</kbd><kbd>s</kbd> commands.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Settings That Change How Search Feels</header>
+<ul>
+<li><code>&#x27;incsearch&#x27;</code> — show matches as you type. On by default in Neovim.</li>
+<li><code>&#x27;hlsearch&#x27;</code> — highlight all matches after Enter. <kbd>:</kbd><kbd>n</kbd><kbd>o</kbd><kbd>h</kbd><kbd>Enter</kbd> clears the highlight without losing the search history.</li>
+<li><code>&#x27;ignorecase&#x27;</code> — case-insensitive search.</li>
+<li><code>&#x27;smartcase&#x27;</code> — combined with <code>ignorecase</code>, search is case-insensitive <em>unless</em> you typed a capital letter. The pragmatic default.</li>
+<li><code>&#x27;wrapscan&#x27;</code> — when the search hits the end of file, wrap to the top. On by default; turn off if you want hard stops.</li>
+</ul>
+<p>The pattern syntax has four &quot;magic&quot; levels: <code>\v</code> (very magic — most regex chars are special), default <code>\m</code>, <code>\M</code> (nomagic), <code>\V</code> (very nomagic — almost everything literal). For complex patterns prefer <code>\v</code>.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Empty pattern reuses the previous one: <kbd>/</kbd><kbd>Enter</kbd> jumps to the next match of whatever you last searched for.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>/</kbd>{pattern}<kbd>Enter</kbd></td>
+<td>Forward search</td>
+</tr>
+<tr>
+<td><kbd>?</kbd>{pattern}<kbd>Enter</kbd></td>
+<td>Backward search</td>
+</tr>
+<tr>
+<td><kbd>n</kbd> / <kbd>N</kbd></td>
+<td>Next / previous (in original direction)</td>
+</tr>
+<tr>
+<td><kbd>/</kbd><kbd>Enter</kbd></td>
+<td>Repeat last search forward</td>
+</tr>
+<tr>
+<td><kbd>?</kbd><kbd>Enter</kbd></td>
+<td>Repeat last search backward</td>
+</tr>
+<tr>
+<td><kbd>:</kbd><kbd>n</kbd><kbd>o</kbd><kbd>h</kbd></td>
+<td>Clear highlights</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-O</kbd> / <kbd>Ctrl-I</kbd></td>
+<td>Jump back / forward (search jumps land here)</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — /word and n / N</h3>
+<p class="example-summary">Forward search, then jump through hits.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/search.pattern/frame_01.color.svg" alt="search.pattern"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>/cat</kbd> · <span class="step-cap">/ shows search prompt at the bottom.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/search.pattern/frame_02.color.svg" alt="/ shows search prompt at the bottom."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>Enter</kbd> · <span class="step-cap">Enter — first match highlighted.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/search.pattern/frame_03.color.svg" alt="Enter — first match highlighted."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>n</kbd> · <span class="step-cap">n — next match.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/search.pattern/frame_04.color.svg" alt="n — next match."></div>
+<p class="narration">N goes back. // repeats with the same pattern; ? searches backward.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+cat%0Aran+past%0Athe+cat%0Aand+away%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="01-pattern.html">Pattern Search</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="02-word.html">Word Search</a>, <a href="../17-ex-commands/02-substitute.html">Substitute (:s)</a>, <a href="../12-registers/07-special.html">Special Registers</a>, <a href="../10-marks-jumps/04-jumplist.html">The Jump List</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../03-basic-editing/08-replace-char.html" rel="prev">← Replace a Character</a></span>
+  <span class="pager-pos">18 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-word.html" rel="next">Word Search →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

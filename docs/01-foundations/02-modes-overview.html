@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Modes — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Foundations</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=Hello+world%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-modal-editing.html" rel="prev">← Modal Editing</a></span>
+  <span class="pager-pos">2 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-universal-grammar.html" rel="next">The Universal Grammar →</a></span>
+</nav>
+<article>
+<h1>The Modes</h1>
+<p class="subtitle">A small finite state machine you carry in your head</p>
+<p class="meta"><code>id: foundations.modes-overview</code> &middot; part: <strong>foundations</strong> &middot; keys: <kbd>Esc</kbd>, <kbd>Ctrl-[</kbd>, <kbd>Ctrl-C</kbd>, <kbd>i</kbd>, <kbd>v</kbd>, <kbd>V</kbd>, <kbd>Ctrl-V</kbd>, <kbd>R</kbd>, <kbd>:</kbd>, <kbd>Ctrl-O</kbd> &middot; lessons: 3, 15</p>
+<blockquote class="summary">Normal, Insert, Visual, Replace, Command-line, Operator-pending, Terminal. What each is for and how to move between them.</blockquote>
+<p>Vim has seven modes. You will spend essentially all your time in two of them — Normal and Insert. The other five matter for specific jobs. Knowing they exist, and how the transitions work, is more important than memorizing every command in each.</p>
+<table>
+<thead><tr>
+<th>Mode</th>
+<th>Status line</th>
+<th>What it&#x27;s for</th>
+</tr></thead><tbody>
+<tr>
+<td>Normal</td>
+<td><em>(empty)</em></td>
+<td>The default. Keys are commands.</td>
+</tr>
+<tr>
+<td>Insert</td>
+<td><code>-- INSERT --</code></td>
+<td>Keys type text.</td>
+</tr>
+<tr>
+<td>Visual</td>
+<td><code>-- VISUAL --</code> / <code>-- V-LINE --</code> / <code>-- V-BLOCK --</code></td>
+<td>Select text, then act on it.</td>
+</tr>
+<tr>
+<td>Replace</td>
+<td><code>-- REPLACE --</code></td>
+<td>Overtype existing characters.</td>
+</tr>
+<tr>
+<td>Command-line</td>
+<td>shows typed <code>:</code> / <code>/</code> / <code>?</code></td>
+<td>Run an Ex command or search.</td>
+</tr>
+<tr>
+<td>Operator-pending</td>
+<td><em>(empty, but last key was an operator)</em></td>
+<td>Waiting for a motion or text object.</td>
+</tr>
+<tr>
+<td>Terminal</td>
+<td><code>-- TERMINAL --</code></td>
+<td>An interactive shell inside Vim.</td>
+</tr>
+</tbody></table>
+<h3>Getting Out</h3>
+<p>From any mode except Normal, <kbd>Esc</kbd> returns to Normal. From Insert and Visual, <kbd>Ctrl-[</kbd> does the same. Build the <kbd>Esc</kbd> reflex: after every thought, escape.</p>
+<p>Terminal mode is the exception — <kbd>Esc</kbd> is forwarded to the shell. Use <kbd>Ctrl-\</kbd><kbd>Ctrl-N</kbd> to escape from a Vim terminal.</p>
+<aside class="tip"><strong>Tip.</strong> If you want a visual cue for what mode you&#x27;re in, configure your status line to show it. Most users learn the mode by feel — but for the first week, having <code>[INSERT]</code> or <code>[NORMAL]</code> in the corner removes a lot of confusion.</aside>
+<hr>
+<h3>Operator-pending: the secret seventh mode</h3>
+<p>When you press an operator like <kbd>d</kbd>, <kbd>c</kbd>, <kbd>y</kbd>, or <kbd>&gt;</kbd>, Vim enters <em>operator-pending mode</em> and waits for a motion or text object. You&#x27;re in Normal mode no longer — keys do different things in this state. <kbd>i</kbd> no longer enters Insert; it begins a text object (inner ...). <kbd>a</kbd> no longer appends; it begins around-text-objects. The operator and motion together form a single change, which is what <kbd>.</kbd> repeats.</p>
+<figure class="keys">
+<figcaption>Operator d → operator-pending → text object iw → execute</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>d</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — The State Machine, Drawn</header>
+<p>The transition graph is small enough to memorize. From Normal you can reach Insert (<kbd>i</kbd>, <kbd>a</kbd>, <kbd>o</kbd>, …), Visual (<kbd>v</kbd>, <kbd>V</kbd>, <kbd>Ctrl-V</kbd>), Replace (<kbd>R</kbd>), Command-line (<kbd>:</kbd>, <kbd>/</kbd>, <kbd>?</kbd>), Operator-pending (any operator), or Terminal (<code>:term</code>). From everywhere else, <kbd>Esc</kbd> returns you to Normal.</p>
+<p>Visual has three sub-modes (char, line, block); pressing <kbd>v</kbd>/<kbd>V</kbd>/<kbd>Ctrl-V</kbd> while already in Visual switches between them. Insert has a sub-state called <em>Replace-Insert</em> (toggle with <kbd>Insert</kbd>) — you almost never want it.</p>
+<p>The deepest transition is <kbd>Ctrl-O</kbd> from Insert mode: it pops you into Normal <em>for exactly one command</em>, then automatically returns. So <kbd>Ctrl-O</kbd><kbd>dd</kbd> from Insert mode deletes the current line and continues typing where the new cursor lands.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Per-Mode State</header>
+<p>Each mode carries its own state. Normal mode tracks the count being typed (<code>5</code> then <code>j</code> is two keystrokes; the <code>5</code> is buffered). Insert mode buffers the inserted text so it can be repeated with <kbd>.</kbd> and so <kbd>Ctrl-O</kbd> can briefly leave and return. Visual mode tracks the <em>anchor</em> (where you started) and the <em>cursor</em> (where you are now); the selection is the range between them, recomputed every keystroke. Operator-pending tracks which operator is pending, plus its count and any selected register.</p>
+<p>When the mode ends, this state is either committed (Insert → Normal commits the typed text and the count&#x27;s repetitions; operator-pending → Normal applies the operator to the motion&#x27;s range) or discarded (Visual → Normal without an operator just throws the selection away, though <kbd>gv</kbd> can recover it from the <kbd>&#x27;&lt;</kbd> / <kbd>&#x27;&gt;</kbd> marks).</p>
+</aside>
+<hr>
+<h3>Why this matters</h3>
+<p>When something surprises you in Vim — a key doesn&#x27;t do what you expected — nine times out of ten you misjudged the current mode. &quot;I pressed <kbd>dd</kbd> and it just typed two d&#x27;s&quot; → you were in Insert. &quot;I pressed <kbd>i</kbd> and a word disappeared&quot; → you were in operator-pending after <kbd>d</kbd>. The fix is always the same: press <kbd>Esc</kbd> (sometimes twice) and start over from Normal.</p>
+<section class="example">
+<h3 class="example-title">Worked example — Normal -&gt; Insert -&gt; Normal</h3>
+<p class="example-summary">The mode transition every editing change goes through.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Normal mode. Cursor as a block on the space.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/foundations.modes/frame_01.color.svg" alt="Normal mode. Cursor as a block on the space."></div>
+<p class="narration">When you open a file, you start in Normal mode. Keystrokes are commands.</p>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>i, vim</kbd> · <span class="step-cap">i then &#x27;, vim&#x27; — Insert mode, text added.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/foundations.modes/frame_02.color.svg" alt="i then &#x27;, vim&#x27; — Insert mode, text added."></div>
+<p class="narration">i enters Insert at the cursor; subsequent keys produce text. The status line below advertises the mode.</p>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>Esc</kbd> · <span class="step-cap">Esc — back to Normal mode.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/foundations.modes/frame_03.color.svg" alt="Esc — back to Normal mode."></div>
+<p class="narration">Esc commits the insert and returns to Normal. The whole insertion is one undoable change.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=Hello+world%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="02-modes-overview.html">The Modes</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/axyczdX5g0I?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Normal Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0003 — <a href="https://youtube.com/watch?v=axyczdX5g0I" target="_blank" rel="noopener">Normal Mode</a></span></li><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/1T7OEvSUh5g?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The Escape Habit" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0015 — <a href="https://youtube.com/watch?v=1T7OEvSUh5g" target="_blank" rel="noopener">The Escape Habit</a></span></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="01-modal-editing.html">Modal Editing</a>, <a href="03-universal-grammar.html">The Universal Grammar</a>, <a href="../18-visual-depth/01-modes.html">The Three Visual Modes</a>, <a href="../11-transform/01-replace-mode.html">Replace Mode</a>, <a href="../16-insert-mode-power/02-one-shot-normal.html">One-Shot Normal Mode</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-modal-editing.html" rel="prev">← Modal Editing</a></span>
+  <span class="pager-pos">2 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-universal-grammar.html" rel="next">The Universal Grammar →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

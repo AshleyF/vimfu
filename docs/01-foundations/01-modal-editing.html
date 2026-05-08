@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Modal Editing — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Foundations</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><span class="pager-disabled">← start of book</span></span>
+  <span class="pager-pos">1 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-modes-overview.html" rel="next">The Modes →</a></span>
+</nav>
+<article>
+<h1>Modal Editing</h1>
+<p class="subtitle">Why every key on the keyboard is a command</p>
+<p class="meta"><code>id: foundations.modal-editing</code> &middot; part: <strong>foundations</strong> &middot; keys: <kbd>Esc</kbd>, <kbd>i</kbd> &middot; lessons: 1, 3, 15</p>
+<blockquote class="summary">Vim is modal: the same keys mean different things in different modes. Normal mode is your resting state.</blockquote>
+<p>You spend more time reading, navigating, and restructuring code than typing new code from scratch. Think about your last hour of editing. How much of it was actually inserting new characters? Maybe twenty percent. The rest was scrolling, searching, selecting, deleting, copying, moving, and rearranging.</p>
+<p>Most editors give you a full keyboard for the typing — and then make you reach for the mouse, hold modifier keys, or chase menus for everything else. Vim flips this. It gives you a full keyboard for the <em>eighty</em> percent.</p>
+<p>That is what &quot;modal&quot; means. In <strong>normal mode</strong>, every key on your keyboard is a command. <kbd>j</kbd> moves down. <kbd>w</kbd> jumps forward by a word. <kbd>d</kbd><kbd>w</kbd> deletes a word. <kbd>c</kbd><kbd>i</kbd><kbd>&quot;</kbd> changes the text inside quotes. No mouse. No Ctrl-Shift-Arrow. Just keystrokes.</p>
+<p>When you need to type, press <kbd>i</kbd> to enter <strong>insert mode</strong>. Type what you need. Press <kbd>Esc</kbd> to come back. Normal mode is your resting state — the mode you spend most of your time in.</p>
+<figure class="keys">
+<figcaption>Enter insert mode</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Return to normal mode</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Esc</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="1"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/uOrfphZBjew?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="What Is Vim?" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>What Is Vim — a 60-second tour</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> The productivity payoff isn&#x27;t really about speed — it&#x27;s about fluency. You stop translating between <em>what</em> you want to do and <em>how</em> to do it. The editing language becomes invisible, like touch typing.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Vim Is a State Machine</header>
+<p>Vim is a finite state machine. The states are the modes — Normal, Insert, Visual (with three sub-states: char / line / block), Replace, Command-line, Operator-pending, Terminal. Every keystroke is interpreted <em>relative to the current state</em>. <kbd>i</kbd> in Normal mode enters Insert mode; in Insert mode it inserts the letter &#x27;i&#x27;. The transition function is, in effect, the entire Vim manual.</p>
+<p>This is why &quot;learn Vim&quot; feels different from &quot;learn an editor.&quot; You&#x27;re not memorizing keystrokes — you&#x27;re learning a state machine. Once you have the states in your head, the individual keys fall into place: each one is just an edge in the graph.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Why hjkl?</header>
+<p>Bill Joy wrote vi in 1976 on an ADM-3A terminal at UC Berkeley. The ADM-3A keyboard had no arrow keys — instead, the <kbd>h</kbd>, <kbd>j</kbd>, <kbd>k</kbd>, <kbd>l</kbd> keys were physically labeled with left/down/up/right arrows. Joy reused the existing terminal control codes those keys produced. The keyboard layout died; the convention lived. Today <kbd>hjkl</kbd> is on the home row, which turns out to be a real ergonomic win — but the original reason was just &quot;the arrows were there.&quot;</p>
+</aside>
+<hr>
+<h3>Why this feels backwards (at first)</h3>
+<p>Every other editor starts in what Vim calls <em>insert mode</em>: keys type text. Vim starts in what every other editor would call <em>command mode</em>: keys do things. The learning curve is real. New users press <kbd>j</kbd> expecting a &#x27;j&#x27; and instead see the cursor move. They press <kbd>dd</kbd> expecting two letters and the line vanishes.</p>
+<p>Push through this. Once you internalize the grammar — once <kbd>d</kbd> feels like <em>delete</em>, not like a typed letter — you stop thinking in keystrokes and start thinking in edits: &quot;delete this word,&quot; &quot;change inside these quotes,&quot; &quot;yank this paragraph.&quot; Your hands just execute.</p>
+<aside class="tip"><strong>Tip.</strong> The <kbd>Esc</kbd> habit is the single most important reflex. After every thought, press <kbd>Esc</kbd>. Make it automatic. Your default state is Normal, not Insert.</aside>
+<figure class="lesson-embed" data-lesson="15"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/1T7OEvSUh5g?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The Escape Habit" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>The Escape Habit</figcaption></figure>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>From mode</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>i</kbd></td>
+<td>Normal</td>
+<td>Enter Insert mode (before cursor)</td>
+</tr>
+<tr>
+<td><kbd>Esc</kbd></td>
+<td>Insert / Visual / Replace</td>
+<td>Return to Normal mode</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-[</kbd></td>
+<td>Insert / Visual / Replace</td>
+<td>Same as Esc</td>
+</tr>
+<tr>
+<td><kbd>v</kbd></td>
+<td>Normal</td>
+<td>Enter Visual (character) mode</td>
+</tr>
+<tr>
+<td><kbd>:</kbd></td>
+<td>Normal</td>
+<td>Enter Command-line mode</td>
+</tr>
+</tbody></table>
+<aside class="qr"><span>→ See also <a href="01-modal-editing.html">Modal Editing</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/axyczdX5g0I?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Normal Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0003 — <a href="https://youtube.com/watch?v=axyczdX5g0I" target="_blank" rel="noopener">Normal Mode</a></span></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="02-modes-overview.html">The Modes</a>, <a href="03-universal-grammar.html">The Universal Grammar</a>, <a href="../02-survival/02-insert-and-back.html">Insert and Back Again</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><span class="pager-disabled">← start of book</span></span>
+  <span class="pager-pos">1 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-modes-overview.html" rel="next">The Modes →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -13,17 +13,17 @@
   "blocks": [
     { "type": "heading", "level": 1, "text": "The Small Delete Register" },
 
-    { "type": "prose", "text": "{key:x}, {key:d}{key:w} on a tiny word, {key:r}{c} replacing one character — none of these *should* clobber your last big delete in `\"1`. So Vim diverts them to `\"-`, the **small delete register**." },
+    { "type": "prose", "text": "{key:x}, {key:d}{key:w} on a tiny word, {key:r}{c} replacing one character — none of these *should* clobber your last big delete in {key:\"}{key:1}. So Vim diverts them to {key:\"}{key:-}, the **small delete register**." },
 
     { "type": "embed", "lesson": 123, "caption": "The small delete register" },
 
     {
       "type": "internals",
       "title": "What Counts as Small",
-      "text": "A delete goes to `\"-` (and *not* into the numbered register chain) when it is:\n\n  • **Charwise** (not linewise or blockwise).\n  • Less than one full line.\n  • Doesn't contain a newline.\n\nAnything else — {key:d}{key:d}, {key:d}{key:i}{key:p}, {key:d}{key:%} on a multi-line bracket — goes into `\"1` and shifts the numbered registers.\n\nThe unnamed register {key:\"}{key:\"} is *still* updated by both small and big deletes. So you can always paste the most recent delete with {key:p}, regardless of which numbered slot it landed in.\n\nThe practical upshot: you can {key:x} a typo or {key:d}{key:i}{key:w} a small word freely without losing the line you carefully deleted into `\"1` for re-pasting."
+      "text": "A delete goes to {key:\"}{key:-} (and *not* into the numbered register chain) when it is:\n\n  • **Charwise** (not linewise or blockwise).\n  • Less than one full line.\n  • Doesn't contain a newline.\n\nAnything else — {key:d}{key:d}, {key:d}{key:i}{key:p}, {key:d}{key:%} on a multi-line bracket — goes into {key:\"}{key:1} and shifts the numbered registers.\n\nThe unnamed register {key:\"}{key:\"} is *still* updated by both small and big deletes. So you can always paste the most recent delete with {key:p}, regardless of which numbered slot it landed in.\n\nThe practical upshot: you can {key:x} a typo or {key:d}{key:i}{key:w} a small word freely without losing the line you carefully deleted into {key:\"}{key:1} for re-pasting."
     },
 
-    { "type": "tip", "text": "The {key:r}{c} replace command writes the *replaced* character into `\"-`. Useful occasionally for swap-back-what-I-just-replaced." },
+    { "type": "tip", "text": "The {key:r}{c} replace command writes the *replaced* character into {key:\"}{key:-}. Useful occasionally for swap-back-what-I-just-replaced." },
 
     { "type": "qr", "topic": "registers.small-delete" },
     { "type": "buy-prompt" }

@@ -1,0 +1,49 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "tmux.what-is-tmux",
+  "title": "What Is tmux?",
+  "subtitle": "A terminal multiplexer — one screen, many sessions",
+  "part": "tmux",
+  "summary": "tmux gives one terminal window many independent sessions, windows, and panes. Detach without losing state. Reattach from anywhere. The standard partner program for Vim.",
+  "keys": ["tmux"],
+  "lessons": [501, 502],
+  "see_also": ["tmux.prefix-key", "tmux.panes", "foundations.editing-language"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "What Is tmux?" },
+
+    { "type": "prose", "text": "tmux — short for *terminal multiplexer* — turns one terminal window into many. A single tmux session can hold any number of windows; each window can be split into any number of panes; panes run independent shells. You attach to a session, do your work, detach, and the session keeps running in the background. Reattach hours or days later from a completely different terminal — sometimes from a completely different computer over SSH — and pick up exactly where you left off." },
+
+    { "type": "prose", "text": "Start it by typing `tmux` at any shell. You'll see your shell again, this time with a green status bar across the bottom. Everything you do from now on is happening *inside* the tmux session. The status bar is the only obvious sign tmux is there." },
+
+    {
+      "type": "table",
+      "headers": ["Concept", "What it is",                                                "Mental model"],
+      "rows": [
+        ["Pane",   "A single shell, drawn inside a rectangle on your screen",            "A window into a process"],
+        ["Window", "A full-screen layout containing one or more panes",                    "Like a virtual desktop, scoped to a session"],
+        ["Session","A named collection of windows that can be detached and reattached",   "A workspace that survives terminal closes and SSH disconnects"]
+      ]
+    },
+
+    { "type": "tip", "text": "If you have ever said \"I lost my work because the SSH connection dropped,\" tmux fixes that. Run your work inside a tmux session on the remote machine and the session survives every disconnect." },
+
+    {
+      "type": "internals",
+      "audience": "book",
+      "title": "Why a Multiplexer Exists",
+      "text": "Before tmux there was *screen* (1987), and before screen there were physical multiplexers — small boxes that let multiple users share a single terminal. The need predates the internet: anywhere terminals were a scarce resource, multiplexing was useful. The modern descendants kept the concept and dropped the hardware.\n\nThe interesting design decision in screen and tmux is that the multiplexer is a *separate process* from your shells. Your shell does not know it is being multiplexed; tmux just sits between your terminal and the shell, drawing the borders, drawing the status bar, and routing your keystrokes to the right pane. This is the Unix way: small composable tools that communicate over standard interfaces. The shell does not have to know about windows; tmux does not have to know about your shell."
+    },
+
+    {
+      "type": "internals",
+      "audience": "book",
+      "title": "Why tmux + Vim",
+      "text": "Vim is a great text editor. It is not a great window manager. The window-management code inside Vim is real but feels bolted on: window splits, terminal panes, tabs. Vim works fine with one window full of code; once you want a code window plus a test runner plus a shell prompt plus a log tail, the seams show.\n\ntmux is the other half. It is excellent at managing windows and panes and indifferent about what runs inside them. Pair the two — Vim editing text in one pane, a test runner in the next, a log tail in the third, a shell in the fourth — and you have a complete development environment that is keyboard-driven from end to end. This is the canonical Unix-philosophy pairing: one program for editing, one for window management, both speaking the keyboard, neither trying to do the other's job. Emacs's slogan, only half-jokingly, is \"a great operating system, lacking only a decent editor.\" Vim+tmux is the opposite bet: small tools, sharp edges, composed."
+    },
+
+    { "type": "qr", "topic": "tmux.what-is-tmux" },
+    { "type": "buy-prompt" }
+  ]
+}

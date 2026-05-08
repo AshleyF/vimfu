@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Move with hjkl — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Survival</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=alpha%0Abravo%0Acharlie%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-undo-redo.html" rel="prev">← Undo and Redo</a></span>
+  <span class="pager-pos">9 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../03-basic-editing/01-insert-variants.html" rel="next">More Ways into Insert →</a></span>
+</nav>
+<article>
+<h1>Move with hjkl</h1>
+<p class="subtitle">Left, down, up, right — without leaving home row</p>
+<p class="meta"><code>id: survival.hjkl</code> &middot; part: <strong>survival</strong> &middot; keys: <kbd>h</kbd>, <kbd>j</kbd>, <kbd>k</kbd>, <kbd>l</kbd>, <kbd>Left</kbd>, <kbd>Down</kbd>, <kbd>Up</kbd>, <kbd>Right</kbd> &middot; lessons: 13, 14</p>
+<blockquote class="summary">h j k l move the cursor one cell at a time. Hands stay on the home row. Arrow keys also work but defeat the purpose.</blockquote>
+<p>Four keys to move the cursor one cell at a time:</p>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Direction</th>
+<th>Mnemonic</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>h</kbd></td>
+<td>Left</td>
+<td>h is on the left of the home row</td>
+</tr>
+<tr>
+<td><kbd>j</kbd></td>
+<td>Down</td>
+<td>j has a hook that points down</td>
+</tr>
+<tr>
+<td><kbd>k</kbd></td>
+<td>Up</td>
+<td>k is right next to j; the one above</td>
+</tr>
+<tr>
+<td><kbd>l</kbd></td>
+<td>Right</td>
+<td>l is the last of the four</td>
+</tr>
+</tbody></table>
+<figure class="lesson-embed" data-lesson="13"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/127qYVCOkh4?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Moving: h j k l" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Moving with hjkl</figcaption></figure>
+<p>Counts work: <kbd>5</kbd><kbd>j</kbd> moves down five lines, <kbd>1</kbd><kbd>0</kbd><kbd>l</kbd> moves right ten characters.</p>
+<h3>Why not arrow keys?</h3>
+<p>The arrow keys also work. Vim accepts them. But they live a few inches away from the home row. Every time your fingers leave home row, you spend a beat finding it again. Over a day of editing, those beats add up.</p>
+<p>More importantly, <kbd>hjkl</kbd> are right under your fingers when you are <em>about to issue a command</em>. <kbd>d</kbd><kbd>j</kbd> deletes a line down. <kbd>y</kbd><kbd>5</kbd><kbd>k</kbd> yanks five lines up. The cursor keys can&#x27;t combine like this — they aren&#x27;t part of the grammar.</p>
+<figure class="lesson-embed" data-lesson="14"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/740km_QY3wk?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Why Not Arrow Keys?" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Why not arrow keys?</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> Some Vimmers turn off the arrow keys to break the habit. You don&#x27;t have to be that strict. Just notice when you reach for them; that&#x27;s when <kbd>hjkl</kbd> would be faster.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Why hjkl?</header>
+<p>Bill Joy wrote vi on an ADM-3A terminal at UC Berkeley in 1976. The ADM-3A keyboard had no dedicated arrow keys — instead, the <kbd>h</kbd>, <kbd>j</kbd>, <kbd>k</kbd>, <kbd>l</kbd> keys were physically labeled with left/down/up/right arrows. Joy reused the existing terminal control codes those keys produced. The ADM-3A is long dead; the convention lives.</p>
+<p>It turns out to be a real ergonomic win: those four keys are on the home row of the dominant hand for most touch-typists. If Joy had been working on a different terminal — one with arrow keys somewhere else — modern Vim would feel different. As it stands, the right hand never leaves the home row to navigate.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Sticky Column</header>
+<p>When you move <kbd>k</kbd> or <kbd>j</kbd> up and down, the cursor tries to stay in the same <em>column</em> — even across lines that are too short to reach that column. If you&#x27;re at column 30 and you press <kbd>j</kbd> onto a line of length 10, the cursor lands at column 10 (the end). Press <kbd>j</kbd> again onto a line of length 50: the cursor returns to column 30, not column 10. Vim remembers your <em>intended</em> column.</p>
+<p>Horizontal motions (<kbd>h</kbd>, <kbd>l</kbd>, <kbd>w</kbd>, <kbd>f</kbd>, etc.) reset the sticky column. So a right-moving motion in the middle of vertical navigation will cost you the original column.</p>
+<p>This is the cause of the frequent &quot;I pressed <kbd>j</kbd> a few times and the cursor walked left&quot; surprise — you crossed a short line. The cursor is following the rules; the rules just don&#x27;t match terminal-emulator intuition.</p>
+</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>h</kbd></td>
+<td>One character left</td>
+</tr>
+<tr>
+<td><kbd>j</kbd></td>
+<td>One line down</td>
+</tr>
+<tr>
+<td><kbd>k</kbd></td>
+<td>One line up</td>
+</tr>
+<tr>
+<td><kbd>l</kbd></td>
+<td>One character right</td>
+</tr>
+<tr>
+<td><kbd>{n</kbd>}<kbd>j</kbd></td>
+<td><em>n</em> lines down (etc.)</td>
+</tr>
+<tr>
+<td><kbd>Backspace</kbd></td>
+<td>One character left, wrapping to previous line at column 0</td>
+</tr>
+<tr>
+<td><kbd>Space</kbd></td>
+<td>One character right, wrapping to next line at end of line</td>
+</tr>
+<tr>
+<td><kbd>gj</kbd>, <kbd>gk</kbd></td>
+<td>By <em>visual</em> line — useful when wrap is on (deeper dive in <code>wider-motions.line-start</code>)</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — h j k l</h3>
+<p class="example-summary">Move without leaving home row.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Start at top-left.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.hjkl/frame_01.color.svg" alt="Start at top-left."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>j</kbd> · <span class="step-cap">j — down a line.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.hjkl/frame_02.color.svg" alt="j — down a line."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>lll</kbd> · <span class="step-cap">lll — three right.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.hjkl/frame_03.color.svg" alt="lll — three right."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>j</kbd> · <span class="step-cap">j — down again.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.hjkl/frame_04.color.svg" alt="j — down again."></div>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=alpha%0Abravo%0Acharlie%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="04-hjkl.html">Move with hjkl</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../03-basic-editing/02-word-motions.html">Word Motions</a>, <a href="../03-basic-editing/03-line-motions.html">Line Motions</a>, <a href="../03-basic-editing/04-file-motions.html">File Motions</a>, <a href="../08-wider-motions/05-WORD.html">WORD Motions</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-undo-redo.html" rel="prev">← Undo and Redo</a></span>
+  <span class="pager-pos">9 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../03-basic-editing/01-insert-variants.html" rel="next">More Ways into Insert →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

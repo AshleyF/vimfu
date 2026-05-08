@@ -138,6 +138,43 @@ See [`Schema.md`](Schema.md) for the full spec.
 | `screenshot`  | a single inline frame |
 | `divider`     | horizontal rule / `* * *` |
 
+### Audience tagging — book vs. web vs. both
+
+Topics and individual blocks can carry an `"audience"` field:
+
+| Value    | Where it appears |
+|----------|------------------|
+| `"both"` (default) | All renderers |
+| `"web"`  | HTML only (skipped by InDesign / book) |
+| `"book"` | InDesign only (skipped by HTML / web) |
+| `"all"`  | Same as `both` |
+
+The Markdown renderer always emits everything (it's the review format).
+
+Use `audience: "book"` to author *fluff* — history, philosophy, longer essays,
+asides — that belongs in the printed book but would clutter the web reference.
+Use `audience: "web"` for things that only make sense online (interactive
+widgets, "back to top" links, etc.) Most content stays at the default
+`both` and renders identically in all formats.
+
+```jsonc
+// whole-topic book-only
+{ "id": "foundations.adm-3a", "audience": "book", "blocks": [...] }
+
+// single book-only sidebar inside an otherwise-shared topic
+{ "type": "internals", "audience": "book",
+  "title": "Why hjkl, specifically?",
+  "text": "..." }
+```
+
+Renderer audience defaults:
+
+| File                   | `AUDIENCE` |
+|------------------------|------------|
+| `render_html.py`       | `"web"`    |
+| `render_indesign.py`   | `"book"`   |
+| `render_markdown.py`   | `"all"`    |
+
 ### Inline markup (works inside `prose`, `summary`, `tip`, `internals.text`, …)
 
 | Markup | Renders as |
@@ -262,7 +299,32 @@ python content/render_qrcodes.py
 python content/render_markdown.py
 python content/render_html.py
 python content/render_indesign.py
+
+# 5) Copy the simulator runtime into output/html/sim/ for "Practice" links
+python content/copy_sim.py
 ```
+
+### The simulator integration
+
+Every topic page in the website gets a **▶ Practice in the simulator**
+link in its top nav. The link deep-links into a copy of `sim/` that
+ships at `output/html/sim/`. Supported query params (handled in
+`sim/index.html`):
+
+| Param      | Effect |
+|------------|--------|
+| `?file=NAME&content=TEXT` | Seed/replace a file in the sim's VFS, then run `nvim NAME` at the shell. |
+| `?cmd=CMD` | Type `CMD` at the shell prompt and execute it. |
+| `?keys=KS` | Feed literal keystrokes once the session is ready. URL-encode special keys. |
+| `?reset`   | Wipe the sim's localStorage VFS so seed files are re-created. |
+
+`render_html.py` builds the per-topic query string in
+`_practice_query()`. For Vim topics it seeds `practice.txt` with the
+first wired example's starting buffer. For tmux topics (anything in
+`parts/22-tmux/`) it sends `?cmd=tmux` so practice drops you straight
+into a tmux session. Override per-topic by giving the topic an
+explicit `practice` field once we add support — for now, examples and
+the part name decide.
 
 ### Make it one command (PowerShell)
 
@@ -273,6 +335,7 @@ python content/render_screenshots.py
 python content/render_markdown.py
 python content/render_html.py
 python content/render_indesign.py
+python content/copy_sim.py
 ```
 
 `PYTHONIOENCODING=utf-8` is needed on Windows to print Unicode

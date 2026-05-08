@@ -1,0 +1,83 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "foundations.ai-era",
+  "title": "Vim in the AI Era",
+  "subtitle": "Why a 50-year-old editing language matters more, not less",
+  "part": "foundations",
+  "audience": "book",
+  "summary": "LLMs write code. People dictate commits. Pair programming is a chat tab. None of that changes the fact that the bottleneck is reviewing, restructuring, and steering text — exactly what Vim is best at.",
+  "keys": [],
+  "lessons": [],
+  "see_also": ["foundations.editing-language", "foundations.modal-editing"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Vim in the AI Era" },
+
+    { "type": "prose", "text": "It is reasonable to ask, in 2025: why learn an editor designed for a 1976 terminal, in an era where you can describe a feature to an LLM and get a working implementation back in under a minute? If the AI is doing the typing, who needs an editor? If voice dictation is faster than touch typing, who needs keystrokes?" },
+
+    { "type": "prose", "text": "The answer is that the actual work of programming has never primarily been *typing*. It has always been understanding existing code, deciding what should change, and steering the result toward something correct. AI shifts the ratios — fewer characters typed, more characters generated — but it makes the steering job harder, not easier. You spend less time writing and more time editing what something else wrote. That is exactly what Vim is for." },
+
+    { "type": "heading", "level": 2, "text": "What's Actually Changed" },
+
+    {
+      "type": "table",
+      "headers": ["Old loop",                              "New loop"],
+      "rows": [
+        ["Type code",                                       "Prompt LLM, paste output"],
+        ["Read code",                                       "Read code (still)"],
+        ["Edit code by hand",                               "Edit AI's output by hand"],
+        ["Run, test, debug",                                "Run, test, debug (still)"],
+        ["Rewrite based on feedback",                       "Re-prompt + edit again"]
+      ]
+    },
+
+    { "type": "prose", "text": "Three of those five steps are unchanged. One — typing new code from scratch — has shrunk dramatically. The other — editing — has *expanded*. Almost every AI-assisted change requires manual cleanup: variable renames, structural rearrangement, removing AI hedging, fixing the parts the model got subtly wrong. You spend more time wrangling existing text, not less." },
+
+    { "type": "prose", "text": "If the bulk of your day is reading and editing rather than authoring, you want the most precise editing instrument you can get. That instrument is Vim. The grammar that lets you say {key:c}{key:i}{key:(} (\"change everything inside these parentheses\") in three keystrokes is precisely the grammar you want when an LLM hands you a function and you need to rewrite its body in place." },
+
+    { "type": "heading", "level": 2, "text": "Voice and Dictation" },
+
+    { "type": "prose", "text": "Speech-to-text is now good enough that some authors and developers dictate the prose part of their work — including parts of this book. Dictation is great for prose. It is *terrible* for code. You cannot reliably dictate `if (x === 0) { return -1; }` and have it come out as code. You cannot dictate a regex. You cannot dictate `:%s/foo\\(bar\\)/\\1baz/g`." },
+
+    { "type": "prose", "text": "What dictation *can* do is feed Insert mode. The pattern that emerges: speak prose into Insert mode, then drop to Normal mode and edit it like code. Modal editing turns out to be exactly the right shape for hybrid voice/keyboard workflows — the modes that already separate \"I am inputting characters\" from \"I am manipulating structure\" map naturally onto \"voice mode\" vs. \"keystroke mode\"." },
+
+    {
+      "type": "tip",
+      "text": "Talon Voice (https://talonvoice.com/) is the most polished voice-coding system in 2025, and it ships with deep Vim integration. Its grammar mirrors Vim's: you can say \"delete inside parens\" and have it issue {key:d}{key:i}{key:(}. The two systems compose because they share a model: name the operation, name the target, execute."
+    },
+
+    { "type": "heading", "level": 2, "text": "AI as a Generator, Vim as the Edit Loop" },
+
+    { "type": "prose", "text": "The most productive AI-coding workflow is not \"the AI does everything.\" It is a tight loop:" },
+
+    {
+      "type": "table",
+      "headers": ["Step",  "Tool",                          "Why"],
+      "rows": [
+        ["1",   "AI generates a candidate",                  "Cheap, fast, gets you 80% there"],
+        ["2",   "You read it",                                "AI confidence ≠ correctness"],
+        ["3",   "You edit it (Vim)",                          "Targeted fixes are 10× faster than re-prompting"],
+        ["4",   "You re-run / re-test",                       "Validate the edit"],
+        ["5",   "Goto 1 if needed",                           "Iterate on what the AI didn't get"]
+      ]
+    },
+
+    { "type": "prose", "text": "Step 3 is where Vim earns its keep. A targeted edit — \"change this variable name everywhere in this function,\" \"swap these two arguments,\" \"unindent this block,\" \"yank these tests, paste them somewhere else\" — takes two to five keystrokes in Vim and ten to fifty in a non-modal editor. When you are running this loop fifty times an hour, the keystroke savings compound into hours." },
+
+    {
+      "type": "internals",
+      "title": "Why AI Models Themselves Often Have Vim Modes",
+      "text": "Many code-completion and code-editing AI tools (GitHub Copilot, Cursor, Aider, Claude Code, etc.) ship Vim-key support out of the box. This is not nostalgia. It is because the people building them know that the audience for serious AI-assisted coding overlaps heavily with the audience that already uses Vim. The grammar is so widespread among professional developers that ignoring it would lose a meaningful slice of users.\n\nThe grammar also composes well with AI-generated diffs and patches: applying an edit, navigating to a hunk, accepting or rejecting suggestions — these are all motion-and-operator gestures, and they fit neatly into the same key vocabulary you already know."
+    },
+
+    { "type": "heading", "level": 2, "text": "What This Means for You" },
+
+    { "type": "prose", "text": "If you are deciding whether to invest in learning Vim in an AI-assisted world, the trade is better than ever, not worse. The grammar's value scales with the amount of editing you do. AI generates more text for you to edit. The two compound." },
+
+    { "type": "prose", "text": "Treat Vim the way you treat touch typing: a once-in-a-career investment that compounds for the rest of your working life, regardless of how the surrounding tools evolve." },
+
+    { "type": "qr", "topic": "foundations.ai-era" },
+    { "type": "buy-prompt" }
+  ]
+}

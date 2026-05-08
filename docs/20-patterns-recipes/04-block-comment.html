@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Block Comment with Ctrl-V + I — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Patterns Recipes</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=x+%3D+1%0Ay+%3D+2%0Az+%3D+3%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-cgn-dot.html" rel="prev">← cgn — Change-Next-Match Loop</a></span>
+  <span class="pager-pos">106 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-increment-decrement.html" rel="next">Increment and Decrement (Ctrl-A / Ctrl-X) →</a></span>
+</nav>
+<article>
+<h1>Block Comment with Ctrl-V + I</h1>
+<p class="subtitle">Add a comment marker to N consecutive lines.</p>
+<p class="meta"><code>id: patterns.block-comment</code> &middot; part: <strong>patterns-recipes</strong> &middot; keys: <kbd>Ctrl-V</kbd>, <kbd>I</kbd>, <kbd>Esc</kbd> &middot; lessons: 467, 467</p>
+<blockquote class="summary">Ctrl-V to enter block visual, j or count+j to select rows, I to insert at left edge, type the comment marker, Esc — the marker appears on every line.</blockquote>
+<h2>Block Comment</h2>
+<p>Vim has no built-in &quot;comment this block&quot; command — but block-Visual + capital-<kbd>I</kbd> gives you a one-trick replacement that works in any language.</p>
+<figure class="keys">
+<figcaption>Comment 5 lines with //</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Ctrl-V</kbd></td><td>Enter block Visual</td></tr>
+<tr><td><kbd>4j</kbd></td><td>Extend down 4 more lines (5 total)</td></tr>
+<tr><td><kbd>I</kbd></td><td>Insert at left edge of block</td></tr>
+<tr><td><kbd>// </kbd></td><td>Type the marker</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>Marker appears on all 5 lines</td></tr>
+</tbody></table></figure>
+<h3>Uncomment</h3>
+<figure class="keys">
+<figcaption>Strip 3 chars (&quot;// &quot;) from N lines</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Ctrl-V</kbd></td><td>Block Visual</td></tr>
+<tr><td><kbd>4j</kbd></td><td>Down 4 lines</td></tr>
+<tr><td><kbd>lll</kbd></td><td>Right 3 columns to cover &quot;// &quot;</td></tr>
+<tr><td><kbd>d</kbd></td><td>Delete the rectangle</td></tr>
+</tbody></table></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Why This Beats Plugins for Most Cases</header>
+<p>Plugins like vim-commentary make this prettier (<kbd>g</kbd><kbd>c</kbd><kbd>c</kbd> comments a line). But the block-Visual approach:</p>
+<ul>
+<li>Has zero dependencies — works on any Vim, anywhere.</li>
+<li>Works on any prefix marker — <code>//</code>, <code>#</code>, <code>--</code>, <code>;</code>, <code>// TODO:</code>, anything.</li>
+<li>Composes with counts — <kbd>1</kbd><kbd>0</kbd><kbd>Ctrl-V</kbd><kbd>j</kbd> for 11 lines.</li>
+</ul>
+<p>The trick relies on the block-insert behavior: text typed after <kbd>I</kbd> from block Visual is <em>replayed</em> across all selected rows after <kbd>Esc</kbd>. See <a href="../18-visual-depth/02-block-insert-append.html">`visual.block-insert-append`</a>.</p>
+</aside>
+<section class="example">
+<h3 class="example-title">Worked example — Ctrl-V  jjj  I//&lt;Esc&gt;</h3>
+<p class="example-summary">Block-prefix many lines at once.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.block-comment/frame_01.color.svg" alt="pattern.block-comment"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>Ctrl-V jj</kbd> · <span class="step-cap">Ctrl-V jj — three rows selected.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.block-comment/frame_02.color.svg" alt="Ctrl-V jj — three rows selected."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>I//</kbd> · <span class="step-cap">I// — typing on the first row only.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.block-comment/frame_03.color.svg" alt="I// — typing on the first row only."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>Esc</kbd> · <span class="step-cap">Esc — Vim replays the insertion on every selected row.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.block-comment/frame_04.color.svg" alt="Esc — Vim replays the insertion on every selected row."></div>
+<p class="narration">The trick: in block-Insert mode, the typing only shows on row one until you press Esc.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=x+%3D+1%0Ay+%3D+2%0Az+%3D+3%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="04-block-comment.html">Block Comment with Ctrl-V + I</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0467 :%norm I// — Comment All Lines (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0467 :%norm I// — Comment All Lines (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../18-visual-depth/02-block-insert-append.html">Block Insert and Append</a>, <a href="../18-visual-depth/01-modes.html">The Three Visual Modes</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-cgn-dot.html" rel="prev">← cgn — Change-Next-Match Loop</a></span>
+  <span class="pager-pos">106 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-increment-decrement.html" rel="next">Increment and Decrement (Ctrl-A / Ctrl-X) →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

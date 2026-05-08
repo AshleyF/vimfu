@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Setting and Jumping to Marks — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Marks Jumps</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=chapter+one%0A...content...%0Achapter+two%0A...%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../09-scrolling-screen/06-horizontal.html" rel="prev">← Horizontal Scroll</a></span>
+  <span class="pager-pos">46 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-special.html" rel="next">Special Marks →</a></span>
+</nav>
+<article>
+<h1>Setting and Jumping to Marks</h1>
+<p class="subtitle">m{a-z} sets a mark. &#x27;{a-z} jumps to its line. `{a-z} jumps to its exact spot.</p>
+<p class="meta"><code>id: marks.local-global</code> &middot; part: <strong>marks</strong> &middot; keys: <kbd>m{a-z}</kbd>, <kbd>&#x27;{a-z}</kbd>, <kbd>`{a-z}</kbd>, <kbd>m{A-Z}</kbd> &middot; lessons: 97, 98, 99, 100</p>
+<blockquote class="summary">Marks are named bookmarks. Lowercase marks are buffer-local; uppercase marks are global across files.</blockquote>
+<p>Marks are persistent bookmarks. <kbd>m</kbd><kbd>a</kbd> sets mark <code>a</code> at the cursor. <kbd>&#x27;</kbd><kbd>a</kbd> or <kbd>`</kbd><kbd>a</kbd> jumps back to it. The whole alphabet is at your disposal — 26 lowercase marks per buffer plus 26 uppercase that work across files.</p>
+<figure class="keys">
+<figcaption>Set mark a at cursor</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>m</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Jump to line of mark a</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>&#x27;</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Jump to exact position of mark a</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>`</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Set global mark A (works across files)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>m</kbd></td><td></td></tr>
+<tr><td><kbd>A</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="97"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/5Xu7DNS67vg?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Setting a Mark" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>ma — set a mark</figcaption></figure>
+<figure class="lesson-embed" data-lesson="98"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/V-GPFP0orLs?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Jumping to a Mark (Line)" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>&#x27;a — jump to mark line</figcaption></figure>
+<figure class="lesson-embed" data-lesson="99"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/n6-7uiZ-MWc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Jumping to a Mark (Exact)" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>`a — jump to exact mark</figcaption></figure>
+<figure class="lesson-embed" data-lesson="100"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/BH417aIoiG0?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Global Marks" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Global marks (mA)</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Marks Are a Per-Buffer Dictionary</header>
+<p>Each buffer has a <code>mark → (line, col)</code> dictionary. <code>{a–z}</code> are local to that buffer. <code>{A–Z}</code> are stored in <em>Vim&#x27;s</em> shared mark table along with the file path — that&#x27;s why uppercase marks can jump you to <em>another file</em>.</p>
+<p>Global marks survive across sessions if <code>&#x27;shada&#x27;</code> (Neovim) / <code>&#x27;viminfo&#x27;</code> (Vim) is enabled. So <kbd>m</kbd><kbd>Q</kbd> on a file you reread weekly takes you straight back, even after a restart.</p>
+<p>Marks update automatically when you edit <em>above</em> them — Vim shifts their line number to track the same logical position. They don&#x27;t update when you delete the line they&#x27;re on; the mark just disappears.</p>
+<p><kbd>:</kbd><kbd>m</kbd><kbd>a</kbd><kbd>r</kbd><kbd>k</kbd><kbd>s</kbd> shows the full list.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>&#x27;</kbd> and <kbd>`</kbd> are also <em>jumps</em> — they push the previous position to the jumplist. <kbd>Ctrl-O</kbd> returns. So you can mark a spot, wander, jump back, then <kbd>Ctrl-O</kbd> to where you were before the jump.</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>d</kbd><kbd>&#x27;</kbd><kbd>a</kbd> deletes from the cursor to the line of mark <code>a</code>, linewise. <kbd>d</kbd><kbd>`</kbd><kbd>a</kbd> deletes to the exact position. They&#x27;re motions like everything else in Vim.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>m</kbd>{a}</td>
+<td>Set lowercase mark (local)</td>
+</tr>
+<tr>
+<td><kbd>m</kbd>{A}</td>
+<td>Set uppercase mark (global)</td>
+</tr>
+<tr>
+<td><kbd>&#x27;</kbd>{a}</td>
+<td>Jump to line of mark</td>
+</tr>
+<tr>
+<td><kbd>`</kbd>{a}</td>
+<td>Jump to exact position of mark</td>
+</tr>
+<tr>
+<td><kbd>:</kbd><kbd>m</kbd><kbd>a</kbd><kbd>r</kbd><kbd>k</kbd><kbd>s</kbd></td>
+<td>List all marks</td>
+</tr>
+<tr>
+<td><kbd>:</kbd><kbd>d</kbd><kbd>e</kbd><kbd>l</kbd><kbd>m</kbd> {a}</td>
+<td>Delete a mark</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — ma and &#x27;a</h3>
+<p class="example-summary">Set a mark, jump back later.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/marks.set-jump/frame_01.color.svg" alt="marks.set-jump"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>ma</kbd> · <span class="step-cap">ma — mark &#x27;a&#x27; set at this line.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/marks.set-jump/frame_02.color.svg" alt="ma — mark &#x27;a&#x27; set at this line."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>2j</kbd> · <span class="step-cap">Wandered to chapter two.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/marks.set-jump/frame_03.color.svg" alt="Wandered to chapter two."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>&#x27;a</kbd> · <span class="step-cap">&#x27;a — jumped back to mark &#x27;a&#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/marks.set-jump/frame_04.color.svg" alt="&#x27;a — jumped back to mark &#x27;a&#x27;."></div>
+<p class="narration">Lowercase marks are file-local; uppercase marks are global (jump across files).</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=chapter+one%0A...content...%0Achapter+two%0A...%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="01-local-global.html">Setting and Jumping to Marks</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="02-special.html">Special Marks</a>, <a href="03-tick-vs-backtick.html">Tick vs Backtick</a>, <a href="04-jumplist.html">The Jump List</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../09-scrolling-screen/06-horizontal.html" rel="prev">← Horizontal Scroll</a></span>
+  <span class="pager-pos">46 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-special.html" rel="next">Special Marks →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

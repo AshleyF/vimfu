@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Editing the Command Line — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Command Line Power</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-repeat-ex.html" rel="prev">← Repeat Last Ex (@:)</a></span>
+  <span class="pager-pos">100 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-paste-from-buffer.html" rel="next">Paste from Buffer (Ctrl-R) →</a></span>
+</nav>
+<article>
+<h1>Editing the Command Line</h1>
+<p class="subtitle">Ctrl-B, Ctrl-E, Ctrl-W, Ctrl-U — readline-flavored.</p>
+<p class="meta"><code>id: cmdline.edit-buffer</code> &middot; part: <strong>command-line-power</strong> &middot; keys: <kbd>Ctrl-B</kbd>, <kbd>Ctrl-E</kbd>, <kbd>Ctrl-W</kbd>, <kbd>Ctrl-U</kbd>, <kbd>Ctrl-H</kbd> &middot; lessons: 449, 450</p>
+<blockquote class="summary">Inside the : prompt you have a small editing keyset: Ctrl-B/Ctrl-E for line ends, Ctrl-W to delete word, Ctrl-U to clear, arrow keys, and Ctrl-Left/Ctrl-Right for word jumps.</blockquote>
+<p>The <kbd>:</kbd> prompt is its own mini-editor. The keys are familiar from Insert mode and from readline.</p>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>Ctrl-B</kbd></td>
+<td>Beginning of command line</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-E</kbd></td>
+<td>End of command line</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-Left</kbd> / <kbd>Ctrl-Right</kbd></td>
+<td>Word back / forward</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-H</kbd> / <kbd>Backspace</kbd></td>
+<td>Delete previous char</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-W</kbd></td>
+<td>Delete previous word</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-U</kbd></td>
+<td>Delete to start of line</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd>{reg}</td>
+<td>Insert register contents (as in Insert mode)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>=</kbd>{expr}</td>
+<td>Insert expression result</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-F</kbd></td>
+<td>Open command-line <em>window</em> for full editing</td>
+</tr>
+<tr>
+<td><kbd>Esc</kbd></td>
+<td>Cancel</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — The Word Under Cursor — Ctrl-R Ctrl-W</header>
+<p><kbd>Ctrl-R</kbd><kbd>Ctrl-W</kbd> from the command line inserts the <strong>word under the cursor in the buffer</strong>. Combine with substitute: position cursor on a name, then <code>:%s/&lt;Ctrl-R&gt;&lt;Ctrl-W&gt;/newname/g</code> — type once, get the word inserted automatically.</p>
+<p>Variants:</p>
+<ul>
+<li><kbd>Ctrl-R</kbd><kbd>Ctrl-A</kbd> — WORD under cursor.</li>
+<li><kbd>Ctrl-R</kbd><kbd>Ctrl-F</kbd> — filename under cursor.</li>
+<li><kbd>Ctrl-R</kbd><kbd>Ctrl-L</kbd> — entire current line.</li>
+</ul>
+<p>All save typing when the thing you want to type is already in the buffer.</p>
+</aside>
+<aside class="qr"><span>→ See also <a href="03-edit-buffer.html">Editing the Command Line</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0449 Tab — Complete Command (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0450 Ctrl-R {reg} — Insert Register (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../16-insert-mode-power/03-editing-keys.html">Editing Inside Insert Mode</a>, <a href="05-completion.html">Command-Line Completion</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-repeat-ex.html" rel="prev">← Repeat Last Ex (@:)</a></span>
+  <span class="pager-pos">100 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-paste-from-buffer.html" rel="next">Paste from Buffer (Ctrl-R) →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

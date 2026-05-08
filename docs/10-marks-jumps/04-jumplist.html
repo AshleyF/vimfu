@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Jump List — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Marks Jumps</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=line+A%0Aline+B%0Aline+C%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-tick-vs-backtick.html" rel="prev">← Tick vs Backtick</a></span>
+  <span class="pager-pos">49 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-changelist.html" rel="next">The Change List →</a></span>
+</nav>
+<article>
+<h1>The Jump List</h1>
+<p class="subtitle">Ctrl-O / Ctrl-I — walk back and forward through your big jumps.</p>
+<p class="meta"><code>id: marks.jumplist</code> &middot; part: <strong>marks</strong> &middot; keys: <kbd>Ctrl-O</kbd>, <kbd>Ctrl-I</kbd>, <kbd>:jumps</kbd> &middot; lessons: 102, 103, 104</p>
+<blockquote class="summary">Vim records every &quot;big jump&quot; you make in a per-window jump list. Ctrl-O moves backward through it; Ctrl-I (Tab) moves forward.</blockquote>
+<p>Every time you make a <em>big jump</em> — a search, a <kbd>G</kbd>, a <kbd>%</kbd>, a mark jump — Vim pushes the position you came from onto a list. <kbd>Ctrl-O</kbd> walks back through it; <kbd>Ctrl-I</kbd> walks forward.</p>
+<figure class="keys">
+<figcaption>Jump back</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Ctrl-O</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Jump forward (= Tab in most terminals)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Ctrl-I</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Show the jump list</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>:</kbd></td><td></td></tr>
+<tr><td><kbd>j</kbd></td><td></td></tr>
+<tr><td><kbd>u</kbd></td><td></td></tr>
+<tr><td><kbd>m</kbd></td><td></td></tr>
+<tr><td><kbd>p</kbd></td><td></td></tr>
+<tr><td><kbd>s</kbd></td><td></td></tr>
+<tr><td><kbd>Enter</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="102"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/g6-J634AA5Y?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Jump Back" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Ctrl-O — jump back</figcaption></figure>
+<figure class="lesson-embed" data-lesson="103"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/vfeMP0npIZk?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Jump Forward" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Ctrl-I — jump forward</figcaption></figure>
+<figure class="lesson-embed" data-lesson="104"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/WpyH4xdwC0w?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Last Jump Position" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>:jumps — list jumps</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — What Counts as a &quot;Big&quot; Jump</header>
+<p>Vim has a precise list. Pushed onto the jump list:</p>
+<ul>
+<li>Search: <kbd>/</kbd>, <kbd>?</kbd>, <kbd>n</kbd>, <kbd>N</kbd>, <kbd>*</kbd>, <kbd>#</kbd>.</li>
+<li>File jumps: <kbd>g</kbd><kbd>g</kbd>, <kbd>G</kbd>, <kbd>H</kbd>/<kbd>M</kbd>/<kbd>L</kbd>, <kbd>{n</kbd>}<kbd>G</kbd>, <kbd>:</kbd><kbd>{n</kbd>}.</li>
+<li>Bracket: <kbd>%</kbd>.</li>
+<li>Marks: <kbd>&#x27;</kbd>, <kbd>`</kbd> (any mark, including special).</li>
+<li>Switching files: <kbd>:</kbd><kbd>e</kbd>, <kbd>:</kbd><kbd>b</kbd>, <kbd>:</kbd><kbd>t</kbd><kbd>a</kbd><kbd>g</kbd>.</li>
+<li>Several others (<code>(</code>, <code>)</code>, <code>{</code>, <code>}</code> are jumps; <code>+</code>, <code>-</code>, <kbd>Enter</kbd> are not).</li>
+</ul>
+<p>Not pushed: <kbd>h</kbd>/<kbd>j</kbd>/<kbd>k</kbd>/<kbd>l</kbd>, <kbd>w</kbd>/<kbd>b</kbd>/<kbd>e</kbd>, <kbd>0</kbd>/<kbd>^</kbd>/<kbd>$</kbd>, scroll commands.</p>
+<p>The jump list is <strong>per-window</strong>, capped at 100 entries. <kbd>Ctrl-O</kbd> walks back; <kbd>Ctrl-I</kbd> walks forward. Making a <em>new</em> big jump from the middle of the list truncates everything ahead of you (like browser history).</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Ctrl-I and Tab Are the Same Key</header>
+<p>Terminals send Tab and Ctrl-I as the <em>same</em> byte (0x09). Vim historically treats them as one keystroke. So if you remap Tab in Normal mode, you also remap <kbd>Ctrl-I</kbd> — including its jump-list-forward behavior. This catches a lot of plugin users by surprise.</p>
+<p>GUI Vim and Neovim with <code>tui-input</code> distinguish them. In a terminal, you usually can&#x27;t.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>Ctrl-O</kbd> is your safety net. After any sequence of jumps you can walk straight back to where you started. Combined with <kbd>&#x27;</kbd><kbd>&#x27;</kbd> (line of last big jump), you have a two-key undo for navigation.</aside>
+<section class="example">
+<h3 class="example-title">Worked example — Ctrl-O and Ctrl-I</h3>
+<p class="example-summary">Walk back through your jump history.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/marks.jumplist/frame_01.color.svg" alt="marks.jumplist"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>G</kbd> · <span class="step-cap">G — jumped to bottom (recorded).</span></figcaption>
+<div class="screenshot"><img src="../screenshots/marks.jumplist/frame_02.color.svg" alt="G — jumped to bottom (recorded)."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>Ctrl-O</kbd> · <span class="step-cap">Ctrl-O — back where we came from.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/marks.jumplist/frame_03.color.svg" alt="Ctrl-O — back where we came from."></div>
+<p class="narration">Vim records &#x27;big&#x27; jumps in a per-window list. Ctrl-O goes back, Ctrl-I goes forward.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=line+A%0Aline+B%0Aline+C%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="04-jumplist.html">The Jump List</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-local-global.html">Setting and Jumping to Marks</a>, <a href="05-changelist.html">The Change List</a>, <a href="../04-search-find/01-pattern.html">Pattern Search</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-tick-vs-backtick.html" rel="prev">← Tick vs Backtick</a></span>
+  <span class="pager-pos">49 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-changelist.html" rel="next">The Change List →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

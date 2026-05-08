@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The z Family — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Prefix Families</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=1%0A2%0A3%0A4%0A5%0A6%0A7%0A8%0A9%0A10%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-g-overview.html" rel="prev">← The g Family</a></span>
+  <span class="pager-pos">73 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-bracket-pairs.html" rel="next">The [ and ] Family →</a></span>
+</nav>
+<article>
+<h1>The z Family</h1>
+<p class="subtitle">Folding, scrolling, spell. The most thematically scattered prefix.</p>
+<p class="meta"><code>id: prefixes.z-overview</code> &middot; part: <strong>prefixes</strong> &middot; keys: <kbd>zz</kbd>, <kbd>zt</kbd>, <kbd>zb</kbd>, <kbd>zo</kbd>, <kbd>zc</kbd>, <kbd>zf</kbd>, <kbd>zR</kbd>, <kbd>zM</kbd>, <kbd>z=</kbd>, <kbd>zg</kbd> &middot; lessons: 286, 316</p>
+<blockquote class="summary">z handles three loosely-related families: scroll positioning (zz, zt, zb), folding (zo, zc, zf, zR), and spell suggestions (z=, zg, zw).</blockquote>
+<p>The <kbd>z</kbd> prefix is even more scattered than <kbd>g</kbd>. Three separate families share the prefix because Vim ran out of one-key real estate: scrolling, folding, and spell-checking.</p>
+<aside class="internals">
+<header>🔧 Under the Hood — The Three Sub-Families</header>
+<p><strong>Scrolling</strong> — <kbd>z</kbd><kbd>z</kbd>, <kbd>z</kbd><kbd>t</kbd>, <kbd>z</kbd><kbd>b</kbd>, <kbd>z</kbd><kbd>.</kbd>, <kbd>z</kbd><kbd>+</kbd>, <kbd>z</kbd><kbd>-</kbd>, <kbd>z</kbd><kbd>s</kbd>, <kbd>z</kbd><kbd>e</kbd>, <kbd>z</kbd><kbd>h</kbd>, <kbd>z</kbd><kbd>l</kbd>, <kbd>z</kbd><kbd>H</kbd>, <kbd>z</kbd><kbd>L</kbd>, <kbd>z</kbd>{n}<kbd>Enter</kbd>. Cover the viewport — see <a href="../09-scrolling-screen/02-center-top-bottom.html">`scroll.center-top-bottom`</a> and <a href="../09-scrolling-screen/06-horizontal.html">`scroll.horizontal`</a>.</p>
+<p><strong>Folding</strong> — <kbd>z</kbd><kbd>o</kbd>/<kbd>z</kbd><kbd>c</kbd> (open/close fold), <kbd>z</kbd><kbd>O</kbd>/<kbd>z</kbd><kbd>C</kbd> (recursive), <kbd>z</kbd><kbd>R</kbd>/<kbd>z</kbd><kbd>M</kbd> (reduce/more — open/close all), <kbd>z</kbd><kbd>r</kbd>/<kbd>z</kbd><kbd>m</kbd> (one level), <kbd>z</kbd><kbd>a</kbd> (toggle), <kbd>z</kbd><kbd>f</kbd>{motion} (create), <kbd>z</kbd><kbd>d</kbd> (delete), <kbd>z</kbd><kbd>E</kbd> (eliminate all). Cover folding — see <a href="../21-advanced/07-folding.html">`advanced.folding`</a>.</p>
+<p><strong>Spell</strong> — <kbd>z</kbd><kbd>=</kbd> (suggestions for misspelled word under cursor), <kbd>z</kbd><kbd>g</kbd> (mark word as correct), <kbd>z</kbd><kbd>w</kbd> (mark as wrong), <kbd>z</kbd><kbd>u</kbd><kbd>g</kbd>/<kbd>z</kbd><kbd>u</kbd><kbd>w</kbd> (undo each).</p>
+</aside>
+<h3>Reference (most-used)</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Family</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>z</kbd><kbd>z</kbd></td>
+<td>Scroll</td>
+<td>Cursor&#x27;s line → middle</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>t</kbd></td>
+<td>Scroll</td>
+<td>Cursor&#x27;s line → top</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>b</kbd></td>
+<td>Scroll</td>
+<td>Cursor&#x27;s line → bottom</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>.</kbd></td>
+<td>Scroll</td>
+<td>Like <kbd>z</kbd><kbd>z</kbd>, cursor → first non-blank</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>s</kbd> / <kbd>z</kbd><kbd>e</kbd></td>
+<td>Scroll</td>
+<td>Horizontal: cursor → left / right</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>o</kbd></td>
+<td>Fold</td>
+<td>Open one fold</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>c</kbd></td>
+<td>Fold</td>
+<td>Close one fold</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>O</kbd> / <kbd>z</kbd><kbd>C</kbd></td>
+<td>Fold</td>
+<td>Open / close folds recursively</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>a</kbd></td>
+<td>Fold</td>
+<td>Toggle one fold</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>R</kbd></td>
+<td>Fold</td>
+<td>Open all folds</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>M</kbd></td>
+<td>Fold</td>
+<td>Close all folds</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>r</kbd> / <kbd>z</kbd><kbd>m</kbd></td>
+<td>Fold</td>
+<td>Open / close one level</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>f</kbd>{motion}</td>
+<td>Fold</td>
+<td>Create fold over motion</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>d</kbd> / <kbd>z</kbd><kbd>E</kbd></td>
+<td>Fold</td>
+<td>Delete this fold / all folds</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>=</kbd></td>
+<td>Spell</td>
+<td>Suggest corrections</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>g</kbd> / <kbd>z</kbd><kbd>w</kbd></td>
+<td>Spell</td>
+<td>Mark word as good / wrong</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>n</kbd> / <kbd>z</kbd><kbd>N</kbd></td>
+<td>Fold</td>
+<td>Disable / re-enable folding</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — zz zt zb</h3>
+<p class="example-summary">Viewport positioning with z.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/prefix.z/frame_01.color.svg" alt="prefix.z"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>zt</kbd> · <span class="step-cap">zt — current line to top.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/prefix.z/frame_02.color.svg" alt="zt — current line to top."></div>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=1%0A2%0A3%0A4%0A5%0A6%0A7%0A8%0A9%0A10%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="02-z-overview.html">The z Family</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0286 zz Center Screen (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0316 z= in Practice (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="01-g-overview.html">The g Family</a>, <a href="../09-scrolling-screen/02-center-top-bottom.html">Centering the Cursor</a>, <a href="../21-advanced/07-folding.html">Folding</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-g-overview.html" rel="prev">← The g Family</a></span>
+  <span class="pager-pos">73 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-bracket-pairs.html" rel="next">The [ and ] Family →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

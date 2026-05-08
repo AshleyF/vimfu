@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vi → Vim → Neovim — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Foundations</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="04-you-dont-need-vim.html" rel="prev">← You Don&#x27;t Need Vim</a></span>
+  <span class="pager-pos">5 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../02-survival/01-open-save-quit.html" rel="next">Open, Save, Quit →</a></span>
+</nav>
+<article>
+<h1>Vi → Vim → Neovim</h1>
+<p class="subtitle">Fifty years of an editing language</p>
+<p class="meta"><code>id: foundations.vi-vim-neovim</code> &middot; part: <strong>foundations</strong></p>
+<blockquote class="summary">vi (1976) → Vim (1991) → Neovim (2014). Three editors, one keybinding language, surprisingly little drift.</blockquote>
+<p>The lineage is short, surprisingly stable, and worth knowing. Three editors over fifty years. The keybindings you learn today are mostly the keybindings someone learned in 1976.</p>
+<table>
+<thead><tr>
+<th>Year</th>
+<th>Editor</th>
+<th>Creator</th>
+<th>Key contribution</th>
+</tr></thead><tbody>
+<tr>
+<td>1969</td>
+<td>ed</td>
+<td>Ken Thompson</td>
+<td>The original Unix line editor — Vim&#x27;s :Ex commands are direct descendants.</td>
+</tr>
+<tr>
+<td>1976</td>
+<td>vi</td>
+<td>Bill Joy (UC Berkeley)</td>
+<td>Visual interface to ex. Modal editing on the ADM-3A terminal.</td>
+</tr>
+<tr>
+<td>1991</td>
+<td>Vim</td>
+<td>Bram Moolenaar</td>
+<td>Vi IMproved: visual mode, multi-level undo, scripting, plugins, syntax highlighting.</td>
+</tr>
+<tr>
+<td>2014</td>
+<td>Neovim</td>
+<td>Community fork</td>
+<td>Async jobs, Lua scripting, built-in LSP, modern defaults, embeddable as a library.</td>
+</tr>
+</tbody></table>
+<h3>vi (1976)</h3>
+<p>Bill Joy wrote vi as the <em>visual</em> mode of <code>ex</code>, an extended version of <code>ed</code>. The terminal was the ADM-3A — no arrow keys, no escape key in the modern position, no separate display memory for a status line. Joy designed around those constraints. <kbd>hjkl</kbd> for cursor movement was on the keyboard physically. The status line at the bottom was the only place you could put feedback without scrolling the buffer. Modal editing existed because the terminal was a teletype — keys had to mean <em>something</em> even when you weren&#x27;t typing prose into a buffer.</p>
+<p>Almost every design decision in modern Vim makes sense if you remember it was first made for a 1976 terminal.</p>
+<h3>Vim (1991)</h3>
+<p>Bram Moolenaar wrote Vim — <em>Vi IMproved</em> — to add the things vi was missing: visual mode for selecting before acting, multi-level undo, syntax highlighting, a real scripting language (Vimscript), and a plugin ecosystem. Bram maintained Vim almost single-handedly for 32 years until his passing in 2023. Vim is still actively maintained by a small team.</p>
+<p>Vim is still the default <code>vi</code> on macOS, BSD, and many Linux distributions. When you type <code>vi</code> at a terminal and get something that supports <code>u</code> and <kbd>Ctrl-R</kbd>, you have Vim. Pure 1976 vi has not shipped on a normal Unix install in decades.</p>
+<h3>Neovim (2014)</h3>
+<p>Neovim started in 2014 as a refactor: split the editor core from the UI so multiple front-ends could exist; add an async event loop so plugins could call out to LSP servers and language tools without freezing the editor; replace Vimscript-only configuration with first-class Lua. It also took the chance to flip a few defaults that had been frozen for backward compatibility — better terminal mouse handling, sane <code>&#x27;incsearch&#x27;</code>, hybrid line numbers, fixing the <kbd>Y</kbd> = <kbd>y</kbd><kbd>y</kbd> historical wart, etc.</p>
+<p>Neovim is now the de facto front of the Vim world for new users. The keybindings are essentially identical to Vim&#x27;s; the configuration ecosystem has moved.</p>
+<aside class="internals">
+<header>🔧 Under the Hood — What Actually Differs (and What Doesn&#x27;t)</header>
+<p>For everything in this book through Part 14 — every operator, motion, text object, register, mark, macro, and visual-mode command — Vim and Neovim are indistinguishable. The differences live in:</p>
+<ul>
+<li><strong>Defaults.</strong> Neovim ships with <code>&#x27;incsearch&#x27;</code>, hybrid line numbers, true-color terminal support, sane <code>&#x27;sessionoptions&#x27;</code>, etc. on by default. Vanilla Vim does not.</li>
+<li><strong>Config language.</strong> Neovim&#x27;s <code>init.lua</code> vs Vim&#x27;s <code>vimrc</code>. (Both still understand Vimscript.)</li>
+<li><strong>LSP.</strong> Neovim 0.5+ ships a built-in LSP client; Vim users use plugins (coc.nvim, vim-lsp, ALE).</li>
+<li><strong>Terminal.</strong> Neovim&#x27;s <code>:terminal</code> is async and well-integrated; Vim&#x27;s is bolted on.</li>
+<li><strong>Tree-sitter.</strong> Neovim ships built-in Tree-sitter highlighting; Vim relies on regex syntax files.</li>
+<li><strong>Plugin host model.</strong> Neovim plugins can be Lua libraries that call back into Neovim; Vim plugins are typically Vimscript or <code>+python</code>/<code>+ruby</code> -compiled subroutines.</li>
+</ul>
+<p>None of this changes how <kbd>d</kbd><kbd>a</kbd><kbd>w</kbd> behaves. The <em>editing language</em> — what this book is about — is the same. The differences matter when you are configuring and extending the editor, not when you are editing text.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> If you are starting from scratch in 2025, install Neovim. If your team or distro gives you Vim, use Vim. The keys are the same. Worry about migrating later, if at all.</aside>
+<aside class="qr"><span>→ See also <a href="05-vi-vim-neovim.html">Vi → Vim → Neovim</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-modal-editing.html">Modal Editing</a>, <a href="04-you-dont-need-vim.html">You Don&#x27;t Need Vim</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="04-you-dont-need-vim.html" rel="prev">← You Don&#x27;t Need Vim</a></span>
+  <span class="pager-pos">5 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../02-survival/01-open-save-quit.html" rel="next">Open, Save, Quit →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "tmux.copy-mode",
+  "title": "Copy Mode — Vim Motions in Your Scrollback",
+  "subtitle": "Read the buffer, select text, yank it, paste it",
+  "part": "tmux",
+  "summary": "Ctrl-B [ enters copy mode: a read-only view of the pane's scrollback with full Vim motions. Press v to start a selection, y to copy, q or Esc to leave.",
+  "keys": ["Ctrl-B [", "h", "j", "k", "l", "/", "n", "v", "y", "q"],
+  "lessons": [527, 528, 529],
+  "see_also": ["tmux.panes", "search-find.pattern"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Copy Mode" },
+
+    { "type": "prose", "text": "Copy mode is tmux's read-only scrollback view. Enter it with {key:Ctrl-B}{key:[}. Once inside, every Vim motion you already know works:" },
+
+    {
+      "type": "table",
+      "headers": ["Keys",                                  "Action"],
+      "rows": [
+        ["{key:h} {key:j} {key:k} {key:l}",                  "Move one cell"],
+        ["{key:0} {key:^} {key:$}",                          "Beginning / first non-blank / end of line"],
+        ["{key:w} {key:b} {key:e}",                          "Word forward / back / end"],
+        ["{key:g}{key:g} / {key:G}",                          "Top / bottom of scrollback"],
+        ["{key:Ctrl-U} {key:Ctrl-D} {key:Ctrl-B} {key:Ctrl-F}", "Half-page / full-page scroll"],
+        ["{key:/} {key:?} {key:n} {key:N}",                  "Search forward / backward / next / previous"],
+        ["{key:v}",                                          "Toggle visual character selection"],
+        ["{key:V}",                                          "Toggle visual line selection (in vi-mode tmux)"],
+        ["{key:y}",                                          "Copy selection to tmux's paste buffer"],
+        ["{key:q} or {key:Esc}",                             "Leave copy mode"]
+      ]
+    },
+
+    { "type": "prose", "text": "After you copy, paste with {key:Ctrl-B}{key:]}. The copy buffer is a tmux-internal stack; `tmux list-buffers` shows everything you've yanked recently." },
+
+    { "type": "tip", "text": "If your tmux is configured for *vi mode* (`setw -g mode-keys vi` in `~/.tmux.conf`), copy mode is fully Vim-flavored. Without that line, tmux defaults to emacs-style motions in copy mode, which is rarely what a Vim user wants. Set it once and forget it." },
+
+    { "type": "heading", "level": 2, "text": "System Clipboard Integration" },
+
+    { "type": "prose", "text": "By default, copy mode's {key:y} writes to a *tmux* buffer — useful inside tmux, invisible to your OS clipboard. To make {key:y} write to the system clipboard so you can paste into a browser or another app, bind copy-pipe to a clipboard tool:" },
+
+    {
+      "type": "prose",
+      "text": "```\n# macOS\nbind -T copy-mode-vi y send -X copy-pipe-and-cancel \"pbcopy\"\n\n# Linux X11 (xclip)\nbind -T copy-mode-vi y send -X copy-pipe-and-cancel \"xclip -selection clipboard\"\n\n# Linux Wayland (wl-copy)\nbind -T copy-mode-vi y send -X copy-pipe-and-cancel \"wl-copy\"\n```"
+    },
+
+    {
+      "type": "internals",
+      "audience": "book",
+      "title": "Why Copy Mode Has Its Own Universe",
+      "text": "tmux can't just let you scroll the pane's terminal directly — the program in the pane (your shell, Vim, a log tailer) owns that terminal and is constantly redrawing. Copy mode freezes the pane, hands you a virtual scrollback buffer to navigate, and then drops you back when you exit.\n\nThe motion vocabulary is borrowed straight from Vim because the audience for tmux is overwhelmingly Vim users. Tmux's author specifically wanted Vim users to feel at home in copy mode without learning a second motion language. The fact that {key:/} works for search, {key:n}/{key:N} for next/previous, {key:gg}/{key:G} for top/bottom — none of that is coincidence. It's a deliberate UX decision to inherit a vocabulary the audience already speaks."
+    },
+
+    { "type": "qr", "topic": "tmux.copy-mode" },
+    { "type": "buy-prompt" }
+  ]
+}

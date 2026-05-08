@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Copy Mode — Vim Motions in Your Scrollback — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Tmux</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&cmd=tmux" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="05-sessions.html" rel="prev">← Sessions, Detach, Reattach</a></span>
+  <span class="pager-pos">124 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../99-appendices/01-keyboard-walk.html" rel="next">Keyboard Walk →</a></span>
+</nav>
+<article>
+<h1>Copy Mode — Vim Motions in Your Scrollback</h1>
+<p class="subtitle">Read the buffer, select text, yank it, paste it</p>
+<p class="meta"><code>id: tmux.copy-mode</code> &middot; part: <strong>tmux</strong> &middot; keys: <kbd>Ctrl-B [</kbd>, <kbd>h</kbd>, <kbd>j</kbd>, <kbd>k</kbd>, <kbd>l</kbd>, <kbd>/</kbd>, <kbd>n</kbd>, <kbd>v</kbd>, <kbd>y</kbd>, <kbd>q</kbd> &middot; lessons: 527, 528, 529</p>
+<blockquote class="summary">Ctrl-B [ enters copy mode: a read-only view of the pane&#x27;s scrollback with full Vim motions. Press v to start a selection, y to copy, q or Esc to leave.</blockquote>
+<h2>Copy Mode</h2>
+<p>Copy mode is tmux&#x27;s read-only scrollback view. Enter it with <kbd>Ctrl-B</kbd><kbd>[</kbd>. Once inside, every Vim motion you already know works:</p>
+<table>
+<thead><tr>
+<th>Keys</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd></td>
+<td>Move one cell</td>
+</tr>
+<tr>
+<td><kbd>0</kbd> <kbd>^</kbd> <kbd>$</kbd></td>
+<td>Beginning / first non-blank / end of line</td>
+</tr>
+<tr>
+<td><kbd>w</kbd> <kbd>b</kbd> <kbd>e</kbd></td>
+<td>Word forward / back / end</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>g</kbd> / <kbd>G</kbd></td>
+<td>Top / bottom of scrollback</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-U</kbd> <kbd>Ctrl-D</kbd> <kbd>Ctrl-B</kbd> <kbd>Ctrl-F</kbd></td>
+<td>Half-page / full-page scroll</td>
+</tr>
+<tr>
+<td><kbd>/</kbd> <kbd>?</kbd> <kbd>n</kbd> <kbd>N</kbd></td>
+<td>Search forward / backward / next / previous</td>
+</tr>
+<tr>
+<td><kbd>v</kbd></td>
+<td>Toggle visual character selection</td>
+</tr>
+<tr>
+<td><kbd>V</kbd></td>
+<td>Toggle visual line selection (in vi-mode tmux)</td>
+</tr>
+<tr>
+<td><kbd>y</kbd></td>
+<td>Copy selection to tmux&#x27;s paste buffer</td>
+</tr>
+<tr>
+<td><kbd>q</kbd> or <kbd>Esc</kbd></td>
+<td>Leave copy mode</td>
+</tr>
+</tbody></table>
+<p>After you copy, paste with <kbd>Ctrl-B</kbd><kbd>]</kbd>. The copy buffer is a tmux-internal stack; <code>tmux list-buffers</code> shows everything you&#x27;ve yanked recently.</p>
+<aside class="tip"><strong>Tip.</strong> If your tmux is configured for <em>vi mode</em> (<code>setw -g mode-keys vi</code> in <code>~/.tmux.conf</code>), copy mode is fully Vim-flavored. Without that line, tmux defaults to emacs-style motions in copy mode, which is rarely what a Vim user wants. Set it once and forget it.</aside>
+<h3>System Clipboard Integration</h3>
+<p>By default, copy mode&#x27;s <kbd>y</kbd> writes to a <em>tmux</em> buffer — useful inside tmux, invisible to your OS clipboard. To make <kbd>y</kbd> write to the system clipboard so you can paste into a browser or another app, bind copy-pipe to a clipboard tool:</p>
+<pre><code># macOS
+bind -T copy-mode-vi y send -X copy-pipe-and-cancel &quot;pbcopy&quot;
+
+# Linux X11 (xclip)
+bind -T copy-mode-vi y send -X copy-pipe-and-cancel &quot;xclip -selection clipboard&quot;
+
+# Linux Wayland (wl-copy)
+bind -T copy-mode-vi y send -X copy-pipe-and-cancel &quot;wl-copy&quot;</code></pre>
+<aside class="qr"><span>→ See also <a href="06-copy-mode.html">Copy Mode — Vim Motions in Your Scrollback</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/frkkprfqKXk?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Enter Copy Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0527 — <a href="https://youtube.com/watch?v=frkkprfqKXk" target="_blank" rel="noopener">Enter Copy Mode</a></span></li><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/cDCo1jN4tKE?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Copy Mode Navigation" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0528 — <a href="https://youtube.com/watch?v=cDCo1jN4tKE" target="_blank" rel="noopener">Copy Mode Navigation</a></span></li><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/t_3ZnWCtviQ?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Copy Mode Visual Selection" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0529 — <a href="https://youtube.com/watch?v=t_3ZnWCtviQ" target="_blank" rel="noopener">Copy Mode Visual Selection</a></span></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="03-panes.html">Panes — Split, Navigate, Resize</a>, <span class="broken">search-find.pattern</span></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="05-sessions.html" rel="prev">← Sessions, Detach, Reattach</a></span>
+  <span class="pager-pos">124 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../99-appendices/01-keyboard-walk.html" rel="next">Keyboard Walk →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

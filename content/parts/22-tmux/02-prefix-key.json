@@ -1,0 +1,49 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "tmux.prefix-key",
+  "title": "The Prefix Key",
+  "subtitle": "Every tmux command starts with Ctrl-B (or whatever you remap it to)",
+  "part": "tmux",
+  "summary": "tmux commands are two-step: press the prefix key, release, then press the command key. Default prefix is Ctrl-B. Most users remap it because Ctrl-B clashes with Vim's page-up.",
+  "keys": ["Ctrl-B", "Ctrl-B ?"],
+  "lessons": [503, 504],
+  "see_also": ["tmux.what-is-tmux", "tmux.panes", "tmux.windows"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "The Prefix Key" },
+
+    { "type": "prose", "text": "tmux's keymap is two-step on purpose. You press the prefix key — by default {key:Ctrl-B} — release it, and then press the actual command key. {key:Ctrl-B}{key:c} creates a window; {key:Ctrl-B}{key:%} splits a pane. The prefix exists because tmux runs *underneath* whatever program is in your active pane. Without a clear separator, tmux would have to fight every program for keystrokes. With a prefix, programs see all the normal keys; tmux sees only what comes after the prefix." },
+
+    { "type": "prose", "text": "Press {key:Ctrl-B}{key:?} for the built-in cheat sheet. It lists every default binding in a scrollable buffer. Press {key:q} to dismiss it. This is the canonical \"how do I do X in tmux\" lookup — always a keystroke away." },
+
+    { "type": "tip", "text": "Once you can get to {key:Ctrl-B}{key:?}, you can rediscover anything you forget about tmux. That single binding is worth memorizing first." },
+
+    { "type": "heading", "level": 2, "text": "Why People Remap the Prefix" },
+
+    { "type": "prose", "text": "{key:Ctrl-B} clashes with Vim. Vim uses {key:Ctrl-B} for *page-back*. When Vim runs inside tmux, tmux intercepts the keystroke before Vim sees it, and Vim's page-up stops working. Three workarounds, in order of popularity:" },
+
+    {
+      "type": "table",
+      "headers": ["Solution", "How", "Trade-off"],
+      "rows": [
+        ["Remap prefix to {key:Ctrl-Space}",       "`set -g prefix C-Space` in `~/.tmux.conf`",          "Cleanest. {key:Ctrl-Space} doesn't conflict with Vim or anything else common."],
+        ["Remap prefix to {key:Ctrl-A}",            "`set -g prefix C-a` (matches GNU screen)",            "Familiar to screen users, but {key:Ctrl-A} shadows Vim's *increment number*."],
+        ["Send literal {key:Ctrl-B} through",       "{key:Ctrl-B}{key:Ctrl-B}",                            "No config change, but every page-up is two keystrokes instead of one."],
+        ["Use {key:Ctrl-U} or {key:PageUp}",        "Different Vim binding for the same operation",        "Acceptable if you only need page-up occasionally."]
+      ]
+    },
+
+    { "type": "prose", "text": "The remap-to-{key:Ctrl-Space} approach is the modern consensus. Almost every published `.tmux.conf` you'll find online does it. If you only learn one customization, learn this one." },
+
+    {
+      "type": "internals",
+      "audience": "book",
+      "title": "Why Ctrl-B Was Picked Originally",
+      "text": "tmux inherited the convention of having a prefix from GNU screen, which used {key:Ctrl-A}. tmux's author, Nicholas Marriott, picked {key:Ctrl-B} explicitly to *not* be {key:Ctrl-A}, because he did not want tmux to fight with Emacs (where {key:Ctrl-A} is beginning-of-line). {key:Ctrl-B} was chosen because it looked unused.\n\nIt was, of course, not unused. Vim had been using it for page-back since the early 1990s, and screen users were already irritated by the {key:Ctrl-A} clash. The lesson is that there are no unused {key:Ctrl-letter} chords on a Unix keyboard — every one is contested by at least one popular program. The remap-to-{key:Ctrl-Space} convention took years to settle, and is now ubiquitous because {key:Ctrl-Space} *is* genuinely uncontested in most workflows."
+    },
+
+    { "type": "qr", "topic": "tmux.prefix-key" },
+    { "type": "buy-prompt" }
+  ]
+}

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Buffer vs Window vs Tab — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Windows Buffers Tabs</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="05-tabs.html" rel="prev">← Tabs</a></span>
+  <span class="pager-pos">71 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../15-prefix-families/01-g-overview.html" rel="next">The g Family →</a></span>
+</nav>
+<article>
+<h1>Buffer vs Window vs Tab</h1>
+<p class="subtitle">Three concepts most editors collapse into one. Vim keeps them separate.</p>
+<p class="meta"><code>id: windows.buffers-vs-windows-vs-tabs</code> &middot; part: <strong>windows</strong></p>
+<blockquote class="summary">A buffer is a file in memory. A window is a viewport onto a buffer. A tab is a layout of windows. Most editors call all three &#x27;tabs&#x27; — that&#x27;s why Vim&#x27;s model feels strange at first.</blockquote>
+<p>Most editors give you <em>one</em> concept — call it a tab, a panel, whatever — and that one thing represents &quot;a file you&#x27;re editing.&quot; Vim breaks it into three. Once you see the split, the rest of Vim&#x27;s window model snaps into place.</p>
+<aside class="internals">
+<header>🔧 Under the Hood — The Three Layers</header>
+<p><strong>Buffer</strong> — a <em>file in memory</em>. You open a file, Vim loads its contents into a buffer. The buffer is the editable text. There&#x27;s no UI for it directly; you see a buffer through a window.</p>
+<p><strong>Window</strong> — a <em>viewport</em> onto a buffer. The split layout you see is windows. One buffer can be shown in many windows; one window shows one buffer at a time.</p>
+<p><strong>Tab</strong> — a <em>layout of windows</em>. A way to save and switch between window arrangements.</p>
+<p>Concrete picture: open three files (three buffers). Split the screen into two windows; each window shows a buffer. Open a tab; lay out four windows there showing yet other buffers. Total: 7 buffers, 6 windows, 2 tabs. Closing a window doesn&#x27;t unload its buffer — the buffer is still in memory, just not currently visible.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Why This Matters</header>
+<p>Once you treat <em>buffers</em> as your unit of work and <em>windows</em>/<em>tabs</em> as transient layout decisions:</p>
+<ul>
+<li>You stop trying to &quot;close the tab&quot; and start &quot;closing the window, the file&#x27;s still there.&quot;</li>
+<li>You can have 50 buffers loaded with no UI clutter — they&#x27;re invisible until you <kbd>:</kbd><kbd>b</kbd> to one.</li>
+<li>You arrange splits the way that helps your <em>current task</em>, not your <em>file inventory</em>.</li>
+<li>You stop fighting Vim&#x27;s defaults.</li>
+</ul>
+<p>Your mental model: buffers are the data; windows are the UI; tabs are the saved UI layouts. Most professional Vim users live in 1–3 windows and zero tabs, switching between many buffers.</p>
+</aside>
+<table>
+<thead><tr>
+<th>Concept</th>
+<th>Other editors call it</th>
+<th>Vim primary commands</th>
+</tr></thead><tbody>
+<tr>
+<td>Buffer</td>
+<td>File / tab</td>
+<td><kbd>:</kbd><kbd>l</kbd><kbd>s</kbd>, <kbd>:</kbd><kbd>b</kbd>, <kbd>:</kbd><kbd>e</kbd>, <kbd>:</kbd><kbd>b</kbd><kbd>d</kbd></td>
+</tr>
+<tr>
+<td>Window</td>
+<td>Pane / split</td>
+<td><kbd>Ctrl-W</kbd> family, <kbd>:</kbd><kbd>s</kbd><kbd>p</kbd>, <kbd>:</kbd><kbd>v</kbd><kbd>s</kbd></td>
+</tr>
+<tr>
+<td>Tab</td>
+<td>Workspace / project</td>
+<td><kbd>:</kbd><kbd>t</kbd><kbd>a</kbd><kbd>b</kbd><kbd>n</kbd><kbd>e</kbd><kbd>w</kbd>, <kbd>g</kbd><kbd>t</kbd>, <kbd>g</kbd><kbd>T</kbd></td>
+</tr>
+</tbody></table>
+<aside class="qr"><span>→ See also <a href="06-buffers-vs-windows-vs-tabs.html">Buffer vs Window vs Tab</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="04-buffers.html">Buffers</a>, <a href="05-tabs.html">Tabs</a>, <a href="01-splits.html">Creating Splits</a>, <a href="02-navigate.html">Navigating Windows</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="05-tabs.html" rel="prev">← Tabs</a></span>
+  <span class="pager-pos">71 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../15-prefix-families/01-g-overview.html" rel="next">The g Family →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

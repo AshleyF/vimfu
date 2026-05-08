@@ -27,6 +27,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from lib.videos import video_for_lesson, videos_for_topic  # noqa: E402
+from lib.audience import visible as _visible  # noqa: E402
+
+AUDIENCE = "all"
 
 PARTS_DIR = ROOT / "parts"
 EXAMPLES_DIR = ROOT / "examples"
@@ -191,10 +194,18 @@ def render_block(b: dict[str, Any], *, current_part: str, index, examples: dict[
         rows = b.get("rows", [])
         if not headers:
             return ""
+        key_cols = set(b.get("keyColumns") or
+                       [i for i, h in enumerate(headers)
+                        if str(h).strip().lower() in ("key", "keys")])
         out = ["| " + " | ".join(inl(h) for h in headers) + " |"]
         out.append("|" + "|".join(["---"] * len(headers)) + "|")
         for row in rows:
-            cells = [inl(str(c)) for c in row]
+            cells = []
+            for i, c in enumerate(row):
+                s = str(c)
+                if i in key_cols and s and "{key:" not in s:
+                    s = "{key:" + s + "}"
+                cells.append(inl(s))
             # pad short rows
             while len(cells) < len(headers):
                 cells.append("")
@@ -284,6 +295,8 @@ def render_topic(t: dict[str, Any], index, examples: dict[str, dict]) -> str:
         out.append("")
 
     for b in t.get("blocks", []):
+        if not _visible(b, AUDIENCE):
+            continue
         # Skip a leading H1 that just repeats the title.
         if (b.get("type") == "heading" and int(b.get("level", 2)) == 1
                 and b.get("text", "").strip() == title.strip()):
@@ -387,6 +400,9 @@ def main() -> int:
     # write topic files + part indexes
     written = 0
     for part_dir, plist in parts_map.items():
+        plist = [t for t in plist if _visible(t, AUDIENCE)]
+        if not plist:
+            continue
         pdir = out_dir / part_dir
         pdir.mkdir(parents=True, exist_ok=True)
         for t in plist:

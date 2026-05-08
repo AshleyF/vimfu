@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Yank and Put — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Basic Editing</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=alpha%0Abravo%0Acharlie%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="06-change.html" rel="prev">← Change</a></span>
+  <span class="pager-pos">16 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="08-replace-char.html" rel="next">Replace a Character →</a></span>
+</nav>
+<article>
+<h1>Yank and Put</h1>
+<p class="subtitle">Yank is copy. Put is paste. The register knows whether it&#x27;s a line or a span.</p>
+<p class="meta"><code>id: editing.yank-put</code> &middot; part: <strong>editing</strong> &middot; keys: <kbd>y</kbd>, <kbd>yy</kbd>, <kbd>Y</kbd>, <kbd>yw</kbd>, <kbd>y$</kbd>, <kbd>p</kbd>, <kbd>P</kbd> &middot; lessons: 40, 41, 42, 43, 44</p>
+<blockquote class="summary">y is the yank (copy) operator. p puts after the cursor; P puts before. The register remembers whether it holds characters or whole lines, and that decides where the put lands.</blockquote>
+<p><kbd>y</kbd> is <em>yank</em> — Vim&#x27;s word for copy. It&#x27;s an operator, like <kbd>d</kbd> and <kbd>c</kbd>, so it takes a motion: <kbd>y</kbd><kbd>w</kbd> yanks a word, <kbd>y</kbd><kbd>$</kbd> yanks to end of line, <kbd>y</kbd><kbd>y</kbd> yanks the whole line.</p>
+<p>Whatever you yanked sits in the unnamed register, ready to be put with <kbd>p</kbd> (after the cursor) or <kbd>P</kbd> (before).</p>
+<figure class="keys">
+<figcaption>Yank current line (linewise)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>y</kbd></td><td></td></tr>
+<tr><td><kbd>y</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Yank current line (= yy by tradition; some configs map to y$)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Y</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Yank a word</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>y</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Yank to end of line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>y</kbd></td><td></td></tr>
+<tr><td><kbd>$</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Put after cursor / below line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>p</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Put before cursor / above line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>P</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="40"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/RoicAQxvHnU?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Yank a Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>yy — yank a line</figcaption></figure>
+<figure class="lesson-embed" data-lesson="41"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/nNVPJrMvVTI?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Put After" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Y — yank line</figcaption></figure>
+<figure class="lesson-embed" data-lesson="42"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/oOZYZYqDQ-s?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Put Before" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>p — put after</figcaption></figure>
+<figure class="lesson-embed" data-lesson="43"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/pIXQxZkI5-Q?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Yank a Motion" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>P — put before</figcaption></figure>
+<figure class="lesson-embed" data-lesson="44"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/y4gtoZsay8o?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The dd-p Swap Trick" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>yw / y$ — yank a span</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Why p Sometimes Goes Below the Line and Sometimes After the Cursor</header>
+<p>Every register holds <strong>(text, type)</strong> where <code>type</code> is <code>char</code>, <code>line</code>, or <code>block</code>. The type is set by <em>how the text got into the register</em>:</p>
+<ul>
+<li><kbd>y</kbd><kbd>w</kbd>, <kbd>y</kbd><kbd>$</kbd>, <kbd>y</kbd><kbd>i</kbd><kbd>w</kbd> → type = <code>char</code> (a span of characters).</li>
+<li><kbd>y</kbd><kbd>y</kbd>, <kbd>y</kbd><kbd>j</kbd>, <kbd>y</kbd><kbd>G</kbd> → type = <code>line</code> (one or more whole lines).</li>
+<li><kbd>Ctrl-V</kbd>-then-<kbd>y</kbd> → type = <code>block</code> (a rectangle).</li>
+</ul>
+<p>When you put:</p>
+<ul>
+<li>A <code>char</code>-typed register goes <em>after the cursor</em> (just past the current character).</li>
+<li>A <code>line</code>-typed register goes <em>on the next line below</em>.</li>
+<li>A <code>block</code>-typed register goes <em>as a rectangle starting one column right of the cursor</em>.</li>
+</ul>
+<p>This is why <kbd>y</kbd><kbd>y</kbd><kbd>p</kbd> &quot;duplicates the line&quot; (the line-typed register lands as a new line below) and <kbd>y</kbd><kbd>w</kbd><kbd>p</kbd> &quot;appends a word after the cursor.&quot; It&#x27;s not magic; it&#x27;s the type tag.</p>
+<p><kbd>P</kbd> (capital) does the mirror: charwise = before cursor; linewise = above current line; blockwise = at the cursor column (no shift).</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — The Y Wart</header>
+<p>By symmetry with <kbd>D</kbd> = <kbd>d</kbd><kbd>$</kbd> and <kbd>C</kbd> = <kbd>c</kbd><kbd>$</kbd>, you&#x27;d expect <kbd>Y</kbd> = <kbd>y</kbd><kbd>$</kbd>. It isn&#x27;t.</p>
+<p>In classic Vim, <kbd>Y</kbd> is just another way to say <kbd>y</kbd><kbd>y</kbd>. This is a deliberate compatibility choice — vi behaved that way, so Vim did too. It&#x27;s the most common single complaint about Vim&#x27;s grammar.</p>
+<p>Neovim 0.6+ changed the default: in Neovim, <kbd>Y</kbd> is now <kbd>y</kbd><kbd>$</kbd> (matching <kbd>D</kbd> and <kbd>C</kbd>). In Vim you can opt in with <code>:nnoremap Y y$</code>. The video lessons show classic Y; Neovim users get the new behavior for free.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Move text without using a separate buffer: <kbd>d</kbd><kbd>d</kbd> (cut a line), navigate, <kbd>p</kbd> (paste below). It&#x27;s exactly the cut-and-paste you already know, just expressed in operator+motion.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+<th>Type</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>y</kbd>{motion}</td>
+<td>Yank range</td>
+<td>Inherits from motion</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>y</kbd></td>
+<td>Yank current line</td>
+<td>Linewise</td>
+</tr>
+<tr>
+<td><kbd>Y</kbd></td>
+<td>Yank line (vi) or to end-of-line (nvim default)</td>
+<td>Linewise / charwise</td>
+</tr>
+<tr>
+<td><kbd>p</kbd></td>
+<td>Put after cursor / below line</td>
+<td>—</td>
+</tr>
+<tr>
+<td><kbd>P</kbd></td>
+<td>Put before cursor / above line</td>
+<td>—</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>p</kbd></td>
+<td>Like p but leave cursor <em>after</em> pasted text</td>
+<td>—</td>
+</tr>
+<tr>
+<td><kbd>]</kbd><kbd>p</kbd></td>
+<td>Put + adjust indent to context</td>
+<td>—</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd>{r}<kbd>p</kbd></td>
+<td>Put from register {r}</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — yy then p</h3>
+<p class="example-summary">Copy a line, paste below.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.yank-put/frame_01.color.svg" alt="editing.yank-put"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>yy</kbd> · <span class="step-cap">yy — line into unnamed register.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.yank-put/frame_02.color.svg" alt="yy — line into unnamed register."></div>
+<p class="narration">Buffer unchanged. The unnamed register now holds &#x27;bravo\n&#x27;.</p>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>p</kbd> · <span class="step-cap">p — pasted below.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.yank-put/frame_03.color.svg" alt="p — pasted below."></div>
+<p class="narration">Linewise paste opens a new line beneath. Capital P pastes above.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=alpha%0Abravo%0Acharlie%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="07-yank-put.html">Yank and Put</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="05-delete.html">Delete</a>, <a href="../12-registers/02-unnamed.html">The Unnamed Register</a>, <a href="../12-registers/03-named.html">Named Registers</a>, <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="06-change.html" rel="prev">← Change</a></span>
+  <span class="pager-pos">16 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="08-replace-char.html" rel="next">Replace a Character →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

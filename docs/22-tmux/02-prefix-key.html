@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Prefix Key — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Tmux</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&cmd=tmux" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-what-is-tmux.html" rel="prev">← What Is tmux?</a></span>
+  <span class="pager-pos">120 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-panes.html" rel="next">Panes — Split, Navigate, Resize →</a></span>
+</nav>
+<article>
+<h1>The Prefix Key</h1>
+<p class="subtitle">Every tmux command starts with Ctrl-B (or whatever you remap it to)</p>
+<p class="meta"><code>id: tmux.prefix-key</code> &middot; part: <strong>tmux</strong> &middot; keys: <kbd>Ctrl-B</kbd>, <kbd>Ctrl-B ?</kbd> &middot; lessons: 503, 504</p>
+<blockquote class="summary">tmux commands are two-step: press the prefix key, release, then press the command key. Default prefix is Ctrl-B. Most users remap it because Ctrl-B clashes with Vim&#x27;s page-up.</blockquote>
+<p>tmux&#x27;s keymap is two-step on purpose. You press the prefix key — by default <kbd>Ctrl-B</kbd> — release it, and then press the actual command key. <kbd>Ctrl-B</kbd><kbd>c</kbd> creates a window; <kbd>Ctrl-B</kbd><kbd>%</kbd> splits a pane. The prefix exists because tmux runs <em>underneath</em> whatever program is in your active pane. Without a clear separator, tmux would have to fight every program for keystrokes. With a prefix, programs see all the normal keys; tmux sees only what comes after the prefix.</p>
+<p>Press <kbd>Ctrl-B</kbd><kbd>?</kbd> for the built-in cheat sheet. It lists every default binding in a scrollable buffer. Press <kbd>q</kbd> to dismiss it. This is the canonical &quot;how do I do X in tmux&quot; lookup — always a keystroke away.</p>
+<aside class="tip"><strong>Tip.</strong> Once you can get to <kbd>Ctrl-B</kbd><kbd>?</kbd>, you can rediscover anything you forget about tmux. That single binding is worth memorizing first.</aside>
+<h3>Why People Remap the Prefix</h3>
+<p><kbd>Ctrl-B</kbd> clashes with Vim. Vim uses <kbd>Ctrl-B</kbd> for <em>page-back</em>. When Vim runs inside tmux, tmux intercepts the keystroke before Vim sees it, and Vim&#x27;s page-up stops working. Three workarounds, in order of popularity:</p>
+<table>
+<thead><tr>
+<th>Solution</th>
+<th>How</th>
+<th>Trade-off</th>
+</tr></thead><tbody>
+<tr>
+<td>Remap prefix to <kbd>Ctrl-Space</kbd></td>
+<td><code>set -g prefix C-Space</code> in <code>~/.tmux.conf</code></td>
+<td>Cleanest. <kbd>Ctrl-Space</kbd> doesn&#x27;t conflict with Vim or anything else common.</td>
+</tr>
+<tr>
+<td>Remap prefix to <kbd>Ctrl-A</kbd></td>
+<td><code>set -g prefix C-a</code> (matches GNU screen)</td>
+<td>Familiar to screen users, but <kbd>Ctrl-A</kbd> shadows Vim&#x27;s <em>increment number</em>.</td>
+</tr>
+<tr>
+<td>Send literal <kbd>Ctrl-B</kbd> through</td>
+<td><kbd>Ctrl-B</kbd><kbd>Ctrl-B</kbd></td>
+<td>No config change, but every page-up is two keystrokes instead of one.</td>
+</tr>
+<tr>
+<td>Use <kbd>Ctrl-U</kbd> or <kbd>PageUp</kbd></td>
+<td>Different Vim binding for the same operation</td>
+<td>Acceptable if you only need page-up occasionally.</td>
+</tr>
+</tbody></table>
+<p>The remap-to-<kbd>Ctrl-Space</kbd> approach is the modern consensus. Almost every published <code>.tmux.conf</code> you&#x27;ll find online does it. If you only learn one customization, learn this one.</p>
+<aside class="qr"><span>→ See also <a href="02-prefix-key.html">The Prefix Key</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/Z7DscibehIs?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The Prefix Key" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0503 — <a href="https://youtube.com/watch?v=Z7DscibehIs" target="_blank" rel="noopener">The Prefix Key</a></span></li><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/ApoQSPLSX-8?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="tmux Help" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0504 — <a href="https://youtube.com/watch?v=ApoQSPLSX-8" target="_blank" rel="noopener">tmux Help</a></span></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="01-what-is-tmux.html">What Is tmux?</a>, <a href="03-panes.html">Panes — Split, Navigate, Resize</a>, <a href="04-windows.html">Windows</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-what-is-tmux.html" rel="prev">← What Is tmux?</a></span>
+  <span class="pager-pos">120 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-panes.html" rel="next">Panes — Split, Navigate, Resize →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

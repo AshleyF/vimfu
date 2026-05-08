@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Undo as a Tree — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Advanced</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../20-patterns-recipes/08-external-filter.html" rel="prev">← External Filter Tricks</a></span>
+  <span class="pager-pos">111 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-special-registers.html" rel="next">Special Registers Deep Dive →</a></span>
+</nav>
+<article>
+<h1>Undo as a Tree</h1>
+<p class="subtitle">g- and g+ walk by time. :undolist shows the branches.</p>
+<p class="meta"><code>id: advanced.undo-tree</code> &middot; part: <strong>advanced</strong> &middot; keys: <kbd>u</kbd>, <kbd>Ctrl-R</kbd>, <kbd>g-</kbd>, <kbd>g+</kbd> &middot; lessons: 481, 483</p>
+<blockquote class="summary">Vim&#x27;s undo isn&#x27;t a stack — it&#x27;s a tree. Every undo branch is preserved. g- and g+ walk by chronological time; :undolist shows all branches; :earlier/:later jump by time intervals.</blockquote>
+<p>In most editors, undo is a stack: redo a mistake, the original is gone forever. In Vim, undo is a <strong>tree</strong> — every branch is kept.</p>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>u</kbd></td>
+<td>Undo previous change (along current branch)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd></td>
+<td>Redo (along current branch)</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>-</kbd></td>
+<td>Go to OLDER state by chronological time</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>+</kbd></td>
+<td>Go to NEWER state by chronological time</td>
+</tr>
+<tr>
+<td><kbd>:undolist</kbd></td>
+<td>Show the undo tree</td>
+</tr>
+<tr>
+<td><kbd>:earlier 5m</kbd></td>
+<td>State as of 5 minutes ago</td>
+</tr>
+<tr>
+<td><kbd>:later 30s</kbd></td>
+<td>30 seconds forward</td>
+</tr>
+<tr>
+<td><kbd>:earlier 10</kbd></td>
+<td>10 changes back</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — The Tree Structure</header>
+<p>Each <em>change</em> (one Insert session, one delete, one substitute, etc.) creates a new <strong>node</strong> in the undo tree. <kbd>u</kbd> walks toward the parent of the current node; <kbd>Ctrl-R</kbd> walks back toward the most recent child.</p>
+<p>When you edit, undo, then <strong>edit again</strong>, the new edit becomes a <em>new branch</em> — and the previous redo path is preserved as a sibling. Without <code>g-</code>/<code>g+</code>, you&#x27;d never reach that sibling again.</p>
+<ul>
+<li><kbd>g</kbd><kbd>-</kbd> / <kbd>g</kbd><kbd>+</kbd> walk <strong>by time</strong> — they ignore the tree shape and visit nodes in chronological creation order. This lets you reach any state regardless of branching.</li>
+<li><code>:undolist</code> shows the tree as a table: number, time, save count, branch info. Use <code>:undo N</code> to jump to a specific node.</li>
+<li><code>:earlier 5m</code> and <code>:later 30s</code> jump by wall-clock time — <em>priceless</em> when you realize you broke something a few minutes ago.</li>
+</ul>
+<p>The undo tree is persisted across sessions if you <code>:set undofile</code> — Vim writes a <code>.&lt;filename&gt;.un~</code> file beside each saved file. Real time-travel.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Plugins like <em>undotree</em> visualize the tree as a sidebar. The data is all there in <code>:undolist</code> — the plugin just makes it readable.</aside>
+<aside class="qr"><span>→ See also <a href="01-undo-tree.html">Undo as a Tree</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0481 Undo Branches (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0483 The . Register (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../02-survival/03-undo-redo.html">Undo and Redo</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../20-patterns-recipes/08-external-filter.html" rel="prev">← External Filter Tricks</a></span>
+  <span class="pager-pos">111 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-special-registers.html" rel="next">Special Registers Deep Dive →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

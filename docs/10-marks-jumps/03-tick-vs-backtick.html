@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tick vs Backtick — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Marks Jumps</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-special.html" rel="prev">← Special Marks</a></span>
+  <span class="pager-pos">48 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-jumplist.html" rel="next">The Jump List →</a></span>
+</nav>
+<article>
+<h1>Tick vs Backtick</h1>
+<p class="subtitle">&#x27; jumps to the line of a mark. ` jumps to the exact position.</p>
+<p class="meta"><code>id: marks.tick-vs-backtick</code> &middot; part: <strong>marks</strong> &middot; keys: <kbd>&#x27;</kbd>, <kbd>`</kbd></p>
+<blockquote class="summary">&#x27; (apostrophe) is linewise: jumps to the line of the mark, lands on first non-blank. ` (backtick) is charwise: jumps to the exact stored line and column.</blockquote>
+<p>Every mark has <em>two</em> ways to jump to it:
+
+  • <kbd>&#x27;</kbd>{m} — jump to the <strong>line</strong> of mark m, cursor on first non-blank. Linewise.
+  • <kbd>`</kbd>{m} — jump to the <strong>exact position</strong> of mark m. Charwise.</p>
+<aside class="tip"><strong>Tip.</strong> Mnemonic: tick (<code>&#x27;</code>) = top of column on the line. Backtick (`<code> </code> ``) = back to the precise byte.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Which to Use Depends on the Operator</header>
+<p>When <em>jumping</em>, the difference is small: tick lands on first non-blank, backtick lands at the original column. Either is fine for navigation.</p>
+<p>When used as a <em>motion</em> with an operator, the difference is huge:</p>
+<ul>
+<li><kbd>d</kbd><kbd>&#x27;</kbd><kbd>a</kbd> deletes from the current line through the line of mark <code>a</code>, <strong>linewise</strong>. Both lines and everything between them go in their entirety.</li>
+<li><kbd>d</kbd><kbd>`</kbd><kbd>a</kbd> deletes from the cursor to the exact position of mark <code>a</code>, <strong>charwise</strong>. Partial lines.</li>
+</ul>
+<p>For copying chunks of code: tick. For surgical deletes: backtick. For navigation: whichever your finger reaches.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Backtick is awkward to type on most keyboards. Many users remap with <code>nnoremap &#x27; </code><code> </code> `<code> and </code>nnoremap `<code> </code> `<code> &#x27;</code> to swap them — backtick (the more useful one) becomes the easier key. Try it for a week.</aside>
+<aside class="qr"><span>→ See also <a href="03-tick-vs-backtick.html">Tick vs Backtick</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-local-global.html">Setting and Jumping to Marks</a>, <a href="02-special.html">Special Marks</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-special.html" rel="prev">← Special Marks</a></span>
+  <span class="pager-pos">48 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-jumplist.html" rel="next">The Jump List →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>You Don&#x27;t Need Vim — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Foundations</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-universal-grammar.html" rel="prev">← The Universal Grammar</a></span>
+  <span class="pager-pos">4 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-vi-vim-neovim.html" rel="next">Vi → Vim → Neovim →</a></span>
+</nav>
+<article>
+<h1>You Don&#x27;t Need Vim</h1>
+<p class="subtitle">Vim keybindings work in almost every editor and IDE</p>
+<p class="meta"><code>id: foundations.you-dont-need-vim</code> &middot; part: <strong>foundations</strong></p>
+<blockquote class="summary">This is a book about an editing language, not an editor. The grammar is the same in Neovim, VS Code, JetBrains, Emacs, and a dozen other places.</blockquote>
+<p>The demos in this book use Neovim — a modern, community-driven fork of Vim with clean defaults and a fast UI. We use it because it photographs well and ships sane defaults. But here is the secret: <strong>you do not have to use Neovim. You do not even have to use Vim.</strong></p>
+<p>Vim keybindings — the <em>editing language</em> — are available almost everywhere. Most readers of this book will use them inside a tool they already love.</p>
+<table>
+<thead><tr>
+<th>Editor / Environment</th>
+<th>What to install</th>
+</tr></thead><tbody>
+<tr>
+<td>VS Code</td>
+<td>Vim extension (<code>vscodevim.vim</code>)</td>
+</tr>
+<tr>
+<td>JetBrains IDEs (IntelliJ, PyCharm, GoLand, Rider, …)</td>
+<td>IdeaVim plugin</td>
+</tr>
+<tr>
+<td>Visual Studio</td>
+<td>VsVim extension</td>
+</tr>
+<tr>
+<td>Sublime Text</td>
+<td>Vintage / NeoVintageous</td>
+</tr>
+<tr>
+<td>Emacs</td>
+<td>Evil mode (or Doom Emacs / Spacemacs)</td>
+</tr>
+<tr>
+<td>Xcode</td>
+<td>Xvim2 plugin</td>
+</tr>
+<tr>
+<td>Eclipse</td>
+<td>Vrapper</td>
+</tr>
+<tr>
+<td>Atom (RIP)</td>
+<td>vim-mode-plus</td>
+</tr>
+<tr>
+<td>Chrome / Firefox / Safari</td>
+<td>Vimium / Tridactyl / Vimari</td>
+</tr>
+<tr>
+<td>Obsidian</td>
+<td>Built-in Vim mode (Settings → Editor)</td>
+</tr>
+<tr>
+<td>JupyterLab</td>
+<td>jupyterlab-vim</td>
+</tr>
+<tr>
+<td>Bash / Zsh shell</td>
+<td><code>set -o vi</code> (or <code>bindkey -v</code>)</td>
+</tr>
+<tr>
+<td>readline (everywhere it is used)</td>
+<td><code>set editing-mode vi</code> in <code>~/.inputrc</code></td>
+</tr>
+</tbody></table>
+<p><kbd>d</kbd><kbd>i</kbd><kbd>w</kbd> deletes a word in Vim, in Neovim, in VS Code with the Vim extension, in IntelliJ with IdeaVim, and at the Bash prompt with <code>set -o vi</code>. The grammar is universal. This book teaches the grammar — not any specific editor.</p>
+<aside class="tip"><strong>Tip.</strong> If you are already productive in VS Code or a JetBrains IDE and would rather not switch, do not switch. Install the Vim keybinding extension and learn the editing language inside the tool you already know. You get the best of both worlds: full IDE features (debugger, refactoring, LSP) plus the Vim edit grammar.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — How Faithful Are the Plugins?</header>
+<p>Most Vim emulators implement a subset. The core grammar — operators, motions, text objects, registers, marks, visual mode, the dot command, basic Ex commands — is in essentially every plugin. The long tail is where they diverge: macros (<code>q</code>/<code>@</code>) work in some but not others; the more obscure registers (<kbd>&quot;</kbd><kbd>.</kbd>, <kbd>&quot;</kbd><kbd>=</kbd>, <kbd>&quot;</kbd><kbd>:</kbd>) are often missing; folding, the jumplist, and <kbd>Ctrl-W</kbd> window commands vary widely.</p>
+<p>The hierarchy from most to least faithful (rough): vanilla Vim → Neovim → IdeaVim → VsVim → vscodevim → Vintage. If you live deep in the long tail, you will eventually feel friction. For everything in this book up through Part 7 (Operators and Text Objects), every emulator handles it. The advanced material (registers, macros, the undo tree, folding) is where you start checking the plugin&#x27;s docs for caveats.</p>
+</aside>
+<p>From here on, when this book says &quot;Vim,&quot; we mean <em>the editing language</em>. The simulator demos run on real Neovim, but the keys you learn work in whatever you use.</p>
+<aside class="qr"><span>→ See also <a href="04-you-dont-need-vim.html">You Don&#x27;t Need Vim</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-modal-editing.html">Modal Editing</a>, <a href="05-vi-vim-neovim.html">Vi → Vim → Neovim</a>, <a href="../99-appendices/07-vim-in-other-editors.html">Vim in Other Editors</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-universal-grammar.html" rel="prev">← The Universal Grammar</a></span>
+  <span class="pager-pos">4 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-vi-vim-neovim.html" rel="next">Vi → Vim → Neovim →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Insert and Back Again — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Survival</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-open-save-quit.html" rel="prev">← Open, Save, Quit</a></span>
+  <span class="pager-pos">7 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-undo-redo.html" rel="next">Undo and Redo →</a></span>
+</nav>
+<article>
+<h1>Insert and Back Again</h1>
+<p class="subtitle">i to type, Esc to come home</p>
+<p class="meta"><code>id: survival.insert-and-back</code> &middot; part: <strong>survival</strong> &middot; keys: <kbd>i</kbd>, <kbd>Esc</kbd>, <kbd>Ctrl-[</kbd> &middot; lessons: 4, 5, 6, 15</p>
+<blockquote class="summary">Press i to enter Insert mode and type. Press Esc to return to Normal. Build the Esc reflex.</blockquote>
+<p>You are in Normal mode. The cursor sits on a character. Keys do things — they are commands. You want to type some text. How?</p>
+<figure class="keys">
+<figcaption>Enter Insert mode (before the cursor)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+</tbody></table></figure>
+<p>Press <kbd>i</kbd>. The status line shows <code>-- INSERT --</code>. Now keys do what you&#x27;d expect: they type characters.</p>
+<figure class="lesson-embed" data-lesson="4"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/wWYoPcfwst8?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Insert Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Entering Insert mode with i</figcaption></figure>
+<p>Type whatever you want. Newlines work. Backspace works. This is just typing.</p>
+<figure class="lesson-embed" data-lesson="5"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/_EFqkfWfj1U?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Typing Text" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Typing in Insert mode</figcaption></figure>
+<h3>Coming back</h3>
+<figure class="keys">
+<figcaption>Return to Normal mode</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Esc</kbd></td><td></td></tr>
+</tbody></table></figure>
+<p><kbd>Esc</kbd> returns you to Normal mode. The status line empties. Keys are commands again. <kbd>Ctrl-[</kbd> does the same thing — handy if your <kbd>Esc</kbd> key is far away.</p>
+<figure class="lesson-embed" data-lesson="6"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/pKhYM_Meolk?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Back to Normal Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Back to Normal with Esc</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> Many remappers swap <kbd>Caps Lock</kbd> and <kbd>Esc</kbd> (or map <kbd>Caps Lock</kbd> to <kbd>Esc</kbd>). On many laptops, <kbd>Esc</kbd> is a tiny touch-strip key — moving it to <kbd>Caps Lock</kbd> is a real productivity win and easy to do in OS settings (no Vim config needed).</aside>
+<h3>The Escape Habit</h3>
+<p>Build a reflex: <strong>after every thought, press <kbd>Esc</kbd>.</strong> Finished a sentence? Esc. Finished a function name? Esc. Done with that loop body? Esc. Normal mode is your resting state, not Insert. The minute you finish typing, get back to where you can move.</p>
+<p>This sounds annoying. After a week, you stop noticing. After a month, you no longer remember what mode you are in — you just know which command to issue, and the right mode shows up.</p>
+<figure class="lesson-embed" data-lesson="15"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/1T7OEvSUh5g?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The Escape Habit" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Make Esc a reflex</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — What Insert Mode Is Buffering</header>
+<p>From the moment you press <kbd>i</kbd> until the moment you press <kbd>Esc</kbd>, Vim is recording the text you type into a small buffer. When you leave Insert, three things happen:</p>
+<p>1. The text goes into the buffer (you see it).
+  2. The text is also stored in the <kbd>&quot;</kbd><kbd>.</kbd> register — accessible as the <em>last-inserted-text</em> register, useful in mappings and for the <kbd>.</kbd> repeat command.
+  3. If a count was applied (e.g. <kbd>3</kbd><kbd>i</kbd><kbd>hi</kbd><kbd>Esc</kbd>), the buffered text is replayed <code>count - 1</code> more times so the final result is <code>hihihi</code>.</p>
+<p>This is also what <kbd>.</kbd> (dot, repeat last change) replays for an Insert-mode change: not the keystrokes you pressed, but the <em>text</em> that ended up in the buffer.</p>
+<p>Special keys pressed during Insert (<kbd>Ctrl-W</kbd>, <kbd>Ctrl-U</kbd>, <kbd>Ctrl-T</kbd>, <kbd>Ctrl-D</kbd>, <kbd>Backspace</kbd>, <kbd>Enter</kbd>) are also buffered and replayed faithfully. Insert is not just &quot;typed text&quot; — it is a recording of an editing action that happens to mostly be typing.</p>
+</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>i</kbd></td>
+<td>Insert before cursor</td>
+</tr>
+<tr>
+<td><kbd>Esc</kbd></td>
+<td>Return to Normal mode</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-[</kbd></td>
+<td>Return to Normal mode (alias)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-C</kbd></td>
+<td>Return to Normal mode (cancels pending state too — but does not run autocmds; usually use <kbd>Esc</kbd>)</td>
+</tr>
+</tbody></table>
+<aside class="tip"><strong>Tip.</strong> Five more ways into Insert come in the next part: <kbd>a</kbd>, <kbd>I</kbd>, <kbd>A</kbd>, <kbd>o</kbd>, <kbd>O</kbd>. Each saves you a motion. For now, <kbd>i</kbd> is enough.</aside>
+<section class="example">
+<h3 class="example-title">Worked example — i and Esc</h3>
+<p class="example-summary">Enter Insert with i; leave with Esc.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.insert-and-back/frame_01.color.svg" alt="survival.insert-and-back"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>i</kbd> · <span class="step-cap">Insert mode begins.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.insert-and-back/frame_02.color.svg" alt="Insert mode begins."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>bar</kbd> · <span class="step-cap">Three letters typed.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.insert-and-back/frame_03.color.svg" alt="Three letters typed."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>Esc</kbd> · <span class="step-cap">Esc — back to Normal.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.insert-and-back/frame_04.color.svg" alt="Esc — back to Normal."></div>
+<p class="narration">Insert mode is for typing characters; Normal mode is for everything else.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="02-insert-and-back.html">Insert and Back Again</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../01-foundations/01-modal-editing.html">Modal Editing</a>, <a href="../01-foundations/02-modes-overview.html">The Modes</a>, <a href="../03-basic-editing/01-insert-variants.html">More Ways into Insert</a>, <a href="../16-insert-mode-power/01-exits.html">Exiting Insert Mode</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-open-save-quit.html" rel="prev">← Open, Save, Quit</a></span>
+  <span class="pager-pos">7 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-undo-redo.html" rel="next">Undo and Redo →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -403,6 +403,60 @@ onUpdate(session.renderFrame());
 canvas.classList.add('ready');
 document.getElementById('loading').classList.add('hidden');
 
+// ── ?file=…&content=… / ?keys=… / ?cmd=… preload params ──
+//
+// Lets external pages deep-link into the simulator with a particular file
+// pre-seeded, a particular shell command queued, or a particular sequence
+// of keystrokes fed in once the session is ready.
+//
+//   ?file=demo.py&content=<urlencoded>     seed/replace a file, then open it in nvim
+//   ?cmd=tmux+new-session                  run a shell command (URL-decoded)
+//   ?keys=ddp                              feed literal keys (use %1B for Esc, %0D for Enter)
+//
+// All three are optional and may be combined: file is seeded first, then cmd
+// or keys is dispatched. If anything is consumed we leave the URL alone so a
+// refresh re-runs the preload (and so the user can see what was passed).
+const preloadFile    = urlParams.get('file');
+const preloadContent = urlParams.get('content');
+const preloadCmd     = urlParams.get('cmd');
+const preloadKeys    = urlParams.get('keys');
+const havePreload = !!(preloadFile || preloadCmd || preloadKeys);
+
+try {
+  if (havePreload) {
+    console.log('[vimfu] preload params:', {
+      file: preloadFile, contentLen: preloadContent ? preloadContent.length : 0,
+      cmd: preloadCmd, keys: preloadKeys,
+    });
+  }
+
+  if (preloadFile && preloadContent !== null) {
+    session.fs.write(preloadFile, preloadContent);
+    console.log('[vimfu] wrote', preloadFile, '(' + preloadContent.length + ' bytes)');
+  }
+
+  if (havePreload) {
+    // Run synchronously — we know we're in shell mode here (constructor
+    // always sets it) and the boot sequence below is suppressed when
+    // preload params are present.
+    if (preloadCmd) {
+      console.log('[vimfu] feeding cmd:', preloadCmd);
+      ctrl.feedKeys(preloadCmd + '\r');
+    } else if (preloadFile) {
+      const cmd = 'nvim ' + preloadFile;
+      console.log('[vimfu] feeding cmd:', cmd);
+      ctrl.feedKeys(cmd + '\r');
+    }
+    if (preloadKeys) {
+      // Small delay so vim has time to open before keys land in the buffer.
+      setTimeout(() => {
+        console.log('[vimfu] feeding keys:', preloadKeys);
+        ctrl.feedKeys(preloadKeys);
+      }, 200);
+    }
+  }
+} catch (e) { console.error('[vimfu] preload failed:', e); }
+
 // ── Key-click sounds ──
 const soundBtn = document.getElementById('sound-toggle');
 function updateSoundBtn() {
@@ -453,8 +507,8 @@ if (!_isTouchDev) {
   });
 }
 
-// ── Boot sequence: launch nvim immediately ──
-if (session.mode === 'shell') {
+// ── Boot sequence: launch nvim immediately (suppressed by preload) ──
+if (!havePreload && session.mode === 'shell') {
   session.shell.showWelcome('boot');
   session.shell._inputLine = 'nvim welcome.md';
   session.shell._cursorPos = 15;

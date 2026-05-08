@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gv — Re-Select — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Visual Depth</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=lorem+ipsum+dolor+sit+amet%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="05-range.html" rel="prev">← Visual + Ex Range</a></span>
+  <span class="pager-pos">97 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../19-command-line-power/01-history-window.html" rel="next">Command-Line History →</a></span>
+</nav>
+<article>
+<h1>gv — Re-Select</h1>
+<p class="subtitle">Bring back the last visual selection.</p>
+<p class="meta"><code>id: visual.gv</code> &middot; part: <strong>visual-depth</strong> &middot; keys: <kbd>gv</kbd> &middot; lessons: 444, 445</p>
+<blockquote class="summary">gv re-enters Visual mode with the same selection you last had — same shape, same endpoints. Essential for re-applying an operator to the same region.</blockquote>
+<p><kbd>g</kbd><kbd>v</kbd> re-enters Visual mode with the <em>exact same selection</em> you last had — same shape, same lines, same characters.</p>
+<figure class="keys">
+<figcaption>Re-indent without re-selecting</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>V5j</kbd></td><td>Select 6 lines</td></tr>
+<tr><td><kbd>&gt;</kbd></td><td>Indent — selection lost</td></tr>
+<tr><td><kbd>gv</kbd></td><td>Bring it back</td></tr>
+<tr><td><kbd>&gt;</kbd></td><td>Indent again</td></tr>
+<tr><td><kbd>gv&gt;</kbd></td><td>Or just <code>gv&gt;</code> repeatedly</td></tr>
+</tbody></table></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Where the Selection Is Stored</header>
+<p><kbd>g</kbd><kbd>v</kbd> reads the special marks <kbd>`</kbd><kbd>&lt;</kbd> and <kbd>`</kbd><kbd>&gt;</kbd> (start and end of last visual) plus an internal record of the <em>visual mode shape</em> (character/line/block) that was active. Together those three things are enough to recreate any visual selection.</p>
+<p>The selection persists across:</p>
+<ul>
+<li>Mode changes (Normal/Insert/Ex)</li>
+<li>Cursor moves</li>
+<li>Most edits — though if your edit <em>removes</em> the selected text, gv may select an empty or unexpected region.</li>
+</ul>
+<p><kbd>g</kbd><kbd>v</kbd> doesn&#x27;t survive <code>:e</code> (re-edit). The marks are buffer-local: each buffer has its own last-visual.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> After a <kbd>:</kbd><kbd>s</kbd> substitution that you ran on a visual selection, <kbd>g</kbd><kbd>v</kbd> brings the (modified) selection back so you can re-substitute or re-indent.</aside>
+<section class="example">
+<h3 class="example-title">Worked example — gv</h3>
+<p class="example-summary">Re-select the previous visual region.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/visual.gv/frame_01.color.svg" alt="visual.gv"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>vw</kbd> · <span class="step-cap">Selected &#x27;dolor &#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/visual.gv/frame_02.color.svg" alt="Selected &#x27;dolor &#x27;."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>U</kbd> · <span class="step-cap">U — uppercased the selection.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/visual.gv/frame_03.color.svg" alt="U — uppercased the selection."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>gv</kbd> · <span class="step-cap">gv — same region selected again.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/visual.gv/frame_04.color.svg" alt="gv — same region selected again."></div>
+<p class="narration">gv is great for chained visual operations.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=lorem+ipsum+dolor+sit+amet%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="06-gv.html">gv — Re-Select</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0444 Block Append (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0445 :&#x27;&lt;,&#x27;&gt; — Visual Range (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="05-range.html">Visual + Ex Range</a>, <a href="04-ops.html">Operators on Visual Selections</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="05-range.html" rel="prev">← Visual + Ex Range</a></span>
+  <span class="pager-pos">97 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../19-command-line-power/01-history-window.html" rel="next">Command-Line History →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>z{n}{Enter} — Set Window Height — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Scrolling Screen</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-first-non-blank-z.html" rel="prev">← z. / z+ / z- — Scroll and Land on First Non-Blank</a></span>
+  <span class="pager-pos">43 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-line-by-line.html" rel="next">Line-by-Line Scroll →</a></span>
+</nav>
+<article>
+<h1>z{n}{Enter} — Set Window Height</h1>
+<p class="subtitle">Resize the current window to {n} lines, scroll cursor&#x27;s line to the top.</p>
+<p class="meta"><code>id: scroll.height</code> &middot; part: <strong>scroll</strong> &middot; keys: <kbd>z{n}{Enter}</kbd> &middot; lessons: 248</p>
+<blockquote class="summary">z{n} followed by Enter resizes the current window to n lines tall and lands the cursor at the first non-blank of the topmost line.</blockquote>
+<p>An obscure but occasionally perfect command: <kbd>z</kbd><kbd>1</kbd><kbd>0</kbd><kbd>Enter</kbd> resizes the current window to 10 lines and scrolls the cursor&#x27;s line to the top.</p>
+<figure class="keys">
+<figcaption>Resize window to {n} lines, cursor&#x27;s line to top</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z</kbd></td><td></td></tr>
+<tr><td><kbd>{n}</kbd></td><td></td></tr>
+<tr><td><kbd>Enter</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="248"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/liuQPpv1Np8?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="z{height} Enter" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>z{n}{Enter} — set window height</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Two Things at Once</header>
+<p><kbd>z</kbd><kbd>{n</kbd>}<kbd>Enter</kbd> does <em>two</em> operations atomically:</p>
+<p>1. Sets <code>&#x27;winheight&#x27;</code> for the current window to <code>{n}</code> lines (same effect as <kbd>:</kbd><kbd>r</kbd><kbd>e</kbd><kbd>s</kbd><kbd>i</kbd><kbd>z</kbd><kbd>e</kbd> {n}).
+  2. Scrolls so the cursor&#x27;s current line becomes the top of the window (same as <kbd>z</kbd><kbd>t</kbd>).</p>
+<p>Useful pattern: working in a file with multiple splits, you want one specific window to be exactly N lines tall to fit some block. Move cursor to the start of that block, <kbd>z</kbd><kbd>N</kbd><kbd>Enter</kbd>, done.</p>
+<p>Without the count, <kbd>z</kbd><kbd>Enter</kbd> is just &quot;scroll cursor&#x27;s line to top <em>and</em> go to first non-blank&quot; — same as <kbd>z</kbd><kbd>+</kbd>&#x27;s landing variant.</p>
+</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Sequence</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>z</kbd>{n}<kbd>Enter</kbd></td>
+<td>Resize to {n} lines + scroll line to top</td>
+</tr>
+<tr>
+<td><kbd>z</kbd><kbd>Enter</kbd></td>
+<td>Cursor line to top + first non-blank</td>
+</tr>
+</tbody></table>
+<aside class="qr"><span>→ See also <a href="04-height.html">z{n}{Enter} — Set Window Height</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="02-center-top-bottom.html">Centering the Cursor</a>, <a href="../14-windows-buffers-tabs/03-move-resize.html">Move and Resize Windows</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-first-non-blank-z.html" rel="prev">← z. / z+ / z- — Scroll and Land on First Non-Blank</a></span>
+  <span class="pager-pos">43 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-line-by-line.html" rel="next">Line-by-Line Scroll →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

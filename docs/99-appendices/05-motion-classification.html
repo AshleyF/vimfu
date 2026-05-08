@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Motion Classification — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Appendices</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="04-learning-path.html" rel="prev">← A Suggested Learning Path</a></span>
+  <span class="pager-pos">129 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="06-surround-plugin.html" rel="next">Surround (the Plugin That Should Be Built In) →</a></span>
+</nav>
+<article>
+<h1>Motion Classification</h1>
+<p class="subtitle">Char-wise vs line-wise vs block, inclusive vs exclusive.</p>
+<p class="meta"><code>id: appendix.motion-classification</code> &middot; part: <strong>appendices</strong></p>
+<blockquote class="summary">Every motion has two attributes: shape (char/line/block) and inclusivity (does it include the endpoint?). These attributes change how operators behave.</blockquote>
+<p>Every motion in Vim has two characteristics that determine how operators interact with it. Understanding these explains a lot of &quot;surprising&quot; Vim behavior.</p>
+<h3>Shape: char-wise / line-wise / block-wise</h3>
+<table>
+<thead><tr>
+<th>Motion</th>
+<th>Shape</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>h</kbd>, <kbd>l</kbd>, <kbd>f</kbd>{c}, <kbd>t</kbd>{c}, <kbd>w</kbd>, <kbd>e</kbd>, <kbd>b</kbd></td>
+<td>Char-wise</td>
+</tr>
+<tr>
+<td><kbd>j</kbd>, <kbd>k</kbd>, <kbd>G</kbd>, <kbd>g</kbd><kbd>g</kbd>, <kbd>H</kbd>, <kbd>L</kbd></td>
+<td>Line-wise</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-V</kbd> only</td>
+<td>Block-wise</td>
+</tr>
+</tbody></table>
+<p>Char-wise motion + delete = delete a range of characters. Line-wise motion + delete = delete whole lines (even partial coverage). This is why <kbd>d</kbd><kbd>j</kbd> deletes <em>two whole lines</em> — <kbd>j</kbd> is line-wise.</p>
+<h3>Inclusivity: does the motion include the destination character?</h3>
+<table>
+<thead><tr>
+<th>Motion</th>
+<th>Inclusive?</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>f</kbd>{c}</td>
+<td>Inclusive (includes the {c})</td>
+</tr>
+<tr>
+<td><kbd>t</kbd>{c}</td>
+<td>Exclusive (stops <em>before</em> {c})</td>
+</tr>
+<tr>
+<td><kbd>e</kbd>, <kbd>E</kbd></td>
+<td>Inclusive</td>
+</tr>
+<tr>
+<td><kbd>w</kbd>, <kbd>b</kbd>, <kbd>W</kbd>, <kbd>B</kbd></td>
+<td>Exclusive</td>
+</tr>
+<tr>
+<td><kbd>$</kbd></td>
+<td>Inclusive</td>
+</tr>
+<tr>
+<td><kbd>G</kbd>, <kbd>g</kbd><kbd>g</kbd></td>
+<td>Linewise (inclusivity moot)</td>
+</tr>
+<tr>
+<td><kbd>%</kbd></td>
+<td>Inclusive</td>
+</tr>
+<tr>
+<td>Search (<kbd>/</kbd>, <kbd>?</kbd>)</td>
+<td>Exclusive</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — Why It Matters</header>
+<p><kbd>d</kbd><kbd>f</kbd><kbd>x</kbd> deletes from cursor <em>through</em> the next x. <kbd>d</kbd><kbd>t</kbd><kbd>x</kbd> deletes from cursor <em>up to</em> the next x (leaving x in place).</p>
+<p><kbd>d</kbd><kbd>e</kbd> deletes through the end of the word (the last char of the word IS deleted). <kbd>d</kbd><kbd>w</kbd> deletes through the <em>start</em> of the next word, which often leaves you with a hanging space.</p>
+<p><strong>Force overrides</strong> with <kbd>v</kbd>, <kbd>V</kbd>, <kbd>Ctrl-V</kbd> after the operator:</p>
+<ul>
+<li><kbd>d</kbd><kbd>v</kbd><kbd>j</kbd> — delete <em>characterwise</em> down (instead of the default linewise behavior of <code>dj</code>).</li>
+<li><kbd>d</kbd><kbd>V</kbd><kbd>f</kbd><kbd>x</kbd> — delete <em>linewise</em> through next x.</li>
+</ul>
+</aside>
+<aside class="qr"><span>→ See also <a href="05-motion-classification.html">Motion Classification</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../07-operators-textobjects/06-grammar.html">The Vim Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="04-learning-path.html" rel="prev">← A Suggested Learning Path</a></span>
+  <span class="pager-pos">129 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="06-surround-plugin.html" rel="next">Surround (the Plugin That Should Be Built In) →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

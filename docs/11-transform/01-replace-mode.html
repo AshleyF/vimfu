@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Replace Mode — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Transform</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../10-marks-jumps/05-changelist.html" rel="prev">← The Change List</a></span>
+  <span class="pager-pos">51 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-indent.html" rel="next">Indent and Auto-Indent →</a></span>
+</nav>
+<article>
+<h1>Replace Mode</h1>
+<p class="subtitle">R — overwrite as you type. r{c} — overwrite one character.</p>
+<p class="meta"><code>id: transform.replace-mode</code> &middot; part: <strong>transform</strong> &middot; keys: <kbd>R</kbd>, <kbd>r</kbd> &middot; lessons: 105, 106</p>
+<blockquote class="summary">R enters Replace mode: each typed key overwrites instead of inserting. r{c} overwrites a single character without entering Replace mode.</blockquote>
+<p>Insert mode pushes characters around: typing in the middle of a word <em>grows</em> the word. Replace mode is different — each typed character <em>overwrites</em> the one under the cursor, then advances. Typing 5 characters in Replace mode replaces 5 existing characters.</p>
+<figure class="keys">
+<figcaption>Replace one char with x (stays in Normal)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>r</kbd></td><td></td></tr>
+<tr><td><kbd>x</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Enter Replace mode (continuous overwrite)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>R</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="105"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/1-4yyxoKlFc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Replace Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>r — replace one character</figcaption></figure>
+<figure class="lesson-embed" data-lesson="106"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/yc93Pvgr6-g?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Single Replace" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>R — Replace mode</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Replace Is a First-Class Mode</header>
+<p>Replace mode (<code>-- REPLACE --</code>) sits alongside Insert as a top-level mode. The status line shows the change. <kbd>Esc</kbd> exits.</p>
+<p>Key difference from Insert: each typed character does a <em>delete + insert</em> on the character under the cursor (instead of just an insert). Backspace in Replace mode <em>restores</em> the original character (not deletes it back to nothing).</p>
+<p>There&#x27;s also <kbd>g</kbd><kbd>R</kbd>, <strong>virtual replace mode</strong> — same idea, but newlines and tabs are <em>not</em> overwritten with literal characters that would push text around. <kbd>g</kbd><kbd>R</kbd> treats Tab as a virtual span of spaces; replacing a single column inside the tab keeps the tab character intact. Useful in tab-aligned text.</p>
+<p>Replace mode is rarely the right tool for code editing — most people overwrite a region with <kbd>c</kbd>{motion} or <kbd>c</kbd>{textobject}. But for fixed-width formats or quick column overwrites, it&#x27;s perfect.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>r</kbd> is one-shot: replace one character, stay in Normal. <kbd>R</kbd> is continuous: enter the mode, overwrite as long as you keep typing. Pick based on how many you have to fix.</aside>
+<aside class="qr"><span>→ See also <a href="01-replace-mode.html">Replace Mode</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../03-basic-editing/08-replace-char.html">Replace a Character</a>, <a href="../01-foundations/02-modes-overview.html">The Modes</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../10-marks-jumps/05-changelist.html" rel="prev">← The Change List</a></span>
+  <span class="pager-pos">51 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-indent.html" rel="next">Indent and Auto-Indent →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

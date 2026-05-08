@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Special Marks — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Marks Jumps</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-local-global.html" rel="prev">← Setting and Jumping to Marks</a></span>
+  <span class="pager-pos">47 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-tick-vs-backtick.html" rel="next">Tick vs Backtick →</a></span>
+</nav>
+<article>
+<h1>Special Marks</h1>
+<p class="subtitle">Marks Vim sets for you automatically.</p>
+<p class="meta"><code>id: marks.special</code> &middot; part: <strong>marks</strong> &middot; keys: <kbd>&#x27;&#x27;</kbd>, <kbd>``</kbd>, <kbd>&#x27;.</kbd>, <kbd>&#x27;^</kbd>, <kbd>&#x27;&lt;</kbd>, <kbd>&#x27;&gt;</kbd> &middot; lessons: 101</p>
+<blockquote class="summary">Some marks are set by Vim itself: &#x27;&#x27; for last jump, `` for last position, &#x27;. for last edit, &#x27;&lt; / &#x27;&gt; for last visual selection, and more.</blockquote>
+<p>Most marks you set yourself. But Vim quietly sets a handful of <em>special</em> marks all the time. They&#x27;re worth memorizing — they make navigation feel telepathic.</p>
+<table>
+<thead><tr>
+<th>Mark</th>
+<th>What it tracks</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>&#x27;</kbd><kbd>&#x27;</kbd></td>
+<td>Position before the last big jump</td>
+</tr>
+<tr>
+<td><kbd>`</kbd><kbd>`</kbd></td>
+<td>Same, but exact position</td>
+</tr>
+<tr>
+<td><kbd>&#x27;</kbd><kbd>.</kbd></td>
+<td>Line of the last change</td>
+</tr>
+<tr>
+<td><kbd>`</kbd><kbd>.</kbd></td>
+<td>Exact position of the last change</td>
+</tr>
+<tr>
+<td><kbd>&#x27;</kbd><kbd>^</kbd></td>
+<td>Line where Insert mode was last left</td>
+</tr>
+<tr>
+<td><kbd>`</kbd><kbd>^</kbd></td>
+<td>Exact spot Insert was last left</td>
+</tr>
+<tr>
+<td><kbd>&#x27;</kbd><kbd>&lt;</kbd> / <kbd>&#x27;</kbd><kbd>&gt;</kbd></td>
+<td>Start/end (line) of last visual selection</td>
+</tr>
+<tr>
+<td><kbd>`</kbd><kbd>&lt;</kbd> / <kbd>`</kbd><kbd>&gt;</kbd></td>
+<td>Start/end (exact) of last visual selection</td>
+</tr>
+<tr>
+<td><kbd>&#x27;</kbd><kbd>[</kbd> / <kbd>&#x27;</kbd><kbd>]</kbd></td>
+<td>Start/end of last yanked or changed text</td>
+</tr>
+</tbody></table>
+<figure class="lesson-embed" data-lesson="101"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/Qvs31uqjqx0?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Special Marks" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Special marks</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — These Power Many Familiar Commands</header>
+<p>Special marks aren&#x27;t a separate feature — they <em>are</em> the feature. Many commands you already use are implemented in terms of them:</p>
+<ul>
+<li><kbd>g</kbd><kbd>v</kbd> re-selects the visual range stored in <kbd>&#x27;</kbd><kbd>&lt;</kbd> and <kbd>&#x27;</kbd><kbd>&gt;</kbd>.</li>
+<li><kbd>g</kbd><kbd>i</kbd> re-enters Insert mode at <kbd>`</kbd><kbd>^</kbd>.</li>
+<li><kbd>:</kbd><kbd>&#x27;</kbd><kbd>&lt;</kbd><kbd>,</kbd><kbd>&#x27;</kbd><kbd>&gt;</kbd> as an Ex range targets the last selection.</li>
+<li><kbd>`</kbd><kbd>.</kbd> after a jump returns you to the last edit.</li>
+</ul>
+<p>Knowing the marks gives you composability the docs don&#x27;t always explain. Want to yank from the start of your last yank to here? <kbd>y</kbd><kbd>`</kbd><kbd>[</kbd>. Want to delete the most recent insertion? <kbd>d</kbd><kbd>`</kbd><kbd>[</kbd>.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>`</kbd><kbd>`</kbd> (toggle-back-to-where-you-jumped-from) is one of the most useful marks. After almost any &quot;big&quot; motion (<kbd>G</kbd>, <kbd>/</kbd>, <kbd>%</kbd>, <kbd>`</kbd><kbd>a</kbd>), <kbd>`</kbd><kbd>`</kbd> reverses it.</aside>
+<aside class="qr"><span>→ See also <a href="02-special.html">Special Marks</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-local-global.html">Setting and Jumping to Marks</a>, <a href="05-changelist.html">The Change List</a>, <a href="../05-counts-visual/05-tricks.html">Visual Mode Tricks</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-local-global.html" rel="prev">← Setting and Jumping to Marks</a></span>
+  <span class="pager-pos">47 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-tick-vs-backtick.html" rel="next">Tick vs Backtick →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

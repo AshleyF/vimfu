@@ -36,6 +36,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from lib.videos import video_for_lesson, videos_for_topic  # noqa: E402
+from lib.audience import visible as _visible  # noqa: E402
+
+AUDIENCE = "book"
 
 ROOT = Path(__file__).resolve().parent
 PARTS_DIR = ROOT / "parts"
@@ -265,10 +268,19 @@ def render_block(b, *, index, examples) -> list[str]:
         headers = b.get("headers", [])
         rows = b.get("rows", [])
         if headers:
+            key_cols = set(b.get("keyColumns") or
+                           [i for i, h in enumerate(headers)
+                            if str(h).strip().lower() in ("key", "keys")])
             out.append(para("TableHeader", "<0x0009>".join(inl(h) for h in headers)))
             for row in rows:
                 cells = list(row) + [""] * (len(headers) - len(row))
-                out.append(para("TableRow", "<0x0009>".join(inl(str(c)) for c in cells)))
+                rendered = []
+                for i, c in enumerate(cells):
+                    s = str(c)
+                    if i in key_cols and s and "{key:" not in s:
+                        s = "{key:" + s + "}"
+                    rendered.append(inl(s))
+                out.append(para("TableRow", "<0x0009>".join(rendered)))
 
     elif bt == "embed":
         # The book has no videos; we point readers at the QR section instead.
@@ -354,6 +366,8 @@ def render_topic_body(t, index, examples) -> str:
         out.append(para("Summary", inl(summary)))
 
     for b in t.get("blocks", []):
+        if not _visible(b, AUDIENCE):
+            continue
         if (b.get("type") == "heading" and int(b.get("level", 2)) == 1
                 and b.get("text", "").strip() == title.strip()):
             continue
@@ -437,7 +451,9 @@ def main() -> int:
     book_chunks = [hdr]
 
     for part_dir in sorted(parts_map.keys()):
-        plist = parts_map[part_dir]
+        plist = [t for t in parts_map[part_dir] if _visible(t, AUDIENCE)]
+        if not plist:
+            continue
         pdir = out_dir / part_dir
         pdir.mkdir(parents=True, exist_ok=True)
 

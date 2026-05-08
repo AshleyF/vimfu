@@ -36,7 +36,7 @@ from lib.compact_frame import expand as expand_compact
 
 ROOT = HERE.parent
 EXAMPLES_DIR = HERE / "examples"
-OUTPUT_DIR = HERE / "output" / "screenshots"
+OUTPUT_DIR = HERE / "output" / "html" / "screenshots"
 
 
 def resolve_frame(spec, *, captured_cache):

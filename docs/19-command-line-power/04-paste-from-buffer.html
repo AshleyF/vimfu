@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Paste from Buffer (Ctrl-R) — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Command Line Power</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-edit-buffer.html" rel="prev">← Editing the Command Line</a></span>
+  <span class="pager-pos">101 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-completion.html" rel="next">Command-Line Completion →</a></span>
+</nav>
+<article>
+<h1>Paste from Buffer (Ctrl-R)</h1>
+<p class="subtitle">Same Ctrl-R as Insert mode — inject any register.</p>
+<p class="meta"><code>id: cmdline.paste-from-buffer</code> &middot; part: <strong>command-line-power</strong> &middot; keys: <kbd>Ctrl-R</kbd> &middot; lessons: 451, 451</p>
+<blockquote class="summary">From the command line, Ctrl-R{reg} inserts the register contents — exactly like in Insert mode. Lets you build commands from the unnamed register, search history, last yank, expression results, etc.</blockquote>
+<h2>Paste from Buffer</h2>
+<p><kbd>Ctrl-R</kbd> on the command line works exactly like in Insert mode: it injects register contents into the line you&#x27;re building.</p>
+<table>
+<thead><tr>
+<th>Sequence</th>
+<th>Inserts</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>&quot;</kbd></td>
+<td>Unnamed register</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>0</kbd></td>
+<td>Last yank</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>+</kbd></td>
+<td>System clipboard</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>/</kbd></td>
+<td>Last search pattern</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>:</kbd></td>
+<td>Last Ex command</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>%</kbd></td>
+<td>Current filename</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>Ctrl-W</kbd></td>
+<td>Word under cursor in buffer</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>=</kbd>{expr}</td>
+<td>Expression result</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — Common Pattern: Substitute Last Search</header>
+<p>Searched for something with <kbd>/</kbd>? Now you want to substitute it. Two options:</p>
+<p>1. Use the empty pattern shortcut: <code>:%s//newtext/g</code> — Vim reuses the last search.
+  2. Insert it explicitly: <code>:%s/&lt;Ctrl-R&gt;/</code> — Vim pastes the actual pattern, which you can edit before completing the command.</p>
+<p>Option 2 is useful when you want to <em>modify</em> the search pattern slightly before substituting.</p>
+<p>The <kbd>Ctrl-R</kbd><kbd>=</kbd> expression register is also magical here — <code>:e &lt;Ctrl-R&gt;=expand(&#x27;%:h&#x27;)&lt;CR&gt;/foo</code> builds a path relative to the current file.</p>
+</aside>
+<aside class="qr"><span>→ See also <a href="04-paste-from-buffer.html">Paste from Buffer (Ctrl-R)</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0451 Ctrl-R Ctrl-W — Insert Word (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0451 Ctrl-R Ctrl-W — Insert Word (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../16-insert-mode-power/05-from-register.html">Inserting from a Register</a>, <a href="../12-registers/07-special.html">Special Registers</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-edit-buffer.html" rel="prev">← Editing the Command Line</a></span>
+  <span class="pager-pos">101 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-completion.html" rel="next">Command-Line Completion →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

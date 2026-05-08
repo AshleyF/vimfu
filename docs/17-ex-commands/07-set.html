@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Setting Options (:set) — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Ex Commands</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="06-shell.html" rel="prev">← Shell Commands (:!)</a></span>
+  <span class="pager-pos">91 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../18-visual-depth/01-modes.html" rel="next">The Three Visual Modes →</a></span>
+</nav>
+<article>
+<h1>Setting Options (:set)</h1>
+<p class="subtitle">How options work, and the conventions you&#x27;ll see in every vimrc.</p>
+<p class="meta"><code>id: ex.set</code> &middot; part: <strong>ex-commands</strong> &middot; keys: <kbd>:set</kbd> &middot; lessons: 430, 430</p>
+<blockquote class="summary">:set toggles or assigns options. :set option turns it on; :set nooption turns it off; :set option! toggles; :set option=value assigns; :set option? queries.</blockquote>
+<h2>Setting Options</h2>
+<p>Options are Vim&#x27;s settings — there are over 300. Every vimrc is mostly <code>:set</code> calls. The syntax is consistent once you learn the conventions.</p>
+<table>
+<thead><tr>
+<th>Form</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td>:set</td>
+<td>Show options that differ from defaults</td>
+</tr>
+<tr>
+<td>:set all</td>
+<td>Show all options</td>
+</tr>
+<tr>
+<td>:set nu</td>
+<td>Turn ON option <code>nu</code> (number)</td>
+</tr>
+<tr>
+<td>:set nonu</td>
+<td>Turn OFF (prefix <code>no</code>)</td>
+</tr>
+<tr>
+<td>:set nu!</td>
+<td>Toggle</td>
+</tr>
+<tr>
+<td>:set nu?</td>
+<td>Query current value</td>
+</tr>
+<tr>
+<td>:set ts=4</td>
+<td>Assign 4 to numeric option <code>ts</code></td>
+</tr>
+<tr>
+<td>:set fo+=t</td>
+<td>Append <code>t</code> to option <code>fo</code></td>
+</tr>
+<tr>
+<td>:set fo-=t</td>
+<td>Remove <code>t</code></td>
+</tr>
+<tr>
+<td>:set fo&amp;</td>
+<td>Reset to default</td>
+</tr>
+<tr>
+<td>:setlocal nu</td>
+<td>Set for THIS buffer/window only</td>
+</tr>
+<tr>
+<td>:verbose set ts?</td>
+<td>Show value AND where it was last set</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — Three Kinds of Options</header>
+<p><strong>Boolean</strong> — on/off. Set with <code>:set name</code>, unset with <code>:set noname</code>, toggle with <code>:set name!</code>.</p>
+<p><strong>Numeric</strong> — integer value. Set with <code>:set name=N</code>.</p>
+<p><strong>String</strong> — text value. Set with <code>:set name=text</code>. Some are <em>flag lists</em> (<code>&#x27;formatoptions&#x27;</code>, <code>&#x27;complete&#x27;</code>) — use <code>+=</code> / <code>-=</code> / <code>^=</code> to add/remove/prepend without clobbering.</p>
+<p><strong>Scope:</strong> options are <em>global</em>, <em>buffer-local</em>, <em>window-local</em>, or <em>both</em> (with <code>setlocal</code> and <code>setglobal</code> versions). <code>:set</code> on a both-local option sets <em>both</em> the global default and the local copy. <code>:setlocal</code> sets only the local. <code>:verbose set X?</code> tells you where the current value was last assigned — invaluable for debugging mystery vimrc behavior.</p>
+<p><strong>Short names</strong> — most options have a 2-3 letter alias: <code>nu</code> = <code>number</code>, <code>ts</code> = <code>tabstop</code>, <code>sw</code> = <code>shiftwidth</code>, <code>et</code> = <code>expandtab</code>, <code>ic</code> = <code>ignorecase</code>. Vim docs use full names; vimrcs often use short.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> When something behaves weirdly, run <code>:verbose set whatever?</code> — it tells you the script and line where the option was last set.</aside>
+<aside class="qr"><span>→ See also <a href="07-set.html">Setting Options (:set)</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0430 :set list (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0430 :set list (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../21-advanced/08-config.html">Vim Configuration</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="06-shell.html" rel="prev">← Shell Commands (:!)</a></span>
+  <span class="pager-pos">91 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../18-visual-depth/01-modes.html" rel="next">The Three Visual Modes →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Inserting from a Register — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Insert Mode Power</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="04-indent.html" rel="prev">← Indent in Insert Mode</a></span>
+  <span class="pager-pos">80 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="06-copy-adjacent.html" rel="next">Copy Adjacent Lines →</a></span>
+</nav>
+<article>
+<h1>Inserting from a Register</h1>
+<p class="subtitle">Ctrl-R is paste — but with a twist.</p>
+<p class="meta"><code>id: insert.from-register</code> &middot; part: <strong>insert-mode-power</strong> &middot; keys: <kbd>Ctrl-R</kbd> &middot; lessons: 379, 381</p>
+<blockquote class="summary">Ctrl-R{reg} pastes a register contents from inside Insert mode. Ctrl-R Ctrl-O pastes literally (no formatting); Ctrl-R Ctrl-P pastes and re-indents.</blockquote>
+<p><kbd>Ctrl-R</kbd>{reg} from Insert mode pastes the contents of any register. Unlike Normal-mode <kbd>p</kbd>, this works <em>inline</em>: characters appear at the cursor as if you&#x27;d typed them.</p>
+<figure class="keys">
+<figcaption>Sequence</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Ctrl-R</kbd></td><td>Vim shows a <code>&quot;</code> prompt, waits for register name</td></tr>
+<tr><td><kbd>reg</kbd></td><td>Any register: a-z, 0-9, +, *, /, :, %, .…</td></tr>
+</tbody></table></figure>
+<table>
+<thead><tr>
+<th>Variant</th>
+<th>Behavior</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>a</kbd></td>
+<td>Insert register a, processed normally</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>Ctrl-O</kbd><kbd>a</kbd></td>
+<td>Insert register a <em>literally</em> (no autoindent, no abbreviations)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>Ctrl-P</kbd><kbd>a</kbd></td>
+<td>Insert register a and re-indent</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>=</kbd>{expr}<kbd>Enter</kbd></td>
+<td>Evaluate an expression, insert the result</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — What Does Each Variant Do</header>
+<p>Plain <kbd>Ctrl-R</kbd>{reg} processes the inserted text as if you&#x27;d typed it: special characters like <kbd>&lt;CR&gt;</kbd> or <kbd>&lt;Tab&gt;</kbd> act like real keypresses, autoindent triggers, abbreviations expand. That&#x27;s good for plain text; bad if your register contains code with leading whitespace.</p>
+<p><kbd>Ctrl-R</kbd><kbd>Ctrl-O</kbd>{reg} is the literal version — paste exactly the bytes, no interpretation. Use this for code with significant indentation.</p>
+<p><kbd>Ctrl-R</kbd><kbd>Ctrl-P</kbd>{reg} pastes and re-indents per current <code>&#x27;indentexpr&#x27;</code>. Useful for moving code between contexts.</p>
+<p><kbd>Ctrl-R</kbd><kbd>=</kbd> opens the <em>expression register</em> prompt — type any Vim expression (math, function call, variable) and the result is inserted. <kbd>Ctrl-R</kbd><kbd>=</kbd><kbd>5</kbd><kbd>*</kbd><kbd>7</kbd><kbd>Enter</kbd> inserts <code>35</code>.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>Ctrl-R</kbd><kbd>&quot;</kbd> pastes the unnamed register. <kbd>Ctrl-R</kbd><kbd>0</kbd> pastes the last yank. <kbd>Ctrl-R</kbd><kbd>+</kbd> pastes the system clipboard.</aside>
+<aside class="qr"><span>→ See also <a href="05-from-register.html">Inserting from a Register</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0379 Ctrl-N Autocomplete Next (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0381 Ctrl-K Digraph (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../12-registers/02-unnamed.html">The Unnamed Register</a>, <a href="../12-registers/07-special.html">Special Registers</a>, <a href="09-literal-digraph.html">Literal Insert and Digraphs</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="04-indent.html" rel="prev">← Indent in Insert Mode</a></span>
+  <span class="pager-pos">80 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="06-copy-adjacent.html" rel="next">Copy Adjacent Lines →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

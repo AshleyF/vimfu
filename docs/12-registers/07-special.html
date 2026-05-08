@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Special Registers — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Registers</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="06-clipboard.html" rel="prev">← System Clipboard Registers</a></span>
+  <span class="pager-pos">61 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="08-macros-as-text.html" rel="next">Macros Are Just Register Contents →</a></span>
+</nav>
+<article>
+<h1>Special Registers</h1>
+<p class="subtitle">&quot;/ &quot;: &quot;. &quot;% &quot;# &quot;= &quot;_ — the read-only and weird ones.</p>
+<p class="meta"><code>id: registers.special</code> &middot; part: <strong>registers</strong> &middot; keys: <kbd>&quot;/</kbd>, <kbd>&quot;:</kbd>, <kbd>&quot;.</kbd>, <kbd>&quot;%</kbd>, <kbd>&quot;#</kbd>, <kbd>&quot;=</kbd>, <kbd>&quot;_</kbd> &middot; lessons: 483, 484, 485, 486, 487, 488</p>
+<blockquote class="summary">Vim provides several read-only registers that contain useful state: &quot;/ is the last search, &quot;: the last Ex command, &quot;. the last inserted text, &quot;% the current filename, &quot;# the alternate file, &quot;= the expression register, and &quot;_ the black hole.</blockquote>
+<p>Beyond the alphabetic and numbered registers, Vim has a small zoo of <em>special</em> registers. Most are read-only — Vim writes to them automatically as you work, and you read from them when useful.</p>
+<table>
+<thead><tr>
+<th>Register</th>
+<th>Holds</th>
+<th>Useful for</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>&quot;</kbd><kbd>/</kbd></td>
+<td>Last search pattern</td>
+<td>Reusing search in <kbd>:</kbd><kbd>s</kbd></td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>:</kbd></td>
+<td>Last Ex command</td>
+<td>Pasting it to edit and re-run</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>.</kbd></td>
+<td>Last inserted text</td>
+<td>Re-typing the last Insert content</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>%</kbd></td>
+<td>Current filename</td>
+<td>Inserting it in commands or buffer</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>#</kbd></td>
+<td>Alternate (previous) filename</td>
+<td>Switch-to-other-file shortcut</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>=</kbd></td>
+<td>Expression register (interactive)</td>
+<td>Insert computed values</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>_</kbd></td>
+<td>Black hole — write-only, discards text</td>
+<td>Delete without clobbering registers</td>
+</tr>
+</tbody></table>
+<figure class="lesson-embed" data-lesson="483"><div class="placeholder">📺 The . Register (not yet published)</div><figcaption>&quot;/ — last search</figcaption></figure>
+<figure class="lesson-embed" data-lesson="484"><div class="placeholder">📺 The : Register (not yet published)</div><figcaption>&quot;: — last Ex command</figcaption></figure>
+<figure class="lesson-embed" data-lesson="485"><div class="placeholder">📺 The / Register (not yet published)</div><figcaption>&quot;. — last insert</figcaption></figure>
+<figure class="lesson-embed" data-lesson="486"><div class="placeholder">📺 The % Register (not yet published)</div><figcaption>&quot;% / &quot;# — filenames</figcaption></figure>
+<figure class="lesson-embed" data-lesson="487"><div class="placeholder">📺 The # Register (not yet published)</div><figcaption>&quot;= — expression register</figcaption></figure>
+<figure class="lesson-embed" data-lesson="488"><div class="placeholder">📺 The = Register (not yet published)</div><figcaption>&quot;_ — black hole</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — The Two Most Useful: &quot;_ and &quot;=</header>
+<p><strong><kbd>&quot;</kbd><kbd>_</kbd> (black hole)</strong>. Anything written here disappears. Anything read from it is empty. Use it to delete <em>without affecting any other register</em>:</p>
+<ul>
+<li><kbd>&quot;</kbd><kbd>_</kbd><kbd>d</kbd><kbd>d</kbd> — delete this line, but don&#x27;t update unnamed/numbered.</li>
+<li><kbd>&quot;</kbd><kbd>_</kbd><kbd>c</kbd><kbd>i</kbd><kbd>w</kbd> — change this word, but keep the previous yank ready to paste.</li>
+<li>Visual select something, then <kbd>&quot;</kbd><kbd>_</kbd><kbd>d</kbd><kbd>p</kbd> — replace selection with the unnamed register&#x27;s content (delete to black hole, then put).</li>
+</ul>
+<p><strong><kbd>&quot;</kbd><kbd>=</kbd> (expression)</strong>. In Insert mode, <kbd>Ctrl-R</kbd><kbd>=</kbd> pops up a <code>=</code> prompt. Type any Vim expression, hit <kbd>Enter</kbd>, and the result is inserted as text. Examples:</p>
+<ul>
+<li><kbd>Ctrl-R</kbd><kbd>=</kbd><code>5*7+1</code><kbd>Enter</kbd> → inserts <code>36</code>.</li>
+<li><kbd>Ctrl-R</kbd><kbd>=</kbd><code>strftime(&#x27;%Y-%m-%d&#x27;)</code><kbd>Enter</kbd> → today&#x27;s date.</li>
+<li><kbd>Ctrl-R</kbd><kbd>=</kbd><code>getreg(&#x27;a&#x27;)</code><kbd>Enter</kbd> → contents of register a (programmatic access).</li>
+</ul>
+<p>This is Vim as a calculator inside its editor.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>&quot;</kbd><kbd>%</kbd><kbd>p</kbd> pastes the current filename into the buffer — useful in commit messages, comments, or generated boilerplate. <kbd>&quot;</kbd><kbd>#</kbd><kbd>p</kbd> pastes the previous file&#x27;s name.</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>&quot;</kbd><kbd>/</kbd><kbd>p</kbd> pastes the last search pattern as text. Combined with <kbd>:</kbd><kbd>s</kbd>, you can reuse a complex pattern: <kbd>:</kbd><kbd>s</kbd><kbd>/</kbd><kbd>Ctrl-R</kbd><kbd>/</kbd><kbd>/</kbd>{replacement}<kbd>/</kbd><kbd>g</kbd>.</aside>
+<aside class="qr"><span>→ See also <a href="07-special.html">Special Registers</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-registers-overview.html">Registers</a>, <a href="../21-advanced/02-special-registers.html">Special Registers Deep Dive</a>, <a href="../04-search-find/01-pattern.html">Pattern Search</a>, <a href="../17-ex-commands/02-substitute.html">Substitute (:s)</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="06-clipboard.html" rel="prev">← System Clipboard Registers</a></span>
+  <span class="pager-pos">61 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="08-macros-as-text.html" rel="next">Macros Are Just Register Contents →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

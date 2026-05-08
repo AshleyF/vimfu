@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Word Motions — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Basic Editing</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-insert-variants.html" rel="prev">← More Ways into Insert</a></span>
+  <span class="pager-pos">11 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-line-motions.html" rel="next">Line Motions →</a></span>
+</nav>
+<article>
+<h1>Word Motions</h1>
+<p class="subtitle">Move a word at a time. The grammar&#x27;s first real noun.</p>
+<p class="meta"><code>id: editing.word-motions</code> &middot; part: <strong>editing</strong> &middot; keys: <kbd>w</kbd>, <kbd>b</kbd>, <kbd>e</kbd>, <kbd>ge</kbd> &middot; lessons: 21, 22, 23, 24</p>
+<blockquote class="summary">w/b/e/ge move forward and backward by word. They&#x27;re motions, so they pair with operators: dw deletes a word, cw changes one, yw yanks one.</blockquote>
+<p>Moving one character at a time with <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd> is fine for surgery. For everything else you want to move <em>a word at a time</em>. That&#x27;s what <kbd>w</kbd>, <kbd>b</kbd>, <kbd>e</kbd>, and <kbd>ge</kbd> do — and because they&#x27;re motions, they double as the noun half of every editing command.</p>
+<figure class="keys">
+<figcaption>Forward to the start of the next word</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Back to the start of the current/previous word</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>b</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Forward to the end of the current/next word</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>e</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Back to the end of the previous word</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>g</kbd></td><td></td></tr>
+<tr><td><kbd>e</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="21"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/vLt1k3WkawQ?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Word Forward" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>w — next word</figcaption></figure>
+<figure class="lesson-embed" data-lesson="22"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/30xYTWwQt4E?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Word Backward" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>b — previous word</figcaption></figure>
+<figure class="lesson-embed" data-lesson="23"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/GKA2eTFglGg?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="End of Word" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>e — end of word</figcaption></figure>
+<figure class="lesson-embed" data-lesson="24"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/jIF0J2XXSqA?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Back to End of Word" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>ge — back-end</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> Counts work: <kbd>5</kbd><kbd>w</kbd> jumps five words forward. So does <kbd>d</kbd><kbd>5</kbd><kbd>w</kbd> — delete five words. The grammar is consistent.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — What Counts as a &quot;Word&quot;?</header>
+<p>Vim&#x27;s notion of a word is governed by the <code>&#x27;iskeyword&#x27;</code> option (<code>:set iskeyword?</code> to see it). By default it includes letters, digits, and <code>_</code> — the things that look like an identifier in most languages.</p>
+<p>A &quot;word&quot; is a maximal run of <em>keyword</em> characters, <em>or</em> a maximal run of <em>non-keyword non-whitespace</em> characters. So in <code>foo-&gt;bar</code>, the words are <code>foo</code>, <code>-&gt;</code>, and <code>bar</code>. <kbd>w</kbd> skips between all three.</p>
+<p>If that&#x27;s too granular for you, <strong>WORD</strong> (<kbd>W</kbd>, <kbd>B</kbd>, <kbd>E</kbd>, <kbd>gE</kbd>) treats anything not whitespace as part of the word. In <code>foo-&gt;bar</code>, that&#x27;s a single WORD. See <a href="../08-wider-motions/05-WORD.html">`wider-motions.WORD`</a>.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Mnemonic: lowercase = stops at punctuation; uppercase = whitespace only.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Direction</th>
+<th>Lands on</th>
+<th>Counts</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>w</kbd></td>
+<td>Forward</td>
+<td>Start of next word</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><kbd>b</kbd></td>
+<td>Back</td>
+<td>Start of word</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><kbd>e</kbd></td>
+<td>Forward</td>
+<td>End of word</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>e</kbd></td>
+<td>Back</td>
+<td>End of previous word</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><kbd>W</kbd><kbd>B</kbd><kbd>E</kbd><kbd>g</kbd><kbd>E</kbd></td>
+<td>Same, but WORD-wise (whitespace boundaries)</td>
+<td>—</td>
+<td>Yes</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — w b e</h3>
+<p class="example-summary">Move by word boundary.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Cursor on &#x27;t&#x27; of &#x27;the&#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.word-motions/frame_01.color.svg" alt="Cursor on &#x27;t&#x27; of &#x27;the&#x27;."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>w</kbd> · <span class="step-cap">w — start of next word.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.word-motions/frame_02.color.svg" alt="w — start of next word."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>e</kbd> · <span class="step-cap">e — end of current word.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.word-motions/frame_03.color.svg" alt="e — end of current word."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>b</kbd> · <span class="step-cap">b — back to &#x27;q&#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.word-motions/frame_04.color.svg" alt="b — back to &#x27;q&#x27;."></div>
+<p class="narration">w/b move <em>to</em> word boundaries; e moves to the <em>end</em> of a word. With operators: dw, db, de all differ slightly — see grammar.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="02-word-motions.html">Word Motions</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="05-delete.html">Delete</a>, <a href="06-change.html">Change</a>, <a href="../08-wider-motions/05-WORD.html">WORD Motions</a>, <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-insert-variants.html" rel="prev">← More Ways into Insert</a></span>
+  <span class="pager-pos">11 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="03-line-motions.html" rel="next">Line Motions →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

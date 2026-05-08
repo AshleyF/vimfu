@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Small Delete Register — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Registers</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="04-numbered.html" rel="prev">← Numbered Registers</a></span>
+  <span class="pager-pos">59 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="06-clipboard.html" rel="next">System Clipboard Registers →</a></span>
+</nav>
+<article>
+<h1>The Small Delete Register</h1>
+<p class="subtitle">&quot;- — for charwise deletes that wouldn&#x27;t be worth a numbered slot.</p>
+<p class="meta"><code>id: registers.small-delete</code> &middot; part: <strong>registers</strong> &middot; keys: <kbd>&quot;-</kbd> &middot; lessons: 123</p>
+<blockquote class="summary">When you make a small charwise delete (less than a line, no newline), the deleted text goes into &quot;-, leaving the numbered registers untouched.</blockquote>
+<p><kbd>x</kbd>, <kbd>d</kbd><kbd>w</kbd> on a tiny word, <kbd>r</kbd>{c} replacing one character — none of these <em>should</em> clobber your last big delete in <kbd>&quot;</kbd><kbd>1</kbd>. So Vim diverts them to <kbd>&quot;</kbd><kbd>-</kbd>, the <strong>small delete register</strong>.</p>
+<figure class="lesson-embed" data-lesson="123"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/S2_U0CsQZPU?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Small Delete Register" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>The small delete register</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — What Counts as Small</header>
+<p>A delete goes to <kbd>&quot;</kbd><kbd>-</kbd> (and <em>not</em> into the numbered register chain) when it is:</p>
+<ul>
+<li><strong>Charwise</strong> (not linewise or blockwise).</li>
+<li>Less than one full line.</li>
+<li>Doesn&#x27;t contain a newline.</li>
+</ul>
+<p>Anything else — <kbd>d</kbd><kbd>d</kbd>, <kbd>d</kbd><kbd>i</kbd><kbd>p</kbd>, <kbd>d</kbd><kbd>%</kbd> on a multi-line bracket — goes into <kbd>&quot;</kbd><kbd>1</kbd> and shifts the numbered registers.</p>
+<p>The unnamed register <kbd>&quot;</kbd><kbd>&quot;</kbd> is <em>still</em> updated by both small and big deletes. So you can always paste the most recent delete with <kbd>p</kbd>, regardless of which numbered slot it landed in.</p>
+<p>The practical upshot: you can <kbd>x</kbd> a typo or <kbd>d</kbd><kbd>i</kbd><kbd>w</kbd> a small word freely without losing the line you carefully deleted into <kbd>&quot;</kbd><kbd>1</kbd> for re-pasting.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> The <kbd>r</kbd>{c} replace command writes the <em>replaced</em> character into <kbd>&quot;</kbd><kbd>-</kbd>. Useful occasionally for swap-back-what-I-just-replaced.</aside>
+<aside class="qr"><span>→ See also <a href="05-small-delete.html">The Small Delete Register</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-registers-overview.html">Registers</a>, <a href="04-numbered.html">Numbered Registers</a>, <a href="02-unnamed.html">The Unnamed Register</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="04-numbered.html" rel="prev">← Numbered Registers</a></span>
+  <span class="pager-pos">59 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="06-clipboard.html" rel="next">System Clipboard Registers →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

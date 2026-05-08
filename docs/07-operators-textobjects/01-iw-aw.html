@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Inner Word vs A Word — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Operators Textobjects</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+%28quick%29+brown+fox%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../06-dot-repeat/03-patterns.html" rel="prev">← Dot Patterns</a></span>
+  <span class="pager-pos">29 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-quotes.html" rel="next">Quote Text Objects →</a></span>
+</nav>
+<article>
+<h1>Inner Word vs A Word</h1>
+<p class="subtitle">iw and aw — the first text objects.</p>
+<p class="meta"><code>id: operators-textobjects.iw-aw</code> &middot; part: <strong>operators-textobjects</strong> &middot; keys: <kbd>iw</kbd>, <kbd>aw</kbd> &middot; lessons: 74</p>
+<blockquote class="summary">Text objects produce a (start, end) range <em>without</em> using the cursor. iw is the word the cursor is in. aw is that word plus surrounding whitespace.</blockquote>
+<p>Up to now, the noun in operator+motion has been a <em>motion</em> — a path from where you are to where you&#x27;ll end up. <strong>Text objects</strong> change that. They name a chunk of text directly, no path required. The first one to learn is the word.</p>
+<figure class="keys">
+<figcaption>Delete the word the cursor is on (no spaces)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>d</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Delete the word AND the surrounding space</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>d</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Change just the word</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>c</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Yank the word and a space</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>y</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="74"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/fNSk5_UYOzU?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Inner Word / A Word" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>iw vs aw — inner vs around</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — i Means &quot;Inner.&quot; a Means &quot;Around.&quot;</header>
+<p>Every text object comes in two flavors:</p>
+<ul>
+<li><kbd>i</kbd>{noun} — <strong>inner</strong>: the noun itself, <em>without</em> delimiters or surrounding whitespace.</li>
+<li><kbd>a</kbd>{noun} — <strong>around</strong>: the noun <em>with</em> its delimiters or trailing whitespace.</li>
+</ul>
+<p>For a word (<kbd>i</kbd><kbd>w</kbd> / <kbd>a</kbd><kbd>w</kbd>), there are no delimiters — just whitespace. So:</p>
+<ul>
+<li><kbd>i</kbd><kbd>w</kbd> = the keyword characters under the cursor.</li>
+<li><kbd>a</kbd><kbd>w</kbd> = the word + the trailing space (or leading space if at end of line).</li>
+</ul>
+<p>For a quoted string, <kbd>i</kbd><kbd>&quot;</kbd> is what&#x27;s between the quotes; <kbd>a</kbd><kbd>&quot;</kbd> includes the quotes. For parens, <kbd>i</kbd><kbd>(</kbd> is the contents; <kbd>a</kbd><kbd>(</kbd> includes the parens themselves. Same <code>i</code>/<code>a</code> rule everywhere.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Why Text Objects Aren&#x27;t Motions</header>
+<p>A motion takes you from the cursor <em>to</em> somewhere else. So <kbd>d</kbd><kbd>w</kbd> deletes from the cursor <em>forward</em> to the start of the next word. The cursor&#x27;s position matters.</p>
+<p>A text object is <strong>cursor-position-tolerant</strong>: if the cursor is anywhere inside the chunk, the chunk is the chunk. <kbd>d</kbd><kbd>i</kbd><kbd>w</kbd> on any character of <code>foo</code> deletes <code>foo</code>. You don&#x27;t need to be at the start.</p>
+<p>This is why text objects are easier on your fingers than motions for in-place edits. Combined with <kbd>c</kbd><kbd>i</kbd><kbd>w</kbd> for &quot;change-this-word-no-matter-where-the-cursor-is,&quot; they&#x27;re the workhorse of Vim editing.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Word objects use the same <kbd>&#x27;iskeyword&#x27;</kbd> setting as <kbd>w</kbd>. So in <code>foo-&gt;bar</code>, <kbd>c</kbd><kbd>i</kbd><kbd>w</kbd> on <code>foo</code> changes just <code>foo</code>. WORD objects (<kbd>i</kbd><kbd>W</kbd>, <kbd>a</kbd><kbd>W</kbd>) treat anything-not-whitespace as the word — change the whole <code>foo-&gt;bar</code>.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Object</th>
+<th>Range</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>i</kbd><kbd>w</kbd></td>
+<td>Word (keyword chars only)</td>
+</tr>
+<tr>
+<td><kbd>a</kbd><kbd>w</kbd></td>
+<td>Word + surrounding whitespace</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>W</kbd></td>
+<td>WORD (whitespace boundaries)</td>
+</tr>
+<tr>
+<td><kbd>a</kbd><kbd>W</kbd></td>
+<td>WORD + surrounding whitespace</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — ciw vs caw</h3>
+<p class="example-summary">Inner word vs around word.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/textobj.iw-aw/frame_01.color.svg" alt="textobj.iw-aw"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>diw</kbd> · <span class="step-cap">diw — &#x27;quick&#x27; gone, parens kept.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/textobj.iw-aw/frame_02.color.svg" alt="diw — &#x27;quick&#x27; gone, parens kept."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>u daw</kbd> · <span class="step-cap">daw — &#x27;quick &#x27; AND its surrounding space gone.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/textobj.iw-aw/frame_03.color.svg" alt="daw — &#x27;quick &#x27; AND its surrounding space gone."></div>
+<p class="narration">i = inner (just the thing). a = around (thing + its delimiters or trailing space).</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+%28quick%29+brown+fox%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="01-iw-aw.html">Inner Word vs A Word</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="06-grammar.html">The Vim Grammar</a>, <a href="02-quotes.html">Quote Text Objects</a>, <a href="03-brackets.html">Bracket Text Objects</a>, <a href="../03-basic-editing/02-word-motions.html">Word Motions</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../06-dot-repeat/03-patterns.html" rel="prev">← Dot Patterns</a></span>
+  <span class="pager-pos">29 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-quotes.html" rel="next">Quote Text Objects →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

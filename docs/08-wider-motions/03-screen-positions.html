@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Screen Position Jumps — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Wider Motions</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-match-bracket.html" rel="prev">← Match Bracket</a></span>
+  <span class="pager-pos">37 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-line-start.html" rel="next">Line-Start Motions →</a></span>
+</nav>
+<article>
+<h1>Screen Position Jumps</h1>
+<p class="subtitle">H, M, L — High, Middle, Low on the visible screen.</p>
+<p class="meta"><code>id: wider-motions.screen-positions</code> &middot; part: <strong>wider-motions</strong> &middot; keys: <kbd>H</kbd>, <kbd>M</kbd>, <kbd>L</kbd> &middot; lessons: 94</p>
+<blockquote class="summary">H jumps to the top of the visible screen, M to the middle, L to the bottom. They&#x27;re motions to a <em>screen</em> position, not a <em>file</em> position — they don&#x27;t scroll.</blockquote>
+<p>Three single-key jumps to positions on the <em>current screen</em>: top, middle, bottom. They don&#x27;t scroll — they move the cursor to where you can already see.</p>
+<figure class="keys">
+<figcaption>High — top of visible screen</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>H</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Middle — middle of visible screen</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>M</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Low — bottom of visible screen</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>L</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="94"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/1u6nlYsY71M?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Screen Top / Middle / Bottom" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>H / M / L — screen jumps</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — These Are Window-Local</header>
+<p><kbd>H</kbd>, <kbd>M</kbd>, <kbd>L</kbd> operate on the <em>visible</em> lines of the current window. They have nothing to do with file lines or absolute positions. So they behave the same in a small split as in a full-screen window.</p>
+<p>They respect <code>&#x27;scrolloff&#x27;</code> — if you have <code>:set scrolloff=5</code>, <kbd>H</kbd> lands on the 6th visible line (5 lines below the actual top), and <kbd>L</kbd> lands 5 above the actual bottom. This keeps context visible.</p>
+<p>With a count, <kbd>5</kbd><kbd>H</kbd> means &quot;5 lines below the top of the screen&quot;; <kbd>5</kbd><kbd>L</kbd> means &quot;5 lines above the bottom.&quot; Useful for jumping into a known-position landmark on screen.</p>
+<p>These are <em>jumps</em> — they push the previous position onto the jumplist. <kbd>Ctrl-O</kbd> returns.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>H</kbd>/<kbd>M</kbd>/<kbd>L</kbd> are paired with <kbd>z</kbd><kbd>t</kbd>/<kbd>z</kbd><kbd>z</kbd>/<kbd>z</kbd><kbd>b</kbd> (which scroll the cursor&#x27;s <em>current</em> line to the top/middle/bottom of the screen, see <a href="../09-scrolling-screen/02-center-top-bottom.html">`scroll.center-top-bottom`</a>). Together they let you reposition either the cursor or the viewport without thinking.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Lands on</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>H</kbd></td>
+<td>Top visible line</td>
+</tr>
+<tr>
+<td><kbd>M</kbd></td>
+<td>Middle visible line</td>
+</tr>
+<tr>
+<td><kbd>L</kbd></td>
+<td>Bottom visible line</td>
+</tr>
+<tr>
+<td><kbd>{n</kbd>}<kbd>H</kbd></td>
+<td>{n} lines below top</td>
+</tr>
+<tr>
+<td><kbd>{n</kbd>}<kbd>L</kbd></td>
+<td>{n} lines above bottom</td>
+</tr>
+</tbody></table>
+<aside class="qr"><span>→ See also <a href="03-screen-positions.html">Screen Position Jumps</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../09-scrolling-screen/02-center-top-bottom.html">Centering the Cursor</a>, <a href="../09-scrolling-screen/03-first-non-blank-z.html">z. / z+ / z- — Scroll and Land on First Non-Blank</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-match-bracket.html" rel="prev">← Match Bracket</a></span>
+  <span class="pager-pos">37 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-line-start.html" rel="next">Line-Start Motions →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

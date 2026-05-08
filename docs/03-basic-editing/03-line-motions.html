@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Line Motions — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Basic Editing</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=++++hello+world%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-word-motions.html" rel="prev">← Word Motions</a></span>
+  <span class="pager-pos">12 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-file-motions.html" rel="next">File Motions →</a></span>
+</nav>
+<article>
+<h1>Line Motions</h1>
+<p class="subtitle">0 / ^ / $ — the three places that matter on a line.</p>
+<p class="meta"><code>id: editing.line-motions</code> &middot; part: <strong>editing</strong> &middot; keys: <kbd>0</kbd>, <kbd>^</kbd>, <kbd>$</kbd> &middot; lessons: 25, 26, 27</p>
+<blockquote class="summary">0 jumps to column 0. ^ jumps to the first non-blank character. $ jumps to the end of the line. They&#x27;re motions, so d$ deletes to end of line, c0 changes to start.</blockquote>
+<p>A line has three interesting positions: the actual start (column 0), the first non-blank character (where the code begins), and the end. Vim gives them three keys.</p>
+<figure class="keys">
+<figcaption>Jump to column 0</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>0</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Jump to first non-blank</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>^</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Jump to end of line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>$</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="25"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/YbEJOx2D-wY?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Start of Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>0 — column 0</figcaption></figure>
+<figure class="lesson-embed" data-lesson="26"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/mD09hlt0hI8?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="First Non-Blank" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>^ — first non-blank</figcaption></figure>
+<figure class="lesson-embed" data-lesson="27"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/n4rfbnb9UI4?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="End of Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>$ — end of line</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> <kbd>^</kbd> is what you almost always want. <kbd>0</kbd> is for when the leading whitespace itself is the target — for example, <kbd>d</kbd><kbd>0</kbd> to delete the indentation.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Inclusive vs Exclusive — Why $ Behaves Subtly</header>
+<p>Motions in Vim have a <em>type</em> that decides what an operator does with them:</p>
+<ul>
+<li><strong>Exclusive</strong> motions don&#x27;t include the character under the destination cursor. <kbd>w</kbd> is exclusive: <kbd>d</kbd><kbd>w</kbd> deletes up to but not including the next word&#x27;s first character.</li>
+<li><strong>Inclusive</strong> motions do include it. <kbd>e</kbd> is inclusive: <kbd>d</kbd><kbd>e</kbd> deletes through the end of the word.</li>
+<li><strong>Linewise</strong> motions act on whole lines. <kbd>j</kbd> is linewise: <kbd>d</kbd><kbd>j</kbd> deletes two whole lines.</li>
+</ul>
+<p><kbd>0</kbd> is exclusive; <kbd>^</kbd> is exclusive; <kbd>$</kbd> is <strong>inclusive</strong> — that&#x27;s why <kbd>d</kbd><kbd>$</kbd> deletes through end-of-line <em>including</em> the last character. The Universal Grammar (operator + motion) keeps working, but the precise byte ranges depend on the motion&#x27;s type. Full classification: <a href="../99-appendices/05-motion-classification.html">`appendix.motion-classification`</a>.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> There&#x27;s a shortcut: <kbd>D</kbd> = <kbd>d</kbd><kbd>$</kbd> (delete to end of line). <kbd>C</kbd> = <kbd>c</kbd><kbd>$</kbd>. <kbd>Y</kbd> <em>should</em> be <kbd>y</kbd><kbd>$</kbd> but historically isn&#x27;t — see the wart in <a href="07-yank-put.html">`editing.yank-put`</a>.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Lands on</th>
+<th>Type</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>0</kbd></td>
+<td>Column 0 (the actual start)</td>
+<td>Exclusive</td>
+</tr>
+<tr>
+<td><kbd>^</kbd></td>
+<td>First non-blank character</td>
+<td>Exclusive</td>
+</tr>
+<tr>
+<td><kbd>$</kbd></td>
+<td>End of line</td>
+<td>Inclusive</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>_</kbd></td>
+<td>Last non-blank character</td>
+<td>Inclusive</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — 0 ^ $</h3>
+<p class="example-summary">Three flavors of line start/end.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.line-motions/frame_01.color.svg" alt="editing.line-motions"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>0</kbd> · <span class="step-cap">0 — column 0 (literal start).</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.line-motions/frame_02.color.svg" alt="0 — column 0 (literal start)."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>^</kbd> · <span class="step-cap">^ — first non-blank.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.line-motions/frame_03.color.svg" alt="^ — first non-blank."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>$</kbd> · <span class="step-cap">$ — end of line.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.line-motions/frame_04.color.svg" alt="$ — end of line."></div>
+<p class="narration">Use ^ when you want code, 0 when you want column zero, $ to land on the last char.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=++++hello+world%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="03-line-motions.html">Line Motions</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="05-delete.html">Delete</a>, <a href="06-change.html">Change</a>, <a href="01-insert-variants.html">More Ways into Insert</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-word-motions.html" rel="prev">← Word Motions</a></span>
+  <span class="pager-pos">12 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-file-motions.html" rel="next">File Motions →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

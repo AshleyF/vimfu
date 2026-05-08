@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Editing a Macro — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Macros</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-counted.html" rel="prev">← Counted Macros</a></span>
+  <span class="pager-pos">65 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../14-windows-buffers-tabs/01-splits.html" rel="next">Creating Splits →</a></span>
+</nav>
+<article>
+<h1>Editing a Macro</h1>
+<p class="subtitle">Paste it, fix it, yank it back. Macros are text.</p>
+<p class="meta"><code>id: macros.editing</code> &middot; part: <strong>macros</strong> &middot; keys: <kbd>&quot;ap</kbd>, <kbd>&quot;ay$</kbd></p>
+<blockquote class="summary">Because a macro is just register contents, you can paste it into the buffer, edit any keystroke, and yank it back. This is how macros get refined without a full re-record.</blockquote>
+<p>Recording is the easy way to <em>get</em> a macro. But re-recording every time you want a small fix is painful. Faster: paste the macro into a scratch buffer, edit the keystrokes, yank it back. The macro is text.</p>
+<h3>The recipe</h3>
+<p>Suppose macro <code>a</code> is <em>almost</em> right but has a bug.
+
+  1. Open a scratch line: <kbd>o</kbd><kbd>Esc</kbd>.
+  2. Paste the macro: <kbd>&quot;</kbd><kbd>a</kbd><kbd>p</kbd>. The keystrokes appear as text.
+  3. Edit them — replace <code>dawi</code> with <code>daWi</code>, fix a typo, whatever.
+  4. Select the corrected text (e.g. <kbd>0</kbd><kbd>v</kbd><kbd>$</kbd> or just place cursor at start) and yank it back into <code>a</code>: <kbd>&quot;</kbd><kbd>a</kbd><kbd>y</kbd><kbd>$</kbd>.
+  5. Undo the buffer changes (<kbd>u</kbd>, <kbd>u</kbd>) so the keystroke text doesn&#x27;t pollute your file.
+  6. <kbd>@</kbd><kbd>a</kbd> — try the corrected macro.</p>
+<figure class="keys">
+<figcaption>Paste macro a as text</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>&quot;</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+<tr><td><kbd>p</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Yank cursor-to-EOL back into a</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>&quot;</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+<tr><td><kbd>y</kbd></td><td></td></tr>
+<tr><td><kbd>$</kbd></td><td></td></tr>
+</tbody></table></figure>
+<aside class="tip"><strong>Tip.</strong> Special keys appear as raw escape sequences. <kbd>&lt;Esc&gt;</kbd> shows as <code>^[</code>. You can leave them alone and edit only the visible keys around them. To insert a literal <kbd>&lt;Esc&gt;</kbd> in your editing, use <kbd>Ctrl-V</kbd><kbd>Esc</kbd> — that types the byte without leaving Insert mode.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Scripting the Macro Directly</header>
+<p>If you&#x27;d rather skip the paste-edit-yank dance, set the register from the command line:</p>
+<ul>
+<li><kbd>:</kbd><kbd>l</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>@</kbd><kbd>a</kbd><kbd>=</kbd>&quot;^[ciwhello^[&quot;</li>
+<li><kbd>:</kbd><kbd>l</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>@</kbd><kbd>a</kbd> <kbd>.</kbd><kbd>=</kbd>&quot; <code>j</code>&quot;  <em>(append a <code>j</code> motion)</em></li>
+</ul>
+<p>In the string form, you can use <code>\&lt;Esc&gt;</code> and similar named keys if <code>&#x27;cpoptions&#x27;</code> is set right; or paste literal escape characters with <kbd>Ctrl-V</kbd><kbd>Esc</kbd> while typing the <kbd>:</kbd><kbd>l</kbd><kbd>e</kbd><kbd>t</kbd>.</p>
+<p>For a longer-lived macro, consider stashing it in your config. <kbd>:</kbd><kbd>l</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>g</kbd><kbd>:</kbd>macros = { &#x27;a&#x27;: &#x27;...&#x27; } makes them programmatic; mapping <kbd>@</kbd><kbd>a</kbd> to a function gives them names.</p>
+</aside>
+<aside class="qr"><span>→ See also <a href="03-editing.html">Editing a Macro</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-record-play.html">Recording and Playing Macros</a>, <a href="../12-registers/08-macros-as-text.html">Macros Are Just Register Contents</a>, <a href="../12-registers/03-named.html">Named Registers</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-counted.html" rel="prev">← Counted Macros</a></span>
+  <span class="pager-pos">65 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../14-windows-buffers-tabs/01-splits.html" rel="next">Creating Splits →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

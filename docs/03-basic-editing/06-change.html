@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Change — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Basic Editing</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="05-delete.html" rel="prev">← Delete</a></span>
+  <span class="pager-pos">15 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="07-yank-put.html" rel="next">Yank and Put →</a></span>
+</nav>
+<article>
+<h1>Change</h1>
+<p class="subtitle">c is delete-then-insert, atomically.</p>
+<p class="meta"><code>id: editing.change</code> &middot; part: <strong>editing</strong> &middot; keys: <kbd>c</kbd>, <kbd>cw</kbd>, <kbd>C</kbd>, <kbd>cc</kbd>, <kbd>S</kbd>, <kbd>s</kbd> &middot; lessons: 36, 37, 38, 39</p>
+<blockquote class="summary">c is the change operator. cw changes a word; cc changes a line; C changes to end of line. S and s are short forms that change a whole line and a single character respectively.</blockquote>
+<p><kbd>c</kbd> is what <kbd>d</kbd>-then-<kbd>i</kbd> would be if you didn&#x27;t have to think. It deletes the same range <kbd>d</kbd> would, <em>and</em> drops you straight into Insert mode at that spot. Then <kbd>Esc</kbd> closes the change as one undoable, dot-repeatable unit.</p>
+<figure class="keys">
+<figcaption>Change a word</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>c</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>= c$  (change to end of line)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>C</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Change current line (linewise)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>c</kbd></td><td></td></tr>
+<tr><td><kbd>c</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>= cc (change whole line)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>S</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Substitute character (= cl)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>s</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="36"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/8uX8x-wIjwU?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Change Word" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>cw — change a word</figcaption></figure>
+<figure class="lesson-embed" data-lesson="37"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/L3YSNw0dKMU?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Change to End of Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>C — change to end of line</figcaption></figure>
+<figure class="lesson-embed" data-lesson="38"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/yOoWC6_5dho?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Change Entire Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>cc / S — change a line</figcaption></figure>
+<figure class="lesson-embed" data-lesson="39"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/ezZGHEoc2j4?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Substitute Character" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>s — substitute a char</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Change Is Delete + Insert as One Atomic &quot;Change&quot;</header>
+<p>Internally, <kbd>c</kbd>{motion} does three things:</p>
+<p>1. Cuts the range covered by {motion} into the unnamed and numbered registers (just like <kbd>d</kbd>).
+  2. Switches to Insert mode at the start of the cut range.
+  3. Marks an undo boundary that closes when you press <kbd>Esc</kbd>.</p>
+<p>Step 3 is the important one. The whole episode — delete, type, leave Insert — becomes <strong>one</strong> entry in the undo tree. <kbd>u</kbd> reverts all of it. <kbd>.</kbd> replays all of it.</p>
+<p>That&#x27;s why <kbd>c</kbd><kbd>w</kbd>-type-something-<kbd>Esc</kbd>-<kbd>n</kbd>-<kbd>.</kbd> is one of the most useful patterns in Vim: jump to next match, change-the-word, repeat. Each repeat is one undoable operation, not many. See <a href="#recipes.cgn-dot" class="broken">`recipes.cgn-dot`</a> for the polished form.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Watch out: <kbd>cw</kbd> <em>behaves like</em> <kbd>ce</kbd> (change to end of word) — not what <kbd>dw</kbd> does. This is a deliberate, ancient quirk. The change operator with a word motion changes <em>just the word</em>, not the trailing whitespace. Most people prefer it that way.</aside>
+<aside class="tip"><strong>Tip.</strong> Synonyms to memorize: <kbd>C</kbd> = <kbd>c</kbd><kbd>$</kbd>. <kbd>S</kbd> = <kbd>c</kbd><kbd>c</kbd>. <kbd>s</kbd> = <kbd>c</kbd><kbd>l</kbd>. <kbd>s</kbd> doesn&#x27;t get a lot of love — it&#x27;s a one-character substitute, useful when you want to type a replacement immediately and skip the explicit <kbd>r</kbd>-then-look-around.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+<th>Equivalent</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>c</kbd>{motion}</td>
+<td>Change range</td>
+<td><kbd>d</kbd>{motion} + <kbd>i</kbd></td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>c</kbd></td>
+<td>Change line</td>
+<td>—</td>
+</tr>
+<tr>
+<td><kbd>C</kbd></td>
+<td>Change to end of line</td>
+<td><kbd>c</kbd><kbd>$</kbd></td>
+</tr>
+<tr>
+<td><kbd>S</kbd></td>
+<td>Change line</td>
+<td><kbd>c</kbd><kbd>c</kbd></td>
+</tr>
+<tr>
+<td><kbd>s</kbd></td>
+<td>Substitute one char</td>
+<td><kbd>c</kbd><kbd>l</kbd></td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>w</kbd></td>
+<td>Change word (note: like <kbd>c</kbd><kbd>e</kbd>)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>i</kbd><kbd>w</kbd></td>
+<td>Change inner word</td>
+<td>—</td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>a</kbd><kbd>&#x27;</kbd></td>
+<td>Change around quotes</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — cw is c then w</h3>
+<p class="example-summary">Change = delete + Insert in one step.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.change/frame_01.color.svg" alt="editing.change"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>cw</kbd> · <span class="step-cap">cw — &#x27;quick&#x27; gone, Insert mode on.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.change/frame_02.color.svg" alt="cw — &#x27;quick&#x27; gone, Insert mode on."></div>
+<p class="narration">Note the trailing space stays — cw stops <em>just before</em> the next word. (One of cw&#x27;s well-known quirks.)</p>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>slow</kbd> · <span class="step-cap">Type &#x27;slow&#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.change/frame_03.color.svg" alt="Type &#x27;slow&#x27;."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>Esc</kbd> · <span class="step-cap">Esc — change is committed and dot-repeatable.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.change/frame_04.color.svg" alt="Esc — change is committed and dot-repeatable."></div>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="06-change.html">Change</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="05-delete.html">Delete</a>, <a href="01-insert-variants.html">More Ways into Insert</a>, <a href="../06-dot-repeat/01-repeat.html">Repeat Last Change</a>, <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="05-delete.html" rel="prev">← Delete</a></span>
+  <span class="pager-pos">15 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="07-yank-put.html" rel="next">Yank and Put →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

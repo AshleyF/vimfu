@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>External Filter Tricks — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Patterns Recipes</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="07-diff.html" rel="prev">← Diff Mode</a></span>
+  <span class="pager-pos">110 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../21-advanced/01-undo-tree.html" rel="next">Undo as a Tree →</a></span>
+</nav>
+<article>
+<h1>External Filter Tricks</h1>
+<p class="subtitle">!{motion}cmd — let any Unix tool transform your text.</p>
+<p class="meta"><code>id: patterns.external-filter</code> &middot; part: <strong>patterns-recipes</strong> &middot; keys: <kbd>!</kbd> &middot; lessons: 476, 480</p>
+<blockquote class="summary">Vim&#x27;s filter command !{motion} sends the text covered by motion as stdin to a shell command, replacing it with stdout. Sort, dedup, format, encode, decode — any tool works.</blockquote>
+<p>Vim&#x27;s filter operator (Normal-mode <kbd>!</kbd>) sends a chunk of the buffer through a shell command and replaces it with the result. Combined with Unix tools, you have unlimited transforms.</p>
+<table>
+<thead><tr>
+<th>Sequence</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>!</kbd><kbd>!</kbd>sort</td>
+<td>Sort current line through <code>sort</code> (no-op for one line, but legal)</td>
+</tr>
+<tr>
+<td><kbd>!</kbd><kbd>i</kbd><kbd>p</kbd>sort</td>
+<td>Sort the inner paragraph</td>
+</tr>
+<tr>
+<td><kbd>!</kbd><kbd>G</kbd>sort</td>
+<td>Sort from cursor to end of file</td>
+</tr>
+<tr>
+<td>:%!sort</td>
+<td>Sort the whole file</td>
+</tr>
+<tr>
+<td>:%!sort -u</td>
+<td>Sort + dedup</td>
+</tr>
+<tr>
+<td>:%!jq .</td>
+<td>Pretty-print JSON in place</td>
+</tr>
+<tr>
+<td>:%!python -m json.tool</td>
+<td>Same, with Python</td>
+</tr>
+<tr>
+<td>:%!xmllint --format -</td>
+<td>Pretty-print XML</td>
+</tr>
+<tr>
+<td>:%!fmt -w 80</td>
+<td>Reflow to 80-column lines</td>
+</tr>
+<tr>
+<td>:&#x27;&lt;,&#x27;&gt;!base64</td>
+<td>Base64-encode the visual selection</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — How Filter Mode Works</header>
+<p>From Normal mode, <kbd>!</kbd>{motion} prompts for a shell command on the command line. When you press <kbd>Enter</kbd>:</p>
+<p>1. The lines covered by <code>motion</code> are written to a temp file.
+  2. The shell command is run with that file as stdin.
+  3. The motion&#x27;s lines are replaced in the buffer with the command&#x27;s stdout.</p>
+<p><kbd>!</kbd><kbd>!</kbd> (doubled bang) targets the current line. From Ex, <code>:[range]!cmd</code> does the same with an explicit range.</p>
+<p>The filter is <em>line-oriented</em> even from Normal mode — <kbd>!</kbd><kbd>i</kbd><kbd>w</kbd> doesn&#x27;t filter just a word; the entire line(s) containing the word are sent. (Use the substitute command for sub-line transforms.)</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Make a habit of using filters for one-shot needs (sort, format, encode). It&#x27;s faster than alt-tabbing to a shell and back.</aside>
+<aside class="qr"><span>→ See also <a href="08-external-filter.html">External Filter Tricks</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0476 Map Y to y$ (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0480 External Filtering (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../17-ex-commands/06-shell.html">Shell Commands (:!)</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="07-diff.html" rel="prev">← Diff Mode</a></span>
+  <span class="pager-pos">110 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="../21-advanced/01-undo-tree.html" rel="next">Undo as a Tree →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

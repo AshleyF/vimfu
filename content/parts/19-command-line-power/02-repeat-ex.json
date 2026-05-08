@@ -27,7 +27,7 @@
     {
       "type": "internals",
       "title": "Why It's @ and Not .",
-      "text": "{key:.} replays the last *change* — the last edit that modified the buffer through Normal-mode editing. Ex commands aren't part of that history; they're a separate, parallel stream.\n\n{key:@}{reg} runs the contents of register `reg` as keystrokes. The colon register `:` always holds the last Ex command typed. So {key:@}{key::} just runs that register — the same mechanism as macro playback ({key:@}{key:q}).\n\nAfter {key:@}{key::}, the macro-replay register becomes `:`, so {key:@}{key:@} (replay last macro) runs the same Ex command again. This is why bulk operations chain naturally: `:s/foo/bar/` then `nnn` (search next) `@:` `@:` `@:`."
+      "text": "{key:.} replays the last *change* — the last edit that modified the buffer through Normal-mode editing. Ex commands aren't part of that history; they're a separate, parallel stream.\n\n{key:@}{reg} runs the contents of register `reg` as keystrokes. The colon register `:` always holds the last Ex command typed. So {key:@}{key::} just runs that register — the same mechanism as macro playback ({key:@}{key:q}).\n\nAfter {key:@}{key::}, the macro-replay register becomes `:`, so {key:@}{key:@} (replay last macro) runs the same Ex command again. This is why bulk operations chain naturally: `:s/foo/bar/` then `nnn` (search next) {key:@}{key::} {key:@}{key::} {key:@}{key::}."
     },
 
     { "type": "qr", "topic": "cmdline.repeat-ex" },

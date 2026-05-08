@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Terminal Inside Vim — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Advanced</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-op-pending.html" rel="prev">← Operator-Pending Mode</a></span>
+  <span class="pager-pos">114 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-character-info.html" rel="next">Character Info (ga, g8, g Ctrl-G) →</a></span>
+</nav>
+<article>
+<h1>Terminal Inside Vim</h1>
+<p class="subtitle">:terminal opens a real shell — usable with Vim navigation.</p>
+<p class="meta"><code>id: advanced.terminal</code> &middot; part: <strong>advanced</strong> &middot; keys: <kbd>:term</kbd> &middot; lessons: 489, 490</p>
+<blockquote class="summary">:terminal (or :term) opens a buffer running an interactive shell. You can switch to Normal mode inside the terminal to scroll back, search, and yank with normal Vim motions.</blockquote>
+<p><kbd>:</kbd><kbd>t</kbd><kbd>e</kbd><kbd>r</kbd><kbd>m</kbd><kbd>i</kbd><kbd>n</kbd><kbd>a</kbd><kbd>l</kbd> (or <code>:term</code>) opens a real interactive shell <em>inside a Vim buffer</em>. It&#x27;s a buffer like any other — split it, switch to it, yank from it.</p>
+<table>
+<thead><tr>
+<th>Action</th>
+<th>How</th>
+</tr></thead><tbody>
+<tr>
+<td>Open a terminal</td>
+<td>:terminal</td>
+</tr>
+<tr>
+<td>Open in horizontal split</td>
+<td>:term</td>
+</tr>
+<tr>
+<td>Open in vertical split</td>
+<td>:vert term</td>
+</tr>
+<tr>
+<td>Run a one-shot command</td>
+<td>:term make</td>
+</tr>
+<tr>
+<td>Switch to Normal mode in terminal</td>
+<td><kbd>Ctrl-W</kbd><kbd>N</kbd></td>
+</tr>
+<tr>
+<td>Back to interactive Insert</td>
+<td><kbd>i</kbd> or <kbd>a</kbd></td>
+</tr>
+<tr>
+<td>Send keystrokes from Normal</td>
+<td><kbd>Ctrl-W</kbd><kbd>&quot;</kbd>{reg} pastes register</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — Two States: Terminal-Job and Terminal-Normal</header>
+<p>A terminal buffer has two modes:</p>
+<ul>
+<li><strong>Terminal-Job</strong> — keystrokes go to the shell process. This is the default — feels like a normal terminal.</li>
+<li><strong>Terminal-Normal</strong> — keystrokes are interpreted by Vim. You can scroll back through output, search with <kbd>/</kbd>, yank text with <kbd>y</kbd>, etc.</li>
+</ul>
+<p>Switch to Terminal-Normal with <kbd>Ctrl-W</kbd><kbd>N</kbd> (or <kbd>Ctrl-\</kbd><kbd>Ctrl-N</kbd> in Vim 8, or just <kbd>Esc</kbd> in Neovim). Switch back with <kbd>i</kbd> or <kbd>a</kbd> (just like Normal → Insert).</p>
+<p>This means your terminal buffer&#x27;s scrollback is searchable and yankable using all your Vim muscle memory. Saw an error message? <kbd>Ctrl-W</kbd><kbd>N</kbd> <kbd>?error</kbd><kbd>Enter</kbd> <kbd>y</kbd><kbd>y</kbd> to yank the line.</p>
+<p>Note: <kbd>Ctrl-W</kbd> in Terminal-Job is the <em>window prefix</em>, not delete-word. To send literal <kbd>Ctrl-W</kbd> to the shell, prefix with <kbd>Ctrl-W</kbd><kbd>.</kbd>.</p>
+</aside>
+<aside class="qr"><span>→ See also <a href="04-terminal.html">Terminal Inside Vim</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0489 Operator-Pending Mode (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0490 g@ — Custom Operator (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../17-ex-commands/06-shell.html">Shell Commands (:!)</a>, <a href="../14-windows-buffers-tabs/01-splits.html">Creating Splits</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-op-pending.html" rel="prev">← Operator-Pending Mode</a></span>
+  <span class="pager-pos">114 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-character-info.html" rel="next">Character Info (ga, g8, g Ctrl-G) →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

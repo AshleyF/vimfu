@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sentence and Paragraph — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Operators Textobjects</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-brackets.html" rel="prev">← Bracket Text Objects</a></span>
+  <span class="pager-pos">32 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-tags.html" rel="next">HTML/XML Tag Objects →</a></span>
+</nav>
+<article>
+<h1>Sentence and Paragraph</h1>
+<p class="subtitle">is / as / ip / ap — for prose.</p>
+<p class="meta"><code>id: operators-textobjects.sentence-paragraph</code> &middot; part: <strong>operators-textobjects</strong> &middot; keys: <kbd>is</kbd>, <kbd>as</kbd>, <kbd>ip</kbd>, <kbd>ap</kbd> &middot; lessons: 82, 83</p>
+<blockquote class="summary">is is the sentence containing the cursor. ip is the paragraph. The &#x27;a&#x27; variants include trailing whitespace.</blockquote>
+<p>Most of Vim&#x27;s text objects are for code. These two are for prose — sentences and paragraphs as units of text.</p>
+<figure class="keys">
+<figcaption>Change the sentence the cursor is in</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>c</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>s</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Delete the sentence + trailing whitespace</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>d</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+<tr><td><kbd>s</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Visual-select the paragraph</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>v</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>p</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Reformat the paragraph (line-wrap)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>g</kbd></td><td></td></tr>
+<tr><td><kbd>q</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>p</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="82"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/4txuEYv_x4E?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Inner/Around Sentence" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>is / as — sentence</figcaption></figure>
+<figure class="lesson-embed" data-lesson="83"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/eDrhY71SiFs?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Inner/Around Paragraph" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>ip / ap — paragraph</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — What Vim Means by Sentence and Paragraph</header>
+<p><strong>Sentence</strong>: ends at <code>.</code>, <code>!</code>, or <code>?</code> followed by spaces or end-of-line. Some closing punctuation (<kbd>)</kbd>, <kbd>]</kbd>, <kbd>&quot;</kbd>, <kbd>&#x27;</kbd>) may follow before the spaces. This is set via the <code>&#x27;joinspaces&#x27;</code> and a few related options.</p>
+<p>This definition is about <em>typed</em> text, not English semantics. &quot;Mr. Smith.&quot; is two sentences to Vim. Lists with <code>1.</code> are confusing too. It&#x27;s a heuristic; for code or markdown lists it&#x27;s often wrong, but for paragraphs of plain prose it works.</p>
+<p><strong>Paragraph</strong>: a run of non-empty lines, separated by <em>empty</em> lines. Some configurations also count nroff-style macros as paragraph separators (the <code>&#x27;paragraphs&#x27;</code> option), but the default — blank-line separation — is what you&#x27;ll usually see.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>g</kbd><kbd>q</kbd><kbd>i</kbd><kbd>p</kbd> reformats the current paragraph to fit <code>&#x27;textwidth&#x27;</code>. Combined with markdown-mode it&#x27;s how many writers bulk-tidy a chapter.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Object</th>
+<th>Range</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>i</kbd><kbd>s</kbd></td>
+<td>Inner sentence (no trailing space)</td>
+</tr>
+<tr>
+<td><kbd>a</kbd><kbd>s</kbd></td>
+<td>Sentence + trailing whitespace</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>p</kbd></td>
+<td>Inner paragraph (no surrounding blank lines)</td>
+</tr>
+<tr>
+<td><kbd>a</kbd><kbd>p</kbd></td>
+<td>Paragraph + trailing blank line</td>
+</tr>
+</tbody></table>
+<aside class="qr"><span>→ See also <a href="04-sentence-paragraph.html">Sentence and Paragraph</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../08-wider-motions/01-sentence-paragraph.html">Sentence and Paragraph Motions</a>, <a href="01-iw-aw.html">Inner Word vs A Word</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-brackets.html" rel="prev">← Bracket Text Objects</a></span>
+  <span class="pager-pos">32 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-tags.html" rel="next">HTML/XML Tag Objects →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

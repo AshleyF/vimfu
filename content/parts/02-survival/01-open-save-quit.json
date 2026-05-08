@@ -240,6 +240,12 @@
       "ref": "survival.open-save-quit"
     },
     {
+      "type": "internals",
+      "audience": "book",
+      "title": "Why It's Spelled :w, :q, :wq",
+      "text": "The colon-prefixed commands are not Vim's invention. They are *ex* commands — Bill Joy's line editor from 1976 — that vi inherited and that Vim/Neovim still implement faithfully. Ex itself was an extension of *ed*, Ken Thompson's 1969 line editor.\n\nIn ex, you addressed lines with line numbers and ran commands on them: `1,$s/foo/bar/g` (\"on lines 1 to last, substitute foo with bar globally\"). The single-letter command names — `w` for write, `q` for quit, `s` for substitute, `d` for delete, `y` for yank — were chosen for terseness, because users were typing on slow serial lines where every character cost real time.\n\nThis is why colon commands feel like a different language inside Vim: they *are* a different language, descended from a different lineage. The {key::} keystroke is a gear-shift. To the left of the colon you are speaking visual-mode vi; to the right, you are speaking ex. Both languages compose: {key::}{key:w} writes, {key::}{key:5}{key:,}{key:1}{key:0}{key:w} writes lines 5–10 to a file, {key::}{key:%}{key:s}{key:/}{key:foo}{key:/}{key:bar}{key:/}{key:g} runs an ex substitution on the whole buffer."
+    },
+    {
       "type": "qr",
       "topic": "survival.open-save-quit"
     },

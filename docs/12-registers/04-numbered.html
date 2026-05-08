@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Numbered Registers — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Registers</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=A%0AB%0AC%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-named.html" rel="prev">← Named Registers</a></span>
+  <span class="pager-pos">58 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-small-delete.html" rel="next">The Small Delete Register →</a></span>
+</nav>
+<article>
+<h1>Numbered Registers</h1>
+<p class="subtitle">&quot;0 = last yank. &quot;1–&quot;9 = the last nine deletes.</p>
+<p class="meta"><code>id: registers.numbered</code> &middot; part: <strong>registers</strong> &middot; keys: <kbd>&quot;0</kbd>, <kbd>&quot;1</kbd>, <kbd>&quot;9</kbd> &middot; lessons: 122</p>
+<blockquote class="summary">&quot;0 holds your most recent yank; it never updates on delete. &quot;1 holds your most recent multi-character delete; &quot;2 the one before, and so on through &quot;9. They shift on every delete.</blockquote>
+<p>Vim quietly keeps a backlog of your recent yanks and deletes. <kbd>&quot;</kbd><kbd>0</kbd> is your most recent yank. <kbd>&quot;</kbd><kbd>1</kbd> through <kbd>&quot;</kbd><kbd>9</kbd> are the last nine deletes — they shift down on each new one.</p>
+<figure class="lesson-embed" data-lesson="122"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/g9FRNibLjig?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The System Clipboard" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>The numbered registers</figcaption></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — The Two Different Update Rules</header>
+<p><strong><kbd>&quot;</kbd><kbd>0</kbd></strong> — only updated on <strong>yank</strong>. Stays untouched by delete and change. So if you yank, then delete, then paste, you get the <em>delete</em>. To get your yank back: <kbd>&quot;</kbd><kbd>0</kbd><kbd>p</kbd>.</p>
+<p><strong><kbd>&quot;</kbd><kbd>1</kbd>–<kbd>&quot;</kbd><kbd>9</kbd></strong> — a sliding window of the last nine <strong>deletes</strong> (and changes), not yanks. On each new delete:</p>
+<ul>
+<li>Old <kbd>&quot;</kbd><kbd>9</kbd> falls off.</li>
+<li><kbd>&quot;</kbd><kbd>8</kbd> → <kbd>&quot;</kbd><kbd>9</kbd>.</li>
+<li><kbd>&quot;</kbd><kbd>7</kbd> → <kbd>&quot;</kbd><kbd>8</kbd>. … <kbd>&quot;</kbd><kbd>1</kbd> → <kbd>&quot;</kbd><kbd>2</kbd>. New delete → <kbd>&quot;</kbd><kbd>1</kbd>.</li>
+</ul>
+<p>Exception: small charwise deletes (less than a line, no newline) go into <kbd>&quot;</kbd><kbd>-</kbd>, the small-delete register, and <em>don&#x27;t</em> shift the numbered registers. So <kbd>x</kbd> doesn&#x27;t bump anything off — only multi-character or line deletes do.</p>
+<p>With both rules in mind, the entire register layout becomes navigable: you can paste the most recent yank, the most recent delete, or the delete before that — all by name.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — The .  Trick (Numbered Register + Dot)</header>
+<p>Combine numbered registers with the dot command and you get a power move:</p>
+<p>1. Delete a line with <kbd>d</kbd><kbd>d</kbd>. It goes to <kbd>&quot;</kbd><kbd>1</kbd>.
+  2. Move somewhere else.
+  3. <kbd>&quot;</kbd><kbd>1</kbd><kbd>p</kbd> pastes the deleted line.
+  4. <kbd>.</kbd> repeats — but here&#x27;s the surprise: <kbd>.</kbd> <em>increments</em> the numbered-register reference. So the next <kbd>.</kbd> pastes from <kbd>&quot;</kbd><kbd>2</kbd>, then <kbd>&quot;</kbd><kbd>3</kbd>, etc.</p>
+<p>This lets you walk back through your delete history one paste at a time. See <a href="#recipes.numbered-paste" class="broken">`recipes.numbered-paste`</a>.</p>
+</aside>
+<section class="example">
+<h3 class="example-title">Worked example — &quot;1p and &quot;2p</h3>
+<p class="example-summary">Walk back through deletion history.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/registers.numbered/frame_01.color.svg" alt="registers.numbered"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>dd</kbd> · <span class="step-cap">dd — A goes to &quot;1.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/registers.numbered/frame_02.color.svg" alt="dd — A goes to &quot;1."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>dd</kbd> · <span class="step-cap">dd — B goes to &quot;1, A pushed to &quot;2.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/registers.numbered/frame_03.color.svg" alt="dd — B goes to &quot;1, A pushed to &quot;2."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>&quot;1p</kbd> · <span class="step-cap">&quot;1p — most recent (B) back.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/registers.numbered/frame_04.color.svg" alt="&quot;1p — most recent (B) back."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 5</span> · <kbd>&quot;3p</kbd> · <span class="step-cap">&quot;2p — older one (A) back.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/registers.numbered/frame_05.color.svg" alt="&quot;2p — older one (A) back."></div>
+<p class="narration">&quot;1-&quot;9 hold the last 9 line-deletes. They shift each time you delete.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=A%0AB%0AC%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="04-numbered.html">Numbered Registers</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-registers-overview.html">Registers</a>, <a href="02-unnamed.html">The Unnamed Register</a>, <a href="05-small-delete.html">The Small Delete Register</a>, <span class="broken">recipes.numbered-paste</span></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-named.html" rel="prev">← Named Registers</a></span>
+  <span class="pager-pos">58 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-small-delete.html" rel="next">The Small Delete Register →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

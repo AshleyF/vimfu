@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Visual + Ex Range — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Visual Depth</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="04-ops.html" rel="prev">← Operators on Visual Selections</a></span>
+  <span class="pager-pos">96 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="06-gv.html" rel="next">gv — Re-Select →</a></span>
+</nav>
+<article>
+<h1>Visual + Ex Range</h1>
+<p class="subtitle">Pressing : from Visual auto-fills the range.</p>
+<p class="meta"><code>id: visual.range</code> &middot; part: <strong>visual-depth</strong> &middot; keys: <kbd>:</kbd> &middot; lessons: 443, 443</p>
+<blockquote class="summary">When you press : while in Visual mode, Vim drops you to the command line with <code>:&#x27;&lt;,&#x27;&gt;</code> already typed — the range covering the selection. Just type your command after.</blockquote>
+<p>Visual mode and Ex commands plug right into each other. Press <kbd>:</kbd> from any Visual selection and Vim pre-types the range.</p>
+<figure class="keys">
+<figcaption>From Visual to substitute</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>V</kbd></td><td>Line Visual</td></tr>
+<tr><td><kbd>5j</kbd></td><td>Extend down 5 lines</td></tr>
+<tr><td><kbd>:</kbd></td><td>Vim shows <code>:&#x27;&lt;,&#x27;&gt;</code></td></tr>
+<tr><td><kbd>s/foo/bar/g</kbd></td><td>Operate on those lines only</td></tr>
+</tbody></table></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — What &#x27;&lt; and &#x27;&gt; Are</header>
+<p><kbd>&#x27;</kbd><kbd>&lt;</kbd> and <kbd>&#x27;</kbd><kbd>&gt;</kbd> are <em>special marks</em> — they always point at the <strong>first</strong> and <strong>last</strong> line of the <strong>most recent visual selection</strong>. They persist until you make another selection.</p>
+<p>This means:</p>
+<ul>
+<li>Even after exiting Visual, you can do <code>:&#x27;&lt;,&#x27;&gt;s/foo/bar/g</code> from Normal mode and operate on the last selection.</li>
+<li>You can move elsewhere, do other work, then come back with <kbd>g</kbd><kbd>v</kbd> or use <code>&#x27;&lt;</code> and <code>&#x27;&gt;</code> as marks in motions (<kbd>`</kbd><kbd>&lt;</kbd>, <kbd>`</kbd><kbd>&gt;</kbd>).</li>
+</ul>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Block Visual + <kbd>:</kbd> also gets <code>:&#x27;&lt;,&#x27;&gt;</code> — but most Ex commands are line-oriented and don&#x27;t honor the column boundaries.</aside>
+<aside class="qr"><span>→ See also <a href="05-range.html">Visual + Ex Range</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0443 Block Insert (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0443 Block Insert (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../17-ex-commands/03-ranges.html">Ex Ranges</a>, <a href="../17-ex-commands/02-substitute.html">Substitute (:s)</a>, <a href="../10-marks-jumps/02-special.html">Special Marks</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="04-ops.html" rel="prev">← Operators on Visual Selections</a></span>
+  <span class="pager-pos">96 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="06-gv.html" rel="next">gv — Re-Select →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

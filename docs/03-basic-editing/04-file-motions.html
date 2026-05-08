@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>File Motions — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Basic Editing</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=line+1%0Aline+2%0Aline+3%0Aline+4%0Aline+5%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-line-motions.html" rel="prev">← Line Motions</a></span>
+  <span class="pager-pos">13 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-delete.html" rel="next">Delete →</a></span>
+</nav>
+<article>
+<h1>File Motions</h1>
+<p class="subtitle">gg, G, {n}G — jump anywhere in the file.</p>
+<p class="meta"><code>id: editing.file-motions</code> &middot; part: <strong>editing</strong> &middot; keys: <kbd>gg</kbd>, <kbd>G</kbd>, <kbd>{n}G</kbd>, <kbd>:{n}</kbd> &middot; lessons: 28, 29, 30</p>
+<blockquote class="summary">gg goes to line 1. G goes to the last line. {n}G or :{n} goes to line n.</blockquote>
+<p>Three jumps cover most navigation across a file: top, bottom, and a specific line number.</p>
+<figure class="keys">
+<figcaption>Go to first line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>g</kbd></td><td></td></tr>
+<tr><td><kbd>g</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Go to last line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>G</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Go to line {n}</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>{n}</kbd></td><td></td></tr>
+<tr><td><kbd>G</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Go to line {n} (Ex form)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>:</kbd></td><td></td></tr>
+<tr><td><kbd>{n}</kbd></td><td></td></tr>
+<tr><td><kbd>Enter</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="28"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/7JIvpNZOO3M?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Go to Top of File" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>gg — top of file</figcaption></figure>
+<figure class="lesson-embed" data-lesson="29"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/SWwtzov0TjM?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Go to Bottom of File" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>G — bottom of file</figcaption></figure>
+<figure class="lesson-embed" data-lesson="30"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/ZNTuTVyzt5k?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Go to Line N" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>{n}G — go to line n</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> <kbd>5</kbd><kbd>0</kbd><kbd>G</kbd> goes to line 50. So does <kbd>:</kbd><kbd>5</kbd><kbd>0</kbd><kbd>Enter</kbd>. Pick whichever your fingers reach faster.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — These Are All &quot;Big&quot; Jumps</header>
+<p>Vim distinguishes <em>small</em> movements (<kbd>h</kbd>, <kbd>j</kbd>, <kbd>w</kbd>) from <em>big</em> jumps (<kbd>gg</kbd>, <kbd>G</kbd>, search, <kbd>%</kbd>, mark-jumps, <kbd>`</kbd>). Big jumps push the <em>previous</em> cursor position onto the <strong>jump list</strong> before moving.</p>
+<p>That means after <kbd>G</kbd>-then-edit-then-<kbd>gg</kbd>, you can press <kbd>Ctrl-O</kbd> to jump <em>back</em> to where you came from. Try it — it changes how you navigate.</p>
+<p>Deep dive: <a href="../10-marks-jumps/04-jumplist.html">`marks.jumplist`</a>.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>g</kbd><kbd>g</kbd> and <kbd>G</kbd> are also operands. <kbd>d</kbd><kbd>G</kbd> deletes from here to end of file (linewise). <kbd>y</kbd><kbd>g</kbd><kbd>g</kbd> yanks from here to top. <kbd>=</kbd><kbd>g</kbd><kbd>g</kbd> re-indents from cursor to top. Consistency, again.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>g</kbd><kbd>g</kbd></td>
+<td>First line</td>
+</tr>
+<tr>
+<td><kbd>G</kbd></td>
+<td>Last line</td>
+</tr>
+<tr>
+<td><kbd>{n</kbd>}<kbd>G</kbd></td>
+<td>Line {n}</td>
+</tr>
+<tr>
+<td><kbd>{n</kbd>}<kbd>g</kbd><kbd>g</kbd></td>
+<td>Line {n} (alternate)</td>
+</tr>
+<tr>
+<td><kbd>:</kbd><kbd>{n</kbd>}<kbd>Enter</kbd></td>
+<td>Line {n} via Ex</td>
+</tr>
+<tr>
+<td><kbd>{p</kbd>}<kbd>%</kbd></td>
+<td>Line at {p} percent of file</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — gg G</h3>
+<p class="example-summary">Top and bottom of file.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Middle of file.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.file-motions/frame_01.color.svg" alt="Middle of file."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>gg</kbd> · <span class="step-cap">gg — top.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.file-motions/frame_02.color.svg" alt="gg — top."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>G</kbd> · <span class="step-cap">G — bottom.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/editing.file-motions/frame_03.color.svg" alt="G — bottom."></div>
+<p class="narration">With a count: 3G or :3&lt;CR&gt; jumps to line 3.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=line+1%0Aline+2%0Aline+3%0Aline+4%0Aline+5%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="qr"><span>→ See also <a href="04-file-motions.html">File Motions</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../10-marks-jumps/04-jumplist.html">The Jump List</a>, <a href="../17-ex-commands/03-ranges.html">Ex Ranges</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-line-motions.html" rel="prev">← Line Motions</a></span>
+  <span class="pager-pos">13 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="05-delete.html" rel="next">Delete →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

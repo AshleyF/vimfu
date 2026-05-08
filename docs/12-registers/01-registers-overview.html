@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Registers — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Registers</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../11-transform/04-join.html" rel="prev">← Joining Lines</a></span>
+  <span class="pager-pos">55 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-unnamed.html" rel="next">The Unnamed Register →</a></span>
+</nav>
+<article>
+<h1>Registers</h1>
+<p class="subtitle">A dictionary of named clipboards built from one primitive</p>
+<p class="meta"><code>id: registers.overview</code> &middot; part: <strong>registers</strong> &middot; keys: <kbd>&quot;a</kbd>, <kbd>&quot;A</kbd>, <kbd>&quot;0</kbd>, <kbd>&quot;-</kbd>, <kbd>&quot;+</kbd>, <kbd>&quot;*</kbd>, <kbd>&quot;/</kbd>, <kbd>&quot;:</kbd>, <kbd>&quot;.</kbd>, <kbd>&quot;%</kbd>, <kbd>&quot;#</kbd>, <kbd>&quot;=</kbd>, <kbd>&quot;_</kbd>, <kbd>p</kbd>, <kbd>P</kbd>, <kbd>y</kbd>, <kbd>d</kbd> &middot; lessons: 119, 121, 125</p>
+<blockquote class="summary">A register is a named slot. Yank/delete writes; put reads. The unnamed, named, numbered, clipboard, and special registers are all the same thing — different keys.</blockquote>
+<p>Most editors have one clipboard. Vim has <em>fifty-something</em> — and they&#x27;re all the same thing. Once you see the model, every command that touches yanked or deleted text becomes obvious. This is the single most leveraged piece of Vim&#x27;s design to understand.</p>
+<h3>The model</h3>
+<p>A <strong>register</strong> is a named slot. Each register holds a piece of text plus a <em>type</em> (charwise, linewise, or blockwise). Vim has a fixed set of registers, identified by a single character — a–z, plus numbers, plus a handful of special punctuation. To address one, type <kbd>&quot;</kbd> followed by the register name.</p>
+<figure class="keys">
+<figcaption>Yank this line into register a</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>&quot;</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+<tr><td><kbd>y</kbd></td><td></td></tr>
+<tr><td><kbd>y</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Put register a after the cursor</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>&quot;</kbd></td><td></td></tr>
+<tr><td><kbd>a</kbd></td><td></td></tr>
+<tr><td><kbd>p</kbd></td><td></td></tr>
+</tbody></table></figure>
+<p>That&#x27;s it. <kbd>&quot;</kbd><kbd>a</kbd> <em>selects</em> register <code>a</code> for the next operation. <kbd>y</kbd><kbd>y</kbd> writes a line into it. <kbd>p</kbd> reads from the most recently selected register and inserts. The whole register interface is built from those three pieces: select, write, read.</p>
+<aside class="tip"><strong>Tip.</strong> If you don&#x27;t say <kbd>&quot;</kbd><kbd>a</kbd>, Vim picks for you — the <em>unnamed</em> register <kbd>&quot;</kbd><kbd>&quot;</kbd>, which is the default destination of every yank and delete. So plain <kbd>y</kbd><kbd>y</kbd> <kbd>p</kbd> works because both ops use the unnamed register implicitly.</aside>
+<h3>Looking inside</h3>
+<p>Run <kbd>:</kbd><kbd>r</kbd><kbd>e</kbd><kbd>g</kbd> to see every register&#x27;s contents. This is one of the most useful debugging commands in Vim — most &quot;why did that paste do <em>that</em>&quot; mysteries get solved by reading <kbd>:</kbd><kbd>reg</kbd>.</p>
+<figure class="lesson-embed" data-lesson="125"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/BUZ0j7Nmy7U?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="View Registers" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Inspecting registers with :reg</figcaption></figure>
+<hr>
+<h3>The full set</h3>
+<table>
+<thead><tr>
+<th>Register</th>
+<th>Name</th>
+<th>Written by</th>
+<th>Notes</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>&quot;</kbd><kbd>&quot;</kbd></td>
+<td>Unnamed</td>
+<td>Every yank, delete, change</td>
+<td>The implicit default for <kbd>y</kbd>, <kbd>d</kbd>, <kbd>c</kbd>, <kbd>p</kbd></td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>a</kbd>–<kbd>&quot;</kbd><kbd>z</kbd></td>
+<td>Named (lowercase)</td>
+<td>Explicit selection only</td>
+<td>Yours to use; never overwritten implicitly</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>A</kbd>–<kbd>&quot;</kbd><kbd>Z</kbd></td>
+<td>Named (append)</td>
+<td>Explicit selection (uppercase)</td>
+<td>Appends to the lowercase counterpart</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>0</kbd></td>
+<td>Last yank</td>
+<td>Yank only — never delete</td>
+<td>Survives between deletes</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>1</kbd>–<kbd>&quot;</kbd><kbd>9</kbd></td>
+<td>Numbered (deletes)</td>
+<td>Each multi-line delete shifts entries down</td>
+<td><kbd>&quot;</kbd><kbd>1</kbd> = most recent delete</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>-</kbd></td>
+<td>Small delete</td>
+<td>Sub-line deletes that don&#x27;t specify a register</td>
+<td><kbd>x</kbd>, <kbd>dw</kbd>, <kbd>di&quot;</kbd></td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>+</kbd></td>
+<td>System clipboard</td>
+<td>Yank/delete with explicit selection</td>
+<td>Cross-application paste</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>*</kbd></td>
+<td>Selection clipboard</td>
+<td>Same; X11 primary selection</td>
+<td>On macOS/Windows, often aliased to <kbd>&quot;</kbd><kbd>+</kbd></td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>/</kbd></td>
+<td>Last search</td>
+<td>Every search (<kbd>/</kbd>, <kbd>?</kbd>, <kbd>*</kbd>, <kbd>#</kbd>)</td>
+<td>Read-only effect from searches; writable</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>:</kbd></td>
+<td>Last Ex command</td>
+<td>Every <kbd>:</kbd>-command</td>
+<td><kbd>@</kbd><kbd>:</kbd> re-runs it</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>.</kbd></td>
+<td>Last inserted text</td>
+<td>Each Insert-mode session</td>
+<td>Read-only; useful in mappings</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>%</kbd></td>
+<td>Current filename</td>
+<td>Vim</td>
+<td>Read-only</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>#</kbd></td>
+<td>Alternate filename</td>
+<td>Vim</td>
+<td>Read-only; the previously-edited file</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>=</kbd></td>
+<td>Expression</td>
+<td>When you read it</td>
+<td>Prompts for a Vimscript expression</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>_</kbd></td>
+<td>Black hole</td>
+<td>Throws writes away; reads as empty</td>
+<td>Use to delete <em>without</em> polluting other registers</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — Registers Are a Dictionary</header>
+<p>Internally, registers are a single key→(text, type) dictionary. The lowercase letters give you 26 slots you control. The uppercase forms aren&#x27;t extra slots — they&#x27;re <em>append</em> aliases for the same lowercase slot (<kbd>&quot;</kbd><kbd>A</kbd> writes to register <code>a</code> in append mode). The numbered registers shift on each delete: when a new big delete arrives, it becomes <code>1</code>, the old <code>1</code> becomes <code>2</code>, and so on, dropping <code>9</code>. The yank register <code>0</code> is special — it only updates on yank, not delete, which is why <code>&quot;0p</code> reliably gives you the last <em>thing you yanked</em> even after a few deletes have moved through.</p>
+<p>Special registers like <kbd>&quot;</kbd><kbd>/</kbd>, <kbd>&quot;</kbd><kbd>:</kbd>, <kbd>&quot;</kbd><kbd>.</kbd>, <kbd>&quot;</kbd><kbd>%</kbd>, <kbd>&quot;</kbd><kbd>#</kbd> are read by Vim itself for searches, the last command, the last insert, the filenames. They are <em>the same data structure</em> as the clipboard — Vim just exposes its internal state through the register namespace.</p>
+<p>The black-hole register <kbd>&quot;</kbd><kbd>_</kbd> is a convenient null sink: writes go nowhere. This is the canonical way to delete without disturbing the unnamed register, e.g. <code>&quot;_dd</code> to delete a line without overwriting your last yank.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — The Type Field</header>
+<p>Every register stores not just text but a <em>type</em>: <code>char</code> (charwise), <code>line</code> (linewise), or <code>block</code> (blockwise). The type is set by the operation that wrote the register: <kbd>y</kbd><kbd>y</kbd> writes linewise; <kbd>y</kbd><kbd>w</kbd> writes charwise; <kbd>Ctrl-V</kbd>-then-<kbd>y</kbd> writes blockwise.</p>
+<p>The type changes how <kbd>p</kbd> behaves. A linewise put inserts the text on its own line(s), below the current line. A charwise put inserts inline, after the cursor. A blockwise put inserts a rectangular block to the right of the cursor. So the same key, <kbd>p</kbd>, dispatches on the type of the current register.</p>
+<p>This is why it matters that <kbd>x</kbd> (a charwise delete) overwrites the unnamed register&#x27;s type. If your last yank was <kbd>y</kbd><kbd>y</kbd> (linewise), then a single <kbd>x</kbd> flips the unnamed register to charwise containing one character, and your next <kbd>p</kbd> pastes one character inline rather than a whole line. The fix: yank the line into a named register (<code>&quot;ayy</code>) before you start deleting.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Macros Are Just Register Contents</header>
+<p>Recording a macro into register <code>a</code> writes the keystrokes — as text — into register <code>a</code>. Playing it back reads the text and feeds it to the input buffer.</p>
+<p>This means you can:</p>
+<ul>
+<li>Paste a macro: <code>&quot;ap</code> shows the keystrokes as plain text on the page.</li>
+<li>Edit a macro by hand: paste, edit, then yank back into the register: <code>&quot;ap</code>, edit the line, <code>0&quot;ay$</code> to put the modified text into register <code>a</code>.</li>
+<li>Build a macro from text: type the keystrokes you want, yank them into a register, then <code>@</code> plays them.</li>
+<li>Save a macro to your config: <code>let @a = &#x27;iHello\&lt;Esc&gt;&#x27;</code>. Same data structure as a yanked register — just initialized from Vimscript.</li>
+</ul>
+<p>The dual nature of register-as-text and register-as-keystrokes is one of Vim&#x27;s most elegant design decisions. A clipboard, a search history, a macro store, and a filename cache — all the same primitive.</p>
+</aside>
+<hr>
+<h3>Common patterns</h3>
+<table>
+<thead><tr>
+<th>Pattern</th>
+<th>Why it works</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>&quot;</kbd><kbd>0</kbd><kbd>p</kbd></td>
+<td>Paste the last <em>yank</em>, ignoring intervening deletes.</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>_</kbd><kbd>d</kbd><kbd>d</kbd></td>
+<td>Delete a line without overwriting the unnamed register.</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>+</kbd><kbd>y</kbd><kbd>i</kbd><kbd>w</kbd></td>
+<td>Yank a word to the system clipboard.</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>A</kbd><kbd>y</kbd><kbd>y</kbd></td>
+<td>Append this line to register <code>a</code> (collect lines).</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>1</kbd><kbd>p</kbd><kbd>.</kbd><kbd>.</kbd></td>
+<td>Paste deletes 1, 2, 3 in order — by repeating <kbd>.</kbd>, the numbered register paste increments.</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd><kbd>/</kbd><kbd>p</kbd></td>
+<td>Insert the last search pattern as text.</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>0</kbd></td>
+<td>(Insert mode) paste the last yank into the buffer you&#x27;re typing in.</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd><kbd>=</kbd><kbd>1</kbd><kbd>+</kbd><kbd>1</kbd><kbd>Enter</kbd></td>
+<td>(Insert mode) compute and insert. Expression register live.</td>
+</tr>
+</tbody></table>
+<h3>When to use which</h3>
+<p><strong>Default</strong>: just don&#x27;t say a register. Yank, delete, and paste with the unnamed register. Most edits are too short-lived to bother.</p>
+<p><strong>Holding a clip across deletes</strong>: yank into a named register (<kbd>&quot;</kbd><kbd>a</kbd><kbd>y</kbd>) so your subsequent deletes don&#x27;t clobber it.</p>
+<p><strong>System clipboard</strong>: prefix with <kbd>&quot;</kbd><kbd>+</kbd> to bridge to and from other apps.</p>
+<p><strong>Throwaway delete</strong>: prefix with <kbd>&quot;</kbd><kbd>_</kbd> when you&#x27;re deleting junk you don&#x27;t want to paste later.</p>
+<p><strong>Recovering a recent delete</strong>: <kbd>&quot;</kbd><kbd>1</kbd><kbd>p</kbd> pastes the most recent line-delete; press <kbd>.</kbd> repeatedly to walk back through <kbd>&quot;</kbd><kbd>1</kbd>, <kbd>&quot;</kbd><kbd>2</kbd>, <kbd>&quot;</kbd><kbd>3</kbd>, …</p>
+<aside class="tip"><strong>Tip.</strong> If you find yourself wanting &quot;more clipboards,&quot; you already have 26. The hard part isn&#x27;t capacity — it&#x27;s remembering what&#x27;s in <kbd>&quot;</kbd><kbd>a</kbd> versus <kbd>&quot;</kbd><kbd>b</kbd>. <kbd>:</kbd><kbd>reg</kbd> is your friend.</aside>
+<figure class="lesson-embed" data-lesson="119"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/aMd89ZtGl6Y?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Named Registers" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Yank into a named register</figcaption></figure>
+<figure class="lesson-embed" data-lesson="121"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/9GZR5b0Jt80?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The Unnamed Register" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Append with uppercase registers</figcaption></figure>
+<aside class="qr"><span>→ See also <a href="01-registers-overview.html">Registers</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="02-unnamed.html">The Unnamed Register</a>, <a href="03-named.html">Named Registers</a>, <a href="04-numbered.html">Numbered Registers</a>, <a href="07-special.html">Special Registers</a>, <a href="08-macros-as-text.html">Macros Are Just Register Contents</a>, <a href="../03-basic-editing/07-yank-put.html">Yank and Put</a>, <a href="../13-macros/01-record-play.html">Recording and Playing Macros</a>, <a href="../21-advanced/02-special-registers.html">Special Registers Deep Dive</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../11-transform/04-join.html" rel="prev">← Joining Lines</a></span>
+  <span class="pager-pos">55 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-unnamed.html" rel="next">The Unnamed Register →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

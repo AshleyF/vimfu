@@ -78,11 +78,15 @@ def expand(compact: dict) -> dict:
             for c in range(cols):
                 cells[r][c] = (default_bg, default_fg, "")
 
-    # Apply highlights
+    # Apply highlights (silently skip any that fall outside the frame, so a
+    # single off-by-one in a hand-authored compact frame doesn't kill the
+    # whole render run).
     for h in highlights:
         r = h["row"]
         c0 = h["col"]
         n = h.get("len", 1)
+        if r < 0 or r >= rows:
+            continue
         fg = h.get("fg")
         bg = h.get("bg")
         flags = ""
@@ -90,7 +94,7 @@ def expand(compact: dict) -> dict:
         if h.get("i"): flags += "i"
         if h.get("u"): flags += "u"
         if h.get("s"): flags += "s"
-        for c in range(c0, min(c0 + n, cols)):
+        for c in range(max(0, c0), min(c0 + n, cols)):
             old_fg, old_bg, old_flags = cells[r][c]
             new_fg = fg if fg else old_fg
             new_bg = bg if bg else old_bg

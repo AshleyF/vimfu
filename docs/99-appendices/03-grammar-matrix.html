@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Grammar Matrix — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Appendices</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-synonyms.html" rel="prev">← Synonyms and Shortcuts</a></span>
+  <span class="pager-pos">127 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-learning-path.html" rel="next">A Suggested Learning Path →</a></span>
+</nav>
+<article>
+<h1>The Grammar Matrix</h1>
+<p class="subtitle">Every operator × every text object = the table that makes Vim click.</p>
+<p class="meta"><code>id: appendix.grammar-matrix</code> &middot; part: <strong>appendices</strong></p>
+<blockquote class="summary">A reference matrix showing operators (rows) × text objects/motions (columns). Use it to think &#x27;operator first, motion second&#x27; instead of memorizing combinations.</blockquote>
+<p>Vim&#x27;s productivity comes from a tiny <em>grammar</em>: pick an <strong>operator</strong>, then pick a <strong>text object</strong> or <strong>motion</strong>. The two combine into N×M commands without you having to memorize each one.</p>
+<h3>Operators (the verbs)</h3>
+<table>
+<thead><tr>
+<th>Op</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>d</kbd></td>
+<td>Delete (cut to register)</td>
+</tr>
+<tr>
+<td><kbd>c</kbd></td>
+<td>Change (delete + Insert)</td>
+</tr>
+<tr>
+<td><kbd>y</kbd></td>
+<td>Yank (copy to register)</td>
+</tr>
+<tr>
+<td><kbd>&gt;</kbd>, <kbd>&lt;</kbd></td>
+<td>Indent / outdent</td>
+</tr>
+<tr>
+<td><kbd>=</kbd></td>
+<td>Reindent (per <code>&#x27;indentexpr&#x27;</code>)</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>U</kbd>, <kbd>g</kbd><kbd>u</kbd>, <kbd>g</kbd><kbd>~</kbd></td>
+<td>Upper / lower / toggle case</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>q</kbd></td>
+<td>Reformat (line-wrap)</td>
+</tr>
+<tr>
+<td><kbd>!</kbd></td>
+<td>Filter through shell command</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>?</kbd></td>
+<td>ROT13</td>
+</tr>
+</tbody></table>
+<h3>Text objects (the nouns)</h3>
+<table>
+<thead><tr>
+<th>Object</th>
+<th>Selects</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>i</kbd><kbd>w</kbd> / <kbd>a</kbd><kbd>w</kbd></td>
+<td>Inner / a word</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>W</kbd> / <kbd>a</kbd><kbd>W</kbd></td>
+<td>Inner / a WORD</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>s</kbd> / <kbd>a</kbd><kbd>s</kbd></td>
+<td>Inner / a sentence</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>p</kbd> / <kbd>a</kbd><kbd>p</kbd></td>
+<td>Inner / a paragraph</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>t</kbd> / <kbd>a</kbd><kbd>t</kbd></td>
+<td>Inner / a tag (HTML/XML)</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>&quot;</kbd> / <kbd>a</kbd><kbd>&quot;</kbd></td>
+<td>Inner / a double-quoted string</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>&#x27;</kbd> / <kbd>a</kbd><kbd>&#x27;</kbd></td>
+<td>Inner / a single-quoted string</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>`</kbd> / <kbd>a</kbd><kbd>`</kbd></td>
+<td>Inner / a backtick string</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>(</kbd> / <kbd>a</kbd><kbd>(</kbd></td>
+<td>Inner / a parenthesized region (also <kbd>i</kbd><kbd>b</kbd>)</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>[</kbd> / <kbd>a</kbd><kbd>[</kbd></td>
+<td>Inner / a bracketed region</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>{</kbd> / <kbd>a</kbd><kbd>{</kbd></td>
+<td>Inner / a brace block (also <kbd>i</kbd><kbd>B</kbd>)</td>
+</tr>
+<tr>
+<td><kbd>i</kbd><kbd>&lt;</kbd> / <kbd>a</kbd><kbd>&lt;</kbd></td>
+<td>Inner / an angle-bracket region</td>
+</tr>
+</tbody></table>
+<h3>Motions (also act as ranges)</h3>
+<table>
+<thead><tr>
+<th>Motion</th>
+<th>Range</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>w</kbd>, <kbd>b</kbd>, <kbd>e</kbd></td>
+<td>Next/prev word boundary</td>
+</tr>
+<tr>
+<td><kbd>0</kbd>, <kbd>^</kbd>, <kbd>$</kbd></td>
+<td>Line endpoints</td>
+</tr>
+<tr>
+<td><kbd>f</kbd>{c}, <kbd>t</kbd>{c}</td>
+<td>To/till char on line</td>
+</tr>
+<tr>
+<td><kbd>%</kbd></td>
+<td>Match bracket</td>
+</tr>
+<tr>
+<td><kbd>G</kbd>, <kbd>g</kbd><kbd>g</kbd></td>
+<td>Last / first line</td>
+</tr>
+<tr>
+<td><kbd>n</kbd><kbd>G</kbd></td>
+<td>Line n</td>
+</tr>
+<tr>
+<td><kbd>H</kbd>, <kbd>M</kbd>, <kbd>L</kbd></td>
+<td>Top/middle/bottom of viewport</td>
+</tr>
+<tr>
+<td><kbd>/pat</kbd>, <kbd>?pat</kbd></td>
+<td>Search forward/back</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>n</kbd></td>
+<td>Next search match (text-object-like)</td>
+</tr>
+<tr>
+<td><kbd>`</kbd>{m}</td>
+<td>To mark m</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — How to Read the Matrix</header>
+<p>Think <em>operator → object/motion</em>. <kbd>d</kbd><kbd>i</kbd><kbd>p</kbd> is read &quot;delete inner paragraph,&quot; <kbd>y</kbd><kbd>a</kbd><kbd>t</kbd> is &quot;yank a tag,&quot; <kbd>c</kbd><kbd>f</kbd><kbd>;</kbd> is &quot;change up to and including the next semicolon.&quot;</p>
+<p>The combinations are <em>generated</em>, not memorized. Once you&#x27;ve internalized 8 operators × 12 text objects × 20 motions, you have hundreds of expressive commands available.</p>
+</aside>
+<aside class="qr"><span>→ See also <a href="03-grammar-matrix.html">The Grammar Matrix</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../07-operators-textobjects/06-grammar.html">The Vim Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-synonyms.html" rel="prev">← Synonyms and Shortcuts</a></span>
+  <span class="pager-pos">127 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="04-learning-path.html" rel="next">A Suggested Learning Path →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

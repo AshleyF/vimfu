@@ -104,6 +104,7 @@
         ["@",   "Run macro from register"],
         [":",   "Enter Ex command line"],
         ["!",   "Filter operator"],
+        ["|",   "Go to column [count]"],
         ["{, }",  "Previous / next paragraph"],
         ["(, )",  "Previous / next sentence"],
         ["[, ]",  "Backward / forward bracket prefixes"],
@@ -115,6 +116,46 @@
       ]
     },
 
+    { "type": "heading", "level": 2, "text": "Digits" },
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["1-9", "Count prefix (repeat the next command N times)"],
+        ["0",   "When no count is pending: start of line; otherwise: count digit"]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "Special keys" },
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:Esc}",       "Return to Normal mode / cancel pending command"],
+        ["{key:Enter}",     "Down to first non-blank (= +)"],
+        ["{key:Space}",     "Right (wraps lines)"],
+        ["{key:Backspace}", "Left (wraps lines, = h with wrap)"],
+        ["{key:Tab}",       "Jump forward in jumplist (= Ctrl-I)"],
+        ["{key:Insert}",    "Toggle Insert / Replace mode"],
+        ["{key:Delete}",    "Delete char under cursor (= x)"],
+        ["{key:Home}",      "Start of line (= 0)"],
+        ["{key:End}",       "End of line (= $)"],
+        ["{key:PageUp}",    "Page back (= Ctrl-B)"],
+        ["{key:PageDown}",  "Page forward (= Ctrl-F)"],
+        ["{key:Up}/{key:Down}/{key:Left}/{key:Right}", "Cursor motion (prefer h/j/k/l)"]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "Function keys" },
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:F1}",        "Open help (= :help)"],
+        ["{key:F2}-{key:F12}", "Unmapped by default; commonly used by plugins and user mappings"]
+      ]
+    },
+
     { "type": "heading", "level": 2, "text": "Control combinations (most-used)" },
     {
       "type": "table",
@@ -122,20 +163,31 @@
       "rows": [
         ["{key:Ctrl-A}",             "Increment number"],
         ["{key:Ctrl-B}",             "Page back"],
+        ["{key:Ctrl-C}",             "Cancel / interrupt (Normal mode: like Esc)"],
         ["{key:Ctrl-D}",             "Half-page down"],
         ["{key:Ctrl-E}",             "Scroll line down"],
         ["{key:Ctrl-F}",             "Page forward"],
-        ["{key:Ctrl-G}",             "Show position"],
-        ["{key:Ctrl-I}",             "Jump forward (= Tab)"],
-        ["{key:Ctrl-O}",             "Jump back (or Insert one-shot Normal)"],
+        ["{key:Ctrl-G}",             "Show position (file/line info)"],
+        ["{key:Ctrl-H}",             "Left (= h, = Backspace)"],
+        ["{key:Ctrl-I}",             "Jump forward in jumplist (= Tab)"],
+        ["{key:Ctrl-J}",             "Down (= j, rarely used)"],
+        ["{key:Ctrl-L}",             "Redraw screen"],
+        ["{key:Ctrl-M}",             "Down to first non-blank (= Enter)"],
+        ["{key:Ctrl-N}",             "Down (= j) / completion next in Insert"],
+        ["{key:Ctrl-O}",             "Jump back in jumplist (or Insert one-shot Normal)"],
+        ["{key:Ctrl-P}",             "Up (= k) / completion previous in Insert"],
+        ["{key:Ctrl-Q}",             "Block visual on terminals where Ctrl-V is paste"],
         ["{key:Ctrl-R}",             "Redo (or paste-register in Insert/cmdline)"],
+        ["{key:Ctrl-T}",             "Pop tag stack"],
         ["{key:Ctrl-U}",             "Half-page up"],
         ["{key:Ctrl-V}",             "Block visual"],
         ["{key:Ctrl-W}",             "Window prefix"],
         ["{key:Ctrl-X}",             "Decrement number"],
         ["{key:Ctrl-Y}",             "Scroll line up"],
-        ["{key:Ctrl-]}",             "Jump to tag"],
-        ["{key:Ctrl-^}",             "Switch to alternate file"]
+        ["{key:Ctrl-Z}",             "Suspend Vim (resume with `fg`)"],
+        ["{key:Ctrl-]}",             "Jump to tag under cursor"],
+        ["{key:Ctrl-^}",             "Switch to alternate file"],
+        ["{key:Ctrl-\\\\}",            "Reserved prefix (e.g. Ctrl-\\\\ Ctrl-N to force Normal)"]
       ]
     },
 

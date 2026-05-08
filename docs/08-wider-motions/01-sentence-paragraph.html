@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sentence and Paragraph Motions — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Wider Motions</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../07-operators-textobjects/06-grammar.html" rel="prev">← The Vim Grammar</a></span>
+  <span class="pager-pos">35 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-match-bracket.html" rel="next">Match Bracket →</a></span>
+</nav>
+<article>
+<h1>Sentence and Paragraph Motions</h1>
+<p class="subtitle">( ) — sentences. { } — paragraphs.</p>
+<p class="meta"><code>id: wider-motions.sentence-paragraph</code> &middot; part: <strong>wider-motions</strong> &middot; keys: <kbd>(</kbd>, <kbd>)</kbd>, <kbd>{</kbd>, <kbd>}</kbd> &middot; lessons: 91, 92</p>
+<blockquote class="summary">( and ) jump to the previous and next sentence. { and } jump by paragraph (blank-line separated).</blockquote>
+<p>When you&#x27;re navigating prose, words and lines are too small. Vim offers two larger units: sentences (delimited by <code>.</code>/<code>!</code>/<code>?</code>) and paragraphs (delimited by blank lines).</p>
+<figure class="keys">
+<figcaption>Forward to next sentence</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>)</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Back to previous sentence</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>(</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Forward to next paragraph</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>}</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Back to previous paragraph</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>{</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="91"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/cezdeYP9bYA?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Sentence Forward/Backward" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>( ) — sentence motion</figcaption></figure>
+<figure class="lesson-embed" data-lesson="92"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/g5C-QCdZn2E?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Paragraph Forward/Backward" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>{ } — paragraph motion</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> These pair with operators just like every other motion. <kbd>d</kbd>{key:}{key:}} deletes from the cursor to the next blank line. <kbd>c</kbd><kbd>)</kbd>-type-replacement-<kbd>Esc</kbd> changes the rest of the current sentence.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — What Counts as a Sentence / Paragraph</header>
+<p><strong>Sentence</strong> boundary: <code>.</code>, <code>!</code>, or <code>?</code>, optionally followed by closing brackets/quotes (<kbd>)</kbd>, <kbd>]</kbd>, <kbd>&quot;</kbd>, <kbd>&#x27;</kbd>), then whitespace or end-of-line.</p>
+<p><strong>Paragraph</strong> boundary: a blank line. The <code>&#x27;paragraphs&#x27;</code> option also lets nroff-style macros count, but that&#x27;s vintage stuff.</p>
+<p>In code, paragraph motion is <em>surprisingly</em> useful: function bodies are usually surrounded by blank lines, so {key:}{key:}} jumps function-by-function in well-formatted code. Sentence motion is less useful in code because <code>.</code> appears in method calls, but in markdown it&#x27;s perfect.</p>
+</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>)</kbd></td>
+<td>Forward to next sentence</td>
+</tr>
+<tr>
+<td><kbd>(</kbd></td>
+<td>Back to previous sentence</td>
+</tr>
+<tr>
+<td>{key:}}</td>
+<td>Forward to next paragraph (blank line)</td>
+</tr>
+<tr>
+<td><kbd>{</kbd></td>
+<td>Back to previous paragraph</td>
+</tr>
+</tbody></table>
+<aside class="qr"><span>→ See also <a href="01-sentence-paragraph.html">Sentence and Paragraph Motions</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../07-operators-textobjects/04-sentence-paragraph.html">Sentence and Paragraph</a>, <a href="02-match-bracket.html">Match Bracket</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../07-operators-textobjects/06-grammar.html" rel="prev">← The Vim Grammar</a></span>
+  <span class="pager-pos">35 / 132</span>
+  <span class="pager-next"><a class="pager-link" href="02-match-bracket.html" rel="next">Match Bracket →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>
