@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="../01-foundations/05-vi-vim-neovim.html" rel="prev">← Vi → Vim → Neovim</a></span>
-  <span class="pager-pos">6 / 132</span>
+  <span class="pager-pos">6 / 136</span>
   <span class="pager-next"><a class="pager-link" href="02-insert-and-back.html" rel="next">Insert and Back Again →</a></span>
 </nav>
 <article>
@@ -161,19 +161,23 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=greetings%0Afrom+vim%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
+<aside class="internals">
+<header>🔧 Under the Hood — Buffers carry a dirty bit</header>
+<p>Saving and quitting aren&#x27;t symmetric. The buffer carries a <code>modified</code> flag that flips on the first edit and clears on a successful write. <kbd>:q</kbd> consults that flag and refuses to exit (E37) unless you force it with <kbd>!</kbd>; <kbd>:x</kbd> is a conditional <code>write-then-quit</code> that skips the write when the flag is already clear. <kbd>Z</kbd><kbd>Z</kbd> is the same conditional path as <kbd>:x</kbd>; <kbd>Z</kbd><kbd>Q</kbd> is the unconditional discard path of <kbd>:q</kbd><kbd>!</kbd>. Internally these are four code paths, not four shortcuts.</p>
+</aside>
 <aside class="qr"><span>→ See also <a href="01-open-save-quit.html">Open, Save, Quit</a></span></aside>
 <aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="02-insert-and-back.html">Insert and Back Again</a>, <a href="03-undo-redo.html">Undo and Redo</a>, <a href="../17-ex-commands/01-file-ops.html">File Operations</a>, <a href="../14-windows-buffers-tabs/04-buffers.html">Buffers</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="../01-foundations/05-vi-vim-neovim.html" rel="prev">← Vi → Vim → Neovim</a></span>
-  <span class="pager-pos">6 / 132</span>
+  <span class="pager-pos">6 / 136</span>
   <span class="pager-next"><a class="pager-link" href="02-insert-and-back.html" rel="next">Insert and Back Again →</a></span>
 </nav>
 <nav class="bottomnav">
   <a href="index.html">← back to part</a>
   &middot; <a href="../index.html">📚 all parts</a>
 </nav>
-<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
 </body>
 </html>

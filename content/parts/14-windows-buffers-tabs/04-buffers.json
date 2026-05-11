@@ -27,7 +27,7 @@
     },
     {
       "type": "prose",
-      "text": "Every file you open in Vim becomes a *buffer* \u2014 an in-memory copy. You may have ten buffers loaded but only one window showing one of them. Navigating buffers, not windows, is how you move between files."
+      "text": "Every file you open in Vim becomes a *buffer* — an in-memory copy. You may have ten buffers loaded but only one window showing one of them. Navigating buffers, not windows, is how you move between files."
     },
     {
       "type": "keys",
@@ -90,12 +90,12 @@
     {
       "type": "internals",
       "title": "What :ls Shows You",
-      "text": "{key::}{key:l}{key:s} (alias {key::}{key:b}{key:u}{key:f}{key:f}{key:e}{key:r}{key:s}) lists every buffer Vim knows about, with flags:\n\n  \u2022 `%` \u2014 current buffer.\n  \u2022 `#` \u2014 alternate (previous) buffer.\n  \u2022 `+` \u2014 modified.\n  \u2022 `a` \u2014 active (loaded and shown in some window).\n  \u2022 `h` \u2014 hidden (loaded but not shown).\n  \u2022 `-` \u2014 modifiable off.\n  \u2022 `=` \u2014 read-only.\n\nYou can switch by buffer number ({key::}{key:b}{key: }{key:5}) or by name fragment ({key::}{key:b}{key: }{key:f}{key:o}{key:o}). Tab-complete works."
+      "text": "{key::}{key:l}{key:s} (alias {key::}{key:b}{key:u}{key:f}{key:f}{key:e}{key:r}{key:s}) lists every buffer Vim knows about, with flags:\n\n  • `%` — current buffer.\n  • `#` — alternate (previous) buffer.\n  • `+` — modified.\n  • `a` — active (loaded and shown in some window).\n  • `h` — hidden (loaded but not shown).\n  • `-` — modifiable off.\n  • `=` — read-only.\n\nYou can switch by buffer number ({key::}{key:b}{key: }{key:5}) or by name fragment ({key::}{key:b}{key: }{key:f}{key:o}{key:o}). Tab-complete works."
     },
     {
       "type": "internals",
       "title": "The 'hidden' Option Is Worth Setting",
-      "text": "By default Vim refuses to switch buffers if the current one is modified. Set `:set hidden` (it's on by default in Neovim) and Vim will *hide* the modified buffer instead \u2014 keeping the changes in memory while you work on another file.\n\nWithout `'hidden'`, you'll constantly hit \"E37: No write since last change\" and end up using {key::}{key:b}{key:!} (force) or aborting. With `'hidden'`, buffers behave like the tabs in any modern editor \u2014 switch freely, save when ready.\n\nThe trade-off is that you can {key::}{key:q} a window with unsaved buffers in the background. {key::}{key:q}{key:a}{key:l}{key:l} will warn you about them when exiting Vim."
+      "text": "By default Vim refuses to switch buffers if the current one is modified. Set `:set hidden` (it's on by default in Neovim) and Vim will *hide* the modified buffer instead — keeping the changes in memory while you work on another file.\n\nWithout `'hidden'`, you'll constantly hit \"E37: No write since last change\" and end up using {key::}{key:b}{key:!} (force) or aborting. With `'hidden'`, buffers behave like the tabs in any modern editor — switch freely, save when ready.\n\nThe trade-off is that you can {key::}{key:q} a window with unsaved buffers in the background. {key::}{key:q}{key:a}{key:l}{key:l} will warn you about them when exiting Vim."
     },
     {
       "type": "tip",
@@ -104,6 +104,11 @@
     {
       "type": "example",
       "ref": "windows.buffers"
+    },
+    {
+      "type": "internals",
+      "title": "Buffer state and window state are independent layers",
+      "text": "A buffer owns the text and the modified flag. A window owns a viewport (top line, leftmost column) and a cursor position. The same buffer can be open in multiple windows simultaneously, each with its own cursor. Closing a window doesn't close its buffer — buffers persist hidden until explicitly deleted with {key::}{key:b}{key:d}. Internally these are two object pools with a many-to-many relationship."
     },
     {
       "type": "qr",

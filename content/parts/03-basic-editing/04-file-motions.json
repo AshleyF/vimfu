@@ -3,7 +3,7 @@
   "version": 1,
   "id": "editing.file-motions",
   "title": "File Motions",
-  "subtitle": "gg, G, {n}G \u2014 jump anywhere in the file.",
+  "subtitle": "gg, G, {n}G — jump anywhere in the file.",
   "part": "editing",
   "summary": "gg goes to line 1. G goes to the last line. {n}G or :{n} goes to line n.",
   "keys": [
@@ -66,17 +66,17 @@
     {
       "type": "embed",
       "lesson": 28,
-      "caption": "gg \u2014 top of file"
+      "caption": "gg — top of file"
     },
     {
       "type": "embed",
       "lesson": 29,
-      "caption": "G \u2014 bottom of file"
+      "caption": "G — bottom of file"
     },
     {
       "type": "embed",
       "lesson": 30,
-      "caption": "{n}G \u2014 go to line n"
+      "caption": "{n}G — go to line n"
     },
     {
       "type": "tip",
@@ -85,7 +85,7 @@
     {
       "type": "internals",
       "title": "These Are All \"Big\" Jumps",
-      "text": "Vim distinguishes *small* movements ({key:h}, {key:j}, {key:w}) from *big* jumps ({key:gg}, {key:G}, search, {key:%}, mark-jumps, {key:`}). Big jumps push the *previous* cursor position onto the **jump list** before moving.\n\nThat means after {key:G}-then-edit-then-{key:gg}, you can press {key:Ctrl-O} to jump *back* to where you came from. Try it \u2014 it changes how you navigate.\n\nDeep dive: [`marks.jumplist`](#marks.jumplist)."
+      "text": "Vim distinguishes *small* movements ({key:h}, {key:j}, {key:w}) from *big* jumps ({key:gg}, {key:G}, search, {key:%}, mark-jumps, {key:`}). Big jumps push the *previous* cursor position onto the **jump list** before moving.\n\nThat means after {key:G}-then-edit-then-{key:gg}, you can press {key:Ctrl-O} to jump *back* to where you came from. Try it — it changes how you navigate.\n\nDeep dive: [`marks.jumplist`](#marks.jumplist)."
     },
     {
       "type": "tip",
@@ -135,6 +135,11 @@
     {
       "type": "example",
       "ref": "editing.file-motions"
+    },
+    {
+      "type": "internals",
+      "title": "Cursor positions are clamped per mode",
+      "text": "Normal mode pins the cursor to a real character; insert and replace allow the extra one-past-end virtual column. So a motion that lands at line end resolves differently depending on which mode you're in. The buffer doesn't store a cursor — the window does, and the window applies the mode-dependent clamp every time it's drawn."
     },
     {
       "type": "qr",

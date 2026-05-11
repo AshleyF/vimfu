@@ -3,7 +3,7 @@
   "version": 1,
   "id": "search.find-on-line",
   "title": "Find on Line",
-  "subtitle": "f, F, t, T \u2014 jump to a character without leaving the line.",
+  "subtitle": "f, F, t, T — jump to a character without leaving the line.",
   "part": "search",
   "summary": "f{c} jumps to the next {c} on the line; F{c} jumps to the previous one. t{c} stops one character before; T{c} stops one character after. ; and , repeat in the same and opposite directions.",
   "keys": [
@@ -86,32 +86,32 @@
     {
       "type": "embed",
       "lesson": 52,
-      "caption": "f \u2014 find character forward"
+      "caption": "f — find character forward"
     },
     {
       "type": "embed",
       "lesson": 53,
-      "caption": "F \u2014 find character backward"
+      "caption": "F — find character backward"
     },
     {
       "type": "embed",
       "lesson": 54,
-      "caption": "t \u2014 till character forward"
+      "caption": "t — till character forward"
     },
     {
       "type": "embed",
       "lesson": 55,
-      "caption": "T \u2014 till character backward"
+      "caption": "T — till character backward"
     },
     {
       "type": "embed",
       "lesson": 56,
-      "caption": "; \u2014 repeat"
+      "caption": "; — repeat"
     },
     {
       "type": "embed",
       "lesson": 57,
-      "caption": ", \u2014 reverse repeat"
+      "caption": ", — reverse repeat"
     },
     {
       "type": "tip",
@@ -120,11 +120,11 @@
     {
       "type": "internals",
       "title": "Why ; Is So Useful",
-      "text": "{key:f}, {key:F}, {key:t}, {key:T} all stash *two pieces of state*: the last character you searched for, and the direction (or modality \u2014 `t` vs `f`). {key:;} replays both. {key:,} replays the character but flips the direction.\n\nSo {key:f}{key:,}-then-jump-to-some-other-thing-then-{key:;} re-finds the next comma. You don't have to retype it; the keyboard remembers. This is one of those rare cases where two pieces of remembered state make a one-key motion enormously useful.\n\nThis state is **per-window**, not per-buffer. Switching files keeps your last find."
+      "text": "{key:f}, {key:F}, {key:t}, {key:T} all stash *two pieces of state*: the last character you searched for, and the direction (or modality — `t` vs `f`). {key:;} replays both. {key:,} replays the character but flips the direction.\n\nSo {key:f}{key:,}-then-jump-to-some-other-thing-then-{key:;} re-finds the next comma. You don't have to retype it; the keyboard remembers. This is one of those rare cases where two pieces of remembered state make a one-key motion enormously useful.\n\nThis state is **per-window**, not per-buffer. Switching files keeps your last find."
     },
     {
       "type": "tip",
-      "text": "{key:f} only sees the *current line* \u2014 it never crosses a newline. For cross-line jumps, use search ({key:/})."
+      "text": "{key:f} only sees the *current line* — it never crosses a newline. For cross-line jumps, use search ({key:/})."
     },
     {
       "type": "divider"
@@ -170,13 +170,18 @@
         [
           "{key:,}",
           "Repeat last find (opposite)",
-          "\u2014"
+          "—"
         ]
       ]
     },
     {
       "type": "example",
       "ref": "search.find-on-line"
+    },
+    {
+      "type": "internals",
+      "title": "{key:f}/{key:t} are a single-line cursor with replay memory",
+      "text": "Find-on-line never crosses lines, and it remembers the last `(direction, target)` pair it executed. {key:;} replays that pair; {key:,} replays it with direction flipped. So {key:f}{key:t}{key:;}{key:;} jumps to the third `t` on the line. The memory slot is per-window and survives normal-mode commands but is reset by mode changes."
     },
     {
       "type": "qr",

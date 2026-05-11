@@ -3,9 +3,9 @@
   "version": 1,
   "id": "counts-visual.char-visual",
   "title": "Character Visual Mode",
-  "subtitle": "v \u2014 select first, act second.",
+  "subtitle": "v — select first, act second.",
   "part": "counts-visual",
-  "summary": "v enters character-wise Visual mode. Move to extend the selection. Press an operator (d, c, y, \u2026) to act on it.",
+  "summary": "v enters character-wise Visual mode. Move to extend the selection. Press an operator (d, c, y, …) to act on it.",
   "keys": [
     "v",
     "o"
@@ -57,12 +57,12 @@
     {
       "type": "embed",
       "lesson": 64,
-      "caption": "v \u2014 character Visual"
+      "caption": "v — character Visual"
     },
     {
       "type": "embed",
       "lesson": 68,
-      "caption": "o \u2014 switch endpoints"
+      "caption": "o — switch endpoints"
     },
     {
       "type": "tip",
@@ -71,12 +71,12 @@
     {
       "type": "internals",
       "title": "Visual Is Just an Anchored Cursor",
-      "text": "When you press {key:v}, Vim sets an **anchor** at the cursor and remembers it. Every motion now updates the *cursor* while the *anchor* stays put. The selection is the (anchor \u2192 cursor) range \u2014 and Vim keeps it sorted so the lower position is always the start.\n\n{key:o} *swaps* the anchor and cursor. So if you started a selection going forward and realize you need to extend it backward, {key:o} flips which end your motions move.\n\nWhen you finally press an operator, Vim hands the operator the (start, end) pair just like a motion would. **Visual mode and operator+motion are the same thing internally** \u2014 they just package the range differently."
+      "text": "When you press {key:v}, Vim sets an **anchor** at the cursor and remembers it. Every motion now updates the *cursor* while the *anchor* stays put. The selection is the (anchor → cursor) range — and Vim keeps it sorted so the lower position is always the start.\n\n{key:o} *swaps* the anchor and cursor. So if you started a selection going forward and realize you need to extend it backward, {key:o} flips which end your motions move.\n\nWhen you finally press an operator, Vim hands the operator the (start, end) pair just like a motion would. **Visual mode and operator+motion are the same thing internally** — they just package the range differently."
     },
     {
       "type": "internals",
       "title": "The Last Visual Selection Is Remembered",
-      "text": "Whenever you exit Visual mode, Vim sets two automatic marks: {key:`}{key:<} (start) and {key:`}{key:>} (end). They live in the buffer until your next visual selection.\n\nThis means:\n\n  \u2022 {key:g}{key:v}  re-selects the last visual range.\n  \u2022 {key::}{key:'}{key:<}{key:,}{key:'}{key:>} (or just {key::} from Visual) targets it as an Ex range \u2014 useful for {key::}{key:s}{key:/}{key:foo}{key:/}{key:bar}{key:/}{key:g}.\n\nMost \"do an Ex command on what I just selected\" idioms work this way. See [`visual.range`](#visual.range)."
+      "text": "Whenever you exit Visual mode, Vim sets two automatic marks: {key:`}{key:<} (start) and {key:`}{key:>} (end). They live in the buffer until your next visual selection.\n\nThis means:\n\n  • {key:g}{key:v}  re-selects the last visual range.\n  • {key::}{key:'}{key:<}{key:,}{key:'}{key:>} (or just {key::} from Visual) targets it as an Ex range — useful for {key::}{key:s}{key:/}{key:foo}{key:/}{key:bar}{key:/}{key:g}.\n\nMost \"do an Ex command on what I just selected\" idioms work this way. See [`visual.range`](#visual.range)."
     },
     {
       "type": "divider"
@@ -118,6 +118,11 @@
     {
       "type": "example",
       "ref": "visual.char"
+    },
+    {
+      "type": "internals",
+      "title": "Visual mode is anchor + endpoint",
+      "text": "Charwise visual mode stores two positions: the anchor (where you pressed {key:v}) and the current cursor. Motions move the cursor; the selection is always the inclusive range between the two. There's no selection object being copied around — the renderer paints whatever sits between anchor and cursor each frame. Operators consume the resolved range and exit back to normal mode."
     },
     {
       "type": "qr",

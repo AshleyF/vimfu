@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Spell Checking — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Advanced</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="08-config.html" rel="prev">← Vim Configuration</a></span>
+  <span class="pager-pos">121 / 136</span>
+  <span class="pager-next"><a class="pager-link" href="10-tags.html" rel="next">Tag Navigation →</a></span>
+</nav>
+<article>
+<h1>Spell Checking</h1>
+<p class="subtitle">Built-in spell checker with per-language dictionaries.</p>
+<p class="meta"><code>id: advanced.spell</code> &middot; part: <strong>advanced</strong> &middot; keys: <kbd>[s</kbd>, <kbd>]s</kbd>, <kbd>z=</kbd>, <kbd>zg</kbd>, <kbd>zw</kbd>, <kbd>zug</kbd>, <kbd>zuw</kbd></p>
+<blockquote class="summary">Vim ships with a real spell checker. Toggle it with <code>:set spell</code>, jump misspellings with [s/]s, suggest fixes with z=, add words to a personal dictionary with zg.</blockquote>
+<p>Vim has a real spell checker built in — not an after-thought, not a plugin. Turn it on with <kbd>:</kbd><kbd>s</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>s</kbd><kbd>p</kbd><kbd>e</kbd><kbd>l</kbd><kbd>l</kbd>, and misspelled words get a wavy underline (or whatever your <code>&#x27;spell&#x27;</code> highlight defines).</p>
+<h3>Toggle and language</h3>
+<table>
+<thead><tr>
+<th>Command</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td>:set spell</td>
+<td>Turn spell checking on for the current buffer</td>
+</tr>
+<tr>
+<td>:set nospell</td>
+<td>Turn it off</td>
+</tr>
+<tr>
+<td>:setlocal spell!</td>
+<td>Toggle, only for this buffer</td>
+</tr>
+<tr>
+<td>:set spelllang=en_us</td>
+<td>Use the US English dictionary</td>
+</tr>
+<tr>
+<td>:set spelllang=en_us,de_de</td>
+<td>Spell check against multiple languages at once</td>
+</tr>
+</tbody></table>
+<h3>Move between misspellings</h3>
+<figure class="keys">
+<figcaption>Bracket-prefix navigation</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>]s</kbd></td><td>Jump to the next misspelled word</td></tr>
+<tr><td><kbd>[s</kbd></td><td>Jump to the previous misspelled word</td></tr>
+<tr><td><kbd>]S</kbd></td><td>Same as ]s but only flag bad words (skip rare/regional)</td></tr>
+<tr><td><kbd>[S</kbd></td><td>Same as [s but only flag bad words</td></tr>
+</tbody></table></figure>
+<h3>Fix and learn</h3>
+<figure class="keys">
+<figcaption>Suggest, accept, undo</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>z=</kbd></td><td>Show suggestions for the word under cursor (numbered list, type a digit + Enter)</td></tr>
+<tr><td><kbd>zg</kbd></td><td>Good word — add to your personal dictionary (file at &#x27;spellfile&#x27;)</td></tr>
+<tr><td><kbd>zw</kbd></td><td>Wrong word — mark as misspelled in your personal dictionary</td></tr>
+<tr><td><kbd>zug</kbd></td><td>Undo a previous zg</td></tr>
+<tr><td><kbd>zuw</kbd></td><td>Undo a previous zw</td></tr>
+</tbody></table></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Spell as window-layer state</header>
+<p>Spell checking lives in the same <code>z</code>-prefixed family as folds and viewport scroll because, internally, it&#x27;s the same kind of thing: presentation metadata layered over the buffer. The spell checker doesn&#x27;t modify text — it asks the highlighter to mark certain ranges. The misspelling list is recomputed lazily as the window scrolls, against the merged dictionary set in <code>&#x27;spelllang&#x27;</code>. Adding a word with <kbd>z</kbd><kbd>g</kbd> writes to your personal <code>&#x27;spellfile&#x27;</code> (default <code>~/.config/nvim/spell/&lt;lang&gt;.utf-8.add</code>) and triggers a recompile of the binary spell file, then re-runs the highlighter over visible lines.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Why <code>z=</code> opens a numbered prompt</header>
+<p>The suggester is a small ranked list — typically 25 candidates by default — produced by combining edit distance, soundalike rules from the language&#x27;s affix file, and case-fold rules. Vim renders the list as a numbered menu rather than as a popup because the command-line is the only piece of UI that&#x27;s guaranteed to exist in every Vim build. Picking a number performs a <code>:s/&lt;bad&gt;/&lt;good&gt;/g</code> on the visible match — same substitute machinery as everything else.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Set <kbd>:</kbd><kbd>s</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>s</kbd><kbd>p</kbd><kbd>e</kbd><kbd>l</kbd><kbd>l</kbd><kbd>c</kbd><kbd>a</kbd><kbd>p</kbd><kbd>i</kbd><kbd>t</kbd><kbd>a</kbd><kbd>l</kbd><kbd>=</kbd> to disable the &#x27;sentences must start with a capital&#x27; rule, which fires constantly inside code comments.</aside>
+<aside class="qr"><span>→ See also <a href="09-spell.html">Spell Checking</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../15-prefix-families/02-z-overview.html">The z Family</a>, <a href="../15-prefix-families/03-bracket-pairs.html">The [ and ] Family</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="08-config.html" rel="prev">← Vim Configuration</a></span>
+  <span class="pager-pos">121 / 136</span>
+  <span class="pager-next"><a class="pager-link" href="10-tags.html" rel="next">Tag Navigation →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

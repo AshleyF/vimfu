@@ -6,31 +6,74 @@
   "subtitle": "Paste it, fix it, yank it back. Macros are text.",
   "part": "macros",
   "summary": "Because a macro is just register contents, you can paste it into the buffer, edit any keystroke, and yank it back. This is how macros get refined without a full re-record.",
-  "keys": ["\"ap", "\"ay$"],
+  "keys": [
+    "\"ap",
+    "\"ay$"
+  ],
   "lessons": [],
-  "see_also": ["macros.record-play", "registers.macros-as-text", "registers.named"],
-
+  "see_also": [
+    "macros.record-play",
+    "registers.macros-as-text",
+    "registers.named"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Editing a Macro" },
-
-    { "type": "prose", "text": "Recording is the easy way to *get* a macro. But re-recording every time you want a small fix is painful. Faster: paste the macro into a scratch buffer, edit the keystrokes, yank it back. The macro is text." },
-
-    { "type": "heading", "level": 2, "text": "The recipe" },
-
-    { "type": "prose", "text": "Suppose macro `a` is *almost* right but has a bug.\n\n  1. Open a scratch line: {key:o}{key:Esc}.\n  2. Paste the macro: {key:\"}{key:a}{key:p}. The keystrokes appear as text.\n  3. Edit them — replace `dawi` with `daWi`, fix a typo, whatever.\n  4. Select the corrected text (e.g. {key:0}{key:v}{key:$} or just place cursor at start) and yank it back into `a`: {key:\"}{key:a}{key:y}{key:$}.\n  5. Undo the buffer changes ({key:u}, {key:u}) so the keystroke text doesn't pollute your file.\n  6. {key:@}{key:a} — try the corrected macro." },
-
-    { "type": "keys", "sequence": ["\"","a","p"],     "label": "Paste macro a as text" },
-    { "type": "keys", "sequence": ["\"","a","y","$"], "label": "Yank cursor-to-EOL back into a" },
-
-    { "type": "tip", "text": "Special keys appear as raw escape sequences. {key:<Esc>} shows as `^[`. You can leave them alone and edit only the visible keys around them. To insert a literal {key:<Esc>} in your editing, use {key:Ctrl-V}{key:Esc} — that types the byte without leaving Insert mode." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Editing a Macro"
+    },
+    {
+      "type": "prose",
+      "text": "Recording is the easy way to *get* a macro. But re-recording every time you want a small fix is painful. Faster: paste the macro into a scratch buffer, edit the keystrokes, yank it back. The macro is text."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The recipe"
+    },
+    {
+      "type": "prose",
+      "text": "Suppose macro `a` is *almost* right but has a bug.\n\n  1. Open a scratch line: {key:o}{key:Esc}.\n  2. Paste the macro: {key:\"}{key:a}{key:p}. The keystrokes appear as text.\n  3. Edit them — replace `dawi` with `daWi`, fix a typo, whatever.\n  4. Select the corrected text (e.g. {key:0}{key:v}{key:$} or just place cursor at start) and yank it back into `a`: {key:\"}{key:a}{key:y}{key:$}.\n  5. Undo the buffer changes ({key:u}, {key:u}) so the keystroke text doesn't pollute your file.\n  6. {key:@}{key:a} — try the corrected macro."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "\"",
+        "a",
+        "p"
+      ],
+      "label": "Paste macro a as text"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "\"",
+        "a",
+        "y",
+        "$"
+      ],
+      "label": "Yank cursor-to-EOL back into a"
+    },
+    {
+      "type": "tip",
+      "text": "Special keys appear as raw escape sequences. {key:<Esc>} shows as `^[`. You can leave them alone and edit only the visible keys around them. To insert a literal {key:<Esc>} in your editing, use {key:Ctrl-V}{key:Esc} — that types the byte without leaving Insert mode."
+    },
     {
       "type": "internals",
       "title": "Scripting the Macro Directly",
       "text": "If you'd rather skip the paste-edit-yank dance, set the register from the command line:\n\n  • {key::}{key:l}{key:e}{key:t} {key:@}{key:a}{key:=}\"^[ciwhello^[\"\n  • {key::}{key:l}{key:e}{key:t} {key:@}{key:a} {key:.}{key:=}\" `j`\"  *(append a `j` motion)*\n\nIn the string form, you can use `\\<Esc>` and similar named keys if `'cpoptions'` is set right; or paste literal escape characters with {key:Ctrl-V}{key:Esc} while typing the {key::}{key:l}{key:e}{key:t}.\n\nFor a longer-lived macro, consider stashing it in your config. {key::}{key:l}{key:e}{key:t} {key:g}{key::}macros = { 'a': '...' } makes them programmatic; mapping {key:@}{key:a} to a function gives them names."
     },
-
-    { "type": "qr", "topic": "macros.editing" },
-    { "type": "buy-prompt" }
+    {
+      "type": "internals",
+      "title": "Macro recursion has a bounded call stack",
+      "text": "A macro can invoke another macro (or itself), but the recursion depth is capped — usually a few hundred — to prevent runaway loops. Macros are stored as plain register text, so editing a macro is just editing the text in that register: yank it onto a line, change it, then yank back into the register."
+    },
+    {
+      "type": "qr",
+      "topic": "macros.editing"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

@@ -6,39 +6,90 @@
   "subtitle": "g- and g+ walk by time. :undolist shows the branches.",
   "part": "advanced",
   "summary": "Vim's undo isn't a stack — it's a tree. Every undo branch is preserved. g- and g+ walk by chronological time; :undolist shows all branches; :earlier/:later jump by time intervals.",
-  "keys": ["u", "Ctrl-R", "g-", "g+"],
-  "lessons": [481, 483],
-  "see_also": ["survival.undo-redo"],
-
+  "keys": [
+    "u",
+    "Ctrl-R",
+    "g-",
+    "g+"
+  ],
+  "lessons": [
+    481,
+    483
+  ],
+  "see_also": [
+    "survival.undo-redo"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Undo as a Tree" },
-
-    { "type": "prose", "text": "In most editors, undo is a stack: redo a mistake, the original is gone forever. In Vim, undo is a **tree** — every branch is kept." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Undo as a Tree"
+    },
+    {
+      "type": "prose",
+      "text": "In most editors, undo is a stack: redo a mistake, the original is gone forever. In Vim, undo is a **tree** — every branch is kept."
+    },
     {
       "type": "table",
-      "headers": ["Key",       "Action"],
+      "headers": [
+        "Key",
+        "Action"
+      ],
       "rows": [
-        ["{key:u}",             "Undo previous change (along current branch)"],
-        ["{key:Ctrl-R}",        "Redo (along current branch)"],
-        ["{key:g}{key:-}",      "Go to OLDER state by chronological time"],
-        ["{key:g}{key:+}",      "Go to NEWER state by chronological time"],
-        [":undolist",           "Show the undo tree"],
-        [":earlier 5m",         "State as of 5 minutes ago"],
-        [":later 30s",          "30 seconds forward"],
-        [":earlier 10",         "10 changes back"]
+        [
+          "{key:u}",
+          "Undo previous change (along current branch)"
+        ],
+        [
+          "{key:Ctrl-R}",
+          "Redo (along current branch)"
+        ],
+        [
+          "{key:g}{key:-}",
+          "Go to OLDER state by chronological time"
+        ],
+        [
+          "{key:g}{key:+}",
+          "Go to NEWER state by chronological time"
+        ],
+        [
+          ":undolist",
+          "Show the undo tree"
+        ],
+        [
+          ":earlier 5m",
+          "State as of 5 minutes ago"
+        ],
+        [
+          ":later 30s",
+          "30 seconds forward"
+        ],
+        [
+          ":earlier 10",
+          "10 changes back"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "The Tree Structure",
       "text": "Each *change* (one Insert session, one delete, one substitute, etc.) creates a new **node** in the undo tree. {key:u} walks toward the parent of the current node; {key:Ctrl-R} walks back toward the most recent child.\n\nWhen you edit, undo, then **edit again**, the new edit becomes a *new branch* — and the previous redo path is preserved as a sibling. Without `g-`/`g+`, you'd never reach that sibling again.\n\n  • {key:g}{key:-} / {key:g}{key:+} walk **by time** — they ignore the tree shape and visit nodes in chronological creation order. This lets you reach any state regardless of branching.\n  • `:undolist` shows the tree as a table: number, time, save count, branch info. Use `:undo N` to jump to a specific node.\n  • `:earlier 5m` and `:later 30s` jump by wall-clock time — *priceless* when you realize you broke something a few minutes ago.\n\nThe undo tree is persisted across sessions if you `:set undofile` — Vim writes a `.<filename>.un~` file beside each saved file. Real time-travel."
     },
-
-    { "type": "tip", "text": "Plugins like *undotree* visualize the tree as a sidebar. The data is all there in `:undolist` — the plugin just makes it readable." },
-
-    { "type": "qr", "topic": "advanced.undo-tree" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "Plugins like *undotree* visualize the tree as a sidebar. The data is all there in `:undolist` — the plugin just makes it readable."
+    },
+    {
+      "type": "internals",
+      "title": "Undo is a tree, not a stack",
+      "text": "Each undo unit creates a node in a directed graph. Linear edits build a chain; an edit after an undo creates a branch. {key:u}/{key:Ctrl-R} walk one chain; {key:g}{key:-}/{key:g}{key:+} walk by chronological time across branches; {key::}{key:earlier}/{key::}{key:later} walk by wall-clock time. Most editors throw away post-undo edits — Vim preserves them as branches you can navigate back to."
+    },
+    {
+      "type": "qr",
+      "topic": "advanced.undo-tree"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

@@ -3,7 +3,7 @@
   "version": 1,
   "id": "search.word",
   "title": "Word Search",
-  "subtitle": "*  / # \u2014 search for the word under the cursor without typing it.",
+  "subtitle": "*  / # — search for the word under the cursor without typing it.",
   "part": "search",
   "summary": "Put the cursor on a word, press * to search forward for the next occurrence, # for the previous. g* and g# do the same but without word boundaries.",
   "keys": [
@@ -64,21 +64,21 @@
     {
       "type": "embed",
       "lesson": 50,
-      "caption": "* \u2014 find next occurrence"
+      "caption": "* — find next occurrence"
     },
     {
       "type": "embed",
       "lesson": 51,
-      "caption": "# \u2014 find previous occurrence"
+      "caption": "# — find previous occurrence"
     },
     {
       "type": "internals",
       "title": "What * Actually Does",
-      "text": "{key:*} is **not** \"search for the literal text under the cursor.\" It's: take the keyword under the cursor, wrap it in `\\<\u2026\\>` (whole-word boundaries), and run that as a forward search.\n\nSo with the cursor on `foo` in `foo barfoo bazfoo`, {key:*} only matches the standalone `foo`s, not the `foo` inside `barfoo`. That's almost always what you want.\n\nWhen it isn't \u2014 for example, refactoring an identifier where you also want to catch `getFoo` and `Foobar` \u2014 use {key:g}{key:*} (no boundaries). It builds the pattern without `\\<\u2026\\>`.\n\nAfter {key:*}, the search is in the `/` register, so you can edit it: {key:q}{key:/} opens the search history window and lets you tweak the pattern."
+      "text": "{key:*} is **not** \"search for the literal text under the cursor.\" It's: take the keyword under the cursor, wrap it in `\\<…\\>` (whole-word boundaries), and run that as a forward search.\n\nSo with the cursor on `foo` in `foo barfoo bazfoo`, {key:*} only matches the standalone `foo`s, not the `foo` inside `barfoo`. That's almost always what you want.\n\nWhen it isn't — for example, refactoring an identifier where you also want to catch `getFoo` and `Foobar` — use {key:g}{key:*} (no boundaries). It builds the pattern without `\\<…\\>`.\n\nAfter {key:*}, the search is in the `/` register, so you can edit it: {key:q}{key:/} opens the search history window and lets you tweak the pattern."
     },
     {
       "type": "tip",
-      "text": "{key:*} is the start of one of the most useful refactor patterns: {key:*}-{key:c}{key:g}{key:n}-type-replacement-{key:Esc}-{key:.}-{key:.}-\u2026 Walk through every match, change-or-skip with {key:n} or {key:.}. See [`recipes.cgn-dot`](#recipes.cgn-dot)."
+      "text": "{key:*} is the start of one of the most useful refactor patterns: {key:*}-{key:c}{key:g}{key:n}-type-replacement-{key:Esc}-{key:.}-{key:.}-… Walk through every match, change-or-skip with {key:n} or {key:.}. See [`recipes.cgn-dot`](#recipes.cgn-dot)."
     },
     {
       "type": "divider"
@@ -121,6 +121,11 @@
     {
       "type": "example",
       "ref": "search.word"
+    },
+    {
+      "type": "internals",
+      "title": "{key:*} synthesizes a regex from the cursor token",
+      "text": "Word search is a tiny code generator. It tokenizes the text under the cursor, wraps it in word-boundary anchors (`\\<...\\>`), and writes the result into the search-pattern slot. {key:#} is the same generator with reversed initial direction. The `g`-prefixed variants ({key:g}{key:*}, {key:g}{key:#}) drop the boundary anchors. Knowing this, you can predict exactly which token will be selected and why partial matches behave as they do."
     },
     {
       "type": "qr",

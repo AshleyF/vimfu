@@ -2,10 +2,10 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "visual.gv",
-  "title": "gv \u2014 Re-Select",
+  "title": "gv — Re-Select",
   "subtitle": "Bring back the last visual selection.",
   "part": "visual-depth",
-  "summary": "gv re-enters Visual mode with the same selection you last had \u2014 same shape, same endpoints. Essential for re-applying an operator to the same region.",
+  "summary": "gv re-enters Visual mode with the same selection you last had — same shape, same endpoints. Essential for re-applying an operator to the same region.",
   "keys": [
     "gv"
   ],
@@ -21,11 +21,11 @@
     {
       "type": "heading",
       "level": 1,
-      "text": "gv \u2014 Re-Select"
+      "text": "gv — Re-Select"
     },
     {
       "type": "prose",
-      "text": "{key:g}{key:v} re-enters Visual mode with the *exact same selection* you last had \u2014 same shape, same lines, same characters."
+      "text": "{key:g}{key:v} re-enters Visual mode with the *exact same selection* you last had — same shape, same lines, same characters."
     },
     {
       "type": "keys",
@@ -37,7 +37,7 @@
         },
         {
           "key": ">",
-          "note": "Indent \u2014 selection lost"
+          "note": "Indent — selection lost"
         },
         {
           "key": "gv",
@@ -56,7 +56,7 @@
     {
       "type": "internals",
       "title": "Where the Selection Is Stored",
-      "text": "{key:g}{key:v} reads the special marks {key:`}{key:<} and {key:`}{key:>} (start and end of last visual) plus an internal record of the *visual mode shape* (character/line/block) that was active. Together those three things are enough to recreate any visual selection.\n\nThe selection persists across:\n\n  \u2022 Mode changes (Normal/Insert/Ex)\n  \u2022 Cursor moves\n  \u2022 Most edits \u2014 though if your edit *removes* the selected text, gv may select an empty or unexpected region.\n\n{key:g}{key:v} doesn't survive `:e` (re-edit). The marks are buffer-local: each buffer has its own last-visual."
+      "text": "{key:g}{key:v} reads the special marks {key:`}{key:<} and {key:`}{key:>} (start and end of last visual) plus an internal record of the *visual mode shape* (character/line/block) that was active. Together those three things are enough to recreate any visual selection.\n\nThe selection persists across:\n\n  • Mode changes (Normal/Insert/Ex)\n  • Cursor moves\n  • Most edits — though if your edit *removes* the selected text, gv may select an empty or unexpected region.\n\n{key:g}{key:v} doesn't survive `:e` (re-edit). The marks are buffer-local: each buffer has its own last-visual."
     },
     {
       "type": "tip",
@@ -65,6 +65,11 @@
     {
       "type": "example",
       "ref": "visual.gv"
+    },
+    {
+      "type": "internals",
+      "title": "{key:g}{key:v} reads the {key:'}{key:<} / {key:'}{key:>} marks",
+      "text": "The last visual selection is persisted into two special marks ({key:'}{key:<} for start, {key:'}{key:>} for end) plus a stored mode tag (charwise/linewise/blockwise). {key:g}{key:v} simply re-enters visual mode using those three pieces of state. The marks survive across commands, which is why you can edit, jump around, then come back with {key:g}{key:v} and find your old selection intact."
     },
     {
       "type": "qr",

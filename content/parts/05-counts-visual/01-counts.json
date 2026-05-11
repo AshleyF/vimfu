@@ -28,7 +28,7 @@
     },
     {
       "type": "prose",
-      "text": "Almost every Vim command accepts a numeric prefix. The number means \"do this N times.\" That's it \u2014 no escape sequence, no special key. Just type the digits, then the command."
+      "text": "Almost every Vim command accepts a numeric prefix. The number means \"do this N times.\" That's it — no escape sequence, no special key. Just type the digits, then the command."
     },
     {
       "type": "keys",
@@ -79,15 +79,15 @@
     {
       "type": "internals",
       "title": "Counts Multiply",
-      "text": "When a count appears on *both* sides of an operator, the two are **multiplied**:\n\n  \u2022 {key:2}{key:d}{key:3}{key:w} = delete 6 words.\n  \u2022 {key:3}{key:y}{key:2}{key:y} = yank 6 lines.\n  \u2022 {key:5}{key:>}{key:2}{key:j} = indent 15 lines (current + 14 below).\n\nThis is consistent with the grammar: {operator-count} \u00d7 {motion-count}. Most of the time you'll only use one of them; both is rare but legal.\n\nNote that the count goes *between* the register and the operator if you also use a register: {key:\"}{key:a}{key:3}{key:d}{key:w} \u2014 \"into register a, three times, delete word.\""
+      "text": "When a count appears on *both* sides of an operator, the two are **multiplied**:\n\n  • {key:2}{key:d}{key:3}{key:w} = delete 6 words.\n  • {key:3}{key:y}{key:2}{key:y} = yank 6 lines.\n  • {key:5}{key:>}{key:2}{key:j} = indent 15 lines (current + 14 below).\n\nThis is consistent with the grammar: {operator-count} × {motion-count}. Most of the time you'll only use one of them; both is rare but legal.\n\nNote that the count goes *between* the register and the operator if you also use a register: {key:\"}{key:a}{key:3}{key:d}{key:w} — \"into register a, three times, delete word.\""
     },
     {
       "type": "tip",
-      "text": "Counts work in Insert mode too. {key:2}{key:0}{key:i}-{key:Esc} inserts twenty dashes. The count is replayed when you leave Insert. (Some non-character Insert commands like Tab don't behave well with this \u2014 try it before relying on it.)"
+      "text": "Counts work in Insert mode too. {key:2}{key:0}{key:i}-{key:Esc} inserts twenty dashes. The count is replayed when you leave Insert. (Some non-character Insert commands like Tab don't behave well with this — try it before relying on it.)"
     },
     {
       "type": "tip",
-      "text": "{key:Ctrl-A} and {key:Ctrl-X} use counts to add/subtract from the next number on the line \u2014 see [`recipes.increment-decrement`](#recipes.increment-decrement)."
+      "text": "{key:Ctrl-A} and {key:Ctrl-X} use counts to add/subtract from the next number on the line — see [`recipes.increment-decrement`](#recipes.increment-decrement)."
     },
     {
       "type": "divider"
@@ -114,11 +114,11 @@
         ],
         [
           "{op}{key:{n}}{motion}",
-          "Apply op once over (motion \u00d7 n)"
+          "Apply op once over (motion × n)"
         ],
         [
           "{key:{n}}{op}{key:{m}}{motion}",
-          "Apply op (n \u00d7 m) times over motion"
+          "Apply op (n × m) times over motion"
         ],
         [
           "{key:{n}}{key:.}",
@@ -129,6 +129,11 @@
     {
       "type": "example",
       "ref": "counts.basics"
+    },
+    {
+      "type": "internals",
+      "title": "Count parsing is a tiny lexer with context",
+      "text": "Counts aren't a separate argument — they're a prefix accumulated by a small state machine. The first digit must be `1-9` (because `0` is itself a motion to column zero); subsequent digits can include `0`. The accumulated count multiplies with any operator-applied count, so {key:2}{key:d}{key:3}{key:w} deletes six words. Internally it's `count = command_count * motion_count`, both defaulting to one."
     },
     {
       "type": "qr",

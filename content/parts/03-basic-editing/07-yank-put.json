@@ -36,7 +36,7 @@
     },
     {
       "type": "prose",
-      "text": "{key:y} is *yank* \u2014 Vim's word for copy. It's an operator, like {key:d} and {key:c}, so it takes a motion: {key:y}{key:w} yanks a word, {key:y}{key:$} yanks to end of line, {key:y}{key:y} yanks the whole line."
+      "text": "{key:y} is *yank* — Vim's word for copy. It's an operator, like {key:d} and {key:c}, so it takes a motion: {key:y}{key:w} yanks a word, {key:y}{key:$} yanks to end of line, {key:y}{key:y} yanks the whole line."
     },
     {
       "type": "prose",
@@ -90,37 +90,37 @@
     {
       "type": "embed",
       "lesson": 40,
-      "caption": "yy \u2014 yank a line"
+      "caption": "yy — yank a line"
     },
     {
       "type": "embed",
       "lesson": 41,
-      "caption": "Y \u2014 yank line"
+      "caption": "Y — yank line"
     },
     {
       "type": "embed",
       "lesson": 42,
-      "caption": "p \u2014 put after"
+      "caption": "p — put after"
     },
     {
       "type": "embed",
       "lesson": 43,
-      "caption": "P \u2014 put before"
+      "caption": "P — put before"
     },
     {
       "type": "embed",
       "lesson": 44,
-      "caption": "yw / y$ \u2014 yank a span"
+      "caption": "yw / y$ — yank a span"
     },
     {
       "type": "internals",
       "title": "Why p Sometimes Goes Below the Line and Sometimes After the Cursor",
-      "text": "Every register holds **(text, type)** where `type` is `char`, `line`, or `block`. The type is set by *how the text got into the register*:\n\n  \u2022 {key:y}{key:w}, {key:y}{key:$}, {key:y}{key:i}{key:w} \u2192 type = `char` (a span of characters).\n  \u2022 {key:y}{key:y}, {key:y}{key:j}, {key:y}{key:G} \u2192 type = `line` (one or more whole lines).\n  \u2022 {key:Ctrl-V}-then-{key:y} \u2192 type = `block` (a rectangle).\n\nWhen you put:\n\n  \u2022 A `char`-typed register goes *after the cursor* (just past the current character).\n  \u2022 A `line`-typed register goes *on the next line below*.\n  \u2022 A `block`-typed register goes *as a rectangle starting one column right of the cursor*.\n\nThis is why {key:y}{key:y}{key:p} \"duplicates the line\" (the line-typed register lands as a new line below) and {key:y}{key:w}{key:p} \"appends a word after the cursor.\" It's not magic; it's the type tag.\n\n{key:P} (capital) does the mirror: charwise = before cursor; linewise = above current line; blockwise = at the cursor column (no shift)."
+      "text": "Every register holds **(text, type)** where `type` is `char`, `line`, or `block`. The type is set by *how the text got into the register*:\n\n  • {key:y}{key:w}, {key:y}{key:$}, {key:y}{key:i}{key:w} → type = `char` (a span of characters).\n  • {key:y}{key:y}, {key:y}{key:j}, {key:y}{key:G} → type = `line` (one or more whole lines).\n  • {key:Ctrl-V}-then-{key:y} → type = `block` (a rectangle).\n\nWhen you put:\n\n  • A `char`-typed register goes *after the cursor* (just past the current character).\n  • A `line`-typed register goes *on the next line below*.\n  • A `block`-typed register goes *as a rectangle starting one column right of the cursor*.\n\nThis is why {key:y}{key:y}{key:p} \"duplicates the line\" (the line-typed register lands as a new line below) and {key:y}{key:w}{key:p} \"appends a word after the cursor.\" It's not magic; it's the type tag.\n\n{key:P} (capital) does the mirror: charwise = before cursor; linewise = above current line; blockwise = at the cursor column (no shift)."
     },
     {
       "type": "internals",
       "title": "The Y Wart",
-      "text": "By symmetry with {key:D} = {key:d}{key:$} and {key:C} = {key:c}{key:$}, you'd expect {key:Y} = {key:y}{key:$}. It isn't.\n\nIn classic Vim, {key:Y} is just another way to say {key:y}{key:y}. This is a deliberate compatibility choice \u2014 vi behaved that way, so Vim did too. It's the most common single complaint about Vim's grammar.\n\nNeovim 0.6+ changed the default: in Neovim, {key:Y} is now {key:y}{key:$} (matching {key:D} and {key:C}). In Vim you can opt in with `:nnoremap Y y$`. The video lessons show classic Y; Neovim users get the new behavior for free."
+      "text": "By symmetry with {key:D} = {key:d}{key:$} and {key:C} = {key:c}{key:$}, you'd expect {key:Y} = {key:y}{key:$}. It isn't.\n\nIn classic Vim, {key:Y} is just another way to say {key:y}{key:y}. This is a deliberate compatibility choice — vi behaved that way, so Vim did too. It's the most common single complaint about Vim's grammar.\n\nNeovim 0.6+ changed the default: in Neovim, {key:Y} is now {key:y}{key:$} (matching {key:D} and {key:C}). In Vim you can opt in with `:nnoremap Y y$`. The video lessons show classic Y; Neovim users get the new behavior for free."
     },
     {
       "type": "tip",
@@ -160,33 +160,38 @@
         [
           "{key:p}",
           "Put after cursor / below line",
-          "\u2014"
+          "—"
         ],
         [
           "{key:P}",
           "Put before cursor / above line",
-          "\u2014"
+          "—"
         ],
         [
           "{key:g}{key:p}",
           "Like p but leave cursor *after* pasted text",
-          "\u2014"
+          "—"
         ],
         [
           "{key:]}{key:p}",
           "Put + adjust indent to context",
-          "\u2014"
+          "—"
         ],
         [
           "{key:\"}{r}{key:p}",
           "Put from register {r}",
-          "\u2014"
+          "—"
         ]
       ]
     },
     {
       "type": "example",
       "ref": "editing.yank-put"
+    },
+    {
+      "type": "internals",
+      "title": "Yank produces a typed snapshot, not raw text",
+      "text": "A yank captures both payload and type (`char`, `line`, or `block`). Paste reads that type tag and chooses placement: charwise pastes after the cursor on the same line; linewise pastes on a new line below; blockwise pastes as a rectangle. The register is a tiny tagged-union struct, not a string. Mismatch the type and {key:p} appears to misbehave — it's just honoring the tag you stored."
     },
     {
       "type": "qr",

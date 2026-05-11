@@ -43,13 +43,29 @@ Then run ``python content/render_redirects.py`` to regenerate
 
 from __future__ import annotations
 
+from .redirect_ids import id_for_slug
+
 DEFAULT_BASE_URL = "https://vimfubook.com"
 REDIRECT_PATH = "/r/"
 
 
 def redirect_url(slug: str, base_url: str = DEFAULT_BASE_URL) -> str:
-    """Return the public redirect URL for ``slug``."""
-    return f"{base_url.rstrip('/')}{REDIRECT_PATH}{slug}"
+    """Return the public redirect URL for ``slug``.
+
+    The URL uses a short, stable, opaque id (see ``redirect_ids.py``)
+    rather than the verbose taxonomy slug so printed URLs read
+    ``vimfubook.com/r/0042`` instead of ``vimfubook.com/r/v-0042``.
+    The taxonomy slug is still the developer-facing identifier
+    (used as the dictionary key in ``redirects.json``), but it never
+    appears in a printed URL or QR-encoded payload.
+    """
+    short = id_for_slug(slug)
+    return f"{base_url.rstrip('/')}{REDIRECT_PATH}{short}"
+
+
+def redirect_path_segment(slug: str) -> str:
+    """Return just the short id (e.g. ``0042``) for ``slug``."""
+    return id_for_slug(slug)
 
 
 # ---- slug builders --------------------------------------------------------- #

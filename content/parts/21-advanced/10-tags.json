@@ -1,0 +1,78 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "advanced.tags",
+  "title": "Tag Navigation",
+  "subtitle": "Jump to definitions across files using a tags index.",
+  "part": "advanced",
+  "summary": "ctags builds a tags file mapping symbols to file:line. Ctrl-] jumps to the symbol under the cursor; Ctrl-T pops back. The whole jump history forms a stack you can browse with :tags.",
+  "keys": ["Ctrl-]", "Ctrl-T", ":tag", ":tags", ":tnext", ":tprev"],
+  "lessons": [],
+  "see_also": ["marks-jumps.jumplist"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Tag Navigation" },
+
+    { "type": "prose", "text": "Long before LSP, Vim had a 'go to definition.' It still works — and on big codebases it's faster than any language server because it's just a binary-searchable text index." },
+
+    { "type": "heading", "level": 2, "text": "Build the index" },
+
+    { "type": "prose", "text": "Run a tags generator (universal-ctags is the canonical one) at the root of your project:" },
+
+    {
+      "type": "table",
+      "headers": ["Command", "Effect"],
+      "rows": [
+        ["ctags -R .",                "Recursively index everything under . into a file called `tags`"],
+        ["ctags -R --languages=python,go .",  "Limit to specific languages"],
+        ["ctags -R --exclude=node_modules --exclude=.git .",  "Skip noise"]
+      ]
+    },
+
+    { "type": "prose", "text": "Vim looks for the `tags` file in the current directory, then walks parents. Configure with {key::}{key:s}{key:e}{key:t} {key:t}{key:a}{key:g}{key:s}{key:=}{key:.}{key:/}{key:t}{key:a}{key:g}{key:s}{key:;}{key:/}{key:t}{key:a}{key:g}{key:s} to search both adjacent and root tags files." },
+
+    { "type": "heading", "level": 2, "text": "Jump and return" },
+    {
+      "type": "keys",
+      "label": "The core two keys",
+      "sequence": [
+        { "key": "Ctrl-]", "note": "Jump to the definition of the identifier under the cursor" },
+        { "key": "Ctrl-T", "note": "Pop back to where you came from (one level)" },
+        { "key": ":tag NAME", "note": "Jump to a named tag (Tab-completes)" },
+        { "key": "g]",      "note": "Show menu of all matching tags (when the name is ambiguous)" },
+        { "key": "Ctrl-W ]", "note": "Open the tag in a new horizontal split" },
+        { "key": "Ctrl-W }", "note": "Show the tag's definition in a preview window without leaving" }
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "The tag stack" },
+    {
+      "type": "keys",
+      "label": "Browse the history",
+      "sequence": [
+        { "key": ":tags",   "note": "Show the full tag stack with current position marked" },
+        { "key": ":tnext",  "note": "Next match when the tag was ambiguous" },
+        { "key": ":tprev",  "note": "Previous match" },
+        { "key": ":tlast",  "note": "Last match" },
+        { "key": ":tfirst", "note": "First match" }
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Tags is a binary-searched text file",
+      "text": "A `tags` file is plain text, one tag per line: `NAME<TAB>FILE<TAB>SEARCH_PATTERN`. The lines are sorted by NAME so the editor can find a tag with a binary search instead of a scan — which is why a 100MB tags file lookup is essentially instant. The SEARCH_PATTERN is usually a `/^...$/` regex that re-finds the line in the target file, so tag jumps survive small edits to the source between regenerations."
+    },
+
+    {
+      "type": "internals",
+      "title": "The tag stack is a real stack",
+      "text": "{key:Ctrl-]} pushes `(buffer, position, tag)` onto the per-window tag stack and jumps. {key:Ctrl-T} pops. {key::}{key:t}{key:a}{key:g}{key:s} prints the whole stack. Unlike the jump list (a ring buffer with duplicate suppression), the tag stack is a true LIFO — go down ten levels into a definition trail, hit {key:Ctrl-T} ten times to retrace exactly. Each window has its own stack, which is why splitting via {key:Ctrl-W}{key:]} starts a fresh trail in the new window."
+    },
+
+    { "type": "tip", "text": "Pair tags with the quickfix list ({key::}{key:t}{key:s}{key:e}{key:l}{key:e}{key:c}{key:t} fills it with all matches) for cross-file refactor sweeps." },
+
+    { "type": "qr", "topic": "advanced.tags" },
+    { "type": "buy-prompt" }
+  ]
+}

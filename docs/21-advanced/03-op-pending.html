@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="02-special-registers.html" rel="prev">← Special Registers Deep Dive</a></span>
-  <span class="pager-pos">113 / 132</span>
+  <span class="pager-pos">115 / 136</span>
   <span class="pager-next"><a class="pager-link" href="04-terminal.html" rel="next">Terminal Inside Vim →</a></span>
 </nav>
 <article>
@@ -42,6 +42,10 @@
 <p>Useful when the default &quot;motion shape&quot; doesn&#x27;t match what you want.</p>
 </aside>
 <aside class="tip"><strong>Tip.</strong> Try <code>:onoremap il :&lt;C-u&gt;normal! ^v$&lt;CR&gt;</code> — defines a custom &quot;inner line&quot; text object so <kbd>d</kbd><kbd>i</kbd><kbd>l</kbd> deletes line content without the leading whitespace or trailing newline.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Operator-pending is the most important hidden mode</header>
+<p>After you press an operator key like <kbd>d</kbd>, <kbd>c</kbd>, <kbd>y</kbd>, <kbd>&gt;</kbd>, <kbd>&lt;</kbd>, <kbd>g</kbd><kbd>u</kbd>, <kbd>g</kbd><kbd>U</kbd>, the editor enters a fourth major mode where it waits for a motion or text object to resolve a range. Until that resolves, no buffer change happens. The operator is staged with its count; the resolved motion provides <code>(start, end, type)</code>; only then does the operator function execute. This pending state is also why doubled forms (<kbd>d</kbd><kbd>d</kbd>) work: the parser sees the operator key while in op-pending and short-circuits to &#x27;current line, linewise.&#x27;</p>
+</aside>
 <aside class="qr"><span>→ See also <a href="03-op-pending.html">Operator-Pending Mode</a></span></aside>
 <aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
 <section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0487 The # Register (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0488 The = Register (not yet published)</div></li></ul></section>
@@ -49,13 +53,13 @@
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="02-special-registers.html" rel="prev">← Special Registers Deep Dive</a></span>
-  <span class="pager-pos">113 / 132</span>
+  <span class="pager-pos">115 / 136</span>
   <span class="pager-next"><a class="pager-link" href="04-terminal.html" rel="next">Terminal Inside Vim →</a></span>
 </nav>
 <nav class="bottomnav">
   <a href="index.html">← back to part</a>
   &middot; <a href="../index.html">📚 all parts</a>
 </nav>
-<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
 </body>
 </html>

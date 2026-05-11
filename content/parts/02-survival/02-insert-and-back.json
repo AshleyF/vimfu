@@ -31,7 +31,7 @@
     },
     {
       "type": "prose",
-      "text": "You are in Normal mode. The cursor sits on a character. Keys do things \u2014 they are commands. You want to type some text. How?"
+      "text": "You are in Normal mode. The cursor sits on a character. Keys do things — they are commands. You want to type some text. How?"
     },
     {
       "type": "keys",
@@ -72,7 +72,7 @@
     },
     {
       "type": "prose",
-      "text": "{key:Esc} returns you to Normal mode. The status line empties. Keys are commands again. {key:Ctrl-[} does the same thing \u2014 handy if your {key:Esc} key is far away."
+      "text": "{key:Esc} returns you to Normal mode. The status line empties. Keys are commands again. {key:Ctrl-[} does the same thing — handy if your {key:Esc} key is far away."
     },
     {
       "type": "embed",
@@ -81,7 +81,7 @@
     },
     {
       "type": "tip",
-      "text": "Many remappers swap {key:Caps Lock} and {key:Esc} (or map {key:Caps Lock} to {key:Esc}). On many laptops, {key:Esc} is a tiny touch-strip key \u2014 moving it to {key:Caps Lock} is a real productivity win and easy to do in OS settings (no Vim config needed)."
+      "text": "Many remappers swap {key:Caps Lock} and {key:Esc} (or map {key:Caps Lock} to {key:Esc}). On many laptops, {key:Esc} is a tiny touch-strip key — moving it to {key:Caps Lock} is a real productivity win and easy to do in OS settings (no Vim config needed)."
     },
     {
       "type": "heading",
@@ -94,7 +94,7 @@
     },
     {
       "type": "prose",
-      "text": "This sounds annoying. After a week, you stop noticing. After a month, you no longer remember what mode you are in \u2014 you just know which command to issue, and the right mode shows up."
+      "text": "This sounds annoying. After a week, you stop noticing. After a month, you no longer remember what mode you are in — you just know which command to issue, and the right mode shows up."
     },
     {
       "type": "embed",
@@ -104,7 +104,7 @@
     {
       "type": "internals",
       "title": "What Insert Mode Is Buffering",
-      "text": "From the moment you press {key:i} until the moment you press {key:Esc}, Vim is recording the text you type into a small buffer. When you leave Insert, three things happen:\n\n  1. The text goes into the buffer (you see it).\n  2. The text is also stored in the {key:\"}{key:.} register \u2014 accessible as the *last-inserted-text* register, useful in mappings and for the {key:.} repeat command.\n  3. If a count was applied (e.g. {key:3}{key:i}{key:hi}{key:Esc}), the buffered text is replayed `count - 1` more times so the final result is `hihihi`.\n\nThis is also what {key:.} (dot, repeat last change) replays for an Insert-mode change: not the keystrokes you pressed, but the *text* that ended up in the buffer.\n\nSpecial keys pressed during Insert ({key:Ctrl-W}, {key:Ctrl-U}, {key:Ctrl-T}, {key:Ctrl-D}, {key:Backspace}, {key:Enter}) are also buffered and replayed faithfully. Insert is not just \"typed text\" \u2014 it is a recording of an editing action that happens to mostly be typing."
+      "text": "From the moment you press {key:i} until the moment you press {key:Esc}, Vim is recording the text you type into a small buffer. When you leave Insert, three things happen:\n\n  1. The text goes into the buffer (you see it).\n  2. The text is also stored in the {key:\"}{key:.} register — accessible as the *last-inserted-text* register, useful in mappings and for the {key:.} repeat command.\n  3. If a count was applied (e.g. {key:3}{key:i}{key:hi}{key:Esc}), the buffered text is replayed `count - 1` more times so the final result is `hihihi`.\n\nThis is also what {key:.} (dot, repeat last change) replays for an Insert-mode change: not the keystrokes you pressed, but the *text* that ended up in the buffer.\n\nSpecial keys pressed during Insert ({key:Ctrl-W}, {key:Ctrl-U}, {key:Ctrl-T}, {key:Ctrl-D}, {key:Backspace}, {key:Enter}) are also buffered and replayed faithfully. Insert is not just \"typed text\" — it is a recording of an editing action that happens to mostly be typing."
     },
     {
       "type": "divider"
@@ -135,7 +135,7 @@
         ],
         [
           "{key:Ctrl-C}",
-          "Return to Normal mode (cancels pending state too \u2014 but does not run autocmds; usually use {key:Esc})"
+          "Return to Normal mode (cancels pending state too — but does not run autocmds; usually use {key:Esc})"
         ]
       ]
     },
@@ -146,6 +146,11 @@
     {
       "type": "example",
       "ref": "survival.insert-and-back"
+    },
+    {
+      "type": "internals",
+      "title": "Why Escape backs the cursor up one column",
+      "text": "Leaving insert mode is not a pure mode flip. The cursor lives in a virtual column while inserting (it can sit one cell past the last character), but normal mode requires the cursor to land on a real character. So Escape clamps the column back by one when you're past the line end. That single rule is why {key:a} then Esc leaves you under the character you appended past, and why {key:i}-Esc-{key:i} doesn't drift sideways."
     },
     {
       "type": "qr",

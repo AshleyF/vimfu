@@ -67,40 +67,45 @@
     {
       "type": "embed",
       "lesson": 126,
-      "caption": "qa \u2014 start recording"
+      "caption": "qa — start recording"
     },
     {
       "type": "embed",
       "lesson": 127,
-      "caption": "q \u2014 stop recording"
+      "caption": "q — stop recording"
     },
     {
       "type": "embed",
       "lesson": 128,
-      "caption": "@a \u2014 play macro"
+      "caption": "@a — play macro"
     },
     {
       "type": "embed",
       "lesson": 129,
-      "caption": "@@ \u2014 repeat last macro"
+      "caption": "@@ — repeat last macro"
     },
     {
       "type": "tip",
-      "text": "While recording, the status line shows `recording @a`. Don't worry \u2014 the recording is just keystrokes-into-a-register; nothing is locked, nothing is precious. If you mess up, press {key:q} to stop, then {key:q}{key:a} to start fresh."
+      "text": "While recording, the status line shows `recording @a`. Don't worry — the recording is just keystrokes-into-a-register; nothing is locked, nothing is precious. If you mess up, press {key:q} to stop, then {key:q}{key:a} to start fresh."
     },
     {
       "type": "internals",
       "title": "How Recording Works",
-      "text": "{key:q}{key:a}: Vim *opens register `a` for writing* and tags every subsequent keypress to be appended to it. Each key still does its normal job \u2014 you're editing as usual.\n\n{key:q}: Closes the register. The recorded keystrokes (including all the {key:Esc}, motion, and operator keys) sit in {key:\"}{key:a} as a string.\n\n{key:@}{key:a}: Reads {key:\"}{key:a} and feeds the contents back into Vim's input buffer. They run as if you typed them. Errors abort playback.\n\nThis is **just** *type-then-replay*. There's no \"macro language.\" Anything you can type, you can record."
+      "text": "{key:q}{key:a}: Vim *opens register `a` for writing* and tags every subsequent keypress to be appended to it. Each key still does its normal job — you're editing as usual.\n\n{key:q}: Closes the register. The recorded keystrokes (including all the {key:Esc}, motion, and operator keys) sit in {key:\"}{key:a} as a string.\n\n{key:@}{key:a}: Reads {key:\"}{key:a} and feeds the contents back into Vim's input buffer. They run as if you typed them. Errors abort playback.\n\nThis is **just** *type-then-replay*. There's no \"macro language.\" Anything you can type, you can record."
     },
     {
       "type": "internals",
       "title": "Idiom: Make Your Macro Idempotent",
-      "text": "A reliable macro starts with a *stable anchor* \u2014 usually {key:0} (start of line) or a search. That way, no matter where the cursor is, the macro begins at a known position.\n\nIt usually ends with a *forward step* \u2014 typically {key:j} or {key:n} \u2014 so successive plays move down through the buffer.\n\nExample: \"add a semicolon to end of every line.\" Record: {key:q}{key:a}, {key:A}{key:;}{key:Esc}, {key:j}, {key:0}, {key:q}. Now {key:1}{key:0}{key:0}{key:@}{key:a} adds semicolons to 100 lines.\n\nIf the macro fails (e.g. no more lines, or no match for a search), playback aborts. That's why \"do it 100 times\" is safe \u2014 it stops when there's nothing left to do."
+      "text": "A reliable macro starts with a *stable anchor* — usually {key:0} (start of line) or a search. That way, no matter where the cursor is, the macro begins at a known position.\n\nIt usually ends with a *forward step* — typically {key:j} or {key:n} — so successive plays move down through the buffer.\n\nExample: \"add a semicolon to end of every line.\" Record: {key:q}{key:a}, {key:A}{key:;}{key:Esc}, {key:j}, {key:0}, {key:q}. Now {key:1}{key:0}{key:0}{key:@}{key:a} adds semicolons to 100 lines.\n\nIf the macro fails (e.g. no more lines, or no match for a search), playback aborts. That's why \"do it 100 times\" is safe — it stops when there's nothing left to do."
     },
     {
       "type": "example",
       "ref": "macros.record-play"
+    },
+    {
+      "type": "internals",
+      "title": "Macros are input virtualization",
+      "text": "Recording a macro stores the literal keystroke sequence into a register. Playback feeds those keystrokes back through the same input pipeline a real keyboard would feed. Every subsystem — operators, search, marks, insert — must remain callable from synthetic input. That's why macros stop on the first command that would have rung the bell: the input simulator treats a failed command as a real failed command and aborts the stream."
     },
     {
       "type": "qr",

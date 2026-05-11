@@ -6,30 +6,73 @@
   "subtitle": "R — overwrite as you type. r{c} — overwrite one character.",
   "part": "transform",
   "summary": "R enters Replace mode: each typed key overwrites instead of inserting. r{c} overwrites a single character without entering Replace mode.",
-  "keys": ["R", "r"],
-  "lessons": [105, 106],
-  "see_also": ["editing.replace-char", "foundations.modes-overview"],
-
+  "keys": [
+    "R",
+    "r"
+  ],
+  "lessons": [
+    105,
+    106
+  ],
+  "see_also": [
+    "editing.replace-char",
+    "foundations.modes-overview"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Replace Mode" },
-
-    { "type": "prose", "text": "Insert mode pushes characters around: typing in the middle of a word *grows* the word. Replace mode is different — each typed character *overwrites* the one under the cursor, then advances. Typing 5 characters in Replace mode replaces 5 existing characters." },
-
-    { "type": "keys", "sequence": ["r","x"], "label": "Replace one char with x (stays in Normal)" },
-    { "type": "keys", "sequence": ["R"],     "label": "Enter Replace mode (continuous overwrite)" },
-
-    { "type": "embed", "lesson": 105, "caption": "r — replace one character" },
-    { "type": "embed", "lesson": 106, "caption": "R — Replace mode" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Replace Mode"
+    },
+    {
+      "type": "prose",
+      "text": "Insert mode pushes characters around: typing in the middle of a word *grows* the word. Replace mode is different — each typed character *overwrites* the one under the cursor, then advances. Typing 5 characters in Replace mode replaces 5 existing characters."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "r",
+        "x"
+      ],
+      "label": "Replace one char with x (stays in Normal)"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "R"
+      ],
+      "label": "Enter Replace mode (continuous overwrite)"
+    },
+    {
+      "type": "embed",
+      "lesson": 105,
+      "caption": "r — replace one character"
+    },
+    {
+      "type": "embed",
+      "lesson": 106,
+      "caption": "R — Replace mode"
+    },
     {
       "type": "internals",
       "title": "Replace Is a First-Class Mode",
       "text": "Replace mode (`-- REPLACE --`) sits alongside Insert as a top-level mode. The status line shows the change. {key:Esc} exits.\n\nKey difference from Insert: each typed character does a *delete + insert* on the character under the cursor (instead of just an insert). Backspace in Replace mode *restores* the original character (not deletes it back to nothing).\n\nThere's also {key:g}{key:R}, **virtual replace mode** — same idea, but newlines and tabs are *not* overwritten with literal characters that would push text around. {key:g}{key:R} treats Tab as a virtual span of spaces; replacing a single column inside the tab keeps the tab character intact. Useful in tab-aligned text.\n\nReplace mode is rarely the right tool for code editing — most people overwrite a region with {key:c}{motion} or {key:c}{textobject}. But for fixed-width formats or quick column overwrites, it's perfect."
     },
-
-    { "type": "tip", "text": "{key:r} is one-shot: replace one character, stay in Normal. {key:R} is continuous: enter the mode, overwrite as long as you keep typing. Pick based on how many you have to fix." },
-
-    { "type": "qr", "topic": "transform.replace-mode" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "{key:r} is one-shot: replace one character, stay in Normal. {key:R} is continuous: enter the mode, overwrite as long as you keep typing. Pick based on how many you have to fix."
+    },
+    {
+      "type": "internals",
+      "title": "Replace mode is reversible overwrite",
+      "text": "{key:R} pushes a session-local stack of `(column, original_char)` tuples. Each typed character pops/replaces forward; each Backspace pops the top and restores the original. The session boundary forbids backspacing past your entry point — the stack is empty there. Exiting via Escape discards the stack but keeps the buffer changes."
+    },
+    {
+      "type": "qr",
+      "topic": "transform.replace-mode"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

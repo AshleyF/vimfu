@@ -50,7 +50,7 @@
         ],
         [
           ":%s/foo/bar/gc",
-          "\u2026with confirmation per match"
+          "…with confirmation per match"
         ],
         [
           ":'<,'>s/foo/bar/g",
@@ -104,7 +104,7 @@
         ],
         [
           "n",
-          "Don't substitute \u2014 just **count** matches"
+          "Don't substitute — just **count** matches"
         ],
         [
           "&",
@@ -133,7 +133,7 @@
           "Same as &"
         ],
         [
-          "\\1, \\2\u2026",
+          "\\1, \\2…",
           "Capture groups from `\\(...\\)`"
         ],
         [
@@ -161,7 +161,7 @@
     {
       "type": "internals",
       "title": "What :s Actually Does",
-      "text": "`:s` runs the regex engine over each line in `[range]` exactly once (unless `g` flag), substituting matches in place. The buffer's lines are rewritten line-by-line; the cursor lands on the last line changed.\n\n  \u2022 Without `[range]`, the range is the **current line only** (this trips up beginners \u2014 they expect file-wide and get one line).\n  \u2022 The `%` range is shorthand for `1,$` (whole file).\n  \u2022 The `c` flag enters an interactive prompt \u2014 `y` = yes, `n` = no, `a` = all (rest), `q` = quit, `l` = last (do this then quit).\n\n**Re-running:** {key::}{key:&} repeats the last substitute on the current line. {key::}{key:%}{key:&} repeats on the whole file. {key:&} in Normal mode = same as {key::}{key:&}."
+      "text": "`:s` runs the regex engine over each line in `[range]` exactly once (unless `g` flag), substituting matches in place. The buffer's lines are rewritten line-by-line; the cursor lands on the last line changed.\n\n  • Without `[range]`, the range is the **current line only** (this trips up beginners — they expect file-wide and get one line).\n  • The `%` range is shorthand for `1,$` (whole file).\n  • The `c` flag enters an interactive prompt — `y` = yes, `n` = no, `a` = all (rest), `q` = quit, `l` = last (do this then quit).\n\n**Re-running:** {key::}{key:&} repeats the last substitute on the current line. {key::}{key:%}{key:&} repeats on the whole file. {key:&} in Normal mode = same as {key::}{key:&}."
     },
     {
       "type": "tip",
@@ -170,6 +170,11 @@
     {
       "type": "example",
       "ref": "ex.substitute"
+    },
+    {
+      "type": "internals",
+      "title": "Substitute is search-pattern + replacement-template + flags",
+      "text": "{key::}{key:s} composes three subsystems: the regex engine (same one driving {key:/}); a small templating layer that expands `\\0`, `\\1`–`\\9`, `&`, `~`, `\\u`, `\\U`, `\\l`, `\\L`, `\\E`; and a flag-driven loop controller (`g`, `c`, `i`, `e`, `n`, `p`, `&`). Empty pattern reuses the last search — that's the global search-pattern slot again."
     },
     {
       "type": "qr",

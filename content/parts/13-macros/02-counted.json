@@ -6,28 +6,62 @@
   "subtitle": "100@a — run a macro a hundred times. Or until it errors out.",
   "part": "macros",
   "summary": "Counts work on macros. 100@a runs macro a up to 100 times; if any iteration aborts (search miss, end of file), playback stops cleanly.",
-  "keys": ["{n}@a"],
-  "lessons": [130],
-  "see_also": ["macros.record-play", "counts-visual.counts"],
-
+  "keys": [
+    "{n}@a"
+  ],
+  "lessons": [
+    130
+  ],
+  "see_also": [
+    "macros.record-play",
+    "counts-visual.counts"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Counted Macros" },
-
-    { "type": "prose", "text": "A macro that does its work and moves to the next item is a loop. {key:{n}}{key:@}{key:a} runs that loop n times — but it *stops as soon as the macro errors*. So you can confidently say \"do this 1000 times\" knowing it'll stop when there's nothing left." },
-
-    { "type": "keys", "sequence": ["1","0","0","@","a"], "label": "Run macro a up to 100 times" },
-
-    { "type": "embed", "lesson": 130, "caption": "Counted macros" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Counted Macros"
+    },
+    {
+      "type": "prose",
+      "text": "A macro that does its work and moves to the next item is a loop. {key:{n}}{key:@}{key:a} runs that loop n times — but it *stops as soon as the macro errors*. So you can confidently say \"do this 1000 times\" knowing it'll stop when there's nothing left."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "1",
+        "0",
+        "0",
+        "@",
+        "a"
+      ],
+      "label": "Run macro a up to 100 times"
+    },
+    {
+      "type": "embed",
+      "lesson": 130,
+      "caption": "Counted macros"
+    },
     {
       "type": "internals",
       "title": "Why Errors Are Helpful Here",
       "text": "Vim's macro playback halts on an error. Search misses, edge-of-buffer motions, failed operations — anything that beeps interactively also aborts a macro mid-stream.\n\nThis is a *feature*. If your macro processes a list and you don't know how long it is, write the macro to fail gracefully when it runs out of work. Then run it with a count larger than you'll ever need:\n\n  • Macro that searches forward for `TODO`, edits, moves to next: {key:1}{key:0}{key:0}{key:0}{key:@}{key:a}. When `/TODO` finds no more matches, the macro aborts cleanly.\n  • Macro that processes a CSV row by jumping to columns: {key:1}{key:0}{key:0}{key:@}{key:a}. When the cursor falls off the end of the file, the next motion errors and playback stops.\n\nBig counts don't cost much — Vim doesn't run the macro 1000 times unless there's work for it to do."
     },
-
-    { "type": "tip", "text": "If you'd rather *suppress* errors and keep playing, use {key:1}{key:0}{key:0}{key:@}{key:a} inside an {key::}{key:s}{key:i}{key:l}{key:e}{key:n}{key:t}{key:!} or wrap with `try/catch` in scripting. For interactive work, the abort-on-error behavior is what you want." },
-
-    { "type": "qr", "topic": "macros.counted" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "If you'd rather *suppress* errors and keep playing, use {key:1}{key:0}{key:0}{key:@}{key:a} inside an {key::}{key:s}{key:i}{key:l}{key:e}{key:n}{key:t}{key:!} or wrap with `try/catch` in scripting. For interactive work, the abort-on-error behavior is what you want."
+    },
+    {
+      "type": "internals",
+      "title": "Counts re-invoke macros, they don't transform them",
+      "text": "{key:5}{key:@}{key:a} runs the recorded stream five times in sequence; it does not multiply counts inside the recording. Side effects (cursor position, register state, search state) carry over from one invocation to the next. That's how `5@a` plus a motion-at-end-of-recording produces a sweep instead of doing the same thing five times in place."
+    },
+    {
+      "type": "qr",
+      "topic": "macros.counted"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

@@ -5,7 +5,7 @@
   "title": "Undo and Redo",
   "subtitle": "u to undo. Ctrl-R to redo. You cannot lose work.",
   "part": "survival",
-  "summary": "u undoes the last change. Ctrl-R redoes it. Vim's undo is a tree, not a stack \u2014 you literally cannot lose work.",
+  "summary": "u undoes the last change. Ctrl-R redoes it. Vim's undo is a tree, not a stack — you literally cannot lose work.",
   "keys": [
     "u",
     "Ctrl-R",
@@ -28,7 +28,7 @@
     },
     {
       "type": "prose",
-      "text": "Vim is safe. Whatever you just did, you can undo. Whatever you just undid, you can redo. There is no \"oh no\" key \u2014 only {key:u}."
+      "text": "Vim is safe. Whatever you just did, you can undo. Whatever you just undid, you can redo. There is no \"oh no\" key — only {key:u}."
     },
     {
       "type": "keys",
@@ -65,12 +65,12 @@
     {
       "type": "internals",
       "title": "Vim's Undo Is a Tree",
-      "text": "In every other editor, undo is a stack. Undo pops; redo pushes. If you undo three steps and then make a new edit, the redo stack is destroyed \u2014 those three changes are gone forever.\n\nVim's undo is a *tree*. Every change creates a new node. Undo walks toward the root. Redo walks back the way you came. **Branching changes do not destroy history**: when you undo three steps and then make a new edit, you create a new branch from that point. The old branch is still there, and Vim can walk to it.\n\nThe practical consequences:\n\n  \u2022 {key:u} and {key:Ctrl-R} walk along the *current branch*.\n  \u2022 {key:g}{key:-} and {key:g}{key:+} walk *chronologically* \u2014 they can hop to a different branch if it was edited more recently.\n  \u2022 {key::}{key:earlier} {N}{m,s,h} jumps the buffer to its state N minutes/seconds/hours ago \u2014 across branches.\n  \u2022 {key::}{key:later} does the opposite.\n  \u2022 If you have `'undofile'` set, the undo tree is saved to disk between sessions. Reopen the file tomorrow and you can still undo today's edits.\n\nFull treatment in `advanced.undo-tree`. For now: you literally cannot lose work in Vim. If you make a change you regret, {key:u}. If you regret the undo, {key:Ctrl-R}. If hours have passed and you don't even remember the right sequence of presses, {key::}{key:earlier} {key:1}{key:0}{key:m} ({key:Enter})."
+      "text": "In every other editor, undo is a stack. Undo pops; redo pushes. If you undo three steps and then make a new edit, the redo stack is destroyed — those three changes are gone forever.\n\nVim's undo is a *tree*. Every change creates a new node. Undo walks toward the root. Redo walks back the way you came. **Branching changes do not destroy history**: when you undo three steps and then make a new edit, you create a new branch from that point. The old branch is still there, and Vim can walk to it.\n\nThe practical consequences:\n\n  • {key:u} and {key:Ctrl-R} walk along the *current branch*.\n  • {key:g}{key:-} and {key:g}{key:+} walk *chronologically* — they can hop to a different branch if it was edited more recently.\n  • {key::}{key:earlier} {N}{m,s,h} jumps the buffer to its state N minutes/seconds/hours ago — across branches.\n  • {key::}{key:later} does the opposite.\n  • If you have `'undofile'` set, the undo tree is saved to disk between sessions. Reopen the file tomorrow and you can still undo today's edits.\n\nFull treatment in `advanced.undo-tree`. For now: you literally cannot lose work in Vim. If you make a change you regret, {key:u}. If you regret the undo, {key:Ctrl-R}. If hours have passed and you don't even remember the right sequence of presses, {key::}{key:earlier} {key:1}{key:0}{key:m} ({key:Enter})."
     },
     {
       "type": "heading",
       "level": 2,
-      "text": "U \u2014 undo the line"
+      "text": "U — undo the line"
     },
     {
       "type": "prose",
@@ -128,6 +128,11 @@
     {
       "type": "example",
       "ref": "survival.undo-redo"
+    },
+    {
+      "type": "internals",
+      "title": "Undo units are command-shaped, not keystroke-shaped",
+      "text": "The undo system batches edits at command boundaries, not per keystroke. One normal-mode command — including a complete insert session from {key:i} through Escape — collapses into a single undo unit. That's why hitting {key:u} after typing a paragraph rips out the whole paragraph at once: the editor only inserted one undo boundary, at the moment you returned to normal mode. Internally undo is a tree of state snapshots; redo is a forward walk through that tree."
     },
     {
       "type": "qr",

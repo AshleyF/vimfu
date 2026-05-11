@@ -6,54 +6,119 @@
   "subtitle": "vimrc, runtime, plugins — where settings live.",
   "part": "advanced",
   "summary": "Vim reads ~/.vimrc (or ~/.config/nvim/init.vim for Neovim) on startup. Plugins go in plugin folders inside 'runtimepath'. Filetype plugins, syntax files, indent files all auto-load by name.",
-  "keys": [":source", ":scriptnames"],
-  "lessons": [498, 500],
-  "see_also": ["ex.set"],
-
+  "keys": [
+    ":source",
+    ":scriptnames"
+  ],
+  "lessons": [
+    498,
+    500
+  ],
+  "see_also": [
+    "ex.set"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Vim Configuration" },
-
-    { "type": "prose", "text": "Vim is configured by a startup script and an extensible *runtime path*. Knowing where files live makes debugging much easier." },
-
-    { "type": "heading", "level": 2, "text": "The startup file" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Vim Configuration"
+    },
+    {
+      "type": "prose",
+      "text": "Vim is configured by a startup script and an extensible *runtime path*. Knowing where files live makes debugging much easier."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The startup file"
+    },
     {
       "type": "table",
-      "headers": ["Editor",           "Config file"],
+      "headers": [
+        "Editor",
+        "Config file"
+      ],
       "rows": [
-        ["Vim (Unix)",                "`~/.vimrc` or `~/.vim/vimrc`"],
-        ["Vim (Windows)",             "`%USERPROFILE%\\_vimrc` or `%USERPROFILE%\\vimfiles\\vimrc`"],
-        ["Neovim",                    "`~/.config/nvim/init.vim` (or `init.lua`)"]
+        [
+          "Vim (Unix)",
+          "`~/.vimrc` or `~/.vim/vimrc`"
+        ],
+        [
+          "Vim (Windows)",
+          "`%USERPROFILE%\\_vimrc` or `%USERPROFILE%\\vimfiles\\vimrc`"
+        ],
+        [
+          "Neovim",
+          "`~/.config/nvim/init.vim` (or `init.lua`)"
+        ]
       ]
     },
-
-    { "type": "heading", "level": 2, "text": "The runtime path" },
-
-    { "type": "prose", "text": "`'runtimepath'` is a comma-separated list of directories Vim searches for plugins, syntax files, colorschemes, etc. By default it includes `~/.vim` and `$VIMRUNTIME`." },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The runtime path"
+    },
+    {
+      "type": "prose",
+      "text": "`'runtimepath'` is a comma-separated list of directories Vim searches for plugins, syntax files, colorschemes, etc. By default it includes `~/.vim` and `$VIMRUNTIME`."
+    },
     {
       "type": "table",
-      "headers": ["Subfolder",            "Auto-loads"],
+      "headers": [
+        "Subfolder",
+        "Auto-loads"
+      ],
       "rows": [
-        ["`plugin/`",                     "Run on startup, every session"],
-        ["`autoload/`",                   "Loaded on demand by name"],
-        ["`syntax/<filetype>.vim`",       "Loaded when buffer's filetype matches"],
-        ["`ftplugin/<filetype>.vim`",     "Same — for buffer-local settings"],
-        ["`indent/<filetype>.vim`",       "Same — for indenting rules"],
-        ["`colors/<name>.vim`",           "Loaded by `:colorscheme name`"],
-        ["`doc/`",                        "Help files (run `:helptags ALL` after install)"]
+        [
+          "`plugin/`",
+          "Run on startup, every session"
+        ],
+        [
+          "`autoload/`",
+          "Loaded on demand by name"
+        ],
+        [
+          "`syntax/<filetype>.vim`",
+          "Loaded when buffer's filetype matches"
+        ],
+        [
+          "`ftplugin/<filetype>.vim`",
+          "Same — for buffer-local settings"
+        ],
+        [
+          "`indent/<filetype>.vim`",
+          "Same — for indenting rules"
+        ],
+        [
+          "`colors/<name>.vim`",
+          "Loaded by `:colorscheme name`"
+        ],
+        [
+          "`doc/`",
+          "Help files (run `:helptags ALL` after install)"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "Debugging Mystery Behavior",
       "text": "When Vim does something unexpected:\n\n  • `:scriptnames` — list every script that's been loaded, in load order. Find out what set the option.\n  • `:verbose set X?` — show value of option X *and* the file where it was last assigned. Top tool.\n  • `:verbose imap <C-J>` — show what set a particular mapping (great for figuring out which plugin stole your binding).\n  • `vim --noplugin` or `vim -u NONE` — start Vim without any vimrc or plugins. If the bug disappears, it's in your config.\n\n**Plugin managers** (vim-plug, packer, lazy.nvim) all work by adding plugin directories to `'runtimepath'`. The mechanism is the same; only the convenience wrapper differs."
     },
-
-    { "type": "tip", "text": "After editing your vimrc, `:source $MYVIMRC` reloads it without restarting Vim." },
-
-    { "type": "qr", "topic": "advanced.config" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "After editing your vimrc, `:source $MYVIMRC` reloads it without restarting Vim."
+    },
+    {
+      "type": "internals",
+      "title": "Options partition into rendering, editing, and behavior",
+      "text": "Vim's option set is not flat. Rendering options (`'number'`, `'wrap'`, `'cursorline'`) only affect what the window draws. Editing options (`'shiftwidth'`, `'expandtab'`, `'autoindent'`) feed into the operator/insert layer. Behavior options (`'ignorecase'`, `'hlsearch'`, `'incsearch'`) configure subsystems like search. The `:set` command is one interface, but it dispatches across three subsystems with different reload semantics."
+    },
+    {
+      "type": "qr",
+      "topic": "advanced.config"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

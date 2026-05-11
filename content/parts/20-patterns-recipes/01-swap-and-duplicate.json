@@ -6,35 +6,74 @@
   "subtitle": "ddp swaps two lines. yyp duplicates one.",
   "part": "patterns-recipes",
   "summary": "Two of the oldest Vim recipes: ddp moves the current line down past the next one (a swap); yyp duplicates the current line. Both compose primitives you already know.",
-  "keys": ["dd", "p", "yy"],
-  "lessons": [461, 462],
-  "see_also": ["editing.delete", "editing.yank-put"],
-
+  "keys": [
+    "dd",
+    "p",
+    "yy"
+  ],
+  "lessons": [
+    461,
+    462
+  ],
+  "see_also": [
+    "editing.delete",
+    "editing.yank-put"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Swap and Duplicate Lines" },
-
-    { "type": "prose", "text": "Two recipes you'll see in every \"Vim tricks\" list. They aren't *features* — they're compositions of primitives that happen to do something useful." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Swap and Duplicate Lines"
+    },
+    {
+      "type": "prose",
+      "text": "Two recipes you'll see in every \"Vim tricks\" list. They aren't *features* — they're compositions of primitives that happen to do something useful."
+    },
     {
       "type": "table",
-      "headers": ["Recipe",    "Effect"],
+      "headers": [
+        "Recipe",
+        "Effect"
+      ],
       "rows": [
-        ["{key:d}{key:d}{key:p}",    "Swap current line with the one below"],
-        ["{key:d}{key:d}{key:k}{key:P}", "Swap current line with the one above"],
-        ["{key:y}{key:y}{key:p}",    "Duplicate current line below"],
-        ["{key:x}{key:p}",           "Swap two characters"]
+        [
+          "{key:d}{key:d}{key:p}",
+          "Swap current line with the one below"
+        ],
+        [
+          "{key:d}{key:d}{key:k}{key:P}",
+          "Swap current line with the one above"
+        ],
+        [
+          "{key:y}{key:y}{key:p}",
+          "Duplicate current line below"
+        ],
+        [
+          "{key:x}{key:p}",
+          "Swap two characters"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "Why It Works",
       "text": "{key:d}{key:d} cuts the current line into the unnamed register. The cursor lands on what was the *next* line. {key:p} pastes the line back — but {key:p} pastes a *line-wise* register **below** the cursor's line, putting the cut line one position later than where it started. Net effect: swap.\n\n{key:y}{key:y} yanks the line; the cursor doesn't move. {key:p} pastes below. Net effect: duplicate.\n\n{key:x}{key:p}: {key:x} deletes the character under the cursor (into unnamed reg) and the cursor moves to what was the *next* char. {key:p} pastes a character-wise register **after** the cursor — placing the cut character one position later. Swap."
     },
-
-    { "type": "tip", "text": "Move multiple lines? `:m` is cleaner: `:m+1` moves current line down one. Visual + `:m` moves a block." },
-
-    { "type": "qr", "topic": "patterns.swap-and-duplicate" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "Move multiple lines? `:m` is cleaner: `:m+1` moves current line down one. Visual + `:m` moves a block."
+    },
+    {
+      "type": "internals",
+      "title": "Recipes work because everything shares the type tag",
+      "text": "{key:x}{key:p}, {key:d}{key:d}{key:p}, {key:y}{key:y}{key:p} are not magic tricks — they're proofs that the register type tag (charwise vs linewise) and the type-aware paste algorithm are coherent. {key:y}{key:y} stores `(line_text, line)`, then {key:p} reads the `line` tag and pastes on a new line below. The whole composition is a one-line regression test for the register/paste contract."
+    },
+    {
+      "type": "qr",
+      "topic": "patterns.swap-and-duplicate"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

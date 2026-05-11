@@ -115,3 +115,45 @@ whose `.pdf` is missing or older than the source.
   `output/latex/book.log`, search for `! ` (LaTeX errors all start with
   bang). The line number in the error is relative to the originating
   `parts/<part>/<topic>.tex` file, not `book.tex`.
+
+## After every build: scan the LaTeX log for layout problems
+
+xelatex will happily produce a PDF even when text overflows the page
+margin or a box is taller than the page. These show up as **warnings**
+in the log, not errors. Future contributors (humans or LLMs) should
+**always** grep the log after a build:
+
+`
+Get-Content content\output\latex\book.log | Select-String "Overfull"
+`
+
+Two things to look for:
+
+- `Overfull \hbox` — a line of text or an image is too wide. Common
+  causes: an unbreakable URL in \texttt, a wide screenshot, a
+  `longtable` row that doesn't wrap. Fix by rewording, switching to
+  a non-monospace font, narrowing the figure, or using `p{}` columns.
+- `Overfull \vbox` — a callout/figure is taller than the page.
+  Almost always means a `tcolorbox` callout (`example`, `tipbox`,
+  `internals`) needs the `breakable` option so it can split across
+  pages.
+
+A clean build is one with **zero overfull warnings**. If you're adding
+new content or restyling, treat each new warning as a real bug to fix
+before declaring the build done.
+
+## Conventions for the LaTeX renderer
+
+- All headings use `\sffamily` (sans). Body is Libertinus Serif.
+- All callout `tcolorbox` definitions must be `breakable` so they
+  don't overflow short pages.
+- Every printed link is a QR code via `\qrcallout` whose URL goes
+  through the `vimfubook.com/r/<slug>` redirect (see
+  `content/lib/redirects.py`). The only exception is the sample QR
+  on the "About the QR codes" page, which intentionally points
+  straight at the site root.
+- The plain-text URL printed beside each QR is stripped of
+  `https://` / `www.` via `_display_url()` so it reads like a
+  human would type it.
+- The TOC has no numbers (`\setcounter{secnumdepth}{-2}`); chapters
+  indent under their parent part to show hierarchy.

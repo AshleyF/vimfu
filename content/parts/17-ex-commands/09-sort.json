@@ -1,0 +1,53 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "ex.sort",
+  "title": "Sort and Reorder Lines",
+  "subtitle": ":sort with flags handles unique, numeric, reverse, and key-based sorting.",
+  "part": "ex-commands",
+  "summary": ":sort sorts lines lexicographically. Flags switch on numeric, ignore-case, unique, and reverse modes. /pattern/ as a key sorts by the *post-pattern* portion of each line.",
+  "keys": [":sort"],
+  "lessons": [],
+  "see_also": ["ex.shell", "ex.global"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Sort and Reorder Lines" },
+
+    { "type": "prose", "text": "{key::}{key:s}{key:o}{key:r}{key:t} sorts a range of lines in place. With no range, the whole file. Combine flags to get the exact ordering you want without leaving the editor." },
+
+    { "type": "heading", "level": 2, "text": "Flags" },
+    {
+      "type": "table",
+      "headers": ["Command",          "Effect"],
+      "rows": [
+        [":sort",                     "Sort the whole file lexicographically"],
+        [":sort u",                   "Unique — drop duplicate lines after sorting"],
+        [":sort i",                   "Ignore case"],
+        [":sort n",                   "Numeric (treat lines as numbers)"],
+        [":sort r",                   "Reverse"],
+        [":sort un",                  "Unique + numeric"],
+        [":'<,'>sort",                "Sort the visual selection"],
+        [":10,20sort",                "Sort lines 10–20"],
+        [":sort /^\\s*/",             "Sort by the part *after* leading whitespace"],
+        [":sort! r /,/",              "Reverse-sort by the comma-separated key"]
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "The /pattern/ key trick",
+      "text": "By default {key::}{key:s}{key:o}{key:r}{key:t} compares whole lines. Add `/pattern/` and the comparator runs against the substring *after* the first match of `pattern` on each line — the pattern itself is skipped. So `:sort /,/` sorts by what comes after the first comma; `:sort /^\\s*/` sorts ignoring leading whitespace. Add `r` after the slash and the comparator uses the *match itself* instead of what comes after."
+    },
+
+    {
+      "type": "internals",
+      "title": "Sort is in-place and stable",
+      "text": "{key::}{key:s}{key:o}{key:r}{key:t} replaces the range's lines with their sorted permutation in a single buffer mutation, so it produces exactly one undo unit. The underlying algorithm is stable — equal-keyed lines preserve their input order — which matters when sorting by a `/pattern/` key that doesn't disambiguate every row."
+    },
+
+    { "type": "tip", "text": "To shuffle instead of sort, pipe through the shell: {key::}{key:%}{key:!}{key:s}{key:h}{key:u}{key:f} on Linux/macOS." },
+
+    { "type": "qr", "topic": "ex.sort" },
+    { "type": "buy-prompt" }
+  ]
+}

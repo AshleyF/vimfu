@@ -6,40 +6,102 @@
   "subtitle": "[ goes back, ] goes forward. The semantic siblings of search.",
   "part": "prefixes",
   "summary": "[ and ] form a paired-prefix family for navigating semantically: previous/next bracket, function, comment, change, spelling error, etc. Mostly used in code.",
-  "keys": ["[(", "])", "[{", "]}", "[m", "]m", "[c", "]c", "[s", "]s"],
-  "lessons": [317, 333],
-  "see_also": ["prefixes.g-overview", "wider-motions.match-bracket"],
-
+  "keys": [
+    "[(",
+    "])",
+    "[{",
+    "]}",
+    "[m",
+    "]m",
+    "[c",
+    "]c",
+    "[s",
+    "]s"
+  ],
+  "lessons": [
+    317,
+    333
+  ],
+  "see_also": [
+    "prefixes.g-overview",
+    "wider-motions.match-bracket"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "The [ and ] Family" },
-
-    { "type": "prose", "text": "The bracket-prefix family is *symmetric*: {key:[} always means \"backward,\" {key:]} always means \"forward.\" The second key picks the *thing* to look for. {key:[}{key:c} = previous diff hunk; {key:]}{key:c} = next diff hunk. {key:[}{key:m} = previous method start; {key:]}{key:m} = next." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "The [ and ] Family"
+    },
+    {
+      "type": "prose",
+      "text": "The bracket-prefix family is *symmetric*: {key:[} always means \"backward,\" {key:]} always means \"forward.\" The second key picks the *thing* to look for. {key:[}{key:c} = previous diff hunk; {key:]}{key:c} = next diff hunk. {key:[}{key:m} = previous method start; {key:]}{key:m} = next."
+    },
     {
       "type": "internals",
       "title": "Symmetry Is the Whole Idea",
       "text": "Once you internalize the convention, the entire family becomes guessable:\n\n  • {key:[}{key:(} / {key:]}{key:)} — previous / next unmatched paren.\n  • {key:[}{key:{} / {key:]}{key:}} — previous / next unmatched brace.\n  • {key:[}{key:m} / {key:]}{key:m} — previous / next *method start*.\n  • {key:[}{key:M} / {key:]}{key:M} — previous / next *method end*.\n  • {key:[}{key:#} / {key:]}{key:#} — previous / next preprocessor `#if`/`#endif`.\n  • {key:[}{key:s} / {key:]}{key:s} — previous / next spelling error.\n  • {key:[}{key:c} / {key:]}{key:c} — previous / next diff change.\n  • {key:[}{key:I} — list lines containing the keyword under cursor (powerful, obscure).\n\nMost are language-aware via filetype plugins. {key:[}{key:m} on a Java buffer finds method starts; on plain text it does nothing useful."
     },
-
-    { "type": "heading", "level": 2, "text": "Reference" },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Key",                "Action"],
+      "headers": [
+        "Key",
+        "Action"
+      ],
       "rows": [
-        ["{key:[}{key:(} / {key:]}{key:)}", "Previous / next unmatched ("],
-        ["{key:[}{key:{} / {key:]}{key:}}", "Previous / next unmatched {"],
-        ["{key:[}{key:m} / {key:]}{key:m}", "Previous / next method start"],
-        ["{key:[}{key:M} / {key:]}{key:M}", "Previous / next method end"],
-        ["{key:[}{key:c} / {key:]}{key:c}", "Previous / next diff change"],
-        ["{key:[}{key:s} / {key:]}{key:s}", "Previous / next spelling error"],
-        ["{key:[}{key:I}",                  "List occurrences of keyword under cursor"],
-        ["{key:[}{key:p} / {key:]}{key:p}", "Put before / after, adjusting indent"],
-        ["{key:[}{key:#} / {key:]}{key:#}", "Previous / next preprocessor directive"]
+        [
+          "{key:[}{key:(} / {key:]}{key:)}",
+          "Previous / next unmatched ("
+        ],
+        [
+          "{key:[}{key:{} / {key:]}{key:}}",
+          "Previous / next unmatched {"
+        ],
+        [
+          "{key:[}{key:m} / {key:]}{key:m}",
+          "Previous / next method start"
+        ],
+        [
+          "{key:[}{key:M} / {key:]}{key:M}",
+          "Previous / next method end"
+        ],
+        [
+          "{key:[}{key:c} / {key:]}{key:c}",
+          "Previous / next diff change"
+        ],
+        [
+          "{key:[}{key:s} / {key:]}{key:s}",
+          "Previous / next spelling error"
+        ],
+        [
+          "{key:[}{key:I}",
+          "List occurrences of keyword under cursor"
+        ],
+        [
+          "{key:[}{key:p} / {key:]}{key:p}",
+          "Put before / after, adjusting indent"
+        ],
+        [
+          "{key:[}{key:#} / {key:]}{key:#}",
+          "Previous / next preprocessor directive"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "prefixes.bracket-pairs" },
-    { "type": "buy-prompt" }
+    {
+      "type": "internals",
+      "title": "Bracket-prefix commands are 'navigate by structure'",
+      "text": "The {key:[} and {key:]} prefixes share a theme: jump to the next/previous structural token. {key:[}{key:[}, {key:]}{key:]} jump by section; {key:[}{key:m}, {key:]}{key:m} by method; {key:[}{key:s}, {key:]}{key:s} by misspelled word; {key:[}{key:c}, {key:]}{key:c} by diff hunk. Each pair shares the same direction-flip implementation; only the structural predicate changes."
+    },
+    {
+      "type": "qr",
+      "topic": "prefixes.bracket-pairs"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

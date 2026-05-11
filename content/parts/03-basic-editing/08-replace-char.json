@@ -3,9 +3,9 @@
   "version": 1,
   "id": "editing.replace-char",
   "title": "Replace a Character",
-  "subtitle": "r{char} \u2014 overwrite one character without entering Insert mode.",
+  "subtitle": "r{char} — overwrite one character without entering Insert mode.",
   "part": "editing",
-  "summary": "r{char} replaces the character under the cursor with {char} and stays in Normal mode. Perfect for fixing a typo without an i\u2026Esc dance.",
+  "summary": "r{char} replaces the character under the cursor with {char} and stays in Normal mode. Perfect for fixing a typo without an i…Esc dance.",
   "keys": [
     "r"
   ],
@@ -46,11 +46,11 @@
     {
       "type": "embed",
       "lesson": 45,
-      "caption": "r{char} \u2014 replace one character"
+      "caption": "r{char} — replace one character"
     },
     {
       "type": "tip",
-      "text": "{key:r}{key:Enter} replaces the character with a newline \u2014 a sneaky way to break a line at the cursor without entering Insert mode."
+      "text": "{key:r}{key:Enter} replaces the character with a newline — a sneaky way to break a line at the cursor without entering Insert mode."
     },
     {
       "type": "internals",
@@ -59,7 +59,7 @@
     },
     {
       "type": "tip",
-      "text": "If you need to overwrite many characters with different ones, use Replace mode ({key:R}) \u2014 it's like Insert mode but each typed character overwrites instead of pushing. See [`transform.replace-mode`](#transform.replace-mode)."
+      "text": "If you need to overwrite many characters with different ones, use Replace mode ({key:R}) — it's like Insert mode but each typed character overwrites instead of pushing. See [`transform.replace-mode`](#transform.replace-mode)."
     },
     {
       "type": "divider"
@@ -101,6 +101,11 @@
     {
       "type": "example",
       "ref": "editing.replace-char"
+    },
+    {
+      "type": "internals",
+      "title": "Replace mode keeps a shadow buffer",
+      "text": "{key:R} can't be implemented as 'overwrite forward' alone, because Backspace must restore each original character. So replace mode tracks a small shadow region — the line as it was at entry — and the Backspace handler diffs against that shadow to put back what you replaced. The shadow also clamps how far Backspace can go: you can never erase past your entry point."
     },
     {
       "type": "qr",

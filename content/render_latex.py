@@ -77,7 +77,22 @@ def _qr_for_slug(slug: str) -> tuple[Path, str]:
     p = REDIRECT_QR_DIR / f"{slug}.svg"
     if not p.exists():
         p.write_text(_qr_svg(url), encoding="utf-8")
-    return p, url
+    return p, _display_url(url)
+
+
+def _display_url(url: str) -> str:
+    """Strip protocol + ``www.`` for the human-readable form printed beside
+    a QR code. The QR itself still encodes the full URL; this is just the
+    fallback caption a reader can type if they can't scan."""
+    if not url:
+        return url
+    for prefix in ("https://", "http://"):
+        if url.startswith(prefix):
+            url = url[len(prefix):]
+            break
+    if url.startswith("www."):
+        url = url[4:]
+    return url
 
 
 # -------- topic loading (mirrors render_indesign.py) --------------------- #
@@ -179,6 +194,37 @@ _combined = re.compile(
 )
 
 
+def _index_key_entry(k: str) -> str:
+    """Build an \\index entry for a key keystroke, sub-grouped under "Keys".
+
+    Uses makeindex's `sort@display` syntax. In the display half we must
+    keep raw `{` and `}` balanced from makeindex's point of view, so any
+    literal `{`/`}` in the keystroke are rendered with `\\textbraceleft` /
+    `\\textbraceright` instead of `\\{` / `\\}`.
+    """
+    # Sort key: must have balanced braces (LaTeX parses the \index argument).
+    # Substitute brace/backslash with ASCII placeholders so they survive both
+    # LaTeX tokenisation and makeindex sorting.
+    _sort_subst = {"{": "lbrace", "}": "rbrace", "\\": "bslash"}
+    sort_key = "".join(_sort_subst.get(c, ('"' + c if c in '!@|"' else c)) for c in k)
+    safe_chars = []
+    for c in k:
+        if c == "{":
+            safe_chars.append("\\textbraceleft{}")
+        elif c == "}":
+            safe_chars.append("\\textbraceright{}")
+        elif c == "\\":
+            safe_chars.append("\\textbackslash{}")
+        elif c == "|":
+            safe_chars.append("\\textbar{}")
+        elif c in "#$%&_^~":
+            safe_chars.append("\\" + c)
+        else:
+            safe_chars.append(c)
+    display = "\\texttt{" + "".join(safe_chars) + "}"
+    return f"\\index{{Keys!{sort_key}@{display}}}"
+
+
 def render_inline(text: str, *, index) -> str:
     if text is None:
         return ""
@@ -191,7 +237,7 @@ def render_inline(text: str, *, index) -> str:
         raw = m.group(0)
         if kind == "key":
             k = _KEY_RE.match(raw).group(1)
-            out.append(f"\\key{{{tex_escape_inline_code(k)}}}")
+            out.append(f"\\key{{{tex_escape_inline_code(k)}}}{_index_key_entry(k)}")
         elif kind == "link":
             mm = _LINK_RE.match(raw)
             label, tid = mm.group(1), mm.group(2)
@@ -337,6 +383,8 @@ def render_block(b, *, index, examples) -> list[str]:
                 key = step.get("key", "")
                 note = inl(step.get("note", ""))
             key_run = f"\\key{{{tex_escape_inline_code(key)}}}" if key else ""
+            if key:
+                key_run += _index_key_entry(key)
             out.append(f"  {key_run} & {note} \\\\")
         out.append("\\end{keytable}")
 
@@ -359,7 +407,7 @@ def render_block(b, *, index, examples) -> list[str]:
                 else:
                     cols.append(
                         "p{\\dimexpr(\\linewidth-\\keycolwidth*"
-                        f"{len(key_cols)})/{non_key_count}-1em\\relax}}"
+                        f"{len(key_cols)})/{non_key_count}-1.2em\\relax}}"
                     )
             spec = "@{}" + "".join(cols) + "@{}"
             out.append("\\par\\begin{longtable}{" + spec + "}")
@@ -378,26 +426,23 @@ def render_block(b, *, index, examples) -> list[str]:
 
     elif bt == "embed":
         lesson = b.get("lesson", "")
-        cap = inl(b.get("caption", ""))
         v = video_for_lesson(lesson) if lesson != "" else None
         title = (v["title"] if v else f"Lesson {lesson}")
         # In a print book a video link is useless without a QR. We always
         # encode the redirect URL (vimfubook.com/r/v-NNNN) — the redirect
         # map handles "not yet published" with a coming-soon page, so we
-        # don't need a separate fallback path here.
+        # don't need a separate fallback path here. We deliberately drop
+        # the inline caption: it's almost always the same words as the
+        # video title, and the QR title already says "Watch: <title>".
         if isinstance(lesson, int) or (isinstance(lesson, str) and str(lesson).strip().isdigit()):
             qr_p, qr_url = _qr_for_slug(video_slug(int(lesson)))
             out.append(
                 "\\qrcallout{" + latex_path(qr_p)
                 + "}{Watch: " + tex_escape(title) + "}{" + tex_escape(qr_url) + "}"
             )
-            if cap:
-                out.append("\\par " + cap)
         else:
             out.append("\\begin{videocallout}")
             out.append(f"\\textbf{{Watch:}} {tex_escape(title)}")
-            if cap:
-                out.append("\\par " + cap)
             out.append("\\end{videocallout}")
 
     elif bt == "internals":
@@ -446,9 +491,12 @@ def render_topic_body(t, index, examples) -> str:
     title = t.get("title", "(untitled)")
     tid = t.get("id", t["__file_stem"])
     out.append(f"\\chapter{{{inl(title)}}}\\label{{topic:{tex_escape(tid)}}}")
-    # Auto-index entry per topic — lets readers find any topic by name in
-    # the back-of-book index with its real page number.
-    out.append(f"\\index{{{tex_escape(title)}}}")
+    # Index every key the topic claims to be about (keys[] array on the JSON
+    # frontmatter). We deliberately do NOT index the chapter title itself --
+    # that would just duplicate the table of contents. The index is for
+    # *terms* (keys, modes, concepts) found inside the body.
+    for k in (t.get("keys") or []):
+        out.append(_index_key_entry(str(k)))
 
     if sub := t.get("subtitle"):
         out.append("\\par\\textit{" + inl(sub) + "}\\par\\medskip")
@@ -493,17 +541,21 @@ def render_topic_body(t, index, examples) -> str:
     vids = [v for v in vids if v["lesson"] not in embedded_lessons]
     if vids:
         out.append("\\section*{Watch Online}")
-        out.append("\\begin{itemize}")
+        out.append(
+            "\\noindent\\small Scan to watch the supporting videos for this "
+            "topic.\\normalsize\\par\\medskip"
+        )
         for v in vids:
-            url = v.get("url")
-            if url:
-                line = (f"\\#{v['lesson']:04d} --- {tex_escape(v['title'])}"
-                        f" --- \\texttt{{{tex_escape(url)}}}")
+            lesson_n = v.get("lesson")
+            title = tex_escape(v.get("title") or f"Lesson {lesson_n}")
+            if v.get("published") and lesson_n is not None:
+                qr_p, qr_url = _qr_for_slug(video_slug(int(lesson_n)))
+                out.append(
+                    "\\qrcallout{" + latex_path(qr_p)
+                    + "}{Watch: " + title + "}{" + tex_escape(qr_url) + "}"
+                )
             else:
-                line = (f"\\#{v['lesson']:04d} --- {tex_escape(v['title'])}"
-                        " (not yet published)")
-            out.append("  \\item " + line)
-        out.append("\\end{itemize}")
+                out.append(f"\\par\\noindent\\textit{{{title}}} (coming soon)")
 
     if see_also := t.get("see_also"):
         labels = []
@@ -524,7 +576,13 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+\usepackage{fontspec}
+% Book-style typography: classic-feel serif body with a clean sans for headings.
+% Libertinus is shipped with MiKTeX/TeX Live and is designed as a unified family
+% (serif/sans/mono share metrics), giving us a polished, book-like look.
+\setmainfont{Libertinus Serif}
+\setsansfont{Libertinus Sans}
+\setmonofont{Libertinus Mono}
 \usepackage[paperwidth=6in,paperheight=9in,margin=0.6in,bindingoffset=0.25in]{geometry}
 \usepackage{microtype}
 \usepackage{xcolor}
@@ -538,12 +596,41 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{tocloft}
+% Numbered parts with Arabic numerals (no Roman); unnumbered chapters/sections
+% (titles only -- the TOC carries the page numbers).
+\renewcommand{\thepart}{\arabic{part}}
+\setcounter{secnumdepth}{-1}
 % Widen the TOC page-number column so 3-digit numbers don't collide with titles.
-\setlength{\cftchapnumwidth}{2.2em}
-\setlength{\cftsecnumwidth}{3em}
-\setlength{\cftsubsecnumwidth}{3.6em}
+% Chapters/sections aren't numbered, so collapse their number-column gap to 0.
+% No numbering anywhere -- titles only. Parts, chapters, sections all unnumbered.
+\setcounter{secnumdepth}{-2}
+% TOC: collapse all number columns and indent chapters under parts to show
+% hierarchy without numbers.
+\setlength{\cftchapnumwidth}{0pt}
+\setlength{\cftsecnumwidth}{0pt}
+\setlength{\cftsubsecnumwidth}{0pt}
+\setlength{\cftchapindent}{1.2em}
+\setlength{\cftsecindent}{2.4em}
+\setlength{\cftsubsecindent}{3.6em}
 \cftsetpnumwidth{3em}
 \cftsetrmarg{3.5em}
+% Render TOC entries in sans, matching the headings in the body.
+\renewcommand{\cftpartfont}{\sffamily\bfseries}
+\renewcommand{\cftchapfont}{\sffamily}
+\renewcommand{\cftsecfont}{\sffamily}
+\renewcommand{\cftsubsecfont}{\sffamily}
+\renewcommand{\cftpartpagefont}{\sffamily\bfseries}
+\renewcommand{\cftchappagefont}{\sffamily}
+\renewcommand{\cftsecpagefont}{\sffamily}
+\renewcommand{\cftsubsecpagefont}{\sffamily}
+% Sans "Contents" heading.
+\renewcommand{\cfttoctitlefont}{\sffamily\Huge\bfseries}
+% Tighter leading inside chapters; keep visible breathing room before each
+% new chapter so the structure reads at a glance.
+\setlength{\cftbeforepartskip}{14pt plus 1pt}
+\setlength{\cftbeforechapskip}{6pt plus 1pt}
+\setlength{\cftbeforesecskip}{1pt}
+\setlength{\cftbeforesubsecskip}{1pt}
 
 % Modern typography: single-spacing after periods (no Victorian double-spacing),
 % suppress orphans/widows, ragged bottom for even leading.
@@ -604,13 +691,13 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
   formatcom=\color{black}}
 
 % --- Tip box ----------------------------------------------------------------
-\newtcolorbox{tipbox}{enhanced,colback=tipbg,colframe=tipbg,coltext=tipfg,
+\newtcolorbox{tipbox}{enhanced,breakable,colback=tipbg,colframe=tipbg,coltext=tipfg,
   arc=2pt,boxrule=0pt,leftrule=3pt,
   borderline west={2pt}{0pt}{tipborder},
   left=10pt,right=8pt,top=6pt,bottom=6pt}
 
 % --- Internals callout ------------------------------------------------------
-\newtcolorbox{internals}[1]{enhanced,colback=internalsbg,colframe=internalsbg,
+\newtcolorbox{internals}[1]{enhanced,breakable,colback=internalsbg,colframe=internalsbg,
   coltext=internalsfg,arc=2pt,boxrule=0pt,leftrule=3pt,
   borderline west={2pt}{0pt}{internalsborder},
   left=10pt,right=8pt,top=6pt,bottom=6pt,
@@ -618,7 +705,7 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
   attach title to upper={\par\medskip}}
 
 % --- Worked example callout -------------------------------------------------
-\newtcolorbox{example}[1]{enhanced,colback=examplebg,colframe=exampleborder,
+\newtcolorbox{example}[1]{enhanced,breakable,colback=examplebg,colframe=exampleborder,
   arc=2pt,boxrule=0.5pt,
   left=10pt,right=8pt,top=6pt,bottom=6pt,
   title={\textbf{Worked Example: #1}},coltitle=black,fonttitle=\bfseries,
@@ -640,7 +727,7 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \newlength{\keycolwidth}
 \setlength{\keycolwidth}{7.5em}
 \newenvironment{keytable}{%
-  \par\medskip\begin{tabular}{@{}p{\keycolwidth}p{\dimexpr\linewidth-\keycolwidth-1em\relax}@{}}}{%
+  \par\medskip\begin{tabular}{@{}p{\keycolwidth}@{\hspace{1em}}p{\dimexpr\linewidth-\keycolwidth-2.6em\relax}@{}}}{%
   \end{tabular}\par\medskip}
 
 % --- Video callout ----------------------------------------------------------
@@ -655,7 +742,7 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
   \par\medskip\noindent\begin{minipage}[c]{0.18\linewidth}%
     \includegraphics[width=\linewidth]{#1}%
   \end{minipage}\hfill\begin{minipage}[c]{0.78\linewidth}%
-    \textbf{#2}\par\smallskip\small\texttt{#3}%
+    {\sffamily\bfseries #2}\par\smallskip{\footnotesize\sffamily #3}%
   \end{minipage}\par\medskip}
 
 % Slightly tighter chapter heading.
@@ -665,14 +752,17 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 % a 6x9 page. \raggedright in the title body lets LaTeX break wherever it
 % needs to instead of trying to justify a single oversize word.
 \titleformat{\chapter}[block]
-  {\LARGE\bfseries\raggedright}
+  {\sffamily\LARGE\bfseries\raggedright}
   {\thechapter\hspace{0.6em}}{0pt}{}
 \titlespacing*{\chapter}{0pt}{-12pt}{14pt}
 % Section / subsection headings get the same treatment for consistency.
 \titleformat{\section}[block]
-  {\Large\bfseries\raggedright}{\thesection\hspace{0.5em}}{0pt}{}
+  {\sffamily\Large\bfseries\raggedright}{\thesection\hspace{0.5em}}{0pt}{}
 \titleformat{\subsection}[block]
-  {\large\bfseries\raggedright}{\thesubsection\hspace{0.5em}}{0pt}{}
+  {\sffamily\large\bfseries\raggedright}{\thesubsection\hspace{0.5em}}{0pt}{}
+% Part page: just the title, no "Part N" label, in sans.
+\titleformat{\part}[display]
+  {\sffamily\Huge\bfseries\centering}{}{0pt}{}
 
 % TikZ for the \key{} cap — load before the \key{} definition above wouldn't
 % help (forward reference), so put the load-and-providecommand-fallback here.
@@ -771,14 +861,28 @@ def main() -> int:
         + "}{Report a problem (email)}{"
         + tex_escape(report_qr_url) + "}"
     )
+    # Sample QR for the "About the QR codes" front-matter chapter -- gives the
+    # reader something to scan immediately so they know how it works. This one
+    # bypasses the /r/ redirect and points straight at the site root: a
+    # redirect for "open vimfubook.com" is meaningless (if the domain itself
+    # ever moves, every redirect on it is broken anyway).
+    REDIRECT_QR_DIR.mkdir(parents=True, exist_ok=True)
+    _site_url_full = "https://vimfubook.com/"
+    sample_qr_path = REDIRECT_QR_DIR / "_site-direct.svg"
+    if not sample_qr_path.exists():
+        sample_qr_path.write_text(_qr_svg(_site_url_full), encoding="utf-8")
+    sample_qr_callout = (
+        "\\qrcallout{" + latex_path(sample_qr_path)
+        + "}{Try it: open vimfubook.com}{}"
+    )
 
     book_tex = (
         "\\input{preamble}\n"
         "\\begin{document}\n"
         "\\frontmatter\n"
-        "\\title{VimFu}\n"
+        "\\title{\\sffamily\\bfseries VimFu}\n"
         "\\author{}\n"
-        f"\\date{{{tex_escape(edition_string)}}}\n"
+        f"\\date{{\\sffamily {tex_escape(edition_string)}}}\n"
         "\\maketitle\n"
         "\\tableofcontents\n"
         "\\chapter*{About the QR codes}\n"
@@ -799,7 +903,10 @@ def main() -> int:
         "domain \\texttt{vimfubook.com} (under the \\texttt{/r/} prefix)---"
         "a redirect we own. That means if a "
         "video moves or a page is restructured we can re-aim the link "
-        "without ever invalidating a printed code.\n"
+        "without ever invalidating a printed code.\n\n"
+        "\\noindent\\textbf{Try one now---this code opens the website:}"
+        "\\par\\medskip\n"
+        + sample_qr_callout + "\n"
         "\\mainmatter\n"
         + "\n".join(book_parts) + "\n"
         "\\backmatter\n"

@@ -36,7 +36,7 @@
     },
     {
       "type": "prose",
-      "text": "The {key:g} prefix is Vim's *miscellaneous drawer* \u2014 and it's huge. Roughly thirty commands live behind it. The unifying theme is \"this didn't fit on a one-key shortcut, so it got the {key:g} prefix.\" Worth a flat reference table."
+      "text": "The {key:g} prefix is Vim's *miscellaneous drawer* — and it's huge. Roughly thirty commands live behind it. The unifying theme is \"this didn't fit on a one-key shortcut, so it got the {key:g} prefix.\" Worth a flat reference table."
     },
     {
       "type": "internals",
@@ -161,7 +161,7 @@
         ],
         [
           "{key:g}{key:r}{c}",
-          "Replace (virtual) \u2014 see [`transform.replace-mode`](#transform.replace-mode)"
+          "Replace (virtual) — see [`transform.replace-mode`](#transform.replace-mode)"
         ],
         [
           "{key:g}{key:R}",
@@ -184,6 +184,11 @@
     {
       "type": "example",
       "ref": "prefix.g"
+    },
+    {
+      "type": "internals",
+      "title": "{key:g} is a prefix router, not a command",
+      "text": "Vim's parser is a prefix dispatch tree: after {key:g} it waits for a second key and dispatches to a different handler depending on what arrives ({key:g}{key:g}, {key:g}{key:e}, {key:g}{key:U}, {key:g}{key:;}, …). That's why {key:g} alone does nothing — it's an open node in the tree. Same pattern for {key:z}, {key:[}, {key:]}, and the operator-pending state."
     },
     {
       "type": "qr",

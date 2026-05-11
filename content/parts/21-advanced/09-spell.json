@@ -1,0 +1,73 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "advanced.spell",
+  "title": "Spell Checking",
+  "subtitle": "Built-in spell checker with per-language dictionaries.",
+  "part": "advanced",
+  "summary": "Vim ships with a real spell checker. Toggle it with `:set spell`, jump misspellings with [s/]s, suggest fixes with z=, add words to a personal dictionary with zg.",
+  "keys": ["[s", "]s", "z=", "zg", "zw", "zug", "zuw"],
+  "lessons": [],
+  "see_also": ["prefixes.z-overview", "prefixes.bracket-pairs"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Spell Checking" },
+
+    { "type": "prose", "text": "Vim has a real spell checker built in — not an after-thought, not a plugin. Turn it on with {key::}{key:s}{key:e}{key:t} {key:s}{key:p}{key:e}{key:l}{key:l}, and misspelled words get a wavy underline (or whatever your `'spell'` highlight defines)." },
+
+    { "type": "heading", "level": 2, "text": "Toggle and language" },
+    {
+      "type": "table",
+      "headers": ["Command", "Effect"],
+      "rows": [
+        [":set spell",            "Turn spell checking on for the current buffer"],
+        [":set nospell",          "Turn it off"],
+        [":setlocal spell!",      "Toggle, only for this buffer"],
+        [":set spelllang=en_us",  "Use the US English dictionary"],
+        [":set spelllang=en_us,de_de", "Spell check against multiple languages at once"]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "Move between misspellings" },
+    {
+      "type": "keys",
+      "label": "Bracket-prefix navigation",
+      "sequence": [
+        { "key": "]s", "note": "Jump to the next misspelled word" },
+        { "key": "[s", "note": "Jump to the previous misspelled word" },
+        { "key": "]S", "note": "Same as ]s but only flag bad words (skip rare/regional)" },
+        { "key": "[S", "note": "Same as [s but only flag bad words" }
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "Fix and learn" },
+    {
+      "type": "keys",
+      "label": "Suggest, accept, undo",
+      "sequence": [
+        { "key": "z=", "note": "Show suggestions for the word under cursor (numbered list, type a digit + Enter)" },
+        { "key": "zg", "note": "Good word — add to your personal dictionary (file at 'spellfile')" },
+        { "key": "zw", "note": "Wrong word — mark as misspelled in your personal dictionary" },
+        { "key": "zug", "note": "Undo a previous zg" },
+        { "key": "zuw", "note": "Undo a previous zw" }
+      ]
+    },
+
+    {
+      "type": "internals",
+      "title": "Spell as window-layer state",
+      "text": "Spell checking lives in the same `z`-prefixed family as folds and viewport scroll because, internally, it's the same kind of thing: presentation metadata layered over the buffer. The spell checker doesn't modify text — it asks the highlighter to mark certain ranges. The misspelling list is recomputed lazily as the window scrolls, against the merged dictionary set in `'spelllang'`. Adding a word with {key:z}{key:g} writes to your personal `'spellfile'` (default `~/.config/nvim/spell/<lang>.utf-8.add`) and triggers a recompile of the binary spell file, then re-runs the highlighter over visible lines."
+    },
+
+    {
+      "type": "internals",
+      "title": "Why `z=` opens a numbered prompt",
+      "text": "The suggester is a small ranked list — typically 25 candidates by default — produced by combining edit distance, soundalike rules from the language's affix file, and case-fold rules. Vim renders the list as a numbered menu rather than as a popup because the command-line is the only piece of UI that's guaranteed to exist in every Vim build. Picking a number performs a `:s/<bad>/<good>/g` on the visible match — same substitute machinery as everything else."
+    },
+
+    { "type": "tip", "text": "Set {key::}{key:s}{key:e}{key:t} {key:s}{key:p}{key:e}{key:l}{key:l}{key:c}{key:a}{key:p}{key:i}{key:t}{key:a}{key:l}{key:=} to disable the 'sentences must start with a capital' rule, which fires constantly inside code comments." },
+
+    { "type": "qr", "topic": "advanced.spell" },
+    { "type": "buy-prompt" }
+  ]
+}

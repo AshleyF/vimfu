@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quickfix and Location Lists — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Ex Commands</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="07-set.html" rel="prev">← Setting Options (:set)</a></span>
+  <span class="pager-pos">92 / 136</span>
+  <span class="pager-next"><a class="pager-link" href="09-sort.html" rel="next">Sort and Reorder Lines →</a></span>
+</nav>
+<article>
+<h1>Quickfix and Location Lists</h1>
+<p class="subtitle">A typed list of file:line:message — the spine of grep, make, and lint workflows.</p>
+<p class="meta"><code>id: ex.quickfix</code> &middot; part: <strong>ex-commands</strong> &middot; keys: <kbd>:make</kbd>, <kbd>:grep</kbd>, <kbd>:vimgrep</kbd>, <kbd>:copen</kbd>, <kbd>:cnext</kbd>, <kbd>:cprev</kbd>, <kbd>:cclose</kbd></p>
+<blockquote class="summary">:make, :grep, and :vimgrep populate the quickfix list. :copen shows it; :cnext / :cprev step through entries. The location list is the per-window twin.</blockquote>
+<p>The quickfix list is Vim&#x27;s universal results pane. Compile errors, grep hits, lint warnings, test failures — they all funnel into the same list with the same navigation keys. Once you wire your tools through it, every command-line workflow becomes a structured editing session.</p>
+<h3>Populate the list</h3>
+<table>
+<thead><tr>
+<th>Command</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td>:make</td>
+<td>Run <code>&#x27;makeprg&#x27;</code> (default <code>make</code>), capture errors via <code>&#x27;errorformat&#x27;</code></td>
+</tr>
+<tr>
+<td>:make test</td>
+<td>Pass arguments to the make program</td>
+</tr>
+<tr>
+<td>:grep PATTERN [PATH]</td>
+<td>Run external grep (<code>&#x27;grepprg&#x27;</code>), populate from results</td>
+</tr>
+<tr>
+<td>:vimgrep /PATTERN/ FILES</td>
+<td>Run Vim&#x27;s internal grep (no shell)</td>
+</tr>
+<tr>
+<td>:vimgrep /TODO/ **/*.py</td>
+<td>Recursively find TODO in Python files</td>
+</tr>
+<tr>
+<td>:cexpr system(&#x27;rg --vimgrep PATTERN&#x27;)</td>
+<td>Inject any tool&#x27;s output via <code>&#x27;errorformat&#x27;</code></td>
+</tr>
+</tbody></table>
+<h3>Navigate the list</h3>
+<figure class="keys">
+<figcaption>Step through entries</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>:copen</kbd></td><td>Open the quickfix window (fills the bottom)</td></tr>
+<tr><td><kbd>:cclose</kbd></td><td>Close it</td></tr>
+<tr><td><kbd>:cnext</kbd></td><td>Jump to the next entry</td></tr>
+<tr><td><kbd>:cprev</kbd></td><td>Jump to the previous entry</td></tr>
+<tr><td><kbd>:cfirst</kbd></td><td>Jump to the first</td></tr>
+<tr><td><kbd>:clast</kbd></td><td>Jump to the last</td></tr>
+<tr><td><kbd>:cc N</kbd></td><td>Jump to entry number N</td></tr>
+</tbody></table></figure>
+<aside class="tip"><strong>Tip.</strong> In the quickfix window, <kbd>Enter</kbd> opens the entry under the cursor. <kbd>p</kbd> previews it without leaving. <kbd>:</kbd><kbd>c</kbd><kbd>o</kbd><kbd>l</kbd><kbd>d</kbd><kbd>e</kbd><kbd>r</kbd> restores a previous quickfix list — Vim keeps a stack of them.</aside>
+<h3>Location list — same idea, scoped to a window</h3>
+<p>Replace every <kbd>c</kbd>-prefixed command with <kbd>l</kbd>: <kbd>:</kbd><kbd>l</kbd><kbd>m</kbd><kbd>a</kbd><kbd>k</kbd><kbd>e</kbd>, <kbd>:</kbd><kbd>l</kbd><kbd>g</kbd><kbd>r</kbd><kbd>e</kbd><kbd>p</kbd>, <kbd>:</kbd><kbd>l</kbd><kbd>o</kbd><kbd>p</kbd><kbd>e</kbd><kbd>n</kbd>, <kbd>:</kbd><kbd>l</kbd><kbd>n</kbd><kbd>e</kbd><kbd>x</kbd><kbd>t</kbd>, <kbd>:</kbd><kbd>l</kbd><kbd>p</kbd><kbd>r</kbd><kbd>e</kbd><kbd>v</kbd>. The list lives on the window, not the editor, so two splits can run two greps without stepping on each other.</p>
+<aside class="internals">
+<header>🔧 Under the Hood — Quickfix is a list of typed entries</header>
+<p>Internally each quickfix entry is <code>{ filename, lnum, col, type, text, valid }</code>. Population functions (<code>:make</code>, <code>:grep</code>, <code>:cexpr</code>) convert tool output into that struct via the <code>&#x27;errorformat&#x27;</code> scanf-like parser. The quickfix window is a buffer rendered from that list — that&#x27;s why you can&#x27;t really edit it (the renderer overwrites your changes). Navigation commands index into the list, open the entry&#x27;s file (in the current window), and place the cursor at <code>(lnum, col)</code>.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Location lists are per-window quickfix</header>
+<p>Vim keeps two parallel data structures: one global quickfix list (shared by all windows) and one location list per window. They use identical entry structure, identical commands modulo prefix, identical errorformat parsing. The duplication is intentional: it lets you run a project-wide search in the quickfix list while simultaneously running a file-local search in the location list of one window, without overwrites. The window-tied lifetime also means closing the window discards its location list.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Set <kbd>:</kbd><kbd>s</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>g</kbd><kbd>r</kbd><kbd>e</kbd><kbd>p</kbd><kbd>p</kbd><kbd>r</kbd><kbd>g</kbd><kbd>=</kbd><kbd>r</kbd><kbd>g</kbd> <kbd>--vimgrep</kbd> to use ripgrep — it&#x27;s massively faster than grep and produces output matching Vim&#x27;s default <code>&#x27;grepformat&#x27;</code>.</aside>
+<aside class="qr"><span>→ See also <a href="08-quickfix.html">Quickfix and Location Lists</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="06-shell.html">Shell Commands (:!)</a>, <a href="../21-advanced/10-tags.html">Tag Navigation</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="07-set.html" rel="prev">← Setting Options (:set)</a></span>
+  <span class="pager-pos">92 / 136</span>
+  <span class="pager-next"><a class="pager-link" href="09-sort.html" rel="next">Sort and Reorder Lines →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

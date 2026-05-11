@@ -3,7 +3,7 @@
   "version": 1,
   "id": "editing.insert-variants",
   "title": "More Ways into Insert",
-  "subtitle": "Five doors into Insert mode \u2014 pick the one that lands the cursor where you want.",
+  "subtitle": "Five doors into Insert mode — pick the one that lands the cursor where you want.",
   "part": "editing",
   "summary": "i and a are the two basic doors into Insert mode. I, A, o, O are the convenience doors that combine a motion with the entry.",
   "keys": [
@@ -34,7 +34,7 @@
     },
     {
       "type": "prose",
-      "text": "{key:i} inserts *before* the cursor. {key:a} appends *after*. That covers most of life \u2014 but Vim gives you four more doors that do a useful little motion on the way in."
+      "text": "{key:i} inserts *before* the cursor. {key:a} appends *after*. That covers most of life — but Vim gives you four more doors that do a useful little motion on the way in."
     },
     {
       "type": "keys",
@@ -81,27 +81,27 @@
     {
       "type": "embed",
       "lesson": 16,
-      "caption": "a \u2014 append after cursor"
+      "caption": "a — append after cursor"
     },
     {
       "type": "embed",
       "lesson": 17,
-      "caption": "I \u2014 insert at first non-blank"
+      "caption": "I — insert at first non-blank"
     },
     {
       "type": "embed",
       "lesson": 18,
-      "caption": "A \u2014 append at end of line"
+      "caption": "A — append at end of line"
     },
     {
       "type": "embed",
       "lesson": 19,
-      "caption": "o \u2014 open line below"
+      "caption": "o — open line below"
     },
     {
       "type": "embed",
       "lesson": 20,
-      "caption": "O \u2014 open line above"
+      "caption": "O — open line above"
     },
     {
       "type": "tip",
@@ -110,7 +110,7 @@
     {
       "type": "internals",
       "title": "These Are Just Motions + i",
-      "text": "Internally, {key:I} is exactly {key:^}{key:i} \u2014 jump to first non-blank, then enter Insert mode. {key:A} is {key:$}{key:a}. {key:o} and {key:O} create a new line (respecting `'autoindent'` and `'indentexpr'`) and drop you into Insert mode at column 0 of it.\n\nThis matters because Vim doesn't really have six \"insert commands.\" It has *one* (the mode transition), composed with motions you already know. Once you internalize that, the keyboard stops feeling arbitrary."
+      "text": "Internally, {key:I} is exactly {key:^}{key:i} — jump to first non-blank, then enter Insert mode. {key:A} is {key:$}{key:a}. {key:o} and {key:O} create a new line (respecting `'autoindent'` and `'indentexpr'`) and drop you into Insert mode at column 0 of it.\n\nThis matters because Vim doesn't really have six \"insert commands.\" It has *one* (the mode transition), composed with motions you already know. Once you internalize that, the keyboard stops feeling arbitrary."
     },
     {
       "type": "tip",
@@ -135,12 +135,12 @@
         [
           "{key:i}",
           "Before cursor",
-          "\u2014"
+          "—"
         ],
         [
           "{key:a}",
           "After cursor",
-          "\u2014"
+          "—"
         ],
         [
           "{key:I}",
@@ -165,13 +165,18 @@
         [
           "{key:gi}",
           "Last place you left Insert mode",
-          "\u2014"
+          "—"
         ]
       ]
     },
     {
       "type": "example",
       "ref": "editing.insert-variants"
+    },
+    {
+      "type": "internals",
+      "title": "Insert entries are cursor-placement transforms",
+      "text": "{key:i}, {key:a}, {key:I}, {key:A}, {key:o}, {key:O}, {key:s}, {key:S}, {key:c} all converge into the same insert-mode state machine. What differs is a single function that decides where the insert cursor lands and whether to splice in a new line first. Treat them as `(landing-rule, [pre-edit])` pairs, not nine separate commands. Once you see this, learning a new insert-entry key reduces to memorizing its landing rule."
     },
     {
       "type": "qr",

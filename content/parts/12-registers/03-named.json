@@ -3,9 +3,9 @@
   "version": 1,
   "id": "registers.named",
   "title": "Named Registers",
-  "subtitle": "\"a\u2013\"z \u2014 your 26 personal slots. Capitals append.",
+  "subtitle": "\"a–\"z — your 26 personal slots. Capitals append.",
   "part": "registers",
-  "summary": "Lowercase \"a\u2013\"z are 26 named registers you write to explicitly. Uppercase \"A\u2013\"Z append to the same registers instead of overwriting.",
+  "summary": "Lowercase \"a–\"z are 26 named registers you write to explicitly. Uppercase \"A–\"Z append to the same registers instead of overwriting.",
   "keys": [
     "\"a",
     "\"z",
@@ -78,11 +78,16 @@
     {
       "type": "internals",
       "title": "Same Registers Hold Macros",
-      "text": "When you record a macro with {key:q}{key:a}\u2026{key:q}, those keystrokes go into **register `a`** \u2014 exactly the same `a` you yank text into. Macros are just register contents.\n\nThis means you can:\n\n  \u2022 Yank a sequence of keystrokes you typed into a buffer with {key:\"}{key:a}{key:y}, then play it as a macro with {key:@}{key:a}.\n  \u2022 Edit a macro by pasting it into the buffer ({key:\"}{key:a}{key:p}), tweaking, then yanking back ({key:\"}{key:a}{key:y}{key:$}). See [`macros.editing`](#macros.editing).\n  \u2022 Compose macros: {key:\"}{key:A}{key:y}{key:y} appends a line to a recorded macro register, extending what {key:@}{key:a} will replay.\n\nThis unification is one of the most beautiful things in Vim's design."
+      "text": "When you record a macro with {key:q}{key:a}…{key:q}, those keystrokes go into **register `a`** — exactly the same `a` you yank text into. Macros are just register contents.\n\nThis means you can:\n\n  • Yank a sequence of keystrokes you typed into a buffer with {key:\"}{key:a}{key:y}, then play it as a macro with {key:@}{key:a}.\n  • Edit a macro by pasting it into the buffer ({key:\"}{key:a}{key:p}), tweaking, then yanking back ({key:\"}{key:a}{key:y}{key:$}). See [`macros.editing`](#macros.editing).\n  • Compose macros: {key:\"}{key:A}{key:y}{key:y} appends a line to a recorded macro register, extending what {key:@}{key:a} will replay.\n\nThis unification is one of the most beautiful things in Vim's design."
     },
     {
       "type": "example",
       "ref": "registers.named"
+    },
+    {
+      "type": "internals",
+      "title": "Named registers are explicit destinations",
+      "text": "Selecting a register with {key:\"}{key:a} routes the next command's output (or input, for paste) through that slot — once. The selection is consumed by the next operator, then resets. You can't 'set' a register persistently in normal mode; you can only direct individual commands at one. Capital letters ({key:\"}{key:A}) append instead of overwrite."
     },
     {
       "type": "qr",

@@ -3,7 +3,7 @@
   "version": 1,
   "id": "registers.clipboard",
   "title": "System Clipboard Registers",
-  "subtitle": "\"+ and \"* \u2014 bridge to the OS clipboard.",
+  "subtitle": "\"+ and \"* — bridge to the OS clipboard.",
   "part": "registers",
   "summary": "\"+ is the system clipboard. \"* is the X11 selection (Linux) or another alias for the clipboard. Yank into them, paste from them, or set 'clipboard' to make Vim use them by default.",
   "keys": [
@@ -25,7 +25,7 @@
     },
     {
       "type": "prose",
-      "text": "If you want text from Vim to land in your system clipboard \u2014 or vice versa \u2014 use {key:\"}{key:+}. {key:\"}{key:+}{key:y}{key:y} yanks a line into the clipboard. {key:\"}{key:+}{key:p} pastes from it."
+      "text": "If you want text from Vim to land in your system clipboard — or vice versa — use {key:\"}{key:+}. {key:\"}{key:+}{key:y}{key:y} yanks a line into the clipboard. {key:\"}{key:+}{key:p} pastes from it."
     },
     {
       "type": "keys",
@@ -54,7 +54,7 @@
     {
       "type": "internals",
       "title": "+ vs *",
-      "text": "Two clipboard registers exist on Linux/X11:\n\n  \u2022 **{key:\"}{key:+}** \u2014 the **CLIPBOARD** selection. The thing Ctrl-C/Ctrl-V uses in most apps. Use this one by default.\n  \u2022 **{key:\"}{key:*}** \u2014 the **PRIMARY** selection (X11). The thing middle-click pastes. Less universal; only matters in X11.\n\nOn macOS and Windows, both {key:\"}{key:+} and {key:\"}{key:*} map to the same system clipboard. On WSL, you may need extra setup (e.g. `xclip`, `win32yank`, or Neovim's clipboard provider).\n\nIf Vim was built without `+clipboard`, neither register exists. Check with {key::}{key:v}{key:e}{key:r}{key:s}{key:i}{key:o}{key:n}; look for `+clipboard`. Neovim ships with clipboard support that works wherever a provider exists."
+      "text": "Two clipboard registers exist on Linux/X11:\n\n  • **{key:\"}{key:+}** — the **CLIPBOARD** selection. The thing Ctrl-C/Ctrl-V uses in most apps. Use this one by default.\n  • **{key:\"}{key:*}** — the **PRIMARY** selection (X11). The thing middle-click pastes. Less universal; only matters in X11.\n\nOn macOS and Windows, both {key:\"}{key:+} and {key:\"}{key:*} map to the same system clipboard. On WSL, you may need extra setup (e.g. `xclip`, `win32yank`, or Neovim's clipboard provider).\n\nIf Vim was built without `+clipboard`, neither register exists. Check with {key::}{key:v}{key:e}{key:r}{key:s}{key:i}{key:o}{key:n}; look for `+clipboard`. Neovim ships with clipboard support that works wherever a provider exists."
     },
     {
       "type": "internals",
@@ -64,6 +64,11 @@
     {
       "type": "example",
       "ref": "registers.clipboard"
+    },
+    {
+      "type": "internals",
+      "title": "{key:\"}{key:+} and {key:\"}{key:*} are I/O ports",
+      "text": "These registers are not memory — they delegate to the OS clipboard provider (X11 selection, Windows clipboard, macOS pasteboard). Reading them invokes a system call; writing them does too. They can be missing entirely on a build without clipboard support. Treat them as protocol endpoints with potential failure modes."
     },
     {
       "type": "qr",

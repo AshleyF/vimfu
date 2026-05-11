@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="../10-marks-jumps/05-changelist.html" rel="prev">← The Change List</a></span>
-  <span class="pager-pos">51 / 132</span>
+  <span class="pager-pos">51 / 136</span>
   <span class="pager-next"><a class="pager-link" href="02-indent.html" rel="next">Indent and Auto-Indent →</a></span>
 </nav>
 <article>
@@ -44,19 +44,23 @@
 <p>Replace mode is rarely the right tool for code editing — most people overwrite a region with <kbd>c</kbd>{motion} or <kbd>c</kbd>{textobject}. But for fixed-width formats or quick column overwrites, it&#x27;s perfect.</p>
 </aside>
 <aside class="tip"><strong>Tip.</strong> <kbd>r</kbd> is one-shot: replace one character, stay in Normal. <kbd>R</kbd> is continuous: enter the mode, overwrite as long as you keep typing. Pick based on how many you have to fix.</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Replace mode is reversible overwrite</header>
+<p><kbd>R</kbd> pushes a session-local stack of <code>(column, original_char)</code> tuples. Each typed character pops/replaces forward; each Backspace pops the top and restores the original. The session boundary forbids backspacing past your entry point — the stack is empty there. Exiting via Escape discards the stack but keeps the buffer changes.</p>
+</aside>
 <aside class="qr"><span>→ See also <a href="01-replace-mode.html">Replace Mode</a></span></aside>
 <aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../03-basic-editing/08-replace-char.html">Replace a Character</a>, <a href="../01-foundations/02-modes-overview.html">The Modes</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="../10-marks-jumps/05-changelist.html" rel="prev">← The Change List</a></span>
-  <span class="pager-pos">51 / 132</span>
+  <span class="pager-pos">51 / 136</span>
   <span class="pager-next"><a class="pager-link" href="02-indent.html" rel="next">Indent and Auto-Indent →</a></span>
 </nav>
 <nav class="bottomnav">
   <a href="index.html">← back to part</a>
   &middot; <a href="../index.html">📚 all parts</a>
 </nav>
-<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
 </body>
 </html>

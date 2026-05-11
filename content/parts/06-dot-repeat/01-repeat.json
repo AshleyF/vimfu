@@ -3,9 +3,9 @@
   "version": 1,
   "id": "dot.repeat",
   "title": "Repeat Last Change",
-  "subtitle": ". \u2014 replay the last change. The single most useful key.",
+  "subtitle": ". — replay the last change. The single most useful key.",
   "part": "dot",
-  "summary": "The . command repeats the last *change* \u2014 exactly what you did, including any inserted text. It is what makes Vim feel like Vim.",
+  "summary": "The . command repeats the last *change* — exactly what you did, including any inserted text. It is what makes Vim feel like Vim.",
   "keys": [
     "."
   ],
@@ -26,7 +26,7 @@
     },
     {
       "type": "prose",
-      "text": "If Vim has a single most-loved key, this is it. {key:.} replays the last change. Not the last keystroke, not the last motion \u2014 the last *change*. That distinction is the whole reason {key:.} feels magical."
+      "text": "If Vim has a single most-loved key, this is it. {key:.} replays the last change. Not the last keystroke, not the last motion — the last *change*. That distinction is the whole reason {key:.} feels magical."
     },
     {
       "type": "keys",
@@ -43,11 +43,11 @@
     {
       "type": "internals",
       "title": "What Counts as \"a Change\"",
-      "text": "Vim has a precise definition of *change* (and only changes can be dotted):\n\n  \u2022 An entire Insert-mode session, from {key:i}/{key:a}/{key:o}/etc. through {key:Esc}, is **one change**. The text you typed is part of it.\n  \u2022 Every operator+motion ({key:d}{key:w}, {key:c}{key:i}{key:p}, {key:>}{key:i}{key:p}) is **one change**.\n  \u2022 Every single-shot edit ({key:x}, {key:r}{c}, {key:p}, {key:~}) is **one change**.\n  \u2022 Pure motions and searches are **not changes**. {key:j}, {key:G}, {key:/}, {key:n} don't update the dot register.\n\nVim records the *commands and any typed text* of the last change in the **dot register** ({key:\"}{key:.}). Pressing {key:.} replays them at the current cursor position.\n\nSo {key:c}{key:w}-type-`hello`-{key:Esc} is one change. {key:.} on a different word will change-word-to-`hello` again. {key:o}-type-a-line-{key:Esc} is one change. {key:.} opens another line and types the same content."
+      "text": "Vim has a precise definition of *change* (and only changes can be dotted):\n\n  • An entire Insert-mode session, from {key:i}/{key:a}/{key:o}/etc. through {key:Esc}, is **one change**. The text you typed is part of it.\n  • Every operator+motion ({key:d}{key:w}, {key:c}{key:i}{key:p}, {key:>}{key:i}{key:p}) is **one change**.\n  • Every single-shot edit ({key:x}, {key:r}{c}, {key:p}, {key:~}) is **one change**.\n  • Pure motions and searches are **not changes**. {key:j}, {key:G}, {key:/}, {key:n} don't update the dot register.\n\nVim records the *commands and any typed text* of the last change in the **dot register** ({key:\"}{key:.}). Pressing {key:.} replays them at the current cursor position.\n\nSo {key:c}{key:w}-type-`hello`-{key:Esc} is one change. {key:.} on a different word will change-word-to-`hello` again. {key:o}-type-a-line-{key:Esc} is one change. {key:.} opens another line and types the same content."
     },
     {
       "type": "tip",
-      "text": "Search ({key:/}) is *not* a change, but it pairs with {key:.} beautifully: {key:/}{key:foo}{key:Enter}-{key:c}{key:w}-`bar`-{key:Esc} \u2192 {key:n}{key:.} {key:n}{key:.} {key:n}{key:.} walks you through every match. Find next; repeat the change. Two keys to refactor each occurrence."
+      "text": "Search ({key:/}) is *not* a change, but it pairs with {key:.} beautifully: {key:/}{key:foo}{key:Enter}-{key:c}{key:w}-`bar`-{key:Esc} → {key:n}{key:.} {key:n}{key:.} {key:n}{key:.} walks you through every match. Find next; repeat the change. Two keys to refactor each occurrence."
     },
     {
       "type": "tip",
@@ -85,6 +85,11 @@
     {
       "type": "example",
       "ref": "dot.repeat"
+    },
+    {
+      "type": "internals",
+      "title": "Dot replays a change recipe, not keystrokes",
+      "text": "{key:.} is not a keyboard macro. The editor records the last change — the operator, its motion or text object, its count, and (for inserts) the typed text — into a small struct. {key:.} re-executes that struct against the current cursor position. Pure motions and visual-only operations don't update the struct, which is why you can move freely between repeats without losing your dot."
     },
     {
       "type": "qr",

@@ -621,7 +621,7 @@ PART_INDEX = """<!doctype html>
 <nav class="topnav"><a href="../index.html">📚 All Parts</a></nav>
 <nav class="pager pager-top">
   <span class="pager-prev">{prev_link}</span>
-  <span class="pager-pos">Part {pos_label}</span>
+  <span class="pager-pos">{pos_label}</span>
   <span class="pager-next">{next_link}</span>
 </nav>
 <article>
@@ -632,7 +632,7 @@ PART_INDEX = """<!doctype html>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev">{prev_link}</span>
-  <span class="pager-pos">Part {pos_label}</span>
+  <span class="pager-pos">{pos_label}</span>
   <span class="pager-next">{next_link}</span>
 </nav>
 {footer}
@@ -686,7 +686,7 @@ ROOT_INDEX = """<!doctype html>
 </head><body>
 <article>
 <h1>VimFu Content</h1>
-<p class="meta">Auto-generated from <code>content/parts/**/*.json</code>.</p>
+<!-- Auto-generated from content/parts/**/*.json -->
 <p class="hero-practice">▶ <a class="practice-link" href="sim/" target="_blank" rel="noopener">Open the VimFu simulator</a> — an in-browser Neovim+tmux to practice everything in this reference. Opens in a new tab so you can flip back and forth.</p>
 {sections}
 </article>
@@ -701,7 +701,8 @@ def render_root_index(parts_map) -> str:
         topics = parts_map[part_dir]
         label = part_dir.split("-", 1)[-1].replace("-", " ").title()
         nn = part_dir.split("-", 1)[0]
-        sections.append(f'<h2>Part {escape(nn)} — <a href="{part_dir}/index.html">{escape(label)}</a></h2>')
+        sections.append(f'<!-- part {escape(nn)} ({escape(part_dir)}) -->')
+        sections.append(f'<h2><a href="{part_dir}/index.html">{escape(label)}</a></h2>')
         sections.append("<ul>")
         for t in topics:
             stem = t["__file_stem"]

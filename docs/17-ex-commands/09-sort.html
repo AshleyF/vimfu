@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sort and Reorder Lines — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Ex Commands</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="08-quickfix.html" rel="prev">← Quickfix and Location Lists</a></span>
+  <span class="pager-pos">93 / 136</span>
+  <span class="pager-next"><a class="pager-link" href="../18-visual-depth/01-modes.html" rel="next">The Three Visual Modes →</a></span>
+</nav>
+<article>
+<h1>Sort and Reorder Lines</h1>
+<p class="subtitle">:sort with flags handles unique, numeric, reverse, and key-based sorting.</p>
+<p class="meta"><code>id: ex.sort</code> &middot; part: <strong>ex-commands</strong> &middot; keys: <kbd>:sort</kbd></p>
+<blockquote class="summary">:sort sorts lines lexicographically. Flags switch on numeric, ignore-case, unique, and reverse modes. /pattern/ as a key sorts by the <em>post-pattern</em> portion of each line.</blockquote>
+<p><kbd>:</kbd><kbd>s</kbd><kbd>o</kbd><kbd>r</kbd><kbd>t</kbd> sorts a range of lines in place. With no range, the whole file. Combine flags to get the exact ordering you want without leaving the editor.</p>
+<h3>Flags</h3>
+<table>
+<thead><tr>
+<th>Command</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td>:sort</td>
+<td>Sort the whole file lexicographically</td>
+</tr>
+<tr>
+<td>:sort u</td>
+<td>Unique — drop duplicate lines after sorting</td>
+</tr>
+<tr>
+<td>:sort i</td>
+<td>Ignore case</td>
+</tr>
+<tr>
+<td>:sort n</td>
+<td>Numeric (treat lines as numbers)</td>
+</tr>
+<tr>
+<td>:sort r</td>
+<td>Reverse</td>
+</tr>
+<tr>
+<td>:sort un</td>
+<td>Unique + numeric</td>
+</tr>
+<tr>
+<td>:&#x27;&lt;,&#x27;&gt;sort</td>
+<td>Sort the visual selection</td>
+</tr>
+<tr>
+<td>:10,20sort</td>
+<td>Sort lines 10–20</td>
+</tr>
+<tr>
+<td>:sort /^\s*/</td>
+<td>Sort by the part <em>after</em> leading whitespace</td>
+</tr>
+<tr>
+<td>:sort! r /,/</td>
+<td>Reverse-sort by the comma-separated key</td>
+</tr>
+</tbody></table>
+<aside class="internals">
+<header>🔧 Under the Hood — The /pattern/ key trick</header>
+<p>By default <kbd>:</kbd><kbd>s</kbd><kbd>o</kbd><kbd>r</kbd><kbd>t</kbd> compares whole lines. Add <code>/pattern/</code> and the comparator runs against the substring <em>after</em> the first match of <code>pattern</code> on each line — the pattern itself is skipped. So <code>:sort /,/</code> sorts by what comes after the first comma; <code>:sort /^\s*/</code> sorts ignoring leading whitespace. Add <code>r</code> after the slash and the comparator uses the <em>match itself</em> instead of what comes after.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — Sort is in-place and stable</header>
+<p><kbd>:</kbd><kbd>s</kbd><kbd>o</kbd><kbd>r</kbd><kbd>t</kbd> replaces the range&#x27;s lines with their sorted permutation in a single buffer mutation, so it produces exactly one undo unit. The underlying algorithm is stable — equal-keyed lines preserve their input order — which matters when sorting by a <code>/pattern/</code> key that doesn&#x27;t disambiguate every row.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> To shuffle instead of sort, pipe through the shell: <kbd>:</kbd><kbd>%</kbd><kbd>!</kbd><kbd>s</kbd><kbd>h</kbd><kbd>u</kbd><kbd>f</kbd> on Linux/macOS.</aside>
+<aside class="qr"><span>→ See also <a href="09-sort.html">Sort and Reorder Lines</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="06-shell.html">Shell Commands (:!)</a>, <a href="04-global.html">Global (:g) and Vglobal (:v)</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="08-quickfix.html" rel="prev">← Quickfix and Location Lists</a></span>
+  <span class="pager-pos">93 / 136</span>
+  <span class="pager-next"><a class="pager-link" href="../18-visual-depth/01-modes.html" rel="next">The Three Visual Modes →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

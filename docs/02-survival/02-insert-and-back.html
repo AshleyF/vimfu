@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="01-open-save-quit.html" rel="prev">← Open, Save, Quit</a></span>
-  <span class="pager-pos">7 / 132</span>
+  <span class="pager-pos">7 / 136</span>
   <span class="pager-next"><a class="pager-link" href="03-undo-redo.html" rel="next">Undo and Redo →</a></span>
 </nav>
 <article>
@@ -101,19 +101,23 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
+<aside class="internals">
+<header>🔧 Under the Hood — Why Escape backs the cursor up one column</header>
+<p>Leaving insert mode is not a pure mode flip. The cursor lives in a virtual column while inserting (it can sit one cell past the last character), but normal mode requires the cursor to land on a real character. So Escape clamps the column back by one when you&#x27;re past the line end. That single rule is why <kbd>a</kbd> then Esc leaves you under the character you appended past, and why <kbd>i</kbd>-Esc-<kbd>i</kbd> doesn&#x27;t drift sideways.</p>
+</aside>
 <aside class="qr"><span>→ See also <a href="02-insert-and-back.html">Insert and Back Again</a></span></aside>
 <aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../01-foundations/01-modal-editing.html">Modal Editing</a>, <a href="../01-foundations/02-modes-overview.html">The Modes</a>, <a href="../03-basic-editing/01-insert-variants.html">More Ways into Insert</a>, <a href="../16-insert-mode-power/01-exits.html">Exiting Insert Mode</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="01-open-save-quit.html" rel="prev">← Open, Save, Quit</a></span>
-  <span class="pager-pos">7 / 132</span>
+  <span class="pager-pos">7 / 136</span>
   <span class="pager-next"><a class="pager-link" href="03-undo-redo.html" rel="next">Undo and Redo →</a></span>
 </nav>
 <nav class="bottomnav">
   <a href="index.html">← back to part</a>
   &middot; <a href="../index.html">📚 all parts</a>
 </nav>
-<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@vimfubook.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@vimfubook.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
 </body>
 </html>

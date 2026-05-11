@@ -32,7 +32,7 @@
     },
     {
       "type": "prose",
-      "text": "Moving one character at a time with {key:h}{key:j}{key:k}{key:l} is fine for surgery. For everything else you want to move *a word at a time*. That's what {key:w}, {key:b}, {key:e}, and {key:ge} do \u2014 and because they're motions, they double as the noun half of every editing command."
+      "text": "Moving one character at a time with {key:h}{key:j}{key:k}{key:l} is fine for surgery. For everything else you want to move *a word at a time*. That's what {key:w}, {key:b}, {key:e}, and {key:ge} do — and because they're motions, they double as the noun half of every editing command."
     },
     {
       "type": "keys",
@@ -66,31 +66,31 @@
     {
       "type": "embed",
       "lesson": 21,
-      "caption": "w \u2014 next word"
+      "caption": "w — next word"
     },
     {
       "type": "embed",
       "lesson": 22,
-      "caption": "b \u2014 previous word"
+      "caption": "b — previous word"
     },
     {
       "type": "embed",
       "lesson": 23,
-      "caption": "e \u2014 end of word"
+      "caption": "e — end of word"
     },
     {
       "type": "embed",
       "lesson": 24,
-      "caption": "ge \u2014 back-end"
+      "caption": "ge — back-end"
     },
     {
       "type": "tip",
-      "text": "Counts work: {key:5}{key:w} jumps five words forward. So does {key:d}{key:5}{key:w} \u2014 delete five words. The grammar is consistent."
+      "text": "Counts work: {key:5}{key:w} jumps five words forward. So does {key:d}{key:5}{key:w} — delete five words. The grammar is consistent."
     },
     {
       "type": "internals",
       "title": "What Counts as a \"Word\"?",
-      "text": "Vim's notion of a word is governed by the `'iskeyword'` option (`:set iskeyword?` to see it). By default it includes letters, digits, and `_` \u2014 the things that look like an identifier in most languages.\n\nA \"word\" is a maximal run of *keyword* characters, *or* a maximal run of *non-keyword non-whitespace* characters. So in `foo->bar`, the words are `foo`, `->`, and `bar`. {key:w} skips between all three.\n\nIf that's too granular for you, **WORD** ({key:W}, {key:B}, {key:E}, {key:gE}) treats anything not whitespace as part of the word. In `foo->bar`, that's a single WORD. See [`wider-motions.WORD`](#wider-motions.WORD)."
+      "text": "Vim's notion of a word is governed by the `'iskeyword'` option (`:set iskeyword?` to see it). By default it includes letters, digits, and `_` — the things that look like an identifier in most languages.\n\nA \"word\" is a maximal run of *keyword* characters, *or* a maximal run of *non-keyword non-whitespace* characters. So in `foo->bar`, the words are `foo`, `->`, and `bar`. {key:w} skips between all three.\n\nIf that's too granular for you, **WORD** ({key:W}, {key:B}, {key:E}, {key:gE}) treats anything not whitespace as part of the word. In `foo->bar`, that's a single WORD. See [`wider-motions.WORD`](#wider-motions.WORD)."
     },
     {
       "type": "tip",
@@ -140,7 +140,7 @@
         [
           "{key:W}{key:B}{key:E}{key:g}{key:E}",
           "Same, but WORD-wise (whitespace boundaries)",
-          "\u2014",
+          "—",
           "Yes"
         ]
       ]
@@ -148,6 +148,11 @@
     {
       "type": "example",
       "ref": "editing.word-motions"
+    },
+    {
+      "type": "internals",
+      "title": "Word motions are a token-class scanner",
+      "text": "{key:w}, {key:b}, {key:e}, {key:g}{key:e} aren't regex-driven; they classify each character into one of three token classes — word, punctuation, whitespace — and step through class boundaries. Empty lines count as a hard boundary regardless of class. The capitalized variants ({key:W}, {key:B}, {key:E}) collapse word and punctuation into a single class, so they only stop at whitespace. The implementation is one scanner with a swappable classifier."
     },
     {
       "type": "qr",

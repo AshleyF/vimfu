@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tag Navigation — VimFu</title>
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="../index.html">📚 All Parts</a>
+  &middot; <a href="index.html">← Advanced</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="09-spell.html" rel="prev">← Spell Checking</a></span>
+  <span class="pager-pos">122 / 136</span>
+  <span class="pager-next"><a class="pager-link" href="../22-tmux/01-what-is-tmux.html" rel="next">What Is tmux? →</a></span>
+</nav>
+<article>
+<h1>Tag Navigation</h1>
+<p class="subtitle">Jump to definitions across files using a tags index.</p>
+<p class="meta"><code>id: advanced.tags</code> &middot; part: <strong>advanced</strong> &middot; keys: <kbd>Ctrl-]</kbd>, <kbd>Ctrl-T</kbd>, <kbd>:tag</kbd>, <kbd>:tags</kbd>, <kbd>:tnext</kbd>, <kbd>:tprev</kbd></p>
+<blockquote class="summary">ctags builds a tags file mapping symbols to file:line. Ctrl-] jumps to the symbol under the cursor; Ctrl-T pops back. The whole jump history forms a stack you can browse with :tags.</blockquote>
+<p>Long before LSP, Vim had a &#x27;go to definition.&#x27; It still works — and on big codebases it&#x27;s faster than any language server because it&#x27;s just a binary-searchable text index.</p>
+<h3>Build the index</h3>
+<p>Run a tags generator (universal-ctags is the canonical one) at the root of your project:</p>
+<table>
+<thead><tr>
+<th>Command</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td>ctags -R .</td>
+<td>Recursively index everything under . into a file called <code>tags</code></td>
+</tr>
+<tr>
+<td>ctags -R --languages=python,go .</td>
+<td>Limit to specific languages</td>
+</tr>
+<tr>
+<td>ctags -R --exclude=node_modules --exclude=.git .</td>
+<td>Skip noise</td>
+</tr>
+</tbody></table>
+<p>Vim looks for the <code>tags</code> file in the current directory, then walks parents. Configure with <kbd>:</kbd><kbd>s</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>t</kbd><kbd>a</kbd><kbd>g</kbd><kbd>s</kbd><kbd>=</kbd><kbd>.</kbd><kbd>/</kbd><kbd>t</kbd><kbd>a</kbd><kbd>g</kbd><kbd>s</kbd><kbd>;</kbd><kbd>/</kbd><kbd>t</kbd><kbd>a</kbd><kbd>g</kbd><kbd>s</kbd> to search both adjacent and root tags files.</p>
+<h3>Jump and return</h3>
+<figure class="keys">
+<figcaption>The core two keys</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Ctrl-]</kbd></td><td>Jump to the definition of the identifier under the cursor</td></tr>
+<tr><td><kbd>Ctrl-T</kbd></td><td>Pop back to where you came from (one level)</td></tr>
+<tr><td><kbd>:tag NAME</kbd></td><td>Jump to a named tag (Tab-completes)</td></tr>
+<tr><td><kbd>g]</kbd></td><td>Show menu of all matching tags (when the name is ambiguous)</td></tr>
+<tr><td><kbd>Ctrl-W ]</kbd></td><td>Open the tag in a new horizontal split</td></tr>
+<tr><td><kbd>Ctrl-W }</kbd></td><td>Show the tag&#x27;s definition in a preview window without leaving</td></tr>
+</tbody></table></figure>
+<h3>The tag stack</h3>
+<figure class="keys">
+<figcaption>Browse the history</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>:tags</kbd></td><td>Show the full tag stack with current position marked</td></tr>
+<tr><td><kbd>:tnext</kbd></td><td>Next match when the tag was ambiguous</td></tr>
+<tr><td><kbd>:tprev</kbd></td><td>Previous match</td></tr>
+<tr><td><kbd>:tlast</kbd></td><td>Last match</td></tr>
+<tr><td><kbd>:tfirst</kbd></td><td>First match</td></tr>
+</tbody></table></figure>
+<aside class="internals">
+<header>🔧 Under the Hood — Tags is a binary-searched text file</header>
+<p>A <code>tags</code> file is plain text, one tag per line: <code>NAME&lt;TAB&gt;FILE&lt;TAB&gt;SEARCH_PATTERN</code>. The lines are sorted by NAME so the editor can find a tag with a binary search instead of a scan — which is why a 100MB tags file lookup is essentially instant. The SEARCH_PATTERN is usually a <code>/^...$/</code> regex that re-finds the line in the target file, so tag jumps survive small edits to the source between regenerations.</p>
+</aside>
+<aside class="internals">
+<header>🔧 Under the Hood — The tag stack is a real stack</header>
+<p><kbd>Ctrl-]</kbd> pushes <code>(buffer, position, tag)</code> onto the per-window tag stack and jumps. <kbd>Ctrl-T</kbd> pops. <kbd>:</kbd><kbd>t</kbd><kbd>a</kbd><kbd>g</kbd><kbd>s</kbd> prints the whole stack. Unlike the jump list (a ring buffer with duplicate suppression), the tag stack is a true LIFO — go down ten levels into a definition trail, hit <kbd>Ctrl-T</kbd> ten times to retrace exactly. Each window has its own stack, which is why splitting via <kbd>Ctrl-W</kbd><kbd>]</kbd> starts a fresh trail in the new window.</p>
+</aside>
+<aside class="tip"><strong>Tip.</strong> Pair tags with the quickfix list (<kbd>:</kbd><kbd>t</kbd><kbd>s</kbd><kbd>e</kbd><kbd>l</kbd><kbd>e</kbd><kbd>c</kbd><kbd>t</kbd> fills it with all matches) for cross-file refactor sweeps.</aside>
+<aside class="qr"><span>→ See also <a href="10-tags.html">Tag Navigation</a></span></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <span class="broken">marks-jumps.jumplist</span></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="09-spell.html" rel="prev">← Spell Checking</a></span>
+  <span class="pager-pos">122 / 136</span>
+  <span class="pager-next"><a class="pager-link" href="../22-tmux/01-what-is-tmux.html" rel="next">What Is tmux? →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="index.html">← back to part</a>
+  &middot; <a href="../index.html">📚 all parts</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

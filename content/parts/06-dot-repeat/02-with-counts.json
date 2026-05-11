@@ -3,7 +3,7 @@
   "version": 1,
   "id": "dot.with-counts",
   "title": "Dot with Counts",
-  "subtitle": "{n}. \u2014 replay the change with a new count.",
+  "subtitle": "{n}. — replay the change with a new count.",
   "part": "dot",
   "summary": "Pressing a count before . replaces the count baked into the original change. So 5dw then 10. deletes 10 words, not 5.",
   "keys": [
@@ -37,7 +37,7 @@
     {
       "type": "embed",
       "lesson": 72,
-      "caption": "{n}. \u2014 counted dot"
+      "caption": "{n}. — counted dot"
     },
     {
       "type": "prose",
@@ -46,7 +46,7 @@
     {
       "type": "internals",
       "title": "How the Count Substitution Works",
-      "text": "Internally the dot register holds the change as a sequence: optional count, optional register, the operator, the motion (with its own optional count), and any inserted text.\n\nWhen you press {key:.}, Vim replays the recorded sequence verbatim. When you press {key:{n}}{key:.}, the prefix you just typed becomes the *outer* count for the replay \u2014 the operator-side count, not the motion-side count. The motion's own internal count is preserved.\n\nSo if your original change was {key:d}{key:3}{key:w} (delete 3 words), {key:.} repeats it as 3 words; {key:5}{key:.} repeats it as 5 \u00d7 3 = 15 words. Counts multiply, just like in [`counts-visual.counts`](#counts-visual.counts)."
+      "text": "Internally the dot register holds the change as a sequence: optional count, optional register, the operator, the motion (with its own optional count), and any inserted text.\n\nWhen you press {key:.}, Vim replays the recorded sequence verbatim. When you press {key:{n}}{key:.}, the prefix you just typed becomes the *outer* count for the replay — the operator-side count, not the motion-side count. The motion's own internal count is preserved.\n\nSo if your original change was {key:d}{key:3}{key:w} (delete 3 words), {key:.} repeats it as 3 words; {key:5}{key:.} repeats it as 5 × 3 = 15 words. Counts multiply, just like in [`counts-visual.counts`](#counts-visual.counts)."
     },
     {
       "type": "tip",
@@ -77,13 +77,18 @@
         ],
         [
           "{key:{n}}{key:.}, {key:{m}}{key:.}",
-          "Each dot can have its own count \u2014 they don't accumulate"
+          "Each dot can have its own count — they don't accumulate"
         ]
       ]
     },
     {
       "type": "example",
       "ref": "dot.with-counts"
+    },
+    {
+      "type": "internals",
+      "title": "Dot's count overrides the original",
+      "text": "Prefix {key:.} with a count and the replay uses your count, not the count baked into the recorded change. Internally the struct stores the original count separately; at replay time, the executor swaps in any new count provided. So `5.` after a single-line change deletes five lines, not one — the change template is reused with a new multiplier."
     },
     {
       "type": "qr",
