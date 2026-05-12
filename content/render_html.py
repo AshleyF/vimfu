@@ -500,6 +500,7 @@ PAGE = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title} — VimFu</title>
 <link rel="icon" type="image/svg+xml" href="{root_index_dir}logo.svg">
 <link rel="stylesheet" href="{css}">
@@ -575,16 +576,12 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
         body.append(f'<p class="subtitle">{inl(sub)}</p>')
 
     meta = []
-    if tid := t.get("id"):
-        meta.append(f'<code>id: {escape(tid)}</code>')
-    if part := t.get("part"):
-        meta.append(f'part: <strong>{escape(part)}</strong>')
     if keys := t.get("keys"):
-        meta.append("keys: " + ", ".join(f"<kbd>{escape(k)}</kbd>" for k in keys))
-    if lessons := t.get("lessons"):
-        meta.append("lessons: " + ", ".join(escape(str(l)) for l in lessons))
+        meta.append("Keys: " + ", ".join(f"<kbd>{escape(k)}</kbd>" for k in keys))
     if meta:
         body.append('<p class="meta">' + " &middot; ".join(meta) + "</p>")
+    # Note: id, part, and lessons are intentionally not shown on the web —
+    # they're internal taxonomy, not reader-facing reference material.
 
     if summary := t.get("summary"):
         body.append(f'<blockquote class="summary">{inl(summary)}</blockquote>')
@@ -644,6 +641,7 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
 
 PART_INDEX = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{label} — VimFu</title>
 <link rel="icon" type="image/svg+xml" href="../logo.svg">
 <link rel="stylesheet" href="../style.css">
@@ -710,14 +708,26 @@ def render_part_index(part_dir, topics_in_part, all_parts=None) -> str:
 
 ROOT_INDEX = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<title>VimFu Content</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VimFu &mdash; The companion site</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="stylesheet" href="style.css">
 </head><body>
 <article>
-<h1>VimFu Content</h1>
+<h1>VimFu</h1>
 <!-- Auto-generated from content/parts/**/*.json -->
-<p class="hero-practice">▶ <a class="practice-link" href="sim/" target="_blank" rel="noopener">Open the VimFu simulator</a> — an in-browser Neovim+tmux to practice everything in this reference. Opens in a new tab so you can flip back and forth.</p>
+<p class="tagline">The Vim &amp; Neovim reference for programmers &mdash; companion to <a href="r/book/">the book</a>.</p>
+
+<section class="hero">
+  <p>This is the <strong>online reference</strong> half of <em>VimFu</em>. Quick to scan, deep-linkable, packed with embedded videos. Every topic in the book has a page here so you can look something up without flipping pages.</p>
+  <p>The <a href="r/book/">printed book</a> goes deeper &mdash; history, internals, mental models, and worked examples for every concept. The site is the cheat sheet; the book is the why.</p>
+  <p class="hero-cta">
+    <a class="practice-link" href="sim/" target="_blank" rel="noopener">▶ Open the simulator</a>
+    <span class="hero-aside">An in-browser Neovim + tmux for practicing anything you read here.</span>
+  </p>
+</section>
+
+<h2 class="contents-heading">Contents</h2>
 {sections}
 </article>
 {footer}
@@ -758,14 +768,79 @@ STYLE_CSS = """:root {
   --fg: #1a1a1a;
   --muted: #555;
   --bg: #fafafa;
-  --accent: #0a6;
+  --bg-elev: #ffffff;
+  --accent: #800000;
+  --accent-hover: #a00000;
+  --accent-soft: #fbe8e8;
+  --accent-border: #e6c0c0;
   --code-bg: #f0f0f0;
   --kbd-bg: #fff;
   --kbd-border: #999;
+  --kbd-fg: #1a1a1a;
   --panel: #f6f6f0;
-  --tip: #fff8d0;
-  --internals: #eef2f8;
-  --qr: #f0f6f0;
+  --tip-bg: #fff8d0;
+  --tip-border: #cc0;
+  --internals-bg: #eef2f8;
+  --internals-border: #69b;
+  --internals-fg: #246;
+  --anecdote-bg: #fbf6ec;
+  --anecdote-border: #a8884a;
+  --anecdote-fg: #6a4a14;
+  --qr-bg: #f6efef;
+  --qr-fg: #4a1414;
+  --buy-bg: #fff0e0;
+  --buy-border: #c80;
+  --example-bg: #fbf5f5;
+  --example-border: #e6c0c0;
+  --example-fg: #4a1414;
+  --rule: #e5e5e5;
+  --rule-strong: #ddd;
+  --table-head: #efefef;
+  --summary-bg: #fbf2f2;
+  --summary-fg: #4a1414;
+  --pager-hover-bg: #fbe8e8;
+  --pager-hover-border: #e6c0c0;
+  --broken: #a33;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e6e6e6;
+    --muted: #9aa0a6;
+    --bg: #14161b;
+    --bg-elev: #1c1f26;
+    --accent: #e07070;
+    --accent-hover: #ff8c8c;
+    --accent-soft: #2a1818;
+    --accent-border: #5a2828;
+    --code-bg: #22262d;
+    --kbd-bg: #2a2e36;
+    --kbd-border: #555;
+    --kbd-fg: #e6e6e6;
+    --panel: #1c1f26;
+    --tip-bg: #2c2a18;
+    --tip-border: #b8a83a;
+    --internals-bg: #18222e;
+    --internals-border: #4a7aa0;
+    --internals-fg: #aac6e0;
+    --anecdote-bg: #2a2418;
+    --anecdote-border: #a8884a;
+    --anecdote-fg: #d8c08a;
+    --qr-bg: #2a1818;
+    --qr-fg: #d8a0a0;
+    --buy-bg: #2c2418;
+    --buy-border: #a87830;
+    --example-bg: #1f1818;
+    --example-border: #5a2828;
+    --example-fg: #d8a0a0;
+    --rule: #2a2e36;
+    --rule-strong: #3a3e46;
+    --table-head: #22262d;
+    --summary-bg: #2a1818;
+    --summary-fg: #e8b8b8;
+    --pager-hover-bg: #2a1818;
+    --pager-hover-border: #5a2828;
+    --broken: #d88;
+  }
 }
 * { box-sizing: border-box; }
 body {
@@ -785,24 +860,33 @@ nav a:hover { text-decoration: underline; }
 
 a.practice-link {
   display: inline-block; background: var(--accent); color: #fff;
-  padding: 2px 10px; border-radius: 4px; font-weight: 600;
+  padding: 4px 14px; border-radius: 4px; font-weight: 600;
   text-decoration: none;
 }
-a.practice-link:hover { background: #084; text-decoration: none; }
+a.practice-link:hover { background: var(--accent-hover); text-decoration: none; }
 p.example-try {
   margin: 0.6rem 0 0; text-align: right; font-size: 0.92rem;
 }
-p.hero-practice {
-  background: #f0fdf6; border: 1px solid #c8eedc;
-  padding: 0.9rem 1.1rem; border-radius: 6px; margin: 1.2rem 0 2rem;
-  font-size: 1.05rem;
+p.tagline {
+  color: var(--muted); font-size: 1.1rem; margin: -0.4rem 0 1.6rem;
+  font-style: italic;
 }
+section.hero {
+  background: var(--accent-soft); border: 1px solid var(--accent-border);
+  padding: 1rem 1.2rem; border-radius: 6px; margin: 0 0 2rem;
+}
+section.hero p { margin: 0.6rem 0; }
+section.hero p:first-child { margin-top: 0; }
+section.hero p:last-child { margin-bottom: 0; }
+p.hero-cta { margin-top: 1rem !important; display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+p.hero-cta .hero-aside { color: var(--muted); font-size: 0.92rem; }
+h2.contents-heading { margin-top: 1.5rem; }
 nav.pager {
   max-width: 760px; margin: 0.5rem auto; padding: 0.6rem 1.25rem;
   display: grid; grid-template-columns: 1fr auto 1fr;
   align-items: center; gap: 0.8rem;
   font-size: 0.92rem;
-  border-top: 1px solid #eee; border-bottom: 1px solid #eee;
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
 }
 nav.pager .pager-prev { text-align: left; }
 nav.pager .pager-next { text-align: right; }
@@ -812,14 +896,14 @@ nav.pager .pager-link {
   text-decoration: none; color: var(--accent);
   border: 1px solid transparent;
 }
-nav.pager .pager-link:hover { background: #f0fdf6; border-color: #c8eedc; text-decoration: none; }
-nav.pager .pager-disabled { color: #bbb; font-style: italic; }
+nav.pager .pager-link:hover { background: var(--pager-hover-bg); border-color: var(--pager-hover-border); text-decoration: none; }
+nav.pager .pager-disabled { color: var(--muted); opacity: 0.5; font-style: italic; }
 nav.pager.pager-bottom { margin-top: 2rem; }
 
 footer.site-footer {
   margin: 3rem 0 1rem;
   padding: 0.8rem 0 0;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid var(--rule);
   color: var(--muted);
   font-size: 0.85rem;
   text-align: center;
@@ -827,13 +911,14 @@ footer.site-footer {
 footer.site-footer a { color: var(--muted); }
 
 h1 { font-size: 2rem; margin: 0.4rem 0 0.2rem; }
-h2 { font-size: 1.4rem; margin: 1.8rem 0 0.6rem; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+h2 { font-size: 1.4rem; margin: 1.8rem 0 0.6rem; border-bottom: 1px solid var(--rule-strong); padding-bottom: 0.3rem; }
 h3 { font-size: 1.15rem; margin: 1.4rem 0 0.4rem; }
 p.subtitle { color: var(--muted); font-size: 1.1rem; margin-top: 0; font-style: italic; }
-p.meta { color: var(--muted); font-size: 0.85rem; }
+p.meta { color: var(--muted); font-size: 0.9rem; }
 
 a { color: var(--accent); }
-a.broken, span.broken { color: #a33; text-decoration: line-through dotted; }
+a:hover { color: var(--accent-hover); }
+a.broken, span.broken { color: var(--broken); text-decoration: line-through dotted; }
 
 code {
   background: var(--code-bg); padding: 1px 5px; border-radius: 3px;
@@ -842,19 +927,20 @@ code {
 pre {
   background: var(--code-bg); padding: 0.7rem 0.9rem; border-radius: 5px;
   overflow-x: auto; margin: 0.8rem 0;
-  border-left: 3px solid var(--border);
+  border-left: 3px solid var(--rule-strong);
 }
 pre code { background: transparent; padding: 0; font-size: 0.9rem; }
 kbd {
   background: var(--kbd-bg); border: 1px solid var(--kbd-border);
   border-bottom-width: 2px; border-radius: 4px;
   padding: 0 5px; font: 0.85em ui-monospace, Consolas, monospace;
+  color: var(--kbd-fg);
   white-space: nowrap;
 }
 
 blockquote.summary {
   border-left: 3px solid var(--accent); margin: 1rem 0;
-  padding: 0.6rem 1rem; background: #f0fff8; color: #064;
+  padding: 0.6rem 1rem; background: var(--summary-bg); color: var(--summary-fg);
   font-size: 1.05rem;
 }
 
@@ -862,8 +948,8 @@ table {
   border-collapse: collapse; width: 100%; margin: 1rem 0;
   font-size: 0.95rem;
 }
-th, td { border: 1px solid #ddd; padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
-thead th { background: #efefef; }
+th, td { border: 1px solid var(--rule-strong); padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
+thead th { background: var(--table-head); }
 
 figure.keys, figure.lesson-embed { margin: 1rem 0; }
 figure.keys figcaption, figure.lesson-embed figcaption {
@@ -879,35 +965,35 @@ figure.lesson-embed .placeholder {
 }
 
 aside.tip {
-  background: var(--tip); border-left: 4px solid #cc0;
+  background: var(--tip-bg); border-left: 4px solid var(--tip-border);
   padding: 0.7rem 1rem; margin: 1rem 0; border-radius: 4px;
 }
 aside.internals {
-  background: var(--internals); border-left: 4px solid #69b;
+  background: var(--internals-bg); border-left: 4px solid var(--internals-border);
   padding: 0.7rem 1rem; margin: 1.2rem 0; border-radius: 4px;
 }
 aside.internals header {
-  font-weight: 600; margin-bottom: 0.4rem; color: #246;
+  font-weight: 600; margin-bottom: 0.4rem; color: var(--internals-fg);
 }
 aside.internals p { margin: 0.5rem 0; }
 aside.internals ul { margin: 0.5rem 0; padding-left: 1.4rem; }
 aside.anecdote {
-  background: #fbf6ec; border-left: 4px solid #a8884a;
+  background: var(--anecdote-bg); border-left: 4px solid var(--anecdote-border);
   padding: 0.7rem 1rem; margin: 1.2rem 0; border-radius: 4px;
   font-style: italic;
 }
 aside.anecdote header {
-  font-weight: 600; margin-bottom: 0.4rem; color: #6a4a14;
+  font-weight: 600; margin-bottom: 0.4rem; color: var(--anecdote-fg);
   font-style: normal;
 }
 aside.anecdote p { margin: 0.5rem 0; }
 aside.qr {
-  background: var(--qr); padding: 0.4rem 0.8rem; margin: 1rem 0;
-  border-radius: 4px; font-size: 0.9rem; color: #064;
+  background: var(--qr-bg); padding: 0.4rem 0.8rem; margin: 1rem 0;
+  border-radius: 4px; font-size: 0.9rem; color: var(--qr-fg);
   display: flex; align-items: center; gap: 0.8rem;
 }
 aside.qr img.qr-img { background: #fff; padding: 4px; border-radius: 4px; }
-section.watch { margin: 2rem 0; padding-top: 1rem; border-top: 1px solid #ddd; }
+section.watch { margin: 2rem 0; padding-top: 1rem; border-top: 1px solid var(--rule-strong); }
 section.watch h2 { margin-top: 0; }
 ul.lesson-grid {
   list-style: none; padding: 0; display: grid;
@@ -920,39 +1006,39 @@ ul.lesson-grid iframe.lesson-iframe {
 }
 ul.lesson-grid .lesson-meta { font-size: 0.85rem; color: var(--muted); }
 ul.lesson-grid .lesson-pending .placeholder {
-  background: #f3f3f3; color: var(--muted); padding: 1.5rem 1rem;
+  background: var(--code-bg); color: var(--muted); padding: 1.5rem 1rem;
   text-align: center; border-radius: 6px; aspect-ratio: 1/1;
   display: flex; align-items: center; justify-content: center;
 }
 aside.buy-prompt {
-  background: #fff0e0; border: 1px dashed #c80;
+  background: var(--buy-bg); border: 1px dashed var(--buy-border);
   padding: 0.6rem 1rem; margin: 1.5rem 0; border-radius: 4px;
   text-align: center; font-style: italic;
 }
 
 section.example {
   margin: 1.6rem 0; padding: 1rem 1.2rem;
-  background: #f5f9ff; border: 1px solid #cdd9ee; border-radius: 6px;
+  background: var(--example-bg); border: 1px solid var(--example-border); border-radius: 6px;
 }
 section.example h3.example-title {
-  margin: 0 0 0.4rem; font-size: 1.05rem; color: #234;
+  margin: 0 0 0.4rem; font-size: 1.05rem; color: var(--example-fg);
   text-transform: uppercase; letter-spacing: 0.04em;
 }
 section.example p.example-summary {
-  margin: 0 0 1rem; color: #456; font-style: italic;
+  margin: 0 0 1rem; color: var(--example-fg); font-style: italic; opacity: 0.85;
 }
 figure.example-step {
-  margin: 0.8rem 0; padding: 0.6rem; background: #fff;
-  border-radius: 4px; border: 1px solid #dde6f2;
+  margin: 0.8rem 0; padding: 0.6rem; background: var(--bg-elev);
+  border-radius: 4px; border: 1px solid var(--example-border);
 }
 figure.example-step figcaption {
-  font-size: 0.95rem; color: #234; margin-bottom: 0.5rem;
+  font-size: 0.95rem; color: var(--fg); margin-bottom: 0.5rem;
 }
 figure.example-step .step-n {
   display: inline-block; font-weight: 600; color: var(--accent);
   margin-right: 0.5rem;
 }
-figure.example-step .step-cap { color: #345; }
+figure.example-step .step-cap { color: var(--fg); }
 figure.example-step .screenshot {
   background: #000; border-radius: 4px; padding: 4px;
   display: flex; justify-content: flex-start;
@@ -961,15 +1047,15 @@ figure.example-step .screenshot img {
   width: 100%; max-width: 380px; height: auto; display: block;
 }
 figure.example-step .screenshot.missing {
-  background: #fee; color: #900; padding: 1rem; text-align: center;
+  background: var(--accent-soft); color: var(--broken); padding: 1rem; text-align: center;
   font-family: monospace; font-size: 0.9rem;
 }
 figure.example-step p.narration {
-  margin: 0.6rem 0 0; color: #345; font-size: 0.95rem;
+  margin: 0.6rem 0 0; color: var(--muted); font-size: 0.95rem;
 }
 
 p.see-also {
-  margin-top: 2rem; padding-top: 0.8rem; border-top: 1px solid #ddd;
+  margin-top: 2rem; padding-top: 0.8rem; border-top: 1px solid var(--rule-strong);
   font-size: 0.95rem;
 }
 ol.topic-list { padding-left: 1.5rem; }
