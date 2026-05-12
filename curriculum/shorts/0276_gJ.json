@@ -1,0 +1,190 @@
+{
+  "title": "VimFu \u2014 gJ Join Without Space",
+  "description": "gJ joins lines without inserting a space between them. Regular J adds a space, gJ smashes them together.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 417,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "join"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f path.txt .path.txt.swp .path.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "path.txt",
+      "content": "# Path Builder\n/home\n/user\n/documents\n/projects\n/vim\n\nhttp://\nexample\n.com\n/page"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim path.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gJ \u2014 Join Without Space",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G shift J joins lines without adding a space. Regular J inserts a space between the joined lines. G shift J does not."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: compare J vs gJ ---"
+    },
+    {
+      "say": "Go to line two. The path segments. Join with J first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "J",
+      "overlay": "join with space"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Home space user. There's a space between them. Not what we want for a path. Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now G shift J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gJ",
+      "overlay": "no space"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Home user. No space. The path pieces connect cleanly."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: join multiple with count ---"
+    },
+    {
+      "say": "Keep going. Four G shift J to join the rest.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4gJ",
+      "overlay": "join 4 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A complete file path. No extra spaces."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G shift J. Join without spaces. Perfect for paths, URLs, or any time you need lines glued together exactly."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f path.txt"
+    }
+  ]
+}

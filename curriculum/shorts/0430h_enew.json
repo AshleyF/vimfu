@@ -1,0 +1,31 @@
+{
+  "title": "VimFu — :enew New Empty Buffer",
+  "description": "Replace the current window with a fresh empty buffer.",
+  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 579,
+  "ttsVoice": "echo", "playlist": "VimFu",
+  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "setup": [
+    { "line": "export TERM=xterm-256color" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f demo.py .demo.py.swp" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "writeFile": "demo.py", "content": "# Demo\nprint(\"hello\")" },
+    { "line": "clear" },
+    { "line": "nvim demo.py" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "overlay": "VimFu", "caption": ":enew — Empty Buffer", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "say": "Colon E new replaces the current window with a fresh empty buffer. No split, just a clean slate." },
+    { "wait": 0.3 },
+    { "type": ":enew", "overlay": ":enew" }, "enter",
+    { "wait": 0.5 },
+    { "say": "The window now shows an empty unnamed buffer. The previous file is still in memory as a hidden buffer." },
+    { "wait": 0.3 },
+    { "say": "Use colon E new when you want a scratch pad without creating a split." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.py" } ]
+}

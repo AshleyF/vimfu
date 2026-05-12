@@ -1,0 +1,139 @@
+{
+  "title": "VimFu \u2014 :e! Revert",
+  "description": "The :e! command reverts to the last saved version, discarding all changes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 543,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Perfect Code\nx = 1\ny = 2\nz = 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":e! \u2014 Revert",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon E bang reverts the file to its last saved state. All your changes, gone. A fresh start."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's make a mess.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jdd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "dd",
+      "overlay": "another"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "dd",
+      "overlay": "another"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Three lines deleted. But we want them back. Colon E bang.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":e!",
+      "overlay": "revert"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Everything restored. The file reloaded from disk. Like nothing happened."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon E bang. Revert to saved. Your undo button for the whole file."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

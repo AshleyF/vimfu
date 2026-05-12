@@ -1,0 +1,121 @@
+{
+  "title": "VimFu \u2014 Useless Underscore Remap",
+  "description": "The _ key is redundant with ^. Remap it to something useful like inserting a space.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 658,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced",
+    "remap"
+  ],
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "  hello world\n  foo bar\n  test line"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Remap _ (Underscore)",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "The underscore key moves to the first non-blank character. But caret already does that. Underscore is redundant."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Remap it to insert a space. Great for quick alignment.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":map _ i \\<Esc>",
+      "overlay": ":map _ i <Esc>"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now underscore inserts a space and stays in normal mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "next word"
+    },
+    {
+      "keys": "_",
+      "overlay": "insert space"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One keystroke, one space. No mode switching. Put this in your config. Underscore is free real estate."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "title": "VimFu \u2014 g Ctrl-A / g Ctrl-X \u2014 Sequences",
+  "description": "Use g Ctrl-A in visual mode to create incrementing number sequences, and g Ctrl-X for decrementing sequences.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 627,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f list.txt .list.txt.swp .list.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "list.txt",
+      "content": "0. apple\n0. banana\n0. cherry\n0. date\n0. elderberry"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim list.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "g Ctrl-A / g Ctrl-X \u2014 Sequences",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G Control A in visual mode creates incrementing sequences. Instead of adding the same number to each line, each line gets one more."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "All lines start with zero. Select them all with V and G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "G",
+      "overlay": "to last line"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now press G Control A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gctrl+a",
+      "overlay": "sequence"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The zeros became 1, 2, 3, 4, 5. Each line incremented one more than the last."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo and try G Control X for a decrementing sequence.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gctrl+x",
+      "overlay": "decrement"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now they go negative. 0, minus 1, minus 2, and so on. G Control A and G Control X. Perfect for numbered lists."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f list.txt"
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "title": "VimFu \u2014 go Byte Offset",
+  "description": "go jumps to a specific byte offset in the buffer. Useful for binary files or when an error message gives you a byte position.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 401,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f data.txt .data.txt.swp .data.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "data.txt",
+      "content": "ABCDEFGHIJ\nKLMNOPQRST\nUVWXYZ0123\n4567890!@#"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim data.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "go \u2014 Byte Offset",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G O jumps to a byte offset in the file. Type a number, then G O, and the cursor goes to that byte position."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to byte 1 ---"
+    },
+    {
+      "say": "One G O. Byte one. The very first character, A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1go",
+      "overlay": "byte 1 (A)"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Check with G A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ga",
+      "overlay": "confirm"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: jump to byte 5 ---"
+    },
+    {
+      "say": "Five G O. Byte five.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5go",
+      "overlay": "byte 5 (E)"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The letter E. A B C D E, five bytes in."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: jump across a newline ---"
+    },
+    {
+      "say": "Twelve G O. Each line is ten characters plus a newline. Byte twelve should be on line two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "12go",
+      "overlay": "byte 12 (K)"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The letter K. First character of line two, counting the newline as byte eleven."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 4: jump to end ---"
+    },
+    {
+      "say": "Thirty G O.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "30go",
+      "overlay": "byte 30"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Deep into the file. Every character has a byte number."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G O. Jump to a byte offset. Rarely used for everyday editing, but essential when error messages give you byte positions."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f data.txt"
+    }
+  ]
+}

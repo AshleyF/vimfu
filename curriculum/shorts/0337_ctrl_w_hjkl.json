@@ -1,0 +1,186 @@
+{
+  "title": "VimFu \u2014 Ctrl-W hjkl Navigate Splits",
+  "description": "Ctrl-W h/j/k/l moves the cursor to the left, down, up, or right window. Navigate between splits with Vim motions.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 478,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f north.py south.py .north.py.swp .south.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two demo files"
+    },
+    {
+      "writeFile": "north.py",
+      "content": "# North Kingdom\ncastle = \"Winterhold\"\nking = \"Frost King\"\narmy = 5000"
+    },
+    {
+      "writeFile": "south.py",
+      "content": "# South Kingdom\ncastle = \"Sunspire\"\nqueen = \"Sun Queen\"\narmy = 3000"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with horizontal split"
+    },
+    {
+      "line": "nvim -o north.py south.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W hjkl \u2014 Navigate Splits",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W H J K L moves between windows. Same directions as normal mode. H left. J down. K up. L right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: move down ---"
+    },
+    {
+      "say": "Two files open. Cursor is in the top pane. Control W J to go down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now in the bottom pane. South kingdom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: move back up ---"
+    },
+    {
+      "say": "Control W K to go back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back in the top pane. North kingdom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: down and up again ---"
+    },
+    {
+      "say": "J down. K up. Same muscle memory as normal mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0017k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W H J K L. Navigate splits with the same keys you use to move in a file. Natural and fast."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f north.py south.py"
+    }
+  ]
+}

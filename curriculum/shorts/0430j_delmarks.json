@@ -1,0 +1,153 @@
+{
+  "title": "VimFu \u2014 :delmarks Delete Marks",
+  "description": "Remove marks you no longer need.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 581,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "marks"
+  ],
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "line 1\nline 2\nline 3\nline 4\nline 5"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":delmarks \u2014 Delete Marks",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Del marks removes marks you no longer need. Set a couple marks first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ma",
+      "overlay": "set mark a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jjmb",
+      "overlay": "set mark b"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Check the marks.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":marks",
+      "overlay": ":marks"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "q",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Delete mark A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":delmarks a",
+      "overlay": ":delmarks a"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Delete all lowercase marks with del marks bang."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":delmarks!",
+      "overlay": ":delmarks!"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Del marks cleans up specific marks. Del marks bang clears them all."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

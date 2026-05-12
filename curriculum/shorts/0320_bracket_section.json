@@ -1,0 +1,180 @@
+{
+  "title": "VimFu \u2014 [] ][ Section Ends",
+  "description": "[] jumps to the previous section end. ][ jumps to the next section end. Sections end with } in column 1.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 461,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f engine.c .engine.c.swp .engine.c.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with C functions"
+    },
+    {
+      "writeFile": "engine.c",
+      "content": "void update()\n{\n    tick++;\n    physics();\n}\n\nvoid render()\n{\n    clear();\n    draw();\n}\n\nvoid cleanup()\n{\n    free(mem);\n    close(fd);\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' engine.c"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[] ][ \u2014 Section Ends",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close bracket open bracket jumps to the next section end. Open bracket close bracket jumps to the previous section end. A closing brace in column one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to next section end ---"
+    },
+    {
+      "say": "Start at the top. Close bracket open bracket to find the first closing brace.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top of file"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "][",
+      "overlay": "next section end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "][",
+      "overlay": "next end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "][",
+      "overlay": "next end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jumped to each closing brace. The end of each function."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump backward ---"
+    },
+    {
+      "say": "Open bracket close bracket goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[]",
+      "overlay": "prev section end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "[]",
+      "overlay": "prev end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Close bracket open bracket and open bracket close bracket. Navigate to function endings in C-style code."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f engine.c"
+    }
+  ]
+}

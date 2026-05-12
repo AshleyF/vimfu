@@ -1,0 +1,183 @@
+{
+  "title": "VimFu \u2014 zO zC zA Recursive Folds",
+  "description": "zO opens all fold levels recursively. zC closes all levels. zA toggles all levels. Useful for nested code.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 437,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f mages.py .mages.py.swp .mages.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with nested classes"
+    },
+    {
+      "writeFile": "mages.py",
+      "content": "class Wizard:\n    def cast(self):\n        mana = 100\n        spell = \"fireball\"\n        return spell\n    def rest(self):\n        regen = 10\n        return regen\n\nclass Rogue:\n    def hide(self):\n        stealth = True\n        return stealth\n    def stab(self):\n        crit = 200\n        return crit"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with indent folds closed"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' mages.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zO zC zA \u2014 Recursive Folds",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital Z capital O opens folds recursively. Capital Z capital C closes them. Capital Z capital A toggles."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: zO opens all levels ---"
+    },
+    {
+      "say": "Both classes are folded. Lowercase Z O would open one level. Capital Z capital O opens everything.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down to fold"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zO",
+      "overlay": "open all levels"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All methods and their bodies are visible. Every nested fold opened at once."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: zC closes all levels ---"
+    },
+    {
+      "say": "Capital Z capital C closes it all back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zC",
+      "overlay": "close all levels"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Demo 3: zA toggles recursively ---"
+    },
+    {
+      "say": "Capital Z capital A toggles all levels.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zA",
+      "overlay": "toggle all levels"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "zA",
+      "overlay": "toggle again"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital Z capital O, capital C, capital A. Recursive fold control. Lowercase for one level. Capital for all levels."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f mages.py"
+    }
+  ]
+}

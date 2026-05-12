@@ -1,0 +1,171 @@
+{
+  "title": "VimFu — Ctrl-R Ctrl-W — Insert Word",
+  "description": "Press Ctrl-R Ctrl-W on the command line to insert the word under the cursor, perfect for quick substitutions.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 607,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "# config\nwidth = 800\nheight = 600\ntimeout = 30\nwidth = 1024\nwidth = 640"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim config.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-R Ctrl-W — Insert Word",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control R Control W inserts the word under the cursor into the command line. No need to type it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Put the cursor on the word width.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Start a substitute. Colon percent S slash.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now press Control R Control W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+r",
+      "overlay": "Ctrl-R Ctrl-W"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ctrl+w"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Width was inserted from the cursor. Finish the command.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/max_width/g"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All occurrences of width changed to max width. The cursor word went straight into the command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control R Control W. Grab the word under the cursor into any command."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ]
+}

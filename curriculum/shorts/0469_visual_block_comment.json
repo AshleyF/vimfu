@@ -1,0 +1,171 @@
+{
+  "title": "VimFu \u2014 Visual Block Comment",
+  "description": "Use Ctrl-V to select a visual block, then I// Esc to insert double slashes at the start of every selected line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 625,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f code.js .code.js.swp .code.js.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "code.js",
+      "content": "let a = 1;\nlet b = 2;\nlet c = 3;\nlet d = 4;\nlet e = 5;"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim code.js"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Visual Block Comment",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Visual block mode lets you comment out a range of lines by inserting text in a column. Press Control V to start block select."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Move to line two, then press Control V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ctrl+v",
+      "overlay": "block select"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Select down two more lines with J J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jj",
+      "overlay": "select down"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now press capital I to insert before the block, type double slash, then escape.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I",
+      "overlay": "block insert"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "//"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Lines two through four are now commented out. Lines one and five are not. Block insert adds text to every line in the selection."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "To uncomment, block select the slashes and delete with D or X."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f code.js"
+    }
+  ]
+}

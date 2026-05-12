@@ -1,0 +1,163 @@
+{
+  "title": "VimFu \u2014 Ctrl-W gF File in Tab at Line",
+  "description": "Ctrl-W gF opens the file under the cursor in a new tab and jumps to the line number.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 503,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "tabs"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f notes.txt app.py .notes.txt.swp .app.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create app.py"
+    },
+    {
+      "writeFile": "app.py",
+      "content": "# App Code\ndef init():\n    pass\ndef run():\n    pass\ndef cleanup():\n    pass"
+    },
+    {
+      "comment": "Create notes.txt"
+    },
+    {
+      "writeFile": "notes.txt",
+      "content": "TODO: fix app.py:6\nThe cleanup function needs\nproper error handling"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim on notes"
+    },
+    {
+      "line": "nvim notes.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W gF \u2014 File in Tab at Line",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W G capital F opens the file under the cursor in a new tab and jumps to the line number."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: open from TODO note ---"
+    },
+    {
+      "say": "A TODO note says fix app dot py line six. Put the cursor on the filename.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "W",
+      "overlay": "skip word"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "W",
+      "overlay": "to filename"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Open it in a new tab at line six.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017gF",
+      "overlay": "tab at line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "App dot py opened in a new tab, cursor right on the cleanup function at line six. Jump from note to code in one move."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W G capital F. Open file in a new tab at the referenced line. Perfect for jumping from error logs or TODO notes."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f notes.txt app.py"
+    }
+  ]
+}

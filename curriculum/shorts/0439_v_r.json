@@ -1,0 +1,197 @@
+{
+  "title": "VimFu \u2014 v_r \u2014 Replace Selection",
+  "description": "In visual mode, r followed by a character replaces every selected character with that character.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 593,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f secret.py .secret.py.swp .secret.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "secret.py",
+      "content": "# secrets\npassword = \"hunter42\"\napi_key = \"abc123def\"\ntoken = \"xyz789\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim secret.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "v_r \u2014 Replace Selection",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In visual mode, R followed by a character replaces every selected character with that character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select the password value. V I quote to select inside the quotes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf\""
+    },
+    {
+      "keys": "vi\""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now R star.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "r*",
+      "overlay": "replace all"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every character replaced with a star. Password redacted."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Try it on the API key. Select it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf\""
+    },
+    {
+      "keys": "vi\""
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "R X.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "rx",
+      "overlay": "replace all"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All X's. Every selected character became X."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Works with any character. Select, press R, type the replacement. Every character gets the same treatment."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "R in visual mode. Replace the entire selection with one character."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f secret.py"
+    }
+  ]
+}

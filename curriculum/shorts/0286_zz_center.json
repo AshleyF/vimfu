@@ -1,0 +1,178 @@
+{
+  "title": "VimFu \u2014 zz Center Screen",
+  "description": "zz scrolls the screen so the cursor line is in the center. The fastest way to get context around your current position.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 427,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "z commands",
+    "scroll"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "# Dungeon Crawler\nimport random\n\ndef gen_room():\n    w = random.randint(5, 15)\n    h = random.randint(5, 15)\n    return (w, h)\n\ndef gen_monster():\n    hp = random.randint(10, 50)\n    atk = random.randint(1, 10)\n    return {\"hp\": hp, \"atk\": atk}\n\ndef gen_loot():\n    gold = random.randint(1, 100)\n    gems = random.randint(0, 5)\n    return {\"gold\": gold, \"gems\": gems}\n\ndef gen_trap():\n    damage = random.randint(5, 20)\n    return {\"dmg\": damage}\n\ndef gen_floor(rooms=10):\n    floor = []\n    for i in range(rooms):\n        floor.append(gen_room())\n    return floor\n\ndef main():\n    floors = [gen_floor() for _ in range(5)]\n    print(f\"{len(floors)} floors\")\n\nif __name__ == \"__main__\":\n    main()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set number' dungeon.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zz \u2014 Center Screen",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z Z centers the screen on your cursor. Wherever you are, Z Z puts that line in the middle so you can see context above and below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump deep then center ---"
+    },
+    {
+      "say": "Jump to line twenty. The gen trap function.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "20G",
+      "overlay": "line 20"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The line might be near the edge. Z Z.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zz",
+      "overlay": "center!"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Centered. Code above and below. Full context."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: search then center ---"
+    },
+    {
+      "say": "Search for main. Slash main enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/main"
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zz",
+      "overlay": "center on match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Found it and centered. Z Z after any jump keeps your bearings."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z Z. Center screen. Use it after jumps, searches, or any time you want your cursor line front and center."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ]
+}

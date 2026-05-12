@@ -1,0 +1,170 @@
+{
+  "title": "VimFu \u2014 zt Scroll to Top",
+  "description": "zt scrolls the screen so the cursor line is at the top. Maximize the view of what comes after your cursor.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 428,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "z commands",
+    "scroll"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "# Quest System\nclass Quest:\n    def __init__(self, name):\n        self.name = name\n        self.steps = []\n        self.done = False\n\n    def add_step(self, step):\n        self.steps.append(step)\n\n    def complete(self):\n        self.done = True\n        return f\"{self.name} done!\"\n\n    def progress(self):\n        total = len(self.steps)\n        finished = sum(1 for s in self.steps\n                       if s.get(\"done\"))\n        return f\"{finished}/{total}\"\n\n    def reset(self):\n        self.done = False\n        for s in self.steps:\n            s[\"done\"] = False\n\ndef load_quests(path):\n    quests = []\n    print(f\"Loading from {path}\")\n    return quests"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set number' quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zt \u2014 Scroll to Top",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z T scrolls so your cursor line is at the top of the screen. Use it when you want to read a function from its definition downward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to a function, zt ---"
+    },
+    {
+      "say": "Go to the progress method. Line sixteen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "16G",
+      "overlay": "line 16"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zt",
+      "overlay": "scroll to top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The method definition is at the top. The entire body is visible below it. Maximum forward context."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: compare with zz ---"
+    },
+    {
+      "say": "Compare with Z Z.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zz",
+      "overlay": "center"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Centered. But half the function body is hidden above. Z T is better for reading ahead.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zt",
+      "overlay": "back to top"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z T. Cursor line to the top. Best after jumping to a function or class you want to read through."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f quest.py"
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "title": "VimFu \u2014 Ctrl-W p Previous Window",
+  "description": "Ctrl-W p jumps to the last accessed window. Toggle between two windows quickly.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 481,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f source.py test.py .source.py.swp .test.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "source.py",
+      "content": "# Source Code\ndef add(a, b):\n    return a + b\ndef mul(a, b):\n    return a * b"
+    },
+    {
+      "writeFile": "test.py",
+      "content": "# Test File\nassert add(2, 3) == 5\nassert mul(4, 5) == 20\nprint(\"All tests pass!\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with horizontal split"
+    },
+    {
+      "line": "nvim -o source.py test.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W p \u2014 Previous Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W P jumps to the last window you were in. Like alt-tab for Vim windows."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: switch to test file ---"
+    },
+    {
+      "say": "Source code on top. Tests on bottom. Move to the tests.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017j",
+      "overlay": "to tests"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: toggle with Ctrl-W p ---"
+    },
+    {
+      "say": "Now Control W P to jump back to the source.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017p",
+      "overlay": "previous window"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back in the source. Hit it again to return to tests.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017p",
+      "overlay": "toggle back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u0017p",
+      "overlay": "toggle"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control W P bounces between your two most recent windows."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W P. Previous window. Toggle between source and tests, header and implementation, or any two panes."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f source.py test.py"
+    }
+  ]
+}

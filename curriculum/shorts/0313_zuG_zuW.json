@@ -1,0 +1,187 @@
+{
+  "title": "VimFu \u2014 zuG zuW Undo Temp Spelling",
+  "description": "zuG undoes a temporary zG mark. zuW undoes a temporary zW mark. Revert session-only spelling changes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 454,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "spelling",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f draft.txt .draft.txt.swp .draft.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "draft.txt",
+      "content": "Enable autosave for the workspace.\nThe plugin handles linting.\nRefactor the navbar component.\nDeploy the hotfix to staging."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with spell checking"
+    },
+    {
+      "line": "nvim -c 'set spell' draft.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zuG zuW \u2014 Undo Temp Spelling",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z U capital G undoes a temporary capital Z capital G mark. Z U capital W undoes capital Z capital W."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: temp mark then undo ---"
+    },
+    {
+      "say": "Mark autosave as temporarily correct.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "to autosave"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zG",
+      "overlay": "temp correct"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Changed my mind. Z U capital G to undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zuG",
+      "overlay": "undo temp mark"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to being flagged."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: temp flag then undo ---"
+    },
+    {
+      "say": "Temporarily flag linting with capital Z capital W, then undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$b",
+      "overlay": "to linting"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zW",
+      "overlay": "temp incorrect"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "zuW",
+      "overlay": "undo temp flag"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z U capital G and Z U capital W. Undo temporary spelling marks. Full control over your spell checking."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f draft.txt"
+    }
+  ]
+}

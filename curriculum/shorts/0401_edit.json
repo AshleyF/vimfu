@@ -1,0 +1,46 @@
+{
+  "title": "VimFu — :e {file} Edit File",
+  "description": "The :e command opens a different file for editing.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 542,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "setup": [
+    { "comment": "Set TERM for proper color support in Neovim" },
+    { "line": "export TERM=xterm-256color" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f main.py config.py .main.py.swp .config.py.swp" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "writeFile": "main.py", "content": "# Main\nimport config" },
+    { "writeFile": "config.py", "content": "# Config\nDEBUG = True" },
+    { "line": "clear" },
+    { "line": "nvim main.py" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "overlay": "VimFu", "caption": ":e — Edit File", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "say": "Colon E opens a different file. Switch files without leaving Vim." },
+    { "wait": 0.3 },
+    { "say": "We're in main dot py. Open config dot py.", "wait": false },
+    { "wait": 0.3 },
+    { "type": ":e config.py", "overlay": ":e config.py" },
+    "enter",
+    { "wait": 0.5 },
+    { "say": "Config dot py. A different file, same editor session. Tab completion works too. Type colon E, then a few letters and press Tab." },
+    { "wait": 0.3 },
+    { "say": "Colon E. Open any file. Your way to navigate between files inside Vim." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [
+    "escape",
+    { "type": ":q!" },
+    "enter",
+    { "line": "rm -f main.py config.py" }
+  ]
+}

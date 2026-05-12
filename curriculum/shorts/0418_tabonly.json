@@ -1,0 +1,124 @@
+{
+  "title": "VimFu \u2014 :tabonly Only Tab",
+  "description": "The :tabonly command closes all other tabs, keeping only the current one.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 559,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "tabs"
+  ],
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .*.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# A"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# Focus"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# C"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -p a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":tabonly \u2014 Only Tab",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon tab only closes all tabs except the current one. Focus on one file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Three tabs. Switch to the one we want to keep.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gt",
+      "overlay": "to tab B"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": ":tabonly",
+      "overlay": ":tabonly"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "All other tabs gone. Just this one remains. Full focus."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon tab only. Declutter your workspace in one command."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ]
+}

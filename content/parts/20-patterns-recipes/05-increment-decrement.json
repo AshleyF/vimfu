@@ -2,8 +2,8 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "patterns.increment-decrement",
-  "title": "Increment and Decrement (Ctrl-A / Ctrl-X)",
-  "subtitle": "Find the next number, add or subtract \u2014 with counts.",
+  "title": "Increment and Decrement ({key:Ctrl-A} / {key:Ctrl-X})",
+  "subtitle": "Find the next number, add or subtract — with counts.",
   "part": "patterns-recipes",
   "summary": "Ctrl-A increments the next number on the line; Ctrl-X decrements. With a count, it adds/subtracts that much. Combined with macros and :norm, generates sequences instantly.",
   "keys": [
@@ -60,7 +60,7 @@
     {
       "type": "internals",
       "title": "g Ctrl-A and Sequences",
-      "text": "On a *visual selection* of multiple lines, each containing a number:\n\n  \u2022 {key:Ctrl-A} adds the count to *every* number.\n  \u2022 {key:g}{key:Ctrl-A} adds an *increasing* multiple of the count to each line in turn.\n\nClassic recipe: write 100 lines of `0`, select all, press {key:g}{key:Ctrl-A} \u2192 you have 1, 2, 3, \u2026 100.\n\n**Number recognition** is controlled by `'nrformats'` — by default decimal and hex (`0x` prefixed) and octal (`0` prefixed; arguably surprising). Set `:set nrformats-=octal` to avoid the gotcha where `08` is treated as malformed octal. (For the broader option system, see Part 21's configuration chapter.)\n\nVim also recognizes negative signs and will respect them when wrapping (decrementing 0 gives -1)."
+      "text": "On a *visual selection* of multiple lines, each containing a number:\n\n  • {key:Ctrl-A} adds the count to *every* number.\n  • {key:g}{key:Ctrl-A} adds an *increasing* multiple of the count to each line in turn.\n\nClassic recipe: write 100 lines of `0`, select all, press {key:g}{key:Ctrl-A} → you have 1, 2, 3, … 100.\n\n**Number recognition** is controlled by `'nrformats'` — by default decimal and hex (`0x` prefixed) and octal (`0` prefixed; arguably surprising). Set `:set nrformats-=octal` to avoid the gotcha where `08` is treated as malformed octal. (For the broader option system, see Part 21's configuration chapter.)\n\nVim also recognizes negative signs and will respect them when wrapping (decrementing 0 gives -1)."
     },
     {
       "type": "tip",

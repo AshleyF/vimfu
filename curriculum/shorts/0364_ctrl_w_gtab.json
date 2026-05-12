@@ -1,0 +1,198 @@
+{
+  "title": "VimFu \u2014 Ctrl-W g<Tab> Last Tab",
+  "description": "Ctrl-W g Tab jumps to the last accessed tab page. Toggle between two tabs quickly.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 505,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "tabs"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f src.py test.py .src.py.swp .test.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create files"
+    },
+    {
+      "writeFile": "src.py",
+      "content": "# Source Code\ndef double(n):\n    return n * 2"
+    },
+    {
+      "writeFile": "test.py",
+      "content": "# Tests\nassert double(5) == 10\nassert double(0) == 0"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with two tabs"
+    },
+    {
+      "line": "nvim -p src.py test.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W g<Tab> \u2014 Last Tab",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W G Tab jumps to the last accessed tab. Like alt-tab for Vim tabs."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: switch to tests ---"
+    },
+    {
+      "say": "Source code in the first tab. Switch to tests.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gt",
+      "overlay": "next tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Tests tab. Now toggle back with G Tab.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g\t",
+      "overlay": "last tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to source. Toggle again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g\t",
+      "overlay": "last tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Tests again. Bouncing between source and tests. Fast workflow."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: rapid toggle ---"
+    },
+    {
+      "say": "Toggle a few more times.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g\t",
+      "overlay": "toggle"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "g\t",
+      "overlay": "toggle"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "g\t",
+      "overlay": "toggle"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G Tab. Last accessed tab. The fastest way to bounce between two tabs."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f src.py test.py"
+    }
+  ]
+}

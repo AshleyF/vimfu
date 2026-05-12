@@ -1,0 +1,221 @@
+{
+  "title": "VimFu — :'<,'> — Visual Range",
+  "description": "After a visual selection, pressing : automatically inserts the range '<,'> so your command applies only to the selected lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 601,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f fruit.py .fruit.py.swp .fruit.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "fruit.py",
+      "content": "# fruit prices\napple = 1\nbanana = 2\ncherry = 3\ndate = 4\npear = 5\nfig = 6"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim fruit.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":'<,'> — Visual Range",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "After a visual selection, pressing colon gives you a command range. Vim fills in the marks for the selected lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select banana through date. Capital V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "jj"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now press colon.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ":"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "See the command line? It already says colon, less than, comma, greater than. That's the visual range. Any command you type applies only to those lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Type S slash equals slash colon colon slash to change equals to colons.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "s/=/::/g"
+    },
+    {
+      "wait": 0.4
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Only the selected lines changed. Apple and pear still have equals signs."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Another example. Select pear and fig.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j0"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon, then sort to sort just these lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":sort"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Only the selected lines were sorted. Everything else stayed in place."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Visual select, colon, type a command. It runs on just those lines. The visual range."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f fruit.py"
+    }
+  ]
+}

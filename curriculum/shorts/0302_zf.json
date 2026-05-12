@@ -1,0 +1,189 @@
+{
+  "title": "VimFu \u2014 zf Create Manual Fold",
+  "description": "zf followed by a motion creates a manual fold over those lines. You need foldmethod set to manual.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 443,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f todo.py .todo.py.swp .todo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "todo.py",
+      "content": "# Quest Log\ntask_1 = \"Defeat the dragon\"\ntask_2 = \"Find the treasure\"\ntask_3 = \"Return the crown\"\n# Shopping List\nbuy_sword = True\nbuy_armor = True\nbuy_potions = True\n# Party Members\nhero = \"Knight\"\nsidekick = \"Mage\"\npet = \"Wolf\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with manual folds and line numbers"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=manual' -c 'set number' todo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zf \u2014 Create Manual Fold",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z F followed by a motion creates a fold. Set fold method to manual first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: fold the quest log section ---"
+    },
+    {
+      "say": "Fold the quest log. Lines two through four. Go to line two and Z F two J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "go to line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zf2j",
+      "overlay": "fold 3 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines folded into one. The fold hides the tasks."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: fold the shopping list ---"
+    },
+    {
+      "say": "Fold the shopping list too. Z F three J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5G",
+      "overlay": "jump to section"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zf3j",
+      "overlay": "fold 4 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two custom folds. You choose exactly what to hide."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: open it back ---"
+    },
+    {
+      "say": "Z O to open a fold again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zo",
+      "overlay": "open fold"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z F plus a motion. Create folds anywhere you want with manual fold method."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f todo.py"
+    }
+  ]
+}

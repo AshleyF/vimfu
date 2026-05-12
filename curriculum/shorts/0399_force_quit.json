@@ -1,0 +1,120 @@
+{
+  "title": "VimFu \u2014 :q! Force Quit",
+  "description": "The :q! command quits Vim discarding all unsaved changes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 540,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Good Code\nprint(\"works\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":q! \u2014 Force Quit",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon Q bang quits without saving. The bang means I'm sure, throw it all away."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's wreck this file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ggdG",
+      "overlay": "delete everything"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Everything gone. But we don't want to save this disaster.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q!",
+      "overlay": "force quit"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Gone. The file on disk is still perfect. Our edits were thrown away."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon Q bang. Your escape hatch. Discard everything and get out."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

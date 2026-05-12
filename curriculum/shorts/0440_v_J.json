@@ -1,0 +1,196 @@
+{
+  "title": "VimFu \u2014 v_J \u2014 Join Selection",
+  "description": "In visual mode, J joins the selected lines into one line, separated by spaces.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 594,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f addr.py .addr.py.swp .addr.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "addr.py",
+      "content": "# address\nstreet = \"123\"\ncity = \"Main St\"\nstate = \"CA\"\nzip_code = \"90210\"\ncountry = \"US\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim addr.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "v_J \u2014 Join Selection",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In visual mode, J joins the selected lines into one. Line breaks become spaces."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select street, city, and state. Capital V then J J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "jj"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three lines selected. Press J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "J",
+      "overlay": "join lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines merged into one, joined by spaces."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now select all the data lines. V then G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "J to join them all.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "J",
+      "overlay": "join all"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything on one line. Visual J. Select lines, join them."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "J in visual mode. Select the lines, then join."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f addr.py"
+    }
+  ]
+}

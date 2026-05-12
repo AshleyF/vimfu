@@ -1,0 +1,172 @@
+{
+  "title": "VimFu \u2014 zG zW Temporary Spelling",
+  "description": "zG temporarily marks a word as correct. zW temporarily marks it incorrect. Both last only for the session.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 453,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "spelling",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f log.txt .log.txt.swp .log.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "log.txt",
+      "content": "Server recv the webhook data.\nThe middleware parsed the json.\nAPI returned a statuscode error.\nRetry after backoff delay."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with spell checking"
+    },
+    {
+      "line": "nvim -c 'set spell' log.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zG zW \u2014 Temporary Spelling",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital Z capital G marks a word as correct for this session only. Capital Z capital W marks it incorrect. Neither changes your spell file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: temporarily accept recv ---"
+    },
+    {
+      "say": "Recv is flagged. Accept it just for now with capital Z capital G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "to recv"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zG",
+      "overlay": "temp correct"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "No more highlight. But when you reopen the file, it will be flagged again."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: temporarily flag json ---"
+    },
+    {
+      "say": "Capital Z capital W for the opposite. Temporarily flag a word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$b",
+      "overlay": "to json"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zW",
+      "overlay": "temp incorrect"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Flagged for this session. Next time you open the file it resets."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital Z capital G and capital Z capital W. Temporary spell marks. No permanent changes to your dictionary."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f log.txt"
+    }
+  ]
+}

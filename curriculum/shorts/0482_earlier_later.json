@@ -1,0 +1,203 @@
+{
+  "title": "VimFu \u2014 :earlier / :later",
+  "description": "Use :earlier and :later to travel backward and forward in time through your undo history by time or change count.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 638,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f timeline.txt .timeline.txt.swp .timeline.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "timeline.txt",
+      "content": "original text"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim timeline.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":earlier / :later",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Vim can time travel. The earlier command takes the file back in time, and later brings it forward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's make some changes first. Add a second line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o",
+      "overlay": "open line below"
+    },
+    {
+      "type": "first edit"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Add another line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "type": "second edit"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "type": "third edit"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now roll back two changes with earlier two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":earlier 2"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "We jumped back two edits. Only original text and first edit remain."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can also use time units. Earlier five M goes back five minutes. Earlier ten S goes back ten seconds.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now move forward with later.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":later 2"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All edits are back. Later two moved us forward two changes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Earlier and later. Time travel for your text. Use change counts or time units like S, M, and H."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f timeline.txt"
+    }
+  ]
+}

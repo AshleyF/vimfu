@@ -1,0 +1,237 @@
+{
+  "title": "VimFu \u2014 Up/Down \u2014 History",
+  "description": "Use Up and Down arrows on the command line to recall previous and next commands, filtered by what you've already typed.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 611,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f items.py .items.py.swp .items.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "items.py",
+      "content": "# items\nsword = 10\nshield = 8\npotion = 5\narrow = 2\nbow = 7"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim items.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Up/Down \u2014 History",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Up and Down arrows on the command line recall previous commands. Type a prefix first and Up will only show commands that match."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Run a few commands to build history.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set number"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/10/99/"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set cursorline"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/8/88/"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now press colon and then Up arrow.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "up",
+      "overlay": "previous command"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "It shows the last command. Press Up again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "up"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "up"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Scrolling through history. Now press Down to go forward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "down",
+      "overlay": "next command"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Here's the best part. Type a prefix like colon set, then press Up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "up",
+      "overlay": "filtered history"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "It only shows commands starting with set. It skips the substitute commands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "up"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Up and Down arrows. Recall commands, filtered by prefix."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f items.py"
+    }
+  ]
+}

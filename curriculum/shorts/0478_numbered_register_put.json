@@ -1,0 +1,186 @@
+{
+  "title": "VimFu \u2014 Numbered Register Put",
+  "description": "Use \"1p to put from numbered register 1, then dot to cycle through registers 2, 3, and so on, recovering previously deleted text.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 634,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f lines.txt .lines.txt.swp .lines.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "lines.txt",
+      "content": "alpha\nbravo\ncharlie\ndelta\necho\nfoxtrot"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim lines.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Numbered Register Put",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Vim stores your last nine deletes in numbered registers 1 through 9. Register 1 has the most recent, 2 has the one before, and so on."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Delete three lines to fill the registers.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete alpha"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete bravo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete charlie"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three lines deleted. Register 1 has charlie, 2 has bravo, 3 has alpha. Now go to the bottom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Put from register 1 with quote 1 P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"1p",
+      "overlay": "put register 1"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Charlie appeared. Now press U dot. Undo advances to the next register automatically.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u.",
+      "overlay": "undo, next register"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now it's bravo from register 2. U dot again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Alpha from register 3. Quote 1 P, then U dot cycles through your delete history."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f lines.txt"
+    }
+  ]
+}

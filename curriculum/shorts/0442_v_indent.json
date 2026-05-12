@@ -1,0 +1,224 @@
+{
+  "title": "VimFu \u2014 v_> / v_< / v_= \u2014 Indent",
+  "description": "In visual mode, > indents the selection, < unindents, and = auto-indents. Quick way to fix formatting.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 596,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f code.json .code.json.swp .code.json.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with bad indentation"
+    },
+    {
+      "writeFile": "code.json",
+      "content": "{\n\"name\": \"alice\",\n\"age\": 30,\n\"items\": [\n\"apple\",\n\"banana\",\n            \"cherry\",\n            \"date\"\n]\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim code.json"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "v_> / v_< / v_=",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In visual mode, greater than indents, less than unindents, and equals auto-indents."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "These lines need indentation. Select them with capital V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "jj"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Greater than to indent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">",
+      "overlay": "indent"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Indented one level. Now they're inside the object."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "These last items are over-indented. Select those lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5j"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Less than to unindent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "<",
+      "overlay": "unindent"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One level removed. Proper indentation now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Or use equals to auto-indent. Select everything.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "=",
+      "overlay": "auto-indent"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Vim figured out the correct indentation. Equals does it automatically."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Greater than to indent. Less than to unindent. Equals to auto-indent."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f code.json"
+    }
+  ]
+}

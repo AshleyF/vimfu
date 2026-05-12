@@ -1,0 +1,189 @@
+{
+  "title": "VimFu \u2014 xp \u2014 Transpose Characters",
+  "description": "Use xp to swap two adjacent characters. The x deletes the character under the cursor, and p pastes it after the next one.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 617,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f typos.txt .typos.txt.swp .typos.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "typos.txt",
+      "content": "teh quick brown fox\njumsp over the fence\nwiht great speed"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim typos.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "xp \u2014 Transpose Characters",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "X P is a classic Vim trick to swap two characters. X deletes the character under the cursor, and P puts it back after the next one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The word teh is misspelled. Put the cursor on the E.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "l",
+      "overlay": "move right"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now type X P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "xp",
+      "overlay": "transpose"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Teh becomes the. The E and H swapped places."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's fix line two. Move to the M in jumsp.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0f",
+      "overlay": "next line, find"
+    },
+    {
+      "keys": "s"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "xp",
+      "overlay": "transpose"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumsp is now jumps. Quick fix."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Line three. Move to the I in wiht.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0l"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "xp",
+      "overlay": "transpose"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Wiht becomes with. X P. Two keys to fix a transposition typo."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f typos.txt"
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "title": "VimFu \u2014 Ctrl-@ Insert Previous + Leave",
+  "description": "Ctrl-@ inserts the previously typed text and immediately leaves insert mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 517,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\na = \nb = \nc = "
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-@ \u2014 Insert + Leave",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control at sign does two things. It inserts the previously typed text, then immediately leaves insert mode. Control A plus Escape in one keystroke."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: type, then re-insert with auto-leave ---"
+    },
+    {
+      "say": "Type a value on line two first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jA",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "42",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now on line three. Enter insert and use Control at.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jA",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0000",
+      "overlay": "insert + leave"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Forty-two inserted and back in normal mode. One keystroke did both."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control at. Insert previously typed text and leave insert mode. A combo move for quick repetition."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

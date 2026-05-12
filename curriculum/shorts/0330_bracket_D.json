@@ -1,0 +1,174 @@
+{
+  "title": "VimFu \u2014 [D ]D List Defines",
+  "description": "[D lists all #define lines matching the word under the cursor. ]D does the same from the current position.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 471,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "C"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f sizes.h .sizes.h.swp .sizes.h.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with multiple defines"
+    },
+    {
+      "writeFile": "sizes.h",
+      "content": "#define SIZE 10\n#define MAX 100\n#define SIZE 20\n#define MIN 1\n#define SIZE 30\n\nint buf[SIZE];\nint cap = MAX;"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' -c 'silent! nunmap [d' -c 'silent! nunmap ]d' -c 'silent! nunmap [D' -c 'silent! nunmap ]D' sizes.h"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[D ]D \u2014 List Defines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Open bracket capital D lists all defines matching the word under the cursor. Not just the first one. All of them."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: list all SIZE defines ---"
+    },
+    {
+      "say": "SIZE is defined three times. Cursor on SIZE on line seven. Open bracket capital D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "7G",
+      "overlay": "go to line 7"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "3w",
+      "overlay": "to SIZE"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[D",
+      "overlay": "list all defines"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Three matches listed. Lines one, three, and five. Each with a different value.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: compare with [d ---"
+    },
+    {
+      "say": "Compare with lowercase open bracket D. It only shows the first match.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[d",
+      "overlay": "first define only"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open bracket capital D. List every define. Lowercase D shows just the first. Capital D shows all."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f sizes.h"
+    }
+  ]
+}

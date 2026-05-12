@@ -1,0 +1,216 @@
+{
+  "title": "VimFu \u2014 v_y \u2014 Yank Selection",
+  "description": "In visual mode, y yanks (copies) the selected text. Then p pastes it wherever you need it.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 592,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f todo.py .todo.py.swp .todo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "todo.py",
+      "content": "# todo list\ntask1 = \"buy milk\"\ntask2 = \"clean room\"\ntask3 = \"cook dinner\"\ntask4 = \"read book\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim todo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "v_y \u2014 Yank Selection",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In visual mode, Y yanks the selected text. It copies without deleting."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select task 1 with capital V. Then Y.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "V",
+      "overlay": "select line"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "y",
+      "overlay": "yank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Yanked. Selection disappears but the line is in the register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Go to the end. P to paste.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line duplicated at the bottom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "You can also yank part of a line. V then E to select one word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg0jf\""
+    },
+    {
+      "keys": "vi\""
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "y",
+      "overlay": "yank word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Yanked just the text inside the quotes. Go paste it somewhere.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G$"
+    },
+    {
+      "keys": "p"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Only the selected text was pasted, not the whole line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Y in visual mode. Yank exactly what you select."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f todo.py"
+    }
+  ]
+}

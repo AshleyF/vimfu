@@ -1,0 +1,154 @@
+{
+  "title": "VimFu \u2014 Ctrl-X Ctrl-D Define Complete",
+  "description": "Ctrl-X Ctrl-D in insert mode completes defined identifiers (macros, constants).",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 532,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "completion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.c .demo.c.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.c",
+      "content": "#define MAX_SIZE 100\n#define MIN_SIZE 10\n#define MAX_COUNT 50\nint x = ;"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.c"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-X Ctrl-D \u2014 Define",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control X Control D completes defined identifiers. In C, that means macros and defines. In other languages, it looks for definition patterns."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: complete a defined name ---"
+    },
+    {
+      "say": "Go to the last line and type MAX.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3jf;i",
+      "overlay": "last line, insert"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "MAX",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control X Control D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0018\u0004",
+      "overlay": "defined"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "MAX SIZE and MAX COUNT. Defined identifiers matching our prefix."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control X Control D. Complete defined identifiers. Most useful in C and C-plus-plus for macros and constants."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.c"
+    }
+  ]
+}

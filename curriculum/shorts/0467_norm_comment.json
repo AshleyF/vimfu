@@ -1,0 +1,154 @@
+{
+  "title": "VimFu — :%norm I// — Comment All Lines",
+  "description": "Use :%norm I// to prepend double slashes to every line, commenting out the entire file in one command.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 623,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f main.js .main.js.swp .main.js.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "main.js",
+      "content": "let x = 1;\nlet y = 2;\nlet z = x + y;\nconsole.log(z);\nreturn z;"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim main.js"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":%norm I// — Comment All Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Percent norm I double-slash comments out every line in the file. Percent means all lines, norm runs in normal mode, and capital I inserts at the start."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Type the command.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%norm I//",
+      "overlay": ":%norm I//"
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every line now starts with double slashes. The whole file is commented out."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo that. Now comment just lines two through four.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":2,4norm I//",
+      "overlay": ":2,4norm I//"
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Only lines two through four are commented. Lines one and five are untouched. Use a range or percent for all lines."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f main.js"
+    }
+  ]
+}

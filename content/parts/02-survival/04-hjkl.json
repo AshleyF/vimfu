@@ -2,8 +2,8 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "survival.hjkl",
-  "title": "Move with hjkl",
-  "subtitle": "Left, down, up, right \u2014 without leaving home row",
+  "title": "Move with {key:h}{key:j}{key:k}{key:l}",
+  "subtitle": "Left, down, up, right — without leaving home row",
   "part": "survival",
   "summary": "h j k l move the cursor one cell at a time. Hands stay on the home row. Arrow keys also work but defeat the purpose.",
   "keys": [
@@ -86,7 +86,7 @@
     },
     {
       "type": "prose",
-      "text": "More importantly, {key:hjkl} are right under your fingers when you are *about to issue a command*. {key:d}{key:j} deletes a line down. {key:y}{key:5}{key:k} yanks five lines up. The cursor keys can't combine like this \u2014 they aren't part of the grammar."
+      "text": "More importantly, {key:hjkl} are right under your fingers when you are *about to issue a command*. {key:d}{key:j} deletes a line down. {key:y}{key:5}{key:k} yanks five lines up. The cursor keys can't combine like this — they aren't part of the grammar."
     },
     {
       "type": "embed",
@@ -100,12 +100,12 @@
     {
       "type": "internals",
       "title": "Why hjkl?",
-      "text": "Bill Joy wrote vi on an ADM-3A terminal at UC Berkeley in 1976. The ADM-3A keyboard had no dedicated arrow keys \u2014 instead, the {key:h}, {key:j}, {key:k}, {key:l} keys were physically labeled with left/down/up/right arrows. Joy reused the existing terminal control codes those keys produced. The ADM-3A is long dead; the convention lives.\n\nIt turns out to be a real ergonomic win: those four keys are on the home row of the dominant hand for most touch-typists. If Joy had been working on a different terminal \u2014 one with arrow keys somewhere else \u2014 modern Vim would feel different. As it stands, the right hand never leaves the home row to navigate."
+      "text": "Bill Joy wrote vi on an ADM-3A terminal at UC Berkeley in 1976. The ADM-3A keyboard had no dedicated arrow keys — instead, the {key:h}, {key:j}, {key:k}, {key:l} keys were physically labeled with left/down/up/right arrows. Joy reused the existing terminal control codes those keys produced. The ADM-3A is long dead; the convention lives.\n\nIt turns out to be a real ergonomic win: those four keys are on the home row of the dominant hand for most touch-typists. If Joy had been working on a different terminal — one with arrow keys somewhere else — modern Vim would feel different. As it stands, the right hand never leaves the home row to navigate."
     },
     {
       "type": "internals",
       "title": "Sticky Column",
-      "text": "When you move {key:k} or {key:j} up and down, the cursor tries to stay in the same *column* \u2014 even across lines that are too short to reach that column. If you're at column 30 and you press {key:j} onto a line of length 10, the cursor lands at column 10 (the end). Press {key:j} again onto a line of length 50: the cursor returns to column 30, not column 10. Vim remembers your *intended* column.\n\nHorizontal motions ({key:h}, {key:l}, {key:w}, {key:f}, etc.) reset the sticky column. So a right-moving motion in the middle of vertical navigation will cost you the original column.\n\nThis is the cause of the frequent \"I pressed {key:j} a few times and the cursor walked left\" surprise \u2014 you crossed a short line. The cursor is following the rules; the rules just don't match terminal-emulator intuition."
+      "text": "When you move {key:k} or {key:j} up and down, the cursor tries to stay in the same *column* — even across lines that are too short to reach that column. If you're at column 30 and you press {key:j} onto a line of length 10, the cursor lands at column 10 (the end). Press {key:j} again onto a line of length 50: the cursor returns to column 30, not column 10. Vim remembers your *intended* column.\n\nHorizontal motions ({key:h}, {key:l}, {key:w}, {key:f}, etc.) reset the sticky column. So a right-moving motion in the middle of vertical navigation will cost you the original column.\n\nThis is the cause of the frequent \"I pressed {key:j} a few times and the cursor walked left\" surprise — you crossed a short line. The cursor is following the rules; the rules just don't match terminal-emulator intuition."
     },
     {
       "type": "divider"
@@ -152,7 +152,7 @@
         ],
         [
           "{key:gj}, {key:gk}",
-          "By *visual* line \u2014 useful when wrap is on (deeper dive in `wider-motions.line-start`)"
+          "By *visual* line — useful when wrap is on (deeper dive in `wider-motions.line-start`)"
         ]
       ]
     },

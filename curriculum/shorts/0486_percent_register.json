@@ -1,0 +1,170 @@
+{
+  "title": "VimFu \u2014 The % Register",
+  "description": "The \"% register contains the current filename. Use it to insert or reference the file you're editing.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 642,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f myfile.txt .myfile.txt.swp .myfile.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "myfile.txt",
+      "content": "This file is called:\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim myfile.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "The % Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The percent register, quote percent, always contains the current filename."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Check it with echo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":echo @%"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It shows myfile dot txt. That's the file we're editing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can paste the filename into your text. Go to line two and paste it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "\"%",
+      "overlay": "filename register"
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The filename got inserted. This is handy for adding file headers or writing self-referencing notes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can also use percent in command mode. Try bang echo percent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":!echo %"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Vim expanded percent to the filename. Quote percent. The current file, always one register away."
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f myfile.txt"
+    }
+  ]
+}

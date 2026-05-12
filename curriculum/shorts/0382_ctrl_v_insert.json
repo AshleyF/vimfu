@@ -1,0 +1,166 @@
+{
+  "title": "VimFu \u2014 Ctrl-V Literal Character",
+  "description": "Ctrl-V in insert mode inserts the next character literally, bypassing any special meaning.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 523,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "Literal chars:\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-V \u2014 Literal Character",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control V in insert mode inserts the next character literally. Even characters that normally have special meaning."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: insert a literal tab ---"
+    },
+    {
+      "say": "Normally, Tab might trigger completion or indentation. But Control V Tab inserts a real tab character.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jA",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0016\t",
+      "overlay": "literal tab"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A real tab character inserted. You can see it moved the cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: insert by code ---"
+    },
+    {
+      "say": "You can also type a character by its code. Control V then a number.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": " ",
+      "overlay": ""
+    },
+    {
+      "keys": "\u0016065",
+      "overlay": "letter A"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Capital A, ASCII sixty-five. Inserted by number."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control V. Insert the next character literally. Bypass all special handling. Useful for tabs, control characters, and codes."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt"
+    }
+  ]
+}

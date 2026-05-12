@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 q: \u2014 Command History Window",
+  "description": "Open command-line history in an editable window with q: so you can browse, edit, and re-run previous Ex commands.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 602,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f colors.py .colors.py.swp .colors.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "colors.py",
+      "content": "# colors\nred = 1\ngreen = 2\nblue = 3\nyellow = 4\npurple = 5"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim colors.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "q: \u2014 Command History Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Q colon opens the command history in an editable window. You can browse, edit, and rerun past commands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "First, let's run a few commands to build up history.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set number"
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "type": ":%s/1/100/"
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "type": ":set cursorline"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now press Q colon in normal mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q:",
+      "overlay": "command history"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "A window opens with all your recent commands. Each line is a command you ran."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can move through them like any buffer. Press K to go up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "You can even edit a command before running it. Press Enter to execute the command on the current line."
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The command ran again. Q colon. Browse and rerun your command history."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f colors.py"
+    }
+  ]
+}

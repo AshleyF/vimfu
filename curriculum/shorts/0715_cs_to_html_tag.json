@@ -1,0 +1,168 @@
+{
+  "title": "VimFu — Change to HTML Tag",
+  "description": "cs\"<em> changes quotes to an HTML tag pair around the cursor.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 674,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "surround"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f page.html .page.html.swp .page.html.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "page.html",
+      "content": "title = \"Hello World\"\nlabel = \"Click Me\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim page.html"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Change to HTML Tag",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "C S can change any surrounding into an H T M L tag. Type the tag name with angle brackets as the replacement."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Double quotes around Hello World. C S double quote, then type the tag.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fH",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "cs\"<em>",
+      "overlay": "cs\"<em>"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Quotes became em tags. Opening and closing tags both created automatically."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Line two. C S double quote, H one tag.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jfC",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "cs\"<h1>",
+      "overlay": "cs\"<h1>"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Quotes to H one tags. C S to a tag. Very handy for H T M L work."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f page.html"
+    }
+  ]
+}

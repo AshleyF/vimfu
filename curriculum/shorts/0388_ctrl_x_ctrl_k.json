@@ -1,0 +1,169 @@
+{
+  "title": "VimFu \u2014 Ctrl-X Ctrl-K Dictionary Complete",
+  "description": "Ctrl-X Ctrl-K in insert mode completes words from a dictionary file.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 529,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "completion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt words.txt .demo.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "words.txt",
+      "content": "algorithm\nallocate\nanalyze\napplication\narchitecture\nautomation"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "Project notes:\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-X Ctrl-K \u2014 Dictionary",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control X Control K completes from a dictionary file. First, set the dictionary with set dictionary equals filename."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Set dictionary ---"
+    },
+    {
+      "say": "Set the dictionary.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set dictionary=words.txt",
+      "overlay": ""
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 1: complete from dictionary ---"
+    },
+    {
+      "say": "Now type a prefix and complete.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jA",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "al",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0018\u000b",
+      "overlay": "dictionary"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Algorithm and allocate from our custom word list."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control X Control K. Dictionary completion. Set your dictionary file, then complete domain-specific words."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt words.txt"
+    }
+  ]
+}

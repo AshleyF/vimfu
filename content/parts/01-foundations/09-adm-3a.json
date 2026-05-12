@@ -3,77 +3,158 @@
   "version": 1,
   "id": "foundations.adm-3a",
   "title": "The Terminal That Shaped Vim",
-  "subtitle": "Why hjkl, why Esc is over there, why colon means \"command\"",
+  "subtitle": "Why {key:h}{key:j}{key:k}{key:l}, why {key:Esc} is over there, why colon means \"command\"",
   "part": "foundations",
   "audience": "book",
   "summary": "Almost every weird Vim convention is the residue of a 1976 hardware terminal: the Lear Siegler ADM-3A. Knowing the keyboard explains the editor.",
   "keys": [],
   "lessons": [],
-  "see_also": ["foundations.vi-vim-neovim", "survival.hjkl"],
-
+  "see_also": [
+    "foundations.vi-vim-neovim",
+    "survival.hjkl"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "The Terminal That Shaped Vim" },
-
-    { "type": "prose", "text": "When Bill Joy wrote vi at UC Berkeley in 1976, the canonical \"smart terminal\" on campus was the Lear Siegler ADM-3A — a serial terminal, half desk-sized, that displayed 24 lines of 80 characters of green phosphor. It cost about $1,000 (roughly $5,000 in 2025 dollars). For three years it was Joy's keyboard, and almost every weird thing about Vim is a fingerprint of its layout." },
-
-    { "type": "heading", "level": 2, "text": "What the Keyboard Looked Like" },
-
-    { "type": "prose", "text": "Some of what was special about the ADM-3A keyboard:" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "The Terminal That Shaped Vim"
+    },
+    {
+      "type": "prose",
+      "text": "When Bill Joy wrote vi at UC Berkeley in 1976, the canonical \"smart terminal\" on campus was the Lear Siegler ADM-3A — a serial terminal, half desk-sized, that displayed 24 lines of 80 characters of green phosphor. It cost about $1,000 (roughly $5,000 in 2025 dollars). For three years it was Joy's keyboard, and almost every weird thing about Vim is a fingerprint of its layout."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "What the Keyboard Looked Like"
+    },
+    {
+      "type": "prose",
+      "text": "Some of what was special about the ADM-3A keyboard:"
+    },
     {
       "type": "table",
-      "headers": ["What",                                  "Where on the ADM-3A",                                                              "Consequence in Vim"],
+      "headers": [
+        "What",
+        "Where on the ADM-3A",
+        "Consequence in Vim"
+      ],
       "rows": [
-        ["Arrow keys",                                      "Printed on the {key:h}, {key:j}, {key:k}, {key:l} keys (no dedicated arrows)",     "{key:hjkl} for cursor movement"],
-        ["Esc key",                                         "Where {key:Tab} is on a modern keyboard — easy to reach",                          "{key:Esc} is the universal way out of any mode"],
-        ["Caps Lock",                                       "Did not exist; the key in that position was Ctrl",                                 "{key:Ctrl-} chords are heavily used because Ctrl was always under your pinky"],
-        ["The {key::} key",                                 "Required Shift (it lives on the {key:;} key)",                                     "Ex commands feel like a deliberate gear-shift because typing {key::} was a tiny extra effort"],
-        ["No backtick",                                     "{key:`} key was missing on early ADM-3A revisions; mark notation used {key:'} only", "{key:'a} (line of mark) is older than {key:`a} (exact column)"],
-        ["{key:~} key",                                     "Sat between {key:Esc} and {key:1} — used as the literal home directory glyph",     "Vim ended up reusing {key:~} for case-toggling because the keycap was easy to find"]
+        [
+          "Arrow keys",
+          "Printed on the {key:h}, {key:j}, {key:k}, {key:l} keys (no dedicated arrows)",
+          "{key:hjkl} for cursor movement"
+        ],
+        [
+          "Esc key",
+          "Where {key:Tab} is on a modern keyboard — easy to reach",
+          "{key:Esc} is the universal way out of any mode"
+        ],
+        [
+          "Caps Lock",
+          "Did not exist; the key in that position was Ctrl",
+          "{key:Ctrl-} chords are heavily used because Ctrl was always under your pinky"
+        ],
+        [
+          "The {key::} key",
+          "Required Shift (it lives on the {key:;} key)",
+          "Ex commands feel like a deliberate gear-shift because typing {key::} was a tiny extra effort"
+        ],
+        [
+          "No backtick",
+          "{key:`} key was missing on early ADM-3A revisions; mark notation used {key:'} only",
+          "{key:'a} (line of mark) is older than {key:`a} (exact column)"
+        ],
+        [
+          "{key:~} key",
+          "Sat between {key:Esc} and {key:1} — used as the literal home directory glyph",
+          "Vim ended up reusing {key:~} for case-toggling because the keycap was easy to find"
+        ]
       ]
     },
-
-    { "type": "heading", "level": 2, "text": "Why hjkl Stuck" },
-
-    { "type": "prose", "text": "The hjkl-as-arrows decision was the original ADM-3A *hardware* designer's, not Joy's. Lear Siegler had stamped tiny arrows onto the keycaps of {key:h} (left), {key:j} (down), {key:k} (up), and {key:l} (right) so that users of vi-style or other modal editors could navigate without dedicated arrow keys. Joy looked at the keyboard he had and used what was already labeled. There was no abstract design judgement: he just used the arrows that were physically present." },
-
-    { "type": "prose", "text": "Fifty years later, on a keyboard with proper arrow keys, hjkl still wins because it does not require leaving the home row. That is a real ergonomic benefit, but it is downstream of an accident: Joy could have picked any four keys, but those four were the ones with arrows printed on them. Once you know that, hjkl stops feeling like a design choice and starts feeling like an artifact." },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Why hjkl Stuck"
+    },
+    {
+      "type": "prose",
+      "text": "The hjkl-as-arrows decision was the original ADM-3A *hardware* designer's, not Joy's. Lear Siegler had stamped tiny arrows onto the keycaps of {key:h} (left), {key:j} (down), {key:k} (up), and {key:l} (right) so that users of vi-style or other modal editors could navigate without dedicated arrow keys. Joy looked at the keyboard he had and used what was already labeled. There was no abstract design judgement: he just used the arrows that were physically present."
+    },
+    {
+      "type": "prose",
+      "text": "Fifty years later, on a keyboard with proper arrow keys, hjkl still wins because it does not require leaving the home row. That is a real ergonomic benefit, but it is downstream of an accident: Joy could have picked any four keys, but those four were the ones with arrows printed on them. Once you know that, hjkl stops feeling like a design choice and starts feeling like an artifact."
+    },
     {
       "type": "tip",
       "text": "If you ever wondered why you should leave the arrow keys alone in Vim and use {key:hjkl} instead, the answer is: not because the design is sacred, but because every Vim user expects {key:hjkl}, and tutorials and plugins assume it. The advantage is real (home-row movement), and the network effect makes it permanent."
     },
-
-    { "type": "heading", "level": 2, "text": "Why Esc Is the Universal Exit" },
-
-    { "type": "prose", "text": "On the ADM-3A, the Esc key sat where a modern keyboard's {key:Tab} key sits — directly above {key:A}, easily hit with the left pinky. It was *the* meta-key for any program that needed an out-of-band signal. Bill Joy wired vi to use it as the universal \"return to a known state\" key, and we have lived with that decision ever since." },
-
-    { "type": "prose", "text": "Modern keyboards put {key:Esc} on the top row, far from the home row, which is why so many Vim users remap {key:Caps Lock} to {key:Esc} (or {key:Ctrl}) — they are restoring the ADM-3A's ergonomics on hardware that has drifted away from them." },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Why Esc Is the Universal Exit"
+    },
+    {
+      "type": "prose",
+      "text": "On the ADM-3A, the Esc key sat where a modern keyboard's {key:Tab} key sits — directly above {key:A}, easily hit with the left pinky. It was *the* meta-key for any program that needed an out-of-band signal. Bill Joy wired vi to use it as the universal \"return to a known state\" key, and we have lived with that decision ever since."
+    },
+    {
+      "type": "prose",
+      "text": "Modern keyboards put {key:Esc} on the top row, far from the home row, which is why so many Vim users remap {key:Caps Lock} to {key:Esc} (or {key:Ctrl}) — they are restoring the ADM-3A's ergonomics on hardware that has drifted away from them."
+    },
     {
       "type": "internals",
       "title": "The Lineage of the Colon",
       "text": "Vi was originally a *visual* mode of `ex`, an extended version of `ed`. When you typed {key::}, vi shifted into ex's command-line interface — the line-editor underneath the screen interface — to accept ex commands like `:w`, `:q`, `:s/foo/bar/g`. The colon prefix is literally \"now I am talking to ex.\" Vim and Neovim still embed an ex-mode interpreter; type {key:Q} (in Vim, not Neovim) to drop into pure ex mode and you'll see vi's parent system underneath.\n\nThis is why ex commands have such a wildly different design from normal-mode commands. They are a different language, descended from `ed` (1969). Vi/Vim/Neovim speak both languages and put a colon between them so you always know which one you're talking to."
     },
-
-    { "type": "heading", "level": 2, "text": "Things You Can Stop Wondering About" },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Things You Can Stop Wondering About"
+    },
     {
       "type": "table",
-      "headers": ["Why does Vim ...",                                                "Hardware reason"],
+      "headers": [
+        "Why does Vim ...",
+        "Hardware reason"
+      ],
       "rows": [
-        ["Use {key:hjkl} instead of arrows?",                                          "Arrow keys were on hjkl on Joy's terminal"],
-        ["Treat {key:Esc} as so important?",                                           "Esc sat in the comfortable spot Tab now occupies"],
-        ["Make ex commands need {key::} to start?",                                    "Vi was a visual layer over a separate command-line editor (ex)"],
-        ["Distinguish {key:'a} from {key:`a}?",                                        "Early ADM-3A keyboards lacked the backtick, so vi shipped {key:'} first"],
-        ["Use {key:Ctrl} as the canonical chord prefix?",                              "Ctrl was where Caps Lock is now — easy to chord"],
-        ["Have so many keys that look meaningless ({key:Z}{key:Z}, {key:Z}{key:Q})?",  "Joy used pairs of identical keystrokes for emergency commands so muscle memory wouldn't accidentally trigger them"]
+        [
+          "Use {key:hjkl} instead of arrows?",
+          "Arrow keys were on hjkl on Joy's terminal"
+        ],
+        [
+          "Treat {key:Esc} as so important?",
+          "Esc sat in the comfortable spot Tab now occupies"
+        ],
+        [
+          "Make ex commands need {key::} to start?",
+          "Vi was a visual layer over a separate command-line editor (ex)"
+        ],
+        [
+          "Distinguish {key:'a} from {key:`a}?",
+          "Early ADM-3A keyboards lacked the backtick, so vi shipped {key:'} first"
+        ],
+        [
+          "Use {key:Ctrl} as the canonical chord prefix?",
+          "Ctrl was where Caps Lock is now — easy to chord"
+        ],
+        [
+          "Have so many keys that look meaningless ({key:Z}{key:Z}, {key:Z}{key:Q})?",
+          "Joy used pairs of identical keystrokes for emergency commands so muscle memory wouldn't accidentally trigger them"
+        ]
       ]
     },
-
-    { "type": "prose", "text": "None of this is design. All of it is the editor wearing the shape of the keyboard it was born on. Once you see that, the apparent strangeness becomes legible." },
-
-    { "type": "qr", "topic": "foundations.adm-3a" },
-    { "type": "buy-prompt" }
+    {
+      "type": "prose",
+      "text": "None of this is design. All of it is the editor wearing the shape of the keyboard it was born on. Once you see that, the apparent strangeness becomes legible."
+    },
+    {
+      "type": "qr",
+      "topic": "foundations.adm-3a"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

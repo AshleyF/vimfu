@@ -1,0 +1,171 @@
+{
+  "title": "VimFu — :help — The Help System",
+  "description": "Navigate Vim's built-in help system with :help, :h {topic}, Ctrl-], and Ctrl-O to jump between help tags.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 655,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f helpme.txt .helpme.txt.swp .helpme.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "helpme.txt",
+      "content": "Learning Vim Help"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim helpme.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":help — The Help System",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Vim has one of the best built-in help systems of any editor. Everything is documented, and it's searchable."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Open help with colon help.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":help"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "This is the main help page. You can read it like any file. Scroll with control D, search with slash."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Close help with colon Q and search for a specific topic.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":help dd"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Help for the dd command. Every command, option, and feature has a help page."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Help tags are highlighted. Put your cursor on a tag and press Control right bracket to jump to it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press Control O to jump back. Just like the jump list."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Some help prefixes. Colon H colon command for ex commands. Colon H single quote option single quote for options. Colon H I underscore key for insert mode keys."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Vim's help is a superpower. When in doubt, colon help."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f helpme.txt"
+    }
+  ]
+}

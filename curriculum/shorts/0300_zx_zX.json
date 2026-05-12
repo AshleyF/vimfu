@@ -1,0 +1,208 @@
+{
+  "title": "VimFu \u2014 zx zX Reapply Folds",
+  "description": "zx reapplies foldlevel and opens folds at the cursor. zX just reapplies foldlevel. Resets manual fold changes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 441,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f shop.py .shop.py.swp .shop.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "shop.py",
+      "content": "# Item Shop\ndef buy(item, gold):\n    if gold >= item.price:\n        gold -= item.price\n        return True\n    return False\n\ndef sell(item):\n    refund = item.price // 2\n    return refund\n\ndef browse(stock):\n    for item in stock:\n        print(item.name)\n    return len(stock)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with indent folds closed"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' shop.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zx zX \u2014 Reapply Folds",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z X reapplies the fold level and opens folds at the cursor line. Capital Z capital X just reapplies fold level."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: manually open some folds then reapply ---"
+    },
+    {
+      "say": "All folds are closed. Let me open two of them manually.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": "into fold"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "zo",
+      "overlay": "open"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "8j",
+      "overlay": "jump down"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "zo",
+      "overlay": "open"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Two folds open. Now Z X reapplies the fold level. Since fold level is zero, it closes them.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zx",
+      "overlay": "reapply folds"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything is closed again. But the cursor line fold opened because Z X does that."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: zX without cursor fold ---"
+    },
+    {
+      "say": "Capital Z capital X is the same but does not open the cursor fold.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zo",
+      "overlay": "open one"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top of file"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zX",
+      "overlay": "reapply only"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z X reapplies fold level and reveals the cursor. Capital Z capital X just reapplies. Great for resetting after browsing."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f shop.py"
+    }
+  ]
+}

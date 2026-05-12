@@ -1,0 +1,166 @@
+{
+  "title": "VimFu \u2014 ddP \u2014 Swap Lines Up",
+  "description": "Use ddP (capital P) to move the current line up one position. dd deletes the line, P puts it above the previous line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 620,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f order.txt .order.txt.swp .order.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "order.txt",
+      "content": "first\nsecond\nthird\nfourth\nfifth"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim order.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "ddP \u2014 Swap Lines Up",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "D D capital P moves the current line up one. D D deletes, and capital P puts it above."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Move to the third line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now type D D capital P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ddP",
+      "overlay": "swap up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Third moved above second. It bubbled up one line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's undo and try on the last line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "last line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ddP",
+      "overlay": "swap up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Fifth moved above fourth. Lowercase P swaps down, capital P swaps up."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f order.txt"
+    }
+  ]
+}

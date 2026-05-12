@@ -1,0 +1,186 @@
+{
+  "title": "VimFu \u2014 Block $ \u2014 Extend to EOL",
+  "description": "In blockwise visual mode, $ extends the block selection to the end of every line, even when lines have different lengths.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 600,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f lines.py .lines.py.swp .lines.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with varying line lengths"
+    },
+    {
+      "writeFile": "lines.py",
+      "content": "# data\nshort = 1\nmedium_var = 200\nlong_variable = 30000\nx = 5\ntiny = 99"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim lines.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Block $ \u2014 Extend to EOL",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In block visual mode, dollar extends the selection to the end of every line. Even when lines are different lengths."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control V to start a block. Then move down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "keys": "\u0016",
+      "overlay": "block"
+    },
+    {
+      "keys": "4j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Without dollar, the block is a fixed width rectangle. Watch what dollar does.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "extend to EOL"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now the selection goes to the end of each line. The short lines and the long lines are all fully selected."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "This is a ragged block. It follows each line to its end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Append text with capital A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append"
+    },
+    {
+      "type": "  # ok"
+    },
+    {
+      "wait": 0.4
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Comment added to the end of every line, regardless of length. Dollar made the block reach every line end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control V, move down, dollar. Extend the block to end of line on every row."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f lines.py"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "title": "VimFu \u2014 zr zm Fold Level",
+  "description": "zr increases the fold level by one, opening one more level of folds. zm decreases it, closing one level.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 439,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f rpg.py .rpg.py.swp .rpg.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with nested classes"
+    },
+    {
+      "writeFile": "rpg.py",
+      "content": "class Fighter:\n    def slash(self):\n        damage = 40\n        return damage\n    def block(self):\n        armor = 60\n        return armor\n\nclass Healer:\n    def cure(self):\n        restore = 50\n        return restore\n    def buff(self):\n        boost = 20\n        return boost"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with indent folds all closed"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' rpg.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zr zm \u2014 Fold Level",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z R increases the fold level by one, opening the next layer of folds. Z M decreases it, closing a layer."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: zr to open one level ---"
+    },
+    {
+      "say": "Everything is folded. Z R to open one level.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zr",
+      "overlay": "open one level"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The class bodies are visible. But method bodies are still folded. One more Z R.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zr",
+      "overlay": "open another level"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything is open now. Two levels of folds."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: zm to close one level ---"
+    },
+    {
+      "say": "Z M closes one level at a time.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zm",
+      "overlay": "close one level"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Method bodies folded. Class bodies still visible.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zm",
+      "overlay": "close another level"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All folded again. Z R and Z M let you control how deep you see into the code."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z R opens a level. Z M closes a level. Peel back the layers one at a time."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f rpg.py"
+    }
+  ]
+}

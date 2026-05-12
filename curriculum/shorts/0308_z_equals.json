@@ -1,0 +1,166 @@
+{
+  "title": "VimFu \u2014 z= Spelling Suggestions",
+  "description": "z= shows spelling suggestions for the word under the cursor. Pick a number to replace the misspelled word.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 449,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "spelling",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f story.txt .story.txt.swp .story.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with misspellings"
+    },
+    {
+      "writeFile": "story.txt",
+      "content": "The brav knight rode into\nthe darkk forest. His sowrd\nglowed with enchantd light.\nVictory was certan."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with spell checking"
+    },
+    {
+      "line": "nvim -c 'set spell' story.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "z= \u2014 Spelling Suggestions",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z equals shows spelling suggestions for the word under the cursor. A count picks a suggestion directly."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: fix brav ---"
+    },
+    {
+      "say": "The word brav is misspelled. Put the cursor on it and press one Z equals to auto-pick the first suggestion.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "next word"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1z=",
+      "overlay": "fix spelling"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Fixed. Brav is now brave. The count one picks the first suggestion automatically."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: fix drak ---"
+    },
+    {
+      "say": "Fix the next one. Darkk on line two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "next misspelling"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1z=",
+      "overlay": "fix spelling"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z equals. See suggestions and pick a fix. Spell check built right into Vim."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f story.txt"
+    }
+  ]
+}

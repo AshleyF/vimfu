@@ -1,0 +1,191 @@
+{
+  "title": "VimFu \u2014 zh zl Scroll Characters",
+  "description": "zh and zl scroll the screen one character at a time horizontally. Works only with nowrap set.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 432,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "scroll",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spells.py .spells.py.swp .spells.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with long lines"
+    },
+    {
+      "writeFile": "spells.py",
+      "content": "# Spell Engine\ncast(fireball, target=dragon, power=9001, element=\"fire\", cooldown=3, mana_cost=50, area=True)\nstats = {\"hp\": 100, \"mp\": 50, \"str\": 20, \"dex\": 15, \"int\": 18, \"wis\": 12, \"cha\": 8, \"luk\": 7}\nx = 1"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with nowrap"
+    },
+    {
+      "line": "nvim -c 'set nowrap' spells.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zh zl \u2014 Scroll Characters",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z H and Z L scroll the screen one character at a time. You need no wrap set."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: scroll right with zl ---"
+    },
+    {
+      "say": "Line two is cut off. Move there and scroll right with Z L.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "20zl",
+      "overlay": "scroll right 20"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Twenty characters scrolled. The hidden part of the line is visible now.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: scroll back with zh ---"
+    },
+    {
+      "say": "Z H scrolls the other way. Back to the left.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "20zh",
+      "overlay": "scroll left 20"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Demo 3: one at a time ---"
+    },
+    {
+      "say": "Without a count it scrolls one character.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zl",
+      "overlay": "scroll right 1"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zl",
+      "overlay": "scroll right"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zl",
+      "overlay": "scroll right"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z H and Z L. Fine-grained horizontal scrolling. Use a count for bigger jumps."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f spells.py"
+    }
+  ]
+}

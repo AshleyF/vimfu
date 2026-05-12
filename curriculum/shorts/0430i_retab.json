@@ -1,0 +1,37 @@
+{
+  "title": "VimFu — :retab Fix Tabs",
+  "description": "Convert between tabs and spaces with :retab.",
+  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 580,
+  "ttsVoice": "echo", "playlist": "VimFu",
+  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "setup": [
+    { "line": "export TERM=xterm-256color" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f demo.py .demo.py.swp" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "writeFile": "demo.py", "content": "def hello():\n\tprint(\"hi\")\n\tif True:\n\t\tprint(\"yes\")" },
+    { "line": "clear" },
+    { "line": "nvim demo.py" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "overlay": "VimFu", "caption": ":retab — Fix Tabs", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "say": "Retab converts tabs to spaces based on your tab stop and expand tab settings." },
+    { "wait": 0.3 },
+    { "say": "Set expand tab and tab stop to 4.", "wait": false },
+    { "wait": 0.3 },
+    { "type": ":set expandtab tabstop=4", "overlay": ":set et ts=4" }, "enter",
+    { "wait": 0.3 },
+    { "say": "Now retab.", "wait": false },
+    { "wait": 0.3 },
+    { "type": ":retab", "overlay": ":retab" }, "enter",
+    { "wait": 0.5 },
+    { "say": "All tabs replaced with spaces. Clean indentation everywhere." },
+    { "wait": 0.3 },
+    { "say": "Retab bang also replaces sequences of spaces with tabs. Retab is the quick fix for mixed indentation." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.py" } ]
+}

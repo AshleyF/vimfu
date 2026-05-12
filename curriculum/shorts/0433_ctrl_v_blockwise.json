@@ -1,0 +1,199 @@
+{
+  "title": "VimFu \u2014 Ctrl-V \u2014 Blockwise",
+  "description": "Ctrl-V enters blockwise visual mode. Select a rectangular column block across multiple lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 587,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f scores.py .scores.py.swp .scores.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "scores.py",
+      "content": "# scores\nalice = 95\nbobby = 88\ncarol = 76\ndavid = 82\nelena = 91"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim scores.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-V \u2014 Blockwise",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control V enters blockwise visual mode. You select a rectangular column, not whole lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Move to the numbers column. Control V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$b"
+    },
+    {
+      "keys": "\u0016",
+      "overlay": "block"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now move down to extend the block.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "A vertical column is selected. Just the numbers, nothing else."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "L to widen the block right.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "l"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Delete the block with D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d",
+      "overlay": "delete block"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Only the rectangular block was removed. The rest is untouched."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control V. Block visual mode. Select rectangles."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f scores.py"
+    }
+  ]
+}

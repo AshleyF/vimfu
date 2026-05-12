@@ -1,0 +1,196 @@
+{
+  "title": "VimFu \u2014 :s Flag c \u2014 Confirm Each",
+  "description": "The c flag on :s asks for confirmation before each replacement. Answer y, n, a, q, or l.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 741,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "fix the bug here\nfix this later\ndo not fix this one\nfix everything else"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":s Flag c \u2014 Confirm Each",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "The C flag asks you to confirm each substitution. You choose which ones to replace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: confirm substitution ---"
+    },
+    {
+      "say": "Let's replace fix with done across the whole file, but confirm each one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/fix/done/gc",
+      "overlay": ":%s/fix/done/gc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Vim highlights the first match and asks. Press Y for yes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "y",
+      "overlay": "yes"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Replaced. Next match. Press N to skip this one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "no, skip"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Skipped. Next match. Press Y again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "y",
+      "overlay": "yes"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Press Q to quit and stop substituting.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q",
+      "overlay": "quit"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two replaced, one skipped, one untouched. Full control over every match."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "The C flag. Confirm each substitution. Y for yes, N for no, A for all, Q to quit."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt"
+    }
+  ]
+}

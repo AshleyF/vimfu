@@ -1,0 +1,193 @@
+{
+  "title": "VimFu \u2014 zd zD Delete Fold",
+  "description": "zd deletes the fold under the cursor. zD deletes folds recursively. The text is not affected.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 445,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f items.py .items.py.swp .items.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "items.py",
+      "content": "# Inventory\nsword = \"Excalibur\"\nshield = \"Aegis\"\npotion = \"Elixir\"\nscroll = \"Fireball\"\nring = \"Invisibility\"\namulet = \"Protection\"\ngem = \"Ruby\"\nwand = \"Lightning\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with manual folds"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=manual' -c 'set number' items.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zd zD \u2014 Delete Fold",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z D deletes a fold under the cursor. The code stays. Only the fold goes away."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: create a fold then delete it ---"
+    },
+    {
+      "say": "First create a fold. Lines two through five.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "go to line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zf3j",
+      "overlay": "create fold"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now Z D to delete the fold.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zd",
+      "overlay": "delete fold"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The fold is gone. All four lines are back. The text was never touched."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: create and delete another ---"
+    },
+    {
+      "say": "Make another fold at the bottom. Lines six through nine.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6G",
+      "overlay": "go to line 6"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zf3j",
+      "overlay": "create fold"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "zd",
+      "overlay": "delete fold"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gone. Capital Z capital D does the same thing recursively for nested folds."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z D removes the fold. Not the text. Perfect for cleaning up folds you no longer need."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f items.py"
+    }
+  ]
+}

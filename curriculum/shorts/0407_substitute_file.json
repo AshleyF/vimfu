@@ -1,0 +1,45 @@
+{
+  "title": "VimFu — :%s File-Wide Replace",
+  "description": ":%s/old/new/g replaces all occurrences in the entire file.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 548,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "substitute"],
+  "setup": [
+    { "comment": "Set TERM for proper color support in Neovim" },
+    { "line": "export TERM=xterm-256color" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f demo.py .demo.py.swp" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "writeFile": "demo.py", "content": "# Demo\nold = 1\nold = 2\nold = 3\nold = 4" },
+    { "line": "clear" },
+    { "line": "nvim demo.py" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "overlay": "VimFu", "caption": ":%s — File-Wide Replace", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "say": "Percent S replaces across the entire file. The percent means all lines." },
+    { "wait": 0.3 },
+    { "say": "Replace old with new everywhere.", "wait": false },
+    { "wait": 0.3 },
+    { "type": ":%s/old/new/g", "overlay": ":%s/old/new/g" },
+    "enter",
+    { "wait": 0.5 },
+    { "say": "Four substitutions on four lines. Every old in the file became new." },
+    { "wait": 0.3 },
+    { "say": "Percent S slash old slash new slash G. The most common search and replace in Vim." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [
+    "escape",
+    { "type": ":q!" },
+    "enter",
+    { "line": "rm -f demo.py" }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "title": "VimFu \u2014 :wq / :x Write and Quit",
+  "description": "The :wq and :x commands save and quit. :x only writes if changes were made.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 541,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nprint(\"saved\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":wq / :x \u2014 Save & Quit",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon W Q saves and quits. Colon X does the same, but smarter. It only writes if you actually changed something."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Make a quick edit.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jA",
+      "overlay": "append"
+    },
+    {
+      "type": "!",
+      "overlay": ""
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon W Q. Save and exit.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":wq",
+      "overlay": "save and quit"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Done. File saved, editor closed. Two letters, one move."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon X is even shorter. One letter. And it skips the write if nothing changed. Use whichever you prefer."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

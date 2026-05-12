@@ -3,60 +3,119 @@
   "version": 1,
   "id": "insert.literal-digraph",
   "title": "Literal Insert and Digraphs",
-  "subtitle": "Ctrl-V for literals, Ctrl-K for digraphs — type the un-typeable.",
+  "subtitle": "{key:Ctrl-V} for literals, {key:Ctrl-K} for digraphs — type the un-typeable.",
   "part": "insert-mode-power",
   "summary": "Ctrl-V (or Ctrl-Q on Windows) inserts the next keystroke literally — including special keys and Unicode codepoints. Ctrl-K combines two characters into one via the digraph table.",
-  "keys": ["Ctrl-V", "Ctrl-Q", "Ctrl-K"],
-  "lessons": [394, 395],
-  "see_also": ["insert.from-register"],
-
+  "keys": [
+    "Ctrl-V",
+    "Ctrl-Q",
+    "Ctrl-K"
+  ],
+  "lessons": [
+    394,
+    395
+  ],
+  "see_also": [
+    "insert.from-register"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Literal Insert and Digraphs" },
-
-    { "type": "prose", "text": "Sometimes you need to type a character that isn't on your keyboard, or you need to type a literal {key:Tab} that won't be expanded by autoindent. {key:Ctrl-V} and {key:Ctrl-K} are the escape hatches." },
-
-    { "type": "heading", "level": 2, "text": "Literal Insert: Ctrl-V" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Literal Insert and Digraphs"
+    },
+    {
+      "type": "prose",
+      "text": "Sometimes you need to type a character that isn't on your keyboard, or you need to type a literal {key:Tab} that won't be expanded by autoindent. {key:Ctrl-V} and {key:Ctrl-K} are the escape hatches."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Literal Insert: Ctrl-V"
+    },
     {
       "type": "table",
-      "headers": ["Sequence",                "Inserts"],
+      "headers": [
+        "Sequence",
+        "Inserts"
+      ],
       "rows": [
-        ["{key:Ctrl-V}{key:Tab}",            "Literal tab character (no shiftwidth math)"],
-        ["{key:Ctrl-V}{key:Esc}",            "Literal {key:Esc} (^[) into the buffer"],
-        ["{key:Ctrl-V}{key:Enter}",          "Literal CR (^M)"],
-        ["{key:Ctrl-V}{key:0}{key:6}{key:5}","Decimal codepoint 65 → `A`"],
-        ["{key:Ctrl-V}{key:x}{key:4}{key:1}","Hex codepoint 0x41 → `A`"],
-        ["{key:Ctrl-V}{key:u}{key:0}{key:0}{key:e}{key:9}", "Unicode U+00E9 → `é`"]
+        [
+          "{key:Ctrl-V}{key:Tab}",
+          "Literal tab character (no shiftwidth math)"
+        ],
+        [
+          "{key:Ctrl-V}{key:Esc}",
+          "Literal {key:Esc} (^[) into the buffer"
+        ],
+        [
+          "{key:Ctrl-V}{key:Enter}",
+          "Literal CR (^M)"
+        ],
+        [
+          "{key:Ctrl-V}{key:0}{key:6}{key:5}",
+          "Decimal codepoint 65 → `A`"
+        ],
+        [
+          "{key:Ctrl-V}{key:x}{key:4}{key:1}",
+          "Hex codepoint 0x41 → `A`"
+        ],
+        [
+          "{key:Ctrl-V}{key:u}{key:0}{key:0}{key:e}{key:9}",
+          "Unicode U+00E9 → `é`"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "Ctrl-V vs Ctrl-Q on Windows",
       "text": "On Windows GUI Vim, {key:Ctrl-V} is mapped to *paste* (to match Windows convention). The literal-insert key there is {key:Ctrl-Q} — same function, alternate binding. On any system, {key:Ctrl-Q} works as a fallback (unless your terminal is consuming it for flow control, in which case `stty -ixon` frees it)."
     },
-
-    { "type": "heading", "level": 2, "text": "Digraphs: Ctrl-K" },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Digraphs: Ctrl-K"
+    },
     {
       "type": "table",
-      "headers": ["Sequence",         "Inserts"],
+      "headers": [
+        "Sequence",
+        "Inserts"
+      ],
       "rows": [
-        ["{key:Ctrl-K}{key:e}{key:'}",     "é (e-acute)"],
-        ["{key:Ctrl-K}{key:n}{key:?}",     "ñ"],
-        ["{key:Ctrl-K}{key:O}{key:K}",     "✓ (check mark)"],
-        ["{key:Ctrl-K}{key:->|}",          "→ (right arrow)"],
-        ["{key:Ctrl-K}{key:P}{key:i}",     "π"]
+        [
+          "{key:Ctrl-K}{key:e}{key:'}",
+          "é (e-acute)"
+        ],
+        [
+          "{key:Ctrl-K}{key:n}{key:?}",
+          "ñ"
+        ],
+        [
+          "{key:Ctrl-K}{key:O}{key:K}",
+          "✓ (check mark)"
+        ],
+        [
+          "{key:Ctrl-K}{key:->|}",
+          "→ (right arrow)"
+        ],
+        [
+          "{key:Ctrl-K}{key:P}{key:i}",
+          "π"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "The Digraph Table",
       "text": "Vim ships with a built-in table of \"digraphs\" — two-character mnemonics for harder-to-type Unicode characters. Run `:digraphs` to see all ~1500 entries. Most follow RFC 1345 conventions (`e'` = é, `OK` = ✓). You can add your own with `:digraph mn 9837` (define `mn` as ♭ codepoint 9837).\n\nUsing digraphs is faster than {key:Ctrl-V}{key:u} for characters you reach for often."
     },
-
-    { "type": "qr", "topic": "insert.literal-digraph" },
-    { "type": "buy-prompt" }
+    {
+      "type": "qr",
+      "topic": "insert.literal-digraph"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 [z ]z Fold Start End",
+  "description": "[z moves to the start of the current open fold. ]z moves to the end. Navigate within a fold's boundaries.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 448,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "bracket commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f castle.py .castle.py.swp .castle.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with a class"
+    },
+    {
+      "writeFile": "castle.py",
+      "content": "class Castle:\n    def gate(self):\n        locked = True\n        key = \"golden\"\n        return locked\n    def tower(self):\n        height = 50\n        guards = 3\n        return guards\n    def dungeon(self):\n        prisoners = 5\n        escape = False\n        return escape\n    def throne(self):\n        king = \"Arthur\"\n        crown = True\n        return crown"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with indent folds, open level 1"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' -c 'set foldlevel=1' -c 'set number' castle.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[z ]z \u2014 Fold Start/End",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Open bracket Z moves to the start of the current fold. Close bracket Z moves to the end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to fold start with [z ---"
+    },
+    {
+      "say": "We're inside the Castle class fold. The methods are visible. Move to the middle and try open bracket Z.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "8G",
+      "overlay": "go to line 8"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[z",
+      "overlay": "fold start"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the start of the class body. Line two."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump to fold end with ]z ---"
+    },
+    {
+      "say": "Close bracket Z goes to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]z",
+      "overlay": "fold end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the last line of the fold. The fold boundary."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: back to start ---"
+    },
+    {
+      "say": "And back to the start again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[z",
+      "overlay": "fold start"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open bracket Z and close bracket Z. Jump to the start and end of the current fold."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f castle.py"
+    }
+  ]
+}

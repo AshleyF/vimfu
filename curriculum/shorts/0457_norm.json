@@ -1,0 +1,181 @@
+{
+  "title": "VimFu — :norm — Normal on Lines",
+  "description": "Use :norm to run normal-mode commands on every line in a range, like adding comments to all lines at once.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 613,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f code.py .code.py.swp .code.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "code.py",
+      "content": "x = 1\ny = 2\nz = 3\nw = 4\nv = 5"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim code.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":norm — Normal on Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Colon norm runs normal-mode commands on every line in a range. It's like having a macro run on each line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Add a hash comment to every line. Type colon percent norm I hash space.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%norm I# "
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every line now starts with a hash. Percent means all lines, norm runs in normal mode, and capital I inserts at the beginning."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo that. Now try appending a semicolon to every line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%norm A;"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Capital A appends at the end. Every line now has a semicolon."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can also use a range. Lines two through four.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":2,4norm I# "
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Only lines two through four got the comment. Line one and five stayed clean."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon norm. Run normal-mode commands across lines."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f code.py"
+    }
+  ]
+}

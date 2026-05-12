@@ -1,0 +1,175 @@
+{
+  "title": "VimFu \u2014 q/ q? \u2014 Search History",
+  "description": "Open the search history in an editable window with q/ or q? to browse and re-execute past searches.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 603,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f animals.py .animals.py.swp .animals.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "animals.py",
+      "content": "# animals\ncat = \"meow\"\ndog = \"woof\"\nbird = \"chirp\"\nfish = \"blub\"\ncow = \"moo\"\nfrog = \"ribbit\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim animals.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "q/ q? \u2014 Search History",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Q slash opens your forward search history in an editable window. Q question mark opens the backward search history."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "First, do a few searches to build history.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/cat"
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "/bird"
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "/frog"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now press Q slash in normal mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "q/",
+      "overlay": "search history"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "There's our search history. Each line is a past search pattern. You can edit any line and press Enter to search for it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "k"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It jumped to the match. Q question mark does the same for backward searches."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Q slash for forward history, Q question for backward. Browse and rerun searches."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f animals.py"
+    }
+  ]
+}

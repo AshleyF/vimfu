@@ -1,0 +1,211 @@
+{
+  "title": "VimFu \u2014 Visual + :> :< Indent Selection",
+  "description": "After a visual selection, use :> or :< to indent or dedent the selected lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 757,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "if True:\nprint(\"a\")\nprint(\"b\")\nprint(\"c\")\nprint(\"done\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim -c 'set shiftwidth=4' demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Visual + :> :< \u2014 Indent Selection",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Select lines visually, then use colon greater than to indent them."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: visual indent ---"
+    },
+    {
+      "say": "Select lines two through four and indent them into the if block.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": "select 3 lines"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":",
+      "overlay": ":"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": ">",
+      "overlay": ">"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines indented. They're now inside the if block."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: visual dedent ---"
+    },
+    {
+      "say": "Select them again and dedent with colon less than.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gvgv",
+      "overlay": "reselect"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":",
+      "overlay": ":"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "<",
+      "overlay": "<"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the left. Colon less than undoes the indent."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Visual select, then colon greater than or less than. Quick way to adjust indentation."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

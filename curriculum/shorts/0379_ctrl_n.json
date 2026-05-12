@@ -1,0 +1,175 @@
+{
+  "title": "VimFu \u2014 Ctrl-N Autocomplete Next",
+  "description": "Ctrl-N in insert mode triggers keyword completion, showing the next matching word.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 520,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "completion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\ncalculate_total = 0\ncalculate_average = 0\nresult = "
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-N \u2014 Autocomplete Next",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control N in insert mode triggers keyword completion. It finds the next matching word from your file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: complete a word ---"
+    },
+    {
+      "say": "Go to line four and start typing.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j",
+      "overlay": "to line 4"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "cal",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now Control N to complete.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u000e",
+      "overlay": "complete"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A completion menu appears. It found calculate total and calculate average. Press Control N again to cycle."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u000e",
+      "overlay": "next match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Second option. Press Enter or just keep typing to accept.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "accept"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control N. Keyword completion in insert mode. No plugins needed. Vim scans your file and suggests matches."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "title": "VimFu \u2014 do / dp \u2014 Diff Obtain & Put",
+  "description": "In diff mode, use do (diff obtain) to pull changes from the other file and dp (diff put) to push changes to the other file.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 635,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f left.txt right.txt .left.txt.swp .left.txt.swo .right.txt.swp .right.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "left.txt",
+      "content": "alpha\nbravo\ncharlie\ndelta"
+    },
+    {
+      "writeFile": "right.txt",
+      "content": "alpha\nBRAVO\ncharlie\nDELTA"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim in diff mode"
+    },
+    {
+      "line": "nvim -d left.txt right.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "do / dp \u2014 Diff Obtain & Put",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In diff mode, Vim shows two files side by side with differences highlighted. D O obtains a change from the other side. D P puts your change to the other side."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The cursor is in the left file. Move to the bravo line, which differs.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press D O to obtain the right side's version.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "do",
+      "overlay": "diff obtain"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The left file now has BRAVO in uppercase, matching the right. We obtained the change."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now move to the delta line. Let's push our version to the right side with D P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dp",
+      "overlay": "diff put"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The right file now has lowercase delta, matching the left. D O pulls in, D P pushes out. Two keys to resolve diffs."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f left.txt right.txt"
+    }
+  ]
+}

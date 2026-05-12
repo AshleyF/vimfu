@@ -1,0 +1,183 @@
+{
+  "title": "VimFu \u2014 Ctrl-C Quick Leave Insert",
+  "description": "Ctrl-C leaves insert mode without triggering abbreviations or autocmds.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 508,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nx = 10\ny = 20\nz = 30"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-C \u2014 Quick Leave",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control C is another way to leave insert mode. It's faster than Escape but skips abbreviation expansion and some auto commands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Ctrl-C from insert ---"
+    },
+    {
+      "say": "Enter insert mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i",
+      "overlay": "insert mode"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "abc",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control C to leave.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0003",
+      "overlay": "leave insert"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back in normal mode. Works just like Escape for basic editing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: compared to Escape ---"
+    },
+    {
+      "say": "The difference is subtle. If you have abbreviations set up, Escape triggers them. Control C does not. For most editing, both work the same."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Enter insert again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": " = 40",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0003",
+      "overlay": "quick exit"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control C. A quick way out of insert mode. Same as Escape for everyday use, but without abbreviation expansion."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

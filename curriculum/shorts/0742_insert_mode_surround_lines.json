@@ -1,0 +1,159 @@
+{
+  "title": "VimFu — Insert Mode Surround on Separate Lines",
+  "description": "<C-G>S in insert mode creates a multi-line surround, placing the cursor on a new indented line between the pair.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 701,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "surround"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f insml.js .insml.js.swp .insml.js.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "insml.js",
+      "content": "function run() "
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim insml.js"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Insert Surround — Separate Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control G, capital S in insert mode creates a multi-line surround. The opening mark, an indented new line, and the closing mark."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Enter insert mode at the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "A (append)"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control G, capital S, then open brace.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0007S{",
+      "overlay": "<C-G>S{"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Opening brace above, cursor on an indented line, closing brace below. Type the body.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "return true;"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "A complete function block created from insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control G, capital S. Multi-line insert surround. Perfect for opening code blocks."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f insml.js"
+    }
+  ]
+}

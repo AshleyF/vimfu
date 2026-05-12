@@ -1,0 +1,154 @@
+{
+  "title": "VimFu — :%norm ^x — Delete First Char",
+  "description": "Use :%norm ^x to delete the first non-blank character of every line. Handy for removing comment prefixes or leading characters.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 624,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f notes.py .notes.py.swp .notes.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "notes.py",
+      "content": "#alpha\n#beta\n#gamma\n#delta\n#epsilon"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim notes.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":%norm ^x — Delete First Char",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Percent norm caret X deletes the first non-blank character from every line. Caret goes to the first character, and X deletes it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Every line starts with a hash. Remove them all.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%norm ^x",
+      "overlay": ":%norm ^x"
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All the hash characters are gone. One command removed the leading character from every line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Undo. You can also delete just the first two characters. Percent norm caret two X.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%norm 0xx",
+      "overlay": ":%norm 0xx"
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now two characters are gone from each line. Norm lets you run any normal-mode sequence on every line."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f notes.py"
+    }
+  ]
+}

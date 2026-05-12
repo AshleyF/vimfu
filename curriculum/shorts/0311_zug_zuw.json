@@ -1,0 +1,201 @@
+{
+  "title": "VimFu \u2014 zug zuw Undo Spelling Mark",
+  "description": "zug undoes a zg mark. zuw undoes a zw mark. Remove words from your spell file.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 452,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "spelling",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f notes.txt .notes.txt.swp .notes.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "notes.txt",
+      "content": "The mage cast a fireball spell.\nThe rogue used a katana blade.\nThe healer brewed a potion mix.\nThe paladin wore shiny armor."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with spell checking"
+    },
+    {
+      "line": "nvim -c 'set spell' notes.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zug zuw \u2014 Undo Spelling Mark",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z U G undoes Z G. Z U W undoes Z W. If you marked a word by mistake, undo it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: mark then undo with zug ---"
+    },
+    {
+      "say": "Mark fireball as correct with Z G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4w",
+      "overlay": "to fireball"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zg",
+      "overlay": "mark correct"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Wait, I didn't mean to do that. Z U G to undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zug",
+      "overlay": "undo zg"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The word is flagged again. Z U G removed it from the spell file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: mark incorrect then undo with zuw ---"
+    },
+    {
+      "say": "Now mark potion as incorrect with Z W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j0",
+      "overlay": "line 3"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "4w",
+      "overlay": "to potion"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zw",
+      "overlay": "mark incorrect"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Undo that with Z U W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zuw",
+      "overlay": "undo zw"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z U G undoes Z G. Z U W undoes Z W. Easy way to fix spell file mistakes."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f notes.txt"
+    }
+  ]
+}

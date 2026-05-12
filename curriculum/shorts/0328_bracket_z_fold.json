@@ -1,0 +1,165 @@
+{
+  "title": "VimFu \u2014 [z ]z Fold Boundaries",
+  "description": "[z moves to the start of the current fold. ]z moves to the end. Same as the fold section but in bracket context.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 469,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "folds"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tower.py .tower.py.swp .tower.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "tower.py",
+      "content": "class Tower:\n    def floor_one(self):\n        goblins = 5\n        loot = \"bronze\"\n        return goblins\n    def floor_two(self):\n        orcs = 3\n        loot = \"silver\"\n        return orcs\n    def boss_floor(self):\n        dragon = 1\n        loot = \"gold\"\n        return dragon"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with indent folds, level 1 open"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' -c 'set foldlevel=1' -c 'set number' tower.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[z ]z \u2014 Fold Boundaries",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Open bracket Z and close bracket Z are bracket commands that jump to fold boundaries. Start and end of the current open fold."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to fold start ---"
+    },
+    {
+      "say": "We're inside the Tower class fold. Move to the middle and use open bracket Z.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "7G",
+      "overlay": "go to line 7"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[z",
+      "overlay": "fold start"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to line two. The start of the class body fold."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump to fold end ---"
+    },
+    {
+      "say": "Close bracket Z to find the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]z",
+      "overlay": "fold end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Last line of the fold. The fold boundary."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open bracket Z start. Close bracket Z end. Part of the bracket command family. They work on whichever fold contains the cursor."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f tower.py"
+    }
+  ]
+}

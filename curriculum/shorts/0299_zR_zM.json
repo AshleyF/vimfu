@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 zR zM All Folds",
+  "description": "zR opens every fold in the file. zM closes every fold. Global fold control in one keystroke.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 440,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f boss.py .boss.py.swp .boss.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "boss.py",
+      "content": "class Dragon:\n    def breathe(self):\n        element = \"fire\"\n        damage = 200\n        return damage\n    def fly(self):\n        altitude = 9000\n        return altitude\n\nclass Lich:\n    def curse(self):\n        debuff = \"slow\"\n        duration = 10\n        return debuff\n    def summon(self):\n        minions = 5\n        return minions"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with folds open"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' -c 'set foldlevel=99' boss.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zR zM \u2014 All Folds",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital Z capital R opens every fold. Capital Z capital M closes every fold. Global fold control."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: close all with zM ---"
+    },
+    {
+      "say": "All code is visible. Capital Z capital M to close everything.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zM",
+      "overlay": "close all folds"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The entire file collapsed to just two lines. Only class names remain."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: open all with zR ---"
+    },
+    {
+      "say": "Capital Z capital R to expand everything.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zR",
+      "overlay": "open all folds"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every fold opened. All code is visible again."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: close and open again ---"
+    },
+    {
+      "say": "These are great for getting an overview. Close all, scan the structure, then open all.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zM",
+      "overlay": "close all"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "zR",
+      "overlay": "open all"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital Z capital M closes all folds. Capital Z capital R opens them. The fastest way to toggle your entire file."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f boss.py"
+    }
+  ]
+}

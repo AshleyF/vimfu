@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 Ctrl-W v Vertical Split",
+  "description": "Ctrl-W v splits the current window vertically. Two panes side by side showing the same file.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 476,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f stats.py .stats.py.swp .stats.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "stats.py",
+      "content": "# Player Stats\nstr = 18\ndex = 14\ncon = 16\nint_stat = 12\nwis = 10\ncha = 8"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim stats.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W v \u2014 Vertical Split",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W V splits the window vertically. Two panes side by side."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: split ---"
+    },
+    {
+      "say": "Split it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017v",
+      "overlay": "vertical split"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Left and right panes. Both showing the same file. Cursor is in the left pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: navigate to right pane ---"
+    },
+    {
+      "say": "Control W L to move to the right pane.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017l",
+      "overlay": "move right"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "bottom of file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The right pane scrolled independently. Two views, one file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: close ---"
+    },
+    {
+      "say": "Control W Q to close.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017q",
+      "overlay": "close pane"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W V. Vertical split. Compare two parts of the same file side by side."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f stats.py"
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "title": "VimFu \u2014 zo Open Fold",
+  "description": "zo opens one fold under the cursor. Use foldmethod to create folds from indentation or other sources.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 434,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f loot.py .loot.py.swp .loot.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with indented functions"
+    },
+    {
+      "writeFile": "loot.py",
+      "content": "# Dungeon Loot\ndef roll_dice(sides):\n    import random\n    result = random.randint(1, sides)\n    return result\n\ndef open_chest(level):\n    gold = level * 100\n    gems = level // 3\n    return gold, gems\n\ndef sell_item(item):\n    price = item.value // 2\n    return price\n\ndef craft(herbs):\n    power = len(herbs) * 10\n    return power"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with indent folding"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' loot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zo \u2014 Open Fold",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z O opens a fold under the cursor. Folds hide blocks of code so you can focus on what matters."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: show folds are closed, open one ---"
+    },
+    {
+      "say": "This file has four functions. With fold method indent, the bodies are hidden. Let's open the first one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zo",
+      "overlay": "open fold"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The function body is revealed. The other folds stay closed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: open another fold ---"
+    },
+    {
+      "say": "Open the next one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "8j",
+      "overlay": "jump down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zo",
+      "overlay": "open fold"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now we can see both functions. Z O opens one fold at a time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z O. Open a fold. Set fold method to indent, syntax, or manual to create folds."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f loot.py"
+    }
+  ]
+}

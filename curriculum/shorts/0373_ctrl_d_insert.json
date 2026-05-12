@@ -1,0 +1,184 @@
+{
+  "title": "VimFu \u2014 Ctrl-D Unindent in Insert",
+  "description": "Ctrl-D in insert mode removes one shiftwidth of indentation from the current line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 514,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\ndef run():\n        pass\n        return"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-D \u2014 Unindent in Insert",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control D in insert mode decreases indentation by one shift width. The opposite of Control T."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: unindent pass ---"
+    },
+    {
+      "say": "Line three is indented too far. Let's fix it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": "to line 3"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "I",
+      "overlay": "insert at start"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control D to unindent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0004",
+      "overlay": "unindent"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "One level removed. That's the right indent for inside a function."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: unindent another line ---"
+    },
+    {
+      "say": "Same thing on line four.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jI",
+      "overlay": "next line, insert"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0004",
+      "overlay": "unindent"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control D. Remove one shift width in insert mode. Control T to indent, Control D to unindent. Simple pair."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

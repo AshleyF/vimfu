@@ -1,0 +1,205 @@
+{
+  "title": "VimFu \u2014 Tab \u2014 Complete Command",
+  "description": "Press Tab on the command line to auto-complete commands, filenames, settings, and more.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 605,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hello.py world.py .hello.py.swp .world.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "hello.py",
+      "content": "# hello\nprint(\"hello\")"
+    },
+    {
+      "writeFile": "world.py",
+      "content": "# world\nprint(\"world\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim hello.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Tab \u2014 Complete Command",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Tab on the command line completes commands, filenames, and settings. It works just like shell tab completion."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Type colon S E T then Tab.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "tab",
+      "overlay": "complete"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It completed to set. Press space, type N U, then Tab again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": " nu"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "tab",
+      "overlay": "complete"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It completes the option. Press Tab again to cycle through other matches."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "tab"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "tab"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Tab also works for filenames. Colon E space then Tab.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":e "
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "tab",
+      "overlay": "file complete"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It cycles through files in the current directory."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Tab on the command line. Complete commands, files, and settings."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f hello.py world.py"
+    }
+  ]
+}

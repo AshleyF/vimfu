@@ -3,35 +3,81 @@
   "version": 1,
   "id": "registers.macros-as-text",
   "title": "Macros Are Just Register Contents",
-  "subtitle": "\"ap → edit → \"ay$ — the macro lifecycle as text editing.",
+  "subtitle": "{key:\"ap} → edit → {key:\"ay$} — the macro lifecycle as text editing.",
   "part": "registers",
   "summary": "A recorded macro is text in a register. Paste it, edit it, yank it back. This unification of macros and clipboard text is one of Vim's smartest design choices.",
-  "keys": ["\"ap", "\"ay$"],
+  "keys": [
+    "\"ap",
+    "\"ay$"
+  ],
   "lessons": [],
-  "see_also": ["registers.overview", "registers.named", "macros.record-play", "macros.editing"],
-
+  "see_also": [
+    "registers.overview",
+    "registers.named",
+    "macros.record-play",
+    "macros.editing"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Macros Are Just Register Contents" },
-
-    { "type": "prose", "text": "{key:q}{key:a}…{key:q} records a macro into register `a`. {key:@}{key:a} plays it. But the register `a` is the **same `a`** you yank text into — so the macro is just text. Which means you can edit it like any other text." },
-
-    { "type": "heading", "level": 2, "text": "The lifecycle" },
-
-    { "type": "prose", "text": "A typical refinement loop looks like:\n\n  1. Record a draft: {key:q}{key:a}…{key:q}.\n  2. It mostly works but has a glitch.\n  3. {key:o} (open a new line), then {key:\"}{key:a}{key:p} — the keystrokes appear as text in the buffer.\n  4. Edit them. Maybe `dawi` should have been `daWi`. Replace.\n  5. {key:\"}{key:a}{key:y}{key:$} (yank from cursor to end of line back into register `a`) or {key:\"}{key:a}{key:y}{key:y} for the whole line.\n  6. {key:u} to undo the buffer changes (you don't want the keystroke text staying in your file).\n  7. {key:@}{key:a} — try the macro again with the fix." },
-
-    { "type": "keys", "sequence": ["\"","a","p"],          "label": "Paste the macro into the buffer" },
-    { "type": "keys", "sequence": ["\"","a","y","$"],      "label": "Yank from cursor to EOL back into a" },
-    { "type": "keys", "sequence": ["@","a"],               "label": "Run the (now updated) macro" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Macros Are Just Register Contents"
+    },
+    {
+      "type": "prose",
+      "text": "{key:q}{key:a}…{key:q} records a macro into register `a`. {key:@}{key:a} plays it. But the register `a` is the **same `a`** you yank text into — so the macro is just text. Which means you can edit it like any other text."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The lifecycle"
+    },
+    {
+      "type": "prose",
+      "text": "A typical refinement loop looks like:\n\n  1. Record a draft: {key:q}{key:a}…{key:q}.\n  2. It mostly works but has a glitch.\n  3. {key:o} (open a new line), then {key:\"}{key:a}{key:p} — the keystrokes appear as text in the buffer.\n  4. Edit them. Maybe `dawi` should have been `daWi`. Replace.\n  5. {key:\"}{key:a}{key:y}{key:$} (yank from cursor to end of line back into register `a`) or {key:\"}{key:a}{key:y}{key:y} for the whole line.\n  6. {key:u} to undo the buffer changes (you don't want the keystroke text staying in your file).\n  7. {key:@}{key:a} — try the macro again with the fix."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "\"",
+        "a",
+        "p"
+      ],
+      "label": "Paste the macro into the buffer"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "\"",
+        "a",
+        "y",
+        "$"
+      ],
+      "label": "Yank from cursor to EOL back into a"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "@",
+        "a"
+      ],
+      "label": "Run the (now updated) macro"
+    },
     {
       "type": "internals",
       "title": "Why This Works",
       "text": "Recording a macro **just** appends each typed key to the register, encoded as a Vim keystroke string ({key:<Esc>} is one byte 0x1b, etc.). Playback is a function `feedkeys(getreg('a'))` — feed those keystrokes back into the input buffer.\n\nNothing about a macro is \"compiled.\" There's no AST, no special structure. So:\n\n  • Yank works on macros: {key:\"}{key:a}{key:y}{key:$} writes whatever's selected.\n  • Append works on macros: {key:q}{key:A}…{key:q} appends to register `a`'s existing contents — extending the macro.\n  • {key::}{key:l}{key:e}{key:t} {key:@}{key:a}{key:=}{string} sets the macro programmatically.\n  • You can yank a macro from a comment in your file by selecting the keystroke text and {key:\"}{key:a}{key:y}.\n\nSpecial keys appear as {key:<Esc>}, {key:<CR>}, etc. in normal display, but as raw bytes in the register. Use {key::}{key:l}{key:e}{key:t} {key:@}{key:a}{key:=}\"ciw foo<Esc>\" to type-set special keys (the {key:<Esc>} is interpreted by Vim's parser)."
     },
-
-    { "type": "tip", "text": "When you {key:\"}{key:a}{key:p}-paste a macro and special keys show as `^[` or similar weirdness, that's the literal escape character. Most terminals will display it. The macro still works — it's just *not* meant to be human-readable in the buffer." },
-
-    { "type": "qr", "topic": "registers.macros-as-text" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "When you {key:\"}{key:a}{key:p}-paste a macro and special keys show as `^[` or similar weirdness, that's the literal escape character. Most terminals will display it. The macro still works — it's just *not* meant to be human-readable in the buffer."
+    },
+    {
+      "type": "qr",
+      "topic": "registers.macros-as-text"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

@@ -1,0 +1,163 @@
+{
+  "title": "VimFu \u2014 Ctrl-W ^ Alternate File Split",
+  "description": "Ctrl-W ^ splits the window and opens the alternate (previous) file. Split and jump back in one move.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 506,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f first.py second.py .first.py.swp .second.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "first.py",
+      "content": "# First File\nname = \"alpha\"\nvalue = 1"
+    },
+    {
+      "writeFile": "second.py",
+      "content": "# Second File\nname = \"beta\"\nvalue = 2"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim and set up alternate file"
+    },
+    {
+      "line": "nvim first.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W ^ \u2014 Alternate File",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W caret splits the window and opens the alternate file. The alternate file is the one you were editing before."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: open second file to establish alternate ---"
+    },
+    {
+      "say": "First, switch to the second file to establish an alternate.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":e second.py",
+      "overlay": ""
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now editing second dot py. First dot py is the alternate file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: split with alternate ---"
+    },
+    {
+      "say": "Control W caret to split and open the alternate.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017\u001e",
+      "overlay": "split alternate"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both files visible. First dot py opened in a new split. Second dot py is still below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W caret. Split and open the alternate file. Quickly view both your current and previous file side by side."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f first.py second.py"
+    }
+  ]
+}

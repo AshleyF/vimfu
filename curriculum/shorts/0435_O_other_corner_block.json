@@ -1,0 +1,196 @@
+{
+  "title": "VimFu \u2014 O \u2014 Other Corner (Block)",
+  "description": "In blockwise visual mode, capital O moves the cursor to the other end of the current row. Lowercase o jumps diagonally to the opposite corner.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 589,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f grid.py .grid.py.swp .grid.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "grid.py",
+      "content": "# grid data\nrow1 = [10, 20, 30]\nrow2 = [40, 50, 60]\nrow3 = [70, 80, 90]\nrow4 = [11, 22, 33]"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim grid.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "O \u2014 Other Corner",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In block visual mode, capital O flips the cursor horizontally to the other end of the same row. Lowercase O jumps to the diagonally opposite corner."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control V on row 1, then select a block down and right.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j07l"
+    },
+    {
+      "keys": "\u0016"
+    },
+    {
+      "keys": "2j"
+    },
+    {
+      "keys": "4l"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Cursor is at the bottom right corner. Capital O.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "O",
+      "overlay": "flip horizontal"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the bottom left. Same row, opposite side."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital O again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "O"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the right. Capital O toggles left and right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now lowercase O.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o",
+      "overlay": "opposite corner"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the diagonally opposite corner."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "In block mode, lowercase O jumps to the diagonally opposite corner. Capital O flips left and right within the current row. Four corners, two keys."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "O and capital O. Navigate all four corners of a block selection."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f grid.py"
+    }
+  ]
+}

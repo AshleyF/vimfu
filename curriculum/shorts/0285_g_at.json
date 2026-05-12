@@ -1,0 +1,192 @@
+{
+  "title": "VimFu \u2014 g@ Apply Operator",
+  "description": "g@ calls the function set by operatorfunc over a motion. It's how you create custom operators in Vim.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 426,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "operators"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f custom.py .custom.py.swp .custom.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "custom.py",
+      "content": "# Custom Ops\nhello world\nfoo bar baz\ntest data here\nfinal line"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim custom.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "g@ \u2014 Apply Operator",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G at is how Vim calls custom operators. You set operator func to a function, then G at plus a motion invokes it over that range."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: set up a custom operator ---"
+    },
+    {
+      "say": "Define a function that wraps text in brackets. Set it as operator func.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set inccommand="
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": ":function! Bracketize(type)",
+      "overlay": "define function"
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "type": ":  '[,']s/.*$/[&]/",
+      "overlay": "wrap in brackets"
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "type": ":endfunction",
+      "overlay": "end function"
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set operatorfunc=Bracketize",
+      "overlay": "set opfunc"
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: use g@ ---"
+    },
+    {
+      "say": "Now G at with a motion. Go to line two. G at J. Apply to two lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g@j",
+      "overlay": "apply operator"
+    },
+    {
+      "wait": 1.5
+    },
+    {
+      "say": "Lines two and three are wrapped in brackets. Our custom operator worked."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G at. The engine behind custom operators. Set operator func, then G at plus a motion. This is advanced Vim scripting territory."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f custom.py"
+    }
+  ]
+}

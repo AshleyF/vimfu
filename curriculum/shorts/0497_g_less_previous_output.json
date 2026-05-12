@@ -1,0 +1,162 @@
+{
+  "title": "VimFu \u2014 g< \u2014 Previous Output",
+  "description": "Use g< to redisplay the output of the previous command that was shown at the bottom of the screen.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 653,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f output.txt .output.txt.swp .output.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "output.txt",
+      "content": "one\ntwo\nthree\nfour\nfive"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim output.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "g< \u2014 Previous Output",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Sometimes you run a command and the output disappears before you can read it. G less-than brings it back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Run a substitution that shows output.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/o/O/g"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Vim showed a message about replacements. But if you press any key, the message vanishes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's make it disappear. Just move the cursor.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "The message is gone. Press G less-than to see it again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g<",
+      "overlay": "previous output"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The previous command output is displayed again. Press enter or escape to dismiss it."
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G less-than. Recall the last message output. Never miss a command result again."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f output.txt"
+    }
+  ]
+}

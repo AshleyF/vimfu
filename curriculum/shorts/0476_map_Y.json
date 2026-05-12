@@ -1,0 +1,184 @@
+{
+  "title": "VimFu \u2014 Map Y to y$",
+  "description": "By default Y yanks the whole line (same as yy). Map it to y$ to make it consistent with C and D which act to end of line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 632,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "hello beautiful world\nfoo bar baz\none two three"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Map Y to y$",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital D deletes to the end of the line. Capital C changes to the end of the line. But capital Y? It yanks the whole line, same as Y Y. That's inconsistent."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Watch. Move to beautiful and press capital Y.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "Y",
+      "overlay": "yanks whole line"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "It yanked the entire line, not just from the cursor to the end. Now let's fix it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":map Y y$",
+      "overlay": ":map Y y$"
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now try capital Y again from the same position.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0w"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "Y",
+      "overlay": "yank to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Paste it on a new line to see what was yanked.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o",
+      "overlay": "open below"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Only beautiful world was pasted, not the whole line. Now Y is consistent with C and D. Add this to your config."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f demo.txt"
+    }
+  ]
+}

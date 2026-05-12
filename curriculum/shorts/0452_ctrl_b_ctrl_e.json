@@ -1,0 +1,158 @@
+{
+  "title": "VimFu \u2014 Ctrl-B / Ctrl-E \u2014 Start/End",
+  "description": "Use Ctrl-B to jump to the beginning and Ctrl-E to jump to the end of the command line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 608,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# demo\nfoo = 1\nbar = 2\nbaz = 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-B / Ctrl-E \u2014 Start/End",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control B jumps to the beginning of the command line. Control E jumps to the end. Fast navigation while typing commands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Type a long command. Colon percent S slash foo slash bar slash G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/foo/bar/g"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Cursor is at the end. Press Control B to jump to the start.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+b",
+      "overlay": "beginning"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now we're at the beginning. Press Control E to jump back to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+e",
+      "overlay": "end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back at the end. These two keys let you move quickly to either end of whatever you're typing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control B for beginning, Control E for end. Navigate the command line fast."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

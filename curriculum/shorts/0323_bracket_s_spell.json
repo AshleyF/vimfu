@@ -1,0 +1,184 @@
+{
+  "title": "VimFu \u2014 [s ]s Spelling Navigation",
+  "description": "[s and ]s navigate between misspelled words. Combine with z= for a complete spell-checking workflow.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 464,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "spelling"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f patch.txt .patch.txt.swp .patch.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with typos"
+    },
+    {
+      "writeFile": "patch.txt",
+      "content": "Fixd the login buton issue.\nThe pasword field now validates.\nImproved erro handling logic.\nAll tets pass successfuly."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with spell"
+    },
+    {
+      "line": "nvim -c 'set spell' patch.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[s ]s \u2014 Spelling Navigation",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close bracket S and open bracket S are bracket commands for spelling. They jump between misspelled words."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: fix word at cursor, then navigate forward ---"
+    },
+    {
+      "say": "The cursor is already on Fixd. Fix it with one Z equals, then jump forward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1z=",
+      "overlay": "fix spelling"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]s",
+      "overlay": "next misspelling"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1z=",
+      "overlay": "fix spelling"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: continue forward ---"
+    },
+    {
+      "say": "Next typo.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "]s",
+      "overlay": "next"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1z=",
+      "overlay": "fix spelling"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 3: jump backward ---"
+    },
+    {
+      "say": "Open bracket S finds the previous misspelling. It wraps around to the bottom if there are no typos above.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[s",
+      "overlay": "previous"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Close bracket S forward. Open bracket S backward. Bracket commands work with spelling, diffs, folds, and more."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f patch.txt"
+    }
+  ]
+}

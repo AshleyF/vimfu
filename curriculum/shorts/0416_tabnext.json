@@ -1,0 +1,134 @@
+{
+  "title": "VimFu \u2014 :tabnext / :tabprev Cycle Tabs",
+  "description": "Cycle through tabs with :tabnext and :tabprev.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 557,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "tabs"
+  ],
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .*.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# Tab A"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# Tab B"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# Tab C"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -p a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":tabnext / :tabprev",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon tab next goes to the next tab. Colon tab prev goes back. Or use G T and G capital T."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":tabnext",
+      "overlay": ":tabnext"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Tab B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":tabnext",
+      "overlay": ":tabnext"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Tab C. Go back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":tabprev",
+      "overlay": ":tabprev"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Tab B again. Or just type G T and G capital T. Much faster."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ]
+}

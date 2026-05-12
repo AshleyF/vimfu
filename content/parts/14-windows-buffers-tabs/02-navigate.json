@@ -3,40 +3,131 @@
   "version": 1,
   "id": "windows.navigate",
   "title": "Navigating Windows",
-  "subtitle": "Ctrl-W h/j/k/l — move between splits. Ctrl-W c — close. Ctrl-W o — only.",
+  "subtitle": "{key:Ctrl-W} {key:h}/{key:j}/{key:k}/{key:l} — move between splits. {key:Ctrl-W} {key:c} — close. {key:Ctrl-W} {key:o} — only.",
   "part": "windows",
   "summary": "Ctrl-W with a direction key moves to the next window in that direction. Ctrl-W c closes the current window. Ctrl-W o closes everything except the current window.",
-  "keys": ["Ctrl-W h", "Ctrl-W j", "Ctrl-W k", "Ctrl-W l", "Ctrl-W c", "Ctrl-W o"],
-  "lessons": [133, 134, 135],
-  "see_also": ["windows.splits", "windows.move-resize", "prefixes.ctrl-w"],
-
+  "keys": [
+    "Ctrl-W h",
+    "Ctrl-W j",
+    "Ctrl-W k",
+    "Ctrl-W l",
+    "Ctrl-W c",
+    "Ctrl-W o"
+  ],
+  "lessons": [
+    133,
+    134,
+    135
+  ],
+  "see_also": [
+    "windows.splits",
+    "windows.move-resize",
+    "prefixes.ctrl-w"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Navigating Windows" },
-
-    { "type": "prose", "text": "{key:Ctrl-W} is the *window* prefix. After it, {key:h}/{key:j}/{key:k}/{key:l} jump to the window in that direction. {key:c} closes; {key:o} keeps only this one." },
-
-    { "type": "keys", "sequence": ["Ctrl-W","h"], "label": "Window to the left" },
-    { "type": "keys", "sequence": ["Ctrl-W","j"], "label": "Window below" },
-    { "type": "keys", "sequence": ["Ctrl-W","k"], "label": "Window above" },
-    { "type": "keys", "sequence": ["Ctrl-W","l"], "label": "Window to the right" },
-    { "type": "keys", "sequence": ["Ctrl-W","c"], "label": "Close current window" },
-    { "type": "keys", "sequence": ["Ctrl-W","o"], "label": "Close all *other* windows" },
-    { "type": "keys", "sequence": ["Ctrl-W","w"], "label": "Cycle through windows" },
-    { "type": "keys", "sequence": ["Ctrl-W","p"], "label": "Switch to previous window" },
-
-    { "type": "embed", "lesson": 133, "caption": "Ctrl-W h/j/k/l — move between" },
-    { "type": "embed", "lesson": 134, "caption": "Ctrl-W c — close window" },
-    { "type": "embed", "lesson": 135, "caption": "Ctrl-W o — only this one" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Navigating Windows"
+    },
+    {
+      "type": "prose",
+      "text": "{key:Ctrl-W} is the *window* prefix. After it, {key:h}/{key:j}/{key:k}/{key:l} jump to the window in that direction. {key:c} closes; {key:o} keeps only this one."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-W",
+        "h"
+      ],
+      "label": "Window to the left"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-W",
+        "j"
+      ],
+      "label": "Window below"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-W",
+        "k"
+      ],
+      "label": "Window above"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-W",
+        "l"
+      ],
+      "label": "Window to the right"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-W",
+        "c"
+      ],
+      "label": "Close current window"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-W",
+        "o"
+      ],
+      "label": "Close all *other* windows"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-W",
+        "w"
+      ],
+      "label": "Cycle through windows"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-W",
+        "p"
+      ],
+      "label": "Switch to previous window"
+    },
+    {
+      "type": "embed",
+      "lesson": 133,
+      "caption": "Ctrl-W h/j/k/l — move between"
+    },
+    {
+      "type": "embed",
+      "lesson": 134,
+      "caption": "Ctrl-W c — close window"
+    },
+    {
+      "type": "embed",
+      "lesson": 135,
+      "caption": "Ctrl-W o — only this one"
+    },
     {
       "type": "internals",
       "title": "Closing a Window vs Closing a Buffer",
       "text": "{key:Ctrl-W}{key:c} (or {key::}{key:c}{key:l}{key:o}{key:s}{key:e}) closes the **window** — the viewport. The buffer it was showing stays loaded; you can re-show it in another window with {key::}{key:b} {bufname}.\n\n{key::}{key:b}{key:d} (`:bdelete`) closes the **buffer** — unloads the file from memory. The buffer disappears from {key::}{key:l}{key:s}.\n\n{key::}{key:q} is a hybrid that confuses newcomers: it closes the current window, *and* if that was the last window showing the buffer, may also unload it depending on settings. Use {key::}{key:c}{key:l}{key:o}{key:s}{key:e} when you mean window-only and {key::}{key:b}{key:d} when you mean buffer-only.\n\n{key:Ctrl-W}{key:o}: \"only-this-window.\" Closes every other window, leaving the current one full-screen. Buffers are not unloaded."
     },
-
-    { "type": "tip", "text": "Most users remap window navigation to plain {key:Ctrl-h}/{key:Ctrl-j}/{key:Ctrl-k}/{key:Ctrl-l} (no prefix). It's the single highest-impact remap for a multi-split workflow." },
-
-    { "type": "qr", "topic": "windows.navigate" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "Most users remap window navigation to plain {key:Ctrl-h}/{key:Ctrl-j}/{key:Ctrl-k}/{key:Ctrl-l} (no prefix). It's the single highest-impact remap for a multi-split workflow."
+    },
+    {
+      "type": "qr",
+      "topic": "windows.navigate"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

@@ -2,43 +2,88 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "ex.shell",
-  "title": "Shell Commands (:!)",
+  "title": "Shell Commands ({key::!})",
   "subtitle": "Bang sends to the shell. Use as a filter or a one-shot.",
   "part": "ex-commands",
   "summary": ":!cmd runs cmd in a shell. :r !cmd inserts its output. :%!cmd filters the buffer through cmd. !{motion}cmd does the same in Normal mode.",
-  "keys": [":!", "!"],
-  "lessons": [428, 429],
-  "see_also": ["patterns.external-filter", "ex.file-ops"],
-
+  "keys": [
+    ":!",
+    "!"
+  ],
+  "lessons": [
+    428,
+    429
+  ],
+  "see_also": [
+    "patterns.external-filter",
+    "ex.file-ops"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Shell Commands" },
-
-    { "type": "prose", "text": "Vim doesn't try to do everything itself — it gives you the shell as a tool you can pipe through. Three patterns: run, insert output, filter buffer." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Shell Commands"
+    },
+    {
+      "type": "prose",
+      "text": "Vim doesn't try to do everything itself — it gives you the shell as a tool you can pipe through. Three patterns: run, insert output, filter buffer."
+    },
     {
       "type": "table",
-      "headers": ["Command",                "Effect"],
+      "headers": [
+        "Command",
+        "Effect"
+      ],
       "rows": [
-        [":!ls -la",                        "Run shell command, show output"],
-        [":!python %",                      "Run current file (% expands to filename)"],
-        [":r !date",                        "Insert output of `date` below cursor"],
-        [":r !curl -s https://api...",      "Pull URL response into buffer"],
-        [":%!sort",                         "Replace buffer with shell-sorted version"],
-        [":%!jq .",                         "Pretty-print the JSON buffer"],
-        [":'<,'>!sort -u",                  "Sort + dedup visual selection"],
-        ["!}sort",                          "Normal-mode: filter to next paragraph through sort"]
+        [
+          ":!ls -la",
+          "Run shell command, show output"
+        ],
+        [
+          ":!python %",
+          "Run current file (% expands to filename)"
+        ],
+        [
+          ":r !date",
+          "Insert output of `date` below cursor"
+        ],
+        [
+          ":r !curl -s https://api...",
+          "Pull URL response into buffer"
+        ],
+        [
+          ":%!sort",
+          "Replace buffer with shell-sorted version"
+        ],
+        [
+          ":%!jq .",
+          "Pretty-print the JSON buffer"
+        ],
+        [
+          ":'<,'>!sort -u",
+          "Sort + dedup visual selection"
+        ],
+        [
+          "!}sort",
+          "Normal-mode: filter to next paragraph through sort"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "The Three Modes of Bang",
       "text": "**`:!cmd`** — runs `cmd` in `'shell'`, prints output to the message area. Doesn't touch the buffer. Use for one-shot tasks (compile, run tests).\n\n**`:r !cmd`** — runs `cmd`, *inserts* its stdout into the buffer below the cursor.\n\n**`:[range]!cmd`** — sends the range's lines as **stdin** to `cmd`, replaces them with the **stdout**. This is *filter mode*. The classic example: `:%!sort` to sort the file in place; `:%!jq .` to pretty-print JSON.\n\n**Normal-mode `!{motion}cmd`** — same as filter mode, but the range comes from a motion: `!}sort` filters from cursor to next paragraph break. `!ipsort` filters the inner paragraph.\n\nSpecial: `%` in the command expands to the current filename, `#` to the alternate filename. `:!python %` runs the current Python file."
     },
-
-    { "type": "tip", "text": "{key:!}{key:!}{key:s}{key:o}{key:r}{key:t}{key:Enter} sorts the current line through `sort` (the doubled bang means \"current line\")." },
-
-    { "type": "qr", "topic": "ex.shell" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "{key:!}{key:!}{key:s}{key:o}{key:r}{key:t}{key:Enter} sorts the current line through `sort` (the doubled bang means \"current line\")."
+    },
+    {
+      "type": "qr",
+      "topic": "ex.shell"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

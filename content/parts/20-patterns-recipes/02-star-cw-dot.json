@@ -2,10 +2,10 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "patterns.star-cw-dot",
-  "title": "*, cw, then . . . \u2014 The Replace Loop",
+  "title": "{key:*}, {key:cw}, then {key:.} {key:.} {key:.} — The Replace Loop",
   "subtitle": "Search a word, change one, repeat with dot.",
   "part": "patterns-recipes",
-  "summary": "*cwNEW Esc, then n.n.n. \u2014 change every occurrence of a word, one at a time, with confirmation. The most-loved Vim refactoring loop.",
+  "summary": "*cwNEW Esc, then n.n.n. — change every occurrence of a word, one at a time, with confirmation. The most-loved Vim refactoring loop.",
   "keys": [
     "*",
     "c",
@@ -26,7 +26,7 @@
     {
       "type": "heading",
       "level": 1,
-      "text": "*, cw, then . . . \u2014 The Replace Loop"
+      "text": "*, cw, then . . . — The Replace Loop"
     },
     {
       "type": "prose",
@@ -42,7 +42,7 @@
         },
         {
           "key": "cw",
-          "note": "Change word \u2014 Vim drops you in Insert"
+          "note": "Change word — Vim drops you in Insert"
         },
         {
           "key": "NEW",
@@ -50,7 +50,7 @@
         },
         {
           "key": "Esc",
-          "note": "Back to Normal \u2014 change is saved as the dot-target"
+          "note": "Back to Normal — change is saved as the dot-target"
         },
         {
           "key": "n",
@@ -62,22 +62,22 @@
         },
         {
           "key": "n",
-          "note": "Skip this one \u2014 just move to next"
+          "note": "Skip this one — just move to next"
         },
         {
           "key": ".",
-          "note": "Apply\u2026"
+          "note": "Apply…"
         }
       ]
     },
     {
       "type": "internals",
       "title": "Why It's Better Than :%s",
-      "text": "{key::}{key:%}{key:s}{key:/old/new/gc} also works \u2014 but you have to type both `old` and `new`, and you confirm at the *line level* (yes/no). The {key:*}{key:c}{key:w} loop is faster:\n\n  \u2022 {key:*} **fills in the search pattern for you** (the word under cursor with `\\<...\\>` boundaries).\n  \u2022 {key:c}{key:w} drops you straight into Insert at the word's position.\n  \u2022 Esc commits the change. The {key:.} register now holds *the entire change*, including motion and inserted text.\n  \u2022 {key:n} + {key:.} cycle through matches, applying or skipping at each.\n\nThe loop also handles cases where the matches differ slightly (different surrounding context, decision per-match) \u2014 much more flexible than substitute."
+      "text": "{key::}{key:%}{key:s}{key:/old/new/gc} also works — but you have to type both `old` and `new`, and you confirm at the *line level* (yes/no). The {key:*}{key:c}{key:w} loop is faster:\n\n  • {key:*} **fills in the search pattern for you** (the word under cursor with `\\<...\\>` boundaries).\n  • {key:c}{key:w} drops you straight into Insert at the word's position.\n  • Esc commits the change. The {key:.} register now holds *the entire change*, including motion and inserted text.\n  • {key:n} + {key:.} cycle through matches, applying or skipping at each.\n\nThe loop also handles cases where the matches differ slightly (different surrounding context, decision per-match) — much more flexible than substitute."
     },
     {
       "type": "tip",
-      "text": "Need word boundaries to be loose? Use {key:g}{key:*} instead of {key:*} \u2014 finds the word as a substring, not just whole-word matches."
+      "text": "Need word boundaries to be loose? Use {key:g}{key:*} instead of {key:*} — finds the word as a substring, not just whole-word matches."
     },
     {
       "type": "example",

@@ -1,0 +1,164 @@
+{
+  "title": "VimFu \u2014 The Useless _ Key",
+  "description": "The underscore key moves to the first non-blank character of the current line, just like ^. It's a candidate for remapping.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 629,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f indent.py .indent.py.swp .indent.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "indent.py",
+      "content": "def greet():\n    name = \"world\"\n    print(f\"hello {name}\")\n    return True"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim indent.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "The Useless _ Key",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The underscore key moves to the first non-blank character of the current line. Sound familiar? That's exactly what caret does."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Move to the end of line two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now press underscore.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "_",
+      "overlay": "first non-blank"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "It jumped to the N in name, skipping the spaces. Now press caret.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "^",
+      "overlay": "first non-blank"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Same spot. Underscore and caret do the same thing on the current line. Since caret already exists, underscore is redundant."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "That makes underscore a free key to remap. Some people map it to something useful like toggling a file explorer or switching buffers."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "With a count like 3 underscore it moves down two lines to the first non-blank. But caret and plus already cover that. Remap it!"
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f indent.py"
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "title": "VimFu \u2014 ddp \u2014 Swap Lines Down",
+  "description": "Use ddp to move the current line down one position. dd deletes the line, p puts it below the next line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 619,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f order.txt .order.txt.swp .order.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "order.txt",
+      "content": "first\nsecond\nthird\nfourth\nfifth"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim order.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "ddp \u2014 Swap Lines Down",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "D D P moves the current line down one. D D deletes the line, and P puts it below the next line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The cursor is on first. Type D D P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ddp",
+      "overlay": "swap down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "First and second swapped. First moved down one line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's undo and try from a different line. Move to third.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ddp",
+      "overlay": "swap down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Third moved below fourth. It's the quickest way to bubble a line down."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "D D P. Three keys to move a line down."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f order.txt"
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "title": "VimFu \u2014 gg Go to Top",
+  "description": "gg jumps to the first line of the file. With a count, Ngg jumps to line N. The complement of G (go to bottom).",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 397,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f ship.py .ship.py.swp .ship.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "ship.py",
+      "content": "# Spaceship Simulator\nimport math\n\nclass Ship:\n    def __init__(self, name):\n        self.name = name\n        self.x = 0\n        self.y = 0\n        self.fuel = 100\n        self.speed = 0\n\n    def thrust(self, power):\n        self.speed += power\n        self.fuel -= power * 0.1\n\n    def move(self):\n        self.x += self.speed\n\n    def brake(self):\n        self.speed = max(0, self.speed - 5)\n\nclass Fleet:\n    def __init__(self):\n        self.ships = []\n\n    def add(self, ship):\n        self.ships.append(ship)\n\n    def move_all(self):\n        for ship in self.ships:\n            ship.move()\n\n    def status(self):\n        for s in self.ships:\n            print(f\"{s.name}: ({s.x},{s.y})\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' ship.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gg \u2014 Go to Top",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G G jumps to the first line of the file. Shift G goes to the last line. G G goes to the first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: go to bottom, then gg ---"
+    },
+    {
+      "say": "Shift G to go to the last line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "last line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now G G to jump back to line one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "first line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back at the top. Line one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: gg with a count ---"
+    },
+    {
+      "say": "With a count, G G goes to that line number. Twenty two G G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "22gg",
+      "overlay": "line 22"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line twenty two. The Fleet class."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Ten G G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "10gg",
+      "overlay": "line 10"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Line ten. Same as ten G, just a different style."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: gg without count ---"
+    },
+    {
+      "say": "G G with no count always goes to line one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Top of the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G G. Jump to the top. Shift G for the bottom, G G for the top. Add a count to go to any line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f ship.py"
+    }
+  ]
+}

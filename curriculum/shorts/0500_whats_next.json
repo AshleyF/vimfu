@@ -1,0 +1,147 @@
+{
+  "title": "VimFu — What's Next?",
+  "description": "You've learned the core of Vim. Here's what lies ahead: plugins, LSP, Treesitter, and the endless journey of mastery.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 656,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f journey.txt .journey.txt.swp .journey.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "journey.txt",
+      "content": "The Vim Journey"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim journey.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "What's Next?",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Congratulations. You've made it through five hundred lessons of Vim Fu. You know motions, operators, text objects, registers, macros, marks, folds, and so much more."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "But this is just the beginning. Here's what lies ahead."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Plugins. Vim has a massive ecosystem. Plugin managers like lazy dot nvim make installation easy. Popular plugins include telescope for fuzzy finding, oil for file browsing, and fugitive for git."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "L S P. Language Server Protocol gives you auto-completion, go to definition, rename, and diagnostics. Neovim has built-in L S P support."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Treesitter. It gives Neovim a real syntax tree for better highlighting, text objects, and code navigation. It understands your code structurally."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "DAP. The Debug Adapter Protocol lets you debug code right inside Neovim with breakpoints and stepping."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The key to mastery is practice. Use Vim every day. When you find yourself doing something repetitive, look for a better way. There almost always is one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Read colon help. Experiment. Break things. The Vim community is welcoming and full of knowledge."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Thank you for watching Vim Fu. Now go build something amazing."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f journey.txt"
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "title": "VimFu \u2014 Escape / Ctrl-[ Leave Insert",
+  "description": "Escape and Ctrl-[ both leave insert mode and return to normal mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 507,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nname = \"vim\"\nprint(name)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Escape / Ctrl-[ \u2014 Leave Insert",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "There are two ways to leave insert mode. Escape and Control open bracket. They do exactly the same thing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: Escape ---"
+    },
+    {
+      "say": "Enter insert mode with I.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i",
+      "overlay": "insert mode"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now press Escape to leave.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "back to normal"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Back in normal mode. INSERT is gone from the status bar."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: Ctrl-[ ---"
+    },
+    {
+      "say": "Enter insert mode again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i",
+      "overlay": "insert mode"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "This time, Control open bracket.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b",
+      "overlay": "back to normal"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Same result. Normal mode. Some Vim users prefer Control open bracket because it keeps your hands on the home row."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Escape or Control open bracket. Two paths to the same place. Normal mode."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

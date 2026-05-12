@@ -1,0 +1,163 @@
+{
+  "title": "VimFu \u2014 The # Register",
+  "description": "The \"# register contains the alternate filename \u2014 the previously edited file. Use it to reference or switch between files.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 643,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f first.txt second.txt .first.txt.swp .second.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "first.txt",
+      "content": "I am the first file."
+    },
+    {
+      "writeFile": "second.txt",
+      "content": "I am the second file."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with first file"
+    },
+    {
+      "line": "nvim first.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "The # Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The hash register, quote hash, holds the alternate filename. That's the previously edited file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "We're in first dot txt. Let's open second dot txt.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":edit second.txt"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now check the hash register.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":echo @#"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It shows first dot txt. That's the file we were just editing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can switch to the alternate file with Control caret.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+^",
+      "overlay": "alternate file"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to first dot txt. Control caret toggles between the current and alternate files."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The hash register and control caret. Quick switching between two files."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f first.txt second.txt"
+    }
+  ]
+}

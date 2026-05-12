@@ -1,0 +1,172 @@
+{
+  "title": "VimFu \u2014 Ctrl-O in Insert Mode",
+  "description": "Press Ctrl-O in insert mode to execute one normal-mode command without leaving insert mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 631,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f draft.txt .draft.txt.swp .draft.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "draft.txt",
+      "content": "hello world\nthis is a test\nremove this line\nkeep typing here"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim draft.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-O in Insert Mode",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control O in insert mode lets you run one normal-mode command and then drops you right back into insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Enter insert mode and start typing.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append at end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": " today"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now delete line three without leaving insert mode. Press Control O, then D D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+o",
+      "overlay": "one normal cmd"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "We moved down. But wait, Control O only does one command. Let me press Control O again for D D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+o",
+      "overlay": "one normal cmd"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Line removed, and we're still in insert mode. The status line still shows insert. You can keep typing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control O. One normal-mode command without leaving insert mode."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f draft.txt"
+    }
+  ]
+}

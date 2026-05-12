@@ -1,0 +1,174 @@
+{
+  "title": "VimFu \u2014 Terminal Mode",
+  "description": "Use :term to open a terminal inside Vim and Ctrl-\\ Ctrl-N to switch back to normal mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 647,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f termtest.txt .termtest.txt.swp .termtest.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "termtest.txt",
+      "content": "editing a file"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim termtest.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Terminal Mode",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Vim and Neovim can run a full terminal emulator inside the editor. Open one with colon term."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":term"
+    },
+    "enter",
+    {
+      "wait": 1.5
+    },
+    {
+      "say": "We're now in terminal mode. You can type shell commands directly."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "echo hello from the terminal"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The shell ran inside Vim. But notice you can't use normal mode keys. You're in terminal mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "To escape terminal mode, press Control backslash, then Control N.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+\\",
+      "overlay": "Ctrl-\\"
+    },
+    {
+      "keys": "ctrl+n",
+      "overlay": "normal mode"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now we're in normal mode in the terminal buffer. You can navigate, yank text, and use all your normal mode keys."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press I to go back to terminal mode and type commands again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i",
+      "overlay": "back to terminal mode"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control backslash Control N to exit. I to re-enter. That's the terminal mode cycle."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Exit the terminal and quit nvim"
+    },
+    {
+      "keys": "ctrl+\\"
+    },
+    {
+      "keys": "ctrl+n"
+    },
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f termtest.txt"
+    }
+  ]
+}

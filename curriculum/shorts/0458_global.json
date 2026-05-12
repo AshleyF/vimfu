@@ -1,0 +1,169 @@
+{
+  "title": "VimFu — :g/{pattern}/{cmd} — Global",
+  "description": "The :g command executes an Ex command on every line matching a pattern. Delete, print, or modify matching lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 614,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tasks.py .tasks.py.swp .tasks.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "tasks.py",
+      "content": "# task list\nbuy milk\nTODO fix bug\nwalk dog\nTODO write tests\nclean desk\nTODO update docs\nread book"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim tasks.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":g/{pattern}/{cmd} — Global",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Colon G runs a command on every line that matches a pattern. It's one of Vim's most powerful features."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Delete all lines containing TODO. Colon G slash TODO slash D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":g/TODO/d"
+    },
+    {
+      "wait": 0.4
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All the TODO lines are gone. Only the non-TODO lines remain."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo. Now try printing matches instead. Colon G slash TODO slash P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":g/TODO/p"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "It printed all lines with TODO. The file wasn't changed, just displayed the matches."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can also run normal mode commands. Colon G slash TODO slash norm I DONE.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":g/TODO/norm IDONE "
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "DONE was inserted at the start of every TODO line. Global command. Match a pattern, run a command."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f tasks.py"
+    }
+  ]
+}

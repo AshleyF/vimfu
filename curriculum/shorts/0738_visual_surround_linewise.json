@@ -1,0 +1,171 @@
+{
+  "title": "VimFu — Visual Surround — Linewise",
+  "description": "In linewise visual mode (V), S wraps the selected lines with the surrounding on separate lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 697,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "surround"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f lines.html .lines.html.swp .lines.html.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "lines.html",
+      "content": "First line\nSecond line\nThird line"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim lines.html"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Visual Surround — Linewise",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In linewise visual mode, capital S places the surrounding on separate lines. The selected lines are indented between them."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select all three lines with capital V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Vjj",
+      "overlay": "V → select lines"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital S, then type a tag.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "S<div>",
+      "overlay": "S<div>"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The lines are indented between opening and closing div tags on their own lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Braces too. Select and S open brace.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Vjj",
+      "overlay": "V → select lines"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "S{",
+      "overlay": "S{"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Lines wrapped in braces on separate lines. Linewise visual S."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f lines.html"
+    }
+  ]
+}

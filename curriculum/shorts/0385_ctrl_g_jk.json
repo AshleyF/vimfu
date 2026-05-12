@@ -1,0 +1,176 @@
+{
+  "title": "VimFu \u2014 Ctrl-G j/k Move in Insert",
+  "description": "Ctrl-G j and Ctrl-G k move the cursor down or up in insert mode to the column where insert started.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 526,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Row 1\n# Row 2\n# Row 3\n# Row 4\n# Row 5"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-G j/k \u2014 Move in Insert",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control G J moves the cursor down one line in insert mode. Control G K moves it up. The cursor stays at the column where you entered insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: move down ---"
+    },
+    {
+      "say": "Enter insert mode on line one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control G J to move down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0007j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u0007j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Moved down two lines. Still in insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: move back up ---"
+    },
+    {
+      "say": "Control G K to go back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0007k",
+      "overlay": "up"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Up one line. Never left insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control G J and Control G K. Move between lines in insert mode. Useful for editing aligned columns without leaving insert."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "title": "VimFu \u2014 The . Register",
+  "description": "The \". register contains the last inserted text. Use it to paste what you just typed.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 639,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dotreg.txt .dotreg.txt.swp .dotreg.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "dotreg.txt",
+      "content": "Name:\nAddress:\nCity:"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim dotreg.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "The . Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The dot register, quote dot, holds the last text you inserted. It's read-only, and Vim fills it automatically."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's type some text after Name.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append at end"
+    },
+    {
+      "type": " Alice"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now check what's in the dot register.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":echo @."
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It shows space Alice. That's exactly what we just typed in insert mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can paste it with quote dot P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\".",
+      "overlay": "dot register"
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The last inserted text got pasted after Address. Quote dot P. Quick access to what you just typed."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f dotreg.txt"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "version": 1,
   "id": "operators-textobjects.brackets",
   "title": "Bracket Text Objects",
-  "subtitle": "i( i{ i[ i< \u2014 operate on the contents of any bracket pair.",
+  "subtitle": "{key:i(} {key:i{} {key:i[} {key:i<} — operate on the contents of any bracket pair.",
   "part": "operators-textobjects",
   "summary": "i( / a( for parens, i{ / a{ for braces, i[ / a[ for square brackets, i< / a< for angle brackets. ib and iB are aliases for parens and braces.",
   "keys": [
@@ -78,22 +78,22 @@
     {
       "type": "embed",
       "lesson": 78,
-      "caption": "i( / a( \u2014 parens"
+      "caption": "i( / a( — parens"
     },
     {
       "type": "embed",
       "lesson": 79,
-      "caption": "i{ / a{ \u2014 braces"
+      "caption": "i{ / a{ — braces"
     },
     {
       "type": "embed",
       "lesson": 80,
-      "caption": "i[ / a[ \u2014 square brackets"
+      "caption": "i[ / a[ — square brackets"
     },
     {
       "type": "embed",
       "lesson": 81,
-      "caption": "i< / a< \u2014 angle brackets"
+      "caption": "i< / a< — angle brackets"
     },
     {
       "type": "tip",
@@ -102,7 +102,7 @@
     {
       "type": "internals",
       "title": "How Bracket Matching Works",
-      "text": "Bracket objects walk *outward* from the cursor looking for an unbalanced opener of the requested type. They respect nesting \u2014 {key:i}{key:(} on the inner of `f(g(x))` selects `g(x)`; from outside the inner parens it selects `g(x)` if you're inside the outer pair.\n\nMatching uses the `'matchpairs'` option (default `(:),{:},[:],<:>`). It does **not** understand language syntax \u2014 strings and comments don't shield brackets, which is occasionally surprising in code with mismatched brackets in comments.\n\nBracket objects are *charwise*. Even {key:i}{key:{} on a multi-line block selects character-by-character \u2014 meaning the leading and trailing newlines are part of the range. That's usually what you want for change/delete, but it surprises people the first time {key:y}{key:i}{key:{} pastes back as a multi-line span starting in the middle of a line."
+      "text": "Bracket objects walk *outward* from the cursor looking for an unbalanced opener of the requested type. They respect nesting — {key:i}{key:(} on the inner of `f(g(x))` selects `g(x)`; from outside the inner parens it selects `g(x)` if you're inside the outer pair.\n\nMatching uses the `'matchpairs'` option (default `(:),{:},[:],<:>`). It does **not** understand language syntax — strings and comments don't shield brackets, which is occasionally surprising in code with mismatched brackets in comments.\n\nBracket objects are *charwise*. Even {key:i}{key:{} on a multi-line block selects character-by-character — meaning the leading and trailing newlines are part of the range. That's usually what you want for change/delete, but it surprises people the first time {key:y}{key:i}{key:{} pastes back as a multi-line span starting in the middle of a line."
     },
     {
       "type": "tip",
@@ -125,27 +125,27 @@
       "rows": [
         [
           "{key:i}{key:(} / {key:i}{key:b}",
-          "Inside ( \u2026 )"
+          "Inside ( … )"
         ],
         [
           "{key:a}{key:(} / {key:a}{key:b}",
-          "Including ( \u2026 )"
+          "Including ( … )"
         ],
         [
           "{key:i}{key:{} / {key:i}{key:B}",
-          "Inside { \u2026 }"
+          "Inside { … }"
         ],
         [
           "{key:a}{key:{} / {key:a}{key:B}",
-          "Including { \u2026 }"
+          "Including { … }"
         ],
         [
           "{key:i}{key:[} / {key:a}{key:[}",
-          "Inside / including [ \u2026 ]"
+          "Inside / including [ … ]"
         ],
         [
           "{key:i}{key:<} / {key:a}{key:<}",
-          "Inside / including < \u2026 >"
+          "Inside / including < … >"
         ]
       ]
     },

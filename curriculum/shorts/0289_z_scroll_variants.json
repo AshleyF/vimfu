@@ -1,0 +1,185 @@
+{
+  "title": "VimFu \u2014 z. z+ z- z^ Scroll Variants",
+  "description": "z. is like zz but puts cursor on first non-blank. z+ and z- scroll to the next/previous page's first line. z^ scrolls to the previous page's last line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 430,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "z commands",
+    "scroll"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f engine.py .engine.py.swp .engine.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "engine.py",
+      "content": "# Game Engine\nclass Engine:\n    def __init__(self):\n        self.running = False\n        self.fps = 60\n        self.frame = 0\n\n    def start(self):\n        self.running = True\n        self.loop()\n\n    def loop(self):\n        while self.running:\n            self.update()\n            self.render()\n            self.frame += 1\n\n    def update(self):\n        pass\n\n    def render(self):\n        pass\n\n    def stop(self):\n        self.running = False\n        print(f\"Stopped at {self.frame}\")\n\n    def reset(self):\n        self.frame = 0\n        self.running = False"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set number' engine.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "z. z+ z- z^ \u2014 Scroll Variants",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Beyond Z Z, Z T, and Z B, there are more scroll variants. Z dot, Z plus, Z minus, and Z caret."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: z. ---"
+    },
+    {
+      "say": "Z dot is like Z Z but moves the cursor to the first non blank character.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "15G$",
+      "overlay": "end of line 15"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z.",
+      "overlay": "center + first non-blank"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Centered, and cursor moved to the first non blank. Z Z would keep the cursor at the end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: z+ ---"
+    },
+    {
+      "say": "Z plus shows the first line of the next page at the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z+",
+      "overlay": "next page top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Scrolled down a page. Cursor on the first non blank of the top line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: z^ ---"
+    },
+    {
+      "say": "Z caret does the opposite. Previous page, last line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "z^",
+      "overlay": "previous page"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Scrolled back up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z dot centers with cursor on first non blank. Z plus and Z caret page forward and back. Niche, but good to know."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f engine.py"
+    }
+  ]
+}

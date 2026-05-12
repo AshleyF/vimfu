@@ -1,0 +1,189 @@
+{
+  "title": "VimFu \u2014 g@ \u2014 Custom Operator",
+  "description": "Use g@{motion} with operatorfunc to create your own custom operators that work with any motion or text object.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 646,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f custom.txt .custom.txt.swp .custom.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "custom.txt",
+      "content": "hello world\nfoo bar baz\nquick brown fox"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim custom.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "g@ \u2014 Custom Operator",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G at lets you create your own operator. You set operator func to a function, then G at calls that function with any motion."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's define a function that uppercases text. We'll create it with a Vim command.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":function! Upcase(type)"
+    },
+    "enter",
+    {
+      "type": "  '[,']s/.\\+/\\U&/g"
+    },
+    "enter",
+    {
+      "type": "endfunction"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now set operator func to our function.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set operatorfunc=Upcase"
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now G at with a motion uppercases that region. Try G at I W for inner word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g@",
+      "overlay": "custom operator"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "iw",
+      "overlay": "inner word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Hello became HELLO. The operator func received the motion range and uppercased it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Try it on a whole line. G at at applies to the current line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "g@",
+      "overlay": "custom operator"
+    },
+    {
+      "keys": "_",
+      "overlay": "current line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The whole line is uppercase. G at works with any motion or text object. This is how plugins create custom operators."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f custom.txt"
+    }
+  ]
+}

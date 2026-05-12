@@ -1,0 +1,234 @@
+{
+  "title": "VimFu \u2014 g; g, Change List",
+  "description": "g; and g, navigate through the change list. Jump back and forward through every place you made an edit.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 424,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f track.py .track.py.swp .track.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "track.py",
+      "content": "# Tracker\nx = 0\ny = 0\nz = 0\nspeed = 1\nangle = 90\npower = 100"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim track.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "g; g, \u2014 Change List",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Vim remembers where you made changes. G semicolon jumps to the previous change. G comma jumps to the next change."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: make edits in different places ---"
+    },
+    {
+      "say": "Make a few edits. Change X to ten.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2Gf0",
+      "overlay": "on x = 0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "s",
+      "overlay": "change"
+    },
+    {
+      "type": "10"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Change speed to five.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5Gf1",
+      "overlay": "on speed"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "s",
+      "overlay": "change"
+    },
+    {
+      "type": "5"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Change power to fifty.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "7Gf1",
+      "overlay": "on power"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "C",
+      "overlay": "change to end"
+    },
+    {
+      "type": "50"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Three edits in three places. Now G semicolon.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g;",
+      "overlay": "previous change"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "g;",
+      "overlay": "older"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Back to where we changed X. G comma goes forward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g,",
+      "overlay": "newer change"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Speed's edit. Walking through your edit history."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G semicolon and G comma. Navigate the change list. Jump between every place you edited."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f track.py"
+    }
+  ]
+}

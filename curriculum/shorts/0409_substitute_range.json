@@ -1,0 +1,47 @@
+{
+  "title": "VimFu — :s with Ranges",
+  "description": "Substitute within a visual selection or line range.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 550,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "substitute"],
+  "setup": [
+    { "comment": "Set TERM for proper color support in Neovim" },
+    { "line": "export TERM=xterm-256color" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f demo.py .demo.py.swp" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "writeFile": "demo.py", "content": "# Demo\nold = 1\nold = 2\nold = 3\nold = 4\nold = 5" },
+    { "line": "clear" },
+    { "line": "nvim demo.py" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "overlay": "VimFu", "caption": ":s with Ranges", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "say": "You can limit substitution to a range of lines. Specify start and end line numbers." },
+    { "wait": 0.3 },
+    { "say": "Replace old with new, but only on lines two through four.", "wait": false },
+    { "wait": 0.3 },
+    { "type": ":2,4s/old/new/g", "overlay": ":2,4s/old/new/g" },
+    "enter",
+    { "wait": 0.5 },
+    { "say": "Three replacements on three lines. Lines five and six are untouched." },
+    { "wait": 0.3 },
+    { "say": "You can also use a visual selection. Select lines, then colon S, and Vim auto-fills the range." },
+    { "wait": 0.3 },
+    { "say": "Ranges. Target exactly the lines you want to change." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [
+    "escape",
+    { "type": ":q!" },
+    "enter",
+    { "line": "rm -f demo.py" }
+  ]
+}

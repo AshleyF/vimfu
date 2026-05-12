@@ -1,0 +1,201 @@
+{
+  "title": "VimFu \u2014 ga / g8 \u2014 Character Info",
+  "description": "Use ga to show the ASCII/Unicode value of the character under the cursor, and g8 to show its UTF-8 hex bytes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 648,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f chars.txt .chars.txt.swp .chars.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "chars.txt",
+      "content": "A\n~\n\u20ac"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim chars.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "ga / g8 \u2014 Character Info",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G A shows you the character value under the cursor. Decimal, hex, and octal."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is on capital A. Press G A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ga",
+      "overlay": "ASCII value"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "say": "It shows A is decimal sixty five, hex forty one, octal one oh one. Classic ASCII."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Move to the tilde on line two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "ga",
+      "overlay": "ASCII value"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "say": "Tilde is decimal one hundred twenty six. G A works for any character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now the Euro sign on line three. This is a multi-byte Unicode character.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "ga",
+      "overlay": "Unicode value"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "say": "G A shows the Unicode code point for the Euro sign."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G eight shows the raw UTF eight hex bytes instead.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g8",
+      "overlay": "UTF-8 bytes"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "say": "Three bytes for the Euro sign. G A for the character value, G eight for the raw bytes. Handy for debugging encoding issues."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f chars.txt"
+    }
+  ]
+}

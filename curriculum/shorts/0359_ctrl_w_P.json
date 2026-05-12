@@ -1,0 +1,207 @@
+{
+  "title": "VimFu \u2014 Ctrl-W P Preview Window",
+  "description": "Ctrl-W P moves the cursor to the preview window. Jump in to edit or scroll the preview.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 500,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "preview"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f craft.py tags .craft.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "craft.py",
+      "content": "# Crafting\ndef forge(ore):\n    return ore + 50\n\ndef brew(herbs):\n    return herbs * 3\n\n# Workshop\nsword = forge(10)\npotion = brew(5)"
+    },
+    {
+      "comment": "Create tags file (use printf to preserve tabs)"
+    },
+    {
+      "line": "printf 'brew\\tcraft.py\\t/^def brew(/\\nforge\\tcraft.py\\t/^def forge(/\\n' > tags"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim craft.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W P \u2014 Preview Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W capital P moves the cursor into the preview window. You can edit or scroll it like any window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: open preview then jump to it ---"
+    },
+    {
+      "say": "First, open a preview. Move to forge and preview its tag.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "9G",
+      "overlay": "line 9"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "next word"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "to forge"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017}",
+      "overlay": "preview tag"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Preview is open. Now jump into it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017P",
+      "overlay": "go to preview"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Cursor is in the preview window now. You can scroll, edit, or navigate."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: go back and close ---"
+    },
+    {
+      "say": "Control W P again to go back to the main window.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017p",
+      "overlay": "previous window"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0017z",
+      "overlay": "close preview"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W capital P. Jump into the preview window. Control W Z to close it when you're done."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f craft.py tags"
+    }
+  ]
+}

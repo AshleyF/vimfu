@@ -1,0 +1,203 @@
+{
+  "title": "VimFu \u2014 gD Go to Global Definition",
+  "description": "gD jumps to the global definition of the word under the cursor. It searches from the top of the file, not just the current function.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 392,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with global and local vars"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "# App Config\nMAX_RETRIES = 3\nTIMEOUT = 30\nBASE_URL = \"https://api.example.com\"\n\ndef fetch(endpoint):\n    url = BASE_URL + endpoint\n    for attempt in range(MAX_RETRIES):\n        try:\n            resp = request(url, TIMEOUT)\n            return resp\n        except Exception:\n            pass\n    return None\n\ndef request(url, timeout):\n    print(f\"GET {url} ({timeout}s)\")\n    return {\"status\": 200}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' config.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gD \u2014 Go to Global Definition",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G shift D jumps to the global definition. It searches from line one of the file, so it finds top-level declarations."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to global definition ---"
+    },
+    {
+      "say": "Go to line eight where MAX RETRIES is used inside the function.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "8G",
+      "overlay": "line 8"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$F_",
+      "overlay": "on MAX_RETRIES"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G shift D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gD",
+      "overlay": "global definition"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line two. The top-level constant."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: another global ---"
+    },
+    {
+      "say": "Go to line seven where BASE URL is used.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "7G",
+      "overlay": "line 7"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ww",
+      "overlay": "on BASE_URL"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G shift D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gD",
+      "overlay": "gD"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line four. The global BASE URL constant."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G D for local definition, G shift D for global. Both use text search so they work everywhere without a language server."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "title": "VimFu \u2014 gj gk Screen Lines",
+  "description": "gj and gk move by screen lines instead of logical lines. Essential when long lines wrap across multiple screen rows.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 398,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "motion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f prose.txt .prose.txt.swp .prose.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with long wrapping lines"
+    },
+    {
+      "writeFile": "prose.txt",
+      "content": "Short line.\nThis is a much longer line that will definitely wrap around the screen because it has so many words in it that forty columns cannot contain it all on one row.\nAnother short line.\nHere is another very long line with lots of text that wraps around multiple times on the display because the terminal is narrow."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with wrap on"
+    },
+    {
+      "line": "nvim -c 'set number' -c 'set wrap' prose.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gj gk \u2014 Screen Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "When lines wrap, J and K skip the whole logical line. G J and G K move by screen lines instead, one visual row at a time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: j skips wrapped lines ---"
+    },
+    {
+      "say": "The cursor is on line one. Press J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "next logical line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "J jumped to line two. But line two wraps across several rows. Press J again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "skips all wrapped rows"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "It jumped past all the wrapped rows to line three."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: gj moves one screen row ---"
+    },
+    {
+      "say": "Go back to line one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now G J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gj",
+      "overlay": "one screen row"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "One screen row down. G J again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gj",
+      "overlay": "gj"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "gj",
+      "overlay": "gj"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Moving through the wrapped text one row at a time. Still on logical line two."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: gk goes up ---"
+    },
+    {
+      "say": "G K goes up one screen row.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gk",
+      "overlay": "up one screen row"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "gk",
+      "overlay": "gk"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Back up through the wrapped lines, one row at a time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G J and G K. Move by screen rows instead of logical lines. Essential for editing prose or any text that wraps."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f prose.txt"
+    }
+  ]
+}

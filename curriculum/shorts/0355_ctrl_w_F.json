@@ -1,0 +1,153 @@
+{
+  "title": "VimFu \u2014 Ctrl-W F Split File at Line",
+  "description": "Ctrl-W F splits the window and opens the file under the cursor, jumping to the line number that follows.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 496,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f errors.log app.py .errors.log.swp .app.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create app and error log"
+    },
+    {
+      "writeFile": "app.py",
+      "content": "# App\ndef start():\n    pass\ndef connect():\n    raise Error(\"timeout\")\ndef run():\n    connect()"
+    },
+    {
+      "writeFile": "errors.log",
+      "content": "ERROR in app.py:4\nTraceback:\n  File app.py line 4\n  connect() failed"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim on errors.log"
+    },
+    {
+      "line": "nvim errors.log"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W F \u2014 File at Line",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W capital F opens the file under the cursor in a split and jumps to the line number next to it. Equivalent to colon sp plus four space app dot py."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump from error log ---"
+    },
+    {
+      "say": "An error log. Line one says app dot py colon four. Put the cursor on the filename.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ww",
+      "overlay": "to filename"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor on app dot py. We'll split and open it at line four.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":sp +4 app.py"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Opened app dot py at line four in a split. The connect function that caused the error. Error log still visible. Control W capital F is the keystroke shortcut that does both."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W capital F. Open a file at a specific line from an error log or stack trace. Debug faster."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f errors.log app.py"
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "title": "VimFu \u2014 :bn / :bp Cycle Buffers",
+  "description": "The :bn and :bp commands cycle forward and backward through buffers.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 553,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "buffers"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .a.py.swp .b.py.swp .c.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# Alpha"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# Beta"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# Charlie"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":bn / :bp \u2014 Cycle Buffers",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon B N goes to the next buffer. Colon B P goes to the previous."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Next buffer.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":bn",
+      "overlay": "next"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Beta. Next again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":bn",
+      "overlay": "next"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Charlie. Go back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":bp",
+      "overlay": "previous"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Beta again. Simple cycling through your open files."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon B N and B P. Step through buffers one at a time."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "title": "VimFu \u2014 The = Register",
+  "description": "The \"= expression register lets you evaluate a Vimscript expression and insert the result into your text.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 644,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f expr.txt .expr.txt.swp .expr.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "expr.txt",
+      "content": "The answer is:\nItems: 12 * 5 ="
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim expr.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "The = Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The expression register, quote equals, is unique. It evaluates a Vim script expression and gives you the result."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "In insert mode, press Control R equals to activate it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": " "
+    },
+    {
+      "keys": "ctrl+r",
+      "overlay": "insert register"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "=",
+      "overlay": "expression register"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Vim opens a prompt. Type a math expression. Six times seven.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "6*7"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Forty two got inserted. Vim evaluated the expression and typed the result."
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Move to the second line and compute twelve times five.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "keys": " "
+    },
+    {
+      "keys": "ctrl+r"
+    },
+    {
+      "keys": "="
+    },
+    {
+      "type": "12*5"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Sixty. The expression register works as a calculator right inside Vim. You can use any Vim script expression, not just math."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f expr.txt"
+    }
+  ]
+}

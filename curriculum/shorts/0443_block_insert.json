@@ -1,0 +1,223 @@
+{
+  "title": "VimFu \u2014 Block Insert",
+  "description": "In blockwise visual mode, press I to insert text at the start of each line in the block. Appears on all lines after pressing Escape.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 598,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f items.py .items.py.swp .items.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "items.py",
+      "content": "# items\nsword = 10\nshield = 15\npotion = 5\narrow = 2\nhelmet = 12"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim items.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Block Insert",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In block visual mode, capital I inserts text at the start of every line in the block."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's add a prefix to each item. Control V on the first item.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "keys": "\u0016",
+      "overlay": "block"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Move down to select all item lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital I to insert.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I",
+      "overlay": "block insert"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "item_"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "I typed item underscore. It only shows on the first line. Press escape.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "There it is. Item underscore added to every line in the block. All five lines got the prefix."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Another example. Add a hash comment to each line. Control V, select the lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "keys": "\u0016"
+    },
+    {
+      "keys": "4j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I"
+    },
+    {
+      "type": "# "
+    },
+    {
+      "wait": 0.4
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All lines commented out. Block insert is powerful for adding text to multiple lines at once."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control V, select lines, capital I, type, escape. Block insert."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f items.py"
+    }
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "title": "VimFu \u2014 Ctrl-P Autocomplete Prev",
+  "description": "Ctrl-P in insert mode triggers keyword completion, showing the previous matching word.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 521,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "completion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nprocess_data = 1\nprocess_file = 2\nprocess_text = 3\nx = "
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-P \u2014 Autocomplete Prev",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control P in insert mode also triggers keyword completion, but starts from the previous match. It searches backward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: complete with Ctrl-P ---"
+    },
+    {
+      "say": "Go to the last line and start typing.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j",
+      "overlay": "to last line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "pro",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control P to complete from the closest match above.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0010",
+      "overlay": "previous match"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Process text. The nearest match above the cursor. Control P again for the next one up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0010",
+      "overlay": "previous"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Process file. It walks backward through matches. Control N would go forward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control P. Autocomplete searching backward. Control N goes forward. Both scan the same word list, just different starting direction."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

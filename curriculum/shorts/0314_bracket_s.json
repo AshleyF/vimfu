@@ -1,0 +1,193 @@
+{
+  "title": "VimFu \u2014 [s ]s Navigate Misspelled",
+  "description": "[s jumps to the previous misspelled word. ]s jumps to the next one. Quick spelling navigation.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 455,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "spelling",
+    "bracket commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f review.txt .review.txt.swp .review.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with several misspellings"
+    },
+    {
+      "writeFile": "review.txt",
+      "content": "The sofware update is redy.\nPlease verifiy all the changes.\nThe performace looks gret now.\nEverything passd the final test."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with spell checking"
+    },
+    {
+      "line": "nvim -c 'set spell' review.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[s ]s \u2014 Navigate Misspelled",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close bracket S jumps to the next misspelled word. Open bracket S jumps to the previous one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump forward with ]s ---"
+    },
+    {
+      "say": "Start at the top. Close bracket S to find the first typo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top of file"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]s",
+      "overlay": "next misspelling"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Found sofware. Hit it again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]s",
+      "overlay": "next"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]s",
+      "overlay": "next"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jumped through three typos. Fast spelling review."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump backward with [s ---"
+    },
+    {
+      "say": "Open bracket S goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[s",
+      "overlay": "previous"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "[s",
+      "overlay": "previous"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the first typo."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Close bracket S forward. Open bracket S backward. Hop between misspelled words and fix them with Z equals."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f review.txt"
+    }
+  ]
+}

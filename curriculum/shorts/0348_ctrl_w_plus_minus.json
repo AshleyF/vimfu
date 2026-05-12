@@ -1,0 +1,185 @@
+{
+  "title": "VimFu \u2014 Ctrl-W +/- Resize Height",
+  "description": "Ctrl-W + increases window height. Ctrl-W - decreases it. Fine-tune your split sizes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 489,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f main.py log.py .main.py.swp .log.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "main.py",
+      "content": "# Main App\ndef start():\n    print(\"Starting...\")\ndef stop():\n    print(\"Stopping...\")\ndef status():\n    print(\"Running\")"
+    },
+    {
+      "writeFile": "log.py",
+      "content": "# Log\nprint(\"OK\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with two splits"
+    },
+    {
+      "line": "nvim -o main.py log.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W +/- \u2014 Resize Height",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W plus increases window height by one line. Control W minus decreases it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: grow the top window ---"
+    },
+    {
+      "say": "The main file needs more room. Make it taller.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3\u0017+",
+      "overlay": "grow 3 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines taller. The log shrunk to make room."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: shrink it back ---"
+    },
+    {
+      "say": "Too much. Shrink it by two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2\u0017-",
+      "overlay": "shrink 2 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two lines shorter. Fine-tuned."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: with count ---"
+    },
+    {
+      "say": "Use a count prefix for bigger jumps. Five plus.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5\u0017+",
+      "overlay": "grow 5 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The main file dominates the screen now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W plus to grow. Control W minus to shrink. Add a count for bigger adjustments."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f main.py log.py"
+    }
+  ]
+}

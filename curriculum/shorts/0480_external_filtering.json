@@ -1,0 +1,191 @@
+{
+  "title": "VimFu \u2014 External Filtering",
+  "description": "Use !{motion}{command} to filter text through an external program like sort, uniq, or any shell command.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 636,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f items.txt .items.txt.swp .items.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "items.txt",
+      "content": "cherry\napple\nbanana\ndate\nelderberry\n\ngrape\nfig\nkiwi"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim items.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "External Filtering",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The bang operator filters text through an external command. Type bang, then a motion to select text, then the shell command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Sort the first paragraph. Type bang I P sort.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "!",
+      "overlay": "filter"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ip",
+      "overlay": "inner paragraph"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Vim opened the command line with the range filled in. Type sort.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "sort"
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The first paragraph is now sorted alphabetically. Apple, banana, cherry, date, elderberry. The second paragraph stayed untouched."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can use any shell command. Sort, uniq, A W K, sed, even your own scripts. Vim sends the text to the command and replaces it with the output."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Sort the second paragraph too. Move down and filter it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "}"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "!",
+      "overlay": "filter"
+    },
+    {
+      "keys": "ip"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "sort"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both paragraphs sorted. Bang motion command. Vim meets the Unix shell."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f items.txt"
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "title": "VimFu — What Is Surround?",
+  "description": "Surround.vim lets you add, change, and delete surroundings — parentheses, brackets, quotes, and tags.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 659,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "surround"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f surround.py .surround.py.swp .surround.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "surround.py",
+      "content": "msg = \"hello world\"\ndata = [1, 2, 3]\ntag = <div>content</div>"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim surround.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "What Is Surround?",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Surround dot vim is a plugin that lets you add, change, and delete surrounding characters. Parentheses, brackets, quotes, H T M L tags, anything that wraps text."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "It gives you three families of commands. D S deletes surroundings. C S changes them. Y S adds new ones."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Think of it this way. D S, delete surround. C S, change surround. Y S, you surround.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Let's see a quick taste. This string has double quotes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "D S quote. Delete the surrounding quotes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ds\"",
+      "overlay": "ds\""
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Quotes gone. Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "C S quote, single quote. Change double quotes to single.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "cs\"'",
+      "overlay": "cs\"'"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Swapped. Undo.",
+      "wait": false
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now line two. Y S I W bracket. Surround the first number in brackets.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0w",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ysiw]",
+      "overlay": "ysiw]"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Wrapped. Surround handles it all. Over the next lessons, we'll master every operation."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f surround.py"
+    }
+  ]
+}

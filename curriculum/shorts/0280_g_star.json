@@ -1,0 +1,189 @@
+{
+  "title": "VimFu \u2014 g* g# Partial Word Search",
+  "description": "g* and g# search for the word under the cursor without requiring whole-word boundaries. They find partial matches too.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 421,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "search"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f words.py .words.py.swp .words.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "words.py",
+      "content": "# Word Search\nlog = \"start\"\nlogger = get_logger()\nlog_file = \"app.log\"\nblog = \"my blog\"\ncatalog = load_catalog()\nlogging.info(log)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set hlsearch' words.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "g* g# \u2014 Partial Word Search",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Star searches for the exact whole word under the cursor. G star does a partial match. It finds the word even inside other words."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: * vs g* ---"
+    },
+    {
+      "say": "Cursor on log, line two. Try star first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G0",
+      "overlay": "on log"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "*",
+      "overlay": "whole word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Star only highlights exact matches of log. Not logger, not blog, not catalog. Just log."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now go back and try G star.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G0",
+      "overlay": "back to log"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g*",
+      "overlay": "partial match"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "G star highlights log everywhere. Inside logger, log file, blog, catalog. Partial matches."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: g# reverse ---"
+    },
+    {
+      "say": "G hash does the same thing backwards.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g#",
+      "overlay": "partial reverse"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Searching backwards through the partial matches."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G star and G hash. Partial word search forward and backward. When whole word matching is too strict."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f words.py"
+    }
+  ]
+}

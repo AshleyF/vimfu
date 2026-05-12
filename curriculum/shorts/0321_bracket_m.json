@@ -1,0 +1,207 @@
+{
+  "title": "VimFu \u2014 [m ]m Methods",
+  "description": "[m and ]m jump to the start of method blocks. [M and ]M jump to the end. Navigate class methods quickly.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 462,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f player.js .player.js.swp .player.js.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with methods"
+    },
+    {
+      "writeFile": "player.js",
+      "content": "class Player {\n  attack() {\n    this.power = 50;\n    return this.power;\n  }\n  defend() {\n    this.shield = 30;\n    return this.shield;\n  }\n  heal() {\n    this.hp += 25;\n    return this.hp;\n  }\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' player.js"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[m ]m \u2014 Methods",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close bracket M jumps to the next method start. Open bracket M jumps back. They look for opening braces of methods."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump forward through methods ---"
+    },
+    {
+      "say": "Three methods in a class. Jump forward with close bracket M.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top of file"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]m",
+      "overlay": "next method"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]m",
+      "overlay": "next method"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]m",
+      "overlay": "next method"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]m",
+      "overlay": "next method"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Landed on each method's opening brace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump to method ends ---"
+    },
+    {
+      "say": "Open bracket capital M finds the previous method end. Close bracket capital M finds the next.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "first method"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]M",
+      "overlay": "next method end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]M",
+      "overlay": "next end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]M",
+      "overlay": "next end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jumped to each closing brace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open and close bracket M. Navigate methods in class-based code. Works with braces on any column."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f player.js"
+    }
+  ]
+}

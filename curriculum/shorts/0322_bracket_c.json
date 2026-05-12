@@ -1,0 +1,177 @@
+{
+  "title": "VimFu \u2014 [c ]c Diff Changes",
+  "description": "[c jumps to the previous diff change. ]c jumps to the next. Works when Vim is in diff mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 463,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "diff"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f old.py new.py .old.py.swp .new.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files with differences"
+    },
+    {
+      "writeFile": "old.py",
+      "content": "hp = 100\nmp = 50\nspeed = 10\narmor = 30\nluck = 5\ngold = 200"
+    },
+    {
+      "writeFile": "new.py",
+      "content": "hp = 150\nmp = 50\nspeed = 15\narmor = 30\nluck = 5\ngold = 500"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim in diff mode"
+    },
+    {
+      "line": "nvim -d old.py new.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[c ]c \u2014 Diff Changes",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close bracket C jumps to the next diff change. Open bracket C jumps to the previous. You need to be in diff mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump forward through changes ---"
+    },
+    {
+      "say": "Two files side by side. Cursor starts on the H P change. Close bracket C jumps to the next change.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]c",
+      "overlay": "next change"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Speed went from 10 to 15. Jump to the next change.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]c",
+      "overlay": "next change"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gold jumped from 200 to 500. Fast diff navigation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump backward ---"
+    },
+    {
+      "say": "Open bracket C goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[c",
+      "overlay": "prev change"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "[c",
+      "overlay": "prev change"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Close bracket C and open bracket C. Jump between diff changes. Open files with nvim dash D for diff mode."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f old.py new.py"
+    }
+  ]
+}

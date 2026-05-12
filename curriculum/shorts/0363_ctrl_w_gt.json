@@ -1,0 +1,201 @@
+{
+  "title": "VimFu \u2014 Ctrl-W gt/gT Tabs",
+  "description": "Ctrl-W gt goes to the next tab. Ctrl-W gT goes to the previous. Navigate tabs from a window command.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 504,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "tabs"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f red.py blue.py green.py .red.py.swp .blue.py.swp .green.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create files"
+    },
+    {
+      "writeFile": "red.py",
+      "content": "# Red Team\npower = 100"
+    },
+    {
+      "writeFile": "blue.py",
+      "content": "# Blue Team\npower = 90"
+    },
+    {
+      "writeFile": "green.py",
+      "content": "# Green Team\npower = 85"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with tabs"
+    },
+    {
+      "line": "nvim -p red.py blue.py green.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W gt/gT \u2014 Tabs",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W G T goes to the next tab. Control W G capital T goes to the previous. Same as G T and G capital T by themselves."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: cycle forward ---"
+    },
+    {
+      "say": "Three tabs. Red, blue, green. Cycle forward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017gt",
+      "overlay": "next tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Blue team.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\u0017gt",
+      "overlay": "next tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Green team.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\u0017gt",
+      "overlay": "wrap around"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to red. It wraps around."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: cycle backward ---"
+    },
+    {
+      "say": "Capital T to go backward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017gT",
+      "overlay": "previous tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u0017gT",
+      "overlay": "previous tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Backwards through green, blue. Same as plain G T."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W G T and G capital T. Tab navigation through the window prefix. Same result as plain G T, just a different path to get there."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f red.py blue.py green.py"
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "title": "VimFu \u2014 ga ASCII Value",
+  "description": "ga prints the ASCII/Unicode value of the character under the cursor. Useful for debugging invisible characters and checking encodings.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 390,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f chars.py .chars.py.swp .chars.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with interesting characters"
+    },
+    {
+      "writeFile": "chars.py",
+      "content": "# Character Chart\nletters = \"ABCXYZ\"\ndigits = \"0123456789\"\nsymbols = \"@#$%^&*\"\nnewline = \"\\n\"\ntab_char = \"\\t\"\ngreeting = \"Hello, World!\"\npi = 3.14159"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim chars.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "ga \u2014 ASCII Value",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G A shows the ASCII or Unicode value of the character under the cursor. Decimal, hex, and octal."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: check a letter ---"
+    },
+    {
+      "say": "Move to the H in Hello on line seven.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "7G13|",
+      "overlay": "go to H"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ga",
+      "overlay": "show ASCII"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "H is seventy two decimal, forty eight hex, one ten octal."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "comment": "--- Demo 2: check a symbol ---"
+    },
+    {
+      "say": "Now check the at sign on line four.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4G12|",
+      "overlay": "go to @"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ga",
+      "overlay": "ga"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "At sign is sixty four. Easy to remember, it's a nice round number in hex too. Forty."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "comment": "--- Demo 3: check a digit ---"
+    },
+    {
+      "say": "Check the zero on line three.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G11|",
+      "overlay": "go to 0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ga",
+      "overlay": "ga"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Zero the digit is forty eight. Not zero the number."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G A. Shows decimal, hex, and octal values. Great for debugging invisible or unexpected characters."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f chars.py"
+    }
+  ]
+}

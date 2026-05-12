@@ -1,0 +1,186 @@
+{
+  "title": "VimFu \u2014 [[ ]] Sections",
+  "description": "[[ jumps to the previous section start. ]] jumps to the next section start. Sections are marked by { in column 1.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 460,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f game.c .game.c.swp .game.c.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with C-style functions"
+    },
+    {
+      "writeFile": "game.c",
+      "content": "void init()\n{\n    hp = 100;\n    mp = 50;\n}\n\nvoid attack()\n{\n    damage = 25;\n    apply(damage);\n}\n\nvoid defend()\n{\n    shield = 40;\n    block(shield);\n}\n\nvoid heal()\n{\n    restore = 30;\n    apply(restore);\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' game.c"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[[ ]] \u2014 Sections",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Double close bracket jumps to the next section. Double open bracket jumps back. A section starts with an open brace in column one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump forward with ]] ---"
+    },
+    {
+      "say": "Four C functions. Each opens with a brace on its own line. Jump forward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]]",
+      "overlay": "next section"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]]",
+      "overlay": "next section"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]]",
+      "overlay": "next section"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]]",
+      "overlay": "next section"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jumped through all four function bodies. Landed on each opening brace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump backward with [[ ---"
+    },
+    {
+      "say": "Double open bracket goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[[",
+      "overlay": "prev section"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "[[",
+      "overlay": "prev section"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the second function. Great for navigating C code by function."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Double open bracket and double close bracket. Jump between sections. A section is a brace in column one."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f game.c"
+    }
+  ]
+}

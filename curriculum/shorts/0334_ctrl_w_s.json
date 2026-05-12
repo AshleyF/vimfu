@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 Ctrl-W s Horizontal Split",
+  "description": "Ctrl-W s splits the current window horizontally. Two views of the same file, stacked top and bottom.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 475,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hero.py .hero.py.swp .hero.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "hero.py",
+      "content": "# Hero Stats\nname = \"Arthur\"\nhp = 100\nmp = 50\nspeed = 12\narmor = 40\nluck = 7\nlevel = 15\nxp = 4200\ngold = 800"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim hero.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W s \u2014 Horizontal Split",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W S splits the window horizontally. Two panes, stacked top and bottom, showing the same file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: split ---"
+    },
+    {
+      "say": "Split it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017s",
+      "overlay": "horizontal split"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two panes. Both show the same file. The cursor is in the top pane."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: scroll one pane ---"
+    },
+    {
+      "say": "Each pane scrolls independently. Move to the bottom and scroll down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017j",
+      "overlay": "move to bottom"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "bottom of file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The bottom pane shows the end. The top pane stays at the beginning. Two views of one file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: close the split ---"
+    },
+    {
+      "say": "Control W Q to close the current pane.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017q",
+      "overlay": "close pane"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W S. Horizontal split. View the top and bottom of a file at the same time."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f hero.py"
+    }
+  ]
+}

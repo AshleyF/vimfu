@@ -1,0 +1,139 @@
+{
+  "title": "VimFu \u2014 deep \u2014 A Vim Myth",
+  "description": "People say deep duplicates a word. Let's trace what actually happens: de deletes to end, e moves, p pastes elsewhere. It's a famous Vim word, but not a useful trick.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 618,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f words.txt .words.txt.swp .words.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file \u2014 single word on one line"
+    },
+    {
+      "writeFile": "words.txt",
+      "content": "hello"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim words.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "deep \u2014 A Vim Myth",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "D E E P. It spells deep. Some people say it duplicates text. Let's see what actually happens."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One word. Hello. Cursor on the H. Type D E E P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "deep",
+      "overlay": "deep"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Nothing changed. Hello is still hello. Why? D E deletes to the end of the word. E moves to the end of the next word, but there's nothing else. P pastes it right back. Delete and restore. A no-op."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "If you want to actually duplicate a word, use Y I W E P instead. Y I W yanks the inner word, E goes to the end, P pastes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "yiwep",
+      "overlay": "duplicate"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Hello hello. That actually works. Deep is a myth. Know your operators."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f words.txt"
+    }
+  ]
+}

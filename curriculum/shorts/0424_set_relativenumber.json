@@ -1,0 +1,40 @@
+{
+  "title": "VimFu — :set relativenumber",
+  "description": "Show relative line numbers with :set relativenumber in Vim for easier motion commands.",
+  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 565,
+  "ttsVoice": "echo", "playlist": "VimFu",
+  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "settings"],
+  "setup": [
+    { "line": "export TERM=xterm-256color" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f demo.py .demo.py.swp" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "writeFile": "demo.py", "content": "# Demo\ndef greet(name):\n    return f\"Hello {name}\"\n\nresult = greet(\"World\")\nprint(result)" },
+    { "line": "clear" },
+    { "line": "nvim demo.py" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "overlay": "VimFu", "caption": ":set relativenumber", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "say": "Relative line numbers show how far each line is from your cursor. This makes it easy to use motions like 3 j or 5 k." },
+    { "wait": 0.3 },
+    { "type": ":set relativenumber", "overlay": ":set relativenumber" },
+    "enter",
+    { "wait": 1.0 },
+    { "say": "Notice the current line shows zero, and other lines show their distance. Watch the numbers change as I move." },
+    { "wait": 0.3 },
+    { "keys": "j" }, { "wait": 0.5 },
+    { "keys": "j" }, { "wait": 0.5 },
+    { "keys": "j" }, { "wait": 0.5 },
+    { "keys": "k" }, { "wait": 0.5 },
+    { "keys": "k" }, { "wait": 0.5 },
+    { "say": "To turn it off, use set norelativenumber. The shorthand is set rnu and set nornu." },
+    { "wait": 0.3 },
+    { "type": ":set norelativenumber", "overlay": ":set norelativenumber" },
+    "enter",
+    { "wait": 1.5 }
+  ],
+  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.py" } ]
+}

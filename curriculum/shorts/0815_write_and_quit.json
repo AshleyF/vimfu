@@ -1,0 +1,70 @@
+{
+  "title": "VimFu — :wq — Write and Quit",
+  "description": "The :wq command saves the file and exits Vim in one step.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 717,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    { "comment": "Set TERM for proper color support in Neovim" },
+    { "line": "export TERM=xterm-256color" },
+    { "comment": "Prepare workspace" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f draft.txt .draft.txt.swp .draft.txt.swo" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "comment": "Create demo file" },
+    {
+      "writeFile": "draft.txt",
+      "content": "First draft\n\nIdea: learn Vim\nGoal: be faster\nPlan: practice daily"
+    },
+    { "line": "clear" },
+    { "comment": "Launch nvim" },
+    { "line": "nvim draft.txt" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "comment": "--- Title card ---" },
+    { "overlay": "VimFu", "caption": ":wq — Write and Quit", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "comment": "--- Intro ---" },
+    { "say": "Colon W Q does two things at once. Write the file and quit the editor." },
+    { "wait": 0.3 },
+    { "comment": "--- Demo: make a change ---" },
+    { "say": "Add a line first.", "wait": false },
+    { "wait": 0.3 },
+    { "keys": "G", "overlay": "go to end" },
+    { "wait": 0.3 },
+    { "keys": "o", "overlay": "open line below" },
+    { "type": "Status: started" },
+    "escape",
+    { "wait": 0.5 },
+    { "comment": "--- Demo: :wq ---" },
+    { "say": "Now colon W Q. Save and exit.", "wait": false },
+    { "wait": 0.3 },
+    { "type": ":wq" },
+    "enter",
+    { "wait": 0.8 },
+    { "say": "Back at the shell. The file was saved and Vim closed. One command, two actions." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [
+    { "comment": "Vim already exited via :wq" },
+    { "line": "rm -f draft.txt" }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "title": "VimFu \u2014 Ctrl-W w Cycle Windows",
+  "description": "Ctrl-W w cycles to the next window. Ctrl-W W cycles to the previous. Quick round-robin navigation.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 479,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .a.py.swp .b.py.swp .c.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create three files"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# File A\nfire = 100"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# File B\nice = 200"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# File C\nwind = 300"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with three horizontal splits"
+    },
+    {
+      "line": "nvim -o a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W w \u2014 Cycle Windows",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W W cycles to the next window. Capital W goes to the previous. Round-robin through all open panes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: cycle forward ---"
+    },
+    {
+      "say": "Three files open. Cycle forward through them.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017w",
+      "overlay": "next window"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "File B.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\u0017w",
+      "overlay": "next"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "File C.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\u0017w",
+      "overlay": "wrap around"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to File A. It wraps around."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: cycle backward ---"
+    },
+    {
+      "say": "Control W capital W goes backward.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017W",
+      "overlay": "previous"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u0017W",
+      "overlay": "previous"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W W to cycle forward. Control W capital W to cycle backward. Fastest way to hop between panes."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "title": "VimFu \u2014 Ctrl-W f Split File",
+  "description": "Ctrl-W f splits the window and opens the file whose name is under the cursor.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 495,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f main.py utils.py .main.py.swp .utils.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files where one imports the other"
+    },
+    {
+      "writeFile": "utils.py",
+      "content": "# Utility Functions\ndef double(n):\n    return n * 2\ndef triple(n):\n    return n * 3"
+    },
+    {
+      "writeFile": "main.py",
+      "content": "# Main Script\nimport utils\n\nresult = utils.double(5)\nprint(result)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim on main.py"
+    },
+    {
+      "line": "nvim main.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W f \u2014 Split File",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W F splits the window and opens the file under the cursor. Like G F but in a new split."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: open utils.py ---"
+    },
+    {
+      "say": "Main script imports utils. Put the cursor on the filename.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "to utils"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is on utils. Split and open it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017f",
+      "overlay": "split open file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Utils dot py opened in a new split. The main script is still visible below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can read the utility functions while keeping the import context."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W F. Split and open file under cursor. Perfect for exploring imports without losing your place."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f main.py utils.py"
+    }
+  ]
+}

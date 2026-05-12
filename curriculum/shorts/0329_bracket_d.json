@@ -1,0 +1,186 @@
+{
+  "title": "VimFu \u2014 [d ]d Show Define",
+  "description": "[d shows the first #define matching the word under the cursor. ]d starts searching from the cursor position.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 470,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "C"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f stats.h .stats.h.swp .stats.h.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with defines"
+    },
+    {
+      "writeFile": "stats.h",
+      "content": "#define MAX_HP 100\n#define MAX_MP 50\n#define CRIT_RATE 15\n#define BASE_DMG 25\n\nint hp = MAX_HP;\nint mp = MAX_MP;\nint damage = BASE_DMG * CRIT_RATE;"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' -c 'silent! nunmap [d' -c 'silent! nunmap ]d' stats.h"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[d ]d \u2014 Show Define",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Open bracket D shows the first define matching the word under the cursor. It searches from the top of the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: find MAX_HP define ---"
+    },
+    {
+      "say": "Cursor on MAX HP on line six. Open bracket D to find where it's defined.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6G",
+      "overlay": "go to line 6"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "3w",
+      "overlay": "to MAX_HP"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[d",
+      "overlay": "show define"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "It shows the define at the bottom of the screen. Line one. MAX HP is 100."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: find BASE_DMG ---"
+    },
+    {
+      "say": "Try another. BASE DMG on line eight.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "8G0",
+      "overlay": "go to line 8"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "3w",
+      "overlay": "to BASE_DMG"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[d",
+      "overlay": "show define"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Found on line four. BASE DMG is 25."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open bracket D. Show the define for any macro. Quick way to check values in C headers."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f stats.h"
+    }
+  ]
+}

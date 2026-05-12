@@ -1,0 +1,148 @@
+{
+  "title": "VimFu \u2014 Edit a Macro",
+  "description": "Macros live in registers. Paste, edit, and yank back to modify a recorded macro.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 657,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced",
+    "macros"
+  ],
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "apple\nbanana\ncherry\ndate\nelderberry"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Edit a Macro",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Macros are just text stored in registers. You can paste one out, edit it, and yank it back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Record a macro that wraps a word in quotes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "qa",
+      "overlay": "record to a"
+    },
+    {
+      "keys": "I\"",
+      "overlay": "insert quote"
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "keys": "A\"",
+      "overlay": "append quote"
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "keys": "q",
+      "overlay": "stop recording"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now paste the macro to see its contents.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "last line"
+    },
+    {
+      "keys": "o",
+      "overlay": "open line"
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "keys": "\"ap",
+      "overlay": "paste register a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "There's the macro as plain text. Edit it, then yank it back with quote A yy. Now at A plays your edited macro."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

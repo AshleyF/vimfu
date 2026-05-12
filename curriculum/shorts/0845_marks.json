@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 :marks Show All Marks",
+  "description": "The :marks command displays a table of all active marks with their line, column, and file information.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 747,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# header\ndef alpha():\n    pass\n\ndef beta():\n    pass\n\ndef gamma():\n    pass"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":marks \u2014 Show All Marks",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon marks shows every mark that's currently set."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: set some marks then show ---"
+    },
+    {
+      "say": "Let's set a few marks first. Mark A on line two, mark B on line five.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ma",
+      "overlay": "set mark a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j",
+      "overlay": "line 5"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "mb",
+      "overlay": "set mark b"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now type colon marks.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":marks",
+      "overlay": ":marks"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "A table of all marks. You can see mark A on line two and mark B on line five, plus Vim's automatic marks."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "q",
+      "overlay": "dismiss"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon marks. See every mark at a glance."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

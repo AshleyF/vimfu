@@ -1,0 +1,190 @@
+{
+  "title": "VimFu \u2014 za Toggle Fold",
+  "description": "za toggles a fold open or closed. If it's open, za closes it. If it's closed, za opens it.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 436,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f pets.py .pets.py.swp .pets.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "pets.py",
+      "content": "# Pet Simulator\ndef feed(pet):\n    pet.hunger -= 20\n    pet.happy += 10\n    return pet.happy\n\ndef play(pet):\n    pet.energy -= 15\n    pet.happy += 25\n    return pet.happy\n\ndef sleep(pet):\n    pet.energy = 100\n    pet.hunger += 5\n    return pet.energy"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with indent folds closed"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' pets.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "za \u2014 Toggle Fold",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z A toggles a fold. Closed becomes open. Open becomes closed. One key does both."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: toggle open ---"
+    },
+    {
+      "say": "The folds are closed. Toggle the first one open.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "go to fold"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "za",
+      "overlay": "toggle open"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It opened. Now toggle it again to close.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: toggle closed ---"
+    },
+    {
+      "keys": "za",
+      "overlay": "toggle closed"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Closed again. Z A is the easiest way to manage folds."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: toggle a different fold ---"
+    },
+    {
+      "say": "Toggle the last function open.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "last line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "za",
+      "overlay": "toggle open"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z A. Toggle any fold open or closed. No need to remember Z O and Z C separately."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f pets.py"
+    }
+  ]
+}

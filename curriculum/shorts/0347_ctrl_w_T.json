@@ -1,0 +1,183 @@
+{
+  "title": "VimFu \u2014 Ctrl-W T Window to Tab",
+  "description": "Ctrl-W T moves the current window to a brand new tab page. From split to tab in one keystroke.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 488,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits",
+    "tabs"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f code.py test.py .code.py.swp .test.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "code.py",
+      "content": "# Main Code\ndef greet(name):\n    return f\"Hello {name}\"\ndef bye(name):\n    return f\"Bye {name}\""
+    },
+    {
+      "writeFile": "test.py",
+      "content": "# Tests\nassert greet(\"Vim\") == \"Hello Vim\"\nassert bye(\"Vim\") == \"Bye Vim\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with two splits"
+    },
+    {
+      "line": "nvim -o code.py test.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W T \u2014 Window to Tab",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W capital T moves the current window into a new tab page. Promote a split to its own tab."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: move bottom window to tab ---"
+    },
+    {
+      "say": "Two files in a split. Move the test file to its own tab.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017j",
+      "overlay": "to test file"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0017T",
+      "overlay": "to new tab"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Tests now have their own tab. Look at the tab bar at the top. Two tabs."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: switch between tabs ---"
+    },
+    {
+      "say": "G T to go to the next tab.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gt",
+      "overlay": "next tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the code. Full screen now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gt",
+      "overlay": "next tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Tests again. Each file gets the whole screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W capital T. Move a split into its own tab. When you need more room than a split can give."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f code.py test.py"
+    }
+  ]
+}

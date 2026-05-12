@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 gf Go to File",
+  "description": "gf opens the file whose name is under the cursor. A quick way to navigate between files without using the command line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 395,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f main.py utils.py .main.py.swp .main.py.swo .utils.py.swp .utils.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create target file first"
+    },
+    {
+      "writeFile": "utils.py",
+      "content": "# Utility Functions\n\ndef clamp(value, lo, hi):\n    return max(lo, min(hi, value))\n\ndef lerp(a, b, t):\n    return a + (b - a) * t"
+    },
+    {
+      "comment": "Create main file that references utils.py"
+    },
+    {
+      "writeFile": "main.py",
+      "content": "# Main Application\nimport utils\nfrom utils import clamp\n\n# See utils.py for helpers\n\ndef run():\n    x = clamp(150, 0, 100)\n    print(f\"Clamped: {x}\")\n\nif __name__ == \"__main__\":\n    run()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim main.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gf \u2014 Go to File",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G F opens the file whose name is under the cursor. Put your cursor on a filename and press G F to open it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: open utils.py via gf ---"
+    },
+    {
+      "say": "Line five mentions utils dot py. Move the cursor onto it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5Gww",
+      "overlay": "cursor on utils.py"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G F.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gf",
+      "overlay": "open file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "We're now in utils dot py. The clamp and lerp functions."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: go back ---"
+    },
+    {
+      "say": "Ctrl O to go back to main dot py.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Ctrl-O",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to main. Ctrl O is the jump list, it works great with G F."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G F. Open the file under the cursor. Pair it with Ctrl O to jump back. Navigate your project without typing file names."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f main.py utils.py"
+    }
+  ]
+}

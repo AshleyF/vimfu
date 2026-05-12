@@ -1,0 +1,193 @@
+{
+  "title": "VimFu \u2014 V \u2014 Linewise",
+  "description": "Capital V enters linewise visual mode. It selects whole lines. Move up or down to include more lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 586,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f menu.py .menu.py.swp .menu.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "menu.py",
+      "content": "# menu items\npizza = 12\nburger = 10\nsalad = 8\nsoup = 6\nbread = 3\ncake = 7"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim menu.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "V \u2014 Linewise",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital V enters linewise visual mode. It selects entire lines at once."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Go to burger. Capital V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j"
+    },
+    {
+      "keys": "V",
+      "overlay": "line visual"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The whole line is highlighted, no matter where the cursor is."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "J to add the next line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "J again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three lines selected. Burger, salad, soup."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Delete them with D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d",
+      "overlay": "delete lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gone. Three entire lines removed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Undo brings them back. Capital V always selects full lines. No partial selections."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Capital V. Linewise visual mode."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f menu.py"
+    }
+  ]
+}

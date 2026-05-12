@@ -1,0 +1,210 @@
+{
+  "title": "VimFu \u2014 zp zP zy Block Paste",
+  "description": "zp and zP paste block-mode text without adding trailing spaces. zy yanks without trailing spaces.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 456,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "paste",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f grid.py .grid.py.swp .grid.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with ragged source and target lines"
+    },
+    {
+      "writeFile": "grid.py",
+      "content": "# Tags\nA\nBCD\nE\nfoo\nbar\nbaz\n# End"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim grid.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zp zP zy \u2014 Block Paste",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z P pastes block text without trailing spaces. Regular P pads with spaces to make a rectangle. Z P keeps it clean."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: ragged block yank with zy ---"
+    },
+    {
+      "say": "Select a ragged block. Z Y yanks it without padding the short rows.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0016",
+      "overlay": "visual block"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j$",
+      "overlay": "to ragged end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zy",
+      "overlay": "yank no padding"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: paste with zP ---"
+    },
+    {
+      "say": "Jump to foo and paste with capital Z capital P. Lines stay their natural width.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5G0",
+      "overlay": "to foo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zP",
+      "overlay": "block paste clean"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "No trailing spaces inserted. The short rows stay short."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: undo and compare with regular P ---"
+    },
+    {
+      "say": "Now undo and try regular capital P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "P",
+      "overlay": "regular paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Regular paste padded the short rows with spaces. The columns shift. Z P avoids that."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z Y yanks. Z P and capital Z capital P paste. All without trailing whitespace."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f grid.py"
+    }
+  ]
+}

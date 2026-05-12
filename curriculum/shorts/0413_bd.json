@@ -1,0 +1,142 @@
+{
+  "title": "VimFu \u2014 :bd Delete Buffer",
+  "description": "The :bd command removes a buffer from the buffer list.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 554,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "buffers"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .a.py.swp .b.py.swp .c.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# A"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# B"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# C"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":bd \u2014 Delete Buffer",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon B D removes a buffer from the list. The file isn't deleted, just unloaded from Vim."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Check our buffers first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":ls",
+      "overlay": ":ls"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "enter",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Three buffers. Delete the current one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":bd",
+      "overlay": "delete buffer"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Buffer removed. Vim switched to the next one. The file is still on disk, just not in our session anymore."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon B D. Clean up buffers you don't need anymore."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ]
+}

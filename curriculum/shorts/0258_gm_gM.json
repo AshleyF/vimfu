@@ -1,0 +1,226 @@
+{
+  "title": "VimFu \u2014 gm gM Middle of Line",
+  "description": "gm moves to the middle of the screen line. gM moves to the middle of the text on the line. Two ways to find the center.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 399,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "motion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f middle.txt .middle.txt.swp .middle.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with varying line lengths"
+    },
+    {
+      "writeFile": "middle.txt",
+      "content": "short\nthis is a medium length line here\nabcdefghijklmnopqrstuvwxyz0123456789!!\nhello\nthe quick brown fox jumps over dog"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with nowrap"
+    },
+    {
+      "line": "nvim -c 'set nowrap' middle.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gm gM \u2014 Middle of Line",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G M goes to the middle of the screen line. Always column twenty in a forty column terminal. G shift M goes to the middle of the actual text."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: gm on a long line ---"
+    },
+    {
+      "say": "Line three is the long one. Move to it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G0",
+      "overlay": "line 3, start"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G M. Middle of the screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gm",
+      "overlay": "middle of screen"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Column twenty. The exact center of the terminal."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: gM on the same line ---"
+    },
+    {
+      "say": "Now G shift M. Middle of the text.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gM",
+      "overlay": "middle of text"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The midpoint of the actual text content. Different position because the line isn't exactly forty columns."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: short line comparison ---"
+    },
+    {
+      "say": "Try line one. Short.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1G0",
+      "overlay": "line 1"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G shift M. Middle of the text.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gM",
+      "overlay": "middle of 'short'"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Column three. The middle of five characters."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G M would go to column twenty, but the line is too short, so it goes to the end instead.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gm",
+      "overlay": "clamped to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G M for the middle of the screen, G shift M for the middle of the text. Two different kinds of center."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f middle.txt"
+    }
+  ]
+}

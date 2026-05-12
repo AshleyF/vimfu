@@ -1,0 +1,225 @@
+{
+  "title": "VimFu \u2014 gn gN Select Next Match",
+  "description": "gn visually selects the next search match. gN selects the previous. Combine with operators like c or d to change or delete matches.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 400,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "search"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f colors.py .colors.py.swp .colors.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "colors.py",
+      "content": "# Color Palette\nred = \"#FF0000\"\ngreen = \"#00FF00\"\nblue = \"#0000FF\"\nlight_red = \"#FF6666\"\ndark_red = \"#990000\"\nsky_blue = \"#87CEEB\"\nocean_blue = \"#0077BE\"\nforest_green = \"#228B22\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim colors.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gn gN \u2014 Select Next Match",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G N selects the next search match in visual mode. Search for a pattern, then use G N to select and operate on each match."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: search and select ---"
+    },
+    {
+      "say": "Search for red.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/red"
+    },
+    {
+      "keys": "enter",
+      "overlay": "/red"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now G N. It selects the match under the cursor.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gn",
+      "overlay": "select match"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The word red is visually selected. Press escape.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: use with an operator ---"
+    },
+    {
+      "say": "The real power is using G N with an operator. C G N changes the next match.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "cgn",
+      "overlay": "change match"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "crimson"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "changed to 'crimson'"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Changed red to crimson. Now press dot to repeat on the next match."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ".",
+      "overlay": "repeat on next match"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Dot found the next red and changed it to crimson too. Dot again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ".",
+      "overlay": "repeat"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Every match replaced, one dot at a time. You can skip a match by pressing N first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G N selects the next search match. C G N changes it. Then dot repeats. The fastest way to do selective find and replace."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f colors.py"
+    }
+  ]
+}

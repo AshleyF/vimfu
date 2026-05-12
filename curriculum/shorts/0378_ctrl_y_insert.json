@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 Ctrl-Y Copy from Above",
+  "description": "Ctrl-Y in insert mode copies the character from the line above, one character at a time.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 519,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nfirst = 100\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-Y \u2014 Copy from Above",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control Y in insert mode copies the character from the line above. Same idea as Control E, but upward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: copy from line above ---"
+    },
+    {
+      "say": "Line two says first equals one hundred. Copy that pattern onto line three.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": "to line 3"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "i",
+      "overlay": "insert mode"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control Y copies from above.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0019",
+      "overlay": "f"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0019",
+      "overlay": "i"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0019",
+      "overlay": "r"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0019",
+      "overlay": "s"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0019",
+      "overlay": "t"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Copied first from the line above. Now change it to second.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control Y. Copy from the line above. Control E copies from below. Two directions, same idea."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

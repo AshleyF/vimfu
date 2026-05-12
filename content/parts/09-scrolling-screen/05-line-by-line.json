@@ -3,41 +3,82 @@
   "version": 1,
   "id": "scroll.line-by-line",
   "title": "Line-by-Line Scroll",
-  "subtitle": "Ctrl-E and Ctrl-Y — scroll without moving the cursor (until you have to).",
+  "subtitle": "{key:Ctrl-E} and {key:Ctrl-Y} — scroll without moving the cursor (until you have to).",
   "part": "scroll",
   "summary": "Ctrl-E scrolls the screen down one line; Ctrl-Y scrolls it up. The cursor stays on its file line until the screen would have to push it off — then it moves with the screen.",
-  "keys": ["Ctrl-E", "Ctrl-Y"],
+  "keys": [
+    "Ctrl-E",
+    "Ctrl-Y"
+  ],
   "lessons": [],
-  "see_also": ["scroll.half-full-page", "scroll.center-top-bottom"],
-
+  "see_also": [
+    "scroll.half-full-page",
+    "scroll.center-top-bottom"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Line-by-Line Scroll" },
-
-    { "type": "prose", "text": "When you want to *peek* at what's just off-screen without moving the cursor, {key:Ctrl-E} and {key:Ctrl-Y} are the right tools. They scroll the viewport one line at a time and leave the cursor where it was — until the cursor would scroll off, in which case it slides with the screen." },
-
-    { "type": "keys", "sequence": ["Ctrl-E"], "label": "Scroll screen down one line" },
-    { "type": "keys", "sequence": ["Ctrl-Y"], "label": "Scroll screen up one line" },
-
-    { "type": "tip", "text": "Counts work: {key:5}{key:Ctrl-E} scrolls down 5 lines. With `'scrolloff'` set, the cursor will follow as needed to stay within the offset zone." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Line-by-Line Scroll"
+    },
+    {
+      "type": "prose",
+      "text": "When you want to *peek* at what's just off-screen without moving the cursor, {key:Ctrl-E} and {key:Ctrl-Y} are the right tools. They scroll the viewport one line at a time and leave the cursor where it was — until the cursor would scroll off, in which case it slides with the screen."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-E"
+      ],
+      "label": "Scroll screen down one line"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "Ctrl-Y"
+      ],
+      "label": "Scroll screen up one line"
+    },
+    {
+      "type": "tip",
+      "text": "Counts work: {key:5}{key:Ctrl-E} scrolls down 5 lines. With `'scrolloff'` set, the cursor will follow as needed to stay within the offset zone."
+    },
     {
       "type": "internals",
       "title": "Cursor Sticks Until Forced",
       "text": "{key:Ctrl-E} just decrements the window's *visible top line*. The cursor's buffer position doesn't change. Result: the screen scrolls; the cursor appears to climb upward in the visible region.\n\nWhen the cursor's line is about to scroll off the *top* (or fall below the bottom for {key:Ctrl-Y}), Vim moves the cursor to keep it visible. So you can scroll past the cursor's line and the cursor follows along.\n\nWith `'scrolloff'` > 0, the cursor moves earlier — the offset acts as a margin. Combined with `'cursorline'`, this is a very tactile way to read code while keeping a position marked."
     },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Key",            "Action"],
+      "headers": [
+        "Key",
+        "Action"
+      ],
       "rows": [
-        ["{key:Ctrl-E}",            "Scroll screen down (1 line; counts work)"],
-        ["{key:Ctrl-Y}",            "Scroll screen up"]
+        [
+          "{key:Ctrl-E}",
+          "Scroll screen down (1 line; counts work)"
+        ],
+        [
+          "{key:Ctrl-Y}",
+          "Scroll screen up"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "scroll.line-by-line" },
-    { "type": "buy-prompt" }
+    {
+      "type": "qr",
+      "topic": "scroll.line-by-line"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

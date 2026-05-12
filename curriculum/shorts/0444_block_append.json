@@ -1,0 +1,172 @@
+{
+  "title": "VimFu \u2014 Block Append",
+  "description": "In blockwise visual mode, press A to append text at the end of each line in the block. The text appears on all lines after Escape.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 599,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f stats.py .stats.py.swp .stats.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "stats.py",
+      "content": "# stats\nhp = 100\nmp = 50\natk = 25\ndef_ = 30\nspd = 15"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim stats.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Block Append",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In block visual mode, capital A appends text at the end of each line in the block."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Add a comment to each stat line. Control V on the first stat.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "keys": "\u0016",
+      "overlay": "block"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j$"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Block selected to end of lines. Capital A to append.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "block append"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "  # base"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Typed the comment on the first line. Escape to apply to all.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every line got the comment appended. Five lines updated at once."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control V, select the block, dollar for end of line, capital A, type, escape. Block append."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f stats.py"
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "title": "VimFu — Visual Surround — Characterwise",
+  "description": "In characterwise visual mode, S wraps the selection in the given character.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 696,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "surround"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f visual.py .visual.py.swp .visual.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "visual.py",
+      "content": "msg = hello world\nval = x + y + z"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim visual.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Visual Surround — Charwise",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In visual mode, capital S surrounds the selection. Select text with V, then press S and the character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select hello world with visual mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fh",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ve",
+      "overlay": "v → select"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital S, close paren.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "S)",
+      "overlay": "S)"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The selection is wrapped in parentheses."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Try quotes. Select and S double quote.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "fh",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "veee",
+      "overlay": "v → select"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "S\"",
+      "overlay": "S\""
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Wrapped in quotes. Visual S. Select, then surround."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f visual.py"
+    }
+  ]
+}

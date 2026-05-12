@@ -1,0 +1,172 @@
+{
+  "title": "VimFu \u2014 zw Mark Word Incorrect",
+  "description": "zw marks a word as incorrect in your spell file. Vim will flag it as misspelled from now on.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 451,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "spelling",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f rules.txt .rules.txt.swp .rules.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "rules.txt",
+      "content": "Do not use goto in production.\nAvoid eval in user input.\nNever hardcode passwords here.\nAlways sanitize form data."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with spell checking"
+    },
+    {
+      "line": "nvim -c 'set spell' rules.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zw \u2014 Mark Word Incorrect",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z W marks a word as incorrect. Even if the dictionary thinks it's fine, you can flag it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: mark goto ---"
+    },
+    {
+      "say": "The word goto passes spell check. But we banned it. Z W to flag it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3w",
+      "overlay": "to goto"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zw",
+      "overlay": "mark incorrect"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now goto is highlighted as misspelled. Your personal rule."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: mark eval ---"
+    },
+    {
+      "say": "Flag eval too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0w",
+      "overlay": "to eval"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zw",
+      "overlay": "mark incorrect"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Eval is flagged. Vim will highlight it every time you open a file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z W. Mark words as bad. The opposite of Z G. Build your own banned word list."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f rules.txt"
+    }
+  ]
+}

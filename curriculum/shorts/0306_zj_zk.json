@@ -1,0 +1,193 @@
+{
+  "title": "VimFu \u2014 zj zk Navigate Folds",
+  "description": "zj moves to the start of the next fold. zk moves to the end of the previous fold. Quick fold navigation.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 447,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f dungeon.py .dungeon.py.swp .dungeon.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with multiple functions"
+    },
+    {
+      "writeFile": "dungeon.py",
+      "content": "# Dungeon Generator\ndef gen_room(size):\n    width = size * 2\n    height = size\n    return width, height\n\ndef gen_monster(level):\n    hp = level * 50\n    attack = level * 10\n    return hp, attack\n\ndef gen_treasure(rarity):\n    gold = rarity * 100\n    item = pick_item(rarity)\n    return gold, item\n\ndef gen_trap(danger):\n    damage = danger * 25\n    return damage"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with indent folds closed"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' -c 'set number' dungeon.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zj zk \u2014 Navigate Folds",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z J moves to the next fold. Z K moves to the previous fold. Jump between folds without scrolling."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump forward with zj ---"
+    },
+    {
+      "say": "Four folded functions. Start at the top and jump forward with Z J.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top of file"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zj",
+      "overlay": "next fold"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "zj",
+      "overlay": "next fold"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "zj",
+      "overlay": "next fold"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "zj",
+      "overlay": "next fold"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jumped through all four folds. Landed on each fold marker."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump backward with zk ---"
+    },
+    {
+      "say": "Z K goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zk",
+      "overlay": "previous fold"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "zk",
+      "overlay": "previous fold"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to the second fold. Z J and Z K hop between folds."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z J next fold. Z K previous fold. Navigate folded code like jumping between functions."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f dungeon.py"
+    }
+  ]
+}

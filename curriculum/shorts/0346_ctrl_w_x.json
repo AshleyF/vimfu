@@ -1,0 +1,162 @@
+{
+  "title": "VimFu \u2014 Ctrl-W x Exchange Windows",
+  "description": "Ctrl-W x swaps the current window with the next one. Quick way to swap two panes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 487,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hero.py villain.py .hero.py.swp .villain.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "hero.py",
+      "content": "# Hero\nname = \"Knight\"\nhp = 100\nweapon = \"sword\""
+    },
+    {
+      "writeFile": "villain.py",
+      "content": "# Villain\nname = \"Dragon\"\nhp = 500\nweapon = \"fire breath\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with two horizontal splits"
+    },
+    {
+      "line": "nvim -o hero.py villain.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W x \u2014 Exchange Windows",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W X swaps the current window with the next one. Like swapping seats."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: exchange ---"
+    },
+    {
+      "say": "Hero on top, villain on bottom. Swap them.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017x",
+      "overlay": "exchange"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Villain is on top now. Hero moved to the bottom. They traded places."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: swap back ---"
+    },
+    {
+      "say": "Swap again to put them back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017x",
+      "overlay": "exchange"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Hero is back on top. Villain back on the bottom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W X. Exchange windows. Swap two panes without changing the layout."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f hero.py villain.py"
+    }
+  ]
+}

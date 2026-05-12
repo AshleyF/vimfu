@@ -3,50 +3,109 @@
   "version": 1,
   "id": "ex.file-ops",
   "title": "File Operations",
-  "subtitle": ":w, :e, :q, :wq, :x — and the bangs that mean force.",
+  "subtitle": "{key::w}, {key::e}, {key::q}, {key::wq}, {key::x} — and the bangs that mean force.",
   "part": "ex-commands",
   "summary": "Ex commands handle the file system: write, edit, quit, save-and-quit. The trailing ! means \"force.\" :w writes; :e edits; :q quits; :wq does both; :x writes only if changed.",
-  "keys": [":w", ":e", ":q", ":wq", ":x", ":qa", ":wa"],
-  "lessons": [396, 405],
-  "see_also": ["ex.ranges", "windows.buffers"],
-
+  "keys": [
+    ":w",
+    ":e",
+    ":q",
+    ":wq",
+    ":x",
+    ":qa",
+    ":wa"
+  ],
+  "lessons": [
+    396,
+    405
+  ],
+  "see_also": [
+    "ex.ranges",
+    "windows.buffers"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "File Operations" },
-
-    { "type": "prose", "text": "Ex commands (everything starting with {key::}) are how you talk to Vim's *file* and *buffer* layer. A handful cover 95% of daily use." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "File Operations"
+    },
+    {
+      "type": "prose",
+      "text": "Ex commands (everything starting with {key::}) are how you talk to Vim's *file* and *buffer* layer. A handful cover 95% of daily use."
+    },
     {
       "type": "table",
-      "headers": ["Command",         "Action"],
+      "headers": [
+        "Command",
+        "Action"
+      ],
       "rows": [
-        [":w",                       "Write current buffer"],
-        [":w {file}",                "Write to {file} (current buffer keeps its name)"],
-        [":sav {file}",              "Write to {file} AND switch buffer to that filename"],
-        [":w!",                      "Force write (read-only, etc.)"],
-        [":e {file}",                "Edit file (replace current buffer)"],
-        [":e!",                      "Reload current file, discard unsaved changes"],
-        [":q",                       "Close current window (or quit if last)"],
-        [":q!",                      "Force quit, discard changes"],
-        [":wq / :x",                 "Write and quit"],
-        [":wa",                      "Write all modified buffers"],
-        [":qa / :qa!",               "Quit all / force quit all"],
-        [":wqa",                     "Write all and quit"]
+        [
+          ":w",
+          "Write current buffer"
+        ],
+        [
+          ":w {file}",
+          "Write to {file} (current buffer keeps its name)"
+        ],
+        [
+          ":sav {file}",
+          "Write to {file} AND switch buffer to that filename"
+        ],
+        [
+          ":w!",
+          "Force write (read-only, etc.)"
+        ],
+        [
+          ":e {file}",
+          "Edit file (replace current buffer)"
+        ],
+        [
+          ":e!",
+          "Reload current file, discard unsaved changes"
+        ],
+        [
+          ":q",
+          "Close current window (or quit if last)"
+        ],
+        [
+          ":q!",
+          "Force quit, discard changes"
+        ],
+        [
+          ":wq / :x",
+          "Write and quit"
+        ],
+        [
+          ":wa",
+          "Write all modified buffers"
+        ],
+        [
+          ":qa / :qa!",
+          "Quit all / force quit all"
+        ],
+        [
+          ":wqa",
+          "Write all and quit"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": ":x vs :wq — A Real Difference",
       "text": "{key::}{key:w}{key:q} *always* writes, then quits.\n\n{key::}{key:x} writes *only if the buffer has been modified* — otherwise it just quits. The distinction matters for build systems: {key::}{key:w}{key:q} bumps the file's mtime even when nothing changed, which retriggers `make`/watchers; {key::}{key:x} doesn't.\n\n{key::}{key:Z}{key:Z} (Normal mode, no colon) is shorthand for {key::}{key:x}."
     },
-
     {
       "type": "internals",
       "title": "What ! Means After a Command",
       "text": "The trailing `!` is universally \"force.\" It tells Vim to skip safety checks: write a read-only file, quit a modified buffer, reload over unsaved work, etc. It's *not* shell pipe — for that, see [`ex.shell`](#ex.shell)."
     },
-
-    { "type": "qr", "topic": "ex.file-ops" },
-    { "type": "buy-prompt" }
+    {
+      "type": "qr",
+      "topic": "ex.file-ops"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

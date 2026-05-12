@@ -1,0 +1,37 @@
+{
+  "title": "VimFu — :set list",
+  "description": "Show invisible characters like tabs and trailing spaces with :set list in Vim.",
+  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 571,
+  "ttsVoice": "echo", "playlist": "VimFu",
+  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "settings"],
+  "setup": [
+    { "line": "export TERM=xterm-256color" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f demo.txt .demo.txt.swp" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "writeFile": "demo.txt", "content": "Hello World\n\tindented with tab\n    indented with spaces\ntrailing spaces   \nend of file" },
+    { "line": "clear" },
+    { "line": "nvim demo.txt" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "overlay": "VimFu", "caption": ":set list", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "say": "The set list command reveals invisible characters like tabs, trailing spaces, and line endings." },
+    { "wait": 0.3 },
+    { "type": ":set list", "overlay": ":set list" },
+    "enter",
+    { "wait": 1.0 },
+    { "say": "Now you can see special markers. Tabs show as a chevron, trailing spaces appear as dashes, and non-breaking spaces show as plus signs." },
+    { "wait": 1.0 },
+    { "say": "This is useful for catching whitespace issues. To turn it off, use set nolist." },
+    { "wait": 0.3 },
+    { "type": ":set nolist", "overlay": ":set nolist" },
+    "enter",
+    { "wait": 1.0 },
+    { "say": "Everything looks normal again. Toggle list mode whenever you need to inspect whitespace." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.txt" } ]
+}

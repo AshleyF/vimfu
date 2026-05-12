@@ -1,0 +1,181 @@
+{
+  "title": "VimFu \u2014 gw Format Keep Cursor",
+  "description": "gw formats text like gq but keeps the cursor in its original position instead of moving it to the end of the formatted text.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 404,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "format"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f readme.txt .readme.txt.swp .readme.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "readme.txt",
+      "content": "# Readme\n\nThis project is a small utility that helps developers manage their configuration files across multiple machines and keep everything in sync.\n\nFeatures:\n- Fast sync\n- Encrypted backup"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set textwidth=35' readme.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gw \u2014 Format Keep Cursor",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G W formats text like G Q, but keeps the cursor where it was. The text reflows, the cursor stays put."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: compare gq and gw ---"
+    },
+    {
+      "say": "Line three is long. Cursor on line three.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G0",
+      "overlay": "line 3, start"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G Q Q. Format the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gqq",
+      "overlay": "format"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Text is wrapped, but the cursor moved to the end of the formatted text. Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now G W W. Same format, cursor stays.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G0",
+      "overlay": "back to line 3"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gww",
+      "overlay": "format, keep cursor"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same result, but the cursor is still at the top of the formatted text. Ready to keep editing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G W. Format and stay. G Q moves the cursor, G W keeps it. Same formatting, different cursor behavior."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f readme.txt"
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "title": "VimFu \u2014 :jumps Show Jump List",
+  "description": "The :jumps command displays the jump list \u2014 a history of cursor positions you've jumped between.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 753,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# config\nhost = \"localhost\"\nport = 8080\n\n# logic\ndef run():\n    pass\n\n# main\nif __name__ == \"__main__\":\n    run()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":jumps \u2014 Show Jump List",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon jumps shows your jump history. Every big cursor movement is recorded."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: make jumps then show ---"
+    },
+    {
+      "say": "Let's jump around. Go to the bottom, then search, then jump back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "bottom"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/run",
+      "overlay": "/run"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5G",
+      "overlay": "line 5"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now check the jump list.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":jumps",
+      "overlay": ":jumps"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Every jump is recorded with line number and text. Use control O and control I to navigate between them."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "q",
+      "overlay": "dismiss"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon jumps. Your breadcrumb trail through the file."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

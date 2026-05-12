@@ -1,0 +1,224 @@
+{
+  "title": "VimFu \u2014 gv \u2014 Reselect",
+  "description": "Press gv to reselect the last visual area. Useful when you need to apply another operation to the same selection.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 590,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "# config\nhost = \"localhost\"\nport = 8080\ndebug = True\nlog = \"info\"\nretry = 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim config.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "gv \u2014 Reselect",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G V reselects the previous visual area. Whatever you last selected comes right back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select three lines with capital V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j"
+    },
+    {
+      "keys": "V"
+    },
+    {
+      "keys": "jj"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Indent them with greater than.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">",
+      "overlay": "indent"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Indented once, but I want more. G V to reselect.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gv",
+      "overlay": "reselect"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Same three lines selected again. Indent once more.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ">"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Double indented. G V reselected the exact same area."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Another use. Select some text, escape by accident.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg0jw"
+    },
+    {
+      "keys": "ve"
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Oops. Lost the selection. G V brings it back instantly.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gv",
+      "overlay": "reselect"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back. No need to reselect manually."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G V. Reselect the previous visual area."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "title": "VimFu — :w {file} Write As",
+  "description": "The :w {file} command saves to a different filename without switching buffers.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 538,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "setup": [
+    { "comment": "Set TERM for proper color support in Neovim" },
+    { "line": "export TERM=xterm-256color" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f demo.py backup.py .demo.py.swp" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "writeFile": "demo.py", "content": "# Demo\nresult = 42\nprint(result)" },
+    { "line": "clear" },
+    { "line": "nvim demo.py" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "overlay": "VimFu", "caption": ":w {file} — Write As", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "say": "Colon W followed by a filename saves a copy to that file. You keep editing the original." },
+    { "wait": 0.3 },
+    { "say": "Save this file as backup dot py.", "wait": false },
+    { "wait": 0.3 },
+    { "type": ":w backup.py", "overlay": ":w backup.py" },
+    "enter",
+    { "wait": 0.5 },
+    { "say": "Written. But we're still editing demo dot py. The status bar hasn't changed. We just made a copy." },
+    { "wait": 0.3 },
+    { "say": "Colon W with a filename. Save a copy without switching. Great for quick backups." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [
+    "escape",
+    { "type": ":q!" },
+    "enter",
+    { "line": "rm -f demo.py backup.py" }
+  ]
+}

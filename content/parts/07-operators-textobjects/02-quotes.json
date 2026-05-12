@@ -3,7 +3,7 @@
   "version": 1,
   "id": "operators-textobjects.quotes",
   "title": "Quote Text Objects",
-  "subtitle": "i\" / a\" / i' / a' \u2014 operate on a quoted string without finding its boundaries.",
+  "subtitle": "{key:i\"} / {key:a\"} / {key:i'} / {key:a'} — operate on a quoted string without finding its boundaries.",
   "part": "operators-textobjects",
   "summary": "i\" is the contents of the surrounding double-quoted string. a\" includes the quotes themselves. Same for ' and `.",
   "keys": [
@@ -73,30 +73,30 @@
     {
       "type": "embed",
       "lesson": 75,
-      "caption": "i\" / a\" \u2014 double quotes"
+      "caption": "i\" / a\" — double quotes"
     },
     {
       "type": "embed",
       "lesson": 76,
-      "caption": "i' / a' \u2014 single quotes"
+      "caption": "i' / a' — single quotes"
     },
     {
       "type": "embed",
       "lesson": 77,
-      "caption": "i` / a` \u2014 backticks"
+      "caption": "i` / a` — backticks"
     },
     {
       "type": "internals",
       "title": "How Vim Finds the Quotes",
-      "text": "Quote objects use a different search heuristic from bracket objects. For a quote character `q`, Vim:\n\n  1. Counts the q-characters from the start of the line up to the cursor.\n  2. If the count is **odd**, the cursor is *inside* a quoted region: the matching pair is the most recent q-pair containing the cursor.\n  3. If the count is **even**, the cursor is *outside*: the matching pair is the *next* one to the right.\n\nThis is why you can press {key:c}{key:i}{key:\"} from outside a string and still hit the right one \u2014 Vim looks rightward. It also means quote objects don't span multiple lines (the count restarts each line) and they don't understand backslash-escaping inside the string."
+      "text": "Quote objects use a different search heuristic from bracket objects. For a quote character `q`, Vim:\n\n  1. Counts the q-characters from the start of the line up to the cursor.\n  2. If the count is **odd**, the cursor is *inside* a quoted region: the matching pair is the most recent q-pair containing the cursor.\n  3. If the count is **even**, the cursor is *outside*: the matching pair is the *next* one to the right.\n\nThis is why you can press {key:c}{key:i}{key:\"} from outside a string and still hit the right one — Vim looks rightward. It also means quote objects don't span multiple lines (the count restarts each line) and they don't understand backslash-escaping inside the string."
     },
     {
       "type": "tip",
-      "text": "The three quote characters are {key:\"}, {key:'}, and {key:`} (backtick). All three behave identically \u2014 the object character matches the literal quote you typed. You don't need a separate object per language."
+      "text": "The three quote characters are {key:\"}, {key:'}, and {key:`} (backtick). All three behave identically — the object character matches the literal quote you typed. You don't need a separate object per language."
     },
     {
       "type": "tip",
-      "text": "{key:i}{key:\"} and {key:a}{key:\"} are charwise \u2014 the cursor stays on the line. So {key:d}{key:a}{key:\"} doesn't delete the line; it deletes the quoted span and leaves the rest of the line intact."
+      "text": "{key:i}{key:\"} and {key:a}{key:\"} are charwise — the cursor stays on the line. So {key:d}{key:a}{key:\"} doesn't delete the line; it deletes the quoted span and leaves the rest of the line intact."
     },
     {
       "type": "divider"
@@ -115,19 +115,19 @@
       "rows": [
         [
           "{key:i}{key:\"}",
-          "Contents of \"\u2026\" (excluding quotes)"
+          "Contents of \"…\" (excluding quotes)"
         ],
         [
           "{key:a}{key:\"}",
-          "\"\u2026\" including the quotes"
+          "\"…\" including the quotes"
         ],
         [
           "{key:i}{key:'} / {key:a}{key:'}",
-          "Same for '\u2026'"
+          "Same for '…'"
         ],
         [
           "{key:i}{key:`} / {key:a}{key:`}",
-          "Same for `\u2026`"
+          "Same for `…`"
         ]
       ]
     },

@@ -1,0 +1,226 @@
+{
+  "title": "VimFu \u2014 gF Go to File at Line",
+  "description": "gF opens the file under the cursor and jumps to a specific line number. Works with patterns like filename:42 or filename line 42.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 396,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f errors.log helpers.py .errors.log.swp .errors.log.swo .helpers.py.swp .helpers.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create target file"
+    },
+    {
+      "writeFile": "helpers.py",
+      "content": "# Helpers Module\nimport os\nimport sys\n\ndef read_file(path):\n    with open(path) as f:\n        return f.read()\n\ndef write_file(path, data):\n    with open(path, 'w') as f:\n        f.write(data)\n\ndef safe_divide(a, b):\n    if b == 0:\n        raise ValueError(\"Division by zero\")\n    return a / b"
+    },
+    {
+      "comment": "Create error log with file:line references"
+    },
+    {
+      "writeFile": "errors.log",
+      "content": "Build errors:\n  helpers.py:15 ValueError\n  helpers.py:6  missing file\nAll done."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' -c 'edit helpers.py' -c 'buffer errors.log' errors.log"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gF \u2014 Go to File at Line",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G shift F opens the file under the cursor and jumps to the line number after it. Perfect for error logs and stack traces."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to file at line ---"
+    },
+    {
+      "say": "Line two shows helpers dot py colon fifteen. A ValueError.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f.",
+      "overlay": "on helpers.py:15"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G shift F.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gF",
+      "overlay": "file at line"
+    },
+    {
+      "wait": 1.2
+    },
+    {
+      "keys": "\r"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "We're in helpers dot py, right on line fifteen. The raise ValueError line."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: go back and try another ---"
+    },
+    {
+      "say": "Ctrl O to go back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Ctrl-O",
+      "overlay": "back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Line three, helpers dot py colon six.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": "line 3"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f.",
+      "overlay": "on helpers.py:6"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gF",
+      "overlay": "gF"
+    },
+    {
+      "keys": "\r"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line six. The open call inside read file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G shift F. Open a file and jump to the line number. G F opens the file, G shift F opens the file at the line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f errors.log helpers.py"
+    }
+  ]
+}

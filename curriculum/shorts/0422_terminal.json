@@ -1,0 +1,115 @@
+{
+  "title": "VimFu \u2014 :terminal Terminal Inside Vim",
+  "description": "The :terminal command opens a terminal emulator inside Vim.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 563,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "terminal"
+  ],
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nprint(\"hi\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":terminal \u2014 Terminal",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon terminal opens a full terminal inside Vim. A shell right in your editor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":terminal",
+      "overlay": ":terminal"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "A terminal buffer. You can run commands here. To get back to normal mode, press Control backslash, Control N."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001c\u000e",
+      "overlay": "normal mode"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now you can navigate with Vim keys. Close it with colon B D or colon Q."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon terminal. A shell inside Vim. Perfect with tmux or on its own."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

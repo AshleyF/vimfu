@@ -1,0 +1,176 @@
+{
+  "title": "VimFu \u2014 zs ze Horizontal Scroll",
+  "description": "zs scrolls the screen so the cursor is at the left edge. ze scrolls so the cursor is at the right edge. Only works with nowrap.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 431,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "z commands",
+    "scroll"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f wide.py .wide.py.swp .wide.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with long lines"
+    },
+    {
+      "writeFile": "wide.py",
+      "content": "# Wide Lines\nresult = calculate_damage(base_attack, defense_rating, critical_multiplier, elemental_bonus, armor_penetration)\nplayer_stats = {\"health\": 100, \"mana\": 50, \"stamina\": 75, \"strength\": 20, \"dexterity\": 15, \"intelligence\": 18}\nshort = 1"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set nowrap' -c 'set number' wide.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zs ze \u2014 Horizontal Scroll",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z S and Z E scroll horizontally. Z S puts the cursor at the left edge. Z E puts it at the right edge. You need no wrap set."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: navigate to hidden content ---"
+    },
+    {
+      "say": "Line two is very long. The end is hidden off screen. Move to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G$",
+      "overlay": "end of line 2"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The screen scrolled. Now Z S. Put cursor at the left edge.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zs",
+      "overlay": "cursor at left"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The cursor column is now at the left side of the screen. We can see what's to the right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: ze ---"
+    },
+    {
+      "say": "Z E puts the cursor at the right edge instead.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0",
+      "overlay": "start of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ze",
+      "overlay": "cursor at right"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Cursor at the right edge. We can see what's to the left of the cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z S and Z E. Horizontal scroll anchoring. Z S cursor at left. Z E cursor at right. Only useful with no wrap."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f wide.py"
+    }
+  ]
+}

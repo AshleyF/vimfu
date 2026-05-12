@@ -1,0 +1,217 @@
+{
+  "title": "VimFu \u2014 :changes Show Change List",
+  "description": "The :changes command displays the change list \u2014 a history of positions where text was modified.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 754,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "first\nsecond\nthird\nfourth\nfifth\nsixth"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":changes \u2014 Show Change List",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon changes shows where you've made edits. Every change is recorded."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: make changes then show ---"
+    },
+    {
+      "say": "Let's make a few edits around the file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": " edit"
+    },
+    {
+      "wait": 0.2
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j",
+      "overlay": "line 4"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": " edit"
+    },
+    {
+      "wait": 0.2
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": "line 6"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": " edit"
+    },
+    {
+      "wait": 0.2
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now type colon changes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":changes",
+      "overlay": ":changes"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Three changes listed. Lines one, four, and six. Use G semicolon and G comma to navigate between them."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "q",
+      "overlay": "dismiss"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon changes. See everywhere you've edited."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt"
+    }
+  ]
+}

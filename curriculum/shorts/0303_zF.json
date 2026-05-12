@@ -1,0 +1,172 @@
+{
+  "title": "VimFu \u2014 zF Create Fold N Lines",
+  "description": "zF creates a fold for N lines starting at the cursor. Use a count prefix to specify how many lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 444,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f scores.py .scores.py.swp .scores.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "scores.py",
+      "content": "# High Scores\nplayer_1 = 9500\nplayer_2 = 8700\nplayer_3 = 7200\nplayer_4 = 6100\n# Achievements\nbadge_1 = \"Dragon Slayer\"\nbadge_2 = \"Speed Runner\"\nbadge_3 = \"Pacifist\"\n# Settings\ndifficulty = \"hard\"\nsound = True\nmusic = True"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with manual folds and line numbers"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=manual' -c 'set number' scores.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zF \u2014 Create Fold N Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital Z capital F creates a fold for N lines. Use a count prefix to say how many."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: fold 4 lines ---"
+    },
+    {
+      "say": "Fold the high scores. Go to line two and type four capital Z capital F.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "go to line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4zF",
+      "overlay": "fold 4 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Four lines folded. No motion needed. Just the count."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: fold another section ---"
+    },
+    {
+      "say": "Fold the achievements too. Four lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6G",
+      "overlay": "jump to section"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4zF",
+      "overlay": "fold 4 lines"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Clean. Only the settings remain visible."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Count plus capital Z capital F. Quick way to fold a specific number of lines. No motion required."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f scores.py"
+    }
+  ]
+}

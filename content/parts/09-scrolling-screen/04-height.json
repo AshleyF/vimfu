@@ -2,41 +2,80 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "scroll.height",
-  "title": "z{n}{Enter} — Set Window Height",
+  "title": "{key:z}{n}{key:Enter} — Set Window Height",
   "subtitle": "Resize the current window to {n} lines, scroll cursor's line to the top.",
   "part": "scroll",
   "summary": "z{n} followed by Enter resizes the current window to n lines tall and lands the cursor at the first non-blank of the topmost line.",
-  "keys": ["z{n}{Enter}"],
-  "lessons": [248],
-  "see_also": ["scroll.center-top-bottom", "windows.move-resize"],
-
+  "keys": [
+    "z{n}{Enter}"
+  ],
+  "lessons": [
+    248
+  ],
+  "see_also": [
+    "scroll.center-top-bottom",
+    "windows.move-resize"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "z{n}{Enter} — Set Window Height" },
-
-    { "type": "prose", "text": "An obscure but occasionally perfect command: {key:z}{key:1}{key:0}{key:Enter} resizes the current window to 10 lines and scrolls the cursor's line to the top." },
-
-    { "type": "keys", "sequence": ["z","{n}","Enter"], "label": "Resize window to {n} lines, cursor's line to top" },
-
-    { "type": "embed", "lesson": 248, "caption": "z{n}{Enter} — set window height" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "z{n}{Enter} — Set Window Height"
+    },
+    {
+      "type": "prose",
+      "text": "An obscure but occasionally perfect command: {key:z}{key:1}{key:0}{key:Enter} resizes the current window to 10 lines and scrolls the cursor's line to the top."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "z",
+        "{n}",
+        "Enter"
+      ],
+      "label": "Resize window to {n} lines, cursor's line to top"
+    },
+    {
+      "type": "embed",
+      "lesson": 248,
+      "caption": "z{n}{Enter} — set window height"
+    },
     {
       "type": "internals",
       "title": "Two Things at Once",
       "text": "{key:z}{key:{n}}{key:Enter} does *two* operations atomically:\n\n  1. Sets `'winheight'` for the current window to `{n}` lines (same effect as {key::}{key:r}{key:e}{key:s}{key:i}{key:z}{key:e} {n}).\n  2. Scrolls so the cursor's current line becomes the top of the window (same as {key:z}{key:t}).\n\nUseful pattern: working in a file with multiple splits, you want one specific window to be exactly N lines tall to fit some block. Move cursor to the start of that block, {key:z}{key:N}{key:Enter}, done.\n\nWithout the count, {key:z}{key:Enter} is just \"scroll cursor's line to top *and* go to first non-blank\" — same as {key:z}{key:+}'s landing variant."
     },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Sequence",                "Action"],
+      "headers": [
+        "Sequence",
+        "Action"
+      ],
       "rows": [
-        ["{key:z}{n}{key:Enter}",            "Resize to {n} lines + scroll line to top"],
-        ["{key:z}{key:Enter}",               "Cursor line to top + first non-blank"]
+        [
+          "{key:z}{n}{key:Enter}",
+          "Resize to {n} lines + scroll line to top"
+        ],
+        [
+          "{key:z}{key:Enter}",
+          "Cursor line to top + first non-blank"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "scroll.height" },
-    { "type": "buy-prompt" }
+    {
+      "type": "qr",
+      "topic": "scroll.height"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

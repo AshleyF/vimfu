@@ -1,0 +1,143 @@
+{
+  "title": "VimFu \u2014 :q Quit",
+  "description": "The :q command quits Vim. Fails if there are unsaved changes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 539,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nprint(\"test\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":q \u2014 Quit",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon Q quits Vim. But only if there are no unsaved changes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Make a change first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jA",
+      "overlay": "append"
+    },
+    {
+      "type": "!",
+      "overlay": ""
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Try to quit.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q",
+      "overlay": "try to quit"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Rejected. Vim warns about unsaved changes. It's protecting your work."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Save first, then quit.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":wq",
+      "overlay": "save and quit"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Colon Q. A safe quit that won't let you lose work."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

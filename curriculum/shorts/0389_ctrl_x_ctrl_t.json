@@ -1,0 +1,169 @@
+{
+  "title": "VimFu \u2014 Ctrl-X Ctrl-T Thesaurus",
+  "description": "Ctrl-X Ctrl-T in insert mode completes words from a thesaurus file.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 530,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "completion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt thes.txt .demo.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "thes.txt",
+      "content": "fast,quick,rapid,swift,speedy\nslow,sluggish,gradual,leisurely"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "The program is:\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-X Ctrl-T \u2014 Thesaurus",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control X Control T completes from a thesaurus file. Type a word and get synonyms."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Set thesaurus ---"
+    },
+    {
+      "say": "First, set the thesaurus file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set thesaurus=thes.txt",
+      "overlay": ""
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 1: find synonyms ---"
+    },
+    {
+      "say": "Type fast and look for synonyms.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jA",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "fast",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0018\u0014",
+      "overlay": "thesaurus"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Quick, rapid, swift, speedy. All the synonyms from our thesaurus."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control X Control T. Thesaurus completion. Set your thesaurus file and get synonyms on demand."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt thes.txt"
+    }
+  ]
+}

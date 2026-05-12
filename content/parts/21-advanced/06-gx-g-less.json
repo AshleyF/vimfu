@@ -2,40 +2,65 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "advanced.gx-g-less",
-  "title": "gx and g<",
+  "title": "{key:gx} and {key:g<}",
   "subtitle": "Open URLs and recall command output.",
   "part": "advanced",
   "summary": "gx opens the URL or filename under cursor in the system handler (browser/etc.). g< re-displays the output of the last :command — handy when a long message scrolled past.",
-  "keys": ["gx", "g<"],
-  "lessons": [493, 494],
-  "see_also": ["prefixes.g-overview"],
-
+  "keys": [
+    "gx",
+    "g<"
+  ],
+  "lessons": [
+    493,
+    494
+  ],
+  "see_also": [
+    "prefixes.g-overview"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "gx and g<" },
-
-    { "type": "prose", "text": "Two small {key:g} commands worth knowing — both solve real problems." },
-
-    { "type": "heading", "level": 2, "text": "gx — Open URL" },
-
-    { "type": "prose", "text": "{key:g}{key:x} on a URL or file path passes it to the system's default opener (`open` on macOS, `xdg-open` on Linux, `cmd /c start` on Windows). Browsers open URLs; PDFs open in PDF readers; image files open in image viewers." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "gx and g<"
+    },
+    {
+      "type": "prose",
+      "text": "Two small {key:g} commands worth knowing — both solve real problems."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "gx — Open URL"
+    },
+    {
+      "type": "prose",
+      "text": "{key:g}{key:x} on a URL or file path passes it to the system's default opener (`open` on macOS, `xdg-open` on Linux, `cmd /c start` on Windows). Browsers open URLs; PDFs open in PDF readers; image files open in image viewers."
+    },
     {
       "type": "internals",
       "title": "How gx Decides What to Open",
       "text": "The implementation is in `$VIMRUNTIME/plugin/netrwPlugin.vim` — Vim's netrw plugin defines `gx` as a Normal-mode mapping that calls `netrw#BrowseX(netrw#GX(), 0)`.\n\nThe URL/path is found by looking at the WORD under the cursor (not just word) — so URLs with `.`, `?`, `&`, etc. are captured whole. The handler is selected by `'browser'` if set, otherwise by platform defaults."
     },
-
-    { "type": "heading", "level": 2, "text": "g< — Re-show Last Output" },
-
-    { "type": "prose", "text": "{key:g}{key:<} reopens the message area showing the output of the *last* Ex command — handy when a `:registers` or `:set all` listing scrolled past faster than you could read." },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "g< — Re-show Last Output"
+    },
+    {
+      "type": "prose",
+      "text": "{key:g}{key:<} reopens the message area showing the output of the *last* Ex command — handy when a `:registers` or `:set all` listing scrolled past faster than you could read."
+    },
     {
       "type": "internals",
       "title": "Where Messages Live",
       "text": "Vim keeps a rolling buffer of message-area output. `:messages` shows the recent history; {key:g}{key:<} brings back the most recent block.\n\nAfter {key:g}{key:<}, the message hit-Enter prompt appears so you can scroll the listing with {key:Space}/{key:b}, then dismiss with {key:Enter}."
     },
-
-    { "type": "qr", "topic": "advanced.gx-g-less" },
-    { "type": "buy-prompt" }
+    {
+      "type": "qr",
+      "topic": "advanced.gx-g-less"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

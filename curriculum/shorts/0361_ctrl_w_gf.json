@@ -1,0 +1,183 @@
+{
+  "title": "VimFu \u2014 Ctrl-W gf File in New Tab",
+  "description": "Ctrl-W gf opens the file under the cursor in a brand new tab page.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 502,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "tabs"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f main.py config.py .main.py.swp .config.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create files"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "# Config\nDEBUG = True\nPORT = 8080\nHOST = \"localhost\""
+    },
+    {
+      "writeFile": "main.py",
+      "content": "# Main App\nimport config\n\nif config.DEBUG:\n    print(\"Debug mode\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim main.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W gf \u2014 File in New Tab",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W G F opens the file under the cursor in a new tab. Not a split. A full tab page."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: open config in a tab ---"
+    },
+    {
+      "say": "Main imports config. Put the cursor on the filename.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "to config"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Open config in its own tab.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017gf",
+      "overlay": "open in new tab"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Config dot py opened in a new tab. Look at the tab bar. Two tabs now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: switch between tabs ---"
+    },
+    {
+      "say": "G T to go back to the main tab.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gt",
+      "overlay": "next tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Main app again. Full screen. No split clutter."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W G F. Open file under cursor in a new tab. Full-screen views instead of cramped splits."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f main.py config.py"
+    }
+  ]
+}

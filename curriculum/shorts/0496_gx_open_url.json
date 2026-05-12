@@ -1,0 +1,145 @@
+{
+  "title": "VimFu \u2014 gx \u2014 Open URL",
+  "description": "Use gx to open the URL or file path under the cursor with your system's default application.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 652,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f urls.txt .urls.txt.swp .urls.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "urls.txt",
+      "content": "Check out these links:\nhttps://neovim.io\nhttps://vim.org\n/etc/hosts"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim urls.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "gx \u2014 Open URL",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G X opens whatever is under the cursor with your system's default application. URLs open in your browser, files open in their associated app."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Move to the neovim dot io link.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0",
+      "overlay": "next line, start"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "In a live session, pressing G X here would open this URL in your default browser.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gx",
+      "overlay": "open URL"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Vim detected the URL under the cursor and handed it to the system."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G X also works with file paths. If you have a path like slash etc slash hosts, G X would open that file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "In Neovim, G X is built in. In classic Vim, it comes from the netrw plugin. G X. One keystroke to open links and files."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f urls.txt"
+    }
+  ]
+}

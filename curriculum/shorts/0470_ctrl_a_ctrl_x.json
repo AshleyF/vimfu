@@ -1,0 +1,166 @@
+{
+  "title": "VimFu \u2014 Ctrl-A / Ctrl-X \u2014 Increment & Decrement",
+  "description": "Use Ctrl-A to increment and Ctrl-X to decrement the number under or after the cursor.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 626,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f nums.txt .nums.txt.swp .nums.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "nums.txt",
+      "content": "item 1\nitem 10\nitem 100\nport 8080\nversion 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim nums.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-A / Ctrl-X \u2014 Increment & Decrement",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control A increments the number under or after the cursor. Control X decrements it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is on line one. Press Control A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+a",
+      "overlay": "increment"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Item 1 became item 2. The cursor doesn't even need to be on the number. Vim finds the next number on the line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press Control X to decrement it back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+x",
+      "overlay": "decrement"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Back to 1. You can use a count too. Move to the port line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Type 5 Control A to add 5.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5ctrl+a",
+      "overlay": "add 5"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Port 8080 became 8085. Counts work with both Control A and Control X."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f nums.txt"
+    }
+  ]
+}

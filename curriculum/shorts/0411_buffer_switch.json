@@ -1,0 +1,135 @@
+{
+  "title": "VimFu \u2014 :b Switch Buffer",
+  "description": "The :b command switches to a buffer by number or partial name.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 552,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "buffers"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f main.py config.py utils.py .main.py.swp .config.py.swp .utils.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "main.py",
+      "content": "# Main"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "# Config"
+    },
+    {
+      "writeFile": "utils.py",
+      "content": "# Utils"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim main.py config.py utils.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":b \u2014 Switch Buffer",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon B switches to a buffer. Use a number or a partial name."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Switch to buffer two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":b 2",
+      "overlay": ":b 2"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Config. Buffer two. Or use a name.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":b util",
+      "overlay": "partial name"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Utils. Vim matched the partial name. No need to type the full path."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon B. Jump between files by number or name. Fast file switching."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f main.py config.py utils.py"
+    }
+  ]
+}

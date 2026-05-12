@@ -1,0 +1,188 @@
+{
+  "title": "VimFu \u2014 [I ]I List Includes",
+  "description": "[I lists all lines matching the word under the cursor. ]I starts from the cursor position. Shows every occurrence.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 473,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "C"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f game.py .game.py.swp .game.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with repeated word"
+    },
+    {
+      "writeFile": "game.py",
+      "content": "# Battle Engine\nhp = 100\nmax_hp = 200\ndef heal():\n    global hp\n    hp += 50\n    if hp > max_hp:\n        hp = max_hp\ndef damage(amt):\n    global hp\n    hp -= amt\n    if hp < 0:\n        hp = 0"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' game.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[I ]I \u2014 List Includes",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Open bracket capital I lists every line that contains the word under the cursor. Like a quick grep inside Vim."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: list all occurrences of hp ---"
+    },
+    {
+      "say": "Cursor on H P on line two. Open bracket capital I to find every line with H P.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "go to line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[I",
+      "overlay": "list all matches"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Every line containing H P is listed with line numbers. A quick overview of everywhere it's used.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: ]I from current position ---"
+    },
+    {
+      "say": "Close bracket capital I lists from the current position only.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "7G",
+      "overlay": "go to line 7"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "2w",
+      "overlay": "to hp"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]I",
+      "overlay": "list from here"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open bracket capital I lists all matches. Close bracket capital I from cursor down. Built-in search results."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f game.py"
+    }
+  ]
+}

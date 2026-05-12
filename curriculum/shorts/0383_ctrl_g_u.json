@@ -1,0 +1,193 @@
+{
+  "title": "VimFu \u2014 Ctrl-G u Break Undo",
+  "description": "Ctrl-G u in insert mode starts a new undo sequence. Break long edits into undoable chunks.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 524,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "undo"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-G u \u2014 Break Undo",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control G U creates an undo break point in insert mode. Without it, everything you type in one insert session is one undo."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: type with undo break ---"
+    },
+    {
+      "say": "Let's type two lines with an undo break between them.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o",
+      "overlay": "open line below"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "first line",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now Control G U to set an undo break.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0007u",
+      "overlay": "undo break"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "type": "second line",
+      "overlay": ""
+    },
+    {
+      "wait": 0.4
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: undo twice ---"
+    },
+    {
+      "say": "Now undo. It only removes second line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo second line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Second line gone, first line stays. Undo again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo first line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "First line gone too. Two separate undos because of the break point."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control G U. Break undo in insert mode. Type long paragraphs and still undo them in pieces."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

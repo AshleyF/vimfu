@@ -1,0 +1,165 @@
+{
+  "title": "VimFu \u2014 Ctrl-X Ctrl-F File Completion",
+  "description": "Ctrl-X Ctrl-F in insert mode completes file names from the current directory.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 528,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "completion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py config.py utils.py .demo.py.swp"
+    },
+    {
+      "line": "rm -f config.ini config.json config.h convert.py"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "# Config"
+    },
+    {
+      "writeFile": "utils.py",
+      "content": "# Utils"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nimport "
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-X Ctrl-F \u2014 File Complete",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control X Control F completes file names. Vim scans the current directory and offers matching files."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: complete a filename ---"
+    },
+    {
+      "say": "Go to the import line and type a partial name.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jA",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": " con",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control X Control F to complete.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0018\u0006",
+      "overlay": "file complete"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Config dot py. Vim found the file in the current directory. Very useful for typing file paths."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control X Control F. File name completion. Works with paths too. Slash separated directories complete step by step."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py config.py utils.py"
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 gI Insert at Column 1",
+  "description": "gI starts insert mode at column 1, always. Unlike I which goes to the first non-blank, gI goes to the very start of the line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 415,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "insert"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f code.py .code.py.swp .code.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "code.py",
+      "content": "def launch():\n    fuel = 100\n    speed = 0\n    altitude = 0\n    return True"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim code.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gI \u2014 Insert at Column 1",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G shift I inserts at column one. Always. Capital I goes to the first non blank character. G shift I goes to the very beginning of the line, before any indentation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: compare I vs gI ---"
+    },
+    {
+      "say": "Go to line two. Indented code. Try capital I first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "I",
+      "overlay": "first non-blank"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Cursor is on the F in fuel, after the indentation. Escape.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now G shift I.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gI",
+      "overlay": "column 1"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Cursor is at column one. Before the spaces. Type a hash for a comment.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "# ",
+      "overlay": "comment prefix"
+    },
+    {
+      "wait": 0.5
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The comment marker is at the start of the line, before the indentation. That's what G shift I does."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G shift I. Column one, always. Use it when you need to insert before the indentation."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f code.py"
+    }
+  ]
+}

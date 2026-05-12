@@ -1,0 +1,176 @@
+{
+  "title": "VimFu \u2014 Record-and-Apply Macro",
+  "description": "Record a macro with qa...q, then apply it to every line in the file with :%norm @a.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 630,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f names.csv .names.csv.swp .names.csv.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "names.csv",
+      "content": "alice,30\nbob,25\ncharlie,35\ndiana,28\neve,32"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim names.csv"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Record-and-Apply Macro",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Record a macro on one line, then use percent norm at A to apply it to every line. This combines macros with the norm command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's wrap each name in quotes. Record into register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "qa",
+      "overlay": "start recording"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0i\"",
+      "overlay": "insert quote at start"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f,i\"",
+      "overlay": "quote before comma"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "q",
+      "overlay": "stop recording"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The macro adds a quote at the start and before the comma. Line one is done. Now apply to all lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Type colon percent norm at A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%norm @a",
+      "overlay": ":%norm @a"
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every name is now quoted. The macro ran on each line. Record once, apply everywhere."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f names.csv"
+    }
+  ]
+}

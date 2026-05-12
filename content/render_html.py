@@ -113,7 +113,6 @@ _CODE_RE  = re.compile(r"`([^`]+)`")
 _STRONG_RE = re.compile(r"\*\*([^*]+)\*\*")
 _EM_RE    = re.compile(r"(?<!\*)\*([^*\n]+)\*(?!\*)")
 
-
 def render_inline(text: str, *, current_part: str, index) -> str:
     if text is None:
         return ""

@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 :reg Show All Registers",
+  "description": "The :reg command (or :display) shows the contents of all registers.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 748,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "alpha\nbeta\ngamma\ndelta"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":reg \u2014 Show All Registers",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon reg shows what's stored in every register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: yank some things then show ---"
+    },
+    {
+      "say": "Let's put some text into registers. Yank line one into register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"ayy",
+      "overlay": "yank to reg a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\"byy",
+      "overlay": "yank to reg b"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jdd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now type colon reg to see all registers.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":reg",
+      "overlay": ":reg"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Register A has alpha. Register B has beta. The unnamed register and the numbered registers have the deleted line."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "q",
+      "overlay": "dismiss"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon reg. Inspect all your registers. You can also use colon display."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt"
+    }
+  ]
+}

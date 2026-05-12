@@ -1,0 +1,166 @@
+{
+  "title": "VimFu — Insert Mode Surround",
+  "description": "In insert mode, <C-G>s or <C-S> inserts a surrounding pair and places the cursor between them.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 700,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "surround"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f ins.py .ins.py.swp .ins.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "ins.py",
+      "content": "val = "
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim ins.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Insert Mode Surround",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Surround works in insert mode too. Control G then S, or Control S, inserts a surrounding pair and places your cursor between them."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Enter insert mode at the end of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "A (append)"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control G, S, then double quote.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0007s\"",
+      "overlay": "<C-G>s\""
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "A pair of double quotes appeared and the cursor is between them. Type the content.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "hello"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Hello is inside the quotes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control G S in insert mode. Quick way to type inside surroundings."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f ins.py"
+    }
+  ]
+}

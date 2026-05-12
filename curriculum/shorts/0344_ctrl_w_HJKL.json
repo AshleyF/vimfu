@@ -1,0 +1,185 @@
+{
+  "title": "VimFu \u2014 Ctrl-W H/J/K/L Move Window",
+  "description": "Ctrl-W H/J/K/L physically moves the current window to the far left, bottom, top, or right of the screen.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 485,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f top.py bot.py .top.py.swp .bot.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "top.py",
+      "content": "# Navigation\ndef go_north():\n    print(\"north\")\ndef go_south():\n    print(\"south\")"
+    },
+    {
+      "writeFile": "bot.py",
+      "content": "# Map Data\nmap_size = 64\ntiles = [\"grass\", \"stone\"]"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with horizontal split"
+    },
+    {
+      "line": "nvim -o top.py bot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W H/J/K/L \u2014 Move Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital H J K L after Control W physically moves the window. Not the cursor. The entire window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: move to vertical layout ---"
+    },
+    {
+      "say": "Two files stacked horizontally. Move the top window to the left to make a vertical split.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017H",
+      "overlay": "move to far left"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The layout changed. Side by side now. The window moved to the left edge."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: move back to horizontal ---"
+    },
+    {
+      "say": "Capital K to move it to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017K",
+      "overlay": "move to top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to horizontal. The window is on top again."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: move to bottom ---"
+    },
+    {
+      "say": "Capital J moves it to the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017J",
+      "overlay": "move to bottom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now the navigation file is on the bottom. The layout flipped."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W capital H J K L. Move the entire window to the far left, bottom, top, or right. Rearrange your layout on the fly."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f top.py bot.py"
+    }
+  ]
+}

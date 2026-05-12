@@ -1,0 +1,197 @@
+{
+  "title": "VimFu \u2014 gR Virtual Replace Mode",
+  "description": "gR enters virtual replace mode. Like R (replace mode) but respects tab stops and screen columns instead of replacing bytes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 419,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "replace"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f table.tsv .table.tsv.swp .table.tsv.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with tabs"
+    },
+    {
+      "writeFile": "table.tsv",
+      "content": "Name\tAge\tCity\nAce\t28\tNYC\nBob\t35\tLA\nEve\t22\tSF"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set list' -c 'set listchars=tab:>-' table.tsv"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gR \u2014 Virtual Replace Mode",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G shift R enters virtual replace mode. It replaces characters based on screen columns, not bytes. Tab-aligned columns stay lined up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: compare R vs gR ---"
+    },
+    {
+      "say": "Go to line two. Ace's name. Try regular R first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G0",
+      "overlay": "line 2, start"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "R",
+      "overlay": "replace mode"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "Alexander",
+      "overlay": "type long name"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "say": "Alexander ate into the tab and the age column. The alignment broke. Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now G shift R. Virtual replace mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G0",
+      "overlay": "line 2, start"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gR",
+      "overlay": "virtual replace"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "Alexander",
+      "overlay": "type same name"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The name was replaced, but the tab columns adjusted. The alignment is preserved."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G shift R. Virtual replace mode. It respects screen layout. Use it when editing tab-separated data."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f table.tsv"
+    }
+  ]
+}

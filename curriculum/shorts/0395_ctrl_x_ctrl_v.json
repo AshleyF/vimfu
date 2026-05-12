@@ -1,0 +1,154 @@
+{
+  "title": "VimFu \u2014 Ctrl-X Ctrl-V Vim Command Complete",
+  "description": "Ctrl-X Ctrl-V in insert mode completes Vim command-line words \u2014 useful for scripting.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 536,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "completion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.vim .demo.vim.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.vim",
+      "content": "let g:loaded = 1\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.vim"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-X Ctrl-V \u2014 Vim Commands",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control X Control V completes Vim commands. When you're writing Vim script, it suggests command names, options, and variables."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: complete a vim command ---"
+    },
+    {
+      "say": "Let's write a Vim script line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "Go",
+      "overlay": "new line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "set",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control X Control V to see Vim completions.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0018\u0016",
+      "overlay": "vim commands"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All the set-related commands and options. Perfect for writing vim configuration files."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control X Control V. Vim command completion. When you're writing Vim script or editing your vim-R-C, this helps you get the syntax right."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.vim"
+    }
+  ]
+}

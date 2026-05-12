@@ -1,0 +1,225 @@
+{
+  "title": "VimFu \u2014 v_u / v_U / v_~ \u2014 Case",
+  "description": "In visual mode, u lowercases the selection. U uppercases it. Tilde toggles each character's case.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 595,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f names.py .names.py.swp .names.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "names.py",
+      "content": "# team names\nalpha = \"Red Team\"\nbeta = \"Blue Team\"\ngamma = \"Green Team\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim names.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "v_u / v_U / v_~",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In visual mode, U uppercases, lowercase U lowercases, and tilde toggles case."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select Red Team inside the quotes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf\""
+    },
+    {
+      "keys": "vi\""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Capital U to uppercase.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "U",
+      "overlay": "uppercase"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "RED TEAM. All caps."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now select Blue Team.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf\""
+    },
+    {
+      "keys": "vi\""
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Lowercase U.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "lowercase"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "blue team. All lowercase."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Select Green Team. Tilde to toggle.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf\""
+    },
+    {
+      "keys": "vi\""
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "~",
+      "overlay": "toggle case"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "G became lowercase, R E E N became uppercase. Every character flipped."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "U for uppercase. Lowercase U for lowercase. Tilde to toggle. Three case tools in visual mode."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f names.py"
+    }
+  ]
+}

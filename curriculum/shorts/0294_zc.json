@@ -1,0 +1,172 @@
+{
+  "title": "VimFu \u2014 zc Close Fold",
+  "description": "zc closes one fold under the cursor, hiding the indented block of code.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 435,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f combat.py .combat.py.swp .combat.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "combat.py",
+      "content": "# Combat System\ndef attack(target):\n    damage = 50\n    target.hp -= damage\n    return damage\n\ndef defend(shield):\n    block = shield * 2\n    absorbed = min(block, 100)\n    return absorbed\n\ndef heal(potion):\n    restore = potion.power\n    bonus = restore // 5\n    return restore + bonus\n\ndef flee(speed):\n    chance = speed / 100\n    return chance > 0.5"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with folds open"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' -c 'set foldlevel=99' combat.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zc \u2014 Close Fold",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z C closes a fold under the cursor. It hides the code block so you can see the big picture."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: close the first function ---"
+    },
+    {
+      "say": "All four functions are expanded. Close the first one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": "go to line 3"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zc",
+      "overlay": "close fold"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The body is hidden. Just the function signature remains."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: close another ---"
+    },
+    {
+      "say": "Close the defend function too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4j",
+      "overlay": "jump down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zc",
+      "overlay": "close fold"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Two functions folded. The file is much shorter now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z C. Close a fold to hide code you don't need right now. Use Z O to open it back."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f combat.py"
+    }
+  ]
+}

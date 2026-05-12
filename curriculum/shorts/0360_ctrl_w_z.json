@@ -1,0 +1,241 @@
+{
+  "title": "VimFu \u2014 Ctrl-W z Close Preview",
+  "description": "Ctrl-W z closes the preview window. Quick way to dismiss a tag preview.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 501,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "preview"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f shop.py tags .shop.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "shop.py",
+      "content": "# Item Shop\ndef buy(item, gold):\n    return gold - item.price\n\ndef sell(item, gold):\n    return gold + item.price // 2\n\n# Transaction\ncost = buy(sword, 100)\nearned = sell(potion, 50)"
+    },
+    {
+      "comment": "Create tags file (use printf to preserve tabs)"
+    },
+    {
+      "line": "printf 'buy\\tshop.py\\t/^def buy(/\\nsell\\tshop.py\\t/^def sell(/\\n' > tags"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim shop.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W z \u2014 Close Preview",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W Z closes the preview window. A dedicated command just for previews."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: open and close preview ---"
+    },
+    {
+      "say": "Open a preview first. Move to buy and preview it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "9G",
+      "overlay": "line 9"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "next word"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "to buy"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017}",
+      "overlay": "preview tag"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Preview is showing the buy function. Close it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017z",
+      "overlay": "close preview"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gone. Clean screen again."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: preview sell and close ---"
+    },
+    {
+      "say": "Preview sell this time.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "next word"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "to sell"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017}",
+      "overlay": "preview tag"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017z",
+      "overlay": "close preview"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Open, peek, close. Quick and clean."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W Z. Close the preview window. You can also use colon P close for the same thing."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f shop.py tags"
+    }
+  ]
+}

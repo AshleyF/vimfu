@@ -1,0 +1,163 @@
+{
+  "title": "VimFu \u2014 yyp \u2014 Duplicate Line",
+  "description": "Use yyp to copy the current line and paste it below. A quick way to duplicate lines without leaving normal mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 621,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.py .config.py.swp .config.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "host = \"localhost\"\nport = 8080\ndebug = True"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim config.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "yyp \u2014 Duplicate Line",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Y Y P duplicates the current line. Y Y yanks the line, and P pastes it below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Duplicate the host line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "yyp",
+      "overlay": "duplicate"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now there are two host lines. Edit the copy to make a new setting."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Change host to name with C I W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ciwname",
+      "overlay": "change word"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Change the value too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "f\"",
+      "overlay": "find quote"
+    },
+    {
+      "keys": "ci\"myapp",
+      "overlay": "change inside quotes"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Duplicate then edit. Faster than typing a whole new line from scratch. Y Y P."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f config.py"
+    }
+  ]
+}

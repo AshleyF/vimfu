@@ -1,0 +1,186 @@
+{
+  "title": "VimFu \u2014 [f ]f Go to File",
+  "description": "[f and ]f open the file whose name is under the cursor. Same as gf. Quick file navigation.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 474,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f index.py utils.py .index.py.swp .utils.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create target file"
+    },
+    {
+      "writeFile": "utils.py",
+      "content": "# Utility Functions\ndef add(a, b):\n    return a + b\ndef mul(a, b):\n    return a * b"
+    },
+    {
+      "comment": "Create main file referencing utils"
+    },
+    {
+      "writeFile": "index.py",
+      "content": "# Main Entry Point\nimport utils\n\nresult = utils.add(10, 20)\nprint(result)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim index.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[f ]f \u2014 Go to File",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Open bracket F opens the file under the cursor. It works just like G F. A bracket-command alias for go-to-file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: navigate to utils.py ---"
+    },
+    {
+      "say": "Line two imports utils. Put the cursor on the filename.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "go to line 2"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "to utils"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gf",
+      "overlay": "go to file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Opened utils dot py. We can see the utility functions."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: go back and use [f ---"
+    },
+    {
+      "say": "Go back and try open bracket F. Same result.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u000f",
+      "overlay": "go back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "[f",
+      "overlay": "go to file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same file opened. Open bracket F is an alias for G F."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open bracket F. Go to the file under the cursor. Another way to jump to files referenced in your code."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f index.py utils.py"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "title": "VimFu \u2014 :r !{cmd} Read Command",
+  "description": "The :r !{cmd} command inserts the output of a shell command below the cursor.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 545,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "Notes:\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":r !cmd \u2014 Read Command",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon R bang runs a shell command and inserts the output into your file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Insert today's date.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "type": ":r !date",
+      "overlay": ":r !date"
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The date was inserted right into the file. Any shell command works. L S for directory listings, echo for text."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon R bang. Bridge between the shell and your editor. Run a command, capture the output, keep editing."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt"
+    }
+  ]
+}

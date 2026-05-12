@@ -1,0 +1,69 @@
+{
+  "title": "VimFu — :x — Write and Quit (Smart)",
+  "description": "The :x command is like :wq but smarter. It only writes the file if there are unsaved changes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 718,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    { "comment": "Set TERM for proper color support in Neovim" },
+    { "line": "export TERM=xterm-256color" },
+    { "comment": "Prepare workspace" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f config.txt .config.txt.swp .config.txt.swo" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "comment": "Create demo file" },
+    {
+      "writeFile": "config.txt",
+      "content": "host = localhost\nport = 8080\ndebug = true\nlog_level = info"
+    },
+    { "line": "clear" },
+    { "comment": "Launch nvim" },
+    { "line": "nvim config.txt" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "comment": "--- Title card ---" },
+    { "overlay": "VimFu", "caption": ":x — Write and Quit (Smart)", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "comment": "--- Intro ---" },
+    { "say": "Colon X is like colon W Q, but smarter. It only writes the file if you actually changed something. If nothing changed, it just quits without touching the file." },
+    { "wait": 0.3 },
+    { "comment": "--- Demo: make change and :x ---" },
+    { "say": "Make a quick change.", "wait": false },
+    { "wait": 0.3 },
+    { "keys": "G", "overlay": "go to end" },
+    { "wait": 0.3 },
+    { "keys": "o", "overlay": "open line below" },
+    { "type": "timeout = 30" },
+    "escape",
+    { "wait": 0.5 },
+    { "say": "Now colon X. Since we changed the file, it writes and quits.", "wait": false },
+    { "wait": 0.3 },
+    { "type": ":x" },
+    "enter",
+    { "wait": 0.8 },
+    { "say": "Saved and exited. If we had not changed anything, colon X would have quit without writing. This preserves the file's timestamp." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [
+    { "comment": "Vim already exited via :x" },
+    { "line": "rm -f config.txt" }
+  ]
+}

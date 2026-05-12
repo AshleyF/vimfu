@@ -1,0 +1,179 @@
+{
+  "title": "VimFu \u2014 zv View Cursor Line",
+  "description": "zv opens just enough folds to make the cursor line visible. Useful when you jump to a line buried in folds.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 438,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with nested code"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "class Quest:\n    def start(self):\n        print(\"Adventure begins!\")\n        self.active = True\n        return self.active\n    def reward(self):\n        gold = 500\n        xp = 1000\n        return gold, xp\n\nclass Tavern:\n    def enter(self):\n        print(\"Welcome, hero!\")\n        self.visited = True\n    def rest(self):\n        heal = 100\n        return heal"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with indent folds, line numbers, all folds closed"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' -c 'set number' quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zv \u2014 View Cursor Line",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z V opens just enough folds to make the cursor line visible. Jump anywhere and Z V reveals it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump into a fold and reveal ---"
+    },
+    {
+      "say": "Everything is folded. Jump to line three. It's inside the Quest class.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": "go to line 3"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The cursor is on the fold. Z V to reveal the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zv",
+      "overlay": "view cursor line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line three is now visible. Only the folds around it opened."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump to another hidden line ---"
+    },
+    {
+      "say": "Jump to line fifteen. It's inside the Tavern class.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "15G",
+      "overlay": "go to line 15"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zv",
+      "overlay": "view cursor line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both sections visible now. Z V opens the minimum number of folds."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z V. View cursor line. Jump to any line number and Z V makes it visible."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f quest.py"
+    }
+  ]
+}

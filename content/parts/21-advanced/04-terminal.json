@@ -3,39 +3,78 @@
   "version": 1,
   "id": "advanced.terminal",
   "title": "Terminal Inside Vim",
-  "subtitle": ":terminal opens a real shell — usable with Vim navigation.",
+  "subtitle": "{key::terminal} opens a real shell — usable with Vim navigation.",
   "part": "advanced",
   "summary": ":terminal (or :term) opens a buffer running an interactive shell. You can switch to Normal mode inside the terminal to scroll back, search, and yank with normal Vim motions.",
-  "keys": [":term"],
-  "lessons": [489, 490],
-  "see_also": ["ex.shell", "windows.splits"],
-
+  "keys": [
+    ":term"
+  ],
+  "lessons": [
+    489,
+    490
+  ],
+  "see_also": [
+    "ex.shell",
+    "windows.splits"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Terminal Inside Vim" },
-
-    { "type": "prose", "text": "{key::}{key:t}{key:e}{key:r}{key:m}{key:i}{key:n}{key:a}{key:l} (or `:term`) opens a real interactive shell *inside a Vim buffer*. It's a buffer like any other — split it, switch to it, yank from it." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Terminal Inside Vim"
+    },
+    {
+      "type": "prose",
+      "text": "{key::}{key:t}{key:e}{key:r}{key:m}{key:i}{key:n}{key:a}{key:l} (or `:term`) opens a real interactive shell *inside a Vim buffer*. It's a buffer like any other — split it, switch to it, yank from it."
+    },
     {
       "type": "table",
-      "headers": ["Action",                       "How"],
+      "headers": [
+        "Action",
+        "How"
+      ],
       "rows": [
-        ["Open a terminal",                       ":terminal"],
-        ["Open in horizontal split",              ":term"],
-        ["Open in vertical split",                ":vert term"],
-        ["Run a one-shot command",                ":term make"],
-        ["Switch to Normal mode in terminal",     "{key:Ctrl-W}{key:N}"],
-        ["Back to interactive Insert",            "{key:i} or {key:a}"],
-        ["Send keystrokes from Normal",           "{key:Ctrl-W}{key:\"}{reg} pastes register"]
+        [
+          "Open a terminal",
+          ":terminal"
+        ],
+        [
+          "Open in horizontal split",
+          ":term"
+        ],
+        [
+          "Open in vertical split",
+          ":vert term"
+        ],
+        [
+          "Run a one-shot command",
+          ":term make"
+        ],
+        [
+          "Switch to Normal mode in terminal",
+          "{key:Ctrl-W}{key:N}"
+        ],
+        [
+          "Back to interactive Insert",
+          "{key:i} or {key:a}"
+        ],
+        [
+          "Send keystrokes from Normal",
+          "{key:Ctrl-W}{key:\"}{reg} pastes register"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "Two States: Terminal-Job and Terminal-Normal",
       "text": "A terminal buffer has two modes:\n\n  • **Terminal-Job** — keystrokes go to the shell process. This is the default — feels like a normal terminal.\n  • **Terminal-Normal** — keystrokes are interpreted by Vim. You can scroll back through output, search with {key:/}, yank text with {key:y}, etc.\n\nSwitch to Terminal-Normal with {key:Ctrl-W}{key:N} (or {key:Ctrl-\\}{key:Ctrl-N} in Vim 8, or just {key:Esc} in Neovim). Switch back with {key:i} or {key:a} (just like Normal → Insert).\n\nThis means your terminal buffer's scrollback is searchable and yankable using all your Vim muscle memory. Saw an error message? {key:Ctrl-W}{key:N} {key:?error}{key:Enter} {key:y}{key:y} to yank the line.\n\nNote: {key:Ctrl-W} in Terminal-Job is the *window prefix*, not delete-word. To send literal {key:Ctrl-W} to the shell, prefix with {key:Ctrl-W}{key:.}."
     },
-
-    { "type": "qr", "topic": "advanced.terminal" },
-    { "type": "buy-prompt" }
+    {
+      "type": "qr",
+      "topic": "advanced.terminal"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

@@ -1,0 +1,165 @@
+{
+  "title": "VimFu \u2014 g& Repeat Substitution",
+  "description": "g& repeats the last substitution on all lines. It's a shortcut for :%s//~/& \u2014 same pattern, same replacement, whole file.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 423,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "substitution"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f colors.py .colors.py.swp .colors.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "colors.py",
+      "content": "# Color Theme\nbg = \"red\"\nfg = \"blue\"\nborder = \"red\"\nhover = \"red\"\nactive = \"green\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim colors.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "g& \u2014 Repeat Substitution",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G ampersand repeats the last substitution across all lines. Run a substitute on one line, then G ampersand to apply it everywhere."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: substitute on one line ---"
+    },
+    {
+      "say": "Go to line two. Replace red with orange, just on this line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":s/red/orange/",
+      "overlay": "substitute on line"
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Red became orange on line two. But lines four and five still say red."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: g& to apply everywhere ---"
+    },
+    {
+      "say": "G ampersand. Apply the same substitution to all lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g&",
+      "overlay": "all lines!"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All reds are now orange. Every line got the substitution. One keystroke."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G ampersand. Repeat the last substitute on all lines. Test it on one line, then apply everywhere."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f colors.py"
+    }
+  ]
+}

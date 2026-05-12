@@ -1,0 +1,175 @@
+{
+  "title": "VimFu \u2014 :'<,'>s Substitute in Selection",
+  "description": "After making a visual selection, use :'<,'>s to substitute only within the selected lines.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 744,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "item: apple\nitem: banana\nitem: cherry\nitem: date\nitem: elderberry\nitem: fig"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":'<,'>s \u2014 Substitute in Selection",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "You can substitute only within a visual selection. Select the lines first, then run colon S."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: visual select then substitute ---"
+    },
+    {
+      "say": "Select lines two through four with visual line mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "move to line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": "select 3 lines"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now type colon. Vim fills in the selection marks automatically.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":",
+      "overlay": ":"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "s/item/fruit/g",
+      "overlay": "s/item/fruit/g"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Only lines two, three, and four changed. Lines one, five, and six still say item."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Visual select, then colon S. Substitute only where you need it."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt"
+    }
+  ]
+}

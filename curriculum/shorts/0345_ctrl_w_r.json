@@ -1,0 +1,189 @@
+{
+  "title": "VimFu \u2014 Ctrl-W r/R Rotate Windows",
+  "description": "Ctrl-W r rotates windows downward. Ctrl-W R rotates upward. Shuffle panes without changing the layout.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 486,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .a.py.swp .b.py.swp .c.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create three files"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# File A \u2014 Red\ncolor = \"red\""
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# File B \u2014 Green\ncolor = \"green\""
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# File C \u2014 Blue\ncolor = \"blue\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with three horizontal splits"
+    },
+    {
+      "line": "nvim -o a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W r/R \u2014 Rotate Windows",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W R rotates windows downward. Capital R rotates upward. The layout stays the same. The contents shuffle."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: rotate down ---"
+    },
+    {
+      "say": "Red on top, green in the middle, blue on the bottom. Rotate down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017r",
+      "overlay": "rotate down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Blue moved to the top. Everyone shifted down one position."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: rotate down again ---"
+    },
+    {
+      "say": "Rotate again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017r",
+      "overlay": "rotate down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Green on top now. One more rotation and we're back where we started."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: rotate up ---"
+    },
+    {
+      "say": "Capital R rotates the other direction. Back up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017R",
+      "overlay": "rotate up"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Blue is back on top. Reverse rotation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W R to rotate down. Capital R to rotate up. Shuffle your windows without changing the split layout."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ]
+}

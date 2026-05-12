@@ -1,0 +1,175 @@
+{
+  "title": "VimFu \u2014 Ctrl-R {reg} \u2014 Insert Register",
+  "description": "Press Ctrl-R followed by a register name on the command line to insert that register's contents.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 606,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f data.py .data.py.swp .data.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "data.py",
+      "content": "# data\nold_name = \"alpha\"\nold_name = \"beta\"\nold_name = \"gamma\"\nresult = old_name"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim data.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-R {reg} \u2014 Insert Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "On the command line, Control R followed by a register name pastes that register's contents. Great for building commands from text in your file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "First, yank a word into register A. Move to old underscore name and yank it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "keys": "\"ayiw",
+      "overlay": "yank word to a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now start a substitute command. Colon percent S slash.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press Control R then A to paste register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+r",
+      "overlay": "paste register"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The word was inserted into the command line. Now finish the substitute.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/new_name/g"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Every old name became new name. Control R pastes any register right into the command line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control R then the register letter. Insert register contents on the command line."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f data.py"
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+{
+  "title": "VimFu \u2014 :mkview / :loadview \u2014 Save Folds",
+  "description": "Use :mkview to save your fold state and :loadview to restore it when you reopen the file.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 651,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f viewdemo.txt .viewdemo.txt.swp .viewdemo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "viewdemo.txt",
+      "content": "Section One\n  detail a\n  detail b\n  detail c\nSection Two\n  item x\n  item y\nSection Three\n  note 1\n  note 2\n  note 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim viewdemo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":mkview / :loadview",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "When you set up folds, you lose them when you close the file. Mkview saves them and load view restores them."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "First, enable indent folding and close all folds.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set foldmethod=indent shiftwidth=2"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zM",
+      "overlay": "close all"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now open just section two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j"
+    },
+    {
+      "keys": "zo",
+      "overlay": "open fold"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "We have a custom fold layout. Save it with mkview.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":mkview"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Fold state saved. Now let's mess it up. Open all folds.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zR",
+      "overlay": "open all"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "All folds are open. Restore our saved view with loadview.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":loadview"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The fold state is restored exactly as we saved it. Section two open, the rest closed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Mkview and loadview. Save and restore your fold layout across sessions."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f viewdemo.txt"
+    }
+  ]
+}

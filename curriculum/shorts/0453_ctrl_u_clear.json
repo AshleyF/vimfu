@@ -1,0 +1,146 @@
+{
+  "title": "VimFu \u2014 Ctrl-U \u2014 Clear Line",
+  "description": "Press Ctrl-U on the command line to delete everything you've typed, giving you a fresh start.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 609,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# demo\nalpha = 1\nbeta = 2\ngamma = 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-U \u2014 Clear Line",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control U clears the entire command line. If you're halfway through a command and want to start over, this is faster than backspacing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Type a substitute command. Colon percent S slash alpha slash omega slash G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/alpha/omega/g"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Oops, wrong command. Press Control U to wipe the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+u",
+      "overlay": "clear line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Gone. The command line is empty. Now type the right command.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "set number"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Much faster than pressing backspace twenty times. Control U. Clear the command line instantly."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "title": "VimFu \u2014 gd Go to Local Definition",
+  "description": "gd jumps to the local definition of the word under the cursor. It searches from the top of the current function for the first occurrence.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 391,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f calc.py .calc.py.swp .calc.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with local variable usage"
+    },
+    {
+      "writeFile": "calc.py",
+      "content": "# Calculator\n\ndef compute_total(items):\n    tax_rate = 0.08\n    subtotal = 0\n    for item in items:\n        price = item['price']\n        qty = item['qty']\n        subtotal += price * qty\n    tax = subtotal * tax_rate\n    total = subtotal + tax\n    return total\n\ndef format_receipt(items):\n    lines = []\n    for item in items:\n        name = item['name']\n        cost = item['price'] * item['qty']\n        lines.append(f\"{name}: ${cost}\")\n    return '\\n'.join(lines)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' calc.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gd \u2014 Go to Local Definition",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G D jumps to the local definition of the word under the cursor. Vim searches backward from the cursor for the first occurrence."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to definition of tax_rate ---"
+    },
+    {
+      "say": "Go to line ten where tax rate is used.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "10G",
+      "overlay": "line 10"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$b",
+      "overlay": "on tax_rate"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G D. Jump to where tax rate is defined.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gd",
+      "overlay": "local definition"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line four. That's where tax rate is first assigned."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump to definition of subtotal ---"
+    },
+    {
+      "say": "Go to line eleven where total uses subtotal.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "11G",
+      "overlay": "line 11"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ww",
+      "overlay": "on subtotal"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gd",
+      "overlay": "gd"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line five. Where subtotal is first defined."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G D. Jump to the local definition. It uses simple text search, not a language server, so it works in any file type."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f calc.py"
+    }
+  ]
+}

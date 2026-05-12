@@ -1,0 +1,195 @@
+{
+  "title": "VimFu \u2014 v_p \u2014 Replace Selection",
+  "description": "In visual mode, p replaces the selected text with the contents of the register. The old selection goes into the register.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 597,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f swap.py .swap.py.swp .swap.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "swap.py",
+      "content": "# colors\nfirst = \"red\"\nsecond = \"blue\"\nthird = \"green\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim swap.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "v_p \u2014 Replace Selection",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "In visual mode, P replaces the selection with the register contents. It's like paste over."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "First, yank the word red. Y I W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf\""
+    },
+    {
+      "keys": "yi\""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Red is in the register. Now select blue.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf\""
+    },
+    {
+      "keys": "vi\""
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "P to paste over the selection.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "paste over"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Blue replaced with red. And now blue is in the register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select green. P again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf\""
+    },
+    {
+      "keys": "vi\""
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "p",
+      "overlay": "paste over"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Green replaced with blue. The old selection swaps into the register each time."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Visual P. Select text, press P, and the register replaces it. Great for swapping words."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f swap.py"
+    }
+  ]
+}

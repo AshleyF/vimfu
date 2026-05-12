@@ -1,0 +1,176 @@
+{
+  "title": "VimFu \u2014 The : Register",
+  "description": "The \": register contains the last Ex command you ran. Use it to recall or paste your previous command.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 640,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f cmdreg.txt .cmdreg.txt.swp .cmdreg.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "cmdreg.txt",
+      "content": "one\ntwo\nthree\nfour\nfive"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim cmdreg.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "The : Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The colon register, quote colon, stores the last ex command you ran."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Run a substitution command first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/two/TWO/g"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now check the colon register.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":echo @:"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It shows the substitution command. Percent S slash two slash TWO slash G."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can re-execute it with at colon.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":@:"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "At colon reruns the last ex command. You can also paste the command into your file with quote colon P."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "keys": "\":",
+      "overlay": "colon register"
+    },
+    {
+      "keys": "p",
+      "overlay": "paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The command is now in the file. Quote colon. The last ex command, always available."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f cmdreg.txt"
+    }
+  ]
+}

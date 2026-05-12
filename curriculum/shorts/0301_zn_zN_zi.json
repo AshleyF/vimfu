@@ -1,0 +1,182 @@
+{
+  "title": "VimFu \u2014 zn zN zi Enable Disable Folds",
+  "description": "zn disables folding entirely. zN re-enables it. zi toggles. Quickly show or hide all fold markers.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 442,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f ai.py .ai.py.swp .ai.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "ai.py",
+      "content": "# Robot AI\ndef think(data):\n    result = analyze(data)\n    plan = strategize(result)\n    return plan\n\ndef act(plan):\n    for step in plan:\n        execute(step)\n    return True\n\ndef learn(outcome):\n    memory = store(outcome)\n    adapt(memory)\n    return memory"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with indent folds closed"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=indent' ai.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zn zN zi \u2014 Enable/Disable Folds",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z N disables folding. Capital Z capital N re-enables it. Z I toggles between the two."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: disable with zn ---"
+    },
+    {
+      "say": "The function bodies are folded. Z N turns off folding entirely.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zn",
+      "overlay": "disable folds"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All code visible. Folding is off. The fold markers are gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: re-enable with zN ---"
+    },
+    {
+      "say": "Capital Z capital N turns folding back on.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zN",
+      "overlay": "enable folds"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Folds are back. Everything that was folded before is folded again."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: toggle with zi ---"
+    },
+    {
+      "say": "Z I toggles. One keystroke to flip.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zi",
+      "overlay": "toggle folds"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "zi",
+      "overlay": "toggle back"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z N off. Capital Z capital N on. Z I toggle. Quick way to see all your code without losing fold state."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f ai.py"
+    }
+  ]
+}

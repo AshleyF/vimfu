@@ -1,0 +1,229 @@
+{
+  "title": "VimFu \u2014 Undo Branches",
+  "description": "Use g- and g+ to navigate the full undo tree, including branches that linear undo/redo would skip.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 637,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f branches.txt .branches.txt.swp .branches.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "branches.txt",
+      "content": "hello world"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim branches.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Undo Branches",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Vim doesn't just have linear undo. It keeps a full undo tree with branches. If you undo, then make a new change, the old redo path becomes a branch."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Let's create a branch. First, add some text.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append at end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": " one"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now add more text in a new edit.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "type": " two"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo that last change.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now add different text. This creates a branch.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "type": " three"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now if I press U, I undo the word three. But control R only redoes three. The word two is on a lost branch."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G minus walks backward through every state in time order, even across branches.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g-",
+      "overlay": "older state"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "We're back to hello world one two. That branch is reachable with G minus."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G plus moves forward in time.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g+",
+      "overlay": "newer state"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "G minus and G plus. They walk the undo tree in chronological order, so you never lose any change."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f branches.txt"
+    }
+  ]
+}

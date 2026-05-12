@@ -1,0 +1,186 @@
+{
+  "title": "VimFu \u2014 Ctrl-W n New Window",
+  "description": "Ctrl-W n opens a new empty window with a horizontal split. Start a new file without leaving your current one.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 477,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py .quest.py.swp .quest.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "# Active Quests\nquest_1 = \"Slay the dragon\"\nquest_2 = \"Find the gem\"\nquest_3 = \"Save the village\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim quest.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W n \u2014 New Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W N opens a new empty window above the current one. A fresh buffer ready for editing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: open new window ---"
+    },
+    {
+      "say": "Open a new window.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017n",
+      "overlay": "new window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A blank buffer appeared on top. The quest file is below. You can start typing in the new buffer."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: type something ---"
+    },
+    {
+      "say": "Type some notes.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i",
+      "overlay": "insert mode"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "# Scratch pad",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "A scratch buffer for quick notes while your main file stays open."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: switch back ---"
+    },
+    {
+      "say": "Control W J to go back to the quest file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017j",
+      "overlay": "move down"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W N. Open a new empty window. Perfect for scratch work without closing your file."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f quest.py"
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "title": "VimFu \u2014 Ctrl-W >/< Resize Width",
+  "description": "Ctrl-W > increases window width. Ctrl-W < decreases it. Adjust vertical split widths.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 490,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f left.py right.py .left.py.swp .right.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "left.py",
+      "content": "# Left\nx = 10\ny = 20"
+    },
+    {
+      "writeFile": "right.py",
+      "content": "# Right\na = 30\nb = 40"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with vertical split"
+    },
+    {
+      "line": "nvim -O left.py right.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W >/< \u2014 Resize Width",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W greater-than increases window width. Less-than decreases it. For vertical splits."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: widen left ---"
+    },
+    {
+      "say": "Two files side by side. Make the left pane wider.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5\u0017>",
+      "overlay": "widen 5 cols"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Left pane grew. Right pane shrunk."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: shrink it ---"
+    },
+    {
+      "say": "Too wide. Shrink it back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5\u0017<",
+      "overlay": "shrink 5 cols"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Even again. Fine-tune with a count."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: widen from right side ---"
+    },
+    {
+      "say": "Move to the right pane and widen it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017l",
+      "overlay": "move right"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5\u0017>",
+      "overlay": "widen right"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Right pane is wider now. Greater-than always widens the current window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W greater-than to widen. Less-than to narrow. Add a count for bigger moves."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f left.py right.py"
+    }
+  ]
+}

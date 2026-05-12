@@ -1,0 +1,119 @@
+{
+  "title": "VimFu \u2014 :s/old/new/ Substitute",
+  "description": "The :s command replaces the first occurrence of a pattern on the current line.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 546,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "substitute"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nold = \"old old old\"\nkeep = \"safe\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":s \u2014 Substitute",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon S slash old slash new slash. Replace the first occurrence of old with new on the current line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Go to line two. It has old three times.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "to line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":s/old/new/",
+      "overlay": ":s/old/new/"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Only the first old changed to new. The other two are untouched. That's the default. One replacement per line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon S. Search and replace on the current line. Add G at the end to replace all occurrences."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

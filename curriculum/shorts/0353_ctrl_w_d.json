@@ -1,0 +1,209 @@
+{
+  "title": "VimFu \u2014 Ctrl-W d Split Definition",
+  "description": "Ctrl-W d splits the window and jumps to the local definition of the word under the cursor.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 494,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f game.c .game.c.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with #define macros and usage"
+    },
+    {
+      "writeFile": "game.c",
+      "content": "// Game Engine\nint result = ATTACK * 2;\nint block = DEFEND + 5;\nint hp = HP_MAX;\n\n#define ATTACK 25\n#define DEFEND 10\n#define HP_MAX 100"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim -c 'silent! nunmap <C-W>d' game.c"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W d \u2014 Split Definition",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W D splits the window and jumps to the definition of the word under the cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to attack definition ---"
+    },
+    {
+      "say": "Move to where attack is used.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "go to line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3w",
+      "overlay": "to ATTACK"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor is on ATTACK. Split and jump to its define.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "w",
+      "overlay": "split to definition"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A new split opened showing the define for ATTACK. The call site is still visible below."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: close and try DEFEND ---"
+    },
+    {
+      "say": "Close this split and try DEFEND.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "w",
+      "overlay": "close"
+    },
+    {
+      "keys": "c"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G0",
+      "overlay": "go to line 3"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "3w",
+      "overlay": "to DEFEND"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "w",
+      "overlay": "split to definition"
+    },
+    {
+      "keys": "d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the DEFEND define. Definition in one pane, usage in the other."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W D. Split and jump to definition. See both the call site and the source at once."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f game.c"
+    }
+  ]
+}

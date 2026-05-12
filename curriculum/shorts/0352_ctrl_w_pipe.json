@@ -1,0 +1,176 @@
+{
+  "title": "VimFu \u2014 Ctrl-W | Max Width",
+  "description": "Ctrl-W | maximizes the current window's width in a vertical split.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 493,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f east.py west.py .east.py.swp .west.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "east.py",
+      "content": "# East\nsun = \"rises\"\ntime = \"dawn\""
+    },
+    {
+      "writeFile": "west.py",
+      "content": "# West\nsun = \"sets\"\ntime = \"dusk\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with vertical split"
+    },
+    {
+      "line": "nvim -O east.py west.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W | \u2014 Max Width",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W pipe maximizes the current window's width. The other windows collapse."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: maximize left ---"
+    },
+    {
+      "say": "Two files side by side. Maximize the east file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017|",
+      "overlay": "max width"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "East fills the screen. West is a sliver."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: equalize and maximize right ---"
+    },
+    {
+      "say": "Equalize, move right, and maximize west.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017=",
+      "overlay": "equalize"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017l",
+      "overlay": "move right"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017|",
+      "overlay": "max width"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "West dominates. Same command, different window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W pipe. Maximize width in vertical splits. Pair it with Control W equals to reset."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f east.py west.py"
+    }
+  ]
+}

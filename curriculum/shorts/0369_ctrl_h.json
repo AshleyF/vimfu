@@ -1,0 +1,174 @@
+{
+  "title": "VimFu \u2014 Ctrl-H Backspace in Insert",
+  "description": "Ctrl-H deletes the character before the cursor in insert mode, same as Backspace.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 510,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nname = \"vimm\"\ncount = 42"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-H \u2014 Delete Char Back",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control H in insert mode deletes the character before the cursor. Same as Backspace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: fix typo ---"
+    },
+    {
+      "say": "Line two has a typo. Vim m m. Let's fix it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Backspace to delete the extra m.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\b\b",
+      "overlay": "Backspace \u00d7 2"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Same thing with Control H.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "mm",
+      "overlay": ""
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\b",
+      "overlay": "delete back"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Same result. Control H keeps your hands on the home row. No reaching for Backspace."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control H. Delete the character behind the cursor in insert mode. It's just Backspace, but closer to your fingers."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

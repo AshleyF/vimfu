@@ -1,0 +1,33 @@
+{
+  "title": "VimFu — :tabnew New Tab",
+  "description": "The :tabnew command opens a new tab page.",
+  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 556,
+  "ttsVoice": "echo", "playlist": "VimFu",
+  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "tabs"],
+  "setup": [
+    { "line": "export TERM=xterm-256color" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f demo.py .demo.py.swp" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "writeFile": "demo.py", "content": "# Demo\nprint(\"tab one\")" },
+    { "line": "clear" },
+    { "line": "nvim demo.py" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "overlay": "VimFu", "caption": ":tabnew — New Tab", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "say": "Colon tab new opens a fresh tab page." },
+    { "wait": 0.3 },
+    { "type": ":tabnew", "overlay": ":tabnew" }, "enter",
+    { "wait": 0.5 },
+    { "say": "A new empty tab. See the tab bar at the top. Two tabs now." },
+    { "wait": 0.3 },
+    { "say": "You can also open a file directly. Colon tab new filename. It opens that file in a new tab." },
+    { "wait": 0.3 },
+    { "say": "Colon tab new. A fresh tab for a fresh task." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [ "escape", { "type": ":qa!" }, "enter", { "line": "rm -f demo.py" } ]
+}

@@ -1,0 +1,175 @@
+{
+  "title": "VimFu \u2014 gn with Dot",
+  "description": "Search for a pattern, use cgn to change the next match, then dot to repeat on subsequent matches.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 633,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f app.py .app.py.swp .app.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "app.py",
+      "content": "old = get_old()\nprint(old)\nif old > 0:\n    save(old)\nlog(old)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim app.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "gn with Dot",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G N selects the next search match. Combined with C, it becomes C G N, which changes the next match. Then dot repeats it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "First, search for old.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/old",
+      "overlay": "search"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now type C G N, then type the replacement: new.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "cgn",
+      "overlay": "change next match"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "new"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The first old changed to new. Now just press dot.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ".",
+      "overlay": "repeat"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Each dot found the next old and changed it to new. Unlike star-dot, you don't need to press N between dots. G N does the searching for you."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f app.py"
+    }
+  ]
+}

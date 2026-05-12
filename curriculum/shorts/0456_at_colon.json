@@ -1,0 +1,171 @@
+{
+  "title": "VimFu \u2014 @: \u2014 Repeat Last Command",
+  "description": "Press @: to repeat the last Ex command. After that, @@ repeats it again.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 612,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f lines.py .lines.py.swp .lines.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "lines.py",
+      "content": "# lines\na = 1\nb = 2\nc = 3\nd = 4\ne = 5\nf = 6"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim lines.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "@: \u2014 Repeat Last Command",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "At colon repeats the last Ex command. If you need to run the same command again, this saves you from retyping it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Delete the last line with colon dollar D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":$d"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Line F is gone. Now press at colon to repeat.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@:",
+      "overlay": "repeat last command"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Line E is gone too. Same command, re-executed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "After the first at colon, you can use at at to keep repeating.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@@",
+      "overlay": "repeat again"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Line D gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "@@"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Line C gone. At colon for the first repeat, then at at to keep going."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "At colon. Repeat the last Ex command."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f lines.py"
+    }
+  ]
+}

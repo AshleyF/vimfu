@@ -1,0 +1,158 @@
+{
+  "title": "VimFu \u2014 zb Scroll to Bottom",
+  "description": "zb scrolls the screen so the cursor line is at the bottom. See everything above your current position.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 429,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "z commands",
+    "scroll"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tower.py .tower.py.swp .tower.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "tower.py",
+      "content": "# Tower Defense\nimport math\n\nclass Tower:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n        self.range = 5\n        self.damage = 10\n        self.cooldown = 1.0\n        self.level = 1\n\n    def upgrade(self):\n        self.level += 1\n        self.damage *= 1.5\n        self.range += 1\n\n    def in_range(self, enemy):\n        dx = self.x - enemy.x\n        dy = self.y - enemy.y\n        dist = math.sqrt(dx*dx + dy*dy)\n        return dist <= self.range\n\n    def fire(self, enemy):\n        if self.in_range(enemy):\n            enemy.hp -= self.damage\n            return True\n        return False"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set number' tower.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zb \u2014 Scroll to Bottom",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z B scrolls so your cursor line is at the bottom of the screen. See everything above. Great for reviewing what you just wrote."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to end of function, zb ---"
+    },
+    {
+      "say": "Go to the end of the upgrade method. Line seventeen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "17G",
+      "overlay": "line 17"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zb",
+      "overlay": "scroll to bottom"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Cursor at the bottom. The whole method and the class above it are visible. Full backward context."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: use case ---"
+    },
+    {
+      "say": "Z B is perfect when you need to see what came before. Like checking the init method while editing upgrade.",
+      "wait": false
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Summary ---"
+    },
+    {
+      "say": "Z Z centers. Z T scrolls to top. Z B scrolls to bottom. Three scroll commands, three perspectives."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z B. Cursor to the bottom. Use it when context is above you."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f tower.py"
+    }
+  ]
+}

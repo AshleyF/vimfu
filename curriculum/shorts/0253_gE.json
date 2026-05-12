@@ -1,0 +1,231 @@
+{
+  "title": "VimFu \u2014 gE End of Previous WORD",
+  "description": "gE moves backward to the end of the previous WORD (whitespace-delimited). Like ge but treats punctuation as part of the word.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 394,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "motion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f paths.txt .paths.txt.swp .paths.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with punctuation-heavy text"
+    },
+    {
+      "writeFile": "paths.txt",
+      "content": "file: /usr/local/bin/python3\nurl: https://api.example.com/v2\nemail: user@mail.example.org\ncmd: grep -rn \"pattern\" src/"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim paths.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gE \u2014 End of Previous WORD",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G shift E moves backward to the end of the previous big WORD. A big WORD is separated by whitespace only, so punctuation is included."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: compare ge and gE on a path ---"
+    },
+    {
+      "say": "Go to the end of line one. The file path.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G E, lowercase. It stops at each slash and word boundary.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ge",
+      "overlay": "small word"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "ge",
+      "overlay": "ge"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "ge",
+      "overlay": "ge"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Many stops. Now go back to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G shift E. One jump takes you past the entire path.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gE",
+      "overlay": "big WORD"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One move, right to the end of file colon. The path was treated as one big WORD."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: URL ---"
+    },
+    {
+      "say": "Line two. End of the URL.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G$",
+      "overlay": "end of line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G shift E.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gE",
+      "overlay": "gE"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Jumped right past the entire URL in one move."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G shift E. End of previous big WORD. Use it when text has lots of punctuation like paths, URLs, and email addresses."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f paths.txt"
+    }
+  ]
+}

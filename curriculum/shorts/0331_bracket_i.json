@@ -1,0 +1,186 @@
+{
+  "title": "VimFu \u2014 [i ]i Show Include",
+  "description": "[i shows the first line matching the word under the cursor in included files. ]i searches from the cursor.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 472,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "C"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f main.c .main.c.swp .main.c.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "main.c",
+      "content": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    printf(\"Hello dungeon!\");\n    int *loot = malloc(100);\n    free(loot);\n    return 0;\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' main.c"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[i ]i \u2014 Show Include",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Open bracket I shows the first line in the file that matches the word under the cursor. Useful for finding where something is defined."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: find printf ---"
+    },
+    {
+      "say": "Cursor on printf on line five. Open bracket I to find the first match.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5G",
+      "overlay": "go to line 5"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "to printf"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[i",
+      "overlay": "show match"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "It shows the include line for stdio at the bottom. That's where printf comes from."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: find malloc ---"
+    },
+    {
+      "say": "Try malloc on line six.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6G",
+      "overlay": "go to line 6"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "3w",
+      "overlay": "to malloc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[i",
+      "overlay": "show match"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Found the stdlib include. Quick way to trace where functions come from."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open bracket I. Show the first matching line. Trace function origins in C code."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f main.c"
+    }
+  ]
+}

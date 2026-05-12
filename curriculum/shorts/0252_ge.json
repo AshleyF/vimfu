@@ -1,0 +1,249 @@
+{
+  "title": "VimFu \u2014 ge End of Previous Word",
+  "description": "ge moves backward to the end of the previous word. The complement to e (end of next word) and b (beginning of previous word).",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 393,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "motion"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f words.txt .words.txt.swp .words.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "words.txt",
+      "content": "the quick brown fox jumps\nover the lazy sleeping dog\nfast cars and slow trains\nred green blue yellow pink"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim words.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "ge \u2014 End of Previous Word",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G E moves backward to the end of the previous word. You know E for end of word forward. G E does it backward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: move with ge ---"
+    },
+    {
+      "say": "The cursor is on line one. Move to the word jumps.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G E. Back to the end of fox.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ge",
+      "overlay": "end of 'fox'"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G E again. End of brown.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ge",
+      "overlay": "end of 'brown'"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "One more. End of quick.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ge",
+      "overlay": "end of 'quick'"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: compare e and ge ---"
+    },
+    {
+      "say": "Compare with E forward. E goes to the end of the next word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": "end of 'brown'"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "e",
+      "overlay": "end of 'fox'"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "G E goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ge",
+      "overlay": "end of 'brown'"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "ge",
+      "overlay": "end of 'quick'"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 3: with a count ---"
+    },
+    {
+      "say": "Use a count. Three G E jumps back three word endings.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3ge",
+      "overlay": "3ge"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Skipped three word endings in one move."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G E. Backward to the end of the previous word. B goes to the beginning, G E goes to the end."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f words.txt"
+    }
+  ]
+}

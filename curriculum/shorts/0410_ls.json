@@ -1,0 +1,127 @@
+{
+  "title": "VimFu \u2014 :ls List Buffers",
+  "description": "The :ls command shows all open buffers with their status indicators.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 551,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "buffers"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .a.py.swp .b.py.swp .c.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# File A"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# File B"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# File C"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":ls \u2014 List Buffers",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon L S shows all open buffers. Every file you've opened in this session."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "List the buffers.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":ls",
+      "overlay": "list buffers"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three buffers. The percent sign marks the current one. The hash marks the alternate. A means active."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon L S. See all your open files at a glance. Use colon B to switch between them."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ]
+}

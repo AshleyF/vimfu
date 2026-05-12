@@ -1,0 +1,206 @@
+{
+  "title": "VimFu \u2014 Ctrl-W _ Max Height",
+  "description": "Ctrl-W _ maximizes the current window's height. It takes up as much vertical space as possible.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 492,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f big.py small.py .big.py.swp .small.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "big.py",
+      "content": "# Big Module\ndef one():\n    return 1\ndef two():\n    return 2\ndef three():\n    return 3\ndef four():\n    return 4"
+    },
+    {
+      "writeFile": "small.py",
+      "content": "# Small\nx = 0"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with two splits"
+    },
+    {
+      "line": "nvim -o big.py small.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W _ \u2014 Max Height",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W underscore maximizes the current window's height. The other windows shrink to one line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: maximize top ---"
+    },
+    {
+      "say": "Big module on top. Maximize it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017_",
+      "overlay": "max height"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The big file fills the screen. Small is compressed to a single status line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: equalize then maximize the other ---"
+    },
+    {
+      "say": "Equalize, then maximize the small file instead.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017=",
+      "overlay": "equalize"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0017j",
+      "overlay": "move down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017_",
+      "overlay": "max height"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Small file is maximized now. Same command, different window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: with count ---"
+    },
+    {
+      "say": "Add a count to set an exact height. Five underscore.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017=",
+      "overlay": "equalize"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5\u0017_",
+      "overlay": "set height 5"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Exactly five lines tall. Precise control."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W underscore. Maximize height, or set an exact height with a count."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f big.py small.py"
+    }
+  ]
+}

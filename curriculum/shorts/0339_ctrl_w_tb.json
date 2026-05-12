@@ -1,0 +1,193 @@
+{
+  "title": "VimFu \u2014 Ctrl-W t b Top and Bottom",
+  "description": "Ctrl-W t moves to the top-left window. Ctrl-W b moves to the bottom-right. Jump to the extremes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 480,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f top.py mid.py bot.py"
+    },
+    {
+      "line": "rm -f .top.py.swp .mid.py.swp .bot.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create three files"
+    },
+    {
+      "writeFile": "top.py",
+      "content": "# Top Floor\nboss = \"Dragon\""
+    },
+    {
+      "writeFile": "mid.py",
+      "content": "# Middle Floor\nmob = \"Goblin\""
+    },
+    {
+      "writeFile": "bot.py",
+      "content": "# Bottom Floor\nloot = \"Gold\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with three splits"
+    },
+    {
+      "line": "nvim -o top.py mid.py bot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W t b \u2014 Top/Bottom",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W T jumps straight to the top-left window. Control W B jumps to the bottom-right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: go to bottom ---"
+    },
+    {
+      "say": "Three panes. Cursor is in the top one. Jump to the bottom with Control W B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017b",
+      "overlay": "bottom window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the bottom floor. Skipped the middle pane entirely."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: go to top ---"
+    },
+    {
+      "say": "Control W T back to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017t",
+      "overlay": "top window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back at the top. No need to cycle through every window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: rapid switching ---"
+    },
+    {
+      "say": "Bottom and back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017b",
+      "overlay": "bottom"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0017t",
+      "overlay": "top"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W T for top. Control W B for bottom. Jump to the extremes instantly."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f top.py mid.py bot.py"
+    }
+  ]
+}

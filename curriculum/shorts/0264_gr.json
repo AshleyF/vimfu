@@ -1,0 +1,172 @@
+{
+  "title": "VimFu \u2014 gr Virtual Replace",
+  "description": "gr replaces characters virtually, respecting tab stops. Unlike r, it preserves the visual layout of the line when replacing within tabs.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 405,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tabs.txt .tabs.txt.swp .tabs.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with real tabs"
+    },
+    {
+      "line": "printf 'Name\\tScore\\tRank\\nAlice\\t95\\tA\\nBob\\t82\\tB\\nCarol\\t78\\tC\\n' > tabs.txt"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set list' -c 'set listchars=tab:>-' tabs.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gr \u2014 Virtual Replace",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G R replaces a character virtually. It works like R, but it respects tab alignment. The screen columns stay lined up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: r vs gr on a tab ---"
+    },
+    {
+      "say": "Go to line two. Alice's score. Move to the tab before ninety five.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2Gf\t",
+      "overlay": "line 2, on tab"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Normal R, then a dash. It replaces the tab character with a single dash. The columns break.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "r-",
+      "overlay": "replace"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The alignment is ruined. Undo.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now G R, then a dash. Virtual replace.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gr-",
+      "overlay": "virtual replace"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The dash fills the tab space visually. The columns stay aligned."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G R. Virtual replace. Preserves the visual layout when replacing tab characters. Niche but invaluable for tab-aligned data."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f tabs.txt"
+    }
+  ]
+}

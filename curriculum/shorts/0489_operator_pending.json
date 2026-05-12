@@ -1,0 +1,202 @@
+{
+  "title": "VimFu \u2014 Operator-Pending Mode",
+  "description": "What happens between pressing an operator like d, c, or y and providing the motion. This is operator-pending mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 645,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f pending.txt .pending.txt.swp .pending.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "pending.txt",
+      "content": "delete this word here\nchange [inside] these\nyank (some parenthesized) text"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim pending.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Operator-Pending Mode",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "When you press D, C, or Y, Vim enters a special state called operator-pending mode. It's waiting for a motion or text object."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Watch. Press D and pause.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "d",
+      "overlay": "delete (waiting...)"
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Vim is now in operator-pending mode. The cursor changed. It's waiting for a motion. Type W to delete a word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "word motion"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "D W. The operator was D, the motion was W. Together they deleted a word."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can cancel operator-pending mode with escape. Press C, then escape.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "c",
+      "overlay": "change (waiting...)"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "keys": "escape",
+      "overlay": "cancel"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Nothing happened. Escape cancelled the pending operator."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Line two. Change inside the brackets.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jf["
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "c",
+      "overlay": "change (waiting...)"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "i[",
+      "overlay": "inner brackets"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "replaced"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "C I bracket. The operator was C, and the text object I bracket gave it the scope. That moment between the operator and the motion is operator-pending mode."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f pending.txt"
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "title": "VimFu \u2014 [* ]* Comment Blocks",
+  "description": "[* jumps to the start of a C comment block. ]* jumps to the end. Navigate /* */ comments quickly.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 466,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "comments"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spell.c .spell.c.swp .spell.c.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with block comments"
+    },
+    {
+      "writeFile": "spell.c",
+      "content": "int mana = 100;\n\n/*\n * Cast a fireball spell.\n * Costs 25 mana per cast.\n * Deals area damage.\n */\nvoid fireball() {\n    mana -= 25;\n}\n\n/*\n * Heal the entire party.\n * Costs 50 mana.\n */\nvoid heal() {\n    mana -= 50;\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' spell.c"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[* ]* \u2014 Comment Blocks",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Open bracket star jumps to the start of a C comment. Close bracket star jumps to the end."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: jump to comment start ---"
+    },
+    {
+      "say": "Cursor is inside the comment block on line five. Open bracket star to find the start.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5G",
+      "overlay": "go to line 5"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[*",
+      "overlay": "comment start"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the opening slash-star on line three."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump to comment end ---"
+    },
+    {
+      "say": "Move down inside the comment, then close bracket star to find the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j",
+      "overlay": "into comment"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]*",
+      "overlay": "comment end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Landed on the closing star-slash. Quick way to navigate comment blocks."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: next comment ---"
+    },
+    {
+      "say": "Jump into the next comment and find its start.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6j",
+      "overlay": "down to next comment"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[*",
+      "overlay": "comment start"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open bracket star and close bracket star. Navigate C-style block comments."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f spell.c"
+    }
+  ]
+}

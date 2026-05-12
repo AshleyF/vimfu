@@ -1,0 +1,194 @@
+{
+  "title": "VimFu \u2014 Ctrl-W c Close Window",
+  "description": "Ctrl-W c closes the current window without quitting Vim. The buffer stays open \u2014 you just hide the view.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 482,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hero.py stats.py .hero.py.swp .stats.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "hero.py",
+      "content": "# Hero Module\ndef attack(enemy):\n    return enemy.hp - 10\ndef heal(target):\n    return target.hp + 25"
+    },
+    {
+      "writeFile": "stats.py",
+      "content": "# Stats Module\nhp = 100\nmp = 50\nspeed = 12\narmor = 8"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with two splits"
+    },
+    {
+      "line": "nvim -o hero.py stats.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W c \u2014 Close Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W C closes the current window. The buffer stays in memory. You just hide the view."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: close the bottom window ---"
+    },
+    {
+      "say": "Two files open. Hero on top, stats on bottom. Move to stats and close it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017j",
+      "overlay": "move down"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0017c",
+      "overlay": "close window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Stats window gone. Hero is the only window now. But the stats buffer is still loaded."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: prove buffer still exists ---"
+    },
+    {
+      "say": "Switch to the stats buffer with colon B stats.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":b stats",
+      "overlay": ""
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "There it is. The window closed but the buffer survived."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: split and close from top ---"
+    },
+    {
+      "say": "Split again and close the top pane.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017s",
+      "overlay": "split"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0017c",
+      "overlay": "close"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W C. Close the window, keep the buffer. Tidy up your screen without losing your work."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f hero.py stats.py"
+    }
+  ]
+}

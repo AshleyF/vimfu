@@ -1,0 +1,119 @@
+{
+  "title": "VimFu \u2014 :s/old/new/g Substitute All",
+  "description": "The g flag replaces all occurrences on the current line, not just the first.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 547,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "substitute"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nfoo = foo + foo * foo"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":s///g \u2014 All on Line",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Add the G flag to replace all occurrences on the line, not just the first."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Line two has foo four times. Replace them all.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "to line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":s/foo/bar/g",
+      "overlay": ":s/foo/bar/g"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "All four replaced. The G flag means global on the line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Without G, only the first match changes. With G, every match on the line changes."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

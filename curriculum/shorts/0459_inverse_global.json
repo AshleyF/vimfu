@@ -1,0 +1,161 @@
+{
+  "title": "VimFu — :v/{pattern}/{cmd} — Inverse Global",
+  "description": "The :v command (inverse of :g) executes a command on every line that does NOT match the pattern.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 615,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f log.txt .log.txt.swp .log.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "log.txt",
+      "content": "INFO server started\nERROR disk full\nINFO user login\nWARN slow query\nINFO page loaded\nERROR timeout\nINFO task done"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim log.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":v/{pattern}/{cmd} — Inverse Global",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Colon V is the opposite of colon G. It runs a command on every line that does NOT match the pattern."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Keep only ERROR lines. Delete everything that isn't an error. Colon V slash ERROR slash D.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":v/ERROR/d"
+    },
+    {
+      "wait": 0.4
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Only the ERROR lines remain. Every line that didn't match ERROR was deleted."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo. Now keep only INFO lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":v/INFO/d"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything except INFO lines was removed. This is a quick way to filter a file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon G acts on matching lines. Colon V acts on non-matching lines. They're perfect complements."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f log.txt"
+    }
+  ]
+}

@@ -1,0 +1,189 @@
+{
+  "title": "VimFu \u2014 Ctrl-R Insert Register",
+  "description": "Ctrl-R in insert mode inserts the contents of a register. Paste without leaving insert mode.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 515,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "registers"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nfirst_name = \"Alice\"\nlast_name = \"Smith\"\nfull = "
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-R \u2014 Insert Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control R in insert mode inserts the contents of a register. Paste without switching to normal mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: yank a word, paste in insert ---"
+    },
+    {
+      "say": "First, yank the word Alice into register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "to line 2"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "f\"l",
+      "overlay": "inside quotes"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\"ayiw",
+      "overlay": "yank to reg a"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now go to line four and enter insert mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": "line 3"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": "line 4"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "A",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control R then A to paste register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0012a",
+      "overlay": "paste register"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Alice inserted. Still in insert mode. Keep typing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control R then a register name. Insert that register's contents right where you're typing. No Escape, no P, just paste and keep going."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

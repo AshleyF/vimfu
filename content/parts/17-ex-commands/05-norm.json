@@ -2,10 +2,10 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "ex.norm",
-  "title": "Normal (:norm)",
+  "title": "Normal ({key::norm})",
   "subtitle": "Run Normal-mode keystrokes from Ex.",
   "part": "ex-commands",
-  "summary": ":norm runs a sequence of Normal-mode keystrokes on each line in a range. Combine with :g for surgical bulk edits \u2014 anything you can do with keys, you can do over thousands of lines.",
+  "summary": ":norm runs a sequence of Normal-mode keystrokes on each line in a range. Combine with :g for surgical bulk edits — anything you can do with keys, you can do over thousands of lines.",
   "keys": [
     ":norm"
   ],
@@ -49,7 +49,7 @@
         ],
         [
           ":5,10norm @q",
-          "Run macro q on lines 5\u201310"
+          "Run macro q on lines 5–10"
         ],
         [
           ":%norm! 0xx",
@@ -60,7 +60,7 @@
     {
       "type": "internals",
       "title": "Why It Pairs So Well With :g",
-      "text": "{key::}{key:g}/pattern/{key::}{key:n}{key:o}{key:r}{key:m} {keys} = \"on every line matching pattern, execute these Normal-mode keys.\"\n\nThe {keys} can be **anything** you'd type in Normal mode: motions, operators, text-object combos, even macro invocations ({key:@}{reg}). It's faster to read than a substitute regex with backreferences, and infinitely more powerful for non-trivial transforms.\n\n**The `!` matters here too.** `:norm!` ignores user-defined mappings \u2014 important if you've remapped {key:I} or {key:o} and want the *built-in* behavior. As a rule, scripts always use `:norm!`."
+      "text": "{key::}{key:g}/pattern/{key::}{key:n}{key:o}{key:r}{key:m} {keys} = \"on every line matching pattern, execute these Normal-mode keys.\"\n\nThe {keys} can be **anything** you'd type in Normal mode: motions, operators, text-object combos, even macro invocations ({key:@}{reg}). It's faster to read than a substitute regex with backreferences, and infinitely more powerful for non-trivial transforms.\n\n**The `!` matters here too.** `:norm!` ignores user-defined mappings — important if you've remapped {key:I} or {key:o} and want the *built-in* behavior. As a rule, scripts always use `:norm!`."
     },
     {
       "type": "tip",

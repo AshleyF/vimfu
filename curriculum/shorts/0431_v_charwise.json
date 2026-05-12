@@ -1,0 +1,220 @@
+{
+  "title": "VimFu \u2014 v \u2014 Charwise",
+  "description": "Press v to enter charwise visual mode. Select characters. Any motion extends the selection.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 585,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "visual mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f colors.py .colors.py.swp .colors.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "colors.py",
+      "content": "# palette\nred = \"#ff0000\"\ngreen = \"#00ff00\"\nblue = \"#0000ff\"\nyellow = \"#ffff00\"\ncyan = \"#00ffff\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim colors.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "v \u2014 Charwise",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Lowercase V enters charwise visual mode. You select individual characters."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Move to red. Press V.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0"
+    },
+    {
+      "keys": "v",
+      "overlay": "visual"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Visual mode is active. The status bar says visual. Now any motion extends the selection."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "W to select the word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "E to extend to the end of the next word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Dollar to extend to end of line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "J to pull in the next line too.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Escape to cancel without changing anything.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can also use search. V then slash F F.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "0"
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "type": "/ff\n"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Selection extends to the search match. Any motion works inside visual mode."
+    },
+    {
+      "wait": 0.3
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Lowercase V. Charwise visual mode. Select characters with any motion."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f colors.py"
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "title": "VimFu \u2014 Ctrl-X Ctrl-S Spelling",
+  "description": "Ctrl-X Ctrl-S in insert mode suggests spelling corrections for the word under the cursor.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 535,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "completion",
+    "spelling"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "Project Notes:\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-X Ctrl-S \u2014 Spelling",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control X Control S in insert mode offers spelling suggestions. First, enable spell checking."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Enable spell ---"
+    },
+    {
+      "say": "Turn on spell checking.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set spell",
+      "overlay": ""
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 1: fix a misspelling ---"
+    },
+    {
+      "say": "Type a misspelled word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jA",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "recieve",
+      "overlay": ""
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now Control X Control S for spelling suggestions.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0018\u0013",
+      "overlay": "spelling"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Receive! The correct spelling appears in the completion menu. Select it and keep typing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control X Control S. Spelling completion. Fix typos in insert mode without leaving to use z equals."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt"
+    }
+  ]
+}

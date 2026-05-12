@@ -1,0 +1,80 @@
+{
+  "title": "VimFu — :e {file} — Edit a File",
+  "description": "The :e command opens a different file in the current window. Use it to switch between files.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 721,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    { "comment": "Set TERM for proper color support in Neovim" },
+    { "line": "export TERM=xterm-256color" },
+    { "comment": "Prepare workspace" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f main.py utils.py .main.py.swp .main.py.swo .utils.py.swp .utils.py.swo" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "comment": "Create two demo files" },
+    {
+      "writeFile": "main.py",
+      "content": "# Main Module\n\nfrom utils import helper\n\ndef main():\n    result = helper()\n    print(result)"
+    },
+    {
+      "writeFile": "utils.py",
+      "content": "# Utilities\n\ndef helper():\n    return \"I am helping!\"\n\ndef format(text):\n    return text.strip().upper()"
+    },
+    { "line": "clear" },
+    { "comment": "Launch nvim" },
+    { "line": "nvim main.py" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "comment": "--- Title card ---" },
+    { "overlay": "VimFu", "caption": ":e {file} — Edit a File", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "comment": "--- Intro ---" },
+    { "say": "Colon E opens a different file. E stands for edit." },
+    { "wait": 0.3 },
+    { "comment": "--- Demo: switch to utils.py ---" },
+    { "say": "We're looking at main dot py. Open utils dot py.", "wait": false },
+    { "wait": 0.3 },
+    { "type": ":e utils.py" },
+    "enter",
+    { "wait": 0.6 },
+    { "say": "Now we're in utils dot py. Different file, same window." },
+    { "wait": 0.3 },
+    { "comment": "--- Demo: switch back ---" },
+    { "say": "Switch back to main dot py.", "wait": false },
+    { "wait": 0.3 },
+    { "type": ":e main.py" },
+    "enter",
+    { "wait": 0.6 },
+    { "say": "Back in main. Colon E lets you jump between files without closing the editor." },
+    { "wait": 0.3 },
+    { "comment": "--- Wrap up ---" },
+    { "say": "Colon E followed by a filename. Open any file. Tab completion works too." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [
+    { "comment": "Quit nvim without saving" },
+    "escape",
+    { "type": ":q!" },
+    "enter",
+    { "comment": "Clean up" },
+    { "line": "rm -f main.py utils.py" }
+  ]
+}

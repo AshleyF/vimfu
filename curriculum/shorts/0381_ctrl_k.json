@@ -1,0 +1,186 @@
+{
+  "title": "VimFu \u2014 Ctrl-K Digraph",
+  "description": "Ctrl-K in insert mode lets you type a digraph \u2014 a two-character code that produces a special character.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 522,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "digraph"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "Special Characters:\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-K \u2014 Digraph",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control K in insert mode lets you enter a digraph. Type two characters and Vim produces a special symbol."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: copyright symbol ---"
+    },
+    {
+      "say": "Let's type a copyright symbol. Enter insert mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jA",
+      "overlay": "next line, append"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control K, then C O for copyright.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u000bCo",
+      "overlay": "copyright"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Copyright symbol. Two letters mapped to a special character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: more digraphs ---"
+    },
+    {
+      "type": " ",
+      "overlay": ""
+    },
+    {
+      "say": "Try a degree sign. Control K, D G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u000bDG",
+      "overlay": "degree"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": " ",
+      "overlay": ""
+    },
+    {
+      "say": "And a plus minus. Control K, plus minus.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u000b+-",
+      "overlay": "plus-minus"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control K then two characters. Digraphs for special symbols. Use colon digraphs to see the full list."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "title": "VimFu — :set wrap / nowrap",
+  "description": "Toggle line wrapping with :set wrap and :set nowrap in Vim.",
+  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 569,
+  "ttsVoice": "echo", "playlist": "VimFu",
+  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "settings"],
+  "setup": [
+    { "line": "export TERM=xterm-256color" },
+    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
+    { "line": "rm -f demo.py .demo.py.swp" },
+    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
+    { "writeFile": "demo.py", "content": "# Demo\ndef greet(name):\n    return f\"Hello {name}, welcome to the world of Vim editing and text processing!\"\n\nresult = greet(\"World\")\nprint(result)" },
+    { "line": "clear" },
+    { "line": "nvim demo.py" },
+    { "waitForScreen": "All", "timeout": 30.0 },
+    { "ifScreen": "swap file", "thenKeys": "d" }
+  ],
+  "steps": [
+    { "overlay": "VimFu", "caption": ":set wrap / nowrap", "duration": 2.0 },
+    { "wait": 0.7 },
+    { "say": "By default, Vim wraps long lines to fit the screen. You can toggle this with set wrap and set nowrap." },
+    { "wait": 0.3 },
+    { "type": ":set nowrap", "overlay": ":set nowrap" },
+    "enter",
+    { "wait": 1.0 },
+    { "say": "With nowrap, long lines extend beyond the screen edge. You have to scroll horizontally to see the rest." },
+    { "wait": 0.5 },
+    { "keys": "j" }, { "keys": "j" },
+    { "wait": 0.5 },
+    { "keys": "$" },
+    { "wait": 0.8 },
+    { "say": "Now let's turn wrapping back on." },
+    { "wait": 0.3 },
+    { "type": ":set wrap", "overlay": ":set wrap" },
+    "enter",
+    { "wait": 1.0 },
+    { "say": "The long line wraps to the next screen row. The text is still one line, it just displays across multiple rows." },
+    { "wait": 1.5 }
+  ],
+  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.py" } ]
+}

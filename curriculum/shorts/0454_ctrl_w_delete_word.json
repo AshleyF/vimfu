@@ -1,0 +1,185 @@
+{
+  "title": "VimFu \u2014 Ctrl-W \u2014 Delete Word",
+  "description": "Press Ctrl-W on the command line to delete the word before the cursor, one word at a time.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 610,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "command line"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# demo\none = 1\ntwo = 2\nthree = 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W \u2014 Delete Word",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Control W on the command line deletes the word before the cursor. Fix typos without clearing everything."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Type a command with a mistake. Colon set cursroline.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set cursroline"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Typo in cursorline. Press Control W to delete the last word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+w",
+      "overlay": "delete word"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The misspelled word is gone. Now type it correctly.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "cursorline"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Press Control W again to see it remove another word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":echo hello world oops"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+w",
+      "overlay": "delete word"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "One word removed. Press it again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ctrl+w"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Another word gone. Control W. Delete one word at a time on the command line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

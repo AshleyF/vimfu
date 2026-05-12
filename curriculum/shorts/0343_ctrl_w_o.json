@@ -1,0 +1,201 @@
+{
+  "title": "VimFu \u2014 Ctrl-W o Only Window",
+  "description": "Ctrl-W o closes all windows except the current one. One window to rule them all.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 484,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .a.py.swp .b.py.swp .c.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create three files"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# File A \u2014 Config\nmax_hp = 100\nmax_mp = 50"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# File B \u2014 Engine\ndef run():\n    print(\"go\")"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# File C \u2014 Tests\nassert 1 + 1 == 2"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with three splits"
+    },
+    {
+      "line": "nvim -o a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W o \u2014 Only Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W O closes every window except the current one. Focus mode."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: close all but middle ---"
+    },
+    {
+      "say": "Three files open. Move to the engine file in the middle.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017j",
+      "overlay": "move down"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now close everything else.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017o",
+      "overlay": "only window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All other windows gone. Only the engine file remains. Full screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: re-split and do it again ---"
+    },
+    {
+      "say": "Split a few times to clutter the screen.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017s",
+      "overlay": "split"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017v",
+      "overlay": "vertical split"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three panes again. One command to clean up.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017o",
+      "overlay": "only"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Clean. Just the one file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W O. Only window. Close all the clutter and focus on what matters."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ]
+}

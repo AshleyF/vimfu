@@ -1,0 +1,176 @@
+{
+  "title": "VimFu \u2014 Ctrl-W q Quit Window",
+  "description": "Ctrl-W q quits the current window. If it's the last window, Vim closes entirely.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 483,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quest.py loot.py .quest.py.swp .loot.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create two files"
+    },
+    {
+      "writeFile": "quest.py",
+      "content": "# Quest Log\nquest = \"Defeat the Dragon\"\nreward = 500\nstatus = \"active\""
+    },
+    {
+      "writeFile": "loot.py",
+      "content": "# Loot Table\nsword = 50\nshield = 30\npotion = 10"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with two splits"
+    },
+    {
+      "line": "nvim -o quest.py loot.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W q \u2014 Quit Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W Q quits the current window. If it's the last window, Vim exits."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: quit the bottom window ---"
+    },
+    {
+      "say": "Two windows. Move to loot and quit it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017j",
+      "overlay": "move down"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0017q",
+      "overlay": "quit window"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Loot window is gone. Only the quest remains."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: split and quit again ---"
+    },
+    {
+      "say": "Split the quest file and quit the extra pane.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017s",
+      "overlay": "split"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0017q",
+      "overlay": "quit"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to one window. Control W Q is the quick way to tidy up splits."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W Q. Quit the current window. Last window? Vim closes. Use Control W C if you want to keep the buffer alive."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f quest.py loot.py"
+    }
+  ]
+}

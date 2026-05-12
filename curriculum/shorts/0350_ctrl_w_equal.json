@@ -1,0 +1,196 @@
+{
+  "title": "VimFu \u2014 Ctrl-W = Equalize Windows",
+  "description": "Ctrl-W = makes all windows the same size. Reset your layout to equal splits.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 491,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .a.py.swp .b.py.swp .c.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create three files"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# Alpha\nx = 1"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# Beta\ny = 2"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# Gamma\nz = 3"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with three horizontal splits"
+    },
+    {
+      "line": "nvim -o a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W = \u2014 Equalize",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W equals makes all windows the same size. The great equalizer."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: make things uneven ---"
+    },
+    {
+      "say": "Three files. Let me mess up the sizes first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5\u0017+",
+      "overlay": "grow top"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Top window is huge. The others are tiny."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: equalize ---"
+    },
+    {
+      "say": "Control W equals to fix it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017=",
+      "overlay": "equalize"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All three windows are the same height again. Clean."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: mess up and fix again ---"
+    },
+    {
+      "say": "Mess it up again. Shrink the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5\u0017-",
+      "overlay": "shrink"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0017=",
+      "overlay": "equalize"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One keystroke and they're equal. No matter how uneven things get."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W equals. Equalize all windows. The reset button for messy layouts."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ]
+}

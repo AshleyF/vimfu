@@ -1,0 +1,184 @@
+{
+  "title": "VimFu \u2014 :set fdm=indent \u2014 Fold by Indent",
+  "description": "Set the fold method to indent to automatically create folds based on indentation levels.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 649,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f indent.py .indent.py.swp .indent.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "indent.py",
+      "content": "def greet(name):\n    msg = f\"Hello {name}\"\n    print(msg)\n    return msg\n\ndef farewell(name):\n    msg = f\"Bye {name}\"\n    print(msg)\n    return msg\n\ndef main():\n    greet(\"Alice\")\n    farewell(\"Bob\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim indent.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Fold by Indent",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Vim can create folds automatically based on indentation. This works great for Python and other indent-based languages."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Set the fold method to indent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set foldmethod=indent"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The indented lines folded up. Each indentation level becomes a fold."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Open a fold with Z O.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j"
+    },
+    {
+      "keys": "zo",
+      "overlay": "open fold"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The first function unfolded. Close it again with Z C.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zc",
+      "overlay": "close fold"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Open all folds with Z R.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zR",
+      "overlay": "open all folds"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All code is visible. Close all folds with Z M.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zM",
+      "overlay": "close all folds"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Just the function signatures remain. Set fold method indent. Instant code folding by indentation level."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f indent.py"
+    }
+  ]
+}

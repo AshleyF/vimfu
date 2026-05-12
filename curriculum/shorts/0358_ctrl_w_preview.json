@@ -1,0 +1,200 @@
+{
+  "title": "VimFu \u2014 Ctrl-W } Preview Tag",
+  "description": "Ctrl-W } shows the tag definition in a preview window without leaving your current position.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 499,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "preview",
+    "ctags"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f battle.py tags .battle.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "battle.py",
+      "content": "# Battle System\ndef slash(power):\n    return power * 2\n\ndef block(armor):\n    return armor + 10\n\n# Combat\nhit = slash(15)\ndef_val = block(8)"
+    },
+    {
+      "comment": "Create tags file (use printf to preserve tabs)"
+    },
+    {
+      "line": "printf 'block\\tbattle.py\\t/^def block/\\nslash\\tbattle.py\\t/^def slash/\\n' > tags"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim battle.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W } \u2014 Preview Tag",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W right brace opens the tag definition in a preview window. You stay where you are. The definition appears above."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: preview slash ---"
+    },
+    {
+      "say": "Move to where slash is called.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "9G",
+      "overlay": "line 9"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "w",
+      "overlay": "next word"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "w",
+      "overlay": "to slash"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Preview the slash definition.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017}",
+      "overlay": "preview tag"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\r",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Preview window appeared at the top showing the definition. The cursor stayed in the main window."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: close preview ---"
+    },
+    {
+      "say": "Control W Z to close the preview.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017z",
+      "overlay": "close preview"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Preview gone. Back to full screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W right brace. Peek at a tag definition without jumping. Control W Z to dismiss."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":qa!"
+    },
+    "enter",
+    {
+      "line": "rm -f battle.py tags"
+    }
+  ]
+}

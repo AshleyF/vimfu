@@ -1,0 +1,190 @@
+{
+  "title": "VimFu \u2014 zg Mark Word Correct",
+  "description": "zg adds the word under the cursor to the spell file as a correctly spelled word. No more false positives.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 450,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "spelling",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f config.txt .config.txt.swp .config.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with technical terms"
+    },
+    {
+      "writeFile": "config.txt",
+      "content": "Enable the navbar component.\nSet the tooltip delay to 500ms.\nUse flexbox for the sidebar.\nThe dropdown renders on hover."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with spell checking"
+    },
+    {
+      "line": "nvim -c 'set spell' config.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zg \u2014 Mark Word Correct",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Z G marks a word as correctly spelled. It adds the word to your personal spell file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: mark navbar ---"
+    },
+    {
+      "say": "Navbar is flagged as misspelled. It's a real word in our codebase. Z G to mark it correct.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2w",
+      "overlay": "to navbar"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zg",
+      "overlay": "mark correct"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The highlight is gone. Vim remembers this word now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: mark tooltip ---"
+    },
+    {
+      "say": "Same for tooltip on line two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0ww",
+      "overlay": "to tooltip"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zg",
+      "overlay": "mark correct"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Demo 3: mark flexbox ---"
+    },
+    {
+      "say": "And flexbox on line three.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0w",
+      "overlay": "to flexbox"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "zg",
+      "overlay": "mark correct"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Z G. Add words to your spell file. Perfect for technical terms the dictionary does not know."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f config.txt"
+    }
+  ]
+}

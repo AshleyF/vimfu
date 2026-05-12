@@ -1,0 +1,173 @@
+{
+  "title": "VimFu \u2014 Ctrl-W i Split Declaration",
+  "description": "Ctrl-W i splits the window and jumps to the declaration of the word under the cursor.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 497,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "windows",
+    "splits"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f rpg.py .rpg.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "rpg.py",
+      "content": "# RPG System\nMAX_LEVEL = 99\nBASE_HP = 100\n\ndef level_up(hero):\n    if hero.level < MAX_LEVEL:\n        hero.hp += BASE_HP\n        hero.level += 1\n\nhero_hp = BASE_HP * 2"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim rpg.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W i \u2014 Split Declaration",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W I splits the window and shows the first line that matches the word under the cursor. Like a quick declaration lookup."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: find MAX_LEVEL declaration ---"
+    },
+    {
+      "say": "Move to where MAX LEVEL is used inside the function.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6G",
+      "overlay": "go to line 6"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "end of line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "b",
+      "overlay": "back to MAX_LEVEL"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Cursor on MAX LEVEL. Split and find its declaration.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017i",
+      "overlay": "split to declaration"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Split opened at the top where MAX LEVEL is defined. Usage below, definition above."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Close split ---"
+    },
+    {
+      "keys": "\u0017c",
+      "overlay": "close"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W I. Split and jump to the first occurrence. Quick way to see where something is declared."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f rpg.py"
+    }
+  ]
+}

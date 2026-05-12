@@ -1,0 +1,101 @@
+{
+  "title": "VimFu \u2014 :qa Quit All",
+  "description": "Quit all windows. With !, discard all changes.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 575,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py .*.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# File A"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# File B"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -o a.py b.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":qa \u2014 Quit All",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon Q A quits all windows at once. If any have unsaved changes, it fails. Add bang to force it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Two windows open. Quit both.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":qa",
+      "overlay": "quit all"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Both closed. Back to the shell. Colon Q A bang would discard any unsaved changes."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "rm -f a.py b.py"
+    }
+  ]
+}

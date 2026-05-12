@@ -1,0 +1,166 @@
+{
+  "title": "VimFu \u2014 zE Eliminate All Folds",
+  "description": "zE removes every manually created fold in the file. All text stays, only folds are deleted.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 446,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "folds",
+    "z commands"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f spells.py .spells.py.swp .spells.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "spells.py",
+      "content": "# Spell Book\nfire = \"Fireball\"\nice = \"Blizzard\"\nwind = \"Tornado\"\nearth = \"Earthquake\"\nholy = \"Smite\"\ndark = \"Shadow Bolt\"\narcane = \"Magic Missile\"\nnature = \"Vine Whip\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with manual folds"
+    },
+    {
+      "line": "nvim -c 'set foldmethod=manual' -c 'set number' spells.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "zE \u2014 Eliminate All Folds",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capital Z capital E eliminates every fold in the file at once. The nuclear option for folds."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: create several folds ---"
+    },
+    {
+      "say": "Create three folds first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":2,3fold"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":5,6fold"
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":8,9fold"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three folds created. Now wipe them all with capital Z capital E.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: eliminate all ---"
+    },
+    {
+      "keys": "zE",
+      "overlay": "eliminate all folds"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "All folds gone. Every line is visible. Text untouched."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Capital Z capital E. Remove all manual folds in one shot. Clean slate."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f spells.py"
+    }
+  ]
+}

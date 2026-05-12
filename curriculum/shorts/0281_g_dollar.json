@@ -1,0 +1,203 @@
+{
+  "title": "VimFu \u2014 g$ g0 g^ Display Line Edges",
+  "description": "g$, g0, and g^ move to the end, start, and first non-blank of the display line. Essential when lines wrap on screen.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 422,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f wrap.txt .wrap.txt.swp .wrap.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with long lines"
+    },
+    {
+      "writeFile": "wrap.txt",
+      "content": "Short line.\n    This is a very long indented line that wraps around the screen multiple times because it has so many words in it.\nAnother short line."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set wrap' -c 'set number' wrap.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "g$ g0 g^ \u2014 Display Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "When lines wrap, dollar and zero jump to the real line ends. G dollar and G zero move to the display line ends. The wrapped visual lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: $ vs g$ ---"
+    },
+    {
+      "say": "Go to line two. The long wrapped line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G0",
+      "overlay": "line 2, start"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Dollar. Jump to the end of the real line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "$",
+      "overlay": "real line end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The cursor jumped to the very end. All the way past all the wraps. Now go back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G0"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G dollar. End of the display line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g$",
+      "overlay": "display line end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Only to the end of the first wrapped segment. The visual line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: g0 and g^ ---"
+    },
+    {
+      "say": "G zero goes to the start of the display line. G caret goes to the first non blank of the display line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g0",
+      "overlay": "display start"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "At the display line start."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g^",
+      "overlay": "first non-blank"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G dollar, G zero, G caret. Navigate wrapped display lines. The G prefix means display line, not real line."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f wrap.txt"
+    }
+  ]
+}

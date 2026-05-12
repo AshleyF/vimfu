@@ -1,0 +1,232 @@
+{
+  "title": "VimFu \u2014 [' ]' Navigate Marks",
+  "description": "[' jumps to the previous lowercase mark. ]' jumps to the next. Navigate between marks in order.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 467,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "marks"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f map.py .map.py.swp .map.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "map.py",
+      "content": "# World Map\nforest = \"Dark Woods\"\nvillage = \"Haven\"\nmountain = \"Peak\"\ncastle = \"Stronghold\"\ndesert = \"Dunes\"\nocean = \"Deep Blue\"\nswamp = \"Bog\"\ncave = \"Shadow\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' map.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[' ]' \u2014 Navigate Marks",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close bracket quote jumps to the next mark. Open bracket quote jumps to the previous. Marks sorted by line number."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: set some marks ---"
+    },
+    {
+      "say": "Set three marks first. Mark A on village. Mark B on castle. Mark C on ocean.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": "line 3"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "ma",
+      "overlay": "set mark a"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5G",
+      "overlay": "line 5"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "mb",
+      "overlay": "set mark b"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "7G",
+      "overlay": "line 7"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "mc",
+      "overlay": "set mark c"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: navigate forward ---"
+    },
+    {
+      "say": "Go to line one. Close bracket quote to jump forward through marks.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top of file"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]'",
+      "overlay": "next mark"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]'",
+      "overlay": "next mark"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "]'",
+      "overlay": "next mark"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Visited all three marks in line order."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: navigate backward ---"
+    },
+    {
+      "say": "Open bracket quote goes back.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "['",
+      "overlay": "prev mark"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "['",
+      "overlay": "prev mark"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Close bracket quote forward. Open bracket quote backward. Navigate marks by their line position."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f map.py"
+    }
+  ]
+}

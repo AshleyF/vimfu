@@ -1,0 +1,196 @@
+{
+  "title": "VimFu \u2014 [p ]p Put with Indent",
+  "description": "[p and ]p paste text like P and p but adjust the indent to match the current line. Auto-indented paste.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 468,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "paste"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f indent.py .indent.py.swp .indent.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "indent.py",
+      "content": "def outer():\n    x = 10\n    y = 20\n    def inner():\n        a = 1\n        b = 2\n        return a + b\n    return x + y"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' indent.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[p ]p \u2014 Put with Indent",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Open bracket P and close bracket P paste like capital P and P but adjust the indent to match the current line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: yank a line from inner function ---"
+    },
+    {
+      "say": "Yank the return line from the inner function. It has 8 spaces of indent.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "7G",
+      "overlay": "go to line 7"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: paste with ]p at different indent level ---"
+    },
+    {
+      "say": "Move to the outer function and paste with close bracket P. Watch the indent adjust.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": "go to line 3"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]p",
+      "overlay": "paste with indent"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The line pasted with 4 spaces of indent. Matching the outer function. Regular P would keep 8 spaces."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: undo and compare with regular p ---"
+    },
+    {
+      "say": "Undo and try regular P to compare.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "regular paste"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "See the extra indent? Regular P keeps the original spacing. Close bracket P fixes it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open bracket P and close bracket P. Paste with automatic indent adjustment. No more fixing whitespace."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f indent.py"
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "title": "VimFu \u2014 Ctrl-E Copy from Below",
+  "description": "Ctrl-E in insert mode copies the character from the line below, one character at a time.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 518,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\n\nresult = 100"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-E \u2014 Copy from Below",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control E in insert mode copies the character from the line below. One character at a time, column by column."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: copy characters from line below ---"
+    },
+    {
+      "say": "Line three has result equals one hundred. Go to line two and copy from it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "to line 2"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "i",
+      "overlay": "insert mode"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Control E copies one character from below.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0005",
+      "overlay": "r"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0005",
+      "overlay": "e"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0005",
+      "overlay": "s"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0005",
+      "overlay": "u"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0005",
+      "overlay": "l"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0005",
+      "overlay": "t"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Copied result from the line below, character by character."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control E in insert mode. Copy one character from the line below. Useful for aligning text or duplicating patterns."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

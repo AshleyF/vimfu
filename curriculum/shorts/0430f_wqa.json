@@ -1,0 +1,101 @@
+{
+  "title": "VimFu \u2014 :wqa / :xa Write All + Quit",
+  "description": "Save all buffers and quit \u2014 the ultimate exit.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 577,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py .*.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# File A\nx = 1"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# File B\ny = 2"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -o a.py b.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":wqa \u2014 Save All + Quit",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon W Q A saves all buffers and quits. It's write all plus quit all in one. Colon X A does the same thing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Two files open. Save and quit everything.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":wqa",
+      "overlay": "save all + quit"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Done. Everything saved, Vim closed. The shortest way to save and leave."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "line": "rm -f a.py b.py"
+    }
+  ]
+}

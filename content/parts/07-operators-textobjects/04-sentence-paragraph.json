@@ -3,48 +3,128 @@
   "version": 1,
   "id": "operators-textobjects.sentence-paragraph",
   "title": "Sentence and Paragraph",
-  "subtitle": "is / as / ip / ap — for prose.",
+  "subtitle": "{key:is} / {key:as} / {key:ip} / {key:ap} — for prose.",
   "part": "operators-textobjects",
   "summary": "is is the sentence containing the cursor. ip is the paragraph. The 'a' variants include trailing whitespace.",
-  "keys": ["is", "as", "ip", "ap"],
-  "lessons": [82, 83],
-  "see_also": ["wider-motions.sentence-paragraph", "operators-textobjects.iw-aw"],
-
+  "keys": [
+    "is",
+    "as",
+    "ip",
+    "ap"
+  ],
+  "lessons": [
+    82,
+    83
+  ],
+  "see_also": [
+    "wider-motions.sentence-paragraph",
+    "operators-textobjects.iw-aw"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Sentence and Paragraph" },
-
-    { "type": "prose", "text": "Most of Vim's text objects are for code. These two are for prose — sentences and paragraphs as units of text." },
-
-    { "type": "keys", "sequence": ["c","i","s"], "label": "Change the sentence the cursor is in" },
-    { "type": "keys", "sequence": ["d","a","s"], "label": "Delete the sentence + trailing whitespace" },
-    { "type": "keys", "sequence": ["v","i","p"], "label": "Visual-select the paragraph" },
-    { "type": "keys", "sequence": ["g","q","i","p"], "label": "Reformat the paragraph (line-wrap)" },
-
-    { "type": "embed", "lesson": 82, "caption": "is / as — sentence" },
-    { "type": "embed", "lesson": 83, "caption": "ip / ap — paragraph" },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Sentence and Paragraph"
+    },
+    {
+      "type": "prose",
+      "text": "Most of Vim's text objects are for code. These two are for prose — sentences and paragraphs as units of text."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "c",
+        "i",
+        "s"
+      ],
+      "label": "Change the sentence the cursor is in"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "d",
+        "a",
+        "s"
+      ],
+      "label": "Delete the sentence + trailing whitespace"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "v",
+        "i",
+        "p"
+      ],
+      "label": "Visual-select the paragraph"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "g",
+        "q",
+        "i",
+        "p"
+      ],
+      "label": "Reformat the paragraph (line-wrap)"
+    },
+    {
+      "type": "embed",
+      "lesson": 82,
+      "caption": "is / as — sentence"
+    },
+    {
+      "type": "embed",
+      "lesson": 83,
+      "caption": "ip / ap — paragraph"
+    },
     {
       "type": "internals",
       "title": "What Vim Means by Sentence and Paragraph",
       "text": "**Sentence**: ends at `.`, `!`, or `?` followed by spaces or end-of-line. Some closing punctuation ({key:)}, {key:]}, {key:\"}, {key:'}) may follow before the spaces. This is set via the `'joinspaces'` and a few related options.\n\nThis definition is about *typed* text, not English semantics. \"Mr. Smith.\" is two sentences to Vim. Lists with `1.` are confusing too. It's a heuristic; for code or markdown lists it's often wrong, but for paragraphs of plain prose it works.\n\n**Paragraph**: a run of non-empty lines, separated by *empty* lines. Some configurations also count nroff-style macros as paragraph separators (the `'paragraphs'` option), but the default — blank-line separation — is what you'll usually see."
     },
-
-    { "type": "tip", "text": "{key:g}{key:q}{key:i}{key:p} reformats the current paragraph to fit `'textwidth'`. Combined with markdown-mode it's how many writers bulk-tidy a chapter." },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
+    {
+      "type": "tip",
+      "text": "{key:g}{key:q}{key:i}{key:p} reformats the current paragraph to fit `'textwidth'`. Combined with markdown-mode it's how many writers bulk-tidy a chapter."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
     {
       "type": "table",
-      "headers": ["Object",     "Range"],
+      "headers": [
+        "Object",
+        "Range"
+      ],
       "rows": [
-        ["{key:i}{key:s}",       "Inner sentence (no trailing space)"],
-        ["{key:a}{key:s}",       "Sentence + trailing whitespace"],
-        ["{key:i}{key:p}",       "Inner paragraph (no surrounding blank lines)"],
-        ["{key:a}{key:p}",       "Paragraph + trailing blank line"]
+        [
+          "{key:i}{key:s}",
+          "Inner sentence (no trailing space)"
+        ],
+        [
+          "{key:a}{key:s}",
+          "Sentence + trailing whitespace"
+        ],
+        [
+          "{key:i}{key:p}",
+          "Inner paragraph (no surrounding blank lines)"
+        ],
+        [
+          "{key:a}{key:p}",
+          "Paragraph + trailing blank line"
+        ]
       ]
     },
-
-    { "type": "qr", "topic": "operators-textobjects.sentence-paragraph" },
-    { "type": "buy-prompt" }
+    {
+      "type": "qr",
+      "topic": "operators-textobjects.sentence-paragraph"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

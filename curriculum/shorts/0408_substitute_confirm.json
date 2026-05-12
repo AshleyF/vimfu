@@ -1,0 +1,154 @@
+{
+  "title": "VimFu \u2014 :%s///gc Confirm Each",
+  "description": "The c flag asks for confirmation before each replacement.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 549,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "substitute"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nfoo = 1\nbar = foo\nfoo = foo + 1\nbaz = 99"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": ":%s///gc \u2014 Confirm",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "The C flag asks you to confirm each replacement. Y for yes, N for no, A for all remaining."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Replace foo with X, but confirm each one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/foo/X/gc",
+      "overlay": ":%s/foo/X/gc"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "First match highlighted. Press Y to replace.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "y",
+      "overlay": "yes, replace"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Replaced. Next match. Skip this one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "no, skip"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Skipped. Replace the rest with A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "a",
+      "overlay": "all remaining"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Done. Some replaced, some skipped. Full control over every match."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The C flag. Surgical search and replace."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ]
+}

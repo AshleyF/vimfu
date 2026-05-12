@@ -1,0 +1,150 @@
+{
+  "title": "VimFu \u2014 Align Text with :norm",
+  "description": "Use :'<,'>norm with column placement to align text to a specific column, creating neat tables from messy data.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 628,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f data.txt .data.txt.swp .data.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "data.txt",
+      "content": "name = Alice\nage = 30\ncity = Portland\nrole = engineer\nid = 42"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim data.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Align Text with :norm",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "You can use norm with substitute commands to align text. Let's align the equals signs so they all line up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "First, select all lines with V G.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "V",
+      "overlay": "visual line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "G",
+      "overlay": "to last line"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now use a substitute to pad spaces before the equals sign. We'll replace the space-equals with enough padding.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":s/\\s*=/\\=repeat(' ',10-col('.')).'='/",
+      "overlay": "align equals"
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The equals signs are now aligned. Each line has the right number of spaces so the equals column lines up neatly."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "This technique works for aligning any character. Just change the column number and the target character."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f data.txt"
+    }
+  ]
+}

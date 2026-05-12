@@ -1,0 +1,166 @@
+{
+  "title": "VimFu — Visual gS",
+  "description": "gS in visual mode suppresses automatic indenting or enables virtual editing behavior.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 699,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "surround"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f gs.py .gs.py.swp .gs.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "gs.py",
+      "content": "if True:\n    result = value\n    output = name"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim gs.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Visual gS",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "G S in visual mode is the alternate surround. In linewise visual, S indents the content. G S suppresses that indenting."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select lines with capital V. Then S with braces.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jVj",
+      "overlay": "V → select"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "S{",
+      "overlay": "S{"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "S adds braces and further indents the content."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now G S instead. Same selection.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jVj",
+      "overlay": "V → select"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "gS{",
+      "overlay": "gS{"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "G S wraps without additional indentation. The content keeps its current indent level."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "S re-indents. G S preserves indentation."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f gs.py"
+    }
+  ]
+}

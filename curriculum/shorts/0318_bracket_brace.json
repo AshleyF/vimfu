@@ -1,0 +1,180 @@
+{
+  "title": "VimFu \u2014 [{ ]} Unmatched Braces",
+  "description": "[{ jumps to the previous unmatched opening brace. ]} jumps to the next unmatched closing brace.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 459,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "bracket commands",
+    "navigation"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hero.c .hero.c.swp .hero.c.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with nested braces"
+    },
+    {
+      "writeFile": "hero.c",
+      "content": "void battle() {\n    if (hp > 0) {\n        attack();\n        if (crit) {\n            damage *= 2;\n        }\n    }\n}"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' hero.c"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "[{ ]} \u2014 Unmatched Braces",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Open bracket open brace jumps to the unmatched opening brace. Close bracket close brace jumps to the closing one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: find enclosing brace ---"
+    },
+    {
+      "say": "Cursor is deep inside nested braces on line five. Open bracket open brace to find the enclosing brace.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5G",
+      "overlay": "go to line 5"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[{",
+      "overlay": "enclosing brace"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped to the if-crit brace. Again to go up another level.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "[{",
+      "overlay": "outer brace"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "[{",
+      "overlay": "function brace"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now at the function opening brace. Three levels of nesting."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: jump to closing brace ---"
+    },
+    {
+      "say": "Close bracket close brace finds the matching close.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "]}",
+      "overlay": "closing brace"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Open bracket open brace and close bracket close brace. Navigate brace-delimited blocks. Essential for C-style code."
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f hero.c"
+    }
+  ]
+}

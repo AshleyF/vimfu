@@ -1,0 +1,188 @@
+{
+  "title": "VimFu \u2014 Star-Dot Pattern",
+  "description": "Use star to find the word under the cursor, cw to change it, then n and dot to repeat the change on each occurrence.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 622,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "practical"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f app.py .app.py.swp .app.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "app.py",
+      "content": "foo = get_foo()\nprint(foo)\nif foo > 0:\n    save(foo)\nlog(foo)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim app.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "Star-Dot Pattern",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The star-dot pattern lets you find a word and change each occurrence one at a time. Star finds the word, then you change it, then N dot repeats."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Put the cursor on foo and press star.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "*",
+      "overlay": "find word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "It jumped to the next foo and highlighted all matches. Now change this one with C W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "cwbar",
+      "overlay": "change word"
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Press N to go to the next match, then dot to repeat the change.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n",
+      "overlay": "next match"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ".",
+      "overlay": "repeat change"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Another one changed. N dot again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "n"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Every foo is now bar. Star to search, change once, N dot to repeat. You can also skip occurrences with N N."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f app.py"
+    }
+  ]
+}

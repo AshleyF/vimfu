@@ -1,0 +1,159 @@
+{
+  "title": "VimFu — The / Register",
+  "description": "The \"/ register contains the last search pattern. Use it to recall or reuse your previous search.",
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 641,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "advanced"
+  ],
+  "setup": [
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f search.txt .search.txt.swp .search.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "search.txt",
+      "content": "The fox jumped over\nthe lazy dog and\nthe fox ran away"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim search.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "overlay": "VimFu",
+      "caption": "The / Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The slash register, quote slash, stores your last search pattern."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Search for fox.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/fox"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now check the slash register.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":echo @/"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "It shows fox. That's the last pattern we searched for."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "This is useful in substitutions. You can use the slash register as the search part.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s//wolf/g"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "By leaving the search part empty, Vim uses the slash register automatically. Fox became wolf."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "You can also paste the pattern into your text with quote slash P. The slash register. Your last search, always at hand."
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "teardown": [
+    {
+      "comment": "Quit nvim without saving"
+    },
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f search.txt"
+    }
+  ]
+}
