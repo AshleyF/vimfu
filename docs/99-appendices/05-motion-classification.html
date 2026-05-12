@@ -6,11 +6,47 @@
 <title>Motion Classification — VimFu</title>
 <link rel="icon" type="image/svg+xml" href="../logo.svg">
 <link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
 </head>
 <body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
 <nav class="topnav">
-  <a href="../index.html">📚 All Parts</a>
-  &middot; <a href="index.html">← Appendices</a>
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-99-appendices">↑ Appendices</a>
   &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
 </nav>
 <nav class="pager pager-top">
@@ -91,8 +127,8 @@
   <span class="pager-next"><a class="pager-link" href="06-surround-plugin.html" rel="next">Surround (the Plugin That Should Be Built In) →</a></span>
 </nav>
 <nav class="bottomnav">
-  <a href="index.html">← back to part</a>
-  &middot; <a href="../index.html">📚 all parts</a>
+  <a href="../index.html#part-99-appendices">↑ back to Appendices</a>
+  &middot; <a href="../index.html">📚 contents</a>
 </nav>
 <footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
 </body>

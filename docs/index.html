@@ -4,7 +4,43 @@
 <title>VimFu &mdash; The companion site</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="stylesheet" href="style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
 </head><body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
 <article>
 <h1>VimFu</h1>
 <!-- Auto-generated from content/parts/**/*.json -->
@@ -21,7 +57,7 @@
 
 <h2 class="contents-heading">Contents</h2>
 <!-- part 01 (01-foundations) -->
-<h2><a href="01-foundations/index.html">Foundations</a></h2>
+<h2 id="part-01-foundations">Foundations</h2>
 <ul>
 <li><a href="01-foundations/01-modal-editing.html">Modal Editing</a> — <span class='sub'>Why every key on the keyboard is a command</span></li>
 <li><a href="01-foundations/02-modes-overview.html">The Modes</a> — <span class='sub'>A small finite state machine you carry in your head</span></li>
@@ -30,7 +66,7 @@
 <li><a href="01-foundations/05-vi-vim-neovim.html">Vi → Vim → Neovim</a> — <span class='sub'>Fifty years of an editing language</span></li>
 </ul>
 <!-- part 02 (02-survival) -->
-<h2><a href="02-survival/index.html">Survival</a></h2>
+<h2 id="part-02-survival">Survival</h2>
 <ul>
 <li><a href="02-survival/01-open-save-quit.html">Open, Save, Quit</a> — <span class='sub'>Launch Neovim, write your work, and get out — three ways each</span></li>
 <li><a href="02-survival/02-insert-and-back.html">Insert and Back Again</a> — <span class='sub'>i to type, Esc to come home</span></li>
@@ -38,7 +74,7 @@
 <li><a href="02-survival/04-hjkl.html">Move with hjkl</a> — <span class='sub'>Left, down, up, right — without leaving home row</span></li>
 </ul>
 <!-- part 03 (03-basic-editing) -->
-<h2><a href="03-basic-editing/index.html">Basic Editing</a></h2>
+<h2 id="part-03-basic-editing">Basic Editing</h2>
 <ul>
 <li><a href="03-basic-editing/01-insert-variants.html">More Ways into Insert</a> — <span class='sub'>Five doors into Insert mode — pick the one that lands the cursor where you want.</span></li>
 <li><a href="03-basic-editing/02-word-motions.html">Word Motions</a> — <span class='sub'>Move a word at a time. The grammar&#x27;s first real noun.</span></li>
@@ -50,14 +86,14 @@
 <li><a href="03-basic-editing/08-replace-char.html">Replace a Character</a> — <span class='sub'>r{char} — overwrite one character without entering Insert mode.</span></li>
 </ul>
 <!-- part 04 (04-search-find) -->
-<h2><a href="04-search-find/index.html">Search Find</a></h2>
+<h2 id="part-04-search-find">Search Find</h2>
 <ul>
 <li><a href="04-search-find/01-pattern.html">Pattern Search</a> — <span class='sub'>/ searches forward, ? searches back. n and N step through matches.</span></li>
 <li><a href="04-search-find/02-word.html">Word Search</a> — <span class='sub'>*  / # — search for the word under the cursor without typing it.</span></li>
 <li><a href="04-search-find/03-find-on-line.html">Find on Line</a> — <span class='sub'>f, F, t, T — jump to a character without leaving the line.</span></li>
 </ul>
 <!-- part 05 (05-counts-visual) -->
-<h2><a href="05-counts-visual/index.html">Counts Visual</a></h2>
+<h2 id="part-05-counts-visual">Counts Visual</h2>
 <ul>
 <li><a href="05-counts-visual/01-counts.html">Counts</a> — <span class='sub'>Type a number before any motion or operator. It multiplies.</span></li>
 <li><a href="05-counts-visual/02-percent-bar.html">Percentage and Column Jumps</a> — <span class='sub'>{n}% jumps to a percentage of the file. {n}| jumps to a column.</span></li>
@@ -66,14 +102,14 @@
 <li><a href="05-counts-visual/05-tricks.html">Visual Mode Tricks</a> — <span class='sub'>Block O for diagonal corners. gv to re-select.</span></li>
 </ul>
 <!-- part 06 (06-dot-repeat) -->
-<h2><a href="06-dot-repeat/index.html">Dot Repeat</a></h2>
+<h2 id="part-06-dot-repeat">Dot Repeat</h2>
 <ul>
 <li><a href="06-dot-repeat/01-repeat.html">Repeat Last Change</a> — <span class='sub'>. — replay the last change. The single most useful key.</span></li>
 <li><a href="06-dot-repeat/02-with-counts.html">Dot with Counts</a> — <span class='sub'>{n}. — replay the change with a new count.</span></li>
 <li><a href="06-dot-repeat/03-patterns.html">Dot Patterns</a> — <span class='sub'>Search + change + dot. The two main refactor idioms.</span></li>
 </ul>
 <!-- part 07 (07-operators-textobjects) -->
-<h2><a href="07-operators-textobjects/index.html">Operators Textobjects</a></h2>
+<h2 id="part-07-operators-textobjects">Operators Textobjects</h2>
 <ul>
 <li><a href="07-operators-textobjects/01-iw-aw.html">Inner Word vs A Word</a> — <span class='sub'>iw and aw — the first text objects.</span></li>
 <li><a href="07-operators-textobjects/02-quotes.html">Quote Text Objects</a> — <span class='sub'>i&quot; / a&quot; / i&#x27; / a&#x27; — operate on a quoted string without finding its boundaries.</span></li>
@@ -83,7 +119,7 @@
 <li><a href="07-operators-textobjects/06-grammar.html">The Vim Grammar</a> — <span class='sub'>[count] [register] operator [count] {motion | text-object}</span></li>
 </ul>
 <!-- part 08 (08-wider-motions) -->
-<h2><a href="08-wider-motions/index.html">Wider Motions</a></h2>
+<h2 id="part-08-wider-motions">Wider Motions</h2>
 <ul>
 <li><a href="08-wider-motions/01-sentence-paragraph.html">Sentence and Paragraph Motions</a> — <span class='sub'>( ) — sentences. { } — paragraphs.</span></li>
 <li><a href="08-wider-motions/02-match-bracket.html">Match Bracket</a> — <span class='sub'>% — jump to the matching paren, brace, or bracket.</span></li>
@@ -92,7 +128,7 @@
 <li><a href="08-wider-motions/05-WORD.html">WORD Motions</a> — <span class='sub'>W, B, E, gE — like w/b/e/ge but bigger words.</span></li>
 </ul>
 <!-- part 09 (09-scrolling-screen) -->
-<h2><a href="09-scrolling-screen/index.html">Scrolling Screen</a></h2>
+<h2 id="part-09-scrolling-screen">Scrolling Screen</h2>
 <ul>
 <li><a href="09-scrolling-screen/01-half-full-page.html">Half- and Full-Page Scrolling</a> — <span class='sub'>Ctrl-D / Ctrl-U / Ctrl-F / Ctrl-B — scroll without losing place.</span></li>
 <li><a href="09-scrolling-screen/02-center-top-bottom.html">Centering the Cursor</a> — <span class='sub'>zz, zt, zb — move the viewport, not the cursor.</span></li>
@@ -102,7 +138,7 @@
 <li><a href="09-scrolling-screen/06-horizontal.html">Horizontal Scroll</a> — <span class='sub'>zs, ze, zh, zl — scroll left/right when wrap is off.</span></li>
 </ul>
 <!-- part 10 (10-marks-jumps) -->
-<h2><a href="10-marks-jumps/index.html">Marks Jumps</a></h2>
+<h2 id="part-10-marks-jumps">Marks Jumps</h2>
 <ul>
 <li><a href="10-marks-jumps/01-local-global.html">Setting and Jumping to Marks</a> — <span class='sub'>m{a-z} sets a mark. &#x27;{a-z} jumps to its line. `{a-z} jumps to its exact spot.</span></li>
 <li><a href="10-marks-jumps/02-special.html">Special Marks</a> — <span class='sub'>Marks Vim sets for you automatically.</span></li>
@@ -111,7 +147,7 @@
 <li><a href="10-marks-jumps/05-changelist.html">The Change List</a> — <span class='sub'>g; / g, — walk through the places you&#x27;ve been editing.</span></li>
 </ul>
 <!-- part 11 (11-transform) -->
-<h2><a href="11-transform/index.html">Transform</a></h2>
+<h2 id="part-11-transform">Transform</h2>
 <ul>
 <li><a href="11-transform/01-replace-mode.html">Replace Mode</a> — <span class='sub'>R — overwrite as you type. r{c} — overwrite one character.</span></li>
 <li><a href="11-transform/02-indent.html">Indent and Auto-Indent</a> — <span class='sub'>&gt;&gt; indents. &lt;&lt; dedents. ={motion} re-indents using the language indenter.</span></li>
@@ -119,7 +155,7 @@
 <li><a href="11-transform/04-join.html">Joining Lines</a> — <span class='sub'>J joins the next line to the current. gJ joins without a space.</span></li>
 </ul>
 <!-- part 12 (12-registers) -->
-<h2><a href="12-registers/index.html">Registers</a></h2>
+<h2 id="part-12-registers">Registers</h2>
 <ul>
 <li><a href="12-registers/01-registers-overview.html">Registers</a> — <span class='sub'>A dictionary of named clipboards built from one primitive</span></li>
 <li><a href="12-registers/02-unnamed.html">The Unnamed Register</a> — <span class='sub'>&quot;&quot; — where every yank and delete lands by default.</span></li>
@@ -131,14 +167,14 @@
 <li><a href="12-registers/08-macros-as-text.html">Macros Are Just Register Contents</a> — <span class='sub'>&quot;ap → edit → &quot;ay$ — the macro lifecycle as text editing.</span></li>
 </ul>
 <!-- part 13 (13-macros) -->
-<h2><a href="13-macros/index.html">Macros</a></h2>
+<h2 id="part-13-macros">Macros</h2>
 <ul>
 <li><a href="13-macros/01-record-play.html">Recording and Playing Macros</a> — <span class='sub'>qa records into register a. q stops. @a plays.</span></li>
 <li><a href="13-macros/02-counted.html">Counted Macros</a> — <span class='sub'>100@a — run a macro a hundred times. Or until it errors out.</span></li>
 <li><a href="13-macros/03-editing.html">Editing a Macro</a> — <span class='sub'>Paste it, fix it, yank it back. Macros are text.</span></li>
 </ul>
 <!-- part 14 (14-windows-buffers-tabs) -->
-<h2><a href="14-windows-buffers-tabs/index.html">Windows Buffers Tabs</a></h2>
+<h2 id="part-14-windows-buffers-tabs">Windows Buffers Tabs</h2>
 <ul>
 <li><a href="14-windows-buffers-tabs/01-splits.html">Creating Splits</a> — <span class='sub'>Ctrl-W s — horizontal split. Ctrl-W v — vertical.</span></li>
 <li><a href="14-windows-buffers-tabs/02-navigate.html">Navigating Windows</a> — <span class='sub'>Ctrl-W h/j/k/l — move between splits. Ctrl-W c — close. Ctrl-W o — only.</span></li>
@@ -148,7 +184,7 @@
 <li><a href="14-windows-buffers-tabs/06-buffers-vs-windows-vs-tabs.html">Buffer vs Window vs Tab</a> — <span class='sub'>Three concepts most editors collapse into one. Vim keeps them separate.</span></li>
 </ul>
 <!-- part 15 (15-prefix-families) -->
-<h2><a href="15-prefix-families/index.html">Prefix Families</a></h2>
+<h2 id="part-15-prefix-families">Prefix Families</h2>
 <ul>
 <li><a href="15-prefix-families/01-g-overview.html">The g Family</a> — <span class='sub'>30+ commands hide behind the g prefix.</span></li>
 <li><a href="15-prefix-families/02-z-overview.html">The z Family</a> — <span class='sub'>Folding, scrolling, spell. The most thematically scattered prefix.</span></li>
@@ -156,7 +192,7 @@
 <li><a href="15-prefix-families/04-ctrl-w.html">The Ctrl-W Family</a> — <span class='sub'>30+ window commands hide behind the Ctrl-W prefix.</span></li>
 </ul>
 <!-- part 16 (16-insert-mode-power) -->
-<h2><a href="16-insert-mode-power/index.html">Insert Mode Power</a></h2>
+<h2 id="part-16-insert-mode-power">Insert Mode Power</h2>
 <ul>
 <li><a href="16-insert-mode-power/01-exits.html">Exiting Insert Mode</a> — <span class='sub'>Three ways out, and why people remap.</span></li>
 <li><a href="16-insert-mode-power/02-one-shot-normal.html">One-Shot Normal Mode</a> — <span class='sub'>Ctrl-O runs one Normal command without leaving Insert.</span></li>
@@ -169,7 +205,7 @@
 <li><a href="16-insert-mode-power/09-literal-digraph.html">Literal Insert and Digraphs</a> — <span class='sub'>Ctrl-V for literals, Ctrl-K for digraphs — type the un-typeable.</span></li>
 </ul>
 <!-- part 17 (17-ex-commands) -->
-<h2><a href="17-ex-commands/index.html">Ex Commands</a></h2>
+<h2 id="part-17-ex-commands">Ex Commands</h2>
 <ul>
 <li><a href="17-ex-commands/01-file-ops.html">File Operations</a> — <span class='sub'>:w, :e, :q, :wq, :x — and the bangs that mean force.</span></li>
 <li><a href="17-ex-commands/02-substitute.html">Substitute (:s)</a> — <span class='sub'>The most powerful single command in Vim.</span></li>
@@ -182,7 +218,7 @@
 <li><a href="17-ex-commands/09-sort.html">Sort and Reorder Lines</a> — <span class='sub'>:sort with flags handles unique, numeric, reverse, and key-based sorting.</span></li>
 </ul>
 <!-- part 18 (18-visual-depth) -->
-<h2><a href="18-visual-depth/index.html">Visual Depth</a></h2>
+<h2 id="part-18-visual-depth">Visual Depth</h2>
 <ul>
 <li><a href="18-visual-depth/01-modes.html">The Three Visual Modes</a> — <span class='sub'>v, V, Ctrl-V — character, line, block.</span></li>
 <li><a href="18-visual-depth/02-block-insert-append.html">Block Insert and Append</a> — <span class='sub'>I and A in block mode = insert/append on every selected line.</span></li>
@@ -192,7 +228,7 @@
 <li><a href="18-visual-depth/06-gv.html">gv — Re-Select</a> — <span class='sub'>Bring back the last visual selection.</span></li>
 </ul>
 <!-- part 19 (19-command-line-power) -->
-<h2><a href="19-command-line-power/index.html">Command Line Power</a></h2>
+<h2 id="part-19-command-line-power">Command Line Power</h2>
 <ul>
 <li><a href="19-command-line-power/01-history-window.html">Command-Line History</a> — <span class='sub'>↑/↓ for prefix-match, q: for the full window.</span></li>
 <li><a href="19-command-line-power/02-repeat-ex.html">Repeat Last Ex (@:)</a> — <span class='sub'>@: replays your last :command. Then @@ repeats again.</span></li>
@@ -202,7 +238,7 @@
 <li><a href="19-command-line-power/06-wildmenu.html">The Wildmenu</a> — <span class='sub'>&#x27;wildmenu&#x27;, &#x27;wildmode&#x27;, &#x27;wildoptions&#x27; — making Tab at the : prompt actually pleasant.</span></li>
 </ul>
 <!-- part 20 (20-patterns-recipes) -->
-<h2><a href="20-patterns-recipes/index.html">Patterns Recipes</a></h2>
+<h2 id="part-20-patterns-recipes">Patterns Recipes</h2>
 <ul>
 <li><a href="20-patterns-recipes/01-swap-and-duplicate.html">Swap and Duplicate Lines</a> — <span class='sub'>ddp swaps two lines. yyp duplicates one.</span></li>
 <li><a href="20-patterns-recipes/02-star-cw-dot.html">*, cw, then . . . — The Replace Loop</a> — <span class='sub'>Search a word, change one, repeat with dot.</span></li>
@@ -214,7 +250,7 @@
 <li><a href="20-patterns-recipes/08-external-filter.html">External Filter Tricks</a> — <span class='sub'>!{motion}cmd — let any Unix tool transform your text.</span></li>
 </ul>
 <!-- part 21 (21-advanced) -->
-<h2><a href="21-advanced/index.html">Advanced</a></h2>
+<h2 id="part-21-advanced">Advanced</h2>
 <ul>
 <li><a href="21-advanced/01-undo-tree.html">Undo as a Tree</a> — <span class='sub'>g- and g+ walk by time. :undolist shows the branches.</span></li>
 <li><a href="21-advanced/02-special-registers.html">Special Registers Deep Dive</a> — <span class='sub'>%, #, :, ., /, =, _ — the read-only and computed ones.</span></li>
@@ -229,7 +265,7 @@
 <li><a href="21-advanced/11-mappings.html">Mappings — :map, :noremap, and Friends</a> — <span class='sub'>How to bind a keystroke to a command in every mode, and what the modifiers actually do.</span></li>
 </ul>
 <!-- part 22 (22-tmux) -->
-<h2><a href="22-tmux/index.html">Tmux</a></h2>
+<h2 id="part-22-tmux">Tmux</h2>
 <ul>
 <li><a href="22-tmux/01-what-is-tmux.html">What Is tmux?</a> — <span class='sub'>A terminal multiplexer — one screen, many sessions</span></li>
 <li><a href="22-tmux/02-prefix-key.html">The Prefix Key</a> — <span class='sub'>Every tmux command starts with Ctrl-B (or whatever you remap it to)</span></li>
@@ -239,7 +275,7 @@
 <li><a href="22-tmux/06-copy-mode.html">Copy Mode — Vim Motions in Your Scrollback</a> — <span class='sub'>Read the buffer, select text, yank it, paste it</span></li>
 </ul>
 <!-- part 99 (99-appendices) -->
-<h2><a href="99-appendices/index.html">Appendices</a></h2>
+<h2 id="part-99-appendices">Appendices</h2>
 <ul>
 <li><a href="99-appendices/01-keyboard-walk.html">Keyboard Walk</a> — <span class='sub'>Every Normal-mode key, organized by physical key location.</span></li>
 <li><a href="99-appendices/02-synonyms.html">Synonyms and Shortcuts</a> — <span class='sub'>Equivalent commands you&#x27;ll see in different vimrcs.</span></li>

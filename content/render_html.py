@@ -494,6 +494,52 @@ def render_block(b, *, current_part, index, examples) -> str:
     return f"<!-- unknown block type: {escape(str(bt))} -->"
 
 
+# -------- shared head/body fragments -------------------------------------- #
+
+# Inline FOUC-safe theme initializer. Must run before <body> renders so the
+# correct theme is set immediately. Honors localStorage choice if present,
+# otherwise falls back to the OS preference.
+THEME_INIT_SCRIPT = """<script>
+(function(){{
+  try {{
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {{
+      document.documentElement.setAttribute('data-theme', t);
+    }}
+  }} catch(e) {{}}
+}})();
+</script>"""
+
+# Floating top-right toggle button. Click cycles light <-> dark and persists.
+# Updates the icon to reflect the *next* state (so users see what tapping does).
+THEME_TOGGLE_BUTTON = """<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){{
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){{
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }}
+  function paint(){{
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }}
+  paint();
+  btn.addEventListener('click', function(){{
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try {{ localStorage.setItem('vimfu-theme', next); }} catch(e) {{}}
+    paint();
+  }});
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){{
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  }});
+}})();
+</script>"""
+
+
 # -------- topic page ------------------------------------------------------ #
 
 PAGE = """<!doctype html>
@@ -504,11 +550,13 @@ PAGE = """<!doctype html>
 <title>{title} — VimFu</title>
 <link rel="icon" type="image/svg+xml" href="{root_index_dir}logo.svg">
 <link rel="stylesheet" href="{css}">
+THEME_INIT_PLACEHOLDER
 </head>
 <body>
+THEME_TOGGLE_PLACEHOLDER
 <nav class="topnav">
-  <a href="{root_index}">📚 All Parts</a>
-  &middot; <a href="index.html">← {part_label}</a>
+  <a href="{root_index}">📚 Contents</a>
+  &middot; <a href="{root_index}#part-{part_dir}">↑ {part_label}</a>
   &middot; <a class="practice-link" href="../sim/?{practice_qs}" target="_blank" rel="noopener">▶ Practice in the simulator</a>
 </nav>
 <nav class="pager pager-top">
@@ -525,13 +573,13 @@ PAGE = """<!doctype html>
   <span class="pager-next">{next_link}</span>
 </nav>
 <nav class="bottomnav">
-  <a href="index.html">← back to part</a>
-  &middot; <a href="{root_index}">📚 all parts</a>
+  <a href="{root_index}#part-{part_dir}">↑ back to {part_label}</a>
+  &middot; <a href="{root_index}">📚 contents</a>
 </nav>
 {footer}
 </body>
 </html>
-"""
+""".replace("THEME_INIT_PLACEHOLDER", THEME_INIT_SCRIPT).replace("THEME_TOGGLE_PLACEHOLDER", THEME_TOGGLE_BUTTON)
 
 
 def _pager_links(current_part: str, current_stem: str, ordered: list[tuple[str,str,str]]) -> tuple[str,str,str]:
@@ -627,6 +675,7 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
         css="../style.css",
         root_index="../index.html",
         root_index_dir="../",
+        part_dir=current_part,
         part_label=escape(part_label),
         practice_qs=practice_qs,
         prev_link=prev_link,
@@ -643,67 +692,19 @@ PART_INDEX = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{label} — VimFu</title>
-<link rel="icon" type="image/svg+xml" href="../logo.svg">
-<link rel="stylesheet" href="../style.css">
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0;url=../index.html#part-{part_dir}">
+<link rel="canonical" href="../index.html#part-{part_dir}">
 </head><body>
-<nav class="topnav"><a href="../index.html">📚 All Parts</a></nav>
-<nav class="pager pager-top">
-  <span class="pager-prev">{prev_link}</span>
-  <span class="pager-pos">{pos_label}</span>
-  <span class="pager-next">{next_link}</span>
-</nav>
-<article>
-<h1>{label}</h1>
-<ol class="topic-list">
-{items}
-</ol>
-</article>
-<nav class="pager pager-bottom">
-  <span class="pager-prev">{prev_link}</span>
-  <span class="pager-pos">{pos_label}</span>
-  <span class="pager-next">{next_link}</span>
-</nav>
-{footer}
+<p>This page has moved. <a href="../index.html#part-{part_dir}">Continue to {label} on the contents page</a>.</p>
+<script>location.replace('../index.html#part-{part_dir}');</script>
 </body></html>
 """
 
 
 def render_part_index(part_dir, topics_in_part, all_parts=None) -> str:
-    items = []
-    for t in topics_in_part:
-        stem = t["__file_stem"]
-        title = t.get("title", t.get("id", "?"))
-        sub = t.get("subtitle", "")
-        items.append(
-            f'<li><a href="{stem}.html">{escape(title)}</a>'
-            + (f" — <span class='sub'>{escape(sub)}</span>" if sub else "")
-            + "</li>"
-        )
     label = part_dir.split("-", 1)[-1].replace("-", " ").title()
-
-    # Prev / next part links — let part-index pages chain end to end like the
-    # topic pages do.
-    all_parts = all_parts or []
-    idx = next((i for i, p in enumerate(all_parts) if p == part_dir), None)
-    prev_link = '<span class="pager-disabled">← start</span>'
-    next_link = '<span class="pager-disabled">end →</span>'
-    pos_label = ""
-    if idx is not None:
-        pos_label = f"{idx + 1} / {len(all_parts)}"
-        if idx > 0:
-            p = all_parts[idx - 1]
-            plabel = p.split("-", 1)[-1].replace("-", " ").title()
-            prev_link = f'<a class="pager-link" href="../{escape(p)}/index.html" rel="prev">← {escape(plabel)}</a>'
-        if idx < len(all_parts) - 1:
-            p = all_parts[idx + 1]
-            plabel = p.split("-", 1)[-1].replace("-", " ").title()
-            next_link = f'<a class="pager-link" href="../{escape(p)}/index.html" rel="next">{escape(plabel)} →</a>'
-
-    return PART_INDEX.format(
-        label=escape(label), items="\n".join(items),
-        prev_link=prev_link, next_link=next_link, pos_label=escape(pos_label),
-        footer=_report_footer(prefix="../"),
-    )
+    return PART_INDEX.format(label=escape(label), part_dir=escape(part_dir))
 
 
 ROOT_INDEX = """<!doctype html>
@@ -712,7 +713,9 @@ ROOT_INDEX = """<!doctype html>
 <title>VimFu &mdash; The companion site</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="stylesheet" href="style.css">
+THEME_INIT_PLACEHOLDER
 </head><body>
+THEME_TOGGLE_PLACEHOLDER
 <article>
 <h1>VimFu</h1>
 <!-- Auto-generated from content/parts/**/*.json -->
@@ -732,10 +735,10 @@ ROOT_INDEX = """<!doctype html>
 </article>
 {footer}
 </body></html>
-"""
+""".replace("THEME_INIT_PLACEHOLDER", THEME_INIT_SCRIPT).replace("THEME_TOGGLE_PLACEHOLDER", THEME_TOGGLE_BUTTON)
 
 
-def render_root_index(parts_map) -> str:
+def render_root_index(parts_map, index) -> str:
     sections = []
     for part_dir in sorted(parts_map.keys()):
         topics = [t for t in parts_map[part_dir] if _visible(t, AUDIENCE)]
@@ -744,15 +747,17 @@ def render_root_index(parts_map) -> str:
         label = part_dir.split("-", 1)[-1].replace("-", " ").title()
         nn = part_dir.split("-", 1)[0]
         sections.append(f'<!-- part {escape(nn)} ({escape(part_dir)}) -->')
-        sections.append(f'<h2><a href="{part_dir}/index.html">{escape(label)}</a></h2>')
+        sections.append(f'<h2 id="part-{escape(part_dir)}">{escape(label)}</h2>')
         sections.append("<ul>")
         for t in topics:
             stem = t["__file_stem"]
             ttl = t.get("title", t.get("id", "?"))
             sub = t.get("subtitle", "")
+            ttl_html = render_inline(ttl, current_part=part_dir, index=index)
+            sub_html = render_inline(sub, current_part=part_dir, index=index) if sub else ""
             sections.append(
-                f'<li><a href="{part_dir}/{stem}.html">{escape(ttl)}</a>'
-                + (f" — <span class='sub'>{escape(sub)}</span>" if sub else "")
+                f'<li><a href="{part_dir}/{stem}.html">{ttl_html}</a>'
+                + (f" — <span class='sub'>{sub_html}</span>" if sub else "")
                 + "</li>"
             )
         sections.append("</ul>")
@@ -803,7 +808,7 @@ STYLE_CSS = """:root {
   --broken: #a33;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --fg: #e6e6e6;
     --muted: #9aa0a6;
     --bg: #14161b;
@@ -841,6 +846,60 @@ STYLE_CSS = """:root {
     --pager-hover-border: #5a2828;
     --broken: #d88;
   }
+}
+:root[data-theme="dark"] {
+  --fg: #e6e6e6;
+  --muted: #9aa0a6;
+  --bg: #14161b;
+  --bg-elev: #1c1f26;
+  --accent: #e07070;
+  --accent-hover: #ff8c8c;
+  --accent-soft: #2a1818;
+  --accent-border: #5a2828;
+  --code-bg: #22262d;
+  --kbd-bg: #2a2e36;
+  --kbd-border: #555;
+  --kbd-fg: #e6e6e6;
+  --panel: #1c1f26;
+  --tip-bg: #2c2a18;
+  --tip-border: #b8a83a;
+  --internals-bg: #18222e;
+  --internals-border: #4a7aa0;
+  --internals-fg: #aac6e0;
+  --anecdote-bg: #2a2418;
+  --anecdote-border: #a8884a;
+  --anecdote-fg: #d8c08a;
+  --qr-bg: #2a1818;
+  --qr-fg: #d8a0a0;
+  --buy-bg: #2c2418;
+  --buy-border: #a87830;
+  --example-bg: #1f1818;
+  --example-border: #5a2828;
+  --example-fg: #d8a0a0;
+  --rule: #2a2e36;
+  --rule-strong: #3a3e46;
+  --table-head: #22262d;
+  --summary-bg: #2a1818;
+  --summary-fg: #e8b8b8;
+  --pager-hover-bg: #2a1818;
+  --pager-hover-border: #5a2828;
+  --broken: #d88;
+}
+button#theme-toggle {
+  position: fixed; top: 10px; right: 10px; z-index: 1000;
+  width: 36px; height: 36px; padding: 0;
+  border: 1px solid var(--rule-strong); border-radius: 50%;
+  background: var(--bg-elev); color: var(--fg);
+  font-size: 1.05rem; line-height: 1; cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+button#theme-toggle:hover {
+  background: var(--accent-soft); border-color: var(--accent-border);
+  transform: scale(1.05);
+}
+button#theme-toggle:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
 }
 * { box-sizing: border-box; }
 body {
@@ -1110,7 +1169,7 @@ def main() -> int:
         (pdir / "index.html").write_text(
             render_part_index(part_dir, plist, all_parts=visible_parts), encoding="utf-8")
 
-    (out_dir / "index.html").write_text(render_root_index(parts_map), encoding="utf-8")
+    (out_dir / "index.html").write_text(render_root_index(parts_map, index), encoding="utf-8")
     (out_dir / "style.css").write_text(STYLE_CSS, encoding="utf-8")
 
     print(f"Wrote {written} topic pages across {len(parts_map)} parts → {out_dir}")
