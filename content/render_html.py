@@ -995,6 +995,15 @@ kbd {
   color: var(--kbd-fg);
   white-space: nowrap;
 }
+/* Keycaps that appear inside a link or heading inherit the link/heading color
+   instead of the high-contrast white-on-gray default — this keeps the title
+   visually unified rather than spotted with neutral chips. */
+a kbd, h1 kbd, h2 kbd, h3 kbd, h4 kbd, .subtitle kbd {
+  background: transparent; color: inherit;
+  border-color: currentColor;
+  border-bottom-width: 1px;
+}
+a:hover kbd { color: inherit; }
 
 blockquote.summary {
   border-left: 3px solid var(--accent); margin: 1rem 0;
