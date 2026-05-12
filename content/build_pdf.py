@@ -27,6 +27,15 @@ import subprocess
 import sys
 from pathlib import Path
 
+# This script prints non-ASCII glyphs (→, …, ✓, !) for progress output.
+# On a default Windows console (cp1252) those crash with UnicodeEncodeError.
+# Force UTF-8 on stdout/stderr so the build doesn't abort before TeX even runs.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 ROOT = Path(__file__).resolve().parent
 LATEX_DIR = ROOT / "output" / "latex"
 BOOK_TEX = LATEX_DIR / "book.tex"

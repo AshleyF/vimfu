@@ -192,6 +192,24 @@ element behind a "Show internals" link.
 - `title` — sidebar heading.
 - `text` — body. May contain `{key:X}` markers and inline code spans.
 
+### `anecdote`  *(personal story / historical aside)*
+
+A warm, italic sidebar for a personal anecdote or historical aside — the
+kind of paragraph the author would tell over coffee, not the kind that
+explains a feature. Use sparingly; one or two per part at most. Both book
+and site render it as a callout (tan/amber accent, italic body).
+
+```json
+{
+  "type": "anecdote",
+  "title": "Playing Star Trek on a printer",
+  "text": "My uncle ran a startup out of his basement..."
+}
+```
+
+- `title` — sidebar heading (no "Under the Hood" prefix; the title stands alone).
+- `text` — body. Italic in print/web. May contain inline emphasis with `*...*`.
+
 ### `screenshot`
 
 A single embedded terminal frame (one Frame JSON). Useful for spot

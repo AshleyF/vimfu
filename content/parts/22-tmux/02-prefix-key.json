@@ -40,7 +40,13 @@
       "type": "internals",
       "audience": "book",
       "title": "Why Ctrl-B Was Picked Originally",
-      "text": "tmux inherited the convention of having a prefix from GNU screen, which used {key:Ctrl-A}. tmux's author, Nicholas Marriott, picked {key:Ctrl-B} explicitly to *not* be {key:Ctrl-A}, because he did not want tmux to fight with Emacs (where {key:Ctrl-A} is beginning-of-line). {key:Ctrl-B} was chosen because it looked unused.\n\nIt was, of course, not unused. Vim had been using it for page-back since the early 1990s, and screen users were already irritated by the {key:Ctrl-A} clash. The lesson is that there are no unused {key:Ctrl-letter} chords on a Unix keyboard — every one is contested by at least one popular program. The remap-to-{key:Ctrl-Space} convention took years to settle, and is now ubiquitous because {key:Ctrl-Space} *is* genuinely uncontested in most workflows."
+      "text": "tmux inherited the convention of having a prefix from GNU screen, which used {key:Ctrl-A}. The prefix exists because tmux runs underneath whatever program is in the active pane; without a clear separator, every keystroke would have to be disambiguated. {key:Ctrl-B} was chosen because it looked unused.\n\nIt was, of course, not unused. Vim had been using it for page-back since the early 1990s, and screen users were already irritated by the {key:Ctrl-A} clash. The lesson is that there are no unused {key:Ctrl-letter} chords on a Unix keyboard — every one is contested by at least one popular program. The remap-to-{key:Ctrl-Space} convention took years to settle, and is now ubiquitous because {key:Ctrl-Space} *is* genuinely uncontested in most workflows."
+    },
+
+    {
+      "type": "anecdote",
+      "title": "Nicholas Marriott, screen, and the search for an unused chord",
+      "text": "tmux was written in 2007 by Nicholas Marriott, an OpenBSD developer who wanted *screen* — the venerable 1987 multiplexer — with a saner codebase and a BSD license. He copied screen's basic architecture (a server process, a client, a prefix key) and rewrote it cleanly. Almost everything you do in tmux still maps to a `screen` equivalent if you squint.\n\nThe prefix-key choice was the one place he deliberately broke from screen. screen used {key:Ctrl-A}, which fights Emacs's beginning-of-line. Nicholas picked the next letter — {key:Ctrl-B} — because it *looked* free. He hadn't realised Vim had been using {key:Ctrl-B} for page-up since 1991. Twenty years of Vim users discovered this the hard way: install tmux, run Vim, press {key:Ctrl-B} expecting page-up, watch tmux eat the keystroke. The fix has been the same .tmux.conf line in every tutorial since: `set -g prefix C-Space`. There is no shortcut left on a Unix keyboard that doesn't already belong to someone."
     },
 
     { "type": "qr", "topic": "tmux.prefix-key" },

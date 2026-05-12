@@ -39,6 +39,12 @@
       "text": "Some patterns are common enough to deserve a one-key shortcut:\n\n  • {key:D} = {key:d}{key:$}\n  • {key:C} = {key:c}{key:$}\n  • {key:Y} = {key:y}{key:y} *(classic vi)* / {key:y}{key:$} *(Neovim default)*\n  • {key:S} = {key:c}{key:c}\n  • {key:s} = {key:c}{key:l}\n  • {key:x} = {key:d}{key:l}\n  • {key:X} = {key:d}{key:h}\n\nThese are sugar over the grammar. Knowing both forms helps when reading other people's keystrokes — and explains why {key:Y} is a wart (broken symmetry, see [`editing.yank-put`](#editing.yank-put))."
     },
 
+    {
+      "type": "internals",
+      "title": "Operator-Pending Is a Real Mode",
+      "text": "Between pressing the operator and pressing the motion or text object, Vim is in a fourth major mode: **operator-pending**. It's not a UI flourish — it's a named state in the editor's state machine, with its own keymap. Until a motion resolves, no buffer change has happened: the operator is staged with its count, the motion will produce `(start, end, type)`, and only then does the operator function execute.\n\nThe practical consequence is that op-pending has its *own* mapping table. {key::}{key:o}{key:n}{key:o}{key:r}{key:e}{key:m}{key:a}{key:p} (op-pending non-recursive map) defines mappings that *only fire after an operator*. So `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" without breaking {key:p} (paste) in Normal mode. This is the mechanism every custom text-object plugin uses — vim-surround, targets.vim, vim-textobj-* — and it's why operator-pending shows up in Vim's `:help map-modes` matrix as its own column (`o`). Full treatment in [`advanced.op-pending`](#advanced.op-pending)."
+    },
+
     { "type": "tip", "text": "If you can answer \"what's the verb? what's the noun?\" for a command you want to run, you can usually type it. That's the test for whether you've internalized the grammar — and once you have, every new motion or text object is a free upgrade for *every* operator." },
 
     { "type": "divider" },

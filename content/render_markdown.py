@@ -85,7 +85,7 @@ def build_index(topics: list[dict[str, Any]]) -> dict[str, dict[str, str]]:
 
 # -------- inline markup ---------------------------------------------------- #
 
-_KEY_RE = re.compile(r"\{key:([^}]+)\}")
+_KEY_RE = re.compile(r"\{key:([^}]+|\})\}")
 _LINK_RE = re.compile(r"\[([^\]]+)\]\(#([^)]+)\)")
 
 
@@ -242,6 +242,22 @@ def render_block(b: dict[str, Any], *, current_part: str, index, examples: dict[
             out.append(">")
         # drop trailing ">"
         while out and out[-1] == ">":
+            out.pop()
+        return "\n".join(out)
+
+    if bt == "anecdote":
+        title = inl(b.get("title", ""))
+        text = inl(b.get("text", ""))
+        header = f"📖 *{title}*" if title else "📖 *A story*"
+        out = [f"> {header}", ">"]
+        for para in text.split("\n\n"):
+            para = para.rstrip()
+            if not para:
+                continue
+            for line in para.split("\n"):
+                out.append(f"> *{line}*")
+            out.append(">")
+        if out[-1] == ">":
             out.pop()
         return "\n".join(out)
 

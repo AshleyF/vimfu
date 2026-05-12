@@ -19,6 +19,12 @@ from html import escape
 from pathlib import Path
 from typing import Any
 
+# Ensure UTF-8 stdout on Windows (cp1252) so summary prints with "→" don't crash.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from lib.videos import video_for_lesson, videos_for_topic  # noqa: E402
@@ -93,6 +99,7 @@ def build_index(topics):
                 "part_dir": t["__part_dir"],
                 "file_stem": t["__file_stem"],
                 "title": t.get("title", tid),
+                "visible": _visible(t, AUDIENCE),
             }
     return idx
 
@@ -100,7 +107,7 @@ def build_index(topics):
 # -------- inline markup --------------------------------------------------- #
 
 # Order matters: do `code`, **strong**, *em* AFTER escape, BEFORE link/key
-_KEY_RE   = re.compile(r"\{key:([^}]+)\}")
+_KEY_RE   = re.compile(r"\{key:([^}]+|\})\}")
 _LINK_RE  = re.compile(r"\[([^\]]+)\]\(#([^)]+)\)")
 _CODE_RE  = re.compile(r"`([^`]+)`")
 _STRONG_RE = re.compile(r"\*\*([^*]+)\*\*")
@@ -117,7 +124,7 @@ def render_inline(text: str, *, current_part: str, index) -> str:
     i = 0
     # combined pattern with named groups
     combined = re.compile(
-        r"(?P<key>\{key:[^}]+\})"
+        r"(?P<key>\{key:(?:[^}]+|\})\})"
         r"|(?P<link>\[[^\]]+\]\(#[^)]+\))"
         r"|(?P<code>`[^`]+`)"
         r"|(?P<strong>\*\*[^*]+\*\*)"
@@ -453,6 +460,20 @@ def render_block(b, *, current_part, index, examples) -> str:
         out.append("</aside>")
         return "\n".join(out)
 
+    if bt == "anecdote":
+        title = inl(b.get("title", ""))
+        text = b.get("text", "") or ""
+        header_text = f"📖 {title}" if title else "📖 A story"
+        out = ['<aside class="anecdote">',
+               f'<header>{header_text}</header>']
+        for para in text.split("\n\n"):
+            para = para.rstrip()
+            if not para:
+                continue
+            out.append(render_para_with_fences(para, current_part=current_part, index=index))
+        out.append("</aside>")
+        return "\n".join(out)
+
     if bt == "qr":
         tid = b.get("topic", "")
         info = index.get(tid)
@@ -468,7 +489,7 @@ def render_block(b, *, current_part, index, examples) -> str:
         return f'<aside class="qr"><span>→ See also {link}</span></aside>'
 
     if bt == "buy-prompt":
-        return '<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>'
+        return '<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>'
 
     return f"<!-- unknown block type: {escape(str(bt))} -->"
 
@@ -568,8 +589,15 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
     if summary := t.get("summary"):
         body.append(f'<blockquote class="summary">{inl(summary)}</blockquote>')
 
+    # Block types that are book-only per Strategy.md (web is a reference, not
+    # a deep-dive): suppress QR cross-promotion asides, storytelling
+    # anecdotes, and "Under the Hood" internals sidebars on the website.
+    WEB_SUPPRESSED_BLOCKS = {"qr", "anecdote", "internals"}
+
     for b in t.get("blocks", []):
         if not _visible(b, AUDIENCE):
+            continue
+        if AUDIENCE == "web" and b.get("type") in WEB_SUPPRESSED_BLOCKS:
             continue
         if (b.get("type") == "heading" and int(b.get("level", 2)) == 1
                 and b.get("text", "").strip() == title.strip()):
@@ -583,6 +611,8 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
         links = []
         for ref_id in see_also:
             info = index.get(ref_id)
+            if info and not info.get("visible", True):
+                continue
             if info:
                 href = (f"{info['file_stem']}.html"
                         if info["part_dir"] == current_part
@@ -698,7 +728,9 @@ ROOT_INDEX = """<!doctype html>
 def render_root_index(parts_map) -> str:
     sections = []
     for part_dir in sorted(parts_map.keys()):
-        topics = parts_map[part_dir]
+        topics = [t for t in parts_map[part_dir] if _visible(t, AUDIENCE)]
+        if not topics:
+            continue
         label = part_dir.split("-", 1)[-1].replace("-", " ").title()
         nn = part_dir.split("-", 1)[0]
         sections.append(f'<!-- part {escape(nn)} ({escape(part_dir)}) -->')
@@ -859,6 +891,16 @@ aside.internals header {
 }
 aside.internals p { margin: 0.5rem 0; }
 aside.internals ul { margin: 0.5rem 0; padding-left: 1.4rem; }
+aside.anecdote {
+  background: #fbf6ec; border-left: 4px solid #a8884a;
+  padding: 0.7rem 1rem; margin: 1.2rem 0; border-radius: 4px;
+  font-style: italic;
+}
+aside.anecdote header {
+  font-weight: 600; margin-bottom: 0.4rem; color: #6a4a14;
+  font-style: normal;
+}
+aside.anecdote p { margin: 0.5rem 0; }
 aside.qr {
   background: var(--qr); padding: 0.4rem 0.8rem; margin: 1rem 0;
   border-radius: 4px; font-size: 0.9rem; color: #064;

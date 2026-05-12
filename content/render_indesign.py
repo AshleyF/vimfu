@@ -113,14 +113,14 @@ def tt_escape(s: str) -> str:
 
 
 # Inline markup tokens
-_KEY_RE   = re.compile(r"\{key:([^}]+)\}")
+_KEY_RE   = re.compile(r"\{key:([^}]+|\})\}")
 _LINK_RE  = re.compile(r"\[([^\]]+)\]\(#([^)]+)\)")
 _CODE_RE  = re.compile(r"`([^`]+)`")
 _STRONG_RE = re.compile(r"\*\*([^*]+)\*\*")
 _EM_RE    = re.compile(r"(?<!\*)\*([^*\n]+)\*(?!\*)")
 
 _combined = re.compile(
-    r"(?P<key>\{key:[^}]+\})"
+    r"(?P<key>\{key:(?:[^}]+|\})\})"
     r"|(?P<link>\[[^\]]+\]\(#[^)]+\))"
     r"|(?P<code>`[^`]+`)"
     r"|(?P<strong>\*\*[^*]+\*\*)"
@@ -312,6 +312,16 @@ def render_block(b, *, index, examples) -> list[str]:
                         out.append(para("InternalsBullet", inl(s[2:].strip())))
             else:
                 out.extend(emit_paragraphs(chunk, index=index, body_style="InternalsBody"))
+
+    elif bt == "anecdote":
+        title = inl(b.get("title", "")) or "A Story"
+        text = b.get("text", "") or ""
+        out.append(para("AnecdoteTitle", title))
+        for chunk in text.split("\n\n"):
+            chunk = chunk.rstrip()
+            if not chunk:
+                continue
+            out.extend(emit_paragraphs(chunk, index=index, body_style="AnecdoteBody"))
 
     elif bt == "qr":
         tid = b.get("topic", "")

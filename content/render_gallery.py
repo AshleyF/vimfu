@@ -42,7 +42,7 @@ def main() -> int:
         for i, fr in enumerate(ex.get("frames", []), start=1):
             cap = fr.get("caption", "")
             keys = fr.get("keys", "")
-            rel = f"../screenshots/{eid}/frame_{i:02d}.color.svg"
+            rel = f"screenshots/{eid}/frame_{i:02d}.color.svg"
             exists = (SCREENSHOTS_DIR / eid / f"frame_{i:02d}.color.svg").exists()
             badge = f"<kbd>{escape(keys)}</kbd> " if keys else ""
             if exists:

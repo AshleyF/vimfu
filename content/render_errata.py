@@ -45,6 +45,12 @@ import json
 import sys
 from pathlib import Path
 
+# Ensure UTF-8 stdout on Windows (cp1252) so summary prints with "→" don't crash.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 

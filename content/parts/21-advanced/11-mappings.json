@@ -1,0 +1,81 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "advanced.mappings",
+  "title": "Mappings — :map, :noremap, and Friends",
+  "subtitle": "How to bind a keystroke to a command in every mode, and what the modifiers actually do.",
+  "part": "advanced",
+  "summary": "Vim has one mapping system with a per-mode entry point. :nnoremap is the workhorse — non-recursive normal-mode map. <silent>, <expr>, and <buffer> are the three modifiers that cover 90% of real mappings.",
+  "keys": [":map", ":nmap", ":nnoremap", ":vnoremap", ":xnoremap", ":onoremap", ":inoremap", ":cnoremap"],
+  "lessons": [],
+  "see_also": ["advanced.op-pending", "advanced.config", "ex.set"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Mappings" },
+
+    { "type": "prose", "text": "A *mapping* binds a keystroke (or short sequence) to a command. It's how you build a personal layer on top of Vim's grammar — leader shortcuts, plugin bindings, language-specific helpers. The mapping system has more knobs than most people realize, and most of the bugs in handwritten vimrcs come from picking the wrong knob." },
+
+    { "type": "heading", "level": 2, "text": "Per-mode commands" },
+
+    { "type": "prose", "text": "Mappings are scoped to a mode. Picking the right command (instead of bare `:map`) is the single most important habit." },
+
+    {
+      "type": "table",
+      "headers": ["Command",          "Mode it affects",                                          "When to use"],
+      "rows": [
+        ["{key::}{key:n}{key:m}{key:a}{key:p}",     "Normal",                                          "Bindings that act on the buffer from rest. The default for almost every leader mapping."],
+        ["{key::}{key:i}{key:m}{key:a}{key:p}",     "Insert",                                          "Live-while-typing shortcuts — autopairs, abbreviation-like helpers, completion triggers."],
+        ["{key::}{key:v}{key:m}{key:a}{key:p}",     "Visual *and* Select",                            "Rarely what you want; the Select half eats keystrokes meant as text. Prefer `xmap`."],
+        ["{key::}{key:x}{key:m}{key:a}{key:p}",     "Visual only (not Select)",                       "Visual-mode bindings (e.g. `>` to indent and re-select)."],
+        ["{key::}{key:s}{key:m}{key:a}{key:p}",     "Select only",                                    "Almost never. Select mode behaves like a text-replacing selection (think other editors)."],
+        ["{key::}{key:o}{key:m}{key:a}{key:p}",     "Operator-pending",                               "Custom motions and text objects. After {key:d}/{key:c}/{key:y}, your map fires."],
+        ["{key::}{key:c}{key:m}{key:a}{key:p}",     "Command-line",                                   "Bindings on the {key::} / {key:/} / {key:?} prompt."],
+        ["{key::}{key:t}{key:m}{key:a}{key:p}",     "Terminal-job",                                   "Bindings inside `:terminal` buffers (Neovim and newer Vim)."],
+        ["{key::}{key:m}{key:a}{key:p}",            "Normal + Visual + Select + Op-pending",          "The bare form. Almost always too broad."],
+        ["{key::}{key:m}{key:a}{key:p}{key:!}",      "Insert + Command-line",                          "The other broad form. Sometimes useful for {key:Ctrl}-chords you want everywhere you type."]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "`map` vs `noremap` — the one you almost always want" },
+
+    { "type": "prose", "text": "Every mode has a `nore` variant: {key::}{key:n}{key:n}{key:o}{key:r}{key:e}{key:m}{key:a}{key:p}, {key::}{key:i}{key:n}{key:o}{key:r}{key:e}{key:m}{key:a}{key:p}, {key::}{key:v}{key:n}{key:o}{key:r}{key:e}{key:m}{key:a}{key:p}, etc. The `nore` prefix means *non-recursive*: the right-hand side is interpreted using Vim's built-in commands, not other mappings." },
+
+    { "type": "prose", "text": "Without `nore`, your mapping can be re-mapped by another mapping. `:nmap j gj` then `:nmap gj jjj` will loop. With `:nnoremap j gj`, the `gj` on the right is the *built-in* `gj`, and the mapping is safe. **Use `nore` everywhere unless you have a specific reason not to.** \"Specific reason\" is almost always: you want to invoke another plugin's mapping deliberately." },
+
+    { "type": "heading", "level": 2, "text": "The three modifiers that matter" },
+
+    {
+      "type": "table",
+      "headers": ["Modifier",     "What it does",                                                                                       "When to use"],
+      "rows": [
+        ["`<silent>`",       "Don't echo the right-hand side on the command line as the mapping runs.",                                "Almost always for mappings that call commands. Without it, the {key::}{key:s}{key:o}{key:m}{key:e}{key:c}{key:m}{key:d}{key:Enter} flicker is visible every keystroke."],
+        ["`<expr>`",         "Evaluate the right-hand side as a Vimscript expression; the *result* is what gets typed.",                 "Conditional mappings — \"if the popup menu is visible, do X; otherwise do Y.\" The classic `<expr>` use-case is wiring {key:Tab} for completion."],
+        ["`<buffer>`",       "Mapping applies only in the current buffer. Stored on the buffer, gone when the buffer is wiped.",         "Filetype-specific mappings set from `ftplugin/`. Keeps your Python bindings out of your Markdown buffers."]
+      ]
+    },
+
+    { "type": "prose", "text": "Modifiers go *before* the keystroke, in any order:" },
+
+    {
+      "type": "prose",
+      "text": "```\nnnoremap <silent> <leader>w :write<CR>\ninoremap <silent> <expr> <Tab> pumvisible() ? \"\\<C-n>\" : \"\\<Tab>\"\nnnoremap <silent> <buffer> <leader>r :!python %<CR>\n```"
+    },
+
+    {
+      "type": "internals",
+      "title": "The mapping-mode matrix",
+      "text": "Vim's documentation summarizes the system with a 7×8 matrix. Each row is a mode; each column is a `:map` command that fires in that mode. The diagonal you want is the *minimum-overlap* set:\n\n```\n              Cmd        Normal  Visual  Select  Op-pending  Insert  Cmdline  Term-job\n              ---        ------  ------  ------  ----------  ------  -------  --------\n  :map         (-)         •       •       •         •\n  :nmap        n           •\n  :vmap        v                   •       •\n  :xmap        x                   •\n  :smap        s                           •\n  :omap        o                                     •\n  :map!        (-)                                              •        •\n  :imap        i                                              •\n  :cmap        c                                                        •\n  :tmap        t                                                                  •\n```\n\nRead it as: *which `:map` command fires in which mode*. Bare `:map` lights up four modes — that's why it's almost never the right answer. `:vmap` accidentally hits Select mode too, which is why `:xmap` (Visual-only) is what most people actually want. `:omap` is the only way to define a custom text object or operator-aware motion; it pairs with `:onoremap` and is the entire reason operator-pending (see [`advanced.op-pending`](#advanced.op-pending)) is exposed as its own mode in the first place.\n\nThe `nore` variants ({key::}{key:n}{key:n}{key:o}{key:r}{key:e}{key:m}{key:a}{key:p} etc.) occupy the same columns but disable recursive expansion of the right-hand side. Run {key::}{key:h}{key:e}{key:l}{key:p}{key: }{key:m}{key:a}{key:p}{key:-}{key:m}{key:o}{key:d}{key:e}{key:s} for the canonical version."
+    },
+
+    {
+      "type": "internals",
+      "title": "Useful read-only commands",
+      "text": "Same per-mode prefix, but without arguments lists every mapping in that mode:\n\n  • `:nmap` — list every Normal-mode mapping.\n  • `:nmap <leader>` — list every mapping that starts with your leader.\n  • `:verbose nmap <leader>w` — show the binding *and* the file/line where it was last set. Indispensable for figuring out which plugin stole your shortcut.\n  • `:map <buffer>` — list buffer-local mappings only.\n\nIn Neovim, the Lua spelling is:\n\n```\nvim.keymap.set('n', '<leader>w', ':write<CR>', { silent = true })\n```\n\n— same matrix, same modifiers (`silent`, `expr`, `buffer`, plus `desc` for which-key style helpers)."
+    },
+
+    { "type": "tip", "text": "If a mapping \"doesn't work,\" the first debug step is {key::}{key:v}{key:e}{key:r}{key:b}{key:o}{key:s}{key:e}{key: }{key:n}{key:m}{key:a}{key:p}{key: }{key:l}{key:h}{key:s}. It will name the file that defined whatever currently owns that keystroke — usually a plugin you forgot you installed." },
+
+    { "type": "qr", "topic": "advanced.mappings" },
+    { "type": "buy-prompt" }
+  ]
+}

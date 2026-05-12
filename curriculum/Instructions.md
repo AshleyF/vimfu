@@ -130,6 +130,92 @@ The best way to have efficient navigation is to **design the demo file so the cu
 - **Put the target at the start of the line** when possible, so no horizontal movement is needed.
 - **Avoid variable names that contain the character you need to `f`-search for.** E.g., if you need `fr` to find "red", don't name the variable `color` (the 'r' in color will match first). Use `theme` instead.
 
+### Sending Escape and Enter
+
+To send an Escape or Enter key, use the **bare string** form, not a `keys` object:
+
+**Good:**
+```json
+"escape",
+{ "type": ":w" },
+"enter"
+```
+
+**Bad — this types the literal text "escape" into the buffer:**
+```json
+{ "keys": "escape", "overlay": "back to normal" }
+```
+
+The player now defensively remaps `{"keys":"escape"}` → `Escape()` and `{"keys":"enter"}` → `Enter()` so old broken scripts don't silently corrupt the demo, but new scripts should use the bare-string form. If you need a custom overlay, send the actual control byte instead: `{"keys": "\u001b", "overlay": "back to normal"}`.
+
+### Use deterministic positioning when targets are non-letter characters
+
+`f<char>` motions can be unreliable when chained with the rest of a script — especially when the target character is one that has its own normal-mode meaning (`@`, `0`, `:`, `/`, `<Esc>`, etc.) or when the previous step left Vim at a more-prompt (`Press ENTER to continue`, common after `ga`, `:!`, multi-line `:set`, etc.). The first key sent often gets consumed by the prompt and the rest of the keystrokes execute in an unexpected order.
+
+**Symptoms in the log:**
+- After `4Gf@` the cursor is one column past `@` (on `#`).
+- After `3Gf0` the cursor is several columns past the `0` (because `0` was eaten as start-of-line).
+- After any `ga` step, the next `<count>G` lands one line off because the count digit dismissed the prompt.
+
+**Fixes:**
+1. **Use absolute column motion `N|`** instead of `f<special>`: `4G12|` jumps line 4 column 12, deterministically. Count column 1-based, including spaces and quotes.
+2. **Always dismiss the more-prompt explicitly** with a `\r` step right after `ga`, `:!`, or any command that may produce more than one line of feedback:
+   ```json
+   { "keys": "ga", "overlay": "show ASCII" },
+   { "wait": 0.8 },
+   { "say": "..." },
+   { "keys": "\r", "overlay": "" }
+   ```
+3. Prefer `/<target>\r` (search) over `f<target>` when the target is special and you can guarantee it's the first match from the cursor.
+
+### `writeFile` cannot reliably emit TAB characters
+
+`writeFile` types content into the shell via a heredoc. ConPTY/the terminal mangles literal TAB bytes (often dropping them or converting to spaces), so any file that **requires** real tab separators — most notably `tags` files for `:tag`/`Ctrl-W }` previews — silently breaks (the file is created but Vim reports `E431: Format error in tags file`).
+
+**Workaround:** write tab-bearing files via a `line` step using `printf` (which interprets `\t` itself):
+
+```json
+{ "line": "printf 'forge\\tcraft.py\\t/^def forge(/\\nbrew\\tcraft.py\\t/^def brew(/\\n' > tags" }
+```
+
+Note the doubled backslashes in JSON (`\\t`, `\\n`) so that `printf` sees `\t` and `\n` after JSON decoding.
+
+### Never use `rm -f .../path/*` in setup (zsh `RM_STAR_WAIT`)
+
+Zsh's default `RM_STAR_WAIT` halts on `rm -f .../*` with a `[yn]?` prompt for ~10 seconds. The prompt steals the next keystrokes, which then eat the start of subsequent `cat << EOF > file` heredocs — so the **first multi-file `writeFile` lands empty in the buffer** while later ones look fine. This is the root cause of the `0,0-1 All` "empty buffer" symptom in multi-file `nvim a.py b.py c.py` setups.
+
+**Rule:** never write `rm -f ~/.local/state/nvim/swap/*` (or any `rm -f path/*`). Use `find` with `-delete`:
+
+```json
+{ "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" }
+```
+
+### `ctrl+X` and `tab` keysyms
+
+`{"keys": "ctrl+x"}` (any case, plus `Ctrl-X` / `C-x` / `5ctrl+a` count-prefixed forms) and `{"keys": "tab"}` are defensively remapped in `player.py` to actual control characters / `\t`. You may use them as-is; the literal-text bug is no longer a concern.
+
+### Dismissing the more-prompt: use `\r`, never `q`
+
+After multi-line `:set`, `:!`, `ga`, `g8`, `:undolist`, `:marks`, etc., Vim shows `Press ENTER or type command to continue`. Always dismiss with `{"keys": "\r"}` (Enter). **Do not use `q`** — once back in normal mode, `q` starts macro-recording and leaves a visible `recording @q` indicator.
+
+### Auto-indent (`=`) demos: stock Neovim has no Python indentexpr
+
+`gg=G` on a Python file produces inconsistent results because stock Neovim ships no Python indent script. Use a filetype with a working indentexpr — JSON, JavaScript, C, HTML, or Lua — for any `=` / `gg=G` demonstration.
+
+### `nvim-surround` (not tpope's vim-surround) — limited delimiters
+
+VimFu uses **nvim-surround** (Lua). Some tpope-style triggers do **not** exist:
+
+- No `<C-T>` "tag on separate lines" mode.
+- No self-closing tag detection (`br/>` produces `<br/>...</br/>`, not `<br/>`).
+- No `l` / `\` LaTeX environment delimiter.
+
+For inline HTML tags, use `t` then the tag content + `>` + `\r`:
+
+```json
+{ "keys": "ysiwtem>\r" }
+```
+
 ---
 
 ## Narration Rules

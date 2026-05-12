@@ -337,6 +337,8 @@ _The `:` prompt — file ops, substitution, ranges._
 | `ex.norm`                     | Normal-Mode on Lines           | (ch 25)          | `:norm`                    |
 | `ex.shell`                    | Shell Commands and Filters     | 419–427          | `:!`, `:%!sort`, `:terminal` |
 | `ex.set`                      | Settings                       | 428–430          | `:set`, `:noh`             |
+| `ex.quickfix`                 | The Quickfix List              | —                | `:make`, `:copen`, `:cnext`, `:cprev`, `:cdo` |
+| `ex.sort`                     | Sort                           | —                | `:sort`, `:sort u`, `:sort!`, `:sort n` |
 
 ---
 
@@ -366,6 +368,7 @@ _The colon prompt as a programmable shell._
 | `cmdline.edit-buffer`         | Edit the Command in a Buffer | 449          | `Ctrl-F`                        |
 | `cmdline.paste-from-buffer`   | Paste into the Command       | 450          | `Ctrl-R`, `Ctrl-R Ctrl-W`, `Ctrl-R Ctrl-A` |
 | `cmdline.completion`          | Completion at the `:` prompt | 451          | `Tab`, `Ctrl-D`                 |
+| `cmdline.wildmenu`            | The Wildmenu                 | —            | `'wildmenu'`, `'wildmode'`, `'wildoptions'` |
 
 ---
 
@@ -400,6 +403,33 @@ _Undo trees, special registers, op-pending mode, terminal, folding, config._
 | `advanced.gx-g-less`          | Open URLs and Output History   | (gx, g< videos)| `gx`, `g<`                        |
 | `advanced.folding`            | Folding in Practice            | 493, 494, 495  | `:set fdm=indent`, `zo`, `zc`, `zM`, `zR`, `zf`, `zd` |
 | `advanced.config`             | Configuration                  | 498, 499, 500  | `:help`, `vimrc`, `init.lua`      |
+| `advanced.spell`              | Spell Checking                 | —              | `:set spell`, `]s`, `[s`, `z=`, `zg`, `zw` |
+| `advanced.tags`               | Tags and Code Navigation       | —              | `Ctrl-]`, `Ctrl-T`, `:tag`, `:tags`, `:tselect` |
+| `advanced.mappings`           | Mappings — :map, :noremap, and Friends | —      | `:nnoremap`, `:vnoremap`, `:xnoremap`, `:onoremap`, `:inoremap`, `:cnoremap`, `<silent>`, `<expr>`, `<buffer>` |
+
+---
+
+## Part 22 — Tmux
+
+_The other half of a terminal workflow: terminal multiplexing with vim-flavored
+keys._
+
+| ID                            | Title                                | Lessons                          | Keys                                                  |
+|-------------------------------|--------------------------------------|----------------------------------|-------------------------------------------------------|
+| `tmux.what-is-tmux`           | What Is tmux?                        | 501, 502                         | `tmux`                                                |
+| `tmux.prefix-key`             | The Prefix Key                       | 503, 504                         | `Ctrl-B`, `Ctrl-B ?`                                  |
+| `tmux.panes`                  | Panes — Split, Navigate, Resize      | 505–515                          | `Ctrl-B %`, `Ctrl-B "`, `Ctrl-B o`, `Ctrl-B z`, `Ctrl-B x`, `Ctrl-B q` |
+| `tmux.windows`                | Windows                              | 516–523                          | `Ctrl-B c`, `Ctrl-B n`, `Ctrl-B p`, `Ctrl-B 0`, `Ctrl-B w`, `Ctrl-B ,`, `Ctrl-B &` |
+| `tmux.sessions`               | Sessions, Detach, Reattach           | 524, 525, 526                    | `Ctrl-B d`, `tmux attach`, `tmux new -s`, `tmux ls`   |
+| `tmux.copy-mode`              | Copy Mode — Vim Motions in Scrollback| 527, 528, 529                    | `Ctrl-B [`, `h`, `j`, `k`, `l`, `/`, `n`, `v`, `y`, `q` |
+
+**Internals:** tmux is a long-lived server with attached/detached clients —
+that architecture *is* the killer feature (SSH drops don't kill sessions).
+Panes are independent shells inside one window; windows are virtual-desktop
+layouts inside one session; sessions outlive every terminal they run in.
+{key:Ctrl-B} clashes with Vim's page-back; the modern consensus is to remap
+the prefix to {key:Ctrl-Space}. Copy mode borrows Vim's motion vocabulary
+deliberately — set `mode-keys vi` in `~/.tmux.conf` to make it complete.
 
 ---
 

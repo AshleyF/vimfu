@@ -38,6 +38,14 @@ import json
 import os
 import re
 import sys
+
+# Force UTF-8 on stdout/stderr so prints with → / ✓ / … don't crash on a
+# default Windows console (cp1252).
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -134,41 +142,40 @@ def build_index(topics):
 
 # -------- LaTeX escaping ------------------------------------------------- #
 
-# Order matters: backslash first, then everything that contains it.
-_TEX_REPLACEMENTS = [
-    ("\\", r"\textbackslash{}"),
-    ("&", r"\&"),
-    ("%", r"\%"),
-    ("$", r"\$"),
-    ("#", r"\#"),
-    ("_", r"\_"),
-    ("{", r"\{"),
-    ("}", r"\}"),
-    ("~", r"\textasciitilde{}"),
-    ("^", r"\textasciicircum{}"),
-    ("<", r"\textless{}"),
-    (">", r"\textgreater{}"),
-    ("|", r"\textbar{}"),
-]
+# Single-pass char→token escaping. We MUST NOT use sequential .replace()
+# here: e.g. ("\\" → r"\textbackslash{}") followed by ("{" → r"\{") would
+# re-escape the braces emitted by the backslash replacement, so a literal
+# `\` ends up rendering as `\{}` in the PDF. A single pass over the input
+# avoids that double-escape entirely.
+_TEX_CHAR_MAP = {
+    "\\": r"\textbackslash{}",
+    "&": r"\&",
+    "%": r"\%",
+    "$": r"\$",
+    "#": r"\#",
+    "_": r"\_",
+    "{": r"\{",
+    "}": r"\}",
+    "~": r"\textasciitilde{}",
+    "^": r"\textasciicircum{}",
+    "<": r"\textless{}",
+    ">": r"\textgreater{}",
+    "|": r"\textbar{}",
+    # Unicode glyphs lmodern's T1 encoding doesn't carry → TeX equivalents.
+    "\u2014": "---",          # em-dash
+    "\u2013": "--",           # en-dash
+    "\u2026": r"\ldots{}",    # ellipsis
+    "\u2018": "`",            # left single quote
+    "\u2019": "'",            # right single quote
+    "\u201C": "``",           # left double quote
+    "\u201D": "''",           # right double quote
+}
 
 
 def tex_escape(s: str) -> str:
     if s is None:
         return ""
-    out = s
-    for a, b in _TEX_REPLACEMENTS:
-        out = out.replace(a, b)
-    # Common Unicode dashes / quotes that lmodern's T1 encoding doesn't carry
-    # --- convert to their TeX-idiomatic ASCII equivalents.
-    out = (out
-           .replace("\u2014", "---")    # em-dash
-           .replace("\u2013", "--")     # en-dash
-           .replace("\u2026", r"\ldots{}")  # ellipsis
-           .replace("\u2018", "`")      # left single quote
-           .replace("\u2019", "'")      # right single quote
-           .replace("\u201C", "``")     # left double quote
-           .replace("\u201D", "''"))    # right double quote
-    return out
+    return "".join(_TEX_CHAR_MAP.get(c, c) for c in s)
 
 
 # Verbatim fragments inside arguments are tricky; for ``\code{...}`` and
@@ -179,34 +186,94 @@ def tex_escape_inline_code(s: str) -> str:
 
 
 # Inline markup tokens (same as render_indesign / render_html)
-_KEY_RE   = re.compile(r"\{key:([^}]+)\}")
+_KEY_RE   = re.compile(r"\{key:([^}]+|\})\}")
 _LINK_RE  = re.compile(r"\[([^\]]+)\]\(#([^)]+)\)")
 _CODE_RE  = re.compile(r"`([^`]+)`")
 _STRONG_RE = re.compile(r"\*\*([^*]+)\*\*")
 _EM_RE    = re.compile(r"(?<!\*)\*([^*\n]+)\*(?!\*)")
 
+_EXTLINK_RE = re.compile(r"\[([^\]]+)\]\((?!#)([^)]+)\)")
+
 _combined = re.compile(
-    r"(?P<key>\{key:[^}]+\})"
+    r"(?P<key>\{key:(?:[^}]+|\})\})"
     r"|(?P<link>\[[^\]]+\]\(#[^)]+\))"
+    r"|(?P<extlink>\[[^\]]+\]\((?!#)[^)]+\))"
     r"|(?P<code>`[^`]+`)"
     r"|(?P<strong>\*\*[^*]+\*\*)"
     r"|(?P<em>(?<!\*)\*[^*\n]+\*(?!\*))"
 )
 
 
+# A whitelist for what counts as an actual Vim key worth indexing under
+# "Keys" in the book index. Without this, every `{key:foo}` markup (used
+# for typed text like "foo"/"bar" inside example commands) generates a
+# bogus "Keys!foo" index entry. We keep the index focused on real keys.
+_NAMED_KEYS = {
+    "Esc", "Enter", "Return", "Tab", "Space", "BS", "Backspace",
+    "CR", "NL", "Nul", "Bar", "Bslash", "Lt", "Gt",
+    "Up", "Down", "Left", "Right",
+    "Home", "End", "PageUp", "PageDown", "PgUp", "PgDn",
+    "Del", "Delete", "Ins", "Insert", "Help", "Undo",
+    "Leader", "LocalLeader",
+}
+_FNKEY_RE = re.compile(r"^F\d{1,2}$")
+_MODIFIER_RE = re.compile(
+    r"^(?:Ctrl|Alt|Shift|Cmd|Meta|Super)-", re.IGNORECASE
+)
+
+
+def _is_vim_key(k: str) -> bool:
+    """Return True if `k` looks like an actual Vim key worth indexing."""
+    if not k:
+        return False
+    # Short tokens (single char like `g`, two-char like `gg`, `:w`, `//`).
+    if len(k) <= 2:
+        return True
+    if k in _NAMED_KEYS:
+        return True
+    if _FNKEY_RE.match(k):
+        return True
+    if _MODIFIER_RE.match(k):
+        return True
+    if k.startswith("<") and k.endswith(">"):
+        return True
+    # Modifier combos separated by space, e.g. "Ctrl-W Ctrl-W".
+    if " " in k and all(
+        (not p) or _is_vim_key(p) for p in k.split(" ")
+    ):
+        return True
+    return False
+
+
 def _index_key_entry(k: str) -> str:
     """Build an \\index entry for a key keystroke, sub-grouped under "Keys".
+
+    Returns an empty string for non-key tokens (e.g. literal text like
+    "foo" / "bar" inside example commands) so the index stays focused on
+    real Vim keys.
 
     Uses makeindex's `sort@display` syntax. In the display half we must
     keep raw `{` and `}` balanced from makeindex's point of view, so any
     literal `{`/`}` in the keystroke are rendered with `\\textbraceleft` /
     `\\textbraceright` instead of `\\{` / `\\}`.
     """
+    if not _is_vim_key(k):
+        return ""
+    # Strip control characters (newline, tab, …) from the sort key so they
+    # don't end up sorting next to NULs in makeindex's output.
+    k_for_sort = "".join(c for c in k if c >= " ")
     # Sort key: must have balanced braces (LaTeX parses the \index argument).
-    # Substitute brace/backslash with ASCII placeholders so they survive both
-    # LaTeX tokenisation and makeindex sorting.
-    _sort_subst = {"{": "lbrace", "}": "rbrace", "\\": "bslash"}
-    sort_key = "".join(_sort_subst.get(c, ('"' + c if c in '!@|"' else c)) for c in k)
+    # Substitute brace/backslash/caret/tilde/etc with ASCII placeholders so
+    # they sort sensibly *and* don't survive into the rendered index page
+    # as combining accents (\^x / \~x).
+    _sort_subst = {
+        "{": "lbrace", "}": "rbrace", "\\": "bslash",
+        "^": "caret", "~": "tilde", "|": "bar",
+    }
+    sort_key = "".join(
+        _sort_subst.get(c, ('"' + c if c in '!@|"' else c))
+        for c in k_for_sort
+    )
     safe_chars = []
     for c in k:
         if c == "{":
@@ -217,8 +284,18 @@ def _index_key_entry(k: str) -> str:
             safe_chars.append("\\textbackslash{}")
         elif c == "|":
             safe_chars.append("\\textbar{}")
-        elif c in "#$%&_^~":
+        elif c == "^":
+            # NB: emit the standalone glyph macros (not \^ / \~ which are
+            # accent commands that combine over the *next* character and
+            # produce U+0302 / U+0303 in the rendered index).
+            safe_chars.append("\\textasciicircum{}")
+        elif c == "~":
+            safe_chars.append("\\textasciitilde{}")
+        elif c in "#$%&_":
             safe_chars.append("\\" + c)
+        elif c < " ":
+            # Skip any control chars; they'd crash makeindex anyway.
+            continue
         else:
             safe_chars.append(c)
     display = "\\texttt{" + "".join(safe_chars) + "}"
@@ -247,6 +324,13 @@ def render_inline(text: str, *, index) -> str:
             out.append(
                 f"{tex_escape(label)}~(p.~\\pageref{{topic:{tex_escape(tid)}}})"
             )
+        elif kind == "extlink":
+            # External Markdown link like `[label](https://…)`. The print
+            # book routes all live URLs through QR codes elsewhere; for
+            # inline prose we just emit the label, dropping the URL so the
+            # page doesn't show literal Markdown syntax.
+            mm = _EXTLINK_RE.match(raw)
+            out.append(render_inline(mm.group(1), index=index))
         elif kind == "code":
             inner = _CODE_RE.match(raw).group(1)
             out.append(f"\\code{{{tex_escape_inline_code(inner)}}}")
@@ -465,6 +549,18 @@ def render_block(b, *, index, examples) -> list[str]:
                 out.extend(emit_paragraphs(chunk, index=index))
         out.append("\\end{internals}")
 
+    elif bt == "anecdote":
+        title = inl(b.get("title", ""))
+        text = b.get("text", "") or ""
+        title_arg = title if title else ""
+        out.append("\\begin{anecdote}{" + title_arg + "}")
+        for chunk in text.split("\n\n"):
+            chunk = chunk.rstrip()
+            if not chunk:
+                continue
+            out.extend(emit_paragraphs(chunk, index=index))
+        out.append("\\end{anecdote}")
+
     elif bt == "qr":
         # Per-topic QR codes are website-only — they would point readers at
         # a duplicate of the very page they're reading. The print book uses
@@ -540,6 +636,19 @@ def render_topic_body(t, index, examples) -> str:
                         if b.get("type") == "embed" and b.get("lesson") is not None}
     vids = [v for v in vids if v["lesson"] not in embedded_lessons]
     if vids:
+        # Hide videos that aren't actually published yet. Two signals indicate
+        # "not yet available": missing `published` flag, or a title that
+        # literally announces "(coming soon)". Either one is treated as
+        # invisible in the print book — readers don't need placeholders.
+        def _hidden(v):
+            t = (v.get("title") or "")
+            if not v.get("published"):
+                return True
+            if "(coming soon)" in t.lower():
+                return True
+            return False
+        vids = [v for v in vids if not _hidden(v)]
+    if vids:
         out.append("\\section*{Watch Online}")
         out.append(
             "\\noindent\\small Scan to watch the supporting videos for this "
@@ -555,7 +664,8 @@ def render_topic_body(t, index, examples) -> str:
                     + "}{Watch: " + title + "}{" + tex_escape(qr_url) + "}"
                 )
             else:
-                out.append(f"\\par\\noindent\\textit{{{title}}} (coming soon)")
+                # Defensive: should never reach here given the filter above.
+                continue
 
     if see_also := t.get("see_also"):
         labels = []
@@ -647,6 +757,9 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \definecolor{internalsbg}{HTML}{F0F0F0}
 \definecolor{internalsfg}{HTML}{1A1A1A}
 \definecolor{internalsborder}{HTML}{4A4A4A}
+\definecolor{anecdotebg}{HTML}{FBF6EC}
+\definecolor{anecdotefg}{HTML}{2A2410}
+\definecolor{anecdoteborder}{HTML}{A8884A}
 \definecolor{examplebg}{HTML}{F8F8F8}
 \definecolor{exampleborder}{HTML}{B8B8B8}
 \definecolor{keybg}{HTML}{F4F4F4}
@@ -702,6 +815,16 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
   borderline west={2pt}{0pt}{internalsborder},
   left=10pt,right=8pt,top=6pt,bottom=6pt,
   title={\textbf{Under the Hood --- #1}},coltitle=internalsfg,fonttitle=\bfseries,
+  attach title to upper={\par\medskip}}
+
+% --- Anecdote / personal story callout --------------------------------------
+% Warmer styling than internals; italic body, tan/amber accent.
+\newtcolorbox{anecdote}[1]{enhanced,breakable,colback=anecdotebg,colframe=anecdotebg,
+  coltext=anecdotefg,arc=2pt,boxrule=0pt,leftrule=3pt,
+  borderline west={2pt}{0pt}{anecdoteborder},
+  left=10pt,right=8pt,top=6pt,bottom=6pt,
+  fontupper=\itshape,
+  title={\textbf{\upshape #1}},coltitle=anecdotefg,fonttitle=\bfseries,
   attach title to upper={\par\medskip}}
 
 % --- Worked example callout -------------------------------------------------
@@ -884,7 +1007,13 @@ def main() -> int:
         "\\author{}\n"
         f"\\date{{\\sffamily {tex_escape(edition_string)}}}\n"
         "\\maketitle\n"
-        "\\tableofcontents\n"
+        # The "About the QR codes" chapter is part of the front matter and
+        # should appear physically BEFORE the table of contents (and thus be
+        # listed at the top of the TOC, as a front-matter peer of "Contents"
+        # itself). Emitting it after \tableofcontents put it after the TOC
+        # both physically and visually — and made it look like a peer to the
+        # numbered parts. \addcontentsline still routes the entry into the
+        # generated .toc on the next pass.
         "\\chapter*{About the QR codes}\n"
         "\\addcontentsline{toc}{chapter}{About the QR codes}\n"
         "This book stands on its own---you can read it cover to cover without "
@@ -892,7 +1021,7 @@ def main() -> int:
         "is in the videos: short, screen-recorded demos that show every "
         "technique in motion. We can't print video on paper, so each part of "
         "the book ends with a single QR code that opens the collection of "
-        "videos for that part on \\texttt{vimfubook.com}. Scan it when you "
+        "videos for that part on {\\sffamily vimfubook.com}. Scan it when you "
         "want to see the keystrokes happen live; otherwise, keep reading.\n\n"
         "Inline embeds (the boxed \\textit{Watch} callouts) point at one "
         "specific clip when a single demo is worth pausing for. Cross-"
@@ -900,13 +1029,14 @@ def main() -> int:
         "flip to them directly---there's a full alphabetical index in the "
         "back of the book as well.\n\n"
         "Every QR in this book points at a short, stable URL on the "
-        "domain \\texttt{vimfubook.com} (under the \\texttt{/r/} prefix)---"
+        "domain {\\sffamily vimfubook.com} (under the {\\sffamily /r/} prefix)---"
         "a redirect we own. That means if a "
         "video moves or a page is restructured we can re-aim the link "
         "without ever invalidating a printed code.\n\n"
         "\\noindent\\textbf{Try one now---this code opens the website:}"
         "\\par\\medskip\n"
         + sample_qr_callout + "\n"
+        "\\tableofcontents\n"
         "\\mainmatter\n"
         + "\n".join(book_parts) + "\n"
         "\\backmatter\n"

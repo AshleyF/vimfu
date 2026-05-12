@@ -29,9 +29,8 @@
         ["{key:&}",    ":s",                       "Repeat last substitute (current line)"],
         ["{key:Z}{key:Z}",   ":x",                 "Save if changed, quit"],
         ["{key:Z}{key:Q}",   ":q!",                "Quit, discard changes"],
-        ["{key:U}",    "(per-line undo, rarely used)", ""],
-        ["{key:.}",    "(repeat last change)",     ""],
-        ["{key:&}",    ":&",                       "Repeat last :s"]
+        ["{key:U}",    "(restore current line — rarely used)", ""],
+        ["{key:.}",    "(repeat last change)",     ""]
       ]
     },
 
@@ -39,6 +38,11 @@
       "type": "internals",
       "title": "The Y Wart",
       "text": "Logically {key:Y} should be {key:y}{key:$} (yank to end of line) — that's the pattern set by {key:D} and {key:C}. But for historical reasons {key:Y} is {key:y}{key:y} (yank whole line).\n\nMany users add `nnoremap Y y$` to their vimrc to fix this. Neovim made this the default in 0.6+."
+    },
+    {
+      "type": "anecdote",
+      "title": "Forty years to fix one keystroke",
+      "text": "{key:D} is {key:d}{key:$}. {key:C} is {key:c}{key:$}. {key:Y} should obviously be {key:y}{key:$}. It isn't — it's {key:y}{key:y}, which already has a perfectly good doubled-form spelling. Why?\n\nThe answer is that Bill Joy *left it that way* in 1976. The vi-before-vi (`ex`) had used capital {key:Y} for yank-line, and rather than break the muscle memory of the (small) existing user base, Joy let the wart stand. Bram Moolenaar inherited Vim's compatibility promise and let it stand too. *Every* vimrc on the planet had `nnoremap Y y$` in it for thirty years, and every Vim user knew to add it. The fix waited for a project willing to break tradition.\n\nThat project was Neovim. In 0.6 — November 2021, *forty-five years* after vi shipped — the default finally flipped. {key:Y} = {key:y}{key:$} out of the box. Vanilla Vim still ships the old behavior, because Bram's compatibility promise outlived Bram. So now there are two correct answers: in Neovim, {key:Y} is the consistent thing; in Vim, it's still the wart. The number of users who needed those four-and-a-half decades to converge on the obvious behavior is a small monument to how long muscle memory and backwards compatibility can keep the smallest bad decisions in place."
     },
 
     { "type": "qr", "topic": "appendix.synonyms" },

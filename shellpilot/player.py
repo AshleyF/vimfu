@@ -393,6 +393,35 @@ def _parse_step(item):
     if "type" in item:
         return Type(item["type"])
     if "keys" in item:
+        # Defensive: catch the common authoring mistake of writing
+        # {"keys": "escape"} or {"keys": "enter"} when the author meant
+        # the bare string form ("escape" / "enter") that maps to the
+        # Escape() / Enter() actions. Without this, "escape" gets typed
+        # into the buffer as five literal characters, silently breaking
+        # the entire demo.
+        if item["keys"] == "escape":
+            return Escape()
+        if item["keys"] == "enter":
+            return Enter()
+        # Same defense for {"keys": "tab"} -- author meant the Tab key
+        # (sent as "\t") but the literal text "tab" gets typed instead.
+        if item["keys"] == "tab":
+            return Keys("\t", overlay=item.get("overlay", None))
+        # Same defense for {"keys": "ctrl+x"} -- author meant a control
+        # character but the literal text "ctrl+x" gets typed into the
+        # buffer/cmdline. Map to Ctrl(x) instead. Supports common forms:
+        # "ctrl+x", "Ctrl+x", "ctrl-x", "C-x" (case-insensitive).
+        keys_val = item["keys"]
+        if isinstance(keys_val, str):
+            import re as _re
+            # Allow optional count prefix, e.g. "5ctrl+a" -> Keys("5") + Ctrl("a").
+            m = _re.match(r"^(\d*)(?:ctrl|c)[\+\-](.+)$", keys_val, _re.IGNORECASE)
+            if m:
+                count, letter = m.group(1), m.group(2)
+                ctrl_step = Ctrl(letter, overlay=item.get("overlay", None))
+                if count:
+                    return [Keys(count), ctrl_step]
+                return ctrl_step
         return Keys(item["keys"], overlay=item.get("overlay", None))
     if "line" in item:
         return Line(item["line"], delay=item.get("delay", None))
@@ -419,7 +448,14 @@ def _parse_step(item):
 
 def _parse_steps(items):
     """Parse a list of step definitions."""
-    return [_parse_step(item) for item in items]
+    out = []
+    for item in items:
+        s = _parse_step(item)
+        if isinstance(s, list):
+            out.extend(s)
+        else:
+            out.append(s)
+    return out
 
 
 def load_lesson(json_path: Path) -> Demo:

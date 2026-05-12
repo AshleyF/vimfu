@@ -1,0 +1,73 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "cmdline.wildmenu",
+  "title": "The Wildmenu",
+  "subtitle": "'wildmenu', 'wildmode', 'wildoptions' — making Tab at the : prompt actually pleasant.",
+  "part": "command-line-power",
+  "summary": "Three options shape Tab completion at the : prompt. 'wildmenu' turns on the visual menu; 'wildmode' picks the cycling strategy; 'wildoptions' tweaks behavior. Together they turn : into a tolerable file picker.",
+  "keys": ["Tab", "Shift-Tab", "Ctrl-N", "Ctrl-P"],
+  "lessons": [],
+  "see_also": ["cmdline.completion", "ex.file-ops", "ex.set"],
+
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "The Wildmenu" },
+
+    { "type": "prose", "text": "By default, vintage Vim's Tab completion at the {key::} prompt just *replaces* what you typed with the first match, with no preview of the alternatives. {key:Tab} again cycles. It works, but you're guessing. Three options turn this into a real menu." },
+
+    {
+      "type": "table",
+      "headers": ["Option",        "What it does"],
+      "rows": [
+        ["`'wildmenu'`",     "Turns on the visual completion menu — a list of candidates above the {key::} line that you can walk through with {key:Tab}/{key:Shift-Tab} (or {key:Ctrl-N}/{key:Ctrl-P})."],
+        ["`'wildmode'`",     "How Tab behaves: complete to longest common prefix first, cycle, list-only, or some combination."],
+        ["`'wildoptions'`",  "Extra wildmenu features. The most useful value is `pum` (Neovim 0.9+): show completions as a *popup menu* over the buffer rather than a single-line strip."]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "The recipe everyone copies" },
+
+    { "type": "prose", "text": "These four lines in your config buy you a competent file picker without any plugin:" },
+
+    {
+      "type": "prose",
+      "text": "```\nset wildmenu\nset wildmode=longest:full,full\nset wildoptions+=pum\nset wildignorecase\n```"
+    },
+
+    { "type": "prose", "text": "Read it as: show the menu, on the first Tab complete to the longest unambiguous prefix and open the menu, on the second Tab cycle through entries; render the menu as a popup (Neovim only); be case-insensitive for filename matching." },
+
+    { "type": "heading", "level": 2, "text": "A worked example" },
+
+    { "type": "prose", "text": "Suppose your cwd contains `README.md`, `render_html.py`, `render_markdown.py`, and `requirements.txt`. With the recipe above:" },
+
+    {
+      "type": "table",
+      "headers": ["Keystrokes",                                     "What you see"],
+      "rows": [
+        ["{key::}{key:e}{key: }{key:r}{key:Tab}",                     "Command-line becomes `:e re`; the menu lists every matching file: `README.md`, `render_html.py`, `render_markdown.py`, `requirements.txt`."],
+        ["{key:Tab}",                                                  "Command-line becomes `:e README.md`; first menu entry highlighted."],
+        ["{key:Tab}",                                                  "Advances to `:e render_html.py`."],
+        ["{key:Tab}",                                                  "`:e render_markdown.py`."],
+        ["{key:n}{key:Tab}",                                            "Type `n` to extend the prefix to `ren`, then Tab again — menu narrows to just the two `render_*` files."],
+        ["{key:Enter}",                                                "Opens the highlighted file."]
+      ]
+    },
+
+    { "type": "tip", "text": "{key:Shift-Tab} walks backward through the menu — useful when you've blown past the entry you wanted. {key:Ctrl-E} cancels the menu and restores what you originally typed." },
+
+    {
+      "type": "internals",
+      "title": "Why `wildmode=longest:full,full` is the sweet spot",
+      "text": "`'wildmode'` is a comma-separated list of *stages*. The first Tab uses stage 1, the second uses stage 2, the third uses stage 1 again, and so on. Each stage is one of:\n\n  • `full` — cycle through matches.\n  • `longest` — complete to the longest common prefix.\n  • `list` — show all matches without completing.\n  • `lastused` — for buffers, order by recency.\n  • `:full` (colon-suffix on `longest`) — also open the menu after completing.\n\n`longest:full,full` means: first Tab completes the common prefix *and* opens the menu (so you can both see your options and avoid retyping shared characters); subsequent Tabs cycle. This is the strict superset of every other reasonable choice — you never lose information, and you never have to press more keys than the alternative settings would have required.\n\n`'wildoptions'+=pum` (Neovim only) replaces the cramped one-line strip with a true popup, the same UI Vim uses for Insert-mode completion. `'wildignorecase'` makes `:e Rea<Tab>` and `:e rea<Tab>` behave the same — useful on case-insensitive filesystems and case-sensitive ones both."
+    },
+
+    {
+      "type": "internals",
+      "title": "What `:set wildmenu` actually replaces",
+      "text": "Without `'wildmenu'`, Tab in the {key::} prompt is a *one-shot completion*: Vim picks a match, substitutes it for what you typed, and waits for your next keystroke. You have to press {key:Ctrl-D} separately if you want to see alternatives, and the listing is printed below the command line as static text.\n\nWith `'wildmenu'`, the same Tab interaction becomes *stateful*: Vim opens an in-place menu, tracks the highlighted candidate, and lets {key:Tab}/{key:Shift-Tab} (or {key:Ctrl-N}/{key:Ctrl-P}) walk it. The completion logic underneath is identical — same context inference (`:e` → files, `:set` → options, `:help` → tags) — but the *presentation* shifts from \"guess and re-tab\" to \"see and choose.\" Once you've used it for a week, vanilla Tab completion feels unfinished."
+    },
+
+    { "type": "qr", "topic": "cmdline.wildmenu" },
+    { "type": "buy-prompt" }
+  ]
+}
