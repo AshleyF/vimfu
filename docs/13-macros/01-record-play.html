@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="../12-registers/08-macros-as-text.html" rel="prev">← Macros Are Just Register Contents</a></span>
-  <span class="pager-pos">63 / 136</span>
+  <span class="pager-pos">63 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-counted.html" rel="next">Counted Macros →</a></span>
 </nav>
 <article>
@@ -51,20 +51,6 @@
 <figure class="lesson-embed" data-lesson="128"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/mUDbV7ivEvs?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Play a Macro" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>@a — play macro</figcaption></figure>
 <figure class="lesson-embed" data-lesson="129"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/ta95Jqxv4Pc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Repeat Last Macro" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>@@ — repeat last macro</figcaption></figure>
 <aside class="tip"><strong>Tip.</strong> While recording, the status line shows <code>recording @a</code>. Don&#x27;t worry — the recording is just keystrokes-into-a-register; nothing is locked, nothing is precious. If you mess up, press <kbd>q</kbd> to stop, then <kbd>q</kbd><kbd>a</kbd> to start fresh.</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — How Recording Works</header>
-<p><kbd>q</kbd><kbd>a</kbd>: Vim <em>opens register <code>a</code> for writing</em> and tags every subsequent keypress to be appended to it. Each key still does its normal job — you&#x27;re editing as usual.</p>
-<p><kbd>q</kbd>: Closes the register. The recorded keystrokes (including all the <kbd>Esc</kbd>, motion, and operator keys) sit in <kbd>&quot;</kbd><kbd>a</kbd> as a string.</p>
-<p><kbd>@</kbd><kbd>a</kbd>: Reads <kbd>&quot;</kbd><kbd>a</kbd> and feeds the contents back into Vim&#x27;s input buffer. They run as if you typed them. Errors abort playback.</p>
-<p>This is <strong>just</strong> <em>type-then-replay</em>. There&#x27;s no &quot;macro language.&quot; Anything you can type, you can record.</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Idiom: Make Your Macro Idempotent</header>
-<p>A reliable macro starts with a <em>stable anchor</em> — usually <kbd>0</kbd> (start of line) or a search. That way, no matter where the cursor is, the macro begins at a known position.</p>
-<p>It usually ends with a <em>forward step</em> — typically <kbd>j</kbd> or <kbd>n</kbd> — so successive plays move down through the buffer.</p>
-<p>Example: &quot;add a semicolon to end of every line.&quot; Record: <kbd>q</kbd><kbd>a</kbd>, <kbd>A</kbd><kbd>;</kbd><kbd>Esc</kbd>, <kbd>j</kbd>, <kbd>0</kbd>, <kbd>q</kbd>. Now <kbd>1</kbd><kbd>0</kbd><kbd>0</kbd><kbd>@</kbd><kbd>a</kbd> adds semicolons to 100 lines.</p>
-<p>If the macro fails (e.g. no more lines, or no match for a search), playback aborts. That&#x27;s why &quot;do it 100 times&quot; is safe — it stops when there&#x27;s nothing left to do.</p>
-</aside>
 <section class="example">
 <h3 class="example-title">Worked example — qa ... q  then  @a</h3>
 <p class="example-summary">Record once, play forever.</p>
@@ -91,17 +77,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=one%0Atwo%0Athree%0Arecording+%40a%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Macros are input virtualization</header>
-<p>Recording a macro stores the literal keystroke sequence into a register. Playback feeds those keystrokes back through the same input pipeline a real keyboard would feed. Every subsystem — operators, search, marks, insert — must remain callable from synthetic input. That&#x27;s why macros stop on the first command that would have rung the bell: the input simulator treats a failed command as a real failed command and aborts the stream.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="01-record-play.html">Recording and Playing Macros</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="02-counted.html">Counted Macros</a>, <a href="03-editing.html">Editing a Macro</a>, <a href="../12-registers/08-macros-as-text.html">Macros Are Just Register Contents</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="../12-registers/08-macros-as-text.html" rel="prev">← Macros Are Just Register Contents</a></span>
-  <span class="pager-pos">63 / 136</span>
+  <span class="pager-pos">63 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-counted.html" rel="next">Counted Macros →</a></span>
 </nav>
 <nav class="bottomnav">

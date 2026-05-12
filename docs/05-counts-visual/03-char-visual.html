@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="02-percent-bar.html" rel="prev">← Percentage and Column Jumps</a></span>
-  <span class="pager-pos">23 / 136</span>
+  <span class="pager-pos">23 / 138</span>
   <span class="pager-next"><a class="pager-link" href="04-line-block.html" rel="next">Line and Block Visual →</a></span>
 </nav>
 <article>
@@ -44,22 +44,6 @@
 <figure class="lesson-embed" data-lesson="64"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/j6qyLG1xc9I?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Character Visual Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>v — character Visual</figcaption></figure>
 <figure class="lesson-embed" data-lesson="68"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/diNNU1HIjas?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Actions on Selection" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>o — switch endpoints</figcaption></figure>
 <aside class="tip"><strong>Tip.</strong> Press <kbd>Esc</kbd> or <kbd>v</kbd> again to leave Visual mode without acting. Press an operator to act and return to Normal.</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Visual Is Just an Anchored Cursor</header>
-<p>When you press <kbd>v</kbd>, Vim sets an <strong>anchor</strong> at the cursor and remembers it. Every motion now updates the <em>cursor</em> while the <em>anchor</em> stays put. The selection is the (anchor → cursor) range — and Vim keeps it sorted so the lower position is always the start.</p>
-<p><kbd>o</kbd> <em>swaps</em> the anchor and cursor. So if you started a selection going forward and realize you need to extend it backward, <kbd>o</kbd> flips which end your motions move.</p>
-<p>When you finally press an operator, Vim hands the operator the (start, end) pair just like a motion would. <strong>Visual mode and operator+motion are the same thing internally</strong> — they just package the range differently.</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — The Last Visual Selection Is Remembered</header>
-<p>Whenever you exit Visual mode, Vim sets two automatic marks: <kbd>`</kbd><kbd>&lt;</kbd> (start) and <kbd>`</kbd><kbd>&gt;</kbd> (end). They live in the buffer until your next visual selection.</p>
-<p>This means:</p>
-<ul>
-<li><kbd>g</kbd><kbd>v</kbd>  re-selects the last visual range.</li>
-<li><kbd>:</kbd><kbd>&#x27;</kbd><kbd>&lt;</kbd><kbd>,</kbd><kbd>&#x27;</kbd><kbd>&gt;</kbd> (or just <kbd>:</kbd> from Visual) targets it as an Ex range — useful for <kbd>:</kbd><kbd>s</kbd><kbd>/</kbd><kbd>foo</kbd><kbd>/</kbd><kbd>bar</kbd><kbd>/</kbd><kbd>g</kbd>.</li>
-</ul>
-<p>Most &quot;do an Ex command on what I just selected&quot; idioms work this way. See <a href="../18-visual-depth/05-range.html">`visual.range`</a>.</p>
-</aside>
 <hr>
 <h3>Reference</h3>
 <table>
@@ -106,17 +90,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Visual mode is anchor + endpoint</header>
-<p>Charwise visual mode stores two positions: the anchor (where you pressed <kbd>v</kbd>) and the current cursor. Motions move the cursor; the selection is always the inclusive range between the two. There&#x27;s no selection object being copied around — the renderer paints whatever sits between anchor and cursor each frame. Operators consume the resolved range and exit back to normal mode.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="03-char-visual.html">Character Visual Mode</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="04-line-block.html">Line and Block Visual</a>, <a href="05-tricks.html">Visual Mode Tricks</a>, <a href="../18-visual-depth/01-modes.html">The Three Visual Modes</a>, <a href="../18-visual-depth/03-endpoints.html">Swap and Adjust Endpoints</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="02-percent-bar.html" rel="prev">← Percentage and Column Jumps</a></span>
-  <span class="pager-pos">23 / 136</span>
+  <span class="pager-pos">23 / 138</span>
   <span class="pager-next"><a class="pager-link" href="04-line-block.html" rel="next">Line and Block Visual →</a></span>
 </nav>
 <nav class="bottomnav">

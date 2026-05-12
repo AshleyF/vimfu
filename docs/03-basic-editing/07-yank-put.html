@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="06-change.html" rel="prev">← Change</a></span>
-  <span class="pager-pos">16 / 136</span>
+  <span class="pager-pos">16 / 138</span>
   <span class="pager-next"><a class="pager-link" href="08-replace-char.html" rel="next">Replace a Character →</a></span>
 </nav>
 <article>
@@ -62,29 +62,6 @@
 <figure class="lesson-embed" data-lesson="42"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/oOZYZYqDQ-s?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Put Before" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>p — put after</figcaption></figure>
 <figure class="lesson-embed" data-lesson="43"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/pIXQxZkI5-Q?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Yank a Motion" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>P — put before</figcaption></figure>
 <figure class="lesson-embed" data-lesson="44"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/y4gtoZsay8o?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The dd-p Swap Trick" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>yw / y$ — yank a span</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — Why p Sometimes Goes Below the Line and Sometimes After the Cursor</header>
-<p>Every register holds <strong>(text, type)</strong> where <code>type</code> is <code>char</code>, <code>line</code>, or <code>block</code>. The type is set by <em>how the text got into the register</em>:</p>
-<ul>
-<li><kbd>y</kbd><kbd>w</kbd>, <kbd>y</kbd><kbd>$</kbd>, <kbd>y</kbd><kbd>i</kbd><kbd>w</kbd> → type = <code>char</code> (a span of characters).</li>
-<li><kbd>y</kbd><kbd>y</kbd>, <kbd>y</kbd><kbd>j</kbd>, <kbd>y</kbd><kbd>G</kbd> → type = <code>line</code> (one or more whole lines).</li>
-<li><kbd>Ctrl-V</kbd>-then-<kbd>y</kbd> → type = <code>block</code> (a rectangle).</li>
-</ul>
-<p>When you put:</p>
-<ul>
-<li>A <code>char</code>-typed register goes <em>after the cursor</em> (just past the current character).</li>
-<li>A <code>line</code>-typed register goes <em>on the next line below</em>.</li>
-<li>A <code>block</code>-typed register goes <em>as a rectangle starting one column right of the cursor</em>.</li>
-</ul>
-<p>This is why <kbd>y</kbd><kbd>y</kbd><kbd>p</kbd> &quot;duplicates the line&quot; (the line-typed register lands as a new line below) and <kbd>y</kbd><kbd>w</kbd><kbd>p</kbd> &quot;appends a word after the cursor.&quot; It&#x27;s not magic; it&#x27;s the type tag.</p>
-<p><kbd>P</kbd> (capital) does the mirror: charwise = before cursor; linewise = above current line; blockwise = at the cursor column (no shift).</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — The Y Wart</header>
-<p>By symmetry with <kbd>D</kbd> = <kbd>d</kbd><kbd>$</kbd> and <kbd>C</kbd> = <kbd>c</kbd><kbd>$</kbd>, you&#x27;d expect <kbd>Y</kbd> = <kbd>y</kbd><kbd>$</kbd>. It isn&#x27;t.</p>
-<p>In classic Vim, <kbd>Y</kbd> is just another way to say <kbd>y</kbd><kbd>y</kbd>. This is a deliberate compatibility choice — vi behaved that way, so Vim did too. It&#x27;s the most common single complaint about Vim&#x27;s grammar.</p>
-<p>Neovim 0.6+ changed the default: in Neovim, <kbd>Y</kbd> is now <kbd>y</kbd><kbd>$</kbd> (matching <kbd>D</kbd> and <kbd>C</kbd>). In Vim you can opt in with <code>:nnoremap Y y$</code>. The video lessons show classic Y; Neovim users get the new behavior for free.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> Move text without using a separate buffer: <kbd>d</kbd><kbd>d</kbd> (cut a line), navigate, <kbd>p</kbd> (paste below). It&#x27;s exactly the cut-and-paste you already know, just expressed in operator+motion.</aside>
 <hr>
 <h3>Reference</h3>
@@ -154,17 +131,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=alpha%0Abravo%0Acharlie%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Yank produces a typed snapshot, not raw text</header>
-<p>A yank captures both payload and type (<code>char</code>, <code>line</code>, or <code>block</code>). Paste reads that type tag and chooses placement: charwise pastes after the cursor on the same line; linewise pastes on a new line below; blockwise pastes as a rectangle. The register is a tiny tagged-union struct, not a string. Mismatch the type and <kbd>p</kbd> appears to misbehave — it&#x27;s just honoring the tag you stored.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="07-yank-put.html">Yank and Put</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="05-delete.html">Delete</a>, <a href="../12-registers/02-unnamed.html">The Unnamed Register</a>, <a href="../12-registers/03-named.html">Named Registers</a>, <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="06-change.html" rel="prev">← Change</a></span>
-  <span class="pager-pos">16 / 136</span>
+  <span class="pager-pos">16 / 138</span>
   <span class="pager-next"><a class="pager-link" href="08-replace-char.html" rel="next">Replace a Character →</a></span>
 </nav>
 <nav class="bottomnav">

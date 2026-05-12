@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="05-delete.html" rel="prev">← Delete</a></span>
-  <span class="pager-pos">15 / 136</span>
+  <span class="pager-pos">15 / 138</span>
   <span class="pager-next"><a class="pager-link" href="07-yank-put.html" rel="next">Yank and Put →</a></span>
 </nav>
 <article>
@@ -54,15 +54,6 @@
 <figure class="lesson-embed" data-lesson="37"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/L3YSNw0dKMU?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Change to End of Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>C — change to end of line</figcaption></figure>
 <figure class="lesson-embed" data-lesson="38"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/yOoWC6_5dho?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Change Entire Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>cc / S — change a line</figcaption></figure>
 <figure class="lesson-embed" data-lesson="39"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/ezZGHEoc2j4?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Substitute Character" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>s — substitute a char</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — Change Is Delete + Insert as One Atomic &quot;Change&quot;</header>
-<p>Internally, <kbd>c</kbd>{motion} does three things:</p>
-<p>1. Cuts the range covered by {motion} into the unnamed and numbered registers (just like <kbd>d</kbd>).
-  2. Switches to Insert mode at the start of the cut range.
-  3. Marks an undo boundary that closes when you press <kbd>Esc</kbd>.</p>
-<p>Step 3 is the important one. The whole episode — delete, type, leave Insert — becomes <strong>one</strong> entry in the undo tree. <kbd>u</kbd> reverts all of it. <kbd>.</kbd> replays all of it.</p>
-<p>That&#x27;s why <kbd>c</kbd><kbd>w</kbd>-type-something-<kbd>Esc</kbd>-<kbd>n</kbd>-<kbd>.</kbd> is one of the most useful patterns in Vim: jump to next match, change-the-word, repeat. Each repeat is one undoable operation, not many. See <a href="#recipes.cgn-dot" class="broken">`recipes.cgn-dot`</a> for the polished form.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> Watch out: <kbd>cw</kbd> <em>behaves like</em> <kbd>ce</kbd> (change to end of word) — not what <kbd>dw</kbd> does. This is a deliberate, ancient quirk. The change operator with a word motion changes <em>just the word</em>, not the trailing whitespace. Most people prefer it that way.</aside>
 <aside class="tip"><strong>Tip.</strong> Synonyms to memorize: <kbd>C</kbd> = <kbd>c</kbd><kbd>$</kbd>. <kbd>S</kbd> = <kbd>c</kbd><kbd>c</kbd>. <kbd>s</kbd> = <kbd>c</kbd><kbd>l</kbd>. <kbd>s</kbd> doesn&#x27;t get a lot of love — it&#x27;s a one-character substitute, useful when you want to type a replacement immediately and skip the explicit <kbd>r</kbd>-then-look-around.</aside>
 <hr>
@@ -136,17 +127,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Change is delete-then-insert, with one historical quirk</header>
-<p><kbd>c</kbd> is not a primitive: it runs the delete operator, then enters insert mode at the landing position. The famous <kbd>c</kbd><kbd>w</kbd> = <kbd>c</kbd><kbd>e</kbd> quirk falls out of this — change adjusts the motion&#x27;s endpoint to drop the trailing whitespace so the inserted text doesn&#x27;t push it. Knowing change is a composition lets you predict its behavior with any motion you&#x27;ve already learned.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="06-change.html">Change</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="05-delete.html">Delete</a>, <a href="01-insert-variants.html">More Ways into Insert</a>, <a href="../06-dot-repeat/01-repeat.html">Repeat Last Change</a>, <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="05-delete.html" rel="prev">← Delete</a></span>
-  <span class="pager-pos">15 / 136</span>
+  <span class="pager-pos">15 / 138</span>
   <span class="pager-next"><a class="pager-link" href="07-yank-put.html" rel="next">Yank and Put →</a></span>
 </nav>
 <nav class="bottomnav">

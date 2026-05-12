@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="01-repeat.html" rel="prev">← Repeat Last Change</a></span>
-  <span class="pager-pos">27 / 136</span>
+  <span class="pager-pos">27 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-patterns.html" rel="next">Dot Patterns →</a></span>
 </nav>
 <article>
@@ -31,12 +31,6 @@
 </tbody></table></figure>
 <figure class="lesson-embed" data-lesson="72"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/i2qTfhA9tf4?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Dot with Counts" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>{n}. — counted dot</figcaption></figure>
 <p>Example: <kbd>d</kbd><kbd>w</kbd> deletes a word. <kbd>5</kbd><kbd>.</kbd> deletes 5 words at the new cursor position. The original count (1, implicit) was discarded; 5 took its place.</p>
-<aside class="internals">
-<header>🔧 Under the Hood — How the Count Substitution Works</header>
-<p>Internally the dot register holds the change as a sequence: optional count, optional register, the operator, the motion (with its own optional count), and any inserted text.</p>
-<p>When you press <kbd>.</kbd>, Vim replays the recorded sequence verbatim. When you press <kbd>{n</kbd>}<kbd>.</kbd>, the prefix you just typed becomes the <em>outer</em> count for the replay — the operator-side count, not the motion-side count. The motion&#x27;s own internal count is preserved.</p>
-<p>So if your original change was <kbd>d</kbd><kbd>3</kbd><kbd>w</kbd> (delete 3 words), <kbd>.</kbd> repeats it as 3 words; <kbd>5</kbd><kbd>.</kbd> repeats it as 5 × 3 = 15 words. Counts multiply, just like in <a href="../05-counts-visual/01-counts.html">`counts-visual.counts`</a>.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> <kbd>0</kbd><kbd>.</kbd> is meaningless (counts can&#x27;t be 0). Just use <kbd>.</kbd> for &quot;once.&quot;</aside>
 <hr>
 <h3>Reference</h3>
@@ -76,17 +70,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=x%0Ax%0Ax%0Ax%0Ax%0Ax%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Dot&#x27;s count overrides the original</header>
-<p>Prefix <kbd>.</kbd> with a count and the replay uses your count, not the count baked into the recorded change. Internally the struct stores the original count separately; at replay time, the executor swaps in any new count provided. So <code>5.</code> after a single-line change deletes five lines, not one — the change template is reused with a new multiplier.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="02-with-counts.html">Dot with Counts</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="01-repeat.html">Repeat Last Change</a>, <a href="../05-counts-visual/01-counts.html">Counts</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="01-repeat.html" rel="prev">← Repeat Last Change</a></span>
-  <span class="pager-pos">27 / 136</span>
+  <span class="pager-pos">27 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-patterns.html" rel="next">Dot Patterns →</a></span>
 </nav>
 <nav class="bottomnav">

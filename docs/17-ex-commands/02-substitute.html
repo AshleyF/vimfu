@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="01-file-ops.html" rel="prev">← File Operations</a></span>
-  <span class="pager-pos">86 / 136</span>
+  <span class="pager-pos">86 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-ranges.html" rel="next">Ex Ranges →</a></span>
 </nav>
 <article>
@@ -23,7 +23,9 @@
 <p class="meta"><code>id: ex.substitute</code> &middot; part: <strong>ex-commands</strong> &middot; keys: <kbd>:s</kbd>, <kbd>:%s</kbd> &middot; lessons: 406, 415</p>
 <blockquote class="summary">:s/pattern/replacement/flags is the workhorse for text transformation. Combine with ranges (% for whole file) and flags (g for global, c for confirm, i for case-insensitive).</blockquote>
 <h2>Substitute</h2>
-<p><kbd>:</kbd><kbd>s</kbd> is Vim&#x27;s find-and-replace. The full form is <code>:[range]s/pattern/replacement/flags</code>. Master it and you can rewrite a file in one keystroke.</p>
+<p><kbd>:</kbd><kbd>s</kbd> is Vim&#x27;s find-and-replace. The full form is:</p>
+<pre><code>:[range]s/pattern/replacement/flags</code></pre>
+<p>Master it and you can rewrite a file in one keystroke.</p>
 <table>
 <thead><tr>
 <th>Form</th>
@@ -136,16 +138,6 @@
 <td>Reuse previous replacement</td>
 </tr>
 </tbody></table>
-<aside class="internals">
-<header>🔧 Under the Hood — What :s Actually Does</header>
-<p><code>:s</code> runs the regex engine over each line in <code>[range]</code> exactly once (unless <code>g</code> flag), substituting matches in place. The buffer&#x27;s lines are rewritten line-by-line; the cursor lands on the last line changed.</p>
-<ul>
-<li>Without <code>[range]</code>, the range is the <strong>current line only</strong> (this trips up beginners — they expect file-wide and get one line).</li>
-<li>The <code>%</code> range is shorthand for <code>1,$</code> (whole file).</li>
-<li>The <code>c</code> flag enters an interactive prompt — <code>y</code> = yes, <code>n</code> = no, <code>a</code> = all (rest), <code>q</code> = quit, <code>l</code> = last (do this then quit).</li>
-</ul>
-<p><strong>Re-running:</strong> <kbd>:</kbd><kbd>&amp;</kbd> repeats the last substitute on the current line. <kbd>:</kbd><kbd>%</kbd><kbd>&amp;</kbd> repeats on the whole file. <kbd>&amp;</kbd> in Normal mode = same as <kbd>:</kbd><kbd>&amp;</kbd>.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> <kbd>:</kbd><kbd>%</kbd><kbd>s</kbd><kbd>//</kbd><kbd>bar</kbd><kbd>/</kbd><kbd>g</kbd> reuses the last search pattern as the substitute pattern. Pair with <kbd>*</kbd> (search word under cursor) for a 5-keystroke replace-all.</aside>
 <section class="example">
 <h3 class="example-title">Worked example — :s/foo/bar/g</h3>
@@ -165,18 +157,13 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo+and+foo+and+foo%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Substitute is search-pattern + replacement-template + flags</header>
-<p><kbd>:</kbd><kbd>s</kbd> composes three subsystems: the regex engine (same one driving <kbd>/</kbd>); a small templating layer that expands <code>\0</code>, <code>\1</code>–<code>\9</code>, <code>&amp;</code>, <code>~</code>, <code>\u</code>, <code>\U</code>, <code>\l</code>, <code>\L</code>, <code>\E</code>; and a flag-driven loop controller (<code>g</code>, <code>c</code>, <code>i</code>, <code>e</code>, <code>n</code>, <code>p</code>, <code>&amp;</code>). Empty pattern reuses the last search — that&#x27;s the global search-pattern slot again.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="02-substitute.html">Substitute (:s)</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0406 :s/old/new/g Substitute All (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0415 :tabnew New Tab (not yet published)</div></li></ul></section>
 <p class="see-also"><strong>See also:</strong> <a href="03-ranges.html">Ex Ranges</a>, <a href="04-global.html">Global (:g) and Vglobal (:v)</a>, <a href="../04-search-find/01-pattern.html">Pattern Search</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="01-file-ops.html" rel="prev">← File Operations</a></span>
-  <span class="pager-pos">86 / 136</span>
+  <span class="pager-pos">86 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-ranges.html" rel="next">Ex Ranges →</a></span>
 </nav>
 <nav class="bottomnav">

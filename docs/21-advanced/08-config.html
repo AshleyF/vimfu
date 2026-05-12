@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="07-folding.html" rel="prev">← Folding</a></span>
-  <span class="pager-pos">120 / 136</span>
+  <span class="pager-pos">121 / 138</span>
   <span class="pager-next"><a class="pager-link" href="09-spell.html" rel="next">Spell Checking →</a></span>
 </nav>
 <article>
@@ -35,7 +35,11 @@
 </tr>
 <tr>
 <td>Vim (Windows)</td>
-<td><code>%USERPROFILE%\_vimrc</code> or <code>%USERPROFILE%\vimfiles\vimrc</code></td>
+<td><code>%USERPROFILE%\_vimrc</code></td>
+</tr>
+<tr>
+<td>Vim (Windows, alt.)</td>
+<td><code>%USERPROFILE%\vimfiles\vimrc</code></td>
 </tr>
 <tr>
 <td>Neovim</td>
@@ -78,30 +82,14 @@
 <td>Help files (run <code>:helptags ALL</code> after install)</td>
 </tr>
 </tbody></table>
-<aside class="internals">
-<header>🔧 Under the Hood — Debugging Mystery Behavior</header>
-<p>When Vim does something unexpected:</p>
-<ul>
-<li><code>:scriptnames</code> — list every script that&#x27;s been loaded, in load order. Find out what set the option.</li>
-<li><code>:verbose set X?</code> — show value of option X <em>and</em> the file where it was last assigned. Top tool.</li>
-<li><code>:verbose imap &lt;C-J&gt;</code> — show what set a particular mapping (great for figuring out which plugin stole your binding).</li>
-<li><code>vim --noplugin</code> or <code>vim -u NONE</code> — start Vim without any vimrc or plugins. If the bug disappears, it&#x27;s in your config.</li>
-</ul>
-<p><strong>Plugin managers</strong> (vim-plug, packer, lazy.nvim) all work by adding plugin directories to <code>&#x27;runtimepath&#x27;</code>. The mechanism is the same; only the convenience wrapper differs.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> After editing your vimrc, <code>:source $MYVIMRC</code> reloads it without restarting Vim.</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Options partition into rendering, editing, and behavior</header>
-<p>Vim&#x27;s option set is not flat. Rendering options (<code>&#x27;number&#x27;</code>, <code>&#x27;wrap&#x27;</code>, <code>&#x27;cursorline&#x27;</code>) only affect what the window draws. Editing options (<code>&#x27;shiftwidth&#x27;</code>, <code>&#x27;expandtab&#x27;</code>, <code>&#x27;autoindent&#x27;</code>) feed into the operator/insert layer. Behavior options (<code>&#x27;ignorecase&#x27;</code>, <code>&#x27;hlsearch&#x27;</code>, <code>&#x27;incsearch&#x27;</code>) configure subsystems like search. The <code>:set</code> command is one interface, but it dispatches across three subsystems with different reload semantics.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="08-config.html">Vim Configuration</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0498 The vimrc / init.lua (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0500 What&#x27;s Next? (not yet published)</div></li></ul></section>
 <p class="see-also"><strong>See also:</strong> <a href="../17-ex-commands/07-set.html">Setting Options (:set)</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="07-folding.html" rel="prev">← Folding</a></span>
-  <span class="pager-pos">120 / 136</span>
+  <span class="pager-pos">121 / 138</span>
   <span class="pager-next"><a class="pager-link" href="09-spell.html" rel="next">Spell Checking →</a></span>
 </nav>
 <nav class="bottomnav">

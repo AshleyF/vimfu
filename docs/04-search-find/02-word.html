@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="01-pattern.html" rel="prev">← Pattern Search</a></span>
-  <span class="pager-pos">19 / 136</span>
+  <span class="pager-pos">19 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-find-on-line.html" rel="next">Find on Line →</a></span>
 </nav>
 <article>
@@ -47,14 +47,7 @@
 </tbody></table></figure>
 <figure class="lesson-embed" data-lesson="50"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/3-vX4PHDjJA?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Search Word Under Cursor" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>* — find next occurrence</figcaption></figure>
 <figure class="lesson-embed" data-lesson="51"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/kvh9hJ31mF0?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Search Word Backward" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption># — find previous occurrence</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — What * Actually Does</header>
-<p><kbd>*</kbd> is <strong>not</strong> &quot;search for the literal text under the cursor.&quot; It&#x27;s: take the keyword under the cursor, wrap it in <code>\&lt;…\&gt;</code> (whole-word boundaries), and run that as a forward search.</p>
-<p>So with the cursor on <code>foo</code> in <code>foo barfoo bazfoo</code>, <kbd>*</kbd> only matches the standalone <code>foo</code>s, not the <code>foo</code> inside <code>barfoo</code>. That&#x27;s almost always what you want.</p>
-<p>When it isn&#x27;t — for example, refactoring an identifier where you also want to catch <code>getFoo</code> and <code>Foobar</code> — use <kbd>g</kbd><kbd>*</kbd> (no boundaries). It builds the pattern without <code>\&lt;…\&gt;</code>.</p>
-<p>After <kbd>*</kbd>, the search is in the <code>/</code> register, so you can edit it: <kbd>q</kbd><kbd>/</kbd> opens the search history window and lets you tweak the pattern.</p>
-</aside>
-<aside class="tip"><strong>Tip.</strong> <kbd>*</kbd> is the start of one of the most useful refactor patterns: <kbd>*</kbd>-<kbd>c</kbd><kbd>g</kbd><kbd>n</kbd>-type-replacement-<kbd>Esc</kbd>-<kbd>.</kbd>-<kbd>.</kbd>-… Walk through every match, change-or-skip with <kbd>n</kbd> or <kbd>.</kbd>. See <a href="#recipes.cgn-dot" class="broken">`recipes.cgn-dot`</a>.</aside>
+<aside class="tip"><strong>Tip.</strong> <kbd>*</kbd> is the start of one of the most useful refactor patterns: <kbd>*</kbd>-<kbd>c</kbd><kbd>g</kbd><kbd>n</kbd>-type-replacement-<kbd>Esc</kbd>-<kbd>.</kbd>-<kbd>.</kbd>-… Walk through every match, change-or-skip with <kbd>n</kbd> or <kbd>.</kbd>. See <a href="../20-patterns-recipes/03-cgn-dot.html">`patterns.cgn-dot`</a>.</aside>
 <hr>
 <h3>Reference</h3>
 <table>
@@ -98,17 +91,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo+bar+foo+baz%0Afoo+qux%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — <kbd>*</kbd> synthesizes a regex from the cursor token</header>
-<p>Word search is a tiny code generator. It tokenizes the text under the cursor, wraps it in word-boundary anchors (<code>\&lt;...\&gt;</code>), and writes the result into the search-pattern slot. <kbd>#</kbd> is the same generator with reversed initial direction. The <code>g</code>-prefixed variants (<kbd>g</kbd><kbd>*</kbd>, <kbd>g</kbd><kbd>#</kbd>) drop the boundary anchors. Knowing this, you can predict exactly which token will be selected and why partial matches behave as they do.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="02-word.html">Word Search</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
-<p class="see-also"><strong>See also:</strong> <a href="01-pattern.html">Pattern Search</a>, <span class="broken">recipes.star-cw-dot</span>, <span class="broken">recipes.cgn-dot</span></p>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-pattern.html">Pattern Search</a>, <a href="../20-patterns-recipes/02-star-cw-dot.html">*, cw, then . . . — The Replace Loop</a>, <a href="../20-patterns-recipes/03-cgn-dot.html">cgn — Change-Next-Match Loop</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="01-pattern.html" rel="prev">← Pattern Search</a></span>
-  <span class="pager-pos">19 / 136</span>
+  <span class="pager-pos">19 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-find-on-line.html" rel="next">Find on Line →</a></span>
 </nav>
 <nav class="bottomnav">

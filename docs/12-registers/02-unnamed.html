@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="01-registers-overview.html" rel="prev">← Registers</a></span>
-  <span class="pager-pos">56 / 136</span>
+  <span class="pager-pos">56 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-named.html" rel="next">Named Registers →</a></span>
 </nav>
 <article>
@@ -24,19 +24,6 @@
 <blockquote class="summary">Every yank and delete writes the unnamed register. p and P read from it. It is the implicit clipboard of every Vim editing session.</blockquote>
 <p>When you press <kbd>y</kbd>, <kbd>d</kbd>, <kbd>c</kbd>, or <kbd>x</kbd>, the affected text goes into the <strong>unnamed register</strong>. When you press <kbd>p</kbd> or <kbd>P</kbd>, the unnamed register comes back. Unless you say otherwise, this is <em>the</em> register your editing uses.</p>
 <figure class="lesson-embed" data-lesson="119"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/aMd89ZtGl6Y?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Named Registers" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Yank, delete, paste — all use the unnamed register</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — It Has a Name: &quot;&quot;</header>
-<p>Despite the name, the unnamed register is reachable: <kbd>&quot;</kbd><kbd>&quot;</kbd><kbd>p</kbd> explicitly pastes from it. So <kbd>&quot;</kbd><kbd>&quot;</kbd> is a register name like any other; &quot;unnamed&quot; just means it&#x27;s the <em>default</em>.</p>
-<p>Every one of these commands writes it:</p>
-<ul>
-<li>Yank: <kbd>y</kbd>{motion}, <kbd>y</kbd><kbd>y</kbd>, <kbd>Y</kbd>.</li>
-<li>Delete: <kbd>d</kbd>{motion}, <kbd>d</kbd><kbd>d</kbd>, <kbd>D</kbd>, <kbd>x</kbd>, <kbd>X</kbd>.</li>
-<li>Change: <kbd>c</kbd>{motion}, <kbd>c</kbd><kbd>c</kbd>, <kbd>C</kbd>, <kbd>s</kbd>, <kbd>S</kbd>.</li>
-<li>Substitute: <kbd>r</kbd>{c} <em>does not</em> write the unnamed register (the original character is in the small-delete register <kbd>&quot;</kbd><kbd>-</kbd> instead).</li>
-</ul>
-<p>And these read it: <kbd>p</kbd>, <kbd>P</kbd>, <kbd>g</kbd><kbd>p</kbd>, <kbd>g</kbd><kbd>P</kbd>, <kbd>]</kbd><kbd>p</kbd>, <kbd>[</kbd><kbd>p</kbd>.</p>
-<p>Knowing this is useful because it explains <em>why</em> paste sometimes shows you the wrong text — you yanked something, then deleted something, and the delete clobbered the unnamed. The yank is preserved in <kbd>&quot;</kbd><kbd>0</kbd> (the yank register); the latest delete is in <kbd>&quot;</kbd><kbd>-</kbd> (small-delete) or <kbd>&quot;</kbd><kbd>1</kbd> (numbered).</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> If you want pasting to use the system clipboard instead, set <code>:set clipboard=unnamedplus</code> (Linux) or <code>unnamed</code> (macOS). That makes the unnamed register <em>be</em> the clipboard. See <a href="06-clipboard.html">`registers.clipboard`</a>.</aside>
 <section class="example">
 <h3 class="example-title">Worked example — yy then p</h3>
@@ -60,17 +47,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=alpha%0Abravo%0Acharlie%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — <kbd>&quot;</kbd><kbd>&quot;</kbd> is the last-write bus</header>
-<p>Every yank, delete, and change writes the unnamed register in addition to whatever explicit register you named. So even a stray <kbd>x</kbd> can clobber a previous yank. If you want to preserve a yank across a delete, route the delete to the black-hole register: <kbd>&quot;</kbd><kbd>_</kbd><kbd>d</kbd><kbd>d</kbd>.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="02-unnamed.html">The Unnamed Register</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="01-registers-overview.html">Registers</a>, <a href="04-numbered.html">Numbered Registers</a>, <a href="03-named.html">Named Registers</a>, <a href="../03-basic-editing/05-delete.html">Delete</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="01-registers-overview.html" rel="prev">← Registers</a></span>
-  <span class="pager-pos">56 / 136</span>
+  <span class="pager-pos">56 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-named.html" rel="next">Named Registers →</a></span>
 </nav>
 <nav class="bottomnav">

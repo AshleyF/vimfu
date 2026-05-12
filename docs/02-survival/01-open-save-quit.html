@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="../01-foundations/05-vi-vim-neovim.html" rel="prev">← Vi → Vim → Neovim</a></span>
-  <span class="pager-pos">6 / 136</span>
+  <span class="pager-pos">6 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-insert-and-back.html" rel="next">Insert and Back Again →</a></span>
 </nav>
 <article>
@@ -134,19 +134,6 @@
 <td><kbd>:</kbd><kbd>e</kbd><kbd>!</kbd></td>
 </tr>
 </tbody></table>
-<aside class="internals">
-<header>🔧 Under the Hood — Buffers, Files, and What :w Actually Does</header>
-<p>When you open a file, Vim copies it into memory as a <em>buffer</em> — an in-memory list of lines. Your edits change the buffer, not the file. <kbd>:</kbd><kbd>w</kbd> (write) flushes the buffer to disk; until then, the on-disk file is unchanged.</p>
-<p>Vim also creates a <em>swapfile</em> (<code>.&lt;filename&gt;.swp</code>) next to the buffer&#x27;s file. The swapfile is a periodic snapshot of unsaved changes; if Vim or your machine crashes, the swapfile lets the next <code>nvim &lt;file&gt;</code> invocation recover. This is also what causes the &quot;swap file already exists&quot; prompt — usually Vim was killed without exiting cleanly, and the swap is still on disk.</p>
-<p>The <em>undofile</em> (separate from the swap, controlled by <code>&#x27;undofile&#x27;</code>) persists the undo <em>tree</em> across sessions: open a file tomorrow and <kbd>u</kbd> can still walk back through today&#x27;s edits.</p>
-<p>Quitting with <kbd>Z</kbd><kbd>Z</kbd> (or <kbd>:</kbd><kbd>x</kbd>) writes the buffer if it&#x27;s modified and exits. Quitting with <kbd>Z</kbd><kbd>Q</kbd> (or <kbd>:</kbd><kbd>q</kbd><kbd>!</kbd>) deletes the swapfile and exits without writing — your unsaved buffer changes are gone, but the on-disk file is intact (it never got written this session).</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Multiple Files</header>
-<p>Vim can hold many buffers at once. <kbd>:</kbd><kbd>e</kbd> {file} opens <em>another</em> file in a new buffer, leaving the previous one in memory. <kbd>:</kbd><kbd>l</kbd><kbd>s</kbd> lists all loaded buffers. <kbd>:</kbd><kbd>b</kbd> {n} switches to buffer N.</p>
-<p>This matters for quitting: <kbd>:</kbd><kbd>q</kbd> closes the current <em>window</em>; if other windows or buffers are open, Vim is still running. <kbd>:</kbd><kbd>q</kbd><kbd>a</kbd> (quit-all) closes everything. <kbd>:</kbd><kbd>w</kbd><kbd>q</kbd><kbd>a</kbd> writes-all-then-quits-all. If you&#x27;ve ever pressed <kbd>:</kbd><kbd>q</kbd> expecting Vim to exit and gotten &quot;E37: No write since last change&quot; or seen it switch to another buffer instead — it&#x27;s because the buffer/window distinction matters even at this level.</p>
-<p>Full treatment in <code>windows.buffers</code>.</p>
-</aside>
 <section class="example">
 <h3 class="example-title">Worked example — :w and :q</h3>
 <p class="example-summary">Save and quit from the Ex prompt.</p>
@@ -161,17 +148,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=greetings%0Afrom+vim%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Buffers carry a dirty bit</header>
-<p>Saving and quitting aren&#x27;t symmetric. The buffer carries a <code>modified</code> flag that flips on the first edit and clears on a successful write. <kbd>:q</kbd> consults that flag and refuses to exit (E37) unless you force it with <kbd>!</kbd>; <kbd>:x</kbd> is a conditional <code>write-then-quit</code> that skips the write when the flag is already clear. <kbd>Z</kbd><kbd>Z</kbd> is the same conditional path as <kbd>:x</kbd>; <kbd>Z</kbd><kbd>Q</kbd> is the unconditional discard path of <kbd>:q</kbd><kbd>!</kbd>. Internally these are four code paths, not four shortcuts.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="01-open-save-quit.html">Open, Save, Quit</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="02-insert-and-back.html">Insert and Back Again</a>, <a href="03-undo-redo.html">Undo and Redo</a>, <a href="../17-ex-commands/01-file-ops.html">File Operations</a>, <a href="../14-windows-buffers-tabs/04-buffers.html">Buffers</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="../01-foundations/05-vi-vim-neovim.html" rel="prev">← Vi → Vim → Neovim</a></span>
-  <span class="pager-pos">6 / 136</span>
+  <span class="pager-pos">6 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-insert-and-back.html" rel="next">Insert and Back Again →</a></span>
 </nav>
 <nav class="bottomnav">

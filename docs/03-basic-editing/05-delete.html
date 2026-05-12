@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="04-file-motions.html" rel="prev">← File Motions</a></span>
-  <span class="pager-pos">14 / 136</span>
+  <span class="pager-pos">14 / 138</span>
   <span class="pager-next"><a class="pager-link" href="06-change.html" rel="next">Change →</a></span>
 </nav>
 <article>
@@ -62,14 +62,6 @@
 <figure class="lesson-embed" data-lesson="34"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/DViSbv2MfSc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Delete to End of Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>D — delete to end of line</figcaption></figure>
 <figure class="lesson-embed" data-lesson="35"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/WQBb6IRUpzE?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Delete Entire Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>dd — delete a line</figcaption></figure>
 <aside class="tip"><strong>Tip.</strong> Counts compose multiplicatively. <kbd>3</kbd><kbd>d</kbd><kbd>2</kbd><kbd>w</kbd> deletes six words. The <kbd>3</kbd> multiplies the <kbd>2</kbd> multiplies the motion. Read it as &quot;three times: delete two words.&quot;</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Delete Doesn&#x27;t Delete — It <em>Moves to a Register</em></header>
-<p>When you press <kbd>d</kbd><kbd>w</kbd>, Vim cuts the deleted text and stores it in <strong>two</strong> registers:</p>
-<p>1. The <strong>unnamed register</strong> (<kbd>&quot;</kbd><kbd>&quot;</kbd>) — your most-recent yank-or-delete.
-  2. A <strong>numbered register</strong> (<kbd>&quot;</kbd><kbd>1</kbd>–<kbd>&quot;</kbd><kbd>9</kbd>) — a rolling buffer of the last nine deletes.</p>
-<p>So <kbd>p</kbd> after <kbd>d</kbd><kbd>w</kbd> pastes the word back. <kbd>&quot;</kbd><kbd>1</kbd><kbd>p</kbd> pastes the most-recent delete. <kbd>&quot;</kbd><kbd>2</kbd><kbd>p</kbd> the one before. <strong>Delete is just &quot;cut.&quot;</strong> This is also why deleting and then pasting elsewhere is the standard Vim move-text idiom.</p>
-<p>The one register <em>not</em> touched by delete is the <strong>yank register</strong> (<kbd>&quot;</kbd><kbd>0</kbd>), which only updates on actual yanks. So if you yank, then delete, then paste, you get the <em>delete</em>. Use <kbd>&quot;</kbd><kbd>0</kbd><kbd>p</kbd> to get the yank back. Full treatment: <a href="../12-registers/04-numbered.html">`registers.numbered`</a> and <a href="../12-registers/02-unnamed.html">`registers.unnamed`</a>.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> <kbd>D</kbd> = <kbd>d</kbd><kbd>$</kbd>. <kbd>dd</kbd> (linewise delete) is the doubled-operator form. <em>Every</em> operator follows that pattern: a doubled operator means &quot;act on this whole line.&quot; <kbd>c</kbd><kbd>c</kbd>, <kbd>y</kbd><kbd>y</kbd>, <kbd>&gt;</kbd><kbd>&gt;</kbd>, <kbd>=</kbd><kbd>=</kbd>, etc.</aside>
 <aside class="tip"><strong>Tip.</strong> Curiosity: <kbd>x</kbd> and <kbd>X</kbd> are essentially <kbd>d</kbd><kbd>l</kbd> and <kbd>d</kbd><kbd>h</kbd> respectively. They exist for ergonomics — single-character deletes happen so often that they get one-key shortcuts.</aside>
 <hr>
@@ -134,17 +126,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Delete has two cursor-landing rules</header>
-<p>Charwise delete leaves the cursor at the start of the deleted range. Linewise delete moves the cursor to the first non-blank of whatever line replaces the deletion. The post-delete landing is keyed off the deleted text&#x27;s type tag (<kbd>d</kbd><kbd>w</kbd> is charwise, <kbd>d</kbd><kbd>d</kbd> is linewise), not off the operator key. That&#x27;s why <kbd>d</kbd><kbd>j</kbd> (linewise: deletes two lines) lands you on first-non-blank, but <kbd>d</kbd><kbd>l</kbd> doesn&#x27;t.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="05-delete.html">Delete</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a>, <a href="06-change.html">Change</a>, <a href="07-yank-put.html">Yank and Put</a>, <a href="../12-registers/02-unnamed.html">The Unnamed Register</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="04-file-motions.html" rel="prev">← File Motions</a></span>
-  <span class="pager-pos">14 / 136</span>
+  <span class="pager-pos">14 / 138</span>
   <span class="pager-next"><a class="pager-link" href="06-change.html" rel="next">Change →</a></span>
 </nav>
 <nav class="bottomnav">

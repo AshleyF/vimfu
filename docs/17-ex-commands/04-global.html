@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="03-ranges.html" rel="prev">← Ex Ranges</a></span>
-  <span class="pager-pos">88 / 136</span>
+  <span class="pager-pos">88 / 138</span>
   <span class="pager-next"><a class="pager-link" href="05-norm.html" rel="next">Normal (:norm) →</a></span>
 </nav>
 <article>
@@ -58,15 +58,6 @@
 <td>On every class declaration, open new line + insert <code>pass</code></td>
 </tr>
 </tbody></table>
-<aside class="internals">
-<header>🔧 Under the Hood — How :g Works</header>
-<p>Vim does a <strong>two-pass</strong> algorithm:</p>
-<p>1. Scan the range, mark every line matching the pattern.
-  2. Run the command on each marked line, in order, <em>deleting marks as it goes</em>.</p>
-<p>The two-pass design means a command that deletes lines (<code>:g/foo/d</code>) doesn&#x27;t lose its place — the marks are set before any deletion happens.</p>
-<p><code>:v/pat/cmd</code> is exactly <code>:g!/pat/cmd</code> — the inversion. Mnemonic: &quot;v = inVerse.&quot;</p>
-<p>The command after the pattern can be anything: <code>:d</code>, <code>:s/.../.../</code>, <code>:m</code>, <code>:t</code>, even <code>:norm</code> to inject Normal-mode keys per matched line. That last form is wildly powerful.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> <kbd>:</kbd><kbd>g</kbd><kbd>/^$/d</kbd> is the universally-useful blank-line stripper. <kbd>:</kbd><kbd>v</kbd><kbd>/keyword/d</kbd> keeps only matching lines (poor man&#x27;s grep).</aside>
 <section class="example">
 <h3 class="example-title">Worked example — :g/TODO/d</h3>
@@ -82,14 +73,13 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=x+%3D+1%0A%23+TODO%3A+fix%0Ay+%3D+2%0A%23+TODO%3A+again%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="qr"><span>→ See also <a href="04-global.html">Global (:g) and Vglobal (:v)</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0423 :set number (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0425 :set hlsearch (not yet published)</div></li></ul></section>
 <p class="see-also"><strong>See also:</strong> <a href="02-substitute.html">Substitute (:s)</a>, <a href="05-norm.html">Normal (:norm)</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="03-ranges.html" rel="prev">← Ex Ranges</a></span>
-  <span class="pager-pos">88 / 136</span>
+  <span class="pager-pos">88 / 138</span>
   <span class="pager-next"><a class="pager-link" href="05-norm.html" rel="next">Normal (:norm) →</a></span>
 </nav>
 <nav class="bottomnav">

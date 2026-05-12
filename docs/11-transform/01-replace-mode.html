@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="../10-marks-jumps/05-changelist.html" rel="prev">← The Change List</a></span>
-  <span class="pager-pos">51 / 136</span>
+  <span class="pager-pos">51 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-indent.html" rel="next">Indent and Auto-Indent →</a></span>
 </nav>
 <article>
@@ -36,25 +36,13 @@
 </tbody></table></figure>
 <figure class="lesson-embed" data-lesson="105"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/1-4yyxoKlFc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Replace Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>r — replace one character</figcaption></figure>
 <figure class="lesson-embed" data-lesson="106"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/yc93Pvgr6-g?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Single Replace" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>R — Replace mode</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — Replace Is a First-Class Mode</header>
-<p>Replace mode (<code>-- REPLACE --</code>) sits alongside Insert as a top-level mode. The status line shows the change. <kbd>Esc</kbd> exits.</p>
-<p>Key difference from Insert: each typed character does a <em>delete + insert</em> on the character under the cursor (instead of just an insert). Backspace in Replace mode <em>restores</em> the original character (not deletes it back to nothing).</p>
-<p>There&#x27;s also <kbd>g</kbd><kbd>R</kbd>, <strong>virtual replace mode</strong> — same idea, but newlines and tabs are <em>not</em> overwritten with literal characters that would push text around. <kbd>g</kbd><kbd>R</kbd> treats Tab as a virtual span of spaces; replacing a single column inside the tab keeps the tab character intact. Useful in tab-aligned text.</p>
-<p>Replace mode is rarely the right tool for code editing — most people overwrite a region with <kbd>c</kbd>{motion} or <kbd>c</kbd>{textobject}. But for fixed-width formats or quick column overwrites, it&#x27;s perfect.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> <kbd>r</kbd> is one-shot: replace one character, stay in Normal. <kbd>R</kbd> is continuous: enter the mode, overwrite as long as you keep typing. Pick based on how many you have to fix.</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Replace mode is reversible overwrite</header>
-<p><kbd>R</kbd> pushes a session-local stack of <code>(column, original_char)</code> tuples. Each typed character pops/replaces forward; each Backspace pops the top and restores the original. The session boundary forbids backspacing past your entry point — the stack is empty there. Exiting via Escape discards the stack but keeps the buffer changes.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="01-replace-mode.html">Replace Mode</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../03-basic-editing/08-replace-char.html">Replace a Character</a>, <a href="../01-foundations/02-modes-overview.html">The Modes</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="../10-marks-jumps/05-changelist.html" rel="prev">← The Change List</a></span>
-  <span class="pager-pos">51 / 136</span>
+  <span class="pager-pos">51 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-indent.html" rel="next">Indent and Auto-Indent →</a></span>
 </nav>
 <nav class="bottomnav">

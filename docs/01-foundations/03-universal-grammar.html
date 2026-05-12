@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="02-modes-overview.html" rel="prev">← The Modes</a></span>
-  <span class="pager-pos">3 / 136</span>
+  <span class="pager-pos">3 / 138</span>
   <span class="pager-next"><a class="pager-link" href="04-you-dont-need-vim.html" rel="next">You Don&#x27;t Need Vim →</a></span>
 </nav>
 <article>
@@ -32,7 +32,7 @@
 <tr><td><kbd>[count]</kbd></td><td></td></tr>
 <tr><td><kbd>motion</kbd></td><td></td></tr>
 </tbody></table></figure>
-<p>Read it as a sentence: <em>do this thing</em>, optionally <em>to register r</em>, <em>this many times</em>, <em>to this stretch of text</em>. Concrete examples:</p>
+<p>Read it as a sentence: <em>do this thing</em>, optionally <em>to register r</em>, <em>this many times</em>, <em>to this stretch of text</em>. (Registers are named clipboards — the <code>&quot;a</code> prefix means &quot;into register <code>a</code>&quot;; the full treatment is in Part 12.) Concrete examples:</p>
 <table>
 <thead><tr>
 <th>Command</th>
@@ -151,7 +151,7 @@
 </tr>
 <tr>
 <td>Sentence / paragraph</td>
-<td><kbd>(</kbd>, <kbd>)</kbd>, <kbd>{</kbd>, {key:}}</td>
+<td><kbd>(</kbd>, <kbd>)</kbd>, <kbd>{</kbd>, <kbd>}</kbd></td>
 </tr>
 <tr>
 <td>Bracket match</td>
@@ -162,19 +162,6 @@
 <td><kbd>i</kbd><kbd>w</kbd>, <kbd>a</kbd><kbd>w</kbd>, <kbd>i</kbd><kbd>&quot;</kbd>, <kbd>a</kbd><kbd>(</kbd>, <kbd>i</kbd><kbd>p</kbd>, <kbd>a</kbd><kbd>t</kbd></td>
 </tr>
 </tbody></table>
-<aside class="internals">
-<header>🔧 Under the Hood — Why It Composes</header>
-<p>Operators and motions live behind a clean interface. A motion is a function <code>cursor → (start, end, type)</code>, where <em>type</em> is <code>char</code>, <code>line</code>, or <code>block</code>. A text object is a function <code>cursor → (start, end, type)</code> that doesn&#x27;t have to use the cursor as one of the endpoints. An operator is a function <code>(start, end, type) → effect-on-buffer</code>.</p>
-<p>This is why every operator works with every motion and every text object. Vim&#x27;s source code does not have a giant switch statement of &quot;if d, then handle w specially.&quot; It has <em>one</em> operator dispatch and <em>one</em> motion dispatch, and they meet through the <code>(start, end, type)</code> triple. When you learn a new operator, you&#x27;ve learned its combination with every motion you already know. When you learn a new text object, you&#x27;ve learned its combination with every operator. The grammar scales multiplicatively.</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — The Doubled Form</header>
-<p>Every operator has a <em>doubled</em> form that means &quot;apply linewise to this line&quot;: <kbd>d</kbd><kbd>d</kbd> deletes the line, <kbd>y</kbd><kbd>y</kbd> yanks the line, <kbd>c</kbd><kbd>c</kbd> changes the line, <kbd>&gt;</kbd><kbd>&gt;</kbd> indents the line, <kbd>g</kbd><kbd>U</kbd><kbd>g</kbd><kbd>U</kbd> (or <kbd>g</kbd><kbd>U</kbd><kbd>U</kbd>) uppercases the line. This is a syntactic shortcut — internally, <kbd>d</kbd><kbd>d</kbd> is processed as a special case where the motion is replaced by &quot;the current line, linewise.&quot;</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — The Wart: Y, D, C, S</header>
-<p>Vi shipped before the doubled-form rule was systematic. <kbd>Y</kbd> is <em>not</em> <kbd>y</kbd><kbd>$</kbd> — historically it was <kbd>y</kbd><kbd>y</kbd> (yank line). Modern Neovim has finally fixed this default, but vanilla Vim still aliases <kbd>Y</kbd> to <kbd>y</kbd><kbd>y</kbd>. <kbd>D</kbd>, on the other hand, <em>is</em> <kbd>d</kbd><kbd>$</kbd> — it has always been the consistent form. <kbd>C</kbd> is <kbd>c</kbd><kbd>$</kbd>. <kbd>S</kbd> is <kbd>c</kbd><kbd>c</kbd>. <kbd>s</kbd> is <kbd>c</kbd><kbd>l</kbd>. These shortcuts predate the unified grammar and are kept for muscle memory. Treat them as exceptions to learn, not principles to derive.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> When you want to learn a new key, ask: is it a <em>verb</em> (operator), a <em>noun</em> (motion / text object), or a <em>complete command</em> (like <kbd>x</kbd> or <kbd>p</kbd>)? If it&#x27;s the first two, you&#x27;ve immediately doubled the size of your vocabulary by combining it with everything you already know.</aside>
 <figure class="lesson-embed" data-lesson="85"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/dwhaSnH-BT8?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The Vim Grammar" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>The Vim Grammar in Action</figcaption></figure>
 <section class="example">
@@ -197,13 +184,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="qr"><span>→ See also <a href="03-universal-grammar.html">The Universal Grammar</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../07-operators-textobjects/06-grammar.html">The Vim Grammar</a>, <a href="../03-basic-editing/05-delete.html">Delete</a>, <a href="../03-basic-editing/06-change.html">Change</a>, <a href="../03-basic-editing/07-yank-put.html">Yank and Put</a>, <a href="../07-operators-textobjects/01-iw-aw.html">Inner Word vs A Word</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="02-modes-overview.html" rel="prev">← The Modes</a></span>
-  <span class="pager-pos">3 / 136</span>
+  <span class="pager-pos">3 / 138</span>
   <span class="pager-next"><a class="pager-link" href="04-you-dont-need-vim.html" rel="next">You Don&#x27;t Need Vim →</a></span>
 </nav>
 <nav class="bottomnav">

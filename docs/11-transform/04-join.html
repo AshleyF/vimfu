@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="03-case.html" rel="prev">← Case Changing</a></span>
-  <span class="pager-pos">54 / 136</span>
+  <span class="pager-pos">54 / 138</span>
   <span class="pager-next"><a class="pager-link" href="../12-registers/01-registers-overview.html" rel="next">Registers →</a></span>
 </nav>
 <article>
@@ -42,16 +42,6 @@
 </tbody></table></figure>
 <figure class="lesson-embed" data-lesson="117"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/sZg5D0vV2-c?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Join Lines" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>J — join lines</figcaption></figure>
 <figure class="lesson-embed" data-lesson="118"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/LkgwUh2RCQk?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Join Without Space" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>gJ — literal join</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — What J Actually Does</header>
-<p><kbd>J</kbd>&#x27;s rules:</p>
-<p>1. Remove the trailing newline of the current line.
-  2. Strip leading whitespace from the joined-in line.
-  3. Strip any comment leader (<code>//</code>, <code>#</code>, <code>*</code>) if <code>&#x27;formatoptions&#x27;</code> includes <code>j</code> and the line being absorbed is in the same comment block.
-  4. Insert <em>one space</em> between the joined parts (zero spaces if joining to a line that ended in <code>(</code>, or if the next line started with <code>)</code>).</p>
-<p><kbd>g</kbd><kbd>J</kbd>: take <em>only</em> step 1. Pure newline removal — useful for joining lines that are intentionally adjacent without whitespace, like splitting a long URL or hex string back together.</p>
-<p>With a count, <kbd>{n</kbd>}<kbd>J</kbd> joins n lines (the current plus n-1 below). The count is <em>number of lines involved</em>, not number of joins — so <kbd>2</kbd><kbd>J</kbd> = <kbd>J</kbd> (joins one line into the current).</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> In Visual mode, <kbd>J</kbd> joins all selected lines. <kbd>V</kbd>-select-3-lines-<kbd>J</kbd> joins them all into one.</aside>
 <section class="example">
 <h3 class="example-title">Worked example — J</h3>
@@ -67,17 +57,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick%0Abrown+fox%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — <kbd>J</kbd> is a whitespace-normalization pipeline</header>
-<p>Plain <kbd>J</kbd> doesn&#x27;t just delete the newline — it strips leading whitespace from the next line, inserts one space (two after <code>.</code>, <code>!</code>, <code>?</code> if <code>&#x27;joinspaces&#x27;</code> is on, none before <code>)</code>), and lands the cursor at the join point. <kbd>g</kbd><kbd>J</kbd> skips the entire normalization pass and just removes the newline. Two operators, one trivial, one with an opinionated formatter behind it.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="04-join.html">Joining Lines</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../03-basic-editing/03-line-motions.html">Line Motions</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="03-case.html" rel="prev">← Case Changing</a></span>
-  <span class="pager-pos">54 / 136</span>
+  <span class="pager-pos">54 / 138</span>
   <span class="pager-next"><a class="pager-link" href="../12-registers/01-registers-overview.html" rel="next">Registers →</a></span>
 </nav>
 <nav class="bottomnav">

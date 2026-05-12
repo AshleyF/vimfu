@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="../15-prefix-families/04-ctrl-w.html" rel="prev">← The Ctrl-W Family</a></span>
-  <span class="pager-pos">76 / 136</span>
+  <span class="pager-pos">76 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-one-shot-normal.html" rel="next">One-Shot Normal Mode →</a></span>
 </nav>
 <article>
@@ -30,27 +30,14 @@
 <tr><td><kbd>Ctrl-[</kbd></td><td>Identical to <kbd>Esc</kbd> (terminal heritage).</td></tr>
 <tr><td><kbd>Ctrl-C</kbd></td><td>Exits, but skips InsertLeave.</td></tr>
 </tbody></table></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — Why Ctrl-[ Exists</header>
-<p>On old terminals, <kbd>Esc</kbd> sent the byte <code>0x1b</code> — same byte produced by <kbd>Ctrl-[</kbd>. Vim never had to distinguish them; both still trigger the same exit logic. The <kbd>Ctrl-[</kbd> alias survives because (a) <kbd>Esc</kbd> is far away on modern keyboards, and (b) <kbd>Ctrl-[</kbd> is more comfortable for fast typists with Caps Lock remapped to Ctrl.</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Ctrl-C Is NOT the Same</header>
-<p><kbd>Ctrl-C</kbd> exits Insert mode but <strong>skips the <code>InsertLeave</code> autocommand</strong>. Plugins that auto-format, save, or update status on Insert-leave will not fire. It also doesn&#x27;t abbreviate: typed <code>:abbreviate</code> expansions don&#x27;t trigger. For everyday text editing, prefer <kbd>Esc</kbd> or <kbd>Ctrl-[</kbd>.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> Many users remap <kbd>Caps Lock</kbd> → <kbd>Ctrl</kbd> at the OS level, then use <kbd>Ctrl-[</kbd> as their exit. It&#x27;s the single biggest ergonomic win for Vim.</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Insert exit = state flip + cursor clamp + undo boundary</header>
-<p>Three things happen on Escape from insert mode, in order: the input transcript is finalized into the dot-repeat slot, an undo boundary is inserted, and the cursor is clamped back from the virtual one-past-end column to a real character. <kbd>Ctrl-C</kbd> skips the dot-repeat finalize step (which is why it doesn&#x27;t update <kbd>.</kbd> the same way Esc does); <kbd>Ctrl-[</kbd> is a literal alias for Esc.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="01-exits.html">Exiting Insert Mode</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0366 Escape / Ctrl-[ Leave Insert (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0368 Ctrl-O One Normal Command (not yet published)</div></li></ul></section>
-<p class="see-also"><strong>See also:</strong> <a href="02-one-shot-normal.html">One-Shot Normal Mode</a>, <span class="broken">intro.modes</span></p>
+<p class="see-also"><strong>See also:</strong> <a href="02-one-shot-normal.html">One-Shot Normal Mode</a>, <a href="../01-foundations/02-modes-overview.html">The Modes</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="../15-prefix-families/04-ctrl-w.html" rel="prev">← The Ctrl-W Family</a></span>
-  <span class="pager-pos">76 / 136</span>
+  <span class="pager-pos">76 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-one-shot-normal.html" rel="next">One-Shot Normal Mode →</a></span>
 </nav>
 <nav class="bottomnav">

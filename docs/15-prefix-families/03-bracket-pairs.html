@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="02-z-overview.html" rel="prev">← The z Family</a></span>
-  <span class="pager-pos">74 / 136</span>
+  <span class="pager-pos">74 / 138</span>
   <span class="pager-next"><a class="pager-link" href="04-ctrl-w.html" rel="next">The Ctrl-W Family →</a></span>
 </nav>
 <article>
@@ -23,21 +23,6 @@
 <p class="meta"><code>id: prefixes.bracket-pairs</code> &middot; part: <strong>prefixes</strong> &middot; keys: <kbd>[(</kbd>, <kbd>])</kbd>, <kbd>[{</kbd>, <kbd>]}</kbd>, <kbd>[m</kbd>, <kbd>]m</kbd>, <kbd>[c</kbd>, <kbd>]c</kbd>, <kbd>[s</kbd>, <kbd>]s</kbd> &middot; lessons: 317, 333</p>
 <blockquote class="summary">[ and ] form a paired-prefix family for navigating semantically: previous/next bracket, function, comment, change, spelling error, etc. Mostly used in code.</blockquote>
 <p>The bracket-prefix family is <em>symmetric</em>: <kbd>[</kbd> always means &quot;backward,&quot; <kbd>]</kbd> always means &quot;forward.&quot; The second key picks the <em>thing</em> to look for. <kbd>[</kbd><kbd>c</kbd> = previous diff hunk; <kbd>]</kbd><kbd>c</kbd> = next diff hunk. <kbd>[</kbd><kbd>m</kbd> = previous method start; <kbd>]</kbd><kbd>m</kbd> = next.</p>
-<aside class="internals">
-<header>🔧 Under the Hood — Symmetry Is the Whole Idea</header>
-<p>Once you internalize the convention, the entire family becomes guessable:</p>
-<ul>
-<li><kbd>[</kbd><kbd>(</kbd> / <kbd>]</kbd><kbd>)</kbd> — previous / next unmatched paren.</li>
-<li><kbd>[</kbd><kbd>{</kbd> / <kbd>]</kbd>{key:}} — previous / next unmatched brace.</li>
-<li><kbd>[</kbd><kbd>m</kbd> / <kbd>]</kbd><kbd>m</kbd> — previous / next <em>method start</em>.</li>
-<li><kbd>[</kbd><kbd>M</kbd> / <kbd>]</kbd><kbd>M</kbd> — previous / next <em>method end</em>.</li>
-<li><kbd>[</kbd><kbd>#</kbd> / <kbd>]</kbd><kbd>#</kbd> — previous / next preprocessor <code>#if</code>/<code>#endif</code>.</li>
-<li><kbd>[</kbd><kbd>s</kbd> / <kbd>]</kbd><kbd>s</kbd> — previous / next spelling error.</li>
-<li><kbd>[</kbd><kbd>c</kbd> / <kbd>]</kbd><kbd>c</kbd> — previous / next diff change.</li>
-<li><kbd>[</kbd><kbd>I</kbd> — list lines containing the keyword under cursor (powerful, obscure).</li>
-</ul>
-<p>Most are language-aware via filetype plugins. <kbd>[</kbd><kbd>m</kbd> on a Java buffer finds method starts; on plain text it does nothing useful.</p>
-</aside>
 <h3>Reference</h3>
 <table>
 <thead><tr>
@@ -49,7 +34,7 @@
 <td>Previous / next unmatched (</td>
 </tr>
 <tr>
-<td><kbd>[</kbd><kbd>{</kbd> / <kbd>]</kbd>{key:}}</td>
+<td><kbd>[</kbd><kbd>{</kbd> / <kbd>]</kbd><kbd>}</kbd></td>
 <td>Previous / next unmatched {</td>
 </tr>
 <tr>
@@ -81,18 +66,13 @@
 <td>Previous / next preprocessor directive</td>
 </tr>
 </tbody></table>
-<aside class="internals">
-<header>🔧 Under the Hood — Bracket-prefix commands are &#x27;navigate by structure&#x27;</header>
-<p>The <kbd>[</kbd> and <kbd>]</kbd> prefixes share a theme: jump to the next/previous structural token. <kbd>[</kbd><kbd>[</kbd>, <kbd>]</kbd><kbd>]</kbd> jump by section; <kbd>[</kbd><kbd>m</kbd>, <kbd>]</kbd><kbd>m</kbd> by method; <kbd>[</kbd><kbd>s</kbd>, <kbd>]</kbd><kbd>s</kbd> by misspelled word; <kbd>[</kbd><kbd>c</kbd>, <kbd>]</kbd><kbd>c</kbd> by diff hunk. Each pair shares the same direction-flip implementation; only the structural predicate changes.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="03-bracket-pairs.html">The [ and ] Family</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0317 [( ]) Unmatched Parens (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0333 [f ]f Go to File (not yet published)</div></li></ul></section>
 <p class="see-also"><strong>See also:</strong> <a href="01-g-overview.html">The g Family</a>, <a href="../08-wider-motions/02-match-bracket.html">Match Bracket</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="02-z-overview.html" rel="prev">← The z Family</a></span>
-  <span class="pager-pos">74 / 136</span>
+  <span class="pager-pos">74 / 138</span>
   <span class="pager-next"><a class="pager-link" href="04-ctrl-w.html" rel="next">The Ctrl-W Family →</a></span>
 </nav>
 <nav class="bottomnav">

@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="02-word.html" rel="prev">← Word Search</a></span>
-  <span class="pager-pos">20 / 136</span>
+  <span class="pager-pos">20 / 138</span>
   <span class="pager-next"><a class="pager-link" href="../05-counts-visual/01-counts.html" rel="next">Counts →</a></span>
 </nav>
 <article>
@@ -64,12 +64,6 @@
 <figure class="lesson-embed" data-lesson="56"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/KEmMKdFPRtw?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Repeat Find" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>; — repeat</figcaption></figure>
 <figure class="lesson-embed" data-lesson="57"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/4b8qI9boyvw?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Repeat Find Reverse" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>, — reverse repeat</figcaption></figure>
 <aside class="tip"><strong>Tip.</strong> <kbd>t</kbd> is the operator-friendly variant. <kbd>d</kbd><kbd>t</kbd><kbd>)</kbd> deletes everything up to the next <code>)</code> <em>without</em> eating it. <kbd>d</kbd><kbd>f</kbd><kbd>)</kbd> eats it too. Choose based on whether you want to keep the delimiter.</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Why ; Is So Useful</header>
-<p><kbd>f</kbd>, <kbd>F</kbd>, <kbd>t</kbd>, <kbd>T</kbd> all stash <em>two pieces of state</em>: the last character you searched for, and the direction (or modality — <code>t</code> vs <code>f</code>). <kbd>;</kbd> replays both. <kbd>,</kbd> replays the character but flips the direction.</p>
-<p>So <kbd>f</kbd><kbd>,</kbd>-then-jump-to-some-other-thing-then-<kbd>;</kbd> re-finds the next comma. You don&#x27;t have to retype it; the keyboard remembers. This is one of those rare cases where two pieces of remembered state make a one-key motion enormously useful.</p>
-<p>This state is <strong>per-window</strong>, not per-buffer. Switching files keeps your last find.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> <kbd>f</kbd> only sees the <em>current line</em> — it never crosses a newline. For cross-line jumps, use search (<kbd>/</kbd>).</aside>
 <hr>
 <h3>Reference</h3>
@@ -128,17 +122,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox+jumps%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — <kbd>f</kbd>/<kbd>t</kbd> are a single-line cursor with replay memory</header>
-<p>Find-on-line never crosses lines, and it remembers the last <code>(direction, target)</code> pair it executed. <kbd>;</kbd> replays that pair; <kbd>,</kbd> replays it with direction flipped. So <kbd>f</kbd><kbd>t</kbd><kbd>;</kbd><kbd>;</kbd> jumps to the third <code>t</code> on the line. The memory slot is per-window and survives normal-mode commands but is reset by mode changes.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="03-find-on-line.html">Find on Line</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="01-pattern.html">Pattern Search</a>, <a href="../03-basic-editing/05-delete.html">Delete</a>, <a href="../03-basic-editing/06-change.html">Change</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="02-word.html" rel="prev">← Word Search</a></span>
-  <span class="pager-pos">20 / 136</span>
+  <span class="pager-pos">20 / 138</span>
   <span class="pager-next"><a class="pager-link" href="../05-counts-visual/01-counts.html" rel="next">Counts →</a></span>
 </nav>
 <nav class="bottomnav">

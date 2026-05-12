@@ -13,8 +13,8 @@
   &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
 </nav>
 <nav class="pager pager-top">
-  <span class="pager-prev"><a class="pager-link" href="../19-command-line-power/05-completion.html" rel="prev">← Command-Line Completion</a></span>
-  <span class="pager-pos">105 / 136</span>
+  <span class="pager-prev"><a class="pager-link" href="../19-command-line-power/06-wildmenu.html" rel="prev">← The Wildmenu</a></span>
+  <span class="pager-pos">106 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-star-cw-dot.html" rel="next">*, cw, then . . . — The Replace Loop →</a></span>
 </nav>
 <article>
@@ -45,25 +45,14 @@
 <td>Swap two characters</td>
 </tr>
 </tbody></table>
-<aside class="internals">
-<header>🔧 Under the Hood — Why It Works</header>
-<p><kbd>d</kbd><kbd>d</kbd> cuts the current line into the unnamed register. The cursor lands on what was the <em>next</em> line. <kbd>p</kbd> pastes the line back — but <kbd>p</kbd> pastes a <em>line-wise</em> register <strong>below</strong> the cursor&#x27;s line, putting the cut line one position later than where it started. Net effect: swap.</p>
-<p><kbd>y</kbd><kbd>y</kbd> yanks the line; the cursor doesn&#x27;t move. <kbd>p</kbd> pastes below. Net effect: duplicate.</p>
-<p><kbd>x</kbd><kbd>p</kbd>: <kbd>x</kbd> deletes the character under the cursor (into unnamed reg) and the cursor moves to what was the <em>next</em> char. <kbd>p</kbd> pastes a character-wise register <strong>after</strong> the cursor — placing the cut character one position later. Swap.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> Move multiple lines? <code>:m</code> is cleaner: <code>:m+1</code> moves current line down one. Visual + <code>:m</code> moves a block.</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Recipes work because everything shares the type tag</header>
-<p><kbd>x</kbd><kbd>p</kbd>, <kbd>d</kbd><kbd>d</kbd><kbd>p</kbd>, <kbd>y</kbd><kbd>y</kbd><kbd>p</kbd> are not magic tricks — they&#x27;re proofs that the register type tag (charwise vs linewise) and the type-aware paste algorithm are coherent. <kbd>y</kbd><kbd>y</kbd> stores <code>(line_text, line)</code>, then <kbd>p</kbd> reads the <code>line</code> tag and pastes on a new line below. The whole composition is a one-line regression test for the register/paste contract.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="01-swap-and-duplicate.html">Swap and Duplicate Lines</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0461 xp — Transpose Characters (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0462 deep — A Vim Myth (not yet published)</div></li></ul></section>
 <p class="see-also"><strong>See also:</strong> <a href="../03-basic-editing/05-delete.html">Delete</a>, <a href="../03-basic-editing/07-yank-put.html">Yank and Put</a></p>
 </article>
 <nav class="pager pager-bottom">
-  <span class="pager-prev"><a class="pager-link" href="../19-command-line-power/05-completion.html" rel="prev">← Command-Line Completion</a></span>
-  <span class="pager-pos">105 / 136</span>
+  <span class="pager-prev"><a class="pager-link" href="../19-command-line-power/06-wildmenu.html" rel="prev">← The Wildmenu</a></span>
+  <span class="pager-pos">106 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-star-cw-dot.html" rel="next">*, cw, then . . . — The Replace Loop →</a></span>
 </nav>
 <nav class="bottomnav">

@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="05-character-info.html" rel="prev">← Character Info (ga, g8, g Ctrl-G)</a></span>
-  <span class="pager-pos">118 / 136</span>
+  <span class="pager-pos">119 / 138</span>
   <span class="pager-next"><a class="pager-link" href="07-folding.html" rel="next">Folding →</a></span>
 </nav>
 <article>
@@ -25,26 +25,15 @@
 <p>Two small <kbd>g</kbd> commands worth knowing — both solve real problems.</p>
 <h3>gx — Open URL</h3>
 <p><kbd>g</kbd><kbd>x</kbd> on a URL or file path passes it to the system&#x27;s default opener (<code>open</code> on macOS, <code>xdg-open</code> on Linux, <code>cmd /c start</code> on Windows). Browsers open URLs; PDFs open in PDF readers; image files open in image viewers.</p>
-<aside class="internals">
-<header>🔧 Under the Hood — How gx Decides What to Open</header>
-<p>The implementation is in <code>$VIMRUNTIME/plugin/netrwPlugin.vim</code> — Vim&#x27;s netrw plugin defines <code>gx</code> as a Normal-mode mapping that calls <code>netrw#BrowseX(netrw#GX(), 0)</code>.</p>
-<p>The URL/path is found by looking at the WORD under the cursor (not just word) — so URLs with <code>.</code>, <code>?</code>, <code>&amp;</code>, etc. are captured whole. The handler is selected by <code>&#x27;browser&#x27;</code> if set, otherwise by platform defaults.</p>
-</aside>
 <h3>g&lt; — Re-show Last Output</h3>
 <p><kbd>g</kbd><kbd>&lt;</kbd> reopens the message area showing the output of the <em>last</em> Ex command — handy when a <code>:registers</code> or <code>:set all</code> listing scrolled past faster than you could read.</p>
-<aside class="internals">
-<header>🔧 Under the Hood — Where Messages Live</header>
-<p>Vim keeps a rolling buffer of message-area output. <code>:messages</code> shows the recent history; <kbd>g</kbd><kbd>&lt;</kbd> brings back the most recent block.</p>
-<p>After <kbd>g</kbd><kbd>&lt;</kbd>, the message hit-Enter prompt appears so you can scroll the listing with <kbd>Space</kbd>/<kbd>b</kbd>, then dismiss with <kbd>Enter</kbd>.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="06-gx-g-less.html">gx and g&lt;</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0493 :set fdm=indent — Fold by Indent (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0494 :set fdm=syntax — Fold by Syntax (not yet published)</div></li></ul></section>
 <p class="see-also"><strong>See also:</strong> <a href="../15-prefix-families/01-g-overview.html">The g Family</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="05-character-info.html" rel="prev">← Character Info (ga, g8, g Ctrl-G)</a></span>
-  <span class="pager-pos">118 / 136</span>
+  <span class="pager-pos">119 / 138</span>
   <span class="pager-next"><a class="pager-link" href="07-folding.html" rel="next">Folding →</a></span>
 </nav>
 <nav class="bottomnav">

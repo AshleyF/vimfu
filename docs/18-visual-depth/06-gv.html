@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="05-range.html" rel="prev">← Visual + Ex Range</a></span>
-  <span class="pager-pos">99 / 136</span>
+  <span class="pager-pos">99 / 138</span>
   <span class="pager-next"><a class="pager-link" href="../19-command-line-power/01-history-window.html" rel="next">Command-Line History →</a></span>
 </nav>
 <article>
@@ -32,17 +32,6 @@
 <tr><td><kbd>&gt;</kbd></td><td>Indent again</td></tr>
 <tr><td><kbd>gv&gt;</kbd></td><td>Or just <code>gv&gt;</code> repeatedly</td></tr>
 </tbody></table></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — Where the Selection Is Stored</header>
-<p><kbd>g</kbd><kbd>v</kbd> reads the special marks <kbd>`</kbd><kbd>&lt;</kbd> and <kbd>`</kbd><kbd>&gt;</kbd> (start and end of last visual) plus an internal record of the <em>visual mode shape</em> (character/line/block) that was active. Together those three things are enough to recreate any visual selection.</p>
-<p>The selection persists across:</p>
-<ul>
-<li>Mode changes (Normal/Insert/Ex)</li>
-<li>Cursor moves</li>
-<li>Most edits — though if your edit <em>removes</em> the selected text, gv may select an empty or unexpected region.</li>
-</ul>
-<p><kbd>g</kbd><kbd>v</kbd> doesn&#x27;t survive <code>:e</code> (re-edit). The marks are buffer-local: each buffer has its own last-visual.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> After a <kbd>:</kbd><kbd>s</kbd> substitution that you ran on a visual selection, <kbd>g</kbd><kbd>v</kbd> brings the (modified) selection back so you can re-substitute or re-indent.</aside>
 <section class="example">
 <h3 class="example-title">Worked example — gv</h3>
@@ -66,18 +55,13 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=lorem+ipsum+dolor+sit+amet%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — <kbd>g</kbd><kbd>v</kbd> reads the <kbd>&#x27;</kbd><kbd>&lt;</kbd> / <kbd>&#x27;</kbd><kbd>&gt;</kbd> marks</header>
-<p>The last visual selection is persisted into two special marks (<kbd>&#x27;</kbd><kbd>&lt;</kbd> for start, <kbd>&#x27;</kbd><kbd>&gt;</kbd> for end) plus a stored mode tag (charwise/linewise/blockwise). <kbd>g</kbd><kbd>v</kbd> simply re-enters visual mode using those three pieces of state. The marks survive across commands, which is why you can edit, jump around, then come back with <kbd>g</kbd><kbd>v</kbd> and find your old selection intact.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="06-gv.html">gv — Re-Select</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0444 Block Append (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0445 :&#x27;&lt;,&#x27;&gt; — Visual Range (not yet published)</div></li></ul></section>
 <p class="see-also"><strong>See also:</strong> <a href="05-range.html">Visual + Ex Range</a>, <a href="04-ops.html">Operators on Visual Selections</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="05-range.html" rel="prev">← Visual + Ex Range</a></span>
-  <span class="pager-pos">99 / 136</span>
+  <span class="pager-pos">99 / 138</span>
   <span class="pager-next"><a class="pager-link" href="../19-command-line-power/01-history-window.html" rel="next">Command-Line History →</a></span>
 </nav>
 <nav class="bottomnav">

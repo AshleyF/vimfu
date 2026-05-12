@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="08-config.html" rel="prev">← Vim Configuration</a></span>
-  <span class="pager-pos">121 / 136</span>
+  <span class="pager-pos">122 / 138</span>
   <span class="pager-next"><a class="pager-link" href="10-tags.html" rel="next">Tag Navigation →</a></span>
 </nav>
 <article>
@@ -69,22 +69,13 @@
 <tr><td><kbd>zug</kbd></td><td>Undo a previous zg</td></tr>
 <tr><td><kbd>zuw</kbd></td><td>Undo a previous zw</td></tr>
 </tbody></table></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — Spell as window-layer state</header>
-<p>Spell checking lives in the same <code>z</code>-prefixed family as folds and viewport scroll because, internally, it&#x27;s the same kind of thing: presentation metadata layered over the buffer. The spell checker doesn&#x27;t modify text — it asks the highlighter to mark certain ranges. The misspelling list is recomputed lazily as the window scrolls, against the merged dictionary set in <code>&#x27;spelllang&#x27;</code>. Adding a word with <kbd>z</kbd><kbd>g</kbd> writes to your personal <code>&#x27;spellfile&#x27;</code> (default <code>~/.config/nvim/spell/&lt;lang&gt;.utf-8.add</code>) and triggers a recompile of the binary spell file, then re-runs the highlighter over visible lines.</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Why <code>z=</code> opens a numbered prompt</header>
-<p>The suggester is a small ranked list — typically 25 candidates by default — produced by combining edit distance, soundalike rules from the language&#x27;s affix file, and case-fold rules. Vim renders the list as a numbered menu rather than as a popup because the command-line is the only piece of UI that&#x27;s guaranteed to exist in every Vim build. Picking a number performs a <code>:s/&lt;bad&gt;/&lt;good&gt;/g</code> on the visible match — same substitute machinery as everything else.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> Set <kbd>:</kbd><kbd>s</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>s</kbd><kbd>p</kbd><kbd>e</kbd><kbd>l</kbd><kbd>l</kbd><kbd>c</kbd><kbd>a</kbd><kbd>p</kbd><kbd>i</kbd><kbd>t</kbd><kbd>a</kbd><kbd>l</kbd><kbd>=</kbd> to disable the &#x27;sentences must start with a capital&#x27; rule, which fires constantly inside code comments.</aside>
-<aside class="qr"><span>→ See also <a href="09-spell.html">Spell Checking</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../15-prefix-families/02-z-overview.html">The z Family</a>, <a href="../15-prefix-families/03-bracket-pairs.html">The [ and ] Family</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="08-config.html" rel="prev">← Vim Configuration</a></span>
-  <span class="pager-pos">121 / 136</span>
+  <span class="pager-pos">122 / 138</span>
   <span class="pager-next"><a class="pager-link" href="10-tags.html" rel="next">Tag Navigation →</a></span>
 </nav>
 <nav class="bottomnav">

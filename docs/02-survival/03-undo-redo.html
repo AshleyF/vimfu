@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="02-insert-and-back.html" rel="prev">← Insert and Back Again</a></span>
-  <span class="pager-pos">8 / 136</span>
+  <span class="pager-pos">8 / 138</span>
   <span class="pager-next"><a class="pager-link" href="04-hjkl.html" rel="next">Move with hjkl →</a></span>
 </nav>
 <article>
@@ -37,20 +37,6 @@
 <figure class="lesson-embed" data-lesson="11"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/gNWH_h95dgU?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Undo" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Undo with u</figcaption></figure>
 <figure class="lesson-embed" data-lesson="12"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/-tkbSu_IdnE?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Redo" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Redo with Ctrl-R</figcaption></figure>
 <aside class="tip"><strong>Tip.</strong> What counts as &quot;a change&quot;? An entire Insert-mode session, from <kbd>i</kbd> to <kbd>Esc</kbd>, is one change. An operator+motion (like <kbd>d</kbd><kbd>w</kbd>) is one change. A single <kbd>x</kbd> or <kbd>r</kbd> is one change. So <kbd>u</kbd> undoes the <em>last meaningful action</em>, not the last keystroke.</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Vim&#x27;s Undo Is a Tree</header>
-<p>In every other editor, undo is a stack. Undo pops; redo pushes. If you undo three steps and then make a new edit, the redo stack is destroyed — those three changes are gone forever.</p>
-<p>Vim&#x27;s undo is a <em>tree</em>. Every change creates a new node. Undo walks toward the root. Redo walks back the way you came. <strong>Branching changes do not destroy history</strong>: when you undo three steps and then make a new edit, you create a new branch from that point. The old branch is still there, and Vim can walk to it.</p>
-<p>The practical consequences:</p>
-<ul>
-<li><kbd>u</kbd> and <kbd>Ctrl-R</kbd> walk along the <em>current branch</em>.</li>
-<li><kbd>g</kbd><kbd>-</kbd> and <kbd>g</kbd><kbd>+</kbd> walk <em>chronologically</em> — they can hop to a different branch if it was edited more recently.</li>
-<li><kbd>:</kbd><kbd>earlier</kbd> {N}{m,s,h} jumps the buffer to its state N minutes/seconds/hours ago — across branches.</li>
-<li><kbd>:</kbd><kbd>later</kbd> does the opposite.</li>
-<li>If you have <code>&#x27;undofile&#x27;</code> set, the undo tree is saved to disk between sessions. Reopen the file tomorrow and you can still undo today&#x27;s edits.</li>
-</ul>
-<p>Full treatment in <code>advanced.undo-tree</code>. For now: you literally cannot lose work in Vim. If you make a change you regret, <kbd>u</kbd>. If you regret the undo, <kbd>Ctrl-R</kbd>. If hours have passed and you don&#x27;t even remember the right sequence of presses, <kbd>:</kbd><kbd>earlier</kbd> <kbd>1</kbd><kbd>0</kbd><kbd>m</kbd> (<kbd>Enter</kbd>).</p>
-</aside>
 <h3>U — undo the line</h3>
 <p><kbd>U</kbd> (capital) is a less-common command: it undoes <em>all changes on the current line</em> since you last moved off it. Useful occasionally; the regular <kbd>u</kbd> is what you&#x27;ll use 99% of the time.</p>
 <hr>
@@ -115,17 +101,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=alpha%0Abravo%0Acharlie%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Undo units are command-shaped, not keystroke-shaped</header>
-<p>The undo system batches edits at command boundaries, not per keystroke. One normal-mode command — including a complete insert session from <kbd>i</kbd> through Escape — collapses into a single undo unit. That&#x27;s why hitting <kbd>u</kbd> after typing a paragraph rips out the whole paragraph at once: the editor only inserted one undo boundary, at the moment you returned to normal mode. Internally undo is a tree of state snapshots; redo is a forward walk through that tree.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="03-undo-redo.html">Undo and Redo</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../21-advanced/01-undo-tree.html">Undo as a Tree</a>, <a href="../06-dot-repeat/01-repeat.html">Repeat Last Change</a>, <a href="01-open-save-quit.html">Open, Save, Quit</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="02-insert-and-back.html" rel="prev">← Insert and Back Again</a></span>
-  <span class="pager-pos">8 / 136</span>
+  <span class="pager-pos">8 / 138</span>
   <span class="pager-next"><a class="pager-link" href="04-hjkl.html" rel="next">Move with hjkl →</a></span>
 </nav>
 <nav class="bottomnav">

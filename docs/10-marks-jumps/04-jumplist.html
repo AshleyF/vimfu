@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="03-tick-vs-backtick.html" rel="prev">← Tick vs Backtick</a></span>
-  <span class="pager-pos">49 / 136</span>
+  <span class="pager-pos">49 / 138</span>
   <span class="pager-next"><a class="pager-link" href="05-changelist.html" rel="next">The Change List →</a></span>
 </nav>
 <article>
@@ -47,25 +47,6 @@
 <figure class="lesson-embed" data-lesson="102"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/g6-J634AA5Y?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Jump Back" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Ctrl-O — jump back</figcaption></figure>
 <figure class="lesson-embed" data-lesson="103"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/vfeMP0npIZk?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Jump Forward" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Ctrl-I — jump forward</figcaption></figure>
 <figure class="lesson-embed" data-lesson="104"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/WpyH4xdwC0w?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Last Jump Position" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>:jumps — list jumps</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — What Counts as a &quot;Big&quot; Jump</header>
-<p>Vim has a precise list. Pushed onto the jump list:</p>
-<ul>
-<li>Search: <kbd>/</kbd>, <kbd>?</kbd>, <kbd>n</kbd>, <kbd>N</kbd>, <kbd>*</kbd>, <kbd>#</kbd>.</li>
-<li>File jumps: <kbd>g</kbd><kbd>g</kbd>, <kbd>G</kbd>, <kbd>H</kbd>/<kbd>M</kbd>/<kbd>L</kbd>, <kbd>{n</kbd>}<kbd>G</kbd>, <kbd>:</kbd><kbd>{n</kbd>}.</li>
-<li>Bracket: <kbd>%</kbd>.</li>
-<li>Marks: <kbd>&#x27;</kbd>, <kbd>`</kbd> (any mark, including special).</li>
-<li>Switching files: <kbd>:</kbd><kbd>e</kbd>, <kbd>:</kbd><kbd>b</kbd>, <kbd>:</kbd><kbd>t</kbd><kbd>a</kbd><kbd>g</kbd>.</li>
-<li>Several others (<code>(</code>, <code>)</code>, <code>{</code>, <code>}</code> are jumps; <code>+</code>, <code>-</code>, <kbd>Enter</kbd> are not).</li>
-</ul>
-<p>Not pushed: <kbd>h</kbd>/<kbd>j</kbd>/<kbd>k</kbd>/<kbd>l</kbd>, <kbd>w</kbd>/<kbd>b</kbd>/<kbd>e</kbd>, <kbd>0</kbd>/<kbd>^</kbd>/<kbd>$</kbd>, scroll commands.</p>
-<p>The jump list is <strong>per-window</strong>, capped at 100 entries. <kbd>Ctrl-O</kbd> walks back; <kbd>Ctrl-I</kbd> walks forward. Making a <em>new</em> big jump from the middle of the list truncates everything ahead of you (like browser history).</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Ctrl-I and Tab Are the Same Key</header>
-<p>Terminals send Tab and Ctrl-I as the <em>same</em> byte (0x09). Vim historically treats them as one keystroke. So if you remap Tab in Normal mode, you also remap <kbd>Ctrl-I</kbd> — including its jump-list-forward behavior. This catches a lot of plugin users by surprise.</p>
-<p>GUI Vim and Neovim with <code>tui-input</code> distinguish them. In a terminal, you usually can&#x27;t.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> <kbd>Ctrl-O</kbd> is your safety net. After any sequence of jumps you can walk straight back to where you started. Combined with <kbd>&#x27;</kbd><kbd>&#x27;</kbd> (line of last big jump), you have a two-key undo for navigation.</aside>
 <section class="example">
 <h3 class="example-title">Worked example — Ctrl-O and Ctrl-I</h3>
@@ -85,17 +66,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=line+A%0Aline+B%0Aline+C%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — The jump list is a bounded ring buffer</header>
-<p>Vim records every &#x27;big&#x27; jump (search, <kbd>G</kbd>, marks, <kbd>Ctrl-O</kbd> reach) into a per-window history capped at ~100 entries with duplicate suppression on the top. <kbd>Ctrl-O</kbd> walks back through the list; <kbd>Ctrl-I</kbd> (Tab) walks forward. Adding a new jump while in the middle of the history truncates the forward portion — same semantics as a browser back/forward stack.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="04-jumplist.html">The Jump List</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="01-local-global.html">Setting and Jumping to Marks</a>, <a href="05-changelist.html">The Change List</a>, <a href="../04-search-find/01-pattern.html">Pattern Search</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="03-tick-vs-backtick.html" rel="prev">← Tick vs Backtick</a></span>
-  <span class="pager-pos">49 / 136</span>
+  <span class="pager-pos">49 / 138</span>
   <span class="pager-next"><a class="pager-link" href="05-changelist.html" rel="next">The Change List →</a></span>
 </nav>
 <nav class="bottomnav">

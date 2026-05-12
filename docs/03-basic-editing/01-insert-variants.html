@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="../02-survival/04-hjkl.html" rel="prev">← Move with hjkl</a></span>
-  <span class="pager-pos">10 / 136</span>
+  <span class="pager-pos">10 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-word-motions.html" rel="next">Word Motions →</a></span>
 </nav>
 <article>
@@ -59,11 +59,6 @@
 <figure class="lesson-embed" data-lesson="19"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/2y3x-DNotAA?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Open Line Below" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>o — open line below</figcaption></figure>
 <figure class="lesson-embed" data-lesson="20"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/xEWLCB5Oa18?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Open Line Above" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>O — open line above</figcaption></figure>
 <aside class="tip"><strong>Tip.</strong> Notice the pattern: the lowercase letter does the obvious thing at the cursor; the uppercase letter does the <em>bigger</em> version (start/end of line, or line above/below).</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — These Are Just Motions + i</header>
-<p>Internally, <kbd>I</kbd> is exactly <kbd>^</kbd><kbd>i</kbd> — jump to first non-blank, then enter Insert mode. <kbd>A</kbd> is <kbd>$</kbd><kbd>a</kbd>. <kbd>o</kbd> and <kbd>O</kbd> create a new line (respecting <code>&#x27;autoindent&#x27;</code> and <code>&#x27;indentexpr&#x27;</code>) and drop you into Insert mode at column 0 of it.</p>
-<p>This matters because Vim doesn&#x27;t really have six &quot;insert commands.&quot; It has <em>one</em> (the mode transition), composed with motions you already know. Once you internalize that, the keyboard stops feeling arbitrary.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> All six are <em>changes</em>. <kbd>.</kbd> repeats whatever you typed in Insert mode (along with the entry command). So <kbd>o</kbd>-type-a-line, then <kbd>.</kbd>, opens another line below and types the same line again.</aside>
 <hr>
 <h3>Reference</h3>
@@ -128,17 +123,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=++++indented+line%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Insert entries are cursor-placement transforms</header>
-<p><kbd>i</kbd>, <kbd>a</kbd>, <kbd>I</kbd>, <kbd>A</kbd>, <kbd>o</kbd>, <kbd>O</kbd>, <kbd>s</kbd>, <kbd>S</kbd>, <kbd>c</kbd> all converge into the same insert-mode state machine. What differs is a single function that decides where the insert cursor lands and whether to splice in a new line first. Treat them as <code>(landing-rule, [pre-edit])</code> pairs, not nine separate commands. Once you see this, learning a new insert-entry key reduces to memorizing its landing rule.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="01-insert-variants.html">More Ways into Insert</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../02-survival/02-insert-and-back.html">Insert and Back Again</a>, <a href="03-line-motions.html">Line Motions</a>, <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="../02-survival/04-hjkl.html" rel="prev">← Move with hjkl</a></span>
-  <span class="pager-pos">10 / 136</span>
+  <span class="pager-pos">10 / 138</span>
   <span class="pager-next"><a class="pager-link" href="02-word-motions.html" rel="next">Word Motions →</a></span>
 </nav>
 <nav class="bottomnav">

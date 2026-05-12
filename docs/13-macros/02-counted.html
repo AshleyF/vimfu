@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="01-record-play.html" rel="prev">← Recording and Playing Macros</a></span>
-  <span class="pager-pos">64 / 136</span>
+  <span class="pager-pos">64 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-editing.html" rel="next">Editing a Macro →</a></span>
 </nav>
 <article>
@@ -33,28 +33,13 @@
 <tr><td><kbd>a</kbd></td><td></td></tr>
 </tbody></table></figure>
 <figure class="lesson-embed" data-lesson="130"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/9BZv0513Nag?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Counted Macros" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Counted macros</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — Why Errors Are Helpful Here</header>
-<p>Vim&#x27;s macro playback halts on an error. Search misses, edge-of-buffer motions, failed operations — anything that beeps interactively also aborts a macro mid-stream.</p>
-<p>This is a <em>feature</em>. If your macro processes a list and you don&#x27;t know how long it is, write the macro to fail gracefully when it runs out of work. Then run it with a count larger than you&#x27;ll ever need:</p>
-<ul>
-<li>Macro that searches forward for <code>TODO</code>, edits, moves to next: <kbd>1</kbd><kbd>0</kbd><kbd>0</kbd><kbd>0</kbd><kbd>@</kbd><kbd>a</kbd>. When <code>/TODO</code> finds no more matches, the macro aborts cleanly.</li>
-<li>Macro that processes a CSV row by jumping to columns: <kbd>1</kbd><kbd>0</kbd><kbd>0</kbd><kbd>@</kbd><kbd>a</kbd>. When the cursor falls off the end of the file, the next motion errors and playback stops.</li>
-</ul>
-<p>Big counts don&#x27;t cost much — Vim doesn&#x27;t run the macro 1000 times unless there&#x27;s work for it to do.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> If you&#x27;d rather <em>suppress</em> errors and keep playing, use <kbd>1</kbd><kbd>0</kbd><kbd>0</kbd><kbd>@</kbd><kbd>a</kbd> inside an <kbd>:</kbd><kbd>s</kbd><kbd>i</kbd><kbd>l</kbd><kbd>e</kbd><kbd>n</kbd><kbd>t</kbd><kbd>!</kbd> or wrap with <code>try/catch</code> in scripting. For interactive work, the abort-on-error behavior is what you want.</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Counts re-invoke macros, they don&#x27;t transform them</header>
-<p><kbd>5</kbd><kbd>@</kbd><kbd>a</kbd> runs the recorded stream five times in sequence; it does not multiply counts inside the recording. Side effects (cursor position, register state, search state) carry over from one invocation to the next. That&#x27;s how <code>5@a</code> plus a motion-at-end-of-recording produces a sweep instead of doing the same thing five times in place.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="02-counted.html">Counted Macros</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="01-record-play.html">Recording and Playing Macros</a>, <a href="../05-counts-visual/01-counts.html">Counts</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="01-record-play.html" rel="prev">← Recording and Playing Macros</a></span>
-  <span class="pager-pos">64 / 136</span>
+  <span class="pager-pos">64 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-editing.html" rel="next">Editing a Macro →</a></span>
 </nav>
 <nav class="bottomnav">

@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="05-small-delete.html" rel="prev">← The Small Delete Register</a></span>
-  <span class="pager-pos">60 / 136</span>
+  <span class="pager-pos">60 / 138</span>
   <span class="pager-next"><a class="pager-link" href="07-special.html" rel="next">Special Registers →</a></span>
 </nav>
 <article>
@@ -39,23 +39,6 @@
 <tr><td><kbd>p</kbd></td><td></td></tr>
 </tbody></table></figure>
 <figure class="lesson-embed" data-lesson="124"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/sXKUJ7oJFSc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Numbered Registers" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Clipboard registers</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — + vs *</header>
-<p>Two clipboard registers exist on Linux/X11:</p>
-<ul>
-<li><strong><kbd>&quot;</kbd><kbd>+</kbd></strong> — the <strong>CLIPBOARD</strong> selection. The thing Ctrl-C/Ctrl-V uses in most apps. Use this one by default.</li>
-<li>**<kbd>&quot;</kbd><kbd>*</kbd><strong> — the </strong>PRIMARY** selection (X11). The thing middle-click pastes. Less universal; only matters in X11.</li>
-</ul>
-<p>On macOS and Windows, both <kbd>&quot;</kbd><kbd>+</kbd> and <kbd>&quot;</kbd><kbd>*</kbd> map to the same system clipboard. On WSL, you may need extra setup (e.g. <code>xclip</code>, <code>win32yank</code>, or Neovim&#x27;s clipboard provider).</p>
-<p>If Vim was built without <code>+clipboard</code>, neither register exists. Check with <kbd>:</kbd><kbd>v</kbd><kbd>e</kbd><kbd>r</kbd><kbd>s</kbd><kbd>i</kbd><kbd>o</kbd><kbd>n</kbd>; look for <code>+clipboard</code>. Neovim ships with clipboard support that works wherever a provider exists.</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Make Yank/Paste Use the Clipboard by Default</header>
-<p>Add to your config:</p>
-<pre><code>set clipboard=unnamedplus</code></pre>
-<p>Now <kbd>y</kbd> writes to <kbd>&quot;</kbd><kbd>+</kbd> (and <kbd>&quot;</kbd><kbd>&quot;</kbd>); <kbd>p</kbd> reads from <kbd>&quot;</kbd><kbd>+</kbd>. No more <kbd>&quot;</kbd><kbd>+</kbd> prefix. The downside: you lose the ability to yank &quot;just to Vim&quot; without touching the system clipboard. Most people find that&#x27;s a fine trade.</p>
-<p>On macOS without X11, use <code>clipboard=unnamed</code> instead (writes to <kbd>&quot;</kbd><kbd>*</kbd>, which equals the system clipboard there).</p>
-</aside>
 <section class="example">
 <h3 class="example-title">Worked example — &quot;+y and &quot;+p</h3>
 <p class="example-summary">Cross-application copy/paste.</p>
@@ -70,17 +53,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=secret+%3D+%27abc123%27%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — <kbd>&quot;</kbd><kbd>+</kbd> and <kbd>&quot;</kbd><kbd>*</kbd> are I/O ports</header>
-<p>These registers are not memory — they delegate to the OS clipboard provider (X11 selection, Windows clipboard, macOS pasteboard). Reading them invokes a system call; writing them does too. They can be missing entirely on a build without clipboard support. Treat them as protocol endpoints with potential failure modes.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="06-clipboard.html">System Clipboard Registers</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="01-registers-overview.html">Registers</a>, <a href="02-unnamed.html">The Unnamed Register</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="05-small-delete.html" rel="prev">← The Small Delete Register</a></span>
-  <span class="pager-pos">60 / 136</span>
+  <span class="pager-pos">60 / 138</span>
   <span class="pager-next"><a class="pager-link" href="07-special.html" rel="next">Special Registers →</a></span>
 </nav>
 <nav class="bottomnav">

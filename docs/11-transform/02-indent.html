@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="01-replace-mode.html" rel="prev">← Replace Mode</a></span>
-  <span class="pager-pos">52 / 136</span>
+  <span class="pager-pos">52 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-case.html" rel="next">Case Changing →</a></span>
 </nav>
 <article>
@@ -60,19 +60,6 @@
 <figure class="lesson-embed" data-lesson="109"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/TUw7_Wg0WLc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Indent with Motion" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>&gt;{motion} — indent range</figcaption></figure>
 <figure class="lesson-embed" data-lesson="110"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/oKmc1vdGQMs?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Auto-Indent" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>={motion} — auto-indent</figcaption></figure>
 <figure class="lesson-embed" data-lesson="111"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/ehPhXUqy01Y?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Visual Indent" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>== — re-indent line</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — &gt;, &lt;, = Are Operators — That&#x27;s the Whole Insight</header>
-<p>Once you internalize that <kbd>&gt;</kbd>, <kbd>&lt;</kbd>, and <kbd>=</kbd> are operators (verbs), every motion you know becomes an indenter:</p>
-<ul>
-<li><kbd>&gt;</kbd><kbd>G</kbd> — indent from here to end of file.</li>
-<li><kbd>&gt;</kbd><kbd>i</kbd><kbd>{</kbd> — indent inside the next brace block.</li>
-<li><kbd>&gt;</kbd><kbd>%</kbd> — indent everything between this brace and its match.</li>
-<li><kbd>=</kbd><kbd>a</kbd><kbd>p</kbd> — auto-indent the surrounding paragraph.</li>
-<li><kbd>=</kbd><kbd>G</kbd> — auto-indent the rest of the file.</li>
-</ul>
-<p>The <strong>shift width</strong> (how much <kbd>&gt;</kbd> indents) comes from <code>&#x27;shiftwidth&#x27;</code>. With <code>&#x27;expandtab&#x27;</code> set, tabs are expanded to spaces.</p>
-<p><kbd>=</kbd> delegates to whatever <code>&#x27;indentexpr&#x27;</code> or <code>&#x27;cindent&#x27;</code> is configured. For most languages, ftplugin sets this up automatically — pressing <kbd>=</kbd><kbd>i</kbd><kbd>p</kbd> on Python or JavaScript does the right thing.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> In Visual mode, <kbd>&gt;</kbd> and <kbd>&lt;</kbd> indent the selection. With a count: <kbd>3</kbd><kbd>&gt;</kbd> indents three times. <kbd>.</kbd> repeats the last indent.</aside>
 <section class="example">
 <h3 class="example-title">Worked example — &gt;&gt; and &lt;&lt;</h3>
@@ -88,17 +75,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=if+x%3A%0Aprint%28%27hi%27%29%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Indent operators are leading-whitespace rewrites</header>
-<p><kbd>&gt;</kbd> and <kbd>&lt;</kbd> are line-transform operators: for each affected line they recompute leading whitespace using <code>&#x27;shiftwidth&#x27;</code> and <code>&#x27;expandtab&#x27;</code>, then rewrite that prefix. After the rewrite, the cursor lands on the first non-blank of the first affected line — a deterministic landing rule that lets you chain <kbd>&gt;</kbd><kbd>.</kbd><kbd>.</kbd> reliably.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="02-indent.html">Indent and Auto-Indent</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a>, <a href="../07-operators-textobjects/06-grammar.html">The Vim Grammar</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="01-replace-mode.html" rel="prev">← Replace Mode</a></span>
-  <span class="pager-pos">52 / 136</span>
+  <span class="pager-pos">52 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-case.html" rel="next">Case Changing →</a></span>
 </nav>
 <nav class="bottomnav">

@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="07-special.html" rel="prev">← Special Registers</a></span>
-  <span class="pager-pos">62 / 136</span>
+  <span class="pager-pos">62 / 138</span>
   <span class="pager-next"><a class="pager-link" href="../13-macros/01-record-play.html" rel="next">Recording and Playing Macros →</a></span>
 </nav>
 <article>
@@ -54,26 +54,13 @@
 <tr><td><kbd>@</kbd></td><td></td></tr>
 <tr><td><kbd>a</kbd></td><td></td></tr>
 </tbody></table></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — Why This Works</header>
-<p>Recording a macro <strong>just</strong> appends each typed key to the register, encoded as a Vim keystroke string (<kbd>&lt;Esc&gt;</kbd> is one byte 0x1b, etc.). Playback is a function <code>feedkeys(getreg(&#x27;a&#x27;))</code> — feed those keystrokes back into the input buffer.</p>
-<p>Nothing about a macro is &quot;compiled.&quot; There&#x27;s no AST, no special structure. So:</p>
-<ul>
-<li>Yank works on macros: <kbd>&quot;</kbd><kbd>a</kbd><kbd>y</kbd><kbd>$</kbd> writes whatever&#x27;s selected.</li>
-<li>Append works on macros: <kbd>q</kbd><kbd>A</kbd>…<kbd>q</kbd> appends to register <code>a</code>&#x27;s existing contents — extending the macro.</li>
-<li><kbd>:</kbd><kbd>l</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>@</kbd><kbd>a</kbd><kbd>=</kbd>{string} sets the macro programmatically.</li>
-<li>You can yank a macro from a comment in your file by selecting the keystroke text and <kbd>&quot;</kbd><kbd>a</kbd><kbd>y</kbd>.</li>
-</ul>
-<p>Special keys appear as <kbd>&lt;Esc&gt;</kbd>, <kbd>&lt;CR&gt;</kbd>, etc. in normal display, but as raw bytes in the register. Use <kbd>:</kbd><kbd>l</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>@</kbd><kbd>a</kbd><kbd>=</kbd>&quot;ciw foo&lt;Esc&gt;&quot; to type-set special keys (the <kbd>&lt;Esc&gt;</kbd> is interpreted by Vim&#x27;s parser).</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> When you <kbd>&quot;</kbd><kbd>a</kbd><kbd>p</kbd>-paste a macro and special keys show as <code>^[</code> or similar weirdness, that&#x27;s the literal escape character. Most terminals will display it. The macro still works — it&#x27;s just <em>not</em> meant to be human-readable in the buffer.</aside>
-<aside class="qr"><span>→ See also <a href="08-macros-as-text.html">Macros Are Just Register Contents</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="01-registers-overview.html">Registers</a>, <a href="03-named.html">Named Registers</a>, <a href="../13-macros/01-record-play.html">Recording and Playing Macros</a>, <a href="../13-macros/03-editing.html">Editing a Macro</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="07-special.html" rel="prev">← Special Registers</a></span>
-  <span class="pager-pos">62 / 136</span>
+  <span class="pager-pos">62 / 138</span>
   <span class="pager-next"><a class="pager-link" href="../13-macros/01-record-play.html" rel="next">Recording and Playing Macros →</a></span>
 </nav>
 <nav class="bottomnav">

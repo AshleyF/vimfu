@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="03-move-resize.html" rel="prev">← Move and Resize Windows</a></span>
-  <span class="pager-pos">69 / 136</span>
+  <span class="pager-pos">69 / 138</span>
   <span class="pager-next"><a class="pager-link" href="05-tabs.html" rel="next">Tabs →</a></span>
 </nav>
 <article>
@@ -69,26 +69,6 @@
 <table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
 <tr><td><kbd>Ctrl-^</kbd></td><td></td></tr>
 </tbody></table></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — What :ls Shows You</header>
-<p><kbd>:</kbd><kbd>l</kbd><kbd>s</kbd> (alias <kbd>:</kbd><kbd>b</kbd><kbd>u</kbd><kbd>f</kbd><kbd>f</kbd><kbd>e</kbd><kbd>r</kbd><kbd>s</kbd>) lists every buffer Vim knows about, with flags:</p>
-<ul>
-<li><code>%</code> — current buffer.</li>
-<li><code>#</code> — alternate (previous) buffer.</li>
-<li><code>+</code> — modified.</li>
-<li><code>a</code> — active (loaded and shown in some window).</li>
-<li><code>h</code> — hidden (loaded but not shown).</li>
-<li><code>-</code> — modifiable off.</li>
-<li><code>=</code> — read-only.</li>
-</ul>
-<p>You can switch by buffer number (<kbd>:</kbd><kbd>b</kbd><kbd> </kbd><kbd>5</kbd>) or by name fragment (<kbd>:</kbd><kbd>b</kbd><kbd> </kbd><kbd>f</kbd><kbd>o</kbd><kbd>o</kbd>). Tab-complete works.</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — The &#x27;hidden&#x27; Option Is Worth Setting</header>
-<p>By default Vim refuses to switch buffers if the current one is modified. Set <code>:set hidden</code> (it&#x27;s on by default in Neovim) and Vim will <em>hide</em> the modified buffer instead — keeping the changes in memory while you work on another file.</p>
-<p>Without <code>&#x27;hidden&#x27;</code>, you&#x27;ll constantly hit &quot;E37: No write since last change&quot; and end up using <kbd>:</kbd><kbd>b</kbd><kbd>!</kbd> (force) or aborting. With <code>&#x27;hidden&#x27;</code>, buffers behave like the tabs in any modern editor — switch freely, save when ready.</p>
-<p>The trade-off is that you can <kbd>:</kbd><kbd>q</kbd> a window with unsaved buffers in the background. <kbd>:</kbd><kbd>q</kbd><kbd>a</kbd><kbd>l</kbd><kbd>l</kbd> will warn you about them when exiting Vim.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> <kbd>Ctrl-^</kbd> swaps to the <em>alternate</em> buffer (the one you were just in). It&#x27;s the buffer-level version of <kbd>`</kbd><kbd>`</kbd>. Most people use this dozens of times a day.</aside>
 <section class="example">
 <h3 class="example-title">Worked example — :ls and :b</h3>
@@ -107,17 +87,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=main.py%0A...%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Buffer state and window state are independent layers</header>
-<p>A buffer owns the text and the modified flag. A window owns a viewport (top line, leftmost column) and a cursor position. The same buffer can be open in multiple windows simultaneously, each with its own cursor. Closing a window doesn&#x27;t close its buffer — buffers persist hidden until explicitly deleted with <kbd>:</kbd><kbd>b</kbd><kbd>d</kbd>. Internally these are two object pools with a many-to-many relationship.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="04-buffers.html">Buffers</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="01-splits.html">Creating Splits</a>, <a href="05-tabs.html">Tabs</a>, <a href="06-buffers-vs-windows-vs-tabs.html">Buffer vs Window vs Tab</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="03-move-resize.html" rel="prev">← Move and Resize Windows</a></span>
-  <span class="pager-pos">69 / 136</span>
+  <span class="pager-pos">69 / 138</span>
   <span class="pager-next"><a class="pager-link" href="05-tabs.html" rel="next">Tabs →</a></span>
 </nav>
 <nav class="bottomnav">

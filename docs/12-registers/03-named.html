@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="02-unnamed.html" rel="prev">← The Unnamed Register</a></span>
-  <span class="pager-pos">57 / 136</span>
+  <span class="pager-pos">57 / 138</span>
   <span class="pager-next"><a class="pager-link" href="04-numbered.html" rel="next">Numbered Registers →</a></span>
 </nav>
 <article>
@@ -48,25 +48,6 @@
 </tbody></table></figure>
 <figure class="lesson-embed" data-lesson="119"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/aMd89ZtGl6Y?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Named Registers" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Named registers</figcaption></figure>
 <figure class="lesson-embed" data-lesson="120"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/N0sF05fSp2Y?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Append to Register" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Capital register names append</figcaption></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — Capitals Append</header>
-<p><kbd>&quot;</kbd><kbd>a</kbd><kbd>y</kbd><kbd>y</kbd> <strong>overwrites</strong> register <code>a</code> with the current line.</p>
-<p><kbd>&quot;</kbd><kbd>A</kbd><kbd>y</kbd><kbd>y</kbd> <strong>appends</strong> the current line to register <code>a</code> (preserving what was already there).</p>
-<p>This is one of Vim&#x27;s small genius moves: collecting a list of items into one register without an external paste buffer.</p>
-<p>Classic use: scan a file, find every line matching <code>TODO</code>, append each to register <code>t</code>, then dump them somewhere with <kbd>&quot;</kbd><kbd>t</kbd><kbd>p</kbd>.</p>
-<p>With <kbd>:</kbd><kbd>g</kbd><kbd>/</kbd>{pat}<kbd>/</kbd><kbd>y</kbd> <kbd>T</kbd>, the global command does the same thing: yank each matching line <em>appending</em> to register <code>t</code>. Then put.</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Same Registers Hold Macros</header>
-<p>When you record a macro with <kbd>q</kbd><kbd>a</kbd>…<kbd>q</kbd>, those keystrokes go into <strong>register <code>a</code></strong> — exactly the same <code>a</code> you yank text into. Macros are just register contents.</p>
-<p>This means you can:</p>
-<ul>
-<li>Yank a sequence of keystrokes you typed into a buffer with <kbd>&quot;</kbd><kbd>a</kbd><kbd>y</kbd>, then play it as a macro with <kbd>@</kbd><kbd>a</kbd>.</li>
-<li>Edit a macro by pasting it into the buffer (<kbd>&quot;</kbd><kbd>a</kbd><kbd>p</kbd>), tweaking, then yanking back (<kbd>&quot;</kbd><kbd>a</kbd><kbd>y</kbd><kbd>$</kbd>). See <a href="../13-macros/03-editing.html">`macros.editing`</a>.</li>
-<li>Compose macros: <kbd>&quot;</kbd><kbd>A</kbd><kbd>y</kbd><kbd>y</kbd> appends a line to a recorded macro register, extending what <kbd>@</kbd><kbd>a</kbd> will replay.</li>
-</ul>
-<p>This unification is one of the most beautiful things in Vim&#x27;s design.</p>
-</aside>
 <section class="example">
 <h3 class="example-title">Worked example — &quot;ay and &quot;ap</h3>
 <p class="example-summary">Use named register a.</p>
@@ -85,17 +66,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo%0Abar%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Named registers are explicit destinations</header>
-<p>Selecting a register with <kbd>&quot;</kbd><kbd>a</kbd> routes the next command&#x27;s output (or input, for paste) through that slot — once. The selection is consumed by the next operator, then resets. You can&#x27;t &#x27;set&#x27; a register persistently in normal mode; you can only direct individual commands at one. Capital letters (<kbd>&quot;</kbd><kbd>A</kbd>) append instead of overwrite.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="03-named.html">Named Registers</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="01-registers-overview.html">Registers</a>, <a href="02-unnamed.html">The Unnamed Register</a>, <a href="../13-macros/01-record-play.html">Recording and Playing Macros</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="02-unnamed.html" rel="prev">← The Unnamed Register</a></span>
-  <span class="pager-pos">57 / 136</span>
+  <span class="pager-pos">57 / 138</span>
   <span class="pager-next"><a class="pager-link" href="04-numbered.html" rel="next">Numbered Registers →</a></span>
 </nav>
 <nav class="bottomnav">

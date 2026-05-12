@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="03-char-visual.html" rel="prev">← Character Visual Mode</a></span>
-  <span class="pager-pos">24 / 136</span>
+  <span class="pager-pos">24 / 138</span>
   <span class="pager-next"><a class="pager-link" href="05-tricks.html" rel="next">Visual Mode Tricks →</a></span>
 </nav>
 <article>
@@ -37,25 +37,6 @@
 <figure class="lesson-embed" data-lesson="66"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/N5KRukVbfC8?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Block Visual Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Ctrl-V — blockwise Visual</figcaption></figure>
 <figure class="lesson-embed" data-lesson="67"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/otUT4ql2ISs?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Switching Visual Modes" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Block edits in action</figcaption></figure>
 <aside class="tip"><strong>Tip.</strong> From any Visual mode, press <kbd>v</kbd>, <kbd>V</kbd>, or <kbd>Ctrl-V</kbd> to <em>switch</em> to that mode while keeping the selection.</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Three Modes, Three Selection Shapes</header>
-<p>Internally Vim represents selections as (anchor, cursor, <em>type</em>) where type is <code>char</code>, <code>line</code>, or <code>block</code>. The type changes how operators behave:</p>
-<ul>
-<li><strong>Charwise</strong> (<kbd>v</kbd>) — operators see a contiguous span of bytes from anchor to cursor.</li>
-<li><strong>Linewise</strong> (<kbd>V</kbd>) — operators see whole lines containing anchor and cursor. Column position doesn&#x27;t matter.</li>
-<li><strong>Blockwise</strong> (<kbd>Ctrl-V</kbd>) — operators see a <em>rectangle</em>. Yanks come back blockwise, paste back as rectangles, and <kbd>I</kbd> / <kbd>A</kbd> work on every line of the block (see <a href="../18-visual-depth/02-block-insert-append.html">`visual.block-insert-append`</a>).</li>
-</ul>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Block Mode Is the Killer Feature for Columns</header>
-<p>Block-visual on a column lets you insert, append, change, or delete <em>down a column</em> across many lines. Common uses:</p>
-<ul>
-<li>Add <code>// </code> to many lines: <kbd>Ctrl-V</kbd>-select-down-<kbd>I</kbd><kbd>/</kbd><kbd>/</kbd><kbd>Space</kbd><kbd>Esc</kbd>. The prefix is duplicated to every line of the block.</li>
-<li>Replace a column of values: <kbd>Ctrl-V</kbd>-select-rectangle-<kbd>c</kbd>-type-replacement-<kbd>Esc</kbd>.</li>
-<li>Delete a column of leading whitespace: <kbd>Ctrl-V</kbd>-select-the-leading-spaces-<kbd>d</kbd>.</li>
-</ul>
-<p>The <kbd>I</kbd>/<kbd>A</kbd>-replicates-to-every-line trick happens <em>only</em> in block mode and <em>only</em> with capital <kbd>I</kbd> / <kbd>A</kbd> (not lowercase <kbd>i</kbd> / <kbd>a</kbd>).</p>
-</aside>
 <hr>
 <h3>Reference</h3>
 <table>
@@ -94,17 +75,12 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo+1%0Abar+2%0Abaz+3%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="internals">
-<header>🔧 Under the Hood — Visual-line mode normalizes to whole rows</header>
-<p>Linewise visual (<kbd>V</kbd>) doesn&#x27;t extend the charwise range to line ends — it replaces both endpoints with <code>(start_of_line, end_of_line)</code> every frame. That normalization happens before any operator sees the selection, so paste, delete, indent, and join all get a clean row-span. It&#x27;s also why moving horizontally in <kbd>V</kbd> mode doesn&#x27;t appear to do anything: the normalization snaps it back.</p>
-</aside>
-<aside class="qr"><span>→ See also <a href="04-line-block.html">Line and Block Visual</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="03-char-visual.html">Character Visual Mode</a>, <a href="../18-visual-depth/02-block-insert-append.html">Block Insert and Append</a>, <a href="../11-transform/02-indent.html">Indent and Auto-Indent</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="03-char-visual.html" rel="prev">← Character Visual Mode</a></span>
-  <span class="pager-pos">24 / 136</span>
+  <span class="pager-pos">24 / 138</span>
   <span class="pager-next"><a class="pager-link" href="05-tricks.html" rel="next">Visual Mode Tricks →</a></span>
 </nav>
 <nav class="bottomnav">

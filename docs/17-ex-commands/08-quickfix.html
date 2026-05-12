@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="07-set.html" rel="prev">← Setting Options (:set)</a></span>
-  <span class="pager-pos">92 / 136</span>
+  <span class="pager-pos">92 / 138</span>
   <span class="pager-next"><a class="pager-link" href="09-sort.html" rel="next">Sort and Reorder Lines →</a></span>
 </nav>
 <article>
@@ -69,22 +69,13 @@
 <aside class="tip"><strong>Tip.</strong> In the quickfix window, <kbd>Enter</kbd> opens the entry under the cursor. <kbd>p</kbd> previews it without leaving. <kbd>:</kbd><kbd>c</kbd><kbd>o</kbd><kbd>l</kbd><kbd>d</kbd><kbd>e</kbd><kbd>r</kbd> restores a previous quickfix list — Vim keeps a stack of them.</aside>
 <h3>Location list — same idea, scoped to a window</h3>
 <p>Replace every <kbd>c</kbd>-prefixed command with <kbd>l</kbd>: <kbd>:</kbd><kbd>l</kbd><kbd>m</kbd><kbd>a</kbd><kbd>k</kbd><kbd>e</kbd>, <kbd>:</kbd><kbd>l</kbd><kbd>g</kbd><kbd>r</kbd><kbd>e</kbd><kbd>p</kbd>, <kbd>:</kbd><kbd>l</kbd><kbd>o</kbd><kbd>p</kbd><kbd>e</kbd><kbd>n</kbd>, <kbd>:</kbd><kbd>l</kbd><kbd>n</kbd><kbd>e</kbd><kbd>x</kbd><kbd>t</kbd>, <kbd>:</kbd><kbd>l</kbd><kbd>p</kbd><kbd>r</kbd><kbd>e</kbd><kbd>v</kbd>. The list lives on the window, not the editor, so two splits can run two greps without stepping on each other.</p>
-<aside class="internals">
-<header>🔧 Under the Hood — Quickfix is a list of typed entries</header>
-<p>Internally each quickfix entry is <code>{ filename, lnum, col, type, text, valid }</code>. Population functions (<code>:make</code>, <code>:grep</code>, <code>:cexpr</code>) convert tool output into that struct via the <code>&#x27;errorformat&#x27;</code> scanf-like parser. The quickfix window is a buffer rendered from that list — that&#x27;s why you can&#x27;t really edit it (the renderer overwrites your changes). Navigation commands index into the list, open the entry&#x27;s file (in the current window), and place the cursor at <code>(lnum, col)</code>.</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Location lists are per-window quickfix</header>
-<p>Vim keeps two parallel data structures: one global quickfix list (shared by all windows) and one location list per window. They use identical entry structure, identical commands modulo prefix, identical errorformat parsing. The duplication is intentional: it lets you run a project-wide search in the quickfix list while simultaneously running a file-local search in the location list of one window, without overwrites. The window-tied lifetime also means closing the window discards its location list.</p>
-</aside>
 <aside class="tip"><strong>Tip.</strong> Set <kbd>:</kbd><kbd>s</kbd><kbd>e</kbd><kbd>t</kbd> <kbd>g</kbd><kbd>r</kbd><kbd>e</kbd><kbd>p</kbd><kbd>p</kbd><kbd>r</kbd><kbd>g</kbd><kbd>=</kbd><kbd>r</kbd><kbd>g</kbd> <kbd>--vimgrep</kbd> to use ripgrep — it&#x27;s massively faster than grep and produces output matching Vim&#x27;s default <code>&#x27;grepformat&#x27;</code>.</aside>
-<aside class="qr"><span>→ See also <a href="08-quickfix.html">Quickfix and Location Lists</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="06-shell.html">Shell Commands (:!)</a>, <a href="../21-advanced/10-tags.html">Tag Navigation</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="07-set.html" rel="prev">← Setting Options (:set)</a></span>
-  <span class="pager-pos">92 / 136</span>
+  <span class="pager-pos">92 / 138</span>
   <span class="pager-next"><a class="pager-link" href="09-sort.html" rel="next">Sort and Reorder Lines →</a></span>
 </nav>
 <nav class="bottomnav">

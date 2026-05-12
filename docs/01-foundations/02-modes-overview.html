@@ -14,7 +14,7 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="01-modal-editing.html" rel="prev">← Modal Editing</a></span>
-  <span class="pager-pos">2 / 136</span>
+  <span class="pager-pos">2 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-universal-grammar.html" rel="next">The Universal Grammar →</a></span>
 </nav>
 <article>
@@ -79,17 +79,6 @@
 <tr><td><kbd>i</kbd></td><td></td></tr>
 <tr><td><kbd>w</kbd></td><td></td></tr>
 </tbody></table></figure>
-<aside class="internals">
-<header>🔧 Under the Hood — The State Machine, Drawn</header>
-<p>The transition graph is small enough to memorize. From Normal you can reach Insert (<kbd>i</kbd>, <kbd>a</kbd>, <kbd>o</kbd>, …), Visual (<kbd>v</kbd>, <kbd>V</kbd>, <kbd>Ctrl-V</kbd>), Replace (<kbd>R</kbd>), Command-line (<kbd>:</kbd>, <kbd>/</kbd>, <kbd>?</kbd>), Operator-pending (any operator), or Terminal (<code>:term</code>). From everywhere else, <kbd>Esc</kbd> returns you to Normal.</p>
-<p>Visual has three sub-modes (char, line, block); pressing <kbd>v</kbd>/<kbd>V</kbd>/<kbd>Ctrl-V</kbd> while already in Visual switches between them. Insert has a sub-state called <em>Replace-Insert</em> (toggle with <kbd>Insert</kbd>) — you almost never want it.</p>
-<p>The deepest transition is <kbd>Ctrl-O</kbd> from Insert mode: it pops you into Normal <em>for exactly one command</em>, then automatically returns. So <kbd>Ctrl-O</kbd><kbd>dd</kbd> from Insert mode deletes the current line and continues typing where the new cursor lands.</p>
-</aside>
-<aside class="internals">
-<header>🔧 Under the Hood — Per-Mode State</header>
-<p>Each mode carries its own state. Normal mode tracks the count being typed (<code>5</code> then <code>j</code> is two keystrokes; the <code>5</code> is buffered). Insert mode buffers the inserted text so it can be repeated with <kbd>.</kbd> and so <kbd>Ctrl-O</kbd> can briefly leave and return. Visual mode tracks the <em>anchor</em> (where you started) and the <em>cursor</em> (where you are now); the selection is the range between them, recomputed every keystroke. Operator-pending tracks which operator is pending, plus its count and any selected register.</p>
-<p>When the mode ends, this state is either committed (Insert → Normal commits the typed text and the count&#x27;s repetitions; operator-pending → Normal applies the operator to the motion&#x27;s range) or discarded (Visual → Normal without an operator just throws the selection away, though <kbd>gv</kbd> can recover it from the <kbd>&#x27;&lt;</kbd> / <kbd>&#x27;&gt;</kbd> marks).</p>
-</aside>
 <hr>
 <h3>Why this matters</h3>
 <p>When something surprises you in Vim — a key doesn&#x27;t do what you expected — nine times out of ten you misjudged the current mode. &quot;I pressed <kbd>dd</kbd> and it just typed two d&#x27;s&quot; → you were in Insert. &quot;I pressed <kbd>i</kbd> and a word disappeared&quot; → you were in operator-pending after <kbd>d</kbd>. The fix is always the same: press <kbd>Esc</kbd> (sometimes twice) and start over from Normal.</p>
@@ -113,14 +102,13 @@
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=Hello+world%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
-<aside class="qr"><span>→ See also <a href="02-modes-overview.html">The Modes</a></span></aside>
-<aside class="buy-prompt">📖 Want the full story? <a href="#">Get the VimFu book.</a></aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/axyczdX5g0I?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Normal Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0003 — <a href="https://youtube.com/watch?v=axyczdX5g0I" target="_blank" rel="noopener">Normal Mode</a></span></li><li><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/1T7OEvSUh5g?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The Escape Habit" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><span class="lesson-meta">#0015 — <a href="https://youtube.com/watch?v=1T7OEvSUh5g" target="_blank" rel="noopener">The Escape Habit</a></span></li></ul></section>
 <p class="see-also"><strong>See also:</strong> <a href="01-modal-editing.html">Modal Editing</a>, <a href="03-universal-grammar.html">The Universal Grammar</a>, <a href="../18-visual-depth/01-modes.html">The Three Visual Modes</a>, <a href="../11-transform/01-replace-mode.html">Replace Mode</a>, <a href="../16-insert-mode-power/02-one-shot-normal.html">One-Shot Normal Mode</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="01-modal-editing.html" rel="prev">← Modal Editing</a></span>
-  <span class="pager-pos">2 / 136</span>
+  <span class="pager-pos">2 / 138</span>
   <span class="pager-next"><a class="pager-link" href="03-universal-grammar.html" rel="next">The Universal Grammar →</a></span>
 </nav>
 <nav class="bottomnav">
