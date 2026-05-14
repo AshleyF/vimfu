@@ -16,6 +16,17 @@ import { SyntaxHighlighter, grammarForFile, scopeToColor } from './highlight.js'
 // Ensure built-in grammars are registered
 import './langs/python.js';
 import './langs/markdown.js';
+import './langs/javascript.js';
+import './langs/typescript.js';
+import './langs/c.js';
+import './langs/cpp.js';
+import './langs/html.js';
+import './langs/css.js';
+import './langs/json.js';
+import './langs/yaml.js';
+import './langs/shell.js';
+import './langs/go.js';
+import './langs/rust.js';
 
 // ── Theme palettes ──────────────────────────────────────────
 // Each theme defines the fixed colours for every UI element.
