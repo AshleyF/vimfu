@@ -30,6 +30,7 @@ sys.path.insert(0, str(ROOT))
 from lib.videos import video_for_lesson, videos_for_topic  # noqa: E402
 from lib.audience import visible as _visible  # noqa: E402
 from lib.site_config import contact_email  # noqa: E402
+from lib.sim_link import SIM_LINK_VERSION as _SIM_LINK_VERSION, practice_filename  # noqa: E402
 
 
 def _report_footer(prefix: str = "") -> str:
@@ -257,12 +258,13 @@ def _example_practice_query(ex: dict) -> str:
     lines = _strip_vim_chrome(compact.get("lines") or [])
     if not lines:
         return ""
-    return urlencode({"v": SIM_LINK_VERSION, "file": "practice.txt", "content": "\n".join(lines) + "\n"})
+    content = "\n".join(lines) + "\n"
+    return urlencode({"v": SIM_LINK_VERSION, "file": practice_filename(ex, content), "content": content})
 
 
-# Bumping this forces every browser to re-fetch /sim/ instead of using a
-# cached copy. Bump whenever sim/index.html's preload semantics change.
-SIM_LINK_VERSION = "3"
+# Single source of truth lives in ``lib/sim_link.py``. Re-exported here so
+# existing call sites keep working unchanged.
+SIM_LINK_VERSION = _SIM_LINK_VERSION
 
 
 def _practice_query(t: dict, examples: dict) -> str:
@@ -295,7 +297,7 @@ def _practice_query(t: dict, examples: dict) -> str:
             if not lines:
                 continue
             content = "\n".join(lines) + "\n"
-            return urlencode({"v": SIM_LINK_VERSION, "file": "practice.txt", "content": content})
+            return urlencode({"v": SIM_LINK_VERSION, "file": practice_filename(ex, content), "content": content})
     return urlencode({"v": SIM_LINK_VERSION})
 
 
@@ -709,7 +711,7 @@ def render_part_index(part_dir, topics_in_part, all_parts=None) -> str:
 ROOT_INDEX = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VimFu &mdash; The companion site</title>
+<title>VimFu &mdash; Master Your Editor. Unleash Your Flow.</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="stylesheet" href="style.css">
 THEME_INIT_PLACEHOLDER
@@ -717,6 +719,7 @@ THEME_INIT_PLACEHOLDER
 THEME_TOGGLE_PLACEHOLDER
 <article>
 <h1>VimFu</h1>
+<p class="booktitle-sub">Master Your Editor. Unleash Your Flow.</p>
 <!-- Auto-generated from content/parts/**/*.json -->
 <p class="tagline">The Vim &amp; Neovim reference for programmers &mdash; companion to <a href="r/book/">the book</a>.</p>
 
@@ -972,6 +975,7 @@ h1 { font-size: 2rem; margin: 0.4rem 0 0.2rem; }
 h2 { font-size: 1.4rem; margin: 1.8rem 0 0.6rem; border-bottom: 1px solid var(--rule-strong); padding-bottom: 0.3rem; }
 h3 { font-size: 1.15rem; margin: 1.4rem 0 0.4rem; }
 p.subtitle { color: var(--muted); font-size: 1.1rem; margin-top: 0; font-style: italic; }
+p.booktitle-sub { color: var(--muted); font-size: 1.25rem; margin: 0 0 0.8rem; font-style: italic; font-weight: 500; letter-spacing: 0.01em; }
 p.meta { color: var(--muted); font-size: 0.9rem; }
 
 a { color: var(--accent); }

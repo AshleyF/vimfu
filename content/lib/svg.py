@@ -40,8 +40,12 @@ def _tspan(cls, col, text, extra=""):
     if n == 0:
         return None
     xs = " ".join(str((col + i) * CW) for i in range(n))
-    safe = xml_escape(text.replace(" ", NBSP))
-    return f'<tspan class="{cls}" x="{xs}"{extra}>{safe}</tspan>'
+    # Each character carries its own absolute x via the xs list, so we don't
+    # need NBSP padding for SVG layout. Using regular spaces keeps the PDF's
+    # extracted text stream clean of U+00A0 — KDP's pre-print validation
+    # flags those as non-printable characters.
+    safe = xml_escape(text)
+    return f'<tspan class="{cls}" x="{xs}" xml:space="preserve"{extra}>{safe}</tspan>'
 
 
 def _build_elements(frame, fg_cls, bg_cls):

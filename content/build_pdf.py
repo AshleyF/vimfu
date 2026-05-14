@@ -100,10 +100,22 @@ def convert_svgs() -> int:
     print(f"[2/3] Converting {len(todo)} of {len(svgs)} SVGs to PDF via Inkscape…")
     # Inkscape supports a shell mode that's much faster than spawning a
     # process per file. Build a script and pipe it in.
+    #
+    # export-text-to-path:true converts every text element to outline paths
+    # before writing the PDF. This eliminates font-embedding warnings from
+    # KDP's preflight (the screenshot SVGs use Cascadia/JetBrains-style
+    # fallback fonts that Inkscape's PDF exporter can otherwise embed as
+    # *unembedded subsets*, which KDP rejects as "fonts not properly
+    # embedded"). Converting to paths is the most reliable fix and keeps
+    # rendering pixel-identical.
     script_lines = []
     for s in todo:
         pdf = s.with_suffix(".pdf")
-        script_lines.append(f'file-open:{s};export-filename:{pdf};export-do;file-close')
+        script_lines.append(
+            f'file-open:{s};'
+            f'export-text-to-path:true;'
+            f'export-filename:{pdf};export-do;file-close'
+        )
     script = "\n".join(script_lines) + "\nquit\n"
 
     proc = subprocess.run(

@@ -52,13 +52,12 @@ from lib.redirects import (  # noqa: E402
 )
 from lib.site_config import contact_email, current_edition, editions  # noqa: E402
 from lib.videos import _index as _videos_index  # noqa: E402
+from lib.sim_link import SIM_LINK_VERSION, practice_filename  # noqa: E402
 
 PARTS_DIR = ROOT / "parts"
 EXAMPLES_DIR = ROOT / "examples"
 MANUAL_REDIRECTS = ROOT / "redirects.manual.json"
 OUT_DIR = ROOT / "output" / "html" / "r"
-
-SIM_LINK_VERSION = "3"
 
 
 PAGE_TEMPLATE = """<!doctype html>
@@ -180,7 +179,9 @@ def _example_sim_url(ex: dict, base_url: str) -> str | None:
         return None
     content = "\n".join(lines) + "\n"
     qs = urlencode({
-        "v": SIM_LINK_VERSION, "file": "practice.txt", "content": content,
+        "v": SIM_LINK_VERSION,
+        "file": practice_filename(ex, content),
+        "content": content,
     })
     return f"{base_url}/sim/?{qs}"
 

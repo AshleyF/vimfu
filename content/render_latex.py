@@ -204,6 +204,115 @@ _combined = re.compile(
 )
 
 
+# Threshold for splitting a single \code{} fragment on path separators.
+# Short fragments (e.g. \code{'fileencoding'}) stay as one pill; long
+# fragments (e.g. \code{$VIMRUNTIME/plugin/netrwPlugin.vim}) get split.
+_CODE_WRAP_THRESHOLD = 12
+
+
+def _split_code_for_wrap(s: str) -> str:
+    """Render `s` as one or more `\\code{}` pills with natural breakpoints.
+
+    A monolithic `\\code{}` is an unbreakable atomic colorbox, so a long
+    inline code run in a narrow context (table cell, tcolorbox interior)
+    overflows the right margin — which on a 6x9 KDP paperback means
+    crossing into the safety zone or beyond the trim.
+
+    Strategy:
+      - Whitespace in the source becomes a literal space (breakable).
+      - Long fragments are further split at `/` and `\\` (path separators),
+        with the separator kept on the LEFT fragment so paths read
+        naturally. Path-internal breakpoints use `\\allowbreak` (no
+        visible space) so the path looks unchanged when it fits on one
+        line and only wraps when it must.
+    """
+    out: list[str] = []
+    words = s.split(" ")
+    for wi, word in enumerate(words):
+        if not word:
+            # Preserve multiple-space runs in source.
+            if wi > 0:
+                out.append(" ")
+            continue
+        if wi > 0:
+            out.append(" ")
+        if len(word) <= _CODE_WRAP_THRESHOLD:
+            out.append(f"\\code{{{tex_escape_inline_code(word)}}}")
+            continue
+        parts = re.split(r"([/\\])", word)
+        if len(parts) <= 1:
+            out.append(f"\\code{{{tex_escape_inline_code(word)}}}")
+            continue
+        # Re-glue separator to preceding fragment; emit each as its own
+        # \code{} pill joined by \allowbreak (zero-width breakpoint).
+        glued: list[str] = []
+        i = 0
+        while i < len(parts):
+            frag = parts[i]
+            if i + 1 < len(parts) and parts[i + 1] in ("/", "\\"):
+                frag = frag + parts[i + 1]
+                i += 2
+            else:
+                i += 1
+            if frag:
+                glued.append(frag)
+        out.append(
+            "\\allowbreak{}".join(
+                f"\\code{{{tex_escape_inline_code(g)}}}" for g in glued
+            )
+        )
+    return "".join(out)
+
+
+def _split_key_for_wrap(s: str) -> str:
+    """Render `s` as one or more `\\key{}` caps with breakpoints.
+
+    `\\key{...}` wraps content in a TikZ node — a single atomic hbox. A long
+    argument like ``@nvim hello.txt`` can't break mid-pill, so in narrow
+    contexts (keytable cells, the gutter side of a two-column layout) it
+    runs off the right margin.
+
+    Whitespace in the source becomes a real space between separate pills,
+    giving TeX an obvious breakpoint without changing how the page looks
+    when the line fits.
+
+    Multi-letter alpha-only tokens like ``hjkl`` or ``gg`` are split
+    into per-character pills — those represent a sequence of separate
+    keystrokes, not a single key labelled "hjkl".
+    """
+    words = s.split(" ")
+    # If any split segment is empty, the spaces aren't pill-separators
+    # — render the whole token as one pill with `␣` (U+2423) for each
+    # literal space so the space character is visible.
+    if not s or any(p == "" for p in words):
+        body = (s.replace(" ", "\u2423") if s else "\u2423")
+        return f"\\key{{{tex_escape_inline_code(body)}}}"
+    if len(words) > 1:
+        pills: list[str] = []
+        for w in words:
+            if not w:
+                continue
+            pills.append(_split_key_for_wrap(w))
+        return " ".join(pills)
+    # Single token: see if it's a sequence of plain letters that should
+    # render as separate pills. Skip named keys ("Esc", "Tab"), modifier
+    # chords ("Ctrl-W"), angle-bracket forms ("<C-W>"), and any token
+    # containing punctuation (":wq", "//", "g~").
+    if (
+        len(s) >= 2
+        and s.isascii()
+        and s.isalpha()
+        and s not in _NAMED_KEYS
+        and not _FNKEY_RE.match(s)
+        and not _MODIFIER_RE.match(s)
+    ):
+        pills = [f"\\key{{{tex_escape_inline_code(c)}}}" for c in s]
+        # Thin space between adjacent pills so they read as a sequence
+        # but stay visually tight.
+        return "\\,".join(pills)
+    return f"\\key{{{tex_escape_inline_code(s)}}}"
+
+
 # A whitelist for what counts as an actual Vim key worth indexing under
 # "Keys" in the book index. Without this, every `{key:foo}` markup (used
 # for typed text like "foo"/"bar" inside example commands) generates a
@@ -269,42 +378,88 @@ def _index_key_entry(k: str) -> str:
     _sort_subst = {
         "{": "lbrace", "}": "rbrace", "\\": "bslash",
         "^": "caret", "~": "tilde", "|": "bar",
+        "#": "hash", "%": "percent", "$": "dollar",
+        "_": "underscore", "&": "amp",
     }
     sort_key = "".join(
         _sort_subst.get(c, ('"' + c if c in '!@|"' else c))
         for c in k_for_sort
     )
-    safe_chars = []
-    for c in k:
-        if c == "{":
-            safe_chars.append("\\textbraceleft{}")
-        elif c == "}":
-            safe_chars.append("\\textbraceright{}")
-        elif c == "\\":
-            safe_chars.append("\\textbackslash{}")
-        elif c == "|":
-            safe_chars.append("\\textbar{}")
-        elif c == "^":
-            # NB: emit the standalone glyph macros (not \^ / \~ which are
-            # accent commands that combine over the *next* character and
-            # produce U+0302 / U+0303 in the rendered index).
-            safe_chars.append("\\textasciicircum{}")
-        elif c == "~":
-            safe_chars.append("\\textasciitilde{}")
-        elif c in "#$%&_":
-            safe_chars.append("\\" + c)
-        elif c < " ":
-            # Skip any control chars; they'd crash makeindex anyway.
-            continue
-        else:
-            safe_chars.append(c)
-    display = "\\texttt{" + "".join(safe_chars) + "}"
+    # Escape each char for inside \key{...}; split on spaces so multi-key
+    # sequences (e.g. "Ctrl-W Ctrl-W") render as separate pills with a
+    # visible gap, instead of one long unbreakable pill.
+    def _esc(c: str) -> str:
+        if c == "{": return "\\textbraceleft{}"
+        if c == "}": return "\\textbraceright{}"
+        if c == "\\": return "\\textbackslash{}"
+        if c == "|": return "\\textbar{}"
+        if c == "^": return "\\textasciicircum{}"
+        if c == "~": return "\\textasciitilde{}"
+        if c in "#$%&_": return "\\" + c
+        # NUL/Tab/etc. don't have a renderable glyph; if such a char
+        # ever sneaks into a key string, substitute the visible-space
+        # symbol so the index entry shows SOMETHING rather than a blank
+        # pill that points readers at a page number with no caption.
+        if c < " ": return "\u2423"
+        return c
+
+    # Render display half. Spaces are usually a separator between distinct
+    # keystrokes ("Ctrl-W Ctrl-W"), but they can also BE the keystroke
+    # (the Space bar) or part of a chord ("Ctrl- " = Ctrl-Space). If any
+    # split segment is empty, the spaces aren't separators — render the
+    # whole token as a single pill with `\textvisiblespace` for spaces.
+    parts = k.split(" ")
+    if not k or any(p == "" for p in parts):
+        # Single pill: replace every literal space with the visible-space
+        # glyph ␣ so the index entry isn't an empty box.
+        body = "".join(
+            "\u2423" if c == " " else _esc(c)
+            for c in (k if k else "\u2423")
+        )
+        display = "\\protect\\key{" + body + "}"
+    else:
+        pills: list[str] = []
+        for word in parts:
+            pills.append("\\protect\\key{" + "".join(_esc(c) for c in word) + "}")
+        display = " ".join(pills)
     return f"\\index{{Keys!{sort_key}@{display}}}"
 
 
-def render_inline(text: str, *, index) -> str:
+_LONG_KEY_RUN_RE = re.compile(r"(?:\{key:[^{}\s]\} ?){4,}")
+
+
+def _collapse_long_key_runs(text: str) -> str:
+    """Collapse a long string of single-char `{key:X}` markers into a
+    single backtick-quoted code span.
+
+    Author shortcut: many topics encode a literal Ex-mode command as
+    `{key::}{key:s}{key:e}{key:t} {key:s}{key:p}{key:e}{key:l}{key:l}`
+    so each char gets its own pill. That looks awful: a row of 8+
+    single-letter boxes for what is really a single command the user
+    types. When we see 4 or more single-char key tokens in a row
+    (allowing one literal space between them, as the author would
+    insert), fold the whole run into ``\\code{...}`` so it renders as
+    one ttfamily code block instead.
+
+    Shorter runs are left alone — ``{key:g}{key:g}`` stays as two
+    pills; ``{key:c}{key:i}{key:p}`` stays as three pills (those read
+    fine as discrete keystrokes).
+    """
+    def repl(m: re.Match) -> str:
+        chunk = m.group(0)
+        chars: list[str] = []
+        for piece in re.finditer(r"\{key:([^{}])\}( ?)", chunk):
+            chars.append(piece.group(1))
+            if piece.group(2):
+                chars.append(piece.group(2))
+        return "`" + "".join(chars).rstrip() + "`"
+    return _LONG_KEY_RUN_RE.sub(repl, text)
+
+
+def render_inline(text: str, *, index, with_key_index: bool = True, plain_keys: bool = False) -> str:
     if text is None:
         return ""
+    text = _collapse_long_key_runs(text)
     out: list[str] = []
     pos = 0
     for m in _combined.finditer(text):
@@ -314,7 +469,11 @@ def render_inline(text: str, *, index) -> str:
         raw = m.group(0)
         if kind == "key":
             k = _KEY_RE.match(raw).group(1)
-            out.append(f"\\key{{{tex_escape_inline_code(k)}}}{_index_key_entry(k)}")
+            idx = _index_key_entry(k) if with_key_index else ""
+            if plain_keys:
+                out.append(f"\\texttt{{{tex_escape_inline_code(k)}}}{idx}")
+            else:
+                out.append(f"{_split_key_for_wrap(k)}{idx}")
         elif kind == "link":
             mm = _LINK_RE.match(raw)
             label, tid = mm.group(1), mm.group(2)
@@ -333,7 +492,13 @@ def render_inline(text: str, *, index) -> str:
             out.append(render_inline(mm.group(1), index=index))
         elif kind == "code":
             inner = _CODE_RE.match(raw).group(1)
-            out.append(f"\\code{{{tex_escape_inline_code(inner)}}}")
+            # Break unbreakable \code{...} runs into per-fragment pills so
+            # they can wrap in narrow contexts (table cells, tcolorbox
+            # interiors) instead of overflowing the page / KDP safe area.
+            # Split on spaces first; then for any still-long fragment,
+            # split on path separators (/ and \), keeping the separator
+            # attached to the LEFT fragment so paths read naturally.
+            out.append(_split_code_for_wrap(inner))
         elif kind == "strong":
             inner = _STRONG_RE.match(raw).group(1)
             out.append(f"\\textbf{{{render_inline(inner, index=index)}}}")
@@ -417,7 +582,7 @@ def render_block(b, *, index, examples) -> list[str]:
             narr = fr.get("narration", "")
             head_bits = [f"\\textbf{{Step {i}}}"]
             if keys:
-                head_bits.append(f"\\key{{{tex_escape_inline_code(keys)}}}")
+                head_bits.append(_split_key_for_wrap(keys))
             if cap:
                 head_bits.append(inl(cap))
             out.append("\\examplestep{" + " \\,---\\, ".join(head_bits) + "}")
@@ -457,20 +622,45 @@ def render_block(b, *, index, examples) -> list[str]:
         out.append("\\begin{center}\\rule{0.4\\linewidth}{0.4pt}\\end{center}")
 
     elif bt == "keys":
-        if label := b.get("label"):
-            out.append("\\par\\textbf{" + inl(label) + "}")
-        out.append("\\begin{keytable}")
-        for step in b.get("sequence", []):
+        label = b.get("label")
+        sequence = b.get("sequence", [])
+        # Decompose to (key, note) pairs.
+        pairs = []
+        for step in sequence:
             if isinstance(step, str):
-                key, note = step, ""
+                pairs.append((step, ""))
             else:
-                key = step.get("key", "")
-                note = inl(step.get("note", ""))
-            key_run = f"\\key{{{tex_escape_inline_code(key)}}}" if key else ""
-            if key:
-                key_run += _index_key_entry(key)
-            out.append(f"  {key_run} & {note} \\\\")
-        out.append("\\end{keytable}")
+                pairs.append((step.get("key", ""), inl(step.get("note", ""))))
+        has_notes = any(n for _, n in pairs)
+        if not has_notes and pairs:
+            # No per-step notes — collapse into a single inline run so a
+            # sequence like ["r", "x"] or ["3", "r", "-"] reads as one
+            # line of pills (with the label as a lead-in), instead of
+            # exploding into a row per keystroke.
+            key_runs = []
+            for k, _ in pairs:
+                if not k:
+                    continue
+                idx = _index_key_entry(k)
+                key_runs.append(f"{_split_key_for_wrap(k)}{idx}")
+            run = "\\,".join(key_runs)  # thin space between pills
+            if label:
+                out.append(
+                    "\\par\\noindent " + inl(label) + ":\\enspace " + run
+                    + "\\par\\medskip"
+                )
+            else:
+                out.append("\\par\\noindent " + run + "\\par\\medskip")
+        else:
+            if label:
+                out.append("\\par\\textbf{" + inl(label) + "}")
+            out.append("\\begin{keytable}")
+            for key, note in pairs:
+                key_run = _split_key_for_wrap(key) if key else ""
+                if key:
+                    key_run += _index_key_entry(key)
+                out.append(f"  {key_run} & {note} \\\\")
+            out.append("\\end{keytable}")
 
     elif bt == "table":
         headers = b.get("headers", [])
@@ -480,21 +670,54 @@ def render_block(b, *, index, examples) -> list[str]:
                            [i for i, h in enumerate(headers)
                             if str(h).strip().lower() in ("key", "keys")])
             n = len(headers)
-            # Pin key columns to \keycolwidth so this table aligns with any
-            # \begin{keytable} (or other key-column tables) stacked above or
-            # below it. Non-key columns stay auto-width.
-            non_key_count = max(1, n - len(key_cols))
+
+            # Estimate how wide each key column needs to be (in em) so we
+            # don't waste page width on a fixed-size key column. Non-key
+            # columns become tabularx X columns: they absorb the rest of
+            # \linewidth and wrap their (typically prose) content.
+            def _visible_len(s: str) -> int:
+                # Strip our content markup so widths reflect rendered text,
+                # not raw `{key:...}` / `**bold**` / `_em_` etc. \key pills
+                # have a few points of horizontal padding so we round up.
+                t = re.sub(r"\{key:([^}]+)\}", r"\1", str(s))
+                t = re.sub(r"\*\*([^*]+)\*\*", r"\1", t)
+                t = re.sub(r"`([^`]+)`", r"\1", t)
+                return len(t)
+
+            key_col_widths = {}
+            for i in key_cols:
+                longest = max(
+                    [_visible_len(headers[i])]
+                    + [_visible_len(row[i]) if i < len(row) else 0
+                       for row in rows]
+                )
+                # ~0.7em per char (ttfamily + pill padding); clamp 3..14em.
+                em = max(3.0, min(14.0, longest * 0.7 + 1.0))
+                key_col_widths[i] = em
+
             cols = []
             for i in range(n):
                 if i in key_cols:
-                    cols.append("p{\\keycolwidth}")
+                    cols.append(
+                        "@{}>{\\raggedright\\sloppy\\arraybackslash}"
+                        f"p{{{key_col_widths[i]:.1f}em}}@{{}}"
+                    )
                 else:
                     cols.append(
-                        "p{\\dimexpr(\\linewidth-\\keycolwidth*"
-                        f"{len(key_cols)})/{non_key_count}-1.2em\\relax}}"
+                        "@{\\hspace{1em}}>{\\raggedright\\sloppy"
+                        "\\arraybackslash}X"
                     )
-            spec = "@{}" + "".join(cols) + "@{}"
-            out.append("\\par\\begin{longtable}{" + spec + "}")
+            # If there is NO X column (all columns are keys), fall back to
+            # a plain longtable so we don't ask tabularx to handle a row
+            # with no expanding column.
+            has_x = any(i not in key_cols for i in range(n))
+            spec = "".join(cols)
+            if has_x:
+                out.append(
+                    "\\par\\begin{tabularx}{\\linewidth}{" + spec + "}"
+                )
+            else:
+                out.append("\\par\\begin{longtable}{" + spec + "}")
             out.append(" & ".join(f"\\textbf{{{inl(h)}}}" for h in headers) + " \\\\")
             out.append("\\hline")
             for row in rows:
@@ -506,7 +729,7 @@ def render_block(b, *, index, examples) -> list[str]:
                         s = "{key:" + s + "}"
                     rendered.append(inl(s))
                 out.append(" & ".join(rendered) + " \\\\")
-            out.append("\\end{longtable}")
+            out.append("\\end{tabularx}" if has_x else "\\end{longtable}")
 
     elif bt == "embed":
         lesson = b.get("lesson", "")
@@ -586,7 +809,13 @@ def render_topic_body(t, index, examples) -> str:
 
     title = t.get("title", "(untitled)")
     tid = t.get("id", t["__file_stem"])
-    out.append(f"\\chapter{{{inl(title)}}}\\label{{topic:{tex_escape(tid)}}}")
+    # Chapter title: render keys as plain-text (\texttt) rather than TikZ
+    # pills. TikZ \key{} inside \chapter{...} blows up hyperref's PDF
+    # bookmark generation ("TeX capacity exceeded - parameter stack size")
+    # because the title also goes into the .toc, .aux, running headers,
+    # AND PDF bookmark strings. Body-level <h1> headings authored inside
+    # blocks still get full key pills.
+    out.append(f"\\chapter{{{render_inline(title, index=index, with_key_index=False, plain_keys=True)}}}\\label{{topic:{tex_escape(tid)}}}")
     # Index every key the topic claims to be about (keys[] array on the JSON
     # frontmatter). We deliberately do NOT index the chapter title itself --
     # that would just duplicate the table of contents. The index is for
@@ -597,18 +826,12 @@ def render_topic_body(t, index, examples) -> str:
     if sub := t.get("subtitle"):
         out.append("\\par\\textit{" + inl(sub) + "}\\par\\medskip")
 
-    bits = []
-    if t.get("id"):
-        bits.append(f"\\code{{{tex_escape_inline_code(t['id'])}}}")
-    if part := t.get("part"):
-        bits.append("part: \\textbf{" + tex_escape(part) + "}")
-    if t.get("keys"):
-        bits.append("keys: " + ", ".join(
-            f"\\key{{{tex_escape_inline_code(k)}}}" for k in t["keys"]))
-    if t.get("lessons"):
-        bits.append("lessons: " + ", ".join(tex_escape(str(l)) for l in t["lessons"]))
-    if bits:
-        out.append("\\par\\small{" + " \\,$\\cdot$\\, ".join(bits) + "}\\par\\medskip\\normalsize")
+    # NOTE: We deliberately do NOT emit a metadata line here (topic id,
+    # part, keys list, lesson numbers). Those fields are useful on the
+    # website (cross-references, lesson links) but look like internal
+    # designations leaking into the print book. The "keys" covered in a
+    # topic still get indexed via _index_key_entry() above, so the back
+    # of book has them; here we go straight from subtitle to summary.
 
     if summary := t.get("summary"):
         out.append("\\par\\noindent " + inl(summary) + "\\par\\medskip")
@@ -623,12 +846,19 @@ def render_topic_body(t, index, examples) -> str:
             + "}{Spin up tmux in the simulator}{" + tex_escape(qr_url) + "}"
         )
 
+    # Normalize title and level-1 heading text by stripping {key:...}
+    # wrappers so titles authored with key-markup like "{key:*}, {key:cw}"
+    # still match a body heading authored as plain "*, cw, …".
+    _norm_title = re.sub(r"\{key:([^}]+)\}", r"\1", title).strip()
+
     for b in t.get("blocks", []):
         if not _visible(b, AUDIENCE):
             continue
-        if (b.get("type") == "heading" and int(b.get("level", 2)) == 1
-                and b.get("text", "").strip() == title.strip()):
-            continue
+        if b.get("type") == "heading" and int(b.get("level", 2)) == 1:
+            heading_text = re.sub(r"\{key:([^}]+)\}", r"\1",
+                                  b.get("text", "")).strip()
+            if heading_text == _norm_title:
+                continue
         out.extend(render_block(b, index=index, examples=examples))
 
     vids = videos_for_topic(t)
@@ -671,8 +901,14 @@ def render_topic_body(t, index, examples) -> str:
         labels = []
         for stid in see_also:
             label = index.get(stid, {}).get("title", stid)
+            # Titles may contain `{key:X}` markup which must render as
+            # actual pills (or plain text), not literal braces. We turn
+            # off key indexing so cross-references don't fabricate index
+            # entries for keys that aren't actually used on this page.
+            label_tex = render_inline(label, index=index,
+                                      with_key_index=False)
             labels.append(
-                f"{tex_escape(label)}~(p.~\\pageref{{topic:{tex_escape(stid)}}})"
+                f"{label_tex}~(p.~\\pageref{{topic:{tex_escape(stid)}}})"
             )
         out.append("\\par\\medskip\\noindent\\textit{See also:} " + ", ".join(labels))
 
@@ -682,18 +918,43 @@ def render_topic_body(t, index, examples) -> str:
 # -------- preamble ------------------------------------------------------- #
 
 PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by hand.
-\documentclass[11pt,oneside]{book}
+% twoside: mirror inner/outer margins so the spine-side (inner) margin
+% alternates correctly between odd and even pages. Required for a properly
+% bound print book (e.g. KDP paperback).
+% openany: don't force chapters onto right-hand (recto) pages with blank
+% versos between them. The book has many short chapters; forcing recto-start
+% would inflate the page count noticeably with little reader benefit.
+\documentclass[11pt,twoside,openany]{book}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{fontspec}
+% Force xelatex to emit /ActualText markup for every glyph so extracted text
+% (KDP preflight, accessibility tools, copy/paste) sees the real Unicode
+% regardless of the font's ToUnicode CMap. Libertinus's CMap maps several
+% glyph IDs to C0 control chars (U+0007, U+0009, U+001A, U+001B, U+001D) for
+% stylistic/ligature glyphs xdvipdfmx couldn't reverse-map; without
+% ActualText, KDP strips those pages with "non-printable markup removed".
+\XeTeXgenerateactualtext=1
 % Book-style typography: classic-feel serif body with a clean sans for headings.
 % Libertinus is shipped with MiKTeX/TeX Live and is designed as a unified family
 % (serif/sans/mono share metrics), giving us a polished, book-like look.
 \setmainfont{Libertinus Serif}
 \setsansfont{Libertinus Sans}
 \setmonofont{Libertinus Mono}
-\usepackage[paperwidth=6in,paperheight=9in,margin=0.6in,bindingoffset=0.25in]{geometry}
+% KDP paperback 7.5x9.25, ~301-500 page bucket at this larger trim:
+% inside >= 0.625", outside/top/bottom >= 0.25". We use generous values.
+%   inner  (spine side):    0.875"
+%   outer (fore edge):      0.625"
+%   top / bottom:           0.75"
+% bindingoffset is intentionally omitted: with twoside + inner/outer geometry,
+% the inner margin already provides the spine allowance and mirrors correctly.
+\usepackage[
+  paperwidth=7.5in, paperheight=9.25in,
+  inner=0.875in, outer=0.625in,
+  top=0.75in, bottom=0.75in,
+  headsep=14pt, footskip=28pt
+]{geometry}
 \usepackage{microtype}
 \usepackage{xcolor}
 \usepackage{graphicx}
@@ -701,7 +962,18 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \usepackage{imakeidx}
 \makeindex[title=Index, columns=2, intoc]
 \usepackage{longtable}
-\usepackage{fancyvrb}
+\usepackage{tabularx}
+\usepackage{ltablex} % longtable + tabularx: X columns that page-break
+\keepXColumns       % preserve X behaviour inside tabularx after ltablex hijacks it
+\usepackage{array}  % \arraybackslash, advanced column specs
+\usepackage{amssymb}  % \checkmark, used by newunicodechar mapping below
+\usepackage{newunicodechar}
+% Libertinus Serif lacks the U+2713 CHECK MARK glyph. Without a mapping,
+% XeLaTeX silently emits a missing-glyph placeholder that downstream PDF
+% consumers (e.g. KDP's pre-print validation) flag as a non-printable
+% character. Map it to the math \checkmark, which renders cleanly.
+\newunicodechar{✓}{\ensuremath{\checkmark}}
+\usepackage{fvextra}
 \usepackage[most]{tcolorbox}
 \usepackage{enumitem}
 \usepackage{titlesec}
@@ -741,6 +1013,14 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \setlength{\cftbeforechapskip}{6pt plus 1pt}
 \setlength{\cftbeforesecskip}{1pt}
 \setlength{\cftbeforesubsecskip}{1pt}
+% Dotted leader lines between TOC entry text and page number. Default
+% LaTeX gives chapters no leader at all; here every level gets light
+% dots so the reader's eye can follow across the wider trim size.
+\renewcommand{\cftpartleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftdotsep}{2}
 
 % Modern typography: single-spacing after periods (no Victorian double-spacing),
 % suppress orphans/widows, ragged bottom for even leading.
@@ -751,21 +1031,26 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \raggedbottom
 
 \definecolor{accentcolor}{HTML}{2A2A2A}
-\definecolor{tipbg}{HTML}{F0F0F0}
+% Unified grayscale palette for callouts (black-and-white book).
+\definecolor{tipbg}{HTML}{F2F2F2}
 \definecolor{tipfg}{HTML}{1A1A1A}
 \definecolor{tipborder}{HTML}{6B6B6B}
-\definecolor{internalsbg}{HTML}{F0F0F0}
+\definecolor{internalsbg}{HTML}{F2F2F2}
 \definecolor{internalsfg}{HTML}{1A1A1A}
 \definecolor{internalsborder}{HTML}{4A4A4A}
-\definecolor{anecdotebg}{HTML}{FBF6EC}
-\definecolor{anecdotefg}{HTML}{2A2410}
-\definecolor{anecdoteborder}{HTML}{A8884A}
+% Anecdote was warm/yellow; flattened to gray for B&W print.
+\definecolor{anecdotebg}{HTML}{F2F2F2}
+\definecolor{anecdotefg}{HTML}{1A1A1A}
+\definecolor{anecdoteborder}{HTML}{6B6B6B}
 \definecolor{examplebg}{HTML}{F8F8F8}
 \definecolor{exampleborder}{HTML}{B8B8B8}
-\definecolor{keybg}{HTML}{F4F4F4}
+% Key pills: white fill so they always pop against any gray callout bg.
+\definecolor{keybg}{HTML}{FFFFFF}
 \definecolor{keyfg}{HTML}{1A1A1A}
-\definecolor{keyborder}{HTML}{888888}
-\definecolor{codebg}{HTML}{F0F0F0}
+\definecolor{keyborder}{HTML}{666666}
+% Inline-code bg slightly darker than callout bg so \code{...} on a callout
+% still has a visible bg pill (otherwise it disappears into the callout).
+\definecolor{codebg}{HTML}{E6E6E6}
 \definecolor{figureborder}{HTML}{888888}
 
 \hypersetup{
@@ -773,7 +1058,7 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
   linkcolor=black,
   urlcolor=black,
   citecolor=black,
-  pdftitle={VimFu --- The Book},
+  pdftitle={VimFu --- Master Your Editor. Unleash Your Flow.},
   pdfauthor={VimFu},
 }
 
@@ -783,8 +1068,8 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 % square. Multi-char caps (Esc, Ctrl) widen naturally.
 \newlength{\keyminwidth}
 \setlength{\keyminwidth}{1.6ex}
-\newcommand{\key}[1]{%
-  \tikz[baseline=(K.base)]{%
+\DeclareRobustCommand{\key}[1]{%
+  \allowbreak\tikz[baseline=(K.base)]{%
     \node[inner xsep=3pt, inner ysep=1pt,
           minimum width=\keyminwidth, minimum height=1.9ex,
           draw=keyborder, line width=0.5pt,
@@ -792,15 +1077,22 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
           rounded corners=2pt,
           font=\ttfamily\footnotesize]
       (K) {\strut #1};%
-  }%
+  }\allowbreak%
 }
 
 % --- Inline code ------------------------------------------------------------
-\newcommand{\code}[1]{\colorbox{codebg}{\texttt{#1}}}
+% \allowbreak so inline code (e.g. \code{'fileencoding'}, file paths, command
+% snippets) can break at word boundaries inside narrow contexts (tcolorboxes,
+% table cells) instead of overflowing the margin.
+\newcommand{\code}[1]{\allowbreak\colorbox{codebg}{\texttt{#1}}\allowbreak}
 
 % --- Block code -------------------------------------------------------------
+% breaklines/breakanywhere: long lines (e.g. the operators-textobjects
+% grammar formula) must wrap inside narrow tcolorbox callouts instead of
+% overflowing the right edge into the gutter.
 \DefineVerbatimEnvironment{codeblock}{Verbatim}{frame=single,framerule=0pt,
   rulecolor=\color{codebg},fontsize=\small,xleftmargin=4pt,xrightmargin=4pt,
+  breaklines=true,breakanywhere=true,breaksymbolleft={\tiny\ensuremath{\hookrightarrow}},
   formatcom=\color{black}}
 
 % --- Tip box ----------------------------------------------------------------
@@ -890,7 +1182,24 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 % TikZ for the \key{} cap — load before the \key{} definition above wouldn't
 % help (forward reference), so put the load-and-providecommand-fallback here.
 \usepackage{tikz}
-\providecommand{\key}[1]{\fbox{\texttt{#1}}}
+% Slim the \fbox around \key{...} so end-of-line keys are less likely to
+% overshoot the right margin. Defaults are \fboxsep=3pt, \fboxrule=0.4pt.
+\setlength{\fboxsep}{2pt}
+\setlength{\fboxrule}{0.4pt}
+% \allowbreak on both sides lets TeX wrap sequences like \key{Up}/\key{Down}/
+% \key{Left}/\key{Right} across lines in narrow table cells instead of
+% running off into the margin.
+\providecommand{\key}[1]{\allowbreak\fbox{\texttt{#1}}\allowbreak}
+
+% Line-breaking safety net. \emergencystretch lets TeX add a bit of extra
+% inter-word glue on otherwise-impossible lines, eliminating most of the
+% small overfull-hboxes that would poke into the margin (and into KDP's
+% safety zone). Hide the visual indicator that TeX draws for residual
+% overfulls in the final PDF.
+\setlength{\emergencystretch}{3em}
+\hbadness=10000
+\hfuzz=2pt
+\overfullrule=0pt
 """
 
 
@@ -1003,7 +1312,7 @@ def main() -> int:
         "\\input{preamble}\n"
         "\\begin{document}\n"
         "\\frontmatter\n"
-        "\\title{\\sffamily\\bfseries VimFu}\n"
+        "\\title{\\sffamily\\bfseries VimFu\\texorpdfstring{\\\\[0.4em]{\\Large\\mdseries\\itshape Master Your Editor.\\\\Unleash Your Flow.}}{}}\n"
         "\\author{}\n"
         f"\\date{{\\sffamily {tex_escape(edition_string)}}}\n"
         "\\maketitle\n"
@@ -1036,6 +1345,7 @@ def main() -> int:
         "\\noindent\\textbf{Try one now---this code opens the website:}"
         "\\par\\medskip\n"
         + sample_qr_callout + "\n"
+        "\\cleardoublepage\n"
         "\\tableofcontents\n"
         "\\mainmatter\n"
         + "\n".join(book_parts) + "\n"
