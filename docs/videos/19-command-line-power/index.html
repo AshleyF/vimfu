@@ -51,4 +51,20 @@
 <ul class="video-grid"><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0446</span> <span class="video-pending-title">q: — Command History Window</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0447</span> <span class="video-pending-title">q/ q? — Search History</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0448</span> <span class="video-pending-title">Ctrl-D — Show Completions</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0449</span> <span class="video-pending-title">Tab — Complete Command</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0450</span> <span class="video-pending-title">Ctrl-R {reg} — Insert Register</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0451</span> <span class="video-pending-title">Ctrl-R Ctrl-W — Insert Word</span><div class="video-pending">(not yet published)</div></div></li></ul>
 </article>
 <footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../../r/github" rel="noopener">GitHub issues</a> · <a href="../../r/errata" rel="noopener">Book errata</a></footer>
+<script>
+(function(){
+  document.addEventListener('click', function(e){
+    var t = e.target.closest && e.target.closest('a.video-thumb[data-video-id]');
+    if (!t) return;
+    e.preventDefault();
+    var id = t.getAttribute('data-video-id');
+    var f = document.createElement('iframe');
+    f.className = 'lesson-iframe';
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
+    f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    f.setAttribute('allowfullscreen','');
+    t.replaceWith(f);
+  });
+})();
+</script>
 </body></html>

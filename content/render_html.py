@@ -806,6 +806,22 @@ THEME_TOGGLE_PLACEHOLDER
 {body}
 </article>
 {footer}
+<script>
+(function(){{
+  document.addEventListener('click', function(e){{
+    var t = e.target.closest && e.target.closest('a.video-thumb[data-video-id]');
+    if (!t) return;
+    e.preventDefault();
+    var id = t.getAttribute('data-video-id');
+    var f = document.createElement('iframe');
+    f.className = 'lesson-iframe';
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
+    f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    f.setAttribute('allowfullscreen','');
+    t.replaceWith(f);
+  }});
+}})();
+</script>
 </body></html>
 """.replace("THEME_INIT_PLACEHOLDER", THEME_INIT_SCRIPT).replace("THEME_TOGGLE_PLACEHOLDER", THEME_TOGGLE_BUTTON)
 
@@ -819,9 +835,10 @@ def _video_card(v: dict, topic_link_html: str = "") -> str:
     if v.get("videoId"):
         vid = escape(v["videoId"])
         thumb = (f'<a href="{escape(v["url"])}" target="_blank" rel="noopener" '
-                 f'class="video-thumb">'
+                 f'class="video-thumb" data-video-id="{vid}" aria-label="Play video">'
                  f'<img loading="lazy" alt="" '
-                 f'src="https://i.ytimg.com/vi/{vid}/hqdefault.jpg"></a>')
+                 f'src="https://i.ytimg.com/vi/{vid}/hqdefault.jpg">'
+                 f'<span class="video-play" aria-hidden="true">▶</span></a>')
         link = (f'<a href="{escape(v["url"])}" target="_blank" rel="noopener">'
                 f'{title}</a>')
         body = f'{thumb}<div class="video-meta"><span class="video-num">#{escape(disp)}</span> {link}'
@@ -1311,10 +1328,30 @@ ul.video-grid {
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 li.video-card { display: flex; flex-direction: column; gap: 0.4rem; }
-li.video-card a.video-thumb { display: block; line-height: 0; }
+li.video-card a.video-thumb {
+  display: block; line-height: 0; position: relative;
+  border-radius: 4px; overflow: hidden;
+}
 li.video-card a.video-thumb img {
   width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px;
   background: var(--code-bg);
+}
+li.video-card a.video-thumb .video-play {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(0,0,0,0.65); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; padding-left: 4px;
+  transition: background 0.15s;
+  pointer-events: none;
+}
+li.video-card a.video-thumb:hover .video-play,
+li.video-card a.video-thumb:focus-visible .video-play {
+  background: rgba(220,30,30,0.9);
+}
+li.video-card iframe.lesson-iframe {
+  width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 4px;
+  background: #000;
 }
 li.video-card .video-thumb-pending {
   aspect-ratio: 16/9; background: var(--code-bg); color: var(--muted);
