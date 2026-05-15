@@ -187,18 +187,39 @@ def _example_sim_url(ex: dict, base_url: str) -> str | None:
 
 
 def write_pages(m: dict[str, str], out_dir: Path) -> int:
+    """Write a redirect page for every slug AND its short id.
+
+    QR codes printed in the book encode the SHORT-id form
+    (``vimfubook.com/r/0079``) — see ``redirect_url()`` in
+    ``lib/redirects.py``. The slug-form (``/r/vimspeak``) is the
+    developer-facing identifier and is also useful for typed URLs.
+    Both must resolve to the same target on the deployed site.
+    """
+    from lib.redirect_ids import id_for_slug  # local import to avoid cycles
     out_dir.mkdir(parents=True, exist_ok=True)
     n = 0
+    written: set[str] = set()
     for slug, target in m.items():
-        d = out_dir / slug
-        d.mkdir(parents=True, exist_ok=True)
         html = PAGE_TEMPLATE.format(
             target_attr=_html_attr(target),
             target_text=_html_text(target),
             target_json=json.dumps(target),
         )
-        (d / "index.html").write_text(html, encoding="utf-8")
-        n += 1
+        paths = [slug]
+        try:
+            short = id_for_slug(slug)
+        except Exception:
+            short = None
+        if short and short != slug:
+            paths.append(short)
+        for path in paths:
+            if path in written:
+                continue
+            d = out_dir / path
+            d.mkdir(parents=True, exist_ok=True)
+            (d / "index.html").write_text(html, encoding="utf-8")
+            written.add(path)
+            n += 1
     (out_dir / "redirects.json").write_text(
         json.dumps(m, indent=2, sort_keys=True), encoding="utf-8"
     )
