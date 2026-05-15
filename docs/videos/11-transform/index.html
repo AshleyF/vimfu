@@ -53,6 +53,7 @@
 <footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../../r/github" rel="noopener">GitHub issues</a> · <a href="../../r/errata" rel="noopener">Book errata</a></footer>
 <script>
 (function(){
+  var current = null;
   document.addEventListener('click', function(e){
     var t = e.target.closest && e.target.closest('a.video-thumb[data-video-id]');
     if (!t) return;
@@ -63,7 +64,12 @@
     f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
     f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     f.setAttribute('allowfullscreen','');
+    f._origThumb = t;
+    if (current && current.parentNode) {
+      current.parentNode.replaceChild(current._origThumb, current);
+    }
     t.replaceWith(f);
+    current = f;
   });
 })();
 </script>

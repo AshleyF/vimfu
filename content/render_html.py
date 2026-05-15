@@ -808,6 +808,7 @@ THEME_TOGGLE_PLACEHOLDER
 {footer}
 <script>
 (function(){{
+  var current = null;
   document.addEventListener('click', function(e){{
     var t = e.target.closest && e.target.closest('a.video-thumb[data-video-id]');
     if (!t) return;
@@ -818,7 +819,12 @@ THEME_TOGGLE_PLACEHOLDER
     f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
     f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     f.setAttribute('allowfullscreen','');
+    f._origThumb = t;
+    if (current && current.parentNode) {{
+      current.parentNode.replaceChild(current._origThumb, current);
+    }}
     t.replaceWith(f);
+    current = f;
   }});
 }})();
 </script>
@@ -1325,7 +1331,10 @@ ul.lesson-grid .lesson-pending .placeholder {
 ul.video-grid {
   list-style: none; padding: 0; margin: 1rem 0 2rem;
   display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (max-width: 520px) {
+  ul.video-grid { grid-template-columns: 1fr; }
 }
 li.video-card { display: flex; flex-direction: column; gap: 0.4rem; }
 li.video-card a.video-thumb {
