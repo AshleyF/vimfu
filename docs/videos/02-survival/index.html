@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Survival videos — VimFu Videos</title>
+<link rel="icon" type="image/png" href="../../icon.png">
+<link rel="stylesheet" href="../../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head><body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../../index.html">📚 Contents</a>
+  &middot; <a href="../index.html">🎬 All videos</a>
+</nav>
+<article>
+<h1>Survival videos</h1>
+<p class="tagline">Every video referenced from the <em>Survival</em> part of the book. See also the <a href="../index.html">complete video index</a>.</p>
+<ul class="video-grid"><li class="video-card"><a href="https://youtube.com/watch?v=Nz6Tdf_JWco" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/Nz6Tdf_JWco/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0002</span> <a href="https://youtube.com/watch?v=Nz6Tdf_JWco" target="_blank" rel="noopener">Opening a File</a><div class="video-topic">from <a href="../../02-survival/01-open-save-quit.html">Open, Save, Quit</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=wWYoPcfwst8" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/wWYoPcfwst8/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0004</span> <a href="https://youtube.com/watch?v=wWYoPcfwst8" target="_blank" rel="noopener">Insert Mode</a><div class="video-topic">from <a href="../../02-survival/02-insert-and-back.html">Insert and Back Again</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=_EFqkfWfj1U" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/_EFqkfWfj1U/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0005</span> <a href="https://youtube.com/watch?v=_EFqkfWfj1U" target="_blank" rel="noopener">Typing Text</a><div class="video-topic">from <a href="../../02-survival/02-insert-and-back.html">Insert and Back Again</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=pKhYM_Meolk" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/pKhYM_Meolk/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0006</span> <a href="https://youtube.com/watch?v=pKhYM_Meolk" target="_blank" rel="noopener">Back to Normal Mode</a><div class="video-topic">from <a href="../../02-survival/02-insert-and-back.html">Insert and Back Again</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=9xN4HPYytMc" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/9xN4HPYytMc/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0007</span> <a href="https://youtube.com/watch?v=9xN4HPYytMc" target="_blank" rel="noopener">Saving Your File</a><div class="video-topic">from <a href="../../02-survival/01-open-save-quit.html">Open, Save, Quit</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=GVORF1_A188" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/GVORF1_A188/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0008</span> <a href="https://youtube.com/watch?v=GVORF1_A188" target="_blank" rel="noopener">Quitting Vim</a><div class="video-topic">from <a href="../../02-survival/01-open-save-quit.html">Open, Save, Quit</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=v0fnS243mLw" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/v0fnS243mLw/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0009</span> <a href="https://youtube.com/watch?v=v0fnS243mLw" target="_blank" rel="noopener">Save and Quit</a><div class="video-topic">from <a href="../../02-survival/01-open-save-quit.html">Open, Save, Quit</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=KvSjAt0pHic" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/KvSjAt0pHic/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0010</span> <a href="https://youtube.com/watch?v=KvSjAt0pHic" target="_blank" rel="noopener">Quit Without Saving</a><div class="video-topic">from <a href="../../02-survival/01-open-save-quit.html">Open, Save, Quit</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=gNWH_h95dgU" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/gNWH_h95dgU/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0011</span> <a href="https://youtube.com/watch?v=gNWH_h95dgU" target="_blank" rel="noopener">Undo</a><div class="video-topic">from <a href="../../02-survival/03-undo-redo.html">Undo and Redo</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=-tkbSu_IdnE" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/-tkbSu_IdnE/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0012</span> <a href="https://youtube.com/watch?v=-tkbSu_IdnE" target="_blank" rel="noopener">Redo</a><div class="video-topic">from <a href="../../02-survival/03-undo-redo.html">Undo and Redo</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=127qYVCOkh4" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/127qYVCOkh4/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0013</span> <a href="https://youtube.com/watch?v=127qYVCOkh4" target="_blank" rel="noopener">Moving: h j k l</a><div class="video-topic">from <a href="../../02-survival/04-hjkl.html">Move with hjkl</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=740km_QY3wk" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/740km_QY3wk/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0014</span> <a href="https://youtube.com/watch?v=740km_QY3wk" target="_blank" rel="noopener">Why Not Arrow Keys?</a><div class="video-topic">from <a href="../../02-survival/04-hjkl.html">Move with hjkl</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=1T7OEvSUh5g" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/1T7OEvSUh5g/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0015</span> <a href="https://youtube.com/watch?v=1T7OEvSUh5g" target="_blank" rel="noopener">The Escape Habit</a><div class="video-topic">from <a href="../../01-foundations/01-modal-editing.html">Modal Editing</a></div></div></li></ul>
+</article>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../../r/github" rel="noopener">GitHub issues</a> · <a href="../../r/errata" rel="noopener">Book errata</a></footer>
+</body></html>

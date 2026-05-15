@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scrolling Screen videos — VimFu Videos</title>
+<link rel="icon" type="image/png" href="../../icon.png">
+<link rel="stylesheet" href="../../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head><body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../../index.html">📚 Contents</a>
+  &middot; <a href="../index.html">🎬 All videos</a>
+</nav>
+<article>
+<h1>Scrolling Screen videos</h1>
+<p class="tagline">Every video referenced from the <em>Scrolling Screen</em> part of the book. See also the <a href="../index.html">complete video index</a>.</p>
+<ul class="video-grid"><li class="video-card"><a href="https://youtube.com/watch?v=PhXrbukxSaw" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/PhXrbukxSaw/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0086</span> <a href="https://youtube.com/watch?v=PhXrbukxSaw" target="_blank" rel="noopener">Scroll Down Half Page</a><div class="video-topic">from <a href="../../09-scrolling-screen/01-half-full-page.html">Half- and Full-Page Scrolling</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=n9UCXzRya_g" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/n9UCXzRya_g/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0087</span> <a href="https://youtube.com/watch?v=n9UCXzRya_g" target="_blank" rel="noopener">Scroll Up Half Page</a><div class="video-topic">from <a href="../../09-scrolling-screen/01-half-full-page.html">Half- and Full-Page Scrolling</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=RXafn_Mvm1o" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/RXafn_Mvm1o/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0088</span> <a href="https://youtube.com/watch?v=RXafn_Mvm1o" target="_blank" rel="noopener">Scroll Full Page Forward</a><div class="video-topic">from <a href="../../09-scrolling-screen/01-half-full-page.html">Half- and Full-Page Scrolling</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=g_YWpQdE_Z4" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/g_YWpQdE_Z4/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0089</span> <a href="https://youtube.com/watch?v=g_YWpQdE_Z4" target="_blank" rel="noopener">Scroll Full Page Backward</a><div class="video-topic">from <a href="../../09-scrolling-screen/01-half-full-page.html">Half- and Full-Page Scrolling</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=8oWZ5IOHW8k" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/8oWZ5IOHW8k/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0090</span> <a href="https://youtube.com/watch?v=8oWZ5IOHW8k" target="_blank" rel="noopener">Center / Top / Bottom</a><div class="video-topic">from <a href="../../09-scrolling-screen/02-center-top-bottom.html">Centering the Cursor</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=ss-UEr1dsLI" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/ss-UEr1dsLI/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0242</span> <a href="https://youtube.com/watch?v=ss-UEr1dsLI" target="_blank" rel="noopener">zz Center Cursor</a><div class="video-topic">from <a href="../../09-scrolling-screen/02-center-top-bottom.html">Centering the Cursor</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=bIPL3t_8NY0" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/bIPL3t_8NY0/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0243</span> <a href="https://youtube.com/watch?v=bIPL3t_8NY0" target="_blank" rel="noopener">zt Cursor to Top</a><div class="video-topic">from <a href="../../09-scrolling-screen/02-center-top-bottom.html">Centering the Cursor</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=5ePOvMOcNwg" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/5ePOvMOcNwg/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0244</span> <a href="https://youtube.com/watch?v=5ePOvMOcNwg" target="_blank" rel="noopener">zb Cursor to Bottom</a><div class="video-topic">from <a href="../../09-scrolling-screen/02-center-top-bottom.html">Centering the Cursor</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=Y6YyL_-w3Zg" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/Y6YyL_-w3Zg/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0245</span> <a href="https://youtube.com/watch?v=Y6YyL_-w3Zg" target="_blank" rel="noopener">z. Center First Non-Blank</a><div class="video-topic">from <a href="../../09-scrolling-screen/03-first-non-blank-z.html">{key:z.} / {key:z+} / {key:z-} — Scroll and Land on First Non-Blank</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=sPOIxSdQRhY" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/sPOIxSdQRhY/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0246</span> <a href="https://youtube.com/watch?v=sPOIxSdQRhY" target="_blank" rel="noopener">z+ Top First Non-Blank</a><div class="video-topic">from <a href="../../09-scrolling-screen/03-first-non-blank-z.html">{key:z.} / {key:z+} / {key:z-} — Scroll and Land on First Non-Blank</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=_LV48cLkTNk" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/_LV48cLkTNk/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0247</span> <a href="https://youtube.com/watch?v=_LV48cLkTNk" target="_blank" rel="noopener">z- Bottom First Non-Blank</a><div class="video-topic">from <a href="../../09-scrolling-screen/03-first-non-blank-z.html">{key:z.} / {key:z+} / {key:z-} — Scroll and Land on First Non-Blank</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=liuQPpv1Np8" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/liuQPpv1Np8/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0248</span> <a href="https://youtube.com/watch?v=liuQPpv1Np8" target="_blank" rel="noopener">z{height} Enter</a><div class="video-topic">from <a href="../../09-scrolling-screen/04-height.html">{key:z}{n}{key:Enter} — Set Window Height</a></div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0289</span> <span class="video-pending-title">z. z+ z- z^ Scroll Variants</span><div class="video-pending">(not yet published)</div></div></li></ul>
+</article>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../../r/github" rel="noopener">GitHub issues</a> · <a href="../../r/errata" rel="noopener">Book errata</a></footer>
+</body></html>

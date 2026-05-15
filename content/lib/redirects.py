@@ -70,8 +70,16 @@ def redirect_path_segment(slug: str) -> str:
 
 # ---- slug builders --------------------------------------------------------- #
 
-def video_slug(lesson: int) -> str:
-    return f"v-{int(lesson):04d}"
+def video_slug(lesson) -> str:
+    """Slug for a lesson key. Accepts int (canonical) or str like ``"0430a"``
+    for letter-suffixed sub-lessons."""
+    if isinstance(lesson, int):
+        return f"v-{lesson:04d}"
+    s = str(lesson).strip()
+    # Numeric strings are normalized to 4-digit zero padded.
+    if s.isdigit():
+        return f"v-{int(s):04d}"
+    return f"v-{s}"
 
 
 def part_videos_slug(part_dir: str) -> str:

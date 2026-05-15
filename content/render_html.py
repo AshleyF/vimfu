@@ -27,7 +27,7 @@ except Exception:
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
-from lib.videos import video_for_lesson, videos_for_topic  # noqa: E402
+from lib.videos import _index as _videos_index, video_for_lesson, videos_for_topic  # noqa: E402
 from lib.audience import visible as _visible  # noqa: E402
 from lib.site_config import contact_email  # noqa: E402
 from lib.sim_link import SIM_LINK_VERSION as _SIM_LINK_VERSION, practice_filename  # noqa: E402
@@ -476,6 +476,16 @@ def render_block(b, *, current_part, index, examples) -> str:
         return "\n".join(out)
 
     if bt == "qr":
+        slug = b.get("slug")
+        caption = b.get("caption") or ""
+        if slug:
+            href = f"../r/{escape(str(slug))}/"
+            label = caption or str(slug)
+            return f'<aside class="qr"><span>→ <a href="{href}">{escape(label)}</a></span></aside>'
+        url = b.get("url")
+        if url:
+            label = caption or url
+            return f'<aside class="qr"><span>→ <a href="{escape(url)}">{escape(label)}</a></span></aside>'
         tid = b.get("topic", "")
         info = index.get(tid)
         label = info["title"] if info else tid
@@ -549,7 +559,7 @@ PAGE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title} — VimFu</title>
-<link rel="icon" type="image/svg+xml" href="{root_index_dir}logo.svg">
+<link rel="icon" type="image/png" href="{root_index_dir}icon.png">
 <link rel="stylesheet" href="{css}">
 THEME_INIT_PLACEHOLDER
 </head>
@@ -558,6 +568,7 @@ THEME_TOGGLE_PLACEHOLDER
 <nav class="topnav">
   <a href="{root_index}">📚 Contents</a>
   &middot; <a href="{root_index}#part-{part_dir}">↑ {part_label}</a>
+  &middot; <a href="{root_index_dir}videos/{part_dir}/">🎬 Videos</a>
   &middot; <a class="practice-link" href="../sim/?{practice_qs}" target="_blank" rel="noopener">▶ Practice in the simulator</a>
 </nav>
 <nav class="pager pager-top">
@@ -712,14 +723,16 @@ ROOT_INDEX = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VimFu &mdash; Master Your Editor. Unleash Your Flow.</title>
-<link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="icon" type="image/png" href="icon.png">
 <link rel="stylesheet" href="style.css">
 THEME_INIT_PLACEHOLDER
 </head><body>
 THEME_TOGGLE_PLACEHOLDER
 <article>
-<h1>VimFu</h1>
-<p class="booktitle-sub">Master Your Editor. Unleash Your Flow.</p>
+<h1 class="site-banner">
+  <img class="banner-light" src="vimfu_light.png" alt="VimFu — Master Your Editor. Unleash Your Flow.">
+  <img class="banner-dark" src="vimfu_dark.png" alt="" aria-hidden="true">
+</h1>
 <!-- Auto-generated from content/parts/**/*.json -->
 <p class="tagline">The Vim &amp; Neovim reference for programmers &mdash; companion to <a href="r/book/">the book</a>.</p>
 
@@ -728,6 +741,7 @@ THEME_TOGGLE_PLACEHOLDER
   <p>The <a href="r/book/">printed book</a> goes deeper &mdash; history, internals, mental models, and worked examples for every concept. The site is the cheat sheet; the book is the why.</p>
   <p class="hero-cta">
     <a class="practice-link" href="sim/" target="_blank" rel="noopener">▶ Open the simulator</a>
+    <a class="practice-link" href="videos/">🎬 All videos</a>
     <span class="hero-aside">An in-browser Neovim + tmux for practicing anything you read here.</span>
   </p>
 </section>
@@ -749,7 +763,8 @@ def render_root_index(parts_map, index) -> str:
         label = part_dir.split("-", 1)[-1].replace("-", " ").title()
         nn = part_dir.split("-", 1)[0]
         sections.append(f'<!-- part {escape(nn)} ({escape(part_dir)}) -->')
-        sections.append(f'<h2 id="part-{escape(part_dir)}">{escape(label)}</h2>')
+        sections.append(f'<h2 id="part-{escape(part_dir)}">{escape(label)} '
+                        f'<a class="part-videos-link" href="videos/{escape(part_dir)}/">🎬 videos</a></h2>')
         sections.append("<ul>")
         for t in topics:
             stem = t["__file_stem"]
@@ -766,6 +781,201 @@ def render_root_index(parts_map, index) -> str:
     return ROOT_INDEX.format(
         sections="\n".join(sections),
         footer=_report_footer(prefix=""),
+    )
+
+
+# -------- videos pages --------------------------------------------------- #
+
+VIDEOS_PAGE = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title} — VimFu Videos</title>
+<link rel="icon" type="image/png" href="{prefix}icon.png">
+<link rel="stylesheet" href="{prefix}style.css">
+THEME_INIT_PLACEHOLDER
+</head><body>
+THEME_TOGGLE_PLACEHOLDER
+<nav class="topnav">
+  <a href="{prefix}index.html">📚 Contents</a>
+  &middot; <a href="{videos_root}index.html">🎬 All videos</a>
+</nav>
+<article>
+<h1>{title}</h1>
+{intro}
+{body}
+</article>
+{footer}
+</body></html>
+""".replace("THEME_INIT_PLACEHOLDER", THEME_INIT_SCRIPT).replace("THEME_TOGGLE_PLACEHOLDER", THEME_TOGGLE_BUTTON)
+
+
+def _video_card(v: dict, topic_link_html: str = "") -> str:
+    """Render one video as a list item (thumbnail + title + meta)."""
+    disp = v.get("display_id") or (
+        f"{v['lesson']:04d}" if isinstance(v.get("lesson"), int) else str(v.get("lesson", "?"))
+    )
+    title = escape(v["title"])
+    if v.get("videoId"):
+        vid = escape(v["videoId"])
+        thumb = (f'<a href="{escape(v["url"])}" target="_blank" rel="noopener" '
+                 f'class="video-thumb">'
+                 f'<img loading="lazy" alt="" '
+                 f'src="https://i.ytimg.com/vi/{vid}/hqdefault.jpg"></a>')
+        link = (f'<a href="{escape(v["url"])}" target="_blank" rel="noopener">'
+                f'{title}</a>')
+        body = f'{thumb}<div class="video-meta"><span class="video-num">#{escape(disp)}</span> {link}'
+        if topic_link_html:
+            body += f'<div class="video-topic">{topic_link_html}</div>'
+        body += '</div>'
+        return f'<li class="video-card">{body}</li>'
+    body = (f'<div class="video-thumb video-thumb-pending">📺</div>'
+            f'<div class="video-meta"><span class="video-num">#{escape(disp)}</span> '
+            f'<span class="video-pending-title">{title}</span>'
+            f'<div class="video-pending">(not yet published)</div></div>')
+    return f'<li class="video-card video-card-pending">{body}</li>'
+
+
+def _build_lesson_backlinks(parts_map: dict) -> dict[int, tuple[str, str, str]]:
+    """Map lesson# → (part_dir, topic_stem, topic_title) of the first topic
+    that references it."""
+    back: dict[int, tuple[str, str, str]] = {}
+    for part_dir in sorted(parts_map.keys()):
+        for t in parts_map[part_dir]:
+            if not _visible(t, AUDIENCE):
+                continue
+            stem = t["__file_stem"]
+            ttl = t.get("title", stem)
+            for n in (t.get("lessons") or []):
+                try:
+                    n = int(n)
+                except (TypeError, ValueError):
+                    continue
+                back.setdefault(n, (part_dir, stem, ttl))
+    return back
+
+
+def render_part_videos_page(part_dir: str, lessons: list[int],
+                            backlinks: dict) -> str:
+    label = part_dir.split("-", 1)[-1].replace("-", " ").title()
+    vids = []
+    for n in lessons:
+        v = video_for_lesson(n)
+        if v is None:
+            continue
+        vids.append(v)
+    # Stable order by lesson number.
+    vids.sort(key=lambda v: v["display_id"])
+    items = []
+    for v in vids:
+        bl = backlinks.get(v["lesson"])
+        topic_html = ""
+        if bl:
+            pd, stem, ttl = bl
+            topic_html = (f'from <a href="../../{escape(pd)}/{escape(stem)}.html">'
+                          f'{escape(ttl)}</a>')
+        items.append(_video_card(v, topic_html))
+    if items:
+        body = '<ul class="video-grid">' + "".join(items) + '</ul>'
+    else:
+        body = '<p class="muted">No videos for this part yet.</p>'
+    intro = (f'<p class="tagline">Every video referenced from the '
+             f'<em>{escape(label)}</em> part of the book. '
+             f'See also the <a href="../index.html">complete video index</a>.</p>')
+    return VIDEOS_PAGE.format(
+        title=f"{escape(label)} videos",
+        prefix="../../",
+        videos_root="../",
+        intro=intro,
+        body=body,
+        footer=_report_footer(prefix="../../"),
+    )
+
+
+def render_master_videos_page(parts_map: dict, backlinks: dict) -> str:
+    idx = _videos_index()
+    # Numeric lessons referenced from topic JSONs.
+    by_part: dict[str, list] = {}
+    for part_dir in sorted(parts_map.keys()):
+        for t in parts_map[part_dir]:
+            if not _visible(t, AUDIENCE):
+                continue
+            for n in (t.get("lessons") or []):
+                try:
+                    n = int(n)
+                except (TypeError, ValueError):
+                    continue
+                if n in idx:
+                    by_part.setdefault(part_dir, []).append(n)
+    # Letter-suffixed sub-lessons (e.g. 0430a, 0531b) follow their numeric
+    # parent's part assignment if the parent is referenced anywhere.
+    parent_part: dict[int, str] = {}
+    for part_dir, lst in by_part.items():
+        for n in lst:
+            parent_part.setdefault(n, part_dir)
+    for key, v in idx.items():
+        if isinstance(key, str) and v.get("suffix"):
+            pd = parent_part.get(v["num"])
+            if pd:
+                by_part.setdefault(pd, []).append(key)
+    assigned = {n for lst in by_part.values() for n in lst}
+    orphans = [k for k in idx.keys() if k not in assigned]
+
+    def _sortkey(k):
+        return idx[k]["display_id"]
+
+    sections = []
+    for part_dir in sorted(by_part.keys()):
+        label = part_dir.split("-", 1)[-1].replace("-", " ").title()
+        lessons = sorted(set(by_part[part_dir]), key=_sortkey)
+        sections.append(f'<h2 id="part-{escape(part_dir)}">'
+                        f'<a href="{escape(part_dir)}/index.html">{escape(label)}</a> '
+                        f'<span class="part-count">({len(lessons)})</span></h2>')
+        items = []
+        for n in lessons:
+            v = idx[n]
+            bl = backlinks.get(n) or (
+                backlinks.get(v["num"]) if isinstance(n, str) and v.get("suffix") else None
+            )
+            topic_html = ""
+            if bl:
+                pd, stem, ttl = bl
+                topic_html = (f'from <a href="../{escape(pd)}/{escape(stem)}.html">'
+                              f'{escape(ttl)}</a>')
+            items.append(_video_card(v, topic_html))
+        sections.append('<ul class="video-grid">' + "".join(items) + '</ul>')
+
+    if orphans:
+        orphans = sorted(orphans, key=_sortkey)
+        pub_o = [n for n in orphans if idx[n]["published"]]
+        unpub_o = [n for n in orphans if not idx[n]["published"]]
+        sections.append('<h2 id="unassigned">More videos '
+                        f'<span class="part-count">({len(orphans)})</span></h2>')
+        sections.append('<p class="muted">Videos that aren\'t yet linked from a '
+                        'specific chapter — but they\'re here, watchable, and '
+                        'searchable.</p>')
+        if pub_o:
+            sections.append('<h3>Published</h3>')
+            sections.append('<ul class="video-grid">' +
+                            "".join(_video_card(idx[n]) for n in pub_o) +
+                            '</ul>')
+        if unpub_o:
+            sections.append('<h3>In production</h3>')
+            sections.append('<ul class="video-grid">' +
+                            "".join(_video_card(idx[n]) for n in unpub_o) +
+                            '</ul>')
+
+    total = len(idx)
+    published = sum(1 for v in idx.values() if v["published"])
+    intro = (f'<p class="tagline">All {total} VimFu videos &mdash; '
+             f'{published} published, {total - published} in production. '
+             f'Grouped by the part of the book that references them.</p>')
+    return VIDEOS_PAGE.format(
+        title="All Videos",
+        prefix="../",
+        videos_root="",
+        intro=intro,
+        body="\n".join(sections),
+        footer=_report_footer(prefix="../"),
     )
 
 
@@ -976,6 +1186,17 @@ h2 { font-size: 1.4rem; margin: 1.8rem 0 0.6rem; border-bottom: 1px solid var(--
 h3 { font-size: 1.15rem; margin: 1.4rem 0 0.4rem; }
 p.subtitle { color: var(--muted); font-size: 1.1rem; margin-top: 0; font-style: italic; }
 p.booktitle-sub { color: var(--muted); font-size: 1.25rem; margin: 0 0 0.8rem; font-style: italic; font-weight: 500; letter-spacing: 0.01em; }
+.site-banner { margin: 0 0 0.6rem; padding: 0; line-height: 0; font-size: 0; }
+.site-banner img { display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto; }
+.site-banner .banner-dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .site-banner .banner-light { display: none; }
+  :root:not([data-theme="light"]) .site-banner .banner-dark  { display: block; }
+}
+:root[data-theme="dark"] .site-banner .banner-light { display: none; }
+:root[data-theme="dark"] .site-banner .banner-dark  { display: block; }
+:root[data-theme="light"] .site-banner .banner-light { display: block; }
+:root[data-theme="light"] .site-banner .banner-dark  { display: none; }
 p.meta { color: var(--muted); font-size: 0.9rem; }
 
 a { color: var(--accent); }
@@ -1083,6 +1304,37 @@ ul.lesson-grid .lesson-pending .placeholder {
   text-align: center; border-radius: 6px; aspect-ratio: 1/1;
   display: flex; align-items: center; justify-content: center;
 }
+ul.video-grid {
+  list-style: none; padding: 0; margin: 1rem 0 2rem;
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+li.video-card { display: flex; flex-direction: column; gap: 0.4rem; }
+li.video-card a.video-thumb { display: block; line-height: 0; }
+li.video-card a.video-thumb img {
+  width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 4px;
+  background: var(--code-bg);
+}
+li.video-card .video-thumb-pending {
+  aspect-ratio: 16/9; background: var(--code-bg); color: var(--muted);
+  display: flex; align-items: center; justify-content: center; font-size: 2rem;
+  border-radius: 4px;
+}
+li.video-card .video-meta { font-size: 0.9rem; line-height: 1.3; }
+li.video-card .video-num {
+  font-family: monospace; color: var(--muted); font-size: 0.8rem;
+  margin-right: 0.3rem;
+}
+li.video-card .video-topic, li.video-card .video-pending {
+  font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem;
+}
+li.video-card-pending .video-pending-title { color: var(--muted); }
+.part-count { font-weight: normal; color: var(--muted); font-size: 0.85em; }
+.part-videos-link {
+  font-size: 0.7em; font-weight: normal; color: var(--muted);
+  margin-left: 0.4em; text-decoration: none;
+}
+.part-videos-link:hover { color: var(--accent); text-decoration: underline; }
 aside.buy-prompt {
   background: var(--buy-bg); border: 1px dashed var(--buy-border);
   padding: 0.6rem 1rem; margin: 1.5rem 0; border-radius: 4px;
@@ -1185,6 +1437,42 @@ def main() -> int:
 
     (out_dir / "index.html").write_text(render_root_index(parts_map, index), encoding="utf-8")
     (out_dir / "style.css").write_text(STYLE_CSS, encoding="utf-8")
+
+    # Per-part and master video pages at /videos/...
+    backlinks = _build_lesson_backlinks(parts_map)
+    idx_all = _videos_index()
+    # Map: part_dir -> list of lesson keys (ints + suffixed sublessons that
+    # inherit their numeric parent's part).
+    part_lessons: dict[str, list] = {}
+    parent_part: dict[int, str] = {}
+    for part_dir, plist in parts_map.items():
+        for t in plist:
+            if not _visible(t, AUDIENCE):
+                continue
+            for n in (t.get("lessons") or []):
+                try:
+                    ni = int(n)
+                except (TypeError, ValueError):
+                    continue
+                part_lessons.setdefault(part_dir, []).append(ni)
+                parent_part.setdefault(ni, part_dir)
+    for key, v in idx_all.items():
+        if isinstance(key, str) and v.get("suffix"):
+            pd = parent_part.get(v["num"])
+            if pd:
+                part_lessons.setdefault(pd, []).append(key)
+
+    videos_dir = out_dir / "videos"
+    videos_dir.mkdir(parents=True, exist_ok=True)
+    for part_dir in parts_map.keys():
+        lessons = part_lessons.get(part_dir, [])
+        pvdir = videos_dir / part_dir
+        pvdir.mkdir(parents=True, exist_ok=True)
+        (pvdir / "index.html").write_text(
+            render_part_videos_page(part_dir, list(dict.fromkeys(lessons)), backlinks),
+            encoding="utf-8")
+    (videos_dir / "index.html").write_text(
+        render_master_videos_page(parts_map, backlinks), encoding="utf-8")
 
     print(f"Wrote {written} topic pages across {len(parts_map)} parts → {out_dir}")
     return 0

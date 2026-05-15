@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advanced videos — VimFu Videos</title>
+<link rel="icon" type="image/png" href="../../icon.png">
+<link rel="stylesheet" href="../../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head><body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../../index.html">📚 Contents</a>
+  &middot; <a href="../index.html">🎬 All videos</a>
+</nav>
+<article>
+<h1>Advanced videos</h1>
+<p class="tagline">Every video referenced from the <em>Advanced</em> part of the book. See also the <a href="../index.html">complete video index</a>.</p>
+<ul class="video-grid"><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0481</span> <span class="video-pending-title">Undo Branches</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0483</span> <span class="video-pending-title">The . Register</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0484</span> <span class="video-pending-title">The : Register</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0486</span> <span class="video-pending-title">The % Register</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0487</span> <span class="video-pending-title">The # Register</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0488</span> <span class="video-pending-title">The = Register</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0489</span> <span class="video-pending-title">Operator-Pending Mode</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0490</span> <span class="video-pending-title">g@ — Custom Operator</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0491</span> <span class="video-pending-title">Terminal Mode</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0492</span> <span class="video-pending-title">ga / g8 — Character Info</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0493</span> <span class="video-pending-title">:set fdm=indent — Fold by Indent</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0494</span> <span class="video-pending-title">:set fdm=syntax — Fold by Syntax</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0495</span> <span class="video-pending-title">:mkview / :loadview — Save Folds</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0497</span> <span class="video-pending-title">g&lt; — Previous Output</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0498</span> <span class="video-pending-title">The vimrc / init.lua</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0500</span> <span class="video-pending-title">What&#x27;s Next?</span><div class="video-pending">(not yet published)</div></div></li></ul>
+</article>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../../r/github" rel="noopener">GitHub issues</a> · <a href="../../r/errata" rel="noopener">Book errata</a></footer>
+</body></html>

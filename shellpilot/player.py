@@ -261,8 +261,12 @@ class Demo:
             # Setup (not recorded) — fast, silent
             self._run_fast(demo, self.setup)
 
-            # Flush delay: let pyte finish processing setup output
-            time.sleep(3.0)
+            # Flush delay: let pyte finish processing setup output AND give
+            # nvim/tmux time to paint their initial UI before the recorder
+            # starts capturing frames. Empirically 3s was sometimes too
+            # short on slower machines, leaving a shell prompt visible at
+            # the start of the recording. 6s gives a comfortable margin.
+            time.sleep(6.0)
 
             # Start recording
             if self.record_video and show_viewer:

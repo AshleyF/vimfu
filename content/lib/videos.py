@@ -23,12 +23,12 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SHORTS_DIR = REPO_ROOT / "curriculum" / "shorts"
 LONGS_DIR = REPO_ROOT / "curriculum" / "longs"
 
-_LESSON_RE = re.compile(r"^(\d{4})_(.+)\.json$")
+_LESSON_RE = re.compile(r"^(\d{4})([a-z]?)_(.+)\.json$")
 
 
 @lru_cache(maxsize=1)
-def _index() -> dict[int, dict[str, Any]]:
-    out: dict[int, dict[str, Any]] = {}
+def _index() -> dict:
+    out: dict = {}
     for d in (SHORTS_DIR, LONGS_DIR):
         if not d.exists():
             continue
@@ -36,8 +36,11 @@ def _index() -> dict[int, dict[str, Any]]:
             m = _LESSON_RE.match(p.name)
             if not m:
                 continue
-            n = int(m.group(1))
-            slug = m.group(2)
+            num = int(m.group(1))
+            suffix = m.group(2)
+            slug = m.group(3)
+            key = num if not suffix else f"{num:04d}{suffix}"
+            display_id = f"{num:04d}{suffix}"
             try:
                 data = json.loads(p.read_text(encoding="utf-8"))
             except Exception:
@@ -47,8 +50,11 @@ def _index() -> dict[int, dict[str, Any]]:
             url = yt.get("url") or (
                 f"https://youtube.com/shorts/{video_id}" if video_id else ""
             )
-            out[n] = {
-                "lesson": n,
+            out[key] = {
+                "lesson": key,
+                "display_id": display_id,
+                "num": num,
+                "suffix": suffix,
                 "slug": slug,
                 "title": _strip_vimfu_prefix(data.get("title", slug.replace("_", " ").title())),
                 "description": data.get("description", ""),
@@ -68,9 +74,19 @@ def _strip_vimfu_prefix(t: str) -> str:
     return _VIMFU_PREFIX_RE.sub("", t).strip() if t else t
 
 
-def video_for_lesson(n: int) -> dict[str, Any] | None:
-    """Return the video record for lesson number ``n``, or None."""
-    return _index().get(int(n))
+def video_for_lesson(n):
+    """Return the video record for lesson key ``n``, or None.
+
+    Accepts ints (canonical for numeric-only lesson IDs) or strings like
+    ``"0430a"`` for sub-lessons.
+    """
+    idx = _index()
+    if n in idx:
+        return idx[n]
+    try:
+        return idx.get(int(n))
+    except (TypeError, ValueError):
+        return None
 
 
 def videos_for_topic(t: dict) -> list[dict[str, Any]]:

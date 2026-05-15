@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundations videos — VimFu Videos</title>
+<link rel="icon" type="image/png" href="../../icon.png">
+<link rel="stylesheet" href="../../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head><body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../../index.html">📚 Contents</a>
+  &middot; <a href="../index.html">🎬 All videos</a>
+</nav>
+<article>
+<h1>Foundations videos</h1>
+<p class="tagline">Every video referenced from the <em>Foundations</em> part of the book. See also the <a href="../index.html">complete video index</a>.</p>
+<ul class="video-grid"><li class="video-card"><a href="https://youtube.com/shorts/uOrfphZBjew" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/uOrfphZBjew/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0001</span> <a href="https://youtube.com/shorts/uOrfphZBjew" target="_blank" rel="noopener">What Is Vim?</a><div class="video-topic">from <a href="../../01-foundations/01-modal-editing.html">Modal Editing</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=axyczdX5g0I" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/axyczdX5g0I/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0003</span> <a href="https://youtube.com/watch?v=axyczdX5g0I" target="_blank" rel="noopener">Normal Mode</a><div class="video-topic">from <a href="../../01-foundations/01-modal-editing.html">Modal Editing</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=1T7OEvSUh5g" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/1T7OEvSUh5g/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0015</span> <a href="https://youtube.com/watch?v=1T7OEvSUh5g" target="_blank" rel="noopener">The Escape Habit</a><div class="video-topic">from <a href="../../01-foundations/01-modal-editing.html">Modal Editing</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=dwhaSnH-BT8" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/dwhaSnH-BT8/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0085</span> <a href="https://youtube.com/watch?v=dwhaSnH-BT8" target="_blank" rel="noopener">The Vim Grammar</a><div class="video-topic">from <a href="../../01-foundations/03-universal-grammar.html">The Universal Grammar</a></div></div></li></ul>
+</article>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../../r/github" rel="noopener">GitHub issues</a> · <a href="../../r/errata" rel="noopener">Book errata</a></footer>
+</body></html>

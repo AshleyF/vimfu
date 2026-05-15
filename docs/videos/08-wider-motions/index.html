@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wider Motions videos — VimFu Videos</title>
+<link rel="icon" type="image/png" href="../../icon.png">
+<link rel="stylesheet" href="../../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head><body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../../index.html">📚 Contents</a>
+  &middot; <a href="../index.html">🎬 All videos</a>
+</nav>
+<article>
+<h1>Wider Motions videos</h1>
+<p class="tagline">Every video referenced from the <em>Wider Motions</em> part of the book. See also the <a href="../index.html">complete video index</a>.</p>
+<ul class="video-grid"><li class="video-card"><a href="https://youtube.com/watch?v=cezdeYP9bYA" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/cezdeYP9bYA/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0091</span> <a href="https://youtube.com/watch?v=cezdeYP9bYA" target="_blank" rel="noopener">Sentence Forward/Backward</a><div class="video-topic">from <a href="../../08-wider-motions/01-sentence-paragraph.html">Sentence and Paragraph Motions</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=g5C-QCdZn2E" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/g5C-QCdZn2E/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0092</span> <a href="https://youtube.com/watch?v=g5C-QCdZn2E" target="_blank" rel="noopener">Paragraph Forward/Backward</a><div class="video-topic">from <a href="../../08-wider-motions/01-sentence-paragraph.html">Sentence and Paragraph Motions</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=YuB6-fEAEfw" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/YuB6-fEAEfw/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0093</span> <a href="https://youtube.com/watch?v=YuB6-fEAEfw" target="_blank" rel="noopener">Matching Bracket</a><div class="video-topic">from <a href="../../08-wider-motions/02-match-bracket.html">Match Bracket</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=1u6nlYsY71M" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/1u6nlYsY71M/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0094</span> <a href="https://youtube.com/watch?v=1u6nlYsY71M" target="_blank" rel="noopener">Screen Top / Middle / Bottom</a><div class="video-topic">from <a href="../../08-wider-motions/03-screen-positions.html">Screen Position Jumps</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=7eAMkzqK6ZI" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/7eAMkzqK6ZI/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0095</span> <a href="https://youtube.com/watch?v=7eAMkzqK6ZI" target="_blank" rel="noopener">Next/Previous Line Start</a><div class="video-topic">from <a href="../../08-wider-motions/04-line-start.html">Line-Start Motions</a></div></div></li><li class="video-card"><a href="https://youtube.com/watch?v=Z8nwWWr58j4" target="_blank" rel="noopener" class="video-thumb"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/Z8nwWWr58j4/hqdefault.jpg"></a><div class="video-meta"><span class="video-num">#0096</span> <a href="https://youtube.com/watch?v=Z8nwWWr58j4" target="_blank" rel="noopener">WORD Motions</a><div class="video-topic">from <a href="../../08-wider-motions/05-WORD.html">WORD Motions</a></div></div></li></ul>
+</article>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../../r/github" rel="noopener">GitHub issues</a> · <a href="../../r/errata" rel="noopener">Book errata</a></footer>
+</body></html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ex Commands videos — VimFu Videos</title>
+<link rel="icon" type="image/png" href="../../icon.png">
+<link rel="stylesheet" href="../../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head><body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../../index.html">📚 Contents</a>
+  &middot; <a href="../index.html">🎬 All videos</a>
+</nav>
+<article>
+<h1>Ex Commands videos</h1>
+<p class="tagline">Every video referenced from the <em>Ex Commands</em> part of the book. See also the <a href="../index.html">complete video index</a>.</p>
+<ul class="video-grid"><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0396</span> <span class="video-pending-title">:w Write (Save)</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0405</span> <span class="video-pending-title">:s/old/new/ Substitute</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0406</span> <span class="video-pending-title">:s/old/new/g Substitute All</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0415</span> <span class="video-pending-title">:tabnew New Tab</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0416</span> <span class="video-pending-title">:tabnext / :tabprev Cycle Tabs</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0422</span> <span class="video-pending-title">:terminal Terminal Inside Vim</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0423</span> <span class="video-pending-title">:set number</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0425</span> <span class="video-pending-title">:set hlsearch</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0426</span> <span class="video-pending-title">:set incsearch</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0427</span> <span class="video-pending-title">:set ignorecase / smartcase</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0428</span> <span class="video-pending-title">:set wrap / nowrap</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0429</span> <span class="video-pending-title">:noh</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430</span> <span class="video-pending-title">:set list</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430a</span> <span class="video-pending-title">:set splitbelow / splitright</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430b</span> <span class="video-pending-title">:set spell Spell Check</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430c</span> <span class="video-pending-title">:set fileformat</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430d</span> <span class="video-pending-title">:qa Quit All</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430e</span> <span class="video-pending-title">:wa Write All</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430f</span> <span class="video-pending-title">:wqa / :xa Write All + Quit</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430g</span> <span class="video-pending-title">:new New Window</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430h</span> <span class="video-pending-title">:enew New Empty Buffer</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430i</span> <span class="video-pending-title">:retab Fix Tabs</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430j</span> <span class="video-pending-title">:delmarks Delete Marks</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430k</span> <span class="video-pending-title">:undolist Undo Info</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430l</span> <span class="video-pending-title">:pwd Print Directory</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0430m</span> <span class="video-pending-title">Ctrl-G / :file File Info</span><div class="video-pending">(not yet published)</div></div></li></ul>
+</article>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../../r/github" rel="noopener">GitHub issues</a> · <a href="../../r/errata" rel="noopener">Book errata</a></footer>
+</body></html>

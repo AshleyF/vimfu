@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patterns Recipes videos — VimFu Videos</title>
+<link rel="icon" type="image/png" href="../../icon.png">
+<link rel="stylesheet" href="../../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head><body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../../index.html">📚 Contents</a>
+  &middot; <a href="../index.html">🎬 All videos</a>
+</nav>
+<article>
+<h1>Patterns Recipes videos</h1>
+<p class="tagline">Every video referenced from the <em>Patterns Recipes</em> part of the book. See also the <a href="../index.html">complete video index</a>.</p>
+<ul class="video-grid"><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0461</span> <span class="video-pending-title">xp — Transpose Characters</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0462</span> <span class="video-pending-title">deep — A Vim Myth</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0463</span> <span class="video-pending-title">ddp — Swap Lines Down</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0464</span> <span class="video-pending-title">ddP — Swap Lines Up</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0465</span> <span class="video-pending-title">yyp — Duplicate Line</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0466</span> <span class="video-pending-title">Star-Dot Pattern</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0467</span> <span class="video-pending-title">:%norm I// — Comment All Lines</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0468</span> <span class="video-pending-title">:%norm ^x — Delete First Char</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0470</span> <span class="video-pending-title">Ctrl-A / Ctrl-X — Increment &amp; Decrement</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0471</span> <span class="video-pending-title">g Ctrl-A / g Ctrl-X — Sequences</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0472</span> <span class="video-pending-title">Align Text with :norm</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0473</span> <span class="video-pending-title">The Useless _ Key</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0475</span> <span class="video-pending-title">Ctrl-O in Insert Mode</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0476</span> <span class="video-pending-title">Map Y to y$</span><div class="video-pending">(not yet published)</div></div></li><li class="video-card video-card-pending"><div class="video-thumb video-thumb-pending">📺</div><div class="video-meta"><span class="video-num">#0480</span> <span class="video-pending-title">External Filtering</span><div class="video-pending">(not yet published)</div></div></li></ul>
+</article>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../../r/github" rel="noopener">GitHub issues</a> · <a href="../../r/errata" rel="noopener">Book errata</a></footer>
+</body></html>
