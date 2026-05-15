@@ -434,7 +434,7 @@ add(E("counts.percent",
 add(E("visual.char",
     "v and motion",
     "Character-wise visual selection.",
-    "visual-depth.char-visual",
+    "visual-modes.char-visual",
     [
         F(["the quick brown fox"], cursor=(0,4)),
         F(["the quick brown fox"], cursor=(0,9), keys="vw", mode_line=VISUAL_LINE,
@@ -448,7 +448,7 @@ add(E("visual.char",
 add(E("visual.line-block",
     "V and Ctrl-V",
     "Linewise vs block visual.",
-    "visual-depth.line-block",
+    "visual-modes.line-block",
     [
         F(["foo 1","bar 2","baz 3"], cursor=(0,0)),
         F(["foo 1","bar 2","baz 3"], cursor=(2,0), keys="Vjj", mode_line=VLINE_LINE,
@@ -863,7 +863,7 @@ add(E("ex.norm",
     ]))
 
 
-# ============ Part 18 — Visual depth ========================================
+# ============ Part 18 — Visual Modes ========================================
 
 add(E("visual.gv",
     "gv",

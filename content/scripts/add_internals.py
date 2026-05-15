@@ -96,15 +96,15 @@ CALLOUTS = [
      "Count parsing is a tiny lexer with context",
      "Counts aren't a separate argument — they're a prefix accumulated by a small state machine. The first digit must be `1-9` (because `0` is itself a motion to column zero); subsequent digits can include `0`. The accumulated count multiplies with any operator-applied count, so {key:2}{key:d}{key:3}{key:w} deletes six words. Internally it's `count = command_count * motion_count`, both defaulting to one."),
 
-    ("parts/18-visual-depth/01-char-visual.json",
+    ("parts/18-visual-modes/01-char-visual.json",
      "Visual mode is anchor + endpoint",
      "Charwise visual mode stores two positions: the anchor (where you pressed {key:v}) and the current cursor. Motions move the cursor; the selection is always the inclusive range between the two. There's no selection object being copied around — the renderer paints whatever sits between anchor and cursor each frame. Operators consume the resolved range and exit back to normal mode."),
 
-    ("parts/18-visual-depth/02-line-block.json",
+    ("parts/18-visual-modes/02-line-block.json",
      "Visual-line mode normalizes to whole rows",
      "Linewise visual ({key:V}) doesn't extend the charwise range to line ends — it replaces both endpoints with `(start_of_line, end_of_line)` every frame. That normalization happens before any operator sees the selection, so paste, delete, indent, and join all get a clean row-span. It's also why moving horizontally in {key:V} mode doesn't appear to do anything: the normalization snaps it back."),
 
-    ("parts/18-visual-depth/03-tricks.json",
+    ("parts/18-visual-modes/03-tricks.json",
      "{key:o} swaps the anchor, not the text",
      "In visual mode, {key:o} (and {key:O} for visual-block) flips which endpoint is the anchor and which is the cursor. The selection contents don't change — only which end your motions extend. After an operator runs, the cursor lands on whichever endpoint was current at consume time, so swapping ends before {key:d} or {key:y} changes where you end up."),
 
@@ -220,7 +220,7 @@ CALLOUTS = [
      "Substitute is search-pattern + replacement-template + flags",
      "{key::}{key:s} composes three subsystems: the regex engine (same one driving {key:/}); a small templating layer that expands `\\0`, `\\1`–`\\9`, `&`, `~`, `\\u`, `\\U`, `\\l`, `\\L`, `\\E`; and a flag-driven loop controller (`g`, `c`, `i`, `e`, `n`, `p`, `&`). Empty pattern reuses the last search — that's the global search-pattern slot again."),
 
-    ("parts/18-visual-depth/06-gv.json",
+    ("parts/18-visual-modes/06-gv.json",
      "{key:g}{key:v} reads the {key:'}{key:<} / {key:'}{key:>} marks",
      "The last visual selection is persisted into two special marks ({key:'}{key:<} for start, {key:'}{key:>} for end) plus a stored mode tag (charwise/linewise/blockwise). {key:g}{key:v} simply re-enters visual mode using those three pieces of state. The marks survive across commands, which is why you can edit, jump around, then come back with {key:g}{key:v} and find your old selection intact."),
 

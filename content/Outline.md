@@ -107,9 +107,9 @@ _Multiply commands; select first, act second._
 |-------------------------------|-----------------------------|---------------------|---------------------------------|
 | `counts.counts`        | Counts                      | 58, 59, 60, 61      | `{n}`, `{n}{motion}`, `{n}{op}` |
 | `counts.percent-bar`   | Jump by Percentage / Column | 62, 63              | `{n}%`, `{n}\|`                 |
-| `visual-depth.char-visual`   | Character Visual Mode       | 64, 68              | `v`, `o`                        |
-| `visual-depth.line-block`    | Line and Block Visual       | 65, 66, 67          | `V`, `Ctrl-V`                   |
-| `visual-depth.tricks`        | Visual Mode Tricks          | 69, 70              | `O`, `gv`                       |
+| `visual-modes.char-visual`   | Character Visual Mode       | 64, 68              | `v`, `o`                        |
+| `visual-modes.line-block`    | Line and Block Visual       | 65, 66, 67          | `V`, `Ctrl-V`                   |
+| `visual-modes.tricks`        | Visual Mode Tricks          | 69, 70              | `O`, `gv`                       |
 
 **Internals:** counts compose multiplicatively (`2d3w` = 6 words); the visual
 selection is a buffer-relative *anchor + cursor* pair; `gv` reuses the
@@ -470,7 +470,7 @@ deliberately — set `mode-keys vi` in `~/.tmux.conf` to make it complete.
 | 52–57          | `search.find-on-line`                            |
 | 58–61          | `counts.counts`                           |
 | 62–63          | `counts.percent-bar`                      |
-| 64–70          | `visual-depth.char-visual`, `.line-block`, `.tricks` |
+| 64–70          | `visual-modes.char-visual`, `.line-block`, `.tricks` |
 | 71–73          | `dot.repeat`, `.with-counts`, `.patterns`        |
 | 74–85          | `operators-textobjects.*`                        |
 | 86–90          | `scroll.half-full-page`, `.center-top-bottom`    |
