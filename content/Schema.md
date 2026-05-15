@@ -17,7 +17,7 @@ content/parts/<NN-part-slug>/<NN-topic-slug>.json
 ```
 
 - `<NN-part-slug>` — two-digit ordering prefix + part slug, e.g.
-  `01-foundations`, `07-operators-textobjects`. Order is the reading order in
+  `01-foundations`, `07-text-objects`. Order is the reading order in
   the book and the order in the site nav.
 - `<NN-topic-slug>` — two-digit ordering prefix + topic slug, e.g.
   `01-modal-editing.json`. Order is the reading/section order within the part.

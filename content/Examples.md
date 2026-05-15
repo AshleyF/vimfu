@@ -52,7 +52,7 @@ Frames are written directly using the [Frame Format](../brainstorming/frame_form
   "id": "grammar.dw-then-dot",
   "title": "Delete a word, then repeat it",
   "summary": "The dot command repeats your last delete — for free.",
-  "topic": "operators-textobjects.grammar",
+  "topic": "text-objects.grammar",
   "frames": [
     {
       "caption": "Cursor on the first word of a list.",
@@ -81,7 +81,7 @@ indices listed.
   "id": "grammar.dw-then-dot",
   "title": "Delete a word, then repeat it",
   "summary": "...",
-  "topic": "operators-textobjects.grammar",
+  "topic": "text-objects.grammar",
   "source": {
     "lesson": "curriculum/shorts/0085_the_vim_grammar.json",
     "select": [0, 5, 9, 14]

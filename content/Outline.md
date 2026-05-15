@@ -134,18 +134,18 @@ much smoother than `*` + `cw` + `n.`.
 
 ---
 
-## Part 07 — Operators and Text Objects
+## Part 07 — Text Objects
 
 _The grammar in full: verbs × nouns. The conceptual climax._
 
 | ID                                  | Title                        | Lessons              | Keys                     |
 |-------------------------------------|------------------------------|----------------------|--------------------------|
-| `operators-textobjects.iw-aw`       | Inner Word vs A Word         | 74                   | `iw`, `aw`               |
-| `operators-textobjects.quotes`      | Quote Text Objects           | 75, 76, 77           | `i"`, `a"`, `i'`, `a'`, `` i` ``, `` a` `` |
-| `operators-textobjects.brackets`    | Bracket Text Objects         | 78, 79, 80, 81       | `i(`, `i{`, `i[`, `i<`, `ib`, `iB` |
-| `operators-textobjects.sentence-paragraph` | Sentence and Paragraph | 82, 83             | `is`, `as`, `ip`, `ap`   |
-| `operators-textobjects.tags`        | HTML/XML Tag Objects         | 84                   | `it`, `at`               |
-| `operators-textobjects.grammar`     | The Vim Grammar              | 85                   | `[count] [reg] op [count] motion` |
+| `text-objects.iw-aw`       | Inner Word vs A Word         | 74                   | `iw`, `aw`               |
+| `text-objects.quotes`      | Quote Text Objects           | 75, 76, 77           | `i"`, `a"`, `i'`, `a'`, `` i` ``, `` a` `` |
+| `text-objects.brackets`    | Bracket Text Objects         | 78, 79, 80, 81       | `i(`, `i{`, `i[`, `i<`, `ib`, `iB` |
+| `text-objects.sentence-paragraph` | Sentence and Paragraph | 82, 83             | `is`, `as`, `ip`, `ap`   |
+| `text-objects.tags`        | HTML/XML Tag Objects         | 84                   | `it`, `at`               |
+| `text-objects.grammar`     | The Vim Grammar              | 85                   | `[count] [reg] op [count] motion` |
 
 **Internals:** every operator is a function `(start, end, type) → effect`;
 every motion produces `(start, end, type)`; text objects produce `(start,
@@ -472,7 +472,7 @@ deliberately — set `mode-keys vi` in `~/.tmux.conf` to make it complete.
 | 62–63          | `counts.percent-bar`                      |
 | 64–70          | `visual-modes.char-visual`, `.line-block`, `.tricks` |
 | 71–73          | `dot.repeat`, `.with-counts`, `.patterns`        |
-| 74–85          | `operators-textobjects.*`                        |
+| 74–85          | `text-objects.*`                        |
 | 86–90          | `scroll.half-full-page`, `.center-top-bottom`    |
 | 91–96          | `wider-motions.*`                                |
 | 97–104         | `marks.*`                                        |

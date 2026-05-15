@@ -60,7 +60,7 @@ def load_topics() -> list[dict[str, Any]]:
             print(f"  ! JSON error in {json_path.relative_to(ROOT)}: {e}", file=sys.stderr)
             continue
         data["__src"] = json_path
-        data["__part_dir"] = json_path.parent.name        # e.g. "07-operators-textobjects"
+        data["__part_dir"] = json_path.parent.name        # e.g. "07-text-objects"
         data["__file_stem"] = json_path.stem              # e.g. "06-grammar"
         topics.append(data)
     return topics

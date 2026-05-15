@@ -493,12 +493,12 @@ add(E("dot.with-counts",
     ]))
 
 
-# ============ Part 7 — Operators and text objects ==========================
+# ============ Part 7 — Text objects ==========================
 
 add(E("textobj.iw-aw",
     "ciw vs caw",
     "Inner word vs around word.",
-    "operators-textobjects.iw-aw",
+    "text-objects.iw-aw",
     [
         F(["the (quick) brown fox"], cursor=(0,5)),
         F(["the () brown fox"], cursor=(0,5), keys="diw",
@@ -511,7 +511,7 @@ add(E("textobj.iw-aw",
 add(E("textobj.quotes",
     'ci" and ca"',
     "Operate on whatever is in the quotes.",
-    "operators-textobjects.quotes",
+    "text-objects.quotes",
     [
         F(['greeting = "hello, world"'], cursor=(0,15),
           caption="Cursor inside the string."),
@@ -523,7 +523,7 @@ add(E("textobj.quotes",
 add(E("textobj.brackets",
     "di( vs da(",
     "Brackets work like quotes.",
-    "operators-textobjects.brackets",
+    "text-objects.brackets",
     [
         F(["call(arg1, arg2)"], cursor=(0,8),
           caption="Cursor on 'a' of arg1."),
@@ -536,7 +536,7 @@ add(E("textobj.brackets",
 add(E("textobj.tags",
     "cit and cat",
     "HTML/XML tag objects.",
-    "operators-textobjects.tags",
+    "text-objects.tags",
     [
         F(["<p>hello world</p>"], cursor=(0,5)),
         F(["<p></p>"], cursor=(0,3), keys="cit", mode_line=INSERT_LINE,

@@ -482,7 +482,7 @@ ASCII-only. Examples: `editing.yank-put`, `registers.unnamed`,
 When you cross-reference inside prose, use:
 
 ```
-... see [the grammar](#operators-textobjects.grammar) for the full ...
+... see [the grammar](#text-objects.grammar) for the full ...
 ```
 
 Renderers resolve the `#topic.id` against the topic index and produce
