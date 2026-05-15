@@ -16,6 +16,7 @@ from __future__ import annotations
 # Map of part slug (no leading NN-) -> display label.
 PART_LABELS: dict[str, str] = {
     "search-find": "Search & Find",
+    "marks-jumps": "Marks and Jumps",
 }
 
 
