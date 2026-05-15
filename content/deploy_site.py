@@ -36,7 +36,7 @@ SIM_BUNDLED = ROOT / "book" / "output" / "sim" / "index.html"
 DOCS_DIR = ROOT / "docs"
 
 # Files inside docs/ we want to keep across re-deploys.
-PRESERVE = {"CNAME", ".gitkeep"}
+PRESERVE = {"CNAME", ".gitkeep", "vimfu_light.png", "vimfu_dark.png"}
 
 
 def run(cmd: list[str], cwd: Path = ROOT) -> None:

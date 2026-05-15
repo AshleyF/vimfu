@@ -31,6 +31,7 @@ from lib.videos import _index as _videos_index, video_for_lesson, videos_for_top
 from lib.audience import visible as _visible  # noqa: E402
 from lib.site_config import contact_email  # noqa: E402
 from lib.sim_link import SIM_LINK_VERSION as _SIM_LINK_VERSION, practice_filename  # noqa: E402
+from lib.parts import part_label as _part_label  # noqa: E402
 
 
 def _report_footer(prefix: str = "") -> str:
@@ -679,7 +680,7 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
                 links.append(f'<span class="broken">{escape(ref_id)}</span>')
         body.append('<p class="see-also"><strong>See also:</strong> ' + ", ".join(links) + "</p>")
 
-    part_label = current_part.split("-", 1)[-1].replace("-", " ").title()
+    part_label = _part_label(current_part)
     practice_qs = _practice_query(t, examples)
     prev_link, next_link, pos_label = _pager_links(current_part, t["__file_stem"], ordered or [])
     return PAGE.format(
@@ -715,7 +716,7 @@ PART_INDEX = """<!doctype html>
 
 
 def render_part_index(part_dir, topics_in_part, all_parts=None) -> str:
-    label = part_dir.split("-", 1)[-1].replace("-", " ").title()
+    label = _part_label(part_dir)
     return PART_INDEX.format(label=escape(label), part_dir=escape(part_dir))
 
 
@@ -760,7 +761,7 @@ def render_root_index(parts_map, index) -> str:
         topics = [t for t in parts_map[part_dir] if _visible(t, AUDIENCE)]
         if not topics:
             continue
-        label = part_dir.split("-", 1)[-1].replace("-", " ").title()
+        label = _part_label(part_dir)
         nn = part_dir.split("-", 1)[0]
         sections.append(f'<!-- part {escape(nn)} ({escape(part_dir)}) -->')
         sections.append(f'<h2 id="part-{escape(part_dir)}">{escape(label)} '
@@ -856,7 +857,7 @@ def _build_lesson_backlinks(parts_map: dict) -> dict[int, tuple[str, str, str]]:
 
 def render_part_videos_page(part_dir: str, lessons: list[int],
                             backlinks: dict) -> str:
-    label = part_dir.split("-", 1)[-1].replace("-", " ").title()
+    label = _part_label(part_dir)
     vids = []
     for n in lessons:
         v = video_for_lesson(n)
@@ -925,7 +926,7 @@ def render_master_videos_page(parts_map: dict, backlinks: dict) -> str:
 
     sections = []
     for part_dir in sorted(by_part.keys()):
-        label = part_dir.split("-", 1)[-1].replace("-", " ").title()
+        label = _part_label(part_dir)
         lessons = sorted(set(by_part[part_dir]), key=_sortkey)
         sections.append(f'<h2 id="part-{escape(part_dir)}">'
                         f'<a href="{escape(part_dir)}/index.html">{escape(label)}</a> '

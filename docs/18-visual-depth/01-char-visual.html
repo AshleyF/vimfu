@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Character Visual Mode — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-18-visual-depth">↑ Visual Depth</a>
+  &middot; <a href="../videos/18-visual-depth/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../17-ex-commands/09-sort.html" rel="prev">← Sort and Reorder Lines</a></span>
+  <span class="pager-pos">91 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="02-line-block.html" rel="next">Line and Block Visual →</a></span>
+</nav>
+<article>
+<h1>Character Visual Mode</h1>
+<p class="subtitle"><kbd>v</kbd> — select first, act second.</p>
+<p class="meta">Keys: <kbd>v</kbd>, <kbd>o</kbd></p>
+<blockquote class="summary">v enters character-wise Visual mode. Move to extend the selection. Press an operator (d, c, y, …) to act on it.</blockquote>
+<p>Visual mode flips the grammar around. Instead of &quot;verb then noun&quot; (<kbd>d</kbd><kbd>w</kbd>), you do &quot;noun then verb&quot;: select first, then act. <kbd>v</kbd> starts the selection, motions extend it, and an operator finishes the job.</p>
+<figure class="keys">
+<figcaption>Enter Visual mode</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>v</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Select two words, delete them</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>v</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+<tr><td><kbd>d</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Switch which end of the selection moves</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>o</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="64"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/j6qyLG1xc9I?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Character Visual Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>v — character Visual</figcaption></figure>
+<figure class="lesson-embed" data-lesson="68"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/diNNU1HIjas?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Actions on Selection" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>o — switch endpoints</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> Press <kbd>Esc</kbd> or <kbd>v</kbd> again to leave Visual mode without acting. Press an operator to act and return to Normal.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>v</kbd></td>
+<td>Enter character-wise Visual</td>
+</tr>
+<tr>
+<td><kbd>o</kbd></td>
+<td>Swap cursor and anchor</td>
+</tr>
+<tr>
+<td><kbd>Esc</kbd></td>
+<td>Leave Visual without acting</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>v</kbd></td>
+<td>Re-select last visual range</td>
+</tr>
+<tr>
+<td><kbd>`</kbd><kbd>&lt;</kbd>, <kbd>`</kbd><kbd>&gt;</kbd></td>
+<td>Marks for selection start/end</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — v and motion</h3>
+<p class="example-summary">Character-wise visual selection.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot missing">[missing screenshot visual.char/frame_01.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>vw</kbd> · <span class="step-cap">vw — selected through next word.</span></figcaption>
+<div class="screenshot missing">[missing screenshot visual.char/frame_02.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>d</kbd> · <span class="step-cap">d — delete the selection.</span></figcaption>
+<div class="screenshot missing">[missing screenshot visual.char/frame_03.color.svg — run python content/render_screenshots.py]</div>
+<p class="narration">Visual mode picks a range <em>first</em>, then you apply an operator. Useful when the right motion is hard to compose.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="02-line-block.html">Line and Block Visual</a>, <a href="03-tricks.html">Visual Mode Tricks</a>, <a href="04-modes.html">The Three Visual Modes</a>, <a href="06-endpoints.html">Swap and Adjust Endpoints</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../17-ex-commands/09-sort.html" rel="prev">← Sort and Reorder Lines</a></span>
+  <span class="pager-pos">91 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="02-line-block.html" rel="next">Line and Block Visual →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-18-visual-depth">↑ back to Visual Depth</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

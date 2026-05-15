@@ -57,6 +57,7 @@ from lib.redirects import (  # noqa: E402
     BOOK_SLUG, REPORT_BOOK_ISSUE_SLUG, SIM_TMUX_SLUG,
     errata_slug, part_videos_slug, redirect_url, sim_example_slug, video_slug,
 )
+from lib.parts import part_label as _part_label  # noqa: E402
 from lib.site_config import (  # noqa: E402
     contact_email, current_edition, current_edition_label,
     current_edition_year,
@@ -591,7 +592,7 @@ def render_block(b, *, index, examples) -> list[str]:
                 out.append("\\examplefigure{" + latex_path(sp) + "}")
             else:
                 out.append(
-                    f"\\par\\textit{{[missing screenshot {tex_escape(ex_id)}/frame_{i:02d}.bw.svg --- "
+                    f"\\par\\textit{{[missing screenshot {tex_escape(ex_id)}/frame\\_{i:02d}.bw.svg --- "
                     "run \\texttt{python content/render\\_screenshots.py}]}"
                 )
             if narr:
@@ -1297,7 +1298,7 @@ def main() -> int:
         pdir = parts_dir / part_dir
         pdir.mkdir(parents=True, exist_ok=True)
 
-        part_label = part_dir.split("-", 1)[-1].replace("-", " ").title()
+        part_label = _part_label(part_dir)
         part_slug = part_dir.split("-", 1)[-1]
         illus = ROOT.parent / "book" / "illustrations" / f"{part_slug}.png"
         if illus.exists():

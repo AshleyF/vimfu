@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Block Insert and Append — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-18-visual-depth">↑ Visual Depth</a>
+  &middot; <a href="../videos/18-visual-depth/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="04-modes.html" rel="prev">← The Three Visual Modes</a></span>
+  <span class="pager-pos">95 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="06-endpoints.html" rel="next">Swap and Adjust Endpoints →</a></span>
+</nav>
+<article>
+<h1>Block Insert and Append</h1>
+<p class="subtitle"><kbd>I</kbd> and <kbd>A</kbd> in block mode = insert/append on every selected line.</p>
+<p class="meta">Keys: <kbd>Ctrl-V</kbd>, <kbd>I</kbd>, <kbd>A</kbd></p>
+<blockquote class="summary">After Ctrl-V selecting a column-rectangle, I types text inserted at the start of every line in the block; A appends it. The text is inserted on all lines after Esc.</blockquote>
+<p>This is the trick most people don&#x27;t know exists — and once you know it, you&#x27;ll use it constantly.</p>
+<figure class="keys">
+<figcaption>Insert prefix on N lines</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Ctrl-V</kbd></td><td>Enter block Visual</td></tr>
+<tr><td><kbd>j</kbd></td><td>Extend down (or count + j)</td></tr>
+<tr><td><kbd>I</kbd></td><td>Insert at the LEFT edge of the block</td></tr>
+<tr><td><kbd>// </kbd></td><td>Type your prefix</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>Now the prefix appears on every selected line</td></tr>
+</tbody></table></figure>
+<aside class="tip"><strong>Tip.</strong> Need to comment out a block of code? <kbd>Ctrl-V</kbd>{count}<kbd>j</kbd><kbd>I</kbd><kbd>//</kbd><kbd> </kbd><kbd>Esc</kbd> — five keystrokes.</aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0434 o — Other End (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0436 gv — Reselect (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="04-modes.html">The Three Visual Modes</a>, <a href="06-endpoints.html">Swap and Adjust Endpoints</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="04-modes.html" rel="prev">← The Three Visual Modes</a></span>
+  <span class="pager-pos">95 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="06-endpoints.html" rel="next">Swap and Adjust Endpoints →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-18-visual-depth">↑ back to Visual Depth</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

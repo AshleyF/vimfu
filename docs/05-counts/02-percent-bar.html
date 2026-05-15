@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Percentage and Column Jumps — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-05-counts">↑ Counts</a>
+  &middot; <a href="../videos/05-counts/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=if+%28x+%3E+0%29+%7B%0A++++do_thing%28%29%3B%0A%7D%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-counts.html" rel="prev">← Counts</a></span>
+  <span class="pager-pos">22 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="../06-dot-repeat/01-repeat.html" rel="next">Repeat Last Change →</a></span>
+</nav>
+<article>
+<h1>Percentage and Column Jumps</h1>
+<p class="subtitle">{n}<kbd>%</kbd> jumps to a percentage of the file. {n}<kbd>|</kbd> jumps to a column.</p>
+<p class="meta">Keys: <kbd>%</kbd>, <kbd>|</kbd></p>
+<blockquote class="summary">{n}% jumps to that percent through the file. {n}| jumps to column n on the current line. Both are obscure, both are occasionally exactly what you want.</blockquote>
+<p><kbd>{n</kbd>}<kbd>%</kbd> is unusual: it jumps to {n} percent of the way through the file. <kbd>5</kbd><kbd>0</kbd><kbd>%</kbd> lands you in the middle of the buffer. Useful for big files when you don&#x27;t want to count lines.</p>
+<p><kbd>{n</kbd>}<kbd>|</kbd> jumps to column {n} on the current line. Useful when working with fixed-width data, makefiles, or anything where columns matter.</p>
+<figure class="keys">
+<figcaption>Jump to {n}% of the file</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>{n}</kbd></td><td></td></tr>
+<tr><td><kbd>%</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Jump to column {n} of the current line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>{n}</kbd></td><td></td></tr>
+<tr><td><kbd>|</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="62"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/n_jF_PsAcoc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Jump to Percentage" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>{n}% — jump by percentage</figcaption></figure>
+<figure class="lesson-embed" data-lesson="63"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/PgAK3HRzbTw?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Go to Column" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>{n}| — jump to column</figcaption></figure>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>{n</kbd>}<kbd>%</kbd></td>
+<td>Jump to {n}% of file</td>
+</tr>
+<tr>
+<td><kbd>{n</kbd>}<kbd>|</kbd></td>
+<td>Jump to column {n} of current line</td>
+</tr>
+<tr>
+<td><kbd>%</kbd></td>
+<td>(no count) Match bracket</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — % jumps to matching bracket</h3>
+<p class="example-summary">% bounces between paired (), [], {}.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Cursor on &#x27;(&#x27;.</span></figcaption>
+<div class="screenshot missing">[missing screenshot counts.percent/frame_01.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>%</kbd> · <span class="step-cap">% — landed on &#x27;)&#x27;.</span></figcaption>
+<div class="screenshot missing">[missing screenshot counts.percent/frame_02.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>l%</kbd> · <span class="step-cap">l then % — bounced from { to }.</span></figcaption>
+<div class="screenshot missing">[missing screenshot counts.percent/frame_03.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=if+%28x+%3E+0%29+%7B%0A++++do_thing%28%29%3B%0A%7D%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../03-basic-editing/04-file-motions.html">File Motions</a>, <a href="../03-basic-editing/03-line-motions.html">Line Motions</a>, <a href="../08-wider-motions/02-match-bracket.html">Match Bracket</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-counts.html" rel="prev">← Counts</a></span>
+  <span class="pager-pos">22 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="../06-dot-repeat/01-repeat.html" rel="next">Repeat Last Change →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-05-counts">↑ back to Counts</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

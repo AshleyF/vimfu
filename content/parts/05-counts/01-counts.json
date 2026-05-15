@@ -1,0 +1,146 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "counts.counts",
+  "title": "Counts",
+  "subtitle": "Type a number before any motion or operator. It multiplies.",
+  "part": "counts",
+  "summary": "Most Vim commands accept a count prefix. 5j moves down 5 lines. 3dw deletes 3 words. Counts on both sides of an operator multiply.",
+  "keys": [
+    "{n}"
+  ],
+  "lessons": [
+    58,
+    59,
+    60,
+    61
+  ],
+  "see_also": [
+    "foundations.universal-grammar",
+    "editing.delete",
+    "dot.with-counts"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Counts"
+    },
+    {
+      "type": "prose",
+      "text": "Almost every Vim command accepts a numeric prefix. The number means \"do this N times.\" That's it — no escape sequence, no special key. Just type the digits, then the command."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "5",
+        "j"
+      ],
+      "label": "Move down 5 lines"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "1",
+        "0",
+        "x"
+      ],
+      "label": "Delete 10 characters"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "3",
+        "d",
+        "w"
+      ],
+      "label": "Delete 3 words"
+    },
+    {
+      "type": "embed",
+      "lesson": 58,
+      "caption": "Counts on motions"
+    },
+    {
+      "type": "embed",
+      "lesson": 59,
+      "caption": "Counts on edits"
+    },
+    {
+      "type": "embed",
+      "lesson": 60,
+      "caption": "Counts before operators"
+    },
+    {
+      "type": "embed",
+      "lesson": 61,
+      "caption": "Counts on insert"
+    },
+    {
+      "type": "internals",
+      "title": "Counts Multiply",
+      "text": "When a count appears on *both* sides of an operator, the two are **multiplied**:\n\n  • {key:2}{key:d}{key:3}{key:w} = delete 6 words.\n  • {key:3}{key:y}{key:2}{key:y} = yank 6 lines.\n  • {key:5}{key:>}{key:2}{key:j} = indent 15 lines (current + 14 below).\n\nThis is consistent with the grammar: {operator-count} × {motion-count}. Most of the time you'll only use one of them; both is rare but legal.\n\nNote that the count goes *between* the register and the operator if you also use a register: {key:\"}{key:a}{key:3}{key:d}{key:w} — \"into register a, three times, delete word.\""
+    },
+    {
+      "type": "tip",
+      "text": "Counts work in Insert mode too. {key:2}{key:0}{key:i}-{key:Esc} inserts twenty dashes. The count is replayed when you leave Insert. (Some non-character Insert commands like Tab don't behave well with this — try it before relying on it.)"
+    },
+    {
+      "type": "tip",
+      "text": "{key:Ctrl-A} and {key:Ctrl-X} use counts to add/subtract from the next number on the line — see [`patterns.increment-decrement`](#patterns.increment-decrement)."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Pattern",
+        "Means"
+      ],
+      "rows": [
+        [
+          "{key:{n}}{motion}",
+          "Apply motion n times"
+        ],
+        [
+          "{key:{n}}{op}{motion}",
+          "Apply (op + motion) n times"
+        ],
+        [
+          "{op}{key:{n}}{motion}",
+          "Apply op once over (motion × n)"
+        ],
+        [
+          "{key:{n}}{op}{key:{m}}{motion}",
+          "Apply op (n × m) times over motion"
+        ],
+        [
+          "{key:{n}}{key:.}",
+          "Repeat last change with new count n"
+        ]
+      ]
+    },
+    {
+      "type": "example",
+      "ref": "counts.basics"
+    },
+    {
+      "type": "internals",
+      "title": "Count parsing is a tiny lexer with context",
+      "text": "Counts aren't a separate argument — they're a prefix accumulated by a small state machine. The first digit must be `1-9` (because `0` is itself a motion to column zero); subsequent digits can include `0`. The accumulated count multiplies with any operator-applied count, so {key:2}{key:d}{key:3}{key:w} deletes six words. Internally it's `count = command_count * motion_count`, both defaulting to one."
+    },
+    {
+      "type": "qr",
+      "topic": "counts.counts"
+    },
+    {
+      "type": "buy-prompt"
+    }
+  ]
+}

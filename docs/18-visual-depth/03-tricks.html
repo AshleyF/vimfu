@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visual Mode Tricks — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-18-visual-depth">↑ Visual Depth</a>
+  &middot; <a href="../videos/18-visual-depth/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-line-block.html" rel="prev">← Line and Block Visual</a></span>
+  <span class="pager-pos">93 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="04-modes.html" rel="next">The Three Visual Modes →</a></span>
+</nav>
+<article>
+<h1>Visual Mode Tricks</h1>
+<p class="subtitle">Block <kbd>O</kbd> for diagonal corners. <kbd>gv</kbd> to re-select.</p>
+<p class="meta">Keys: <kbd>O</kbd>, <kbd>gv</kbd></p>
+<blockquote class="summary">Two tricks that make Visual mode much more useful: O in block mode swaps to the opposite diagonal corner, and gv re-selects the previous selection.</blockquote>
+<p>Two small tricks save lots of pain in Visual mode: <kbd>O</kbd> (capital O) for moving across the diagonal of a block, and <kbd>g</kbd><kbd>v</kbd> for getting back the selection you just lost.</p>
+<h3>O — diagonal corners</h3>
+<p>In char/line Visual, <kbd>o</kbd> swaps which end of the selection your motions move. In <em>block</em> Visual, <kbd>o</kbd> swaps along one diagonal — but <kbd>O</kbd> (capital) swaps to the <em>opposite</em> corner of the rectangle. So you can extend the block from any of the four corners without restarting.</p>
+<figure class="keys">
+<figcaption>(in Block Visual) Move cursor to opposite corner of rectangle</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>O</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="69"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/OMzqSriKw6U?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Other Corner" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>O — block-visual diagonal</figcaption></figure>
+<h3>gv — re-select last visual</h3>
+<p>Pressed Esc by accident? Did one operation and want to do another on the same range? <kbd>g</kbd><kbd>v</kbd> restores the last visual selection — same anchor, same cursor, same mode.</p>
+<figure class="keys">
+<figcaption>Re-select previous visual range</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>g</kbd></td><td></td></tr>
+<tr><td><kbd>v</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="70"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/deKacqjKDIM?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Reselect Last Selection" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>gv — re-select previous visual</figcaption></figure>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>o</kbd></td>
+<td>Swap cursor / anchor (any visual)</td>
+</tr>
+<tr>
+<td><kbd>O</kbd></td>
+<td>Move to opposite corner (block visual only)</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>v</kbd></td>
+<td>Re-enter previous visual selection</td>
+</tr>
+</tbody></table>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="02-line-block.html">Line and Block Visual</a>, <a href="01-char-visual.html">Character Visual Mode</a>, <a href="09-gv.html">{key:gv} — Re-Select</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-line-block.html" rel="prev">← Line and Block Visual</a></span>
+  <span class="pager-pos">93 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="04-modes.html" rel="next">The Three Visual Modes →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-18-visual-depth">↑ back to Visual Depth</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

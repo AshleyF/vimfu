@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Three Visual Modes — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-18-visual-depth">↑ Visual Depth</a>
+  &middot; <a href="../videos/18-visual-depth/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-tricks.html" rel="prev">← Visual Mode Tricks</a></span>
+  <span class="pager-pos">94 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="05-block-insert-append.html" rel="next">Block Insert and Append →</a></span>
+</nav>
+<article>
+<h1>The Three Visual Modes</h1>
+<p class="subtitle"><kbd>v</kbd>, <kbd>V</kbd>, <kbd>Ctrl-V</kbd> — character, line, block.</p>
+<p class="meta">Keys: <kbd>v</kbd>, <kbd>V</kbd>, <kbd>Ctrl-V</kbd></p>
+<blockquote class="summary">Visual mode comes in three flavors: character (v), line (V), and block (Ctrl-V). They differ in what shape they select. Switching between modes mid-selection is a built-in feature.</blockquote>
+<p>Visual mode is Vim&#x27;s <em>select-then-act</em> alternative to the operator-motion grammar. Three sub-modes pick the <em>shape</em> of the selection.</p>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Mode</th>
+<th>Selects</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>v</kbd></td>
+<td>Character</td>
+<td>From cursor to point — by character</td>
+</tr>
+<tr>
+<td><kbd>V</kbd></td>
+<td>Line</td>
+<td>Whole lines</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-V</kbd></td>
+<td>Block</td>
+<td>Rectangular column-by-row region</td>
+</tr>
+</tbody></table>
+<aside class="tip"><strong>Tip.</strong> On Windows, <kbd>Ctrl-V</kbd> is paste — use <kbd>Ctrl-Q</kbd> for block Visual.</aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0431 v — Charwise (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0433 Ctrl-V — Blockwise (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="01-char-visual.html">Character Visual Mode</a>, <a href="02-line-block.html">Line and Block Visual</a>, <a href="09-gv.html">{key:gv} — Re-Select</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-tricks.html" rel="prev">← Visual Mode Tricks</a></span>
+  <span class="pager-pos">94 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="05-block-insert-append.html" rel="next">Block Insert and Append →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-18-visual-depth">↑ back to Visual Depth</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

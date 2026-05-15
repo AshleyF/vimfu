@@ -1,0 +1,80 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "visual.modes",
+  "title": "The Three Visual Modes",
+  "subtitle": "{key:v}, {key:V}, {key:Ctrl-V} — character, line, block.",
+  "part": "visual-depth",
+  "summary": "Visual mode comes in three flavors: character (v), line (V), and block (Ctrl-V). They differ in what shape they select. Switching between modes mid-selection is a built-in feature.",
+  "keys": [
+    "v",
+    "V",
+    "Ctrl-V"
+  ],
+  "lessons": [
+    431,
+    433
+  ],
+  "see_also": [
+    "visual-depth.char-visual",
+    "visual-depth.line-block",
+    "visual.gv"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "The Three Visual Modes"
+    },
+    {
+      "type": "prose",
+      "text": "Visual mode is Vim's *select-then-act* alternative to the operator-motion grammar. Three sub-modes pick the *shape* of the selection."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Key",
+        "Mode",
+        "Selects"
+      ],
+      "rows": [
+        [
+          "{key:v}",
+          "Character",
+          "From cursor to point — by character"
+        ],
+        [
+          "{key:V}",
+          "Line",
+          "Whole lines"
+        ],
+        [
+          "{key:Ctrl-V}",
+          "Block",
+          "Rectangular column-by-row region"
+        ]
+      ]
+    },
+    {
+      "type": "internals",
+      "title": "Switching Mid-Selection",
+      "text": "Once you're in any Visual mode, pressing the *other* visual key switches the shape without losing the endpoints:\n\n  • {key:v} → {key:V} promotes character-wise to line-wise (extends to whole lines).\n  • {key:V} → {key:Ctrl-V} converts to block.\n  • Pressing the **same** key again exits Visual mode.\n\nThis means you can start a selection one way and refine to another shape without re-doing the motion."
+    },
+    {
+      "type": "internals",
+      "title": "Block Mode is Special",
+      "text": "Character and line Visual are common in any editor. Block Visual ({key:Ctrl-V}) is Vim's superpower: select a *rectangle* of text. Operations apply per-line within the block — perfect for adding a prefix to many lines, deleting a column of characters, or aligning text. See [`visual.block-insert-append`](#visual.block-insert-append)."
+    },
+    {
+      "type": "tip",
+      "text": "On Windows, {key:Ctrl-V} is paste — use {key:Ctrl-Q} for block Visual."
+    },
+    {
+      "type": "qr",
+      "topic": "visual.modes"
+    },
+    {
+      "type": "buy-prompt"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Line and Block Visual — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-18-visual-depth">↑ Visual Depth</a>
+  &middot; <a href="../videos/18-visual-depth/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo+1%0Abar+2%0Abaz+3%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-char-visual.html" rel="prev">← Character Visual Mode</a></span>
+  <span class="pager-pos">92 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="03-tricks.html" rel="next">Visual Mode Tricks →</a></span>
+</nav>
+<article>
+<h1>Line and Block Visual</h1>
+<p class="subtitle"><kbd>V</kbd> selects whole lines. <kbd>Ctrl-V</kbd> selects rectangles.</p>
+<p class="meta">Keys: <kbd>V</kbd>, <kbd>Ctrl-V</kbd></p>
+<blockquote class="summary">V enters linewise Visual: motions extend the selection by whole lines. Ctrl-V enters blockwise Visual: the selection is a rectangle, useful for column edits.</blockquote>
+<p><kbd>v</kbd> selects characters. Two more visual modes select differently-shaped regions: <kbd>V</kbd> for whole lines, <kbd>Ctrl-V</kbd> for rectangles.</p>
+<figure class="keys">
+<figcaption>Linewise Visual</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>V</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Blockwise Visual (rectangular)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>Ctrl-V</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="65"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/y2YdcTXFf24?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Line Visual Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>V — linewise Visual</figcaption></figure>
+<figure class="lesson-embed" data-lesson="66"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/N5KRukVbfC8?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Block Visual Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Ctrl-V — blockwise Visual</figcaption></figure>
+<figure class="lesson-embed" data-lesson="67"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/otUT4ql2ISs?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Switching Visual Modes" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Block edits in action</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> From any Visual mode, press <kbd>v</kbd>, <kbd>V</kbd>, or <kbd>Ctrl-V</kbd> to <em>switch</em> to that mode while keeping the selection.</aside>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Selection shape</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>v</kbd></td>
+<td>Characters from anchor to cursor</td>
+</tr>
+<tr>
+<td><kbd>V</kbd></td>
+<td>Whole lines</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-V</kbd></td>
+<td>Rectangle (block)</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — V and Ctrl-V</h3>
+<p class="example-summary">Linewise vs block visual.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot missing">[missing screenshot visual.line-block/frame_01.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>Vjj</kbd> · <span class="step-cap">V then jj — three full lines.</span></figcaption>
+<div class="screenshot missing">[missing screenshot visual.line-block/frame_02.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>Esc Ctrl-V jj l</kbd> · <span class="step-cap">Ctrl-V — block of just the digits.</span></figcaption>
+<div class="screenshot missing">[missing screenshot visual.line-block/frame_03.color.svg — run python content/render_screenshots.py]</div>
+<p class="narration">Block mode operates on a rectangle — perfect for tabular data and column edits.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo+1%0Abar+2%0Abaz+3%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="01-char-visual.html">Character Visual Mode</a>, <a href="05-block-insert-append.html">Block Insert and Append</a>, <a href="../11-transform/02-indent.html">Indent and Auto-Indent</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-char-visual.html" rel="prev">← Character Visual Mode</a></span>
+  <span class="pager-pos">92 / 138</span>
+  <span class="pager-next"><a class="pager-link" href="03-tricks.html" rel="next">Visual Mode Tricks →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-18-visual-depth">↑ back to Visual Depth</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -37,6 +37,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from lib.videos import video_for_lesson, videos_for_topic  # noqa: E402
 from lib.audience import visible as _visible  # noqa: E402
+from lib.parts import part_label as _part_label  # noqa: E402
 
 AUDIENCE = "book"
 
@@ -468,7 +469,7 @@ def main() -> int:
         pdir.mkdir(parents=True, exist_ok=True)
 
         # Per-part full file
-        part_label = part_dir.split("-", 1)[-1].replace("-", " ").title()
+        part_label = _part_label(part_dir)
         part_chunks = [hdr, para("Heading1", tt_escape(part_label))]
 
         for t in plist:
