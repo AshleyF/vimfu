@@ -18,6 +18,7 @@ PART_LABELS: dict[str, str] = {
     "search-find": "Search and Find",
     "marks-jumps": "Marks and Jumps",
     "scrolling-screen": "Scrolling the Screen",
+    "windows-buffers-tabs": "Windows, Buffers and Tabs",
 }
 
 

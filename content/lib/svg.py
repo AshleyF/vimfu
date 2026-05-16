@@ -14,9 +14,9 @@ from xml.sax.saxutils import escape as xml_escape
 
 # Cell geometry (px, viewBox coordinates)
 CW = 10   # cell width
-CH = 20   # cell height
+CH = 18   # cell height
 FS = 16   # font-size
-BL = 15   # baseline offset
+BL = 14   # baseline offset
 
 NBSP = "\u00a0"
 
