@@ -325,7 +325,7 @@ into each output tree as needed.
 ```json
 {
   "type": "figure",
-  "path": "content/images/ADM-3A.png",
+  "path": "book/photos/ADM-3A.png",
   "width": "0.85",
   "caption": "The Lear Siegler ADM-3A keyboard.",
   "credit": "Image courtesy of [vintagecomputer.ca](https://vintagecomputer.ca)."
