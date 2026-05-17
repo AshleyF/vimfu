@@ -391,6 +391,39 @@ def render_block(b, *, current_part, index, examples) -> str:
     if bt == "divider":
         return "<hr>"
 
+    if bt == "figure":
+        raw_path = (b.get("path") or "").strip()
+        caption = inl(b.get("caption") or "")
+        credit = inl(b.get("credit") or "")
+        if not raw_path:
+            return ""
+        # Copy the image into the site output once, alongside the topic
+        # HTML file. We use a flat /images/ subtree under docs/ to keep
+        # the URL stable across re-renders.
+        src = (Path(__file__).resolve().parent.parent / raw_path).resolve()
+        from shutil import copyfile
+        out_root = Path(__file__).resolve().parent / "output" / "html" / "images"
+        out_root.mkdir(parents=True, exist_ok=True)
+        dst = out_root / src.name
+        try:
+            if src.exists() and (not dst.exists() or src.stat().st_mtime > dst.stat().st_mtime):
+                copyfile(src, dst)
+        except OSError:
+            pass
+        href = f"../images/{src.name}"
+        parts = [
+            '<figure class="photo">',
+            f'<img src="{escape(href)}" alt="{escape(b.get("caption") or src.stem)}">',
+        ]
+        if caption or credit:
+            cap_html = f'<figcaption>{caption}'
+            if credit:
+                cap_html += f' <span class="credit">{credit}</span>'
+            cap_html += '</figcaption>'
+            parts.append(cap_html)
+        parts.append('</figure>')
+        return "\n".join(parts)
+
     if bt == "keys":
         out = ['<figure class="keys">']
         if label := b.get("label"):
@@ -1273,6 +1306,21 @@ figure.keys, figure.lesson-embed { margin: 1rem 0; }
 figure.keys figcaption, figure.lesson-embed figcaption {
   font-style: italic; color: var(--muted); font-size: 0.9rem; margin-bottom: 0.4rem;
 }
+figure.photo {
+  margin: 1.4rem auto; text-align: center; max-width: 100%;
+}
+figure.photo img {
+  max-width: 100%; height: auto; border: 1px solid var(--rule-strong);
+  border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+figure.photo figcaption {
+  font-style: italic; color: var(--muted); font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+figure.photo .credit {
+  font-style: normal; font-size: 0.8rem; color: var(--muted);
+}
+figure.photo .credit::before { content: "— "; }
 figure.lesson-embed iframe.lesson-iframe {
   width: 100%; aspect-ratio: 1/1; max-width: 480px; border: 0; border-radius: 6px;
   background: #000; display: block;

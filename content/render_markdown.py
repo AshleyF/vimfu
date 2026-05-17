@@ -171,6 +171,22 @@ def render_block(b: dict[str, Any], *, current_part: str, index, examples: dict[
     if bt == "divider":
         return "---"
 
+    if bt == "figure":
+        raw_path = (b.get("path") or "").strip()
+        caption = inl(b.get("caption") or "")
+        credit = inl(b.get("credit") or "")
+        if not raw_path:
+            return ""
+        alt = caption or Path(raw_path).stem
+        lines = [f"![{alt}](../{raw_path})"]
+        if caption or credit:
+            tail = f"*{caption}*" if caption else ""
+            if credit:
+                tail = (tail + " — " if tail else "") + credit
+            lines.append("")
+            lines.append(tail)
+        return "\n".join(lines)
+
     if bt == "keys":
         out = []
         label = b.get("label")

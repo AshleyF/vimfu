@@ -315,6 +315,30 @@ Renders as:
 { "type": "divider" }
 ```
 
+### `figure` — embedded photograph or illustration
+
+Embed an image file from `content/images/<name>` with an italic caption
+and a small credit line. Rendered identically across book (LaTeX),
+website (HTML), and InDesign exports — the renderer copies the file
+into each output tree as needed.
+
+```json
+{
+  "type": "figure",
+  "path": "content/images/ADM-3A.png",
+  "width": "0.85",
+  "caption": "The Lear Siegler ADM-3A keyboard.",
+  "credit": "Image courtesy of [vintagecomputer.ca](https://vintagecomputer.ca)."
+}
+```
+
+- `path` — repo-relative path to the image (PNG, JPG, or PDF).
+- `width` *(optional, default `0.8`)* — width as a fraction of the
+  surrounding text width (LaTeX); HTML scales to `max-width: 100%`.
+- `caption` *(optional)* — italic caption under the figure.
+- `credit` *(optional)* — small attribution line under the caption.
+  Inline `[label](url)` markup is supported for crediting sources.
+
 A horizontal rule separating major subsections.
 
 ---
