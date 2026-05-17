@@ -365,11 +365,12 @@ Inspect `content/output/latex/book.log` for overfull boxes and
 - **MiKTeX** (xelatex + makeindex) with the Libertinus, TikZ, tcolorbox,
   microtype, longtable, and newunicodechar packages.
 
-#### KDP layout constants (6×9, 501–700 page bucket — book is ~520 pages)
+#### KDP layout constants (7.5×9.25, 501–700 page bucket — book is ~520 pages)
 
-- **Inner (gutter) ≥ 0.875"** — we use **1.0"** for headroom.
-- Outer/top/bottom ≥ 0.25" minimum, 0.5" recommended — we use 0.5" outer, 0.75" top/bottom.
-- `twoside,openany`. Defined in `render_latex.py` `\geometry{...}`.
+- **Trim size**: 7.5" × 9.25" (KDP "B6+" / non-standard, larger than 6×9).
+- **Inner (gutter) ≥ 0.875"** — set to **0.875"** at the bucket minimum.
+- Outer/top/bottom ≥ 0.25" minimum, 0.5" recommended — we use **0.625"** outer, **0.75"** top/bottom.
+- `twoside,openany`. Defined in `render_latex.py` `\geometry{...}` (paperwidth=7.5in, paperheight=9.25in).
 - **Watch the page-count buckets:** if the book grows past 700 pages the
   minimum gutter jumps to 1.0" (KDP table: 24–150=0.375, 151–300=0.5,
   301–500=0.625, 501–700=0.875, 701–828=1.0").

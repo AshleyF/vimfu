@@ -228,7 +228,7 @@ def render_block(b: dict[str, Any], *, current_part: str, index, examples: dict[
         text = inl(b.get("text", ""))
         # convert internal "  • " bullets to real markdown bullets
         # paragraphs are split on blank line
-        out = [f"> **🔧 Under the Hood — {title}**", ">"]
+        out = [f"> **⚙ {title}**", ">"]
         for para in text.split("\n\n"):
             para = para.rstrip()
             if not para:

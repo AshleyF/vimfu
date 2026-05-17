@@ -443,7 +443,7 @@ def render_block(b, *, current_part, index, examples) -> str:
         title = inl(b.get("title", "Under the Hood"))
         text = b.get("text", "") or ""
         out = ['<aside class="internals">',
-               f'<header>🔧 Under the Hood — {title}</header>']
+               f'<header>⚙ {title}</header>']
         for para in text.split("\n\n"):
             para = para.rstrip()
             if not para:
