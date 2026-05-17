@@ -308,9 +308,10 @@ def _split_key_for_wrap(s: str) -> str:
         and not _MODIFIER_RE.match(s)
     ):
         pills = [f"\\key{{{tex_escape_inline_code(c)}}}" for c in s]
-        # Thin space between adjacent pills so they read as a sequence
-        # but stay visually tight.
-        return "\\,".join(pills)
+        # Pills in a key sequence render touching (no thin space): per
+        # the style guide, a sequence like {key:dd} or {key:ciw} reads
+        # as one continuous chord-of-keystrokes.
+        return "".join(pills)
     return f"\\key{{{tex_escape_inline_code(s)}}}"
 
 
@@ -457,15 +458,58 @@ def _collapse_long_key_runs(text: str) -> str:
     return _LONG_KEY_RUN_RE.sub(repl, text)
 
 
+def _smart_quotes(s: str, *, prev_char: str = "") -> str:
+    """Convert ASCII " and ' in prose to typographic curly quotes.
+
+    Heuristic: an ASCII double or single quote opens (left-curly) when
+    the preceding character is whitespace, opening punctuation, or
+    start-of-string; otherwise it closes (right-curly). For single
+    quotes, an alphanumeric preceding character forces the closing
+    form so contractions (don't, it's) render as right-curly
+    apostrophes.
+
+    ``prev_char`` is the character before this segment in the
+    surrounding text — passed in by render_inline so that a quote at
+    the very start of a prose chunk knows what was before it across
+    markup boundaries.
+    """
+    out: list[str] = []
+    prev = prev_char
+    for c in s:
+        if c == '"':
+            if not prev or prev.isspace() or prev in "([{<-/\u2013\u2014":
+                out.append("\u201C")
+            else:
+                out.append("\u201D")
+        elif c == "'":
+            if prev and prev.isalnum():
+                out.append("\u2019")
+            elif not prev or prev.isspace() or prev in "([{<-/\u2013\u2014":
+                out.append("\u2018")
+            else:
+                out.append("\u2019")
+        else:
+            out.append(c)
+        prev = c
+    return "".join(out)
+
+
 def render_inline(text: str, *, index, with_key_index: bool = True, plain_keys: bool = False) -> str:
     if text is None:
         return ""
     text = _collapse_long_key_runs(text)
     out: list[str] = []
     pos = 0
+    # Track the last raw character emitted (before tex_escape) so that
+    # _smart_quotes can make correct open/close decisions for a quote
+    # that begins a prose segment immediately after markup like a
+    # closing italic or a key pill.
+    last_char = ""
     for m in _combined.finditer(text):
         if m.start() > pos:
-            out.append(tex_escape(text[pos:m.start()]))
+            seg = text[pos:m.start()]
+            out.append(tex_escape(_smart_quotes(seg, prev_char=last_char)))
+            last_char = seg[-1] if seg else last_char
         kind = m.lastgroup
         raw = m.group(0)
         if kind == "key":
@@ -475,40 +519,48 @@ def render_inline(text: str, *, index, with_key_index: bool = True, plain_keys: 
                 out.append(f"\\texttt{{{tex_escape_inline_code(k)}}}{idx}")
             else:
                 out.append(f"{_split_key_for_wrap(k)}{idx}")
+            last_char = " "  # treat markup as a word boundary
         elif kind == "link":
             mm = _LINK_RE.match(raw)
             label, tid = mm.group(1), mm.group(2)
-            # Print-style cross-reference: "label (p. NN)". The label text is
-            # left as plain (non-clickable-looking) prose so the printed page
-            # reads naturally; \pageref auto-tracks the actual page number.
             out.append(
                 f"{tex_escape(label)}~(p.~\\pageref{{topic:{tex_escape(tid)}}})"
             )
+            last_char = ")"
         elif kind == "extlink":
-            # External Markdown link like `[label](https://…)`. The print
-            # book routes all live URLs through QR codes elsewhere; for
-            # inline prose we just emit the label, dropping the URL so the
-            # page doesn't show literal Markdown syntax.
             mm = _EXTLINK_RE.match(raw)
             out.append(render_inline(mm.group(1), index=index))
+            last_char = " "
         elif kind == "code":
             inner = _CODE_RE.match(raw).group(1)
-            # Break unbreakable \code{...} runs into per-fragment pills so
-            # they can wrap in narrow contexts (table cells, tcolorbox
-            # interiors) instead of overflowing the page / KDP safe area.
-            # Split on spaces first; then for any still-long fragment,
-            # split on path separators (/ and \), keeping the separator
-            # attached to the LEFT fragment so paths read naturally.
-            out.append(_split_code_for_wrap(inner))
+            if plain_keys:
+                out.append(f"\\texttt{{{tex_escape_inline_code(inner)}}}")
+            else:
+                out.append(_split_code_for_wrap(inner))
+            last_char = " "
         elif kind == "strong":
             inner = _STRONG_RE.match(raw).group(1)
             out.append(f"\\textbf{{{render_inline(inner, index=index)}}}")
+            last_char = inner[-1] if inner else last_char
         elif kind == "em":
             inner = _EM_RE.match(raw).group(1)
-            out.append(f"\\textit{{{render_inline(inner, index=index)}}}")
+            # Pull a trailing punctuation char into the italic span so
+            # the kerning between the italic glyph and the punctuation
+            # doesn't fight the upright baseline.
+            tail = ""
+            end = m.end()
+            if end < len(text) and text[end] in ",.:;!?\u2014\u2013":
+                tail = text[end]
+                pos = end + 1
+            else:
+                pos = end
+            out.append(f"\\textit{{{render_inline(inner + tail, index=index)}}}")
+            last_char = tail if tail else (inner[-1] if inner else last_char)
+            continue
         pos = m.end()
     if pos < len(text):
-        out.append(tex_escape(text[pos:]))
+        seg = text[pos:]
+        out.append(tex_escape(_smart_quotes(seg, prev_char=last_char)))
     return "".join(out)
 
 
@@ -820,13 +872,14 @@ def render_topic_body(t, index, examples) -> str:
 
     title = t.get("title", "(untitled)")
     tid = t.get("id", t["__file_stem"])
-    # Chapter title: render keys as plain-text (\texttt) rather than TikZ
-    # pills. TikZ \key{} inside \chapter{...} blows up hyperref's PDF
-    # bookmark generation ("TeX capacity exceeded - parameter stack size")
-    # because the title also goes into the .toc, .aux, running headers,
-    # AND PDF bookmark strings. Body-level <h1> headings authored inside
-    # blocks still get full key pills.
-    out.append(f"\\chapter{{{render_inline(title, index=index, with_key_index=False, plain_keys=True)}}}\\label{{topic:{tex_escape(tid)}}}")
+    # Chapter title: pills inside the body heading; plain monospace
+    # (\texttt) in the optional [short] form which feeds the TOC,
+    # running headers, and PDF bookmarks. TikZ \key{} pills don't
+    # survive into hyperref's bookmark strings, so plain_keys=True is
+    # used for that short form only.
+    body_title = render_inline(title, index=index, with_key_index=False, plain_keys=False)
+    toc_title = render_inline(title, index=index, with_key_index=False, plain_keys=True)
+    out.append(f"\\chapter[{toc_title}]{{{body_title}}}\\label{{topic:{tex_escape(tid)}}}")
     # Index every key the topic claims to be about (keys[] array on the JSON
     # frontmatter). We deliberately do NOT index the chapter title itself --
     # that would just duplicate the table of contents. The index is for
@@ -1097,7 +1150,7 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 % \allowbreak so inline code (e.g. \code{'fileencoding'}, file paths, command
 % snippets) can break at word boundaries inside narrow contexts (tcolorboxes,
 % table cells) instead of overflowing the margin.
-\newcommand{\code}[1]{\allowbreak\colorbox{codebg}{\texttt{#1}}\allowbreak}
+\newcommand{\code}[1]{\allowbreak\texttt{#1}\allowbreak}
 
 % --- Block code -------------------------------------------------------------
 % breaklines/breakanywhere: long lines (e.g. the text-objects
@@ -1112,13 +1165,15 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \newtcolorbox{tipbox}{enhanced,breakable,colback=tipbg,colframe=tipbg,coltext=tipfg,
   arc=2pt,boxrule=0pt,leftrule=3pt,
   borderline west={2pt}{0pt}{tipborder},
-  left=10pt,right=8pt,top=6pt,bottom=6pt}
+  left=10pt,right=8pt,top=6pt,bottom=6pt,
+  fontupper={\setlength{\parskip}{0.5\baselineskip}\setlength{\parindent}{0pt}}}
 
 % --- Internals callout ------------------------------------------------------
 \newtcolorbox{internals}[1]{enhanced,breakable,colback=internalsbg,colframe=internalsbg,
   coltext=internalsfg,arc=2pt,boxrule=0pt,leftrule=3pt,
   borderline west={2pt}{0pt}{internalsborder},
   left=10pt,right=8pt,top=6pt,bottom=6pt,
+  fontupper={\setlength{\parskip}{0.5\baselineskip}\setlength{\parindent}{0pt}},
   title={\textbf{Under the Hood --- #1}},coltitle=internalsfg,fonttitle=\bfseries,
   attach title to upper={\par\medskip}}
 
@@ -1128,7 +1183,7 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
   coltext=anecdotefg,arc=2pt,boxrule=0pt,leftrule=3pt,
   borderline west={2pt}{0pt}{anecdoteborder},
   left=10pt,right=8pt,top=6pt,bottom=6pt,
-  fontupper=\itshape,
+  fontupper={\itshape\setlength{\parskip}{0.5\baselineskip}\setlength{\parindent}{0pt}},
   title={\textbf{\upshape #1}},coltitle=anecdotefg,fonttitle=\bfseries,
   attach title to upper={\par\medskip}}
 
@@ -1136,6 +1191,7 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \newtcolorbox{example}[1]{enhanced,breakable,colback=examplebg,colframe=exampleborder,
   arc=2pt,boxrule=0.5pt,
   left=10pt,right=8pt,top=6pt,bottom=6pt,
+  fontupper={\setlength{\parskip}{0.5\baselineskip}\setlength{\parindent}{0pt}},
   title={\textbf{Worked Example: #1}},coltitle=black,fonttitle=\bfseries,
   attach title to upper={\par\medskip}}
 \newcommand{\examplesummary}[1]{\par\textit{#1}\par\medskip}
@@ -1155,7 +1211,7 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \newlength{\keycolwidth}
 \setlength{\keycolwidth}{7.5em}
 \newenvironment{keytable}{%
-  \par\medskip\begin{tabular}{@{}p{\keycolwidth}@{\hspace{1em}}p{\dimexpr\linewidth-\keycolwidth-2.6em\relax}@{}}}{%
+  \par\medskip\begin{tabular}{@{}>{\centering\arraybackslash}m{\keycolwidth}@{\hspace{1em}}p{\dimexpr\linewidth-\keycolwidth-2.6em\relax}@{}}}{%
   \end{tabular}\par\medskip}
 
 % --- Video callout ----------------------------------------------------------
@@ -1421,14 +1477,14 @@ def main() -> int:
         # generated .toc on the next pass.
         "\\chapter*{About the QR codes}\n"
         "\\addcontentsline{toc}{chapter}{About the QR codes}\n"
-        "This book stands on its own---you can read it cover to cover without "
-        "ever picking up a phone. Where it earns its place beside the website "
-        "is in the videos and the live simulator: short screen-recorded demos "
-        "that show every technique in motion, and a browser-based Vim "
-        "playground where you can practice without leaving the page. We "
-        "can't print either of those on paper, so QR codes throughout the "
-        "book---not just at the end of each part---let you jump straight to "
-        "them on {\\sffamily vimfubook.com}.\n\n"
+        "This book stands on its own---you can read it cover to cover "
+        "without ever picking up a phone. It also has a companion website, "
+        "{\\sffamily vimfubook.com}, that hosts a short screen-recorded "
+        "video for every technique in the book and a browser-based Vim "
+        "simulator where you can practice everything you read about "
+        "without leaving the page. QR codes throughout the book---not "
+        "just at the end of each part---let you jump straight to that "
+        "material from wherever you are reading.\n\n"
         "There are three kinds of QR codes you will see:\n\n"
         "\\begin{itemize}\n"
         "\\item \\textbf{Videos.} Each part of the book ends with a QR that "
@@ -1451,7 +1507,7 @@ def main() -> int:
         "redirect we own. That means if a video moves or a page is "
         "restructured we can re-aim the link without ever invalidating a "
         "printed code.\n\n"
-        "\\noindent\\textbf{Try one now---this code opens the website:}"
+        "\\noindent\\textbf{Try one:}"
         "\\par\\medskip\n"
         + sample_qr_callout + "\n"
         "\\clearpage\n"

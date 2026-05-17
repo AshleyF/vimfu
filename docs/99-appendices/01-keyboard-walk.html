@@ -52,38 +52,58 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="../22-tmux/06-copy-mode.html" rel="prev">← Copy Mode — Vim Motions in Your Scrollback</a></span>
-  <span class="pager-pos">131 / 138</span>
+  <span class="pager-pos">131 / 139</span>
   <span class="pager-next"><a class="pager-link" href="02-synonyms.html" rel="next">Synonyms and Shortcuts →</a></span>
 </nav>
 <article>
 <h1>Keyboard Walk</h1>
-<p class="subtitle">Every Normal-mode key, organized by physical key location.</p>
-<blockquote class="summary">A row-by-row tour of the QWERTY keyboard mapping each key to its primary Normal-mode function. Useful as a wall poster.</blockquote>
-<p>Vim&#x27;s bindings cover the entire keyboard. This appendix walks the QWERTY layout row-by-row, showing the <em>primary</em> Normal-mode function of each key. (Many keys also serve as second halves of operator-motion sequences — see <a href="08-complete-key-reference.html">`appendix.complete-key-reference`</a>.)</p>
-<h3>Number row</h3>
+<p class="subtitle">Every normal-mode key, organized by physical key location.</p>
+<blockquote class="summary">A row-by-row tour of the QWERTY keyboard: every unshifted key, every shifted key, with a note on Ctrl- variants. Useful as a wall poster and as a study plan.</blockquote>
+<p>Vim&#x27;s bindings cover <em>every key on the keyboard</em>. Not most of them. Not the popular ones. <strong>Every key.</strong> Hold a finger over almost any character on a QWERTY keyboard, hit it in <em>normal mode</em>, and something happens — a motion, an operator, a prefix into a family of commands, a jump, an action. The empty key is the exception, not the rule.</p>
+<p>That&#x27;s also a study plan. You don&#x27;t have to learn Vim&#x27;s grammar all at once — you can <em>walk the keyboard</em>. Pick a key a day, hit it in normal mode, see what it does, look it up. After a few weeks the unshifted letters are second nature. Then shifted letters. Then shifted symbols. Then a handful of useful Ctrl- variants. By the time you&#x27;ve finished one full lap of the keyboard, you&#x27;ve absorbed essentially every common normal-mode command in Vim.</p>
+<p>The order of importance:
+
+  1. <strong>Unshifted keys</strong> — the bulk of day-to-day editing. Motions (<kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd>, <kbd>w</kbd>, <kbd>b</kbd>, <kbd>e</kbd>, <kbd>f</kbd>, <kbd>t</kbd>), operators (<kbd>d</kbd>, <kbd>c</kbd>, <kbd>y</kbd>), modes (<kbd>i</kbd>, <kbd>a</kbd>, <kbd>o</kbd>, <kbd>v</kbd>, <kbd>:</kbd>), basic editing (<kbd>u</kbd>, <kbd>x</kbd>, <kbd>p</kbd>, <kbd>r</kbd>, <kbd>s</kbd>).
+  2. <strong>Shifted keys</strong> — bigger, opposite, or specialised siblings of the unshifted versions. <kbd>A</kbd> appends at end of line, <kbd>O</kbd> opens above, <kbd>I</kbd> inserts at first non-blank, <kbd>N</kbd> reverses search, <kbd>G</kbd> jumps to last line.
+  3. <strong>Shifted symbols</strong> — search-word-under-cursor (<kbd>*</kbd>, <kbd>#</kbd>), sentence motions (<kbd>(</kbd>, <kbd>)</kbd>), paragraph motions (<kbd>{</kbd>, <kbd>}</kbd>), indent operators (<kbd>&gt;</kbd>, <kbd>&lt;</kbd>), end-of-line (<kbd>$</kbd>), bracket-match (<kbd>%</kbd>).
+  4. <strong>Ctrl- variants</strong> — window prefixes (<kbd>Ctrl-W</kbd>…), scrolling (<kbd>Ctrl-D</kbd>, <kbd>Ctrl-U</kbd>, <kbd>Ctrl-F</kbd>, <kbd>Ctrl-B</kbd>), the jumplist (<kbd>Ctrl-O</kbd>, <kbd>Ctrl-I</kbd>), inc/dec (<kbd>Ctrl-A</kbd>, <kbd>Ctrl-X</kbd>), redo (<kbd>Ctrl-R</kbd>), file-info (<kbd>Ctrl-G</kbd>). A full reference of every Ctrl- key lives in <a href="08-complete-key-reference.html">Complete Key Reference</a>.</p>
+<aside class="tip"><strong>Tip.</strong> If you&#x27;re just starting out: walk the unshifted keys first, in any order. <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd> obviously, but also pick the strange ones — <kbd>t</kbd>, <kbd>s</kbd>, <kbd>q</kbd>, <kbd>m</kbd>, <kbd>z</kbd>. Most of them either <em>do</em> something useful immediately or are <em>prefixes</em> into a family worth learning.</aside>
+<h3>Pass 1 — Unshifted keys</h3>
+<h4>Tilde row</h4>
 <table>
 <thead><tr>
 <th>Key</th>
 <th>Function</th>
 </tr></thead><tbody>
 <tr>
-<td><kbd>1-9</kbd></td>
-<td>Count prefixes</td>
+<td><kbd>`</kbd></td>
+<td>Jump to mark (precise column) — <kbd>`</kbd><kbd>a</kbd> jumps to mark <code>a</code>, <kbd>`</kbd><kbd>`</kbd> to last position</td>
+</tr>
+</tbody></table>
+<h4>Number row</h4>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Function</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>1</kbd> … <kbd>9</kbd></td>
+<td>Count prefix (e.g. <kbd>5</kbd><kbd>j</kbd> = down 5 lines)</td>
 </tr>
 <tr>
 <td><kbd>0</kbd></td>
-<td>Start of line</td>
+<td>Start of line (column 0)</td>
 </tr>
 <tr>
-<td><kbd>- _</kbd></td>
-<td>Up/down to first non-blank</td>
+<td><kbd>-</kbd></td>
+<td>Up to first non-blank of previous line</td>
 </tr>
 <tr>
-<td><kbd>= +</kbd></td>
-<td>Re-indent operator (== / =motion) / next line&#x27;s first non-blank</td>
+<td><kbd>=</kbd></td>
+<td>Re-indent operator (<code>==</code> line, <code>=</code>+motion range, <code>=ap</code> paragraph)</td>
 </tr>
 </tbody></table>
-<h3>Top letter row</h3>
+<h4>Top letter row</h4>
 <table>
 <thead><tr>
 <th>Key</th>
@@ -91,27 +111,27 @@
 </tr></thead><tbody>
 <tr>
 <td><kbd>q</kbd></td>
-<td>Record macro</td>
+<td>Record macro into register (<code>qa</code>…<code>q</code>); replay with <code>@a</code></td>
 </tr>
 <tr>
 <td><kbd>w</kbd></td>
-<td>Word forward</td>
+<td>Word forward (motion)</td>
 </tr>
 <tr>
 <td><kbd>e</kbd></td>
-<td>End of word</td>
+<td>End of word (motion)</td>
 </tr>
 <tr>
 <td><kbd>r</kbd></td>
-<td>Replace one char</td>
+<td>Replace one character</td>
 </tr>
 <tr>
 <td><kbd>t</kbd></td>
-<td>Till char (motion)</td>
+<td>Till char on line (motion — stops <em>before</em> match)</td>
 </tr>
 <tr>
 <td><kbd>y</kbd></td>
-<td>Yank operator</td>
+<td>Yank operator (copy)</td>
 </tr>
 <tr>
 <td><kbd>u</kbd></td>
@@ -119,22 +139,30 @@
 </tr>
 <tr>
 <td><kbd>i</kbd></td>
-<td>Insert</td>
+<td>Insert before cursor</td>
 </tr>
 <tr>
 <td><kbd>o</kbd></td>
-<td>Open line below</td>
+<td>Open new line below and insert</td>
 </tr>
 <tr>
 <td><kbd>p</kbd></td>
-<td>Paste after</td>
+<td>Paste after cursor</td>
 </tr>
 <tr>
-<td><kbd>[ ]</kbd></td>
-<td>Backward / forward bracket prefixes</td>
+<td><kbd>[</kbd></td>
+<td>Backward-prefix family (<code>[c</code> prev hunk, <code>[m</code> prev method, <code>[{</code> prev <code>{</code>)</td>
+</tr>
+<tr>
+<td><kbd>]</kbd></td>
+<td>Forward-prefix family (<code>]c</code>, <code>]m</code>, <code>]}</code>)</td>
+</tr>
+<tr>
+<td><kbd>\</kbd></td>
+<td>Default <code>&lt;Leader&gt;</code> in most configs (custom mappings)</td>
 </tr>
 </tbody></table>
-<h3>Home row</h3>
+<h4>Home row</h4>
 <table>
 <thead><tr>
 <th>Key</th>
@@ -142,23 +170,23 @@
 </tr></thead><tbody>
 <tr>
 <td><kbd>a</kbd></td>
-<td>Append</td>
+<td>Append after cursor</td>
 </tr>
 <tr>
 <td><kbd>s</kbd></td>
-<td>Substitute char</td>
+<td>Substitute one character (delete + insert)</td>
 </tr>
 <tr>
 <td><kbd>d</kbd></td>
-<td>Delete operator</td>
+<td>Delete operator (cut)</td>
 </tr>
 <tr>
 <td><kbd>f</kbd></td>
-<td>Find char (forward)</td>
+<td>Find char on line forward (motion — lands <em>on</em> match)</td>
 </tr>
 <tr>
 <td><kbd>g</kbd></td>
-<td>Prefix family (gd, gf, gv, gU…)</td>
+<td>Prefix family (<code>gg</code>, <code>gd</code>, <code>gf</code>, <code>gv</code>, <code>gU</code>, <code>gu</code>, <code>g~</code>, <code>gq</code>, …)</td>
 </tr>
 <tr>
 <td><kbd>h</kbd></td>
@@ -177,11 +205,15 @@
 <td>Right</td>
 </tr>
 <tr>
-<td><kbd>; ,</kbd></td>
-<td>Repeat / reverse-repeat last f/F/t/T</td>
+<td><kbd>;</kbd></td>
+<td>Repeat last <code>f</code>/<code>F</code>/<code>t</code>/<code>T</code> in same direction</td>
+</tr>
+<tr>
+<td><kbd>&#x27;</kbd></td>
+<td>Jump to mark (line, first non-blank) — <kbd>&#x27;</kbd><kbd>a</kbd> jumps to mark <code>a</code>, <kbd>&#x27;</kbd><kbd>&#x27;</kbd> to last position</td>
 </tr>
 </tbody></table>
-<h3>Bottom row</h3>
+<h4>Bottom row</h4>
 <table>
 <thead><tr>
 <th>Key</th>
@@ -189,7 +221,7 @@
 </tr></thead><tbody>
 <tr>
 <td><kbd>z</kbd></td>
-<td>Prefix family (zz, zf, zo…)</td>
+<td>Prefix family (<code>zz</code> centre, <code>zt</code> top, <code>zb</code> bottom, <code>zf</code> fold, <code>zo</code>/<code>zc</code> open/close fold, <code>zM</code>/<code>zR</code> close/open all)</td>
 </tr>
 <tr>
 <td><kbd>x</kbd></td>
@@ -197,15 +229,15 @@
 </tr>
 <tr>
 <td><kbd>c</kbd></td>
-<td>Change operator</td>
+<td>Change operator (delete + enter <em>insert mode</em>)</td>
 </tr>
 <tr>
 <td><kbd>v</kbd></td>
-<td>Visual mode</td>
+<td>Visual mode (charwise)</td>
 </tr>
 <tr>
 <td><kbd>b</kbd></td>
-<td>Word backward</td>
+<td>Word backward (motion)</td>
 </tr>
 <tr>
 <td><kbd>n</kbd></td>
@@ -213,28 +245,353 @@
 </tr>
 <tr>
 <td><kbd>m</kbd></td>
-<td>Set mark</td>
+<td>Set mark (<code>ma</code> marks current position as <code>a</code>)</td>
 </tr>
 <tr>
-<td><kbd>, . /</kbd></td>
-<td>, reverse f/t — . repeat — / search</td>
+<td><kbd>,</kbd></td>
+<td>Reverse-repeat last <code>f</code>/<code>F</code>/<code>t</code>/<code>T</code></td>
+</tr>
+<tr>
+<td><kbd>.</kbd></td>
+<td>Repeat last change (the killer feature)</td>
+</tr>
+<tr>
+<td><kbd>/</kbd></td>
+<td>Search forward</td>
 </tr>
 </tbody></table>
-<h3>Capital letters (the un-shifted&#x27;s siblings)</h3>
-<p>Most uppercase keys are <em>bigger</em> or <em>opposite</em> versions of their lowercase counterparts:
-
-  • <kbd>I</kbd> / <kbd>A</kbd> — Insert at line start / Append at line end (vs. cursor position).
-  • <kbd>O</kbd> — Open line above (vs. below).
-  • <kbd>E</kbd>/<kbd>W</kbd>/<kbd>B</kbd> — WORD-flavored versions of <kbd>e</kbd>/<kbd>w</kbd>/<kbd>b</kbd>.
-  • <kbd>F</kbd>/<kbd>T</kbd> — backward versions of <kbd>f</kbd>/<kbd>t</kbd>.
-  • <kbd>N</kbd> — previous search match.
-  • <kbd>G</kbd> — go to last line (vs. <kbd>g</kbd><kbd>g</kbd> go to first).</p>
+<h4>Special keys (no shift, no row)</h4>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Function</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>Esc</kbd></td>
+<td>Cancel / return to <em>normal mode</em></td>
+</tr>
+<tr>
+<td><kbd>Enter</kbd></td>
+<td>Down to first non-blank of next line (same as <code>+</code>)</td>
+</tr>
+<tr>
+<td><kbd>Space</kbd></td>
+<td>Right one column (same as <code>l</code>)</td>
+</tr>
+<tr>
+<td><kbd>Backspace</kbd></td>
+<td>Left one column (same as <code>h</code>)</td>
+</tr>
+<tr>
+<td><kbd>Tab</kbd></td>
+<td>Next jumplist entry (same as <code>Ctrl-I</code>)</td>
+</tr>
+</tbody></table>
+<h3>Pass 2 — Shifted keys</h3>
+<p>Once the unshifted keys feel automatic, walk the keyboard again with shift held. The pattern: shifted-letter = <em>bigger / opposite / line-flavored</em> version of its unshifted counterpart. Shifted-number = a punctuation symbol with its own meaning. Shifted-punctuation = often a paired motion or an operator.</p>
+<h4>Tilde row</h4>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Function</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>~</kbd></td>
+<td>Toggle case of character under cursor (advances cursor)</td>
+</tr>
+</tbody></table>
+<h4>Shifted number row</h4>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Function</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>!</kbd></td>
+<td>Filter operator — run buffer range through external shell command (<code>!ap</code>)</td>
+</tr>
+<tr>
+<td><kbd>@</kbd></td>
+<td>Play macro from register (<code>@a</code> plays register <code>a</code>, <code>@@</code> replays last)</td>
+</tr>
+<tr>
+<td><kbd>#</kbd></td>
+<td>Search backward for word under cursor</td>
+</tr>
+<tr>
+<td><kbd>$</kbd></td>
+<td>End of line</td>
+</tr>
+<tr>
+<td><kbd>%</kbd></td>
+<td>Jump to matching <code>(</code>/<code>)</code>/<code>[</code>/<code>]</code>/<code>{</code>/<code>}</code>; also %-range in Ex</td>
+</tr>
+<tr>
+<td><kbd>^</kbd></td>
+<td>First non-blank of line</td>
+</tr>
+<tr>
+<td><kbd>&amp;</kbd></td>
+<td>Repeat last <code>:s</code> substitution on current line</td>
+</tr>
+<tr>
+<td><kbd>*</kbd></td>
+<td>Search forward for word under cursor</td>
+</tr>
+<tr>
+<td><kbd>(</kbd></td>
+<td>Sentence backward</td>
+</tr>
+<tr>
+<td><kbd>)</kbd></td>
+<td>Sentence forward</td>
+</tr>
+<tr>
+<td><kbd>_</kbd></td>
+<td>Down to first non-blank (same as <code>-</code>, but next line)</td>
+</tr>
+<tr>
+<td><kbd>+</kbd></td>
+<td>Down to first non-blank of next line (same as Enter)</td>
+</tr>
+</tbody></table>
+<h4>Shifted top letter row</h4>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Function</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>Q</kbd></td>
+<td>In Neovim: replay last macro. In classic Vim: enter Ex mode</td>
+</tr>
+<tr>
+<td><kbd>W</kbd></td>
+<td>WORD forward (whitespace-delimited, vs lowercase <code>w</code> word-delimited)</td>
+</tr>
+<tr>
+<td><kbd>E</kbd></td>
+<td>End of WORD</td>
+</tr>
+<tr>
+<td><kbd>R</kbd></td>
+<td>Enter <em>replace mode</em> (overwrite as you type)</td>
+</tr>
+<tr>
+<td><kbd>T</kbd></td>
+<td>Till char backward</td>
+</tr>
+<tr>
+<td><kbd>Y</kbd></td>
+<td>Yank line (classic Vim) / yank to end of line (Neovim default)</td>
+</tr>
+<tr>
+<td><kbd>U</kbd></td>
+<td>Undo all changes on current line (rarely used)</td>
+</tr>
+<tr>
+<td><kbd>I</kbd></td>
+<td>Insert at first non-blank of line</td>
+</tr>
+<tr>
+<td><kbd>O</kbd></td>
+<td>Open new line <em>above</em> and insert</td>
+</tr>
+<tr>
+<td><kbd>P</kbd></td>
+<td>Paste <em>before</em> cursor</td>
+</tr>
+<tr>
+<td><kbd>{</kbd></td>
+<td>Paragraph backward</td>
+</tr>
+<tr>
+<td><kbd>}</kbd></td>
+<td>Paragraph forward</td>
+</tr>
+<tr>
+<td><kbd>|</kbd></td>
+<td>Go to column N (<code>5|</code> = column 5)</td>
+</tr>
+</tbody></table>
+<h4>Shifted home row</h4>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Function</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>A</kbd></td>
+<td>Append at end of line</td>
+</tr>
+<tr>
+<td><kbd>S</kbd></td>
+<td>Substitute whole line (delete + insert)</td>
+</tr>
+<tr>
+<td><kbd>D</kbd></td>
+<td>Delete to end of line</td>
+</tr>
+<tr>
+<td><kbd>F</kbd></td>
+<td>Find char on line backward</td>
+</tr>
+<tr>
+<td><kbd>G</kbd></td>
+<td>Go to last line (<code>5G</code> = line 5)</td>
+</tr>
+<tr>
+<td><kbd>H</kbd></td>
+<td>Top of screen (high)</td>
+</tr>
+<tr>
+<td><kbd>J</kbd></td>
+<td>Join current line with next</td>
+</tr>
+<tr>
+<td><kbd>K</kbd></td>
+<td>Lookup keyword under cursor (<code>man</code>, <code>:help</code>, or LSP hover)</td>
+</tr>
+<tr>
+<td><kbd>L</kbd></td>
+<td>Bottom of screen (low)</td>
+</tr>
+<tr>
+<td><kbd>:</kbd></td>
+<td>Enter <em>command-line mode</em> — type an Ex command</td>
+</tr>
+<tr>
+<td><kbd>&quot;</kbd></td>
+<td>Register prefix (<code>&quot;ap</code> paste from register <code>a</code>, <code>&quot;+y</code> yank to system clipboard)</td>
+</tr>
+</tbody></table>
+<h4>Shifted bottom row</h4>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Function</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>Z</kbd></td>
+<td>Save/quit prefix (<code>ZZ</code> save + quit, <code>ZQ</code> quit without saving)</td>
+</tr>
+<tr>
+<td><kbd>X</kbd></td>
+<td>Delete char <em>before</em> cursor</td>
+</tr>
+<tr>
+<td><kbd>C</kbd></td>
+<td>Change to end of line</td>
+</tr>
+<tr>
+<td><kbd>V</kbd></td>
+<td>Visual-line mode</td>
+</tr>
+<tr>
+<td><kbd>B</kbd></td>
+<td>WORD backward</td>
+</tr>
+<tr>
+<td><kbd>N</kbd></td>
+<td>Previous search match</td>
+</tr>
+<tr>
+<td><kbd>M</kbd></td>
+<td>Middle of screen</td>
+</tr>
+<tr>
+<td><kbd>&lt;</kbd></td>
+<td>Dedent operator (<code>&lt;&lt;</code> line, <code>&lt;</code>+motion range)</td>
+</tr>
+<tr>
+<td><kbd>&gt;</kbd></td>
+<td>Indent operator (<code>&gt;&gt;</code> line, <code>&gt;</code>+motion range)</td>
+</tr>
+<tr>
+<td><kbd>?</kbd></td>
+<td>Search backward</td>
+</tr>
+</tbody></table>
+<h3>Pass 3 — Ctrl- variants</h3>
+<p>Most letters also have a Ctrl- variant. Many of them are useful, a handful are essential, and a few do nothing in <em>normal mode</em> at all. The most worthwhile to learn:</p>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Function</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>Ctrl-W</kbd></td>
+<td>Window prefix (<kbd>Ctrl-W</kbd><kbd>h</kbd>/<kbd>j</kbd>/<kbd>k</kbd>/<kbd>l</kbd> navigate, <kbd>Ctrl-W</kbd><kbd>s</kbd>/<kbd>v</kbd> split, <kbd>Ctrl-W</kbd><kbd>c</kbd> close, …)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd></td>
+<td>Redo (undo of undo)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-D</kbd></td>
+<td>Scroll half-page down</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-U</kbd></td>
+<td>Scroll half-page up</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-F</kbd></td>
+<td>Scroll full page forward</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-B</kbd></td>
+<td>Scroll full page backward</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-E</kbd></td>
+<td>Scroll one line down (cursor stays)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-Y</kbd></td>
+<td>Scroll one line up (cursor stays)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-O</kbd></td>
+<td>Jumplist backward — return to previous cursor location</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-I</kbd></td>
+<td>Jumplist forward (same key as <kbd>Tab</kbd>)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-A</kbd></td>
+<td>Increment number under or after cursor</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-X</kbd></td>
+<td>Decrement number under or after cursor</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-G</kbd></td>
+<td>Show file info (path, line number, total lines)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-]</kbd></td>
+<td>Jump to tag under cursor (or LSP definition with plugin)</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-T</kbd></td>
+<td>Jump back from tag</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-V</kbd></td>
+<td>Visual-block mode (column selection)</td>
+</tr>
+</tbody></table>
+<p>Every other Ctrl- combination — including the obscure and the rarely-useful — is catalogued in <a href="08-complete-key-reference.html">Complete Key Reference</a>. When in doubt about what <kbd>Ctrl-X</kbd>, say, does in some context, look it up there.</p>
+<aside class="tip"><strong>Tip.</strong> A few Ctrl- keys are stolen by the terminal or window manager before Vim sees them: <kbd>Ctrl-S</kbd> (XON flow control), <kbd>Ctrl-Q</kbd> (XOFF), <kbd>Ctrl-Z</kbd> (suspend), <kbd>Ctrl-C</kbd> (interrupt). If a mapping doesn&#x27;t fire, that&#x27;s the first thing to check.</aside>
 <aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="08-complete-key-reference.html">Complete Key Reference</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="../22-tmux/06-copy-mode.html" rel="prev">← Copy Mode — Vim Motions in Your Scrollback</a></span>
-  <span class="pager-pos">131 / 138</span>
+  <span class="pager-pos">131 / 139</span>
   <span class="pager-next"><a class="pager-link" href="02-synonyms.html" rel="next">Synonyms and Shortcuts →</a></span>
 </nav>
 <nav class="bottomnav">

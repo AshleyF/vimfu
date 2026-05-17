@@ -1,0 +1,3286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Complete Options Reference — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-99-appendices">↑ Appendices</a>
+  &middot; <a href="../videos/99-appendices/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="08-complete-key-reference.html" rel="prev">← Complete Key Reference</a></span>
+  <span class="pager-pos">139 / 139</span>
+  <span class="pager-next"><span class="pager-disabled">end of book →</span></span>
+</nav>
+<article>
+<h1>Complete Options Reference</h1>
+<p class="subtitle">All 457 options across Vim and Neovim</p>
+<blockquote class="summary">Comprehensive lookup table of every Neovim and Vim option: name, short name, type, scope, availability, and a one-line summary.</blockquote>
+<p>Every option known to Neovim and/or Vim, with its short name, type, scope, and availability. Cross-referenced from <a href="#options.setting" class="broken">Setting Options</a>. Use this as a lookup when you encounter an option name in a config file or plugin and want to know what it controls and which editor ships it.</p>
+<p><strong>Availability:</strong> <em>N+V</em> — both Neovim and Vim. <em>N</em> — Neovim only (Vim doesn&#x27;t ship it). <em>V</em> — Vim only (Neovim removed or never implemented it). <strong>Scope:</strong> <em>global</em>, <em>win</em> (window-local), <em>buf</em> (buffer-local). <strong>Type:</strong> <em>bool</em>, <em>num</em>, <em>str</em>.</p>
+<p>Total: 457 options (350 in both, 15 Neovim-only, 92 Vim-only). For full documentation of any option, run <code>:help &#x27;{option}&#x27;</code> in Neovim or Vim.</p>
+<table>
+<thead><tr>
+<th>Option</th>
+<th>Type</th>
+<th>Scope</th>
+<th>Avail.</th>
+<th>Summary</th>
+</tr></thead><tbody>
+<tr>
+<td><code>aleph</code> / <code>al</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>ASCII code of the letter Aleph (Hebrew)</td>
+</tr>
+<tr>
+<td><code>allowrevins</code> / <code>ari</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>allow CTRL-_ in Insert mode</td>
+</tr>
+<tr>
+<td><code>altkeymap</code> / <code>akm</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>obsolete option for Farsi</td>
+</tr>
+<tr>
+<td><code>ambiwidth</code> / <code>ambw</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>what to do with Unicode chars of ambiguous width</td>
+</tr>
+<tr>
+<td><code>antialias</code> / <code>anti</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>Mac OS X: use smooth, antialiased fonts</td>
+</tr>
+<tr>
+<td><code>arabic</code> / <code>arab</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>for Arabic as a default second language</td>
+</tr>
+<tr>
+<td><code>arabicshape</code> / <code>arshape</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>do shaping for Arabic characters</td>
+</tr>
+<tr>
+<td><code>autochdir</code> / <code>acd</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>change directory to the file in the current window</td>
+</tr>
+<tr>
+<td><code>autocomplete</code> / <code>ac</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>enable automatic completion in insert mode</td>
+</tr>
+<tr>
+<td><code>autocompletedelay</code> / <code>acl</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>delay in msec before menu appears after typing</td>
+</tr>
+<tr>
+<td><code>autocompletetimeout</code> / <code>act</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>initial decay timeout for autocompletion algorithm</td>
+</tr>
+<tr>
+<td><code>autoindent</code> / <code>ai</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>take indent for new line from previous line</td>
+</tr>
+<tr>
+<td><code>autoread</code> / <code>ar</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>autom. read file when changed outside of Vim</td>
+</tr>
+<tr>
+<td><code>autoshelldir</code> / <code>asd</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>change directory to the shell&#x27;s current directory</td>
+</tr>
+<tr>
+<td><code>autowrite</code> / <code>aw</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>automatically write file if changed</td>
+</tr>
+<tr>
+<td><code>autowriteall</code> / <code>awa</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>as &#x27;autowrite&#x27;, but works with more commands</td>
+</tr>
+<tr>
+<td><code>background</code> / <code>bg</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>&quot;dark&quot; or &quot;light&quot;, used for highlight colors</td>
+</tr>
+<tr>
+<td><code>backspace</code> / <code>bs</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>how backspace works at start of line</td>
+</tr>
+<tr>
+<td><code>backup</code> / <code>bk</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>keep backup file after overwriting a file</td>
+</tr>
+<tr>
+<td><code>backupcopy</code> / <code>bkc</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>make backup as a copy, don&#x27;t rename the file</td>
+</tr>
+<tr>
+<td><code>backupdir</code> / <code>bdir</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>list of directories for the backup file</td>
+</tr>
+<tr>
+<td><code>backupext</code> / <code>bex</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>extension used for the backup file</td>
+</tr>
+<tr>
+<td><code>backupskip</code> / <code>bsk</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>no backup for files that match these patterns</td>
+</tr>
+<tr>
+<td><code>balloondelay</code> / <code>bdlay</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>delay in mS before a balloon may pop up</td>
+</tr>
+<tr>
+<td><code>ballooneval</code> / <code>beval</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>switch on balloon evaluation in the GUI</td>
+</tr>
+<tr>
+<td><code>balloonevalterm</code> / <code>bevalterm</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>switch on balloon evaluation in the terminal</td>
+</tr>
+<tr>
+<td><code>balloonexpr</code> / <code>bexpr</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>expression to show in balloon</td>
+</tr>
+<tr>
+<td><code>belloff</code> / <code>bo</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>do not ring the bell for these reasons</td>
+</tr>
+<tr>
+<td><code>binary</code> / <code>bin</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>read/write/edit file in binary mode</td>
+</tr>
+<tr>
+<td><code>bioskey</code> / <code>biosk</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>MS-DOS: use bios calls for input characters</td>
+</tr>
+<tr>
+<td><code>bomb</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>prepend a Byte Order Mark to the file</td>
+</tr>
+<tr>
+<td><code>breakat</code> / <code>brk</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>characters that may cause a line break</td>
+</tr>
+<tr>
+<td><code>breakindent</code> / <code>bri</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>wrapped line repeats indent</td>
+</tr>
+<tr>
+<td><code>breakindentopt</code> / <code>briopt</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>settings for &#x27;breakindent&#x27;</td>
+</tr>
+<tr>
+<td><code>browsedir</code> / <code>bsdir</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>which directory to start browsing in</td>
+</tr>
+<tr>
+<td><code>bufhidden</code> / <code>bh</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>what to do when buffer is no longer in window</td>
+</tr>
+<tr>
+<td><code>buflisted</code> / <code>bl</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>whether the buffer shows up in the buffer list</td>
+</tr>
+<tr>
+<td><code>buftype</code> / <code>bt</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>special type of buffer</td>
+</tr>
+<tr>
+<td><code>casemap</code> / <code>cmp</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>specifies how case of letters is changed</td>
+</tr>
+<tr>
+<td><code>cdhome</code> / <code>cdh</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>change directory to the home directory by &quot;:cd&quot;</td>
+</tr>
+<tr>
+<td><code>cdpath</code> / <code>cd</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>list of directories searched with &quot;:cd&quot;</td>
+</tr>
+<tr>
+<td><code>cedit</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>key used to open the command-line window</td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>charconvert</code> / <code>ccv</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>expression for character encoding conversion</td>
+</tr>
+<tr>
+<td><code>chistory</code> / <code>chi</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>maximum number of quickfix lists in history</td>
+</tr>
+<tr>
+<td><code>cindent</code> / <code>cin</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>do C program indenting</td>
+</tr>
+<tr>
+<td><code>cinkeys</code> / <code>cink</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>keys that trigger indent when &#x27;cindent&#x27; is set</td>
+</tr>
+<tr>
+<td><code>cinoptions</code> / <code>cino</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>how to do indenting when &#x27;cindent&#x27; is set</td>
+</tr>
+<tr>
+<td><code>cinscopedecls</code> / <code>cinsd</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>words that are recognized by &#x27;cino-g&#x27;</td>
+</tr>
+<tr>
+<td><code>cinwords</code> / <code>cinw</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>words where &#x27;si&#x27; and &#x27;cin&#x27; add an indent</td>
+</tr>
+<tr>
+<td><code>clipboard</code> / <code>cb</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>use the clipboard as the unnamed register</td>
+</tr>
+<tr>
+<td><code>clipmethod</code> / <code>cpm</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>specify order of what clipboard methods to use</td>
+</tr>
+<tr>
+<td><code>cmdheight</code> / <code>ch</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>number of lines to use for the command-line</td>
+</tr>
+<tr>
+<td><code>cmdwinheight</code> / <code>cwh</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>height of the command-line window</td>
+</tr>
+<tr>
+<td><code>colorcolumn</code> / <code>cc</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>columns to highlight</td>
+</tr>
+<tr>
+<td><code>columns</code> / <code>co</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>number of columns in the display</td>
+</tr>
+<tr>
+<td><code>comments</code> / <code>com</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>patterns that can start a comment line</td>
+</tr>
+<tr>
+<td><code>commentstring</code> / <code>cms</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>template for comments; used for fold marker</td>
+</tr>
+<tr>
+<td><code>compatible</code> / <code>cp</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>behave Vi-compatible as much as possible</td>
+</tr>
+<tr>
+<td><code>complete</code> / <code>cpt</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>specify how Insert mode completion works</td>
+</tr>
+<tr>
+<td><code>completefunc</code> / <code>cfu</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>function to be used for Insert mode completion</td>
+</tr>
+<tr>
+<td><code>completeitemalign</code> / <code>cia</code></td>
+<td>str</td>
+<td>global</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>completeopt</code> / <code>cot</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>options for Insert mode completion</td>
+</tr>
+<tr>
+<td><code>completepopup</code> / <code>cpp</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>options for the Insert mode completion info popup</td>
+</tr>
+<tr>
+<td><code>completeslash</code> / <code>csl</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>like &#x27;shellslash&#x27; for completion</td>
+</tr>
+<tr>
+<td><code>completetimeout</code> / <code>cto</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>initial decay timeout for CTRL-N and CTRL-P</td>
+</tr>
+<tr>
+<td><code>concealcursor</code> / <code>cocu</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>whether concealable text is hidden in cursor line</td>
+</tr>
+<tr>
+<td><code>conceallevel</code> / <code>cole</code></td>
+<td>num</td>
+<td>win</td>
+<td>N+V</td>
+<td>whether concealable text is shown or hidden</td>
+</tr>
+<tr>
+<td><code>confirm</code> / <code>cf</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>ask what to do about unsaved/read-only files</td>
+</tr>
+<tr>
+<td><code>conskey</code> / <code>consk</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>get keys directly from console (MS-DOS only)</td>
+</tr>
+<tr>
+<td><code>copyindent</code> / <code>ci</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>make &#x27;autoindent&#x27; use existing indent structure</td>
+</tr>
+<tr>
+<td><code>cpoptions</code> / <code>cpo</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>flags for Vi-compatible behavior</td>
+</tr>
+<tr>
+<td><code>cryptmethod</code> / <code>cm</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>type of encryption to use for file writing</td>
+</tr>
+<tr>
+<td><code>cscopepathcomp</code> / <code>cspc</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>how many components of the path to show</td>
+</tr>
+<tr>
+<td><code>cscopeprg</code> / <code>csprg</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>command to execute cscope</td>
+</tr>
+<tr>
+<td><code>cscopequickfix</code> / <code>csqf</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>use quickfix window for cscope results</td>
+</tr>
+<tr>
+<td><code>cscoperelative</code> / <code>csre</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>Use cscope.out path basename as prefix</td>
+</tr>
+<tr>
+<td><code>cscopetag</code> / <code>cst</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>use cscope for tag commands</td>
+</tr>
+<tr>
+<td><code>cscopetagorder</code> / <code>csto</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>determines &quot;:cstag&quot; search order</td>
+</tr>
+<tr>
+<td><code>cscopeverbose</code> / <code>csverb</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>give messages when adding a cscope database</td>
+</tr>
+<tr>
+<td><code>cursorbind</code> / <code>crb</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>move cursor in window as it moves in other windows</td>
+</tr>
+<tr>
+<td><code>cursorcolumn</code> / <code>cuc</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>highlight the screen column of the cursor</td>
+</tr>
+<tr>
+<td><code>cursorline</code> / <code>cul</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>highlight the screen line of the cursor</td>
+</tr>
+<tr>
+<td><code>cursorlineopt</code> / <code>culopt</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>settings for &#x27;cursorline&#x27;</td>
+</tr>
+<tr>
+<td><code>debug</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>set to &quot;msg&quot; to see all error messages</td>
+</tr>
+<tr>
+<td><code>define</code> / <code>def</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>pattern to be used to find a macro definition</td>
+</tr>
+<tr>
+<td><code>delcombine</code> / <code>deco</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>delete combining characters on their own</td>
+</tr>
+<tr>
+<td><code>dictionary</code> / <code>dict</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>list of file names used for keyword completion</td>
+</tr>
+<tr>
+<td><code>diff</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>use diff mode for the current window</td>
+</tr>
+<tr>
+<td><code>diffanchors</code> / <code>dia</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>list of {address} to force anchoring of a diff</td>
+</tr>
+<tr>
+<td><code>diffexpr</code> / <code>dex</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>expression used to obtain a diff file</td>
+</tr>
+<tr>
+<td><code>diffopt</code> / <code>dip</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>options for using diff mode</td>
+</tr>
+<tr>
+<td><code>digraph</code> / <code>dg</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>enable the entering of digraphs in Insert mode</td>
+</tr>
+<tr>
+<td><code>directory</code> / <code>dir</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>list of directory names for the swap file</td>
+</tr>
+<tr>
+<td><code>display</code> / <code>dy</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>list of flags for how to display text</td>
+</tr>
+<tr>
+<td><code>eadirection</code> / <code>ead</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>in which direction &#x27;equalalways&#x27; works</td>
+</tr>
+<tr>
+<td><code>edcompatible</code> / <code>ed</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>toggle flags of &quot;:substitute&quot; command</td>
+</tr>
+<tr>
+<td><code>emoji</code> / <code>emo</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>emoji characters are considered full width</td>
+</tr>
+<tr>
+<td><code>encoding</code> / <code>enc</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>encoding used internally</td>
+</tr>
+<tr>
+<td><code>endoffile</code> / <code>eof</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>write CTRL-Z at end of the file</td>
+</tr>
+<tr>
+<td><code>endofline</code> / <code>eol</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>write &lt;EOL&gt; for last line in file</td>
+</tr>
+<tr>
+<td><code>equalalways</code> / <code>ea</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>windows are automatically made the same size</td>
+</tr>
+<tr>
+<td><code>equalprg</code> / <code>ep</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>external program to use for &quot;=&quot; command</td>
+</tr>
+<tr>
+<td><code>errorbells</code> / <code>eb</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>ring the bell for error messages</td>
+</tr>
+<tr>
+<td><code>errorfile</code> / <code>ef</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>name of the errorfile for the QuickFix mode</td>
+</tr>
+<tr>
+<td><code>errorformat</code> / <code>efm</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>description of the lines in the error file</td>
+</tr>
+<tr>
+<td><code>esckeys</code> / <code>ek</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>recognize function keys in Insert mode</td>
+</tr>
+<tr>
+<td><code>eventignore</code> / <code>ei</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>autocommand events that are ignored</td>
+</tr>
+<tr>
+<td><code>eventignorewin</code> / <code>eiw</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>autocommand events that are ignored in a window</td>
+</tr>
+<tr>
+<td><code>expandtab</code> / <code>et</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>use spaces when &lt;Tab&gt; is inserted</td>
+</tr>
+<tr>
+<td><code>exrc</code> / <code>ex</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>read init files in the current directory</td>
+</tr>
+<tr>
+<td><code>fileencoding</code> / <code>fenc</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>file encoding for multibyte text</td>
+</tr>
+<tr>
+<td><code>fileencodings</code> / <code>fencs</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>automatically detected character encodings</td>
+</tr>
+<tr>
+<td><code>fileformat</code> / <code>ff</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>file format used for file I/O</td>
+</tr>
+<tr>
+<td><code>fileformats</code> / <code>ffs</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>automatically detected values for &#x27;fileformat&#x27;</td>
+</tr>
+<tr>
+<td><code>fileignorecase</code> / <code>fic</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>ignore case when using file names</td>
+</tr>
+<tr>
+<td><code>filetype</code> / <code>ft</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>type of file, used for autocommands</td>
+</tr>
+<tr>
+<td><code>fillchars</code> / <code>fcs</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>characters to use for displaying special items</td>
+</tr>
+<tr>
+<td><code>findfunc</code> / <code>ffu</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>function to be called for the /:find/ command</td>
+</tr>
+<tr>
+<td><code>fixendofline</code> / <code>fixeol</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>make sure last line in file has &lt;EOL&gt;</td>
+</tr>
+<tr>
+<td><code>fkmap</code> / <code>fk</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>obsolete option for Farsi</td>
+</tr>
+<tr>
+<td><code>foldclose</code> / <code>fcl</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>close a fold when the cursor leaves it</td>
+</tr>
+<tr>
+<td><code>foldcolumn</code> / <code>fdc</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>width of the column used to indicate folds</td>
+</tr>
+<tr>
+<td><code>foldenable</code> / <code>fen</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>set to display all folds open</td>
+</tr>
+<tr>
+<td><code>foldexpr</code> / <code>fde</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>expression used when &#x27;foldmethod&#x27; is &quot;expr&quot;</td>
+</tr>
+<tr>
+<td><code>foldignore</code> / <code>fdi</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>ignore lines when &#x27;foldmethod&#x27; is &quot;indent&quot;</td>
+</tr>
+<tr>
+<td><code>foldlevel</code> / <code>fdl</code></td>
+<td>num</td>
+<td>win</td>
+<td>N+V</td>
+<td>close folds with a level higher than this</td>
+</tr>
+<tr>
+<td><code>foldlevelstart</code> / <code>fdls</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>&#x27;foldlevel&#x27; when starting to edit a file</td>
+</tr>
+<tr>
+<td><code>foldmarker</code> / <code>fmr</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>markers used when &#x27;foldmethod&#x27; is &quot;marker&quot;</td>
+</tr>
+<tr>
+<td><code>foldmethod</code> / <code>fdm</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>folding type</td>
+</tr>
+<tr>
+<td><code>foldminlines</code> / <code>fml</code></td>
+<td>num</td>
+<td>win</td>
+<td>N+V</td>
+<td>minimum number of lines for a fold to be closed</td>
+</tr>
+<tr>
+<td><code>foldnestmax</code> / <code>fdn</code></td>
+<td>num</td>
+<td>win</td>
+<td>N+V</td>
+<td>maximum fold depth</td>
+</tr>
+<tr>
+<td><code>foldopen</code> / <code>fdo</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>for which commands a fold will be opened</td>
+</tr>
+<tr>
+<td><code>foldtext</code> / <code>fdt</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>expression used to display for a closed fold</td>
+</tr>
+<tr>
+<td><code>formatexpr</code> / <code>fex</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>expression used with &quot;gq&quot; command</td>
+</tr>
+<tr>
+<td><code>formatlistpat</code> / <code>flp</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>pattern used to recognize a list header</td>
+</tr>
+<tr>
+<td><code>formatoptions</code> / <code>fo</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>how automatic formatting is to be done</td>
+</tr>
+<tr>
+<td><code>formatprg</code> / <code>fp</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>name of external program used with &quot;gq&quot; command</td>
+</tr>
+<tr>
+<td><code>fsync</code> / <code>fs</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>whether to invoke fsync() after file write</td>
+</tr>
+<tr>
+<td><code>gdefault</code> / <code>gd</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>the &quot;:substitute&quot; flag &#x27;g&#x27; is default on</td>
+</tr>
+<tr>
+<td><code>grepformat</code> / <code>gfm</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>format of &#x27;grepprg&#x27; output</td>
+</tr>
+<tr>
+<td><code>grepprg</code> / <code>gp</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>program to use for &quot;:grep&quot;</td>
+</tr>
+<tr>
+<td><code>guicursor</code> / <code>gcr</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>GUI: settings for cursor shape and blinking</td>
+</tr>
+<tr>
+<td><code>guifont</code> / <code>gfn</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>GUI: Name(s) of font(s) to be used</td>
+</tr>
+<tr>
+<td><code>guifontset</code> / <code>gfs</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>GUI: Names of multibyte fonts to be used</td>
+</tr>
+<tr>
+<td><code>guifontwide</code> / <code>gfw</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>list of font names for double-wide characters</td>
+</tr>
+<tr>
+<td><code>guiheadroom</code> / <code>ghr</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>GUI: pixels room for window decorations</td>
+</tr>
+<tr>
+<td><code>guiligatures</code> / <code>gli</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>GTK GUI: ASCII characters that can form shapes</td>
+</tr>
+<tr>
+<td><code>guioptions</code> / <code>go</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>GUI: Which components and options are used</td>
+</tr>
+<tr>
+<td><code>guipty</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>GUI: try to use a pseudo-tty for &quot;:!&quot; commands</td>
+</tr>
+<tr>
+<td><code>guitablabel</code> / <code>gtl</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>GUI: custom label for a tab page</td>
+</tr>
+<tr>
+<td><code>guitabtooltip</code> / <code>gtt</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>GUI: custom tooltip for a tab page</td>
+</tr>
+<tr>
+<td><code>helpfile</code> / <code>hf</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>full path name of the main help file</td>
+</tr>
+<tr>
+<td><code>helpheight</code> / <code>hh</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>minimum height of a new help window</td>
+</tr>
+<tr>
+<td><code>helplang</code> / <code>hlg</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>preferred help languages</td>
+</tr>
+<tr>
+<td><code>hidden</code> / <code>hid</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>don&#x27;t unload buffer when it is /abandon/ed</td>
+</tr>
+<tr>
+<td><code>highlight</code> / <code>hl</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>sets highlighting mode for various occasions</td>
+</tr>
+<tr>
+<td><code>history</code> / <code>hi</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>number of command-lines that are remembered</td>
+</tr>
+<tr>
+<td><code>hkmap</code> / <code>hk</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>Hebrew keyboard mapping</td>
+</tr>
+<tr>
+<td><code>hkmapp</code> / <code>hkp</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>phonetic Hebrew keyboard mapping</td>
+</tr>
+<tr>
+<td><code>hlsearch</code> / <code>hls</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>highlight matches with last search pattern</td>
+</tr>
+<tr>
+<td><code>icon</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>let Vim set the text of the window icon</td>
+</tr>
+<tr>
+<td><code>iconstring</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>string to use for the Vim icon text</td>
+</tr>
+<tr>
+<td><code>ignorecase</code> / <code>ic</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>ignore case in search patterns</td>
+</tr>
+<tr>
+<td><code>imactivatefunc</code> / <code>imaf</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>function to enable/disable the X input method</td>
+</tr>
+<tr>
+<td><code>imactivatekey</code> / <code>imak</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>key that activates the X input method</td>
+</tr>
+<tr>
+<td><code>imcmdline</code> / <code>imc</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>use IM when starting to edit a command line</td>
+</tr>
+<tr>
+<td><code>imdisable</code> / <code>imd</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>do not use the IM in any mode</td>
+</tr>
+<tr>
+<td><code>iminsert</code> / <code>imi</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N+V</td>
+<td>use :lmap or IM in Insert mode</td>
+</tr>
+<tr>
+<td><code>imsearch</code> / <code>ims</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N+V</td>
+<td>use :lmap or IM when typing a search pattern</td>
+</tr>
+<tr>
+<td><code>imstatusfunc</code> / <code>imsf</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>function to obtain X input method status</td>
+</tr>
+<tr>
+<td><code>imstyle</code> / <code>imst</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>specifies the input style of the input method</td>
+</tr>
+<tr>
+<td><code>inccommand</code> / <code>icm</code></td>
+<td>str</td>
+<td>global</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>include</code> / <code>inc</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>pattern to be used to find an include file</td>
+</tr>
+<tr>
+<td><code>includeexpr</code> / <code>inex</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>expression used to process an include line</td>
+</tr>
+<tr>
+<td><code>incsearch</code> / <code>is</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>highlight match while typing search pattern</td>
+</tr>
+<tr>
+<td><code>indentexpr</code> / <code>inde</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>expression used to obtain the indent of a line</td>
+</tr>
+<tr>
+<td><code>indentkeys</code> / <code>indk</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>keys that trigger indenting with &#x27;indentexpr&#x27;</td>
+</tr>
+<tr>
+<td><code>infercase</code> / <code>inf</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>adjust case of match for keyword completion</td>
+</tr>
+<tr>
+<td><code>insertmode</code> / <code>im</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>start the edit of a file in Insert mode</td>
+</tr>
+<tr>
+<td><code>isfname</code> / <code>isf</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>characters included in file names and pathnames</td>
+</tr>
+<tr>
+<td><code>isident</code> / <code>isi</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>characters included in identifiers</td>
+</tr>
+<tr>
+<td><code>iskeyword</code> / <code>isk</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>characters included in keywords</td>
+</tr>
+<tr>
+<td><code>isprint</code> / <code>isp</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>printable characters</td>
+</tr>
+<tr>
+<td><code>joinspaces</code> / <code>js</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>two spaces after a period with a join command</td>
+</tr>
+<tr>
+<td><code>jumpoptions</code> / <code>jop</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>specifies how jumping is done</td>
+</tr>
+<tr>
+<td><code>key</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>encryption key</td>
+</tr>
+<tr>
+<td><code>keymap</code> / <code>kmp</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>name of a keyboard mapping</td>
+</tr>
+<tr>
+<td><code>keymodel</code> / <code>km</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>enable starting/stopping selection with keys</td>
+</tr>
+<tr>
+<td><code>keyprotocol</code> / <code>kpc</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>what keyboard protocol to use for what terminal</td>
+</tr>
+<tr>
+<td><code>keywordprg</code> / <code>kp</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>program to use for the &quot;K&quot; command</td>
+</tr>
+<tr>
+<td><code>langmap</code> / <code>lmap</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>alphabetic characters for other language mode</td>
+</tr>
+<tr>
+<td><code>langmenu</code> / <code>lm</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>language to be used for the menus</td>
+</tr>
+<tr>
+<td><code>langnoremap</code> / <code>lnr</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>do not apply &#x27;langmap&#x27; to mapped characters</td>
+</tr>
+<tr>
+<td><code>langremap</code> / <code>lrm</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>do apply &#x27;langmap&#x27; to mapped characters</td>
+</tr>
+<tr>
+<td><code>laststatus</code> / <code>ls</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>tells when last window has status lines</td>
+</tr>
+<tr>
+<td><code>lazyredraw</code> / <code>lz</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>don&#x27;t redraw while executing macros</td>
+</tr>
+<tr>
+<td><code>lhistory</code> / <code>lhi</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>maximum number of location lists in history</td>
+</tr>
+<tr>
+<td><code>linebreak</code> / <code>lbr</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>wrap long lines at a blank</td>
+</tr>
+<tr>
+<td><code>lines</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>number of lines in the display</td>
+</tr>
+<tr>
+<td><code>linespace</code> / <code>lsp</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>number of pixel lines to use between characters</td>
+</tr>
+<tr>
+<td><code>lisp</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>automatic indenting for Lisp</td>
+</tr>
+<tr>
+<td><code>lispoptions</code> / <code>lop</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>changes how Lisp indenting is done</td>
+</tr>
+<tr>
+<td><code>lispwords</code> / <code>lw</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>words that change how lisp indenting works</td>
+</tr>
+<tr>
+<td><code>list</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>show &lt;Tab&gt; and &lt;EOL&gt;</td>
+</tr>
+<tr>
+<td><code>listchars</code> / <code>lcs</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>characters for displaying in list mode</td>
+</tr>
+<tr>
+<td><code>loadplugins</code> / <code>lpl</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>load plugin scripts when starting up</td>
+</tr>
+<tr>
+<td><code>luadll</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the Lua dynamic library</td>
+</tr>
+<tr>
+<td><code>macatsui</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>Mac GUI: use ATSUI text drawing</td>
+</tr>
+<tr>
+<td><code>magic</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>changes special characters in search patterns</td>
+</tr>
+<tr>
+<td><code>makeef</code> / <code>mef</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>name of the errorfile for &quot;:make&quot;</td>
+</tr>
+<tr>
+<td><code>makeencoding</code> / <code>menc</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>encoding of external make/grep commands</td>
+</tr>
+<tr>
+<td><code>makeprg</code> / <code>mp</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>program to use for the &quot;:make&quot; command</td>
+</tr>
+<tr>
+<td><code>matchpairs</code> / <code>mps</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>pairs of characters that &quot;%&quot; can match</td>
+</tr>
+<tr>
+<td><code>matchtime</code> / <code>mat</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>tenths of a second to show matching paren</td>
+</tr>
+<tr>
+<td><code>maxcombine</code> / <code>mco</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>maximum nr of combining characters displayed</td>
+</tr>
+<tr>
+<td><code>maxfuncdepth</code> / <code>mfd</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>maximum recursive depth for user functions</td>
+</tr>
+<tr>
+<td><code>maxmapdepth</code> / <code>mmd</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>maximum recursive depth for mapping</td>
+</tr>
+<tr>
+<td><code>maxmem</code> / <code>mm</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>maximum memory (in Kbyte) used for one buffer</td>
+</tr>
+<tr>
+<td><code>maxmempattern</code> / <code>mmp</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>maximum memory (in Kbyte) used for pattern search</td>
+</tr>
+<tr>
+<td><code>maxmemtot</code> / <code>mmt</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>maximum memory (in Kbyte) used for all buffers</td>
+</tr>
+<tr>
+<td><code>menuitems</code> / <code>mis</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>maximum number of items in a menu</td>
+</tr>
+<tr>
+<td><code>messagesopt</code> / <code>mopt</code></td>
+<td>str</td>
+<td>global</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>mkspellmem</code> / <code>msm</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>memory used before /:mkspell/ compresses the tree</td>
+</tr>
+<tr>
+<td><code>modeline</code> / <code>ml</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>recognize modelines at start or end of file</td>
+</tr>
+<tr>
+<td><code>modelineexpr</code> / <code>mle</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>allow setting expression options from a modeline</td>
+</tr>
+<tr>
+<td><code>modelines</code> / <code>mls</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>number of lines checked for modelines</td>
+</tr>
+<tr>
+<td><code>modelinestrict</code> / <code>mlst</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>only allow safe options in modelines</td>
+</tr>
+<tr>
+<td><code>modifiable</code> / <code>ma</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>changes to the text are not possible</td>
+</tr>
+<tr>
+<td><code>modified</code> / <code>mod</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>buffer has been modified</td>
+</tr>
+<tr>
+<td><code>more</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>pause listings when the whole screen is filled</td>
+</tr>
+<tr>
+<td><code>mouse</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>enable the use of mouse clicks</td>
+</tr>
+<tr>
+<td><code>mousefocus</code> / <code>mousef</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>keyboard focus follows the mouse</td>
+</tr>
+<tr>
+<td><code>mousehide</code> / <code>mh</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>hide mouse pointer while typing</td>
+</tr>
+<tr>
+<td><code>mousemodel</code> / <code>mousem</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>changes meaning of mouse buttons</td>
+</tr>
+<tr>
+<td><code>mousemoveevent</code> / <code>mousemev</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>report mouse moves with &lt;MouseMove&gt;</td>
+</tr>
+<tr>
+<td><code>mousescroll</code></td>
+<td>str</td>
+<td>global</td>
+<td>N</td>
+<td>amount to scroll by when scrolling with a mouse</td>
+</tr>
+<tr>
+<td><code>mouseshape</code> / <code>mouses</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>shape of the mouse pointer in different modes</td>
+</tr>
+<tr>
+<td><code>mousetime</code> / <code>mouset</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>max time between mouse double-click</td>
+</tr>
+<tr>
+<td><code>mzquantum</code> / <code>mzq</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>the interval between polls for MzScheme threads</td>
+</tr>
+<tr>
+<td><code>mzschemedll</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the MzScheme dynamic library</td>
+</tr>
+<tr>
+<td><code>mzschemegcdll</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the MzScheme dynamic library for GC</td>
+</tr>
+<tr>
+<td><code>nrformats</code> / <code>nf</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>number formats recognized for CTRL-A command</td>
+</tr>
+<tr>
+<td><code>number</code> / <code>nu</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>print the line number in front of each line</td>
+</tr>
+<tr>
+<td><code>numberwidth</code> / <code>nuw</code></td>
+<td>num</td>
+<td>win</td>
+<td>N+V</td>
+<td>number of columns used for the line number</td>
+</tr>
+<tr>
+<td><code>omnifunc</code> / <code>ofu</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>function for filetype-specific completion</td>
+</tr>
+<tr>
+<td><code>opendevice</code> / <code>odev</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>allow reading/writing devices on MS-Windows</td>
+</tr>
+<tr>
+<td><code>operatorfunc</code> / <code>opfunc</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>function to be called for /g@/ operator</td>
+</tr>
+<tr>
+<td><code>osfiletype</code> / <code>oft</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>no longer supported</td>
+</tr>
+<tr>
+<td><code>packpath</code> / <code>pp</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>list of directories used for packages</td>
+</tr>
+<tr>
+<td><code>paragraphs</code> / <code>para</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>nroff macros that separate paragraphs</td>
+</tr>
+<tr>
+<td><code>paste</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>allow pasting text</td>
+</tr>
+<tr>
+<td><code>pastetoggle</code> / <code>pt</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>key code that causes &#x27;paste&#x27; to toggle</td>
+</tr>
+<tr>
+<td><code>patchexpr</code> / <code>pex</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>expression used to patch a file</td>
+</tr>
+<tr>
+<td><code>patchmode</code> / <code>pm</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>keep the oldest version of a file</td>
+</tr>
+<tr>
+<td><code>path</code> / <code>pa</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>list of directories searched with &quot;gf&quot; et.al.</td>
+</tr>
+<tr>
+<td><code>perldll</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the Perl dynamic library</td>
+</tr>
+<tr>
+<td><code>preserveindent</code> / <code>pi</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>preserve the indent structure when reindenting</td>
+</tr>
+<tr>
+<td><code>previewheight</code> / <code>pvh</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>height of the preview window</td>
+</tr>
+<tr>
+<td><code>previewpopup</code> / <code>pvp</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>use popup window for preview</td>
+</tr>
+<tr>
+<td><code>previewwindow</code> / <code>pvw</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>identifies the preview window</td>
+</tr>
+<tr>
+<td><code>printdevice</code> / <code>pdev</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the printer to be used for :hardcopy</td>
+</tr>
+<tr>
+<td><code>printencoding</code> / <code>penc</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>encoding to be used for printing</td>
+</tr>
+<tr>
+<td><code>printexpr</code> / <code>pexpr</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>expression used to print PostScript for :hardcopy</td>
+</tr>
+<tr>
+<td><code>printfont</code> / <code>pfn</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the font to be used for :hardcopy</td>
+</tr>
+<tr>
+<td><code>printheader</code> / <code>pheader</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>format of the header used for :hardcopy</td>
+</tr>
+<tr>
+<td><code>printmbcharset</code> / <code>pmbcs</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>CJK character set to be used for :hardcopy</td>
+</tr>
+<tr>
+<td><code>printmbfont</code> / <code>pmbfn</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>font names to be used for CJK output of :hardcopy</td>
+</tr>
+<tr>
+<td><code>printoptions</code> / <code>popt</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>controls the format of :hardcopy output</td>
+</tr>
+<tr>
+<td><code>prompt</code> / <code>prompt</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>enable prompt in Ex mode</td>
+</tr>
+<tr>
+<td><code>pumblend</code> / <code>pb</code></td>
+<td>num</td>
+<td>global</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>pumheight</code> / <code>ph</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>maximum number of items to show in the popup menu</td>
+</tr>
+<tr>
+<td><code>pumopt</code> / <code>pumopt</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>additional options for the popup menu</td>
+</tr>
+<tr>
+<td><code>pumwidth</code> / <code>pw</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>minimum width of the popup menu</td>
+</tr>
+<tr>
+<td><code>pythondll</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the Python 2 dynamic library</td>
+</tr>
+<tr>
+<td><code>pythonhome</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the Python 2 home directory</td>
+</tr>
+<tr>
+<td><code>pythonthreedll</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the Python 3 dynamic library</td>
+</tr>
+<tr>
+<td><code>pythonthreehome</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the Python 3 home directory</td>
+</tr>
+<tr>
+<td><code>pyxversion</code> / <code>pyx</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>Python version used for pyx* commands</td>
+</tr>
+<tr>
+<td><code>quickfixtextfunc</code> / <code>qftf</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>function for the text in the quickfix window</td>
+</tr>
+<tr>
+<td><code>quoteescape</code> / <code>qe</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>escape characters used in a string</td>
+</tr>
+<tr>
+<td><code>readonly</code> / <code>ro</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>disallow writing the buffer</td>
+</tr>
+<tr>
+<td><code>redrawdebug</code> / <code>rdb</code></td>
+<td>str</td>
+<td>global</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>redrawtime</code> / <code>rdt</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>timeout for &#x27;hlsearch&#x27; and /:match/ highlighting</td>
+</tr>
+<tr>
+<td><code>regexpengine</code> / <code>re</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>default regexp engine to use</td>
+</tr>
+<tr>
+<td><code>relativenumber</code> / <code>rnu</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>show relative line number in front of each line</td>
+</tr>
+<tr>
+<td><code>remap</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>allow mappings to work recursively</td>
+</tr>
+<tr>
+<td><code>renderoptions</code> / <code>rop</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>options for text rendering on Windows</td>
+</tr>
+<tr>
+<td><code>report</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>threshold for reporting nr. of lines changed</td>
+</tr>
+<tr>
+<td><code>restorescreen</code> / <code>rs</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>Win32: restore screen when exiting</td>
+</tr>
+<tr>
+<td><code>revins</code> / <code>ri</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>inserting characters will work backwards</td>
+</tr>
+<tr>
+<td><code>rightleft</code> / <code>rl</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>window is right-to-left oriented</td>
+</tr>
+<tr>
+<td><code>rightleftcmd</code> / <code>rlc</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>commands for which editing works right-to-left</td>
+</tr>
+<tr>
+<td><code>rubydll</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the Ruby dynamic library</td>
+</tr>
+<tr>
+<td><code>ruler</code> / <code>ru</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>show cursor line and column in the status line</td>
+</tr>
+<tr>
+<td><code>rulerformat</code> / <code>ruf</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>custom format for the ruler</td>
+</tr>
+<tr>
+<td><code>runtimepath</code> / <code>rtp</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>list of directories used for runtime files</td>
+</tr>
+<tr>
+<td><code>scroll</code> / <code>scr</code></td>
+<td>num</td>
+<td>win</td>
+<td>N+V</td>
+<td>lines to scroll with CTRL-U and CTRL-D</td>
+</tr>
+<tr>
+<td><code>scrollback</code> / <code>scbk</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>scrollbind</code> / <code>scb</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>scroll in window as other windows scroll</td>
+</tr>
+<tr>
+<td><code>scrollfocus</code> / <code>scf</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>scroll wheel applies to window under pointer</td>
+</tr>
+<tr>
+<td><code>scrolljump</code> / <code>sj</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>minimum number of lines to scroll</td>
+</tr>
+<tr>
+<td><code>scrolloff</code> / <code>so</code></td>
+<td>num</td>
+<td>win</td>
+<td>N+V</td>
+<td>minimum nr. of lines above and below cursor</td>
+</tr>
+<tr>
+<td><code>scrolloffpad</code> / <code>sop</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>vertically center cursor at end of file</td>
+</tr>
+<tr>
+<td><code>scrollopt</code> / <code>sbo</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>how &#x27;scrollbind&#x27; should behave</td>
+</tr>
+<tr>
+<td><code>sections</code> / <code>sect</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>nroff macros that separate sections</td>
+</tr>
+<tr>
+<td><code>secure</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>secure mode for reading .vimrc in current dir</td>
+</tr>
+<tr>
+<td><code>selection</code> / <code>sel</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>what type of selection to use</td>
+</tr>
+<tr>
+<td><code>selectmode</code> / <code>slm</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>when to use Select mode instead of Visual mode</td>
+</tr>
+<tr>
+<td><code>sessionoptions</code> / <code>ssop</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>options for /:mksession/</td>
+</tr>
+<tr>
+<td><code>shada</code> / <code>sd</code></td>
+<td>str</td>
+<td>global</td>
+<td>N</td>
+<td>use /shada/ file upon startup and exiting</td>
+</tr>
+<tr>
+<td><code>shadafile</code> / <code>sdf</code></td>
+<td>str</td>
+<td>global</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>shell</code> / <code>sh</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>name of shell to use for external commands</td>
+</tr>
+<tr>
+<td><code>shellcmdflag</code> / <code>shcf</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>flag to shell to execute one command</td>
+</tr>
+<tr>
+<td><code>shellpipe</code> / <code>sp</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>string to put output of &quot;:make&quot; in error file</td>
+</tr>
+<tr>
+<td><code>shellquote</code> / <code>shq</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>quote character(s) for around shell command</td>
+</tr>
+<tr>
+<td><code>shellredir</code> / <code>srr</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>string to put output of filter in a temp file</td>
+</tr>
+<tr>
+<td><code>shellslash</code> / <code>ssl</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>use forward slash for shell file names</td>
+</tr>
+<tr>
+<td><code>shelltemp</code> / <code>stmp</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>whether to use a temp file for shell commands</td>
+</tr>
+<tr>
+<td><code>shelltype</code> / <code>st</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>Amiga: influences how to use a shell</td>
+</tr>
+<tr>
+<td><code>shellxescape</code> / <code>sxe</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>characters to escape when &#x27;shellxquote&#x27; is (</td>
+</tr>
+<tr>
+<td><code>shellxquote</code> / <code>sxq</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>like &#x27;shellquote&#x27;, but include redirection</td>
+</tr>
+<tr>
+<td><code>shiftround</code> / <code>sr</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>round indent to multiple of shiftwidth</td>
+</tr>
+<tr>
+<td><code>shiftwidth</code> / <code>sw</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N+V</td>
+<td>number of spaces to use for (auto)indent step</td>
+</tr>
+<tr>
+<td><code>shortmess</code> / <code>shm</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>list of flags, reduce length of messages</td>
+</tr>
+<tr>
+<td><code>shortname</code> / <code>sn</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>Filenames assumed to be 8.3 chars</td>
+</tr>
+<tr>
+<td><code>showbreak</code> / <code>sbr</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>string to use at the start of wrapped lines</td>
+</tr>
+<tr>
+<td><code>showcmd</code> / <code>sc</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>show (partial) command somewhere</td>
+</tr>
+<tr>
+<td><code>showcmdloc</code> / <code>sloc</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>where to show (partial) command</td>
+</tr>
+<tr>
+<td><code>showfulltag</code> / <code>sft</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>show full tag pattern when completing tag</td>
+</tr>
+<tr>
+<td><code>showmatch</code> / <code>sm</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>briefly jump to matching bracket if insert one</td>
+</tr>
+<tr>
+<td><code>showmode</code> / <code>smd</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>message on status line to show current mode</td>
+</tr>
+<tr>
+<td><code>showtabline</code> / <code>stal</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>tells when the tab pages line is displayed</td>
+</tr>
+<tr>
+<td><code>sidescroll</code> / <code>ss</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>minimum number of columns to scroll horizontal</td>
+</tr>
+<tr>
+<td><code>sidescrolloff</code> / <code>siso</code></td>
+<td>num</td>
+<td>win</td>
+<td>N+V</td>
+<td>min. nr. of columns to left and right of cursor</td>
+</tr>
+<tr>
+<td><code>signcolumn</code> / <code>scl</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>when and how to display the sign column</td>
+</tr>
+<tr>
+<td><code>smartcase</code> / <code>scs</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>no ignore case when pattern has uppercase</td>
+</tr>
+<tr>
+<td><code>smartindent</code> / <code>si</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>smart autoindenting for C programs</td>
+</tr>
+<tr>
+<td><code>smarttab</code> / <code>sta</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>use &#x27;shiftwidth&#x27; when inserting &lt;Tab&gt;</td>
+</tr>
+<tr>
+<td><code>smoothscroll</code> / <code>sms</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>scroll by screen lines when &#x27;wrap&#x27; is set</td>
+</tr>
+<tr>
+<td><code>softtabstop</code> / <code>sts</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N+V</td>
+<td>number of spaces that &lt;Tab&gt; uses while editing</td>
+</tr>
+<tr>
+<td><code>spell</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>enable spell checking</td>
+</tr>
+<tr>
+<td><code>spellcapcheck</code> / <code>spc</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>pattern to locate end of a sentence</td>
+</tr>
+<tr>
+<td><code>spellfile</code> / <code>spf</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>files where /zg/ and /zw/ store words</td>
+</tr>
+<tr>
+<td><code>spelllang</code> / <code>spl</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>language(s) to do spell checking for</td>
+</tr>
+<tr>
+<td><code>spelloptions</code> / <code>spo</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>options for spell checking</td>
+</tr>
+<tr>
+<td><code>spellsuggest</code> / <code>sps</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>method(s) used to suggest spelling corrections</td>
+</tr>
+<tr>
+<td><code>splitbelow</code> / <code>sb</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>new window from split is below the current one</td>
+</tr>
+<tr>
+<td><code>splitkeep</code> / <code>spk</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>determines scroll behavior for split windows</td>
+</tr>
+<tr>
+<td><code>splitright</code> / <code>spr</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>new window is put right of the current one</td>
+</tr>
+<tr>
+<td><code>startofline</code> / <code>sol</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>commands move cursor to first non-blank in line</td>
+</tr>
+<tr>
+<td><code>statuscolumn</code> / <code>stc</code></td>
+<td>str</td>
+<td>win</td>
+<td>N</td>
+<td>custom format for the status column</td>
+</tr>
+<tr>
+<td><code>statusline</code> / <code>stl</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>custom format for the status line</td>
+</tr>
+<tr>
+<td><code>statuslineopt</code> / <code>stlo</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>additional options for the /status-line/</td>
+</tr>
+<tr>
+<td><code>suffixes</code> / <code>su</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>suffixes that are ignored with multiple match</td>
+</tr>
+<tr>
+<td><code>suffixesadd</code> / <code>sua</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>suffixes added when searching for a file</td>
+</tr>
+<tr>
+<td><code>swapfile</code> / <code>swf</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>whether to use a swapfile for a buffer</td>
+</tr>
+<tr>
+<td><code>swapsync</code> / <code>sws</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>how to sync the swap file</td>
+</tr>
+<tr>
+<td><code>switchbuf</code> / <code>swb</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>sets behavior when switching to another buffer</td>
+</tr>
+<tr>
+<td><code>synmaxcol</code> / <code>smc</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N+V</td>
+<td>maximum column to find syntax items</td>
+</tr>
+<tr>
+<td><code>syntax</code> / <code>syn</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>syntax to be loaded for current buffer</td>
+</tr>
+<tr>
+<td><code>tabclose</code> / <code>tcl</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>which tab page to focus when closing a tab</td>
+</tr>
+<tr>
+<td><code>tabline</code> / <code>tal</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>custom format for the console tab pages line</td>
+</tr>
+<tr>
+<td><code>tabpagemax</code> / <code>tpm</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>maximum number of tab pages for /-p/ and &quot;tab all&quot;</td>
+</tr>
+<tr>
+<td><code>tabstop</code> / <code>ts</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N+V</td>
+<td>number of spaces that &lt;Tab&gt; in file uses</td>
+</tr>
+<tr>
+<td><code>tagbsearch</code> / <code>tbs</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>use binary searching in tags files</td>
+</tr>
+<tr>
+<td><code>tagcase</code> / <code>tc</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>how to handle case when searching in tags files</td>
+</tr>
+<tr>
+<td><code>tagfunc</code> / <code>tfu</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>function to get list of tag matches</td>
+</tr>
+<tr>
+<td><code>taglength</code> / <code>tl</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>number of significant characters for a tag</td>
+</tr>
+<tr>
+<td><code>tagrelative</code> / <code>tr</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>file names in tag file are relative</td>
+</tr>
+<tr>
+<td><code>tags</code> / <code>tag</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>list of file names used by the tag command</td>
+</tr>
+<tr>
+<td><code>tagstack</code> / <code>tgst</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>push tags onto the tag stack</td>
+</tr>
+<tr>
+<td><code>tcldll</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the Tcl dynamic library</td>
+</tr>
+<tr>
+<td><code>term</code></td>
+<td></td>
+<td></td>
+<td>N+V</td>
+<td>name of the terminal</td>
+</tr>
+<tr>
+<td><code>termbidi</code> / <code>tbidi</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>terminal takes care of bi-directionality</td>
+</tr>
+<tr>
+<td><code>termencoding</code> / <code>tenc</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>character encoding used by the terminal</td>
+</tr>
+<tr>
+<td><code>termguicolors</code> / <code>tgc</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>enable 24-bit RGB color in the TUI</td>
+</tr>
+<tr>
+<td><code>termpastefilter</code> / <code>tpf</code></td>
+<td>str</td>
+<td>global</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>termsync</code> / <code>tsy</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>enable terminal sync mode for redraw</td>
+</tr>
+<tr>
+<td><code>termwinkey</code> / <code>twk</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>key that precedes a Vim command in a terminal</td>
+</tr>
+<tr>
+<td><code>termwinscroll</code> / <code>twsl</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>max number of scrollback lines in a terminal window</td>
+</tr>
+<tr>
+<td><code>termwinsize</code> / <code>tws</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>size of a terminal window</td>
+</tr>
+<tr>
+<td><code>termwintype</code> / <code>twt</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>MS-Windows: type of pty to use for terminal window</td>
+</tr>
+<tr>
+<td><code>terse</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>shorten some messages</td>
+</tr>
+<tr>
+<td><code>textauto</code> / <code>ta</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>obsolete, use &#x27;fileformats&#x27;</td>
+</tr>
+<tr>
+<td><code>textmode</code> / <code>tx</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>obsolete, use &#x27;fileformat&#x27;</td>
+</tr>
+<tr>
+<td><code>textwidth</code> / <code>tw</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N+V</td>
+<td>maximum width of text that is being inserted</td>
+</tr>
+<tr>
+<td><code>thesaurus</code> / <code>tsr</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>list of thesaurus files for keyword completion</td>
+</tr>
+<tr>
+<td><code>thesaurusfunc</code> / <code>tsrfu</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>function to be used for thesaurus completion</td>
+</tr>
+<tr>
+<td><code>tildeop</code> / <code>top</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>tilde command &quot;~&quot; behaves like an operator</td>
+</tr>
+<tr>
+<td><code>timeout</code> / <code>to</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>time out on mappings and key codes</td>
+</tr>
+<tr>
+<td><code>timeoutlen</code> / <code>tm</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>time out time in milliseconds</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>let Vim set the title of the window</td>
+</tr>
+<tr>
+<td><code>titlelen</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>percentage of &#x27;columns&#x27; used for window title</td>
+</tr>
+<tr>
+<td><code>titleold</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>old title, restored when exiting</td>
+</tr>
+<tr>
+<td><code>titlestring</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>string to use for the Vim window title</td>
+</tr>
+<tr>
+<td><code>toolbar</code> / <code>tb</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>GUI: which items to show in the toolbar</td>
+</tr>
+<tr>
+<td><code>toolbariconsize</code> / <code>tbis</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>size of the toolbar icons (for GTK 2 only)</td>
+</tr>
+<tr>
+<td><code>ttimeout</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>time out on mappings</td>
+</tr>
+<tr>
+<td><code>ttimeoutlen</code> / <code>ttm</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>time out time for key codes in milliseconds</td>
+</tr>
+<tr>
+<td><code>ttybuiltin</code> / <code>tbi</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>use built-in termcap before external termcap</td>
+</tr>
+<tr>
+<td><code>ttyfast</code> / <code>tf</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>indicates a fast terminal connection</td>
+</tr>
+<tr>
+<td><code>ttymouse</code> / <code>ttym</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>type of mouse codes generated</td>
+</tr>
+<tr>
+<td><code>ttyscroll</code> / <code>tsl</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>maximum number of lines for a scroll</td>
+</tr>
+<tr>
+<td><code>ttytype</code> / <code>tty</code></td>
+<td></td>
+<td></td>
+<td>N+V</td>
+<td>alias for &#x27;term&#x27;</td>
+</tr>
+<tr>
+<td><code>undodir</code> / <code>udir</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>where to store undo files</td>
+</tr>
+<tr>
+<td><code>undofile</code> / <code>udf</code></td>
+<td>bool</td>
+<td>buf</td>
+<td>N+V</td>
+<td>save undo information in a file</td>
+</tr>
+<tr>
+<td><code>undolevels</code> / <code>ul</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N+V</td>
+<td>maximum number of changes that can be undone</td>
+</tr>
+<tr>
+<td><code>undoreload</code> / <code>ur</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>max nr of lines to save for undo on a buffer reload</td>
+</tr>
+<tr>
+<td><code>updatecount</code> / <code>uc</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>after this many characters flush swap file</td>
+</tr>
+<tr>
+<td><code>updatetime</code> / <code>ut</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>after this many milliseconds flush swap file</td>
+</tr>
+<tr>
+<td><code>varsofttabstop</code> / <code>vsts</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>a list of number of spaces when typing &lt;Tab&gt;</td>
+</tr>
+<tr>
+<td><code>vartabstop</code> / <code>vts</code></td>
+<td>str</td>
+<td>buf</td>
+<td>N+V</td>
+<td>a list of number of spaces for &lt;Tab&gt;s</td>
+</tr>
+<tr>
+<td><code>verbose</code> / <code>vbs</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>give informative messages</td>
+</tr>
+<tr>
+<td><code>verbosefile</code> / <code>vfile</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>file to write messages in</td>
+</tr>
+<tr>
+<td><code>viewdir</code> / <code>vdir</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>directory where to store files with :mkview</td>
+</tr>
+<tr>
+<td><code>viewoptions</code> / <code>vop</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>specifies what to save for :mkview</td>
+</tr>
+<tr>
+<td><code>viminfo</code> / <code>vi</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>use .viminfo file upon startup and exiting</td>
+</tr>
+<tr>
+<td><code>viminfofile</code> / <code>vif</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>file name used for the viminfo file</td>
+</tr>
+<tr>
+<td><code>virtualedit</code> / <code>ve</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>when to use virtual editing</td>
+</tr>
+<tr>
+<td><code>visualbell</code> / <code>vb</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>use visual bell instead of beeping</td>
+</tr>
+<tr>
+<td><code>warn</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>warn for shell command when buffer was changed</td>
+</tr>
+<tr>
+<td><code>weirdinvert</code> / <code>wiv</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>for terminals that have weird inversion method</td>
+</tr>
+<tr>
+<td><code>whichwrap</code> / <code>ww</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>allow specified keys to cross line boundaries</td>
+</tr>
+<tr>
+<td><code>wildchar</code> / <code>wc</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>command-line character for wildcard expansion</td>
+</tr>
+<tr>
+<td><code>wildcharm</code> / <code>wcm</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>like &#x27;wildchar&#x27; but also works when mapped</td>
+</tr>
+<tr>
+<td><code>wildignore</code> / <code>wig</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>files matching these patterns are not completed</td>
+</tr>
+<tr>
+<td><code>wildignorecase</code> / <code>wic</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>ignore case when completing file names</td>
+</tr>
+<tr>
+<td><code>wildmenu</code> / <code>wmnu</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>use menu for command line completion</td>
+</tr>
+<tr>
+<td><code>wildmode</code> / <code>wim</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>mode for &#x27;wildchar&#x27; command-line expansion</td>
+</tr>
+<tr>
+<td><code>wildoptions</code> / <code>wop</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>specifies how command line completion is done</td>
+</tr>
+<tr>
+<td><code>winaltkeys</code> / <code>wak</code></td>
+<td>str</td>
+<td>global</td>
+<td>N+V</td>
+<td>when the windows system handles ALT keys</td>
+</tr>
+<tr>
+<td><code>winbar</code> / <code>wbr</code></td>
+<td>str</td>
+<td>win</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>winblend</code> / <code>winbl</code></td>
+<td>num</td>
+<td>win</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>winborder</code></td>
+<td>str</td>
+<td>global</td>
+<td>N</td>
+<td></td>
+</tr>
+<tr>
+<td><code>wincolor</code> / <code>wcr</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>window-local highlighting</td>
+</tr>
+<tr>
+<td><code>window</code> / <code>wi</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>nr of lines to scroll for CTRL-F and CTRL-B</td>
+</tr>
+<tr>
+<td><code>winfixbuf</code> / <code>wfb</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>keep window focused on a single buffer</td>
+</tr>
+<tr>
+<td><code>winfixheight</code> / <code>wfh</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>keep window height when opening/closing windows</td>
+</tr>
+<tr>
+<td><code>winfixwidth</code> / <code>wfw</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>keep window width when opening/closing windows</td>
+</tr>
+<tr>
+<td><code>winheight</code> / <code>wh</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>minimum number of lines for the current window</td>
+</tr>
+<tr>
+<td><code>winhighlight</code> / <code>winhl</code></td>
+<td>str</td>
+<td>win</td>
+<td>N+V</td>
+<td>window-local highlighting</td>
+</tr>
+<tr>
+<td><code>winminheight</code> / <code>wmh</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>minimum number of lines for any window</td>
+</tr>
+<tr>
+<td><code>winminwidth</code> / <code>wmw</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>minimal number of columns for any window</td>
+</tr>
+<tr>
+<td><code>winptydll</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>name of the winpty dynamic library</td>
+</tr>
+<tr>
+<td><code>winwidth</code> / <code>wiw</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>minimal number of columns for current window</td>
+</tr>
+<tr>
+<td><code>wlseat</code> / <code>wse</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>the Wayland seat to use</td>
+</tr>
+<tr>
+<td><code>wlsteal</code> / <code>wst</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>allow focus stealing functionality for Wayland</td>
+</tr>
+<tr>
+<td><code>wltimeoutlen</code> / <code>wtm</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>timeout to use when polling in Wayland</td>
+</tr>
+<tr>
+<td><code>wrap</code></td>
+<td>bool</td>
+<td>win</td>
+<td>N+V</td>
+<td>long lines wrap and continue on the next line</td>
+</tr>
+<tr>
+<td><code>wrapmargin</code> / <code>wm</code></td>
+<td>num</td>
+<td>buf</td>
+<td>N+V</td>
+<td>chars from the right where wrapping starts</td>
+</tr>
+<tr>
+<td><code>wrapscan</code> / <code>ws</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>searches wrap around the end of the file</td>
+</tr>
+<tr>
+<td><code>write</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>writing to a file is allowed</td>
+</tr>
+<tr>
+<td><code>writeany</code> / <code>wa</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>write to file with no need for &quot;!&quot; override</td>
+</tr>
+<tr>
+<td><code>writebackup</code> / <code>wb</code></td>
+<td>bool</td>
+<td>global</td>
+<td>N+V</td>
+<td>make a backup before overwriting a file</td>
+</tr>
+<tr>
+<td><code>writedelay</code> / <code>wd</code></td>
+<td>num</td>
+<td>global</td>
+<td>N+V</td>
+<td>delay this many msec for each char (for debug)</td>
+</tr>
+<tr>
+<td><code>xtermcodes</code></td>
+<td></td>
+<td></td>
+<td>V</td>
+<td>request terminal codes from an xterm</td>
+</tr>
+</tbody></table>
+<p class="see-also"><strong>See also:</strong> <span class="broken">options.setting</span></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="08-complete-key-reference.html" rel="prev">← Complete Key Reference</a></span>
+  <span class="pager-pos">139 / 139</span>
+  <span class="pager-next"><span class="pager-disabled">end of book →</span></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-99-appendices">↑ back to Appendices</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

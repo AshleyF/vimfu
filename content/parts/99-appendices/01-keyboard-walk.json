@@ -3,9 +3,9 @@
   "version": 1,
   "id": "appendix.keyboard-walk",
   "title": "Keyboard Walk",
-  "subtitle": "Every Normal-mode key, organized by physical key location.",
+  "subtitle": "Every normal-mode key, organized by physical key location.",
   "part": "appendices",
-  "summary": "A row-by-row tour of the QWERTY keyboard mapping each key to its primary Normal-mode function. Useful as a wall poster.",
+  "summary": "A row-by-row tour of the QWERTY keyboard: every unshifted key, every shifted key, with a note on Ctrl- variants. Useful as a wall poster and as a study plan.",
   "keys": [],
   "lessons": [],
   "see_also": ["appendix.complete-key-reference"],
@@ -13,77 +13,230 @@
   "blocks": [
     { "type": "heading", "level": 1, "text": "Keyboard Walk" },
 
-    { "type": "prose", "text": "Vim's bindings cover the entire keyboard. This appendix walks the QWERTY layout row-by-row, showing the *primary* Normal-mode function of each key. (Many keys also serve as second halves of operator-motion sequences — see [`appendix.complete-key-reference`](#appendix.complete-key-reference).)" },
+    { "type": "prose", "text": "Vim's bindings cover *every key on the keyboard*. Not most of them. Not the popular ones. **Every key.** Hold a finger over almost any character on a QWERTY keyboard, hit it in *normal mode*, and something happens — a motion, an operator, a prefix into a family of commands, a jump, an action. The empty key is the exception, not the rule." },
 
-    { "type": "heading", "level": 2, "text": "Number row" },
-    {
-      "type": "table",
-      "headers": ["Key",      "Function"],
-      "rows": [
-        ["1-9",     "Count prefixes"],
-        ["0",       "Start of line"],
-        ["- _",     "Up/down to first non-blank"],
-        ["= +",     "Re-indent operator (== / =motion) / next line's first non-blank"]
-      ]
+    { "type": "prose", "text": "That's also a study plan. You don't have to learn Vim's grammar all at once — you can *walk the keyboard*. Pick a key a day, hit it in normal mode, see what it does, look it up. After a few weeks the unshifted letters are second nature. Then shifted letters. Then shifted symbols. Then a handful of useful Ctrl- variants. By the time you've finished one full lap of the keyboard, you've absorbed essentially every common normal-mode command in Vim." },
+
+    { "type": "prose", "text": "The order of importance:\n\n  1. **Unshifted keys** — the bulk of day-to-day editing. Motions ({key:h}{key:j}{key:k}{key:l}, {key:w}, {key:b}, {key:e}, {key:f}, {key:t}), operators ({key:d}, {key:c}, {key:y}), modes ({key:i}, {key:a}, {key:o}, {key:v}, {key::}), basic editing ({key:u}, {key:x}, {key:p}, {key:r}, {key:s}).\n  2. **Shifted keys** — bigger, opposite, or specialised siblings of the unshifted versions. {key:A} appends at end of line, {key:O} opens above, {key:I} inserts at first non-blank, {key:N} reverses search, {key:G} jumps to last line.\n  3. **Shifted symbols** — search-word-under-cursor ({key:*}, {key:#}), sentence motions ({key:(}, {key:)}), paragraph motions ({key:{}, {key:}}), indent operators ({key:>}, {key:<}), end-of-line ({key:$}), bracket-match ({key:%}).\n  4. **Ctrl- variants** — window prefixes ({key:Ctrl-W}…), scrolling ({key:Ctrl-D}, {key:Ctrl-U}, {key:Ctrl-F}, {key:Ctrl-B}), the jumplist ({key:Ctrl-O}, {key:Ctrl-I}), inc/dec ({key:Ctrl-A}, {key:Ctrl-X}), redo ({key:Ctrl-R}), file-info ({key:Ctrl-G}). A full reference of every Ctrl- key lives in [Complete Key Reference](#appendix.complete-key-reference)."
     },
 
-    { "type": "heading", "level": 2, "text": "Top letter row" },
+    { "type": "tip", "text": "If you're just starting out: walk the unshifted keys first, in any order. {key:h}{key:j}{key:k}{key:l} obviously, but also pick the strange ones — {key:t}, {key:s}, {key:q}, {key:m}, {key:z}. Most of them either *do* something useful immediately or are *prefixes* into a family worth learning." },
+
+    { "type": "heading", "level": 2, "text": "Pass 1 — Unshifted keys" },
+
+    { "type": "heading", "level": 3, "text": "Tilde row" },
     {
       "type": "table",
       "headers": ["Key", "Function"],
       "rows": [
-        ["q",  "Record macro"],
-        ["w",  "Word forward"],
-        ["e",  "End of word"],
-        ["r",  "Replace one char"],
-        ["t",  "Till char (motion)"],
-        ["y",  "Yank operator"],
-        ["u",  "Undo"],
-        ["i",  "Insert"],
-        ["o",  "Open line below"],
-        ["p",  "Paste after"],
-        ["[ ]", "Backward / forward bracket prefixes"]
+        ["{key:`}",   "Jump to mark (precise column) — {key:`}{key:a} jumps to mark `a`, {key:`}{key:`} to last position"]
       ]
     },
 
-    { "type": "heading", "level": 2, "text": "Home row" },
+    { "type": "heading", "level": 3, "text": "Number row" },
     {
       "type": "table",
       "headers": ["Key", "Function"],
       "rows": [
-        ["a",  "Append"],
-        ["s",  "Substitute char"],
-        ["d",  "Delete operator"],
-        ["f",  "Find char (forward)"],
-        ["g",  "Prefix family (gd, gf, gv, gU…)"],
-        ["h",  "Left"],
-        ["j",  "Down"],
-        ["k",  "Up"],
-        ["l",  "Right"],
-        ["; ,", "Repeat / reverse-repeat last f/F/t/T"]
+        ["{key:1} … {key:9}", "Count prefix (e.g. {key:5}{key:j} = down 5 lines)"],
+        ["{key:0}",       "Start of line (column 0)"],
+        ["{key:-}",       "Up to first non-blank of previous line"],
+        ["{key:=}",       "Re-indent operator (`==` line, `=`+motion range, `=ap` paragraph)"]
       ]
     },
 
-    { "type": "heading", "level": 2, "text": "Bottom row" },
+    { "type": "heading", "level": 3, "text": "Top letter row" },
     {
       "type": "table",
       "headers": ["Key", "Function"],
       "rows": [
-        ["z",  "Prefix family (zz, zf, zo…)"],
-        ["x",  "Delete char under cursor"],
-        ["c",  "Change operator"],
-        ["v",  "Visual mode"],
-        ["b",  "Word backward"],
-        ["n",  "Next search match"],
-        ["m",  "Set mark"],
-        [", . /", ", reverse f/t — . repeat — / search"]
+        ["{key:q}", "Record macro into register (`qa`…`q`); replay with `@a`"],
+        ["{key:w}", "Word forward (motion)"],
+        ["{key:e}", "End of word (motion)"],
+        ["{key:r}", "Replace one character"],
+        ["{key:t}", "Till char on line (motion — stops *before* match)"],
+        ["{key:y}", "Yank operator (copy)"],
+        ["{key:u}", "Undo"],
+        ["{key:i}", "Insert before cursor"],
+        ["{key:o}", "Open new line below and insert"],
+        ["{key:p}", "Paste after cursor"],
+        ["{key:[}", "Backward-prefix family (`[c` prev hunk, `[m` prev method, `[{` prev `{`)"],
+        ["{key:]}", "Forward-prefix family (`]c`, `]m`, `]}`)"],
+        ["{key:\\}", "Default `<Leader>` in most configs (custom mappings)"]
       ]
     },
 
-    { "type": "heading", "level": 2, "text": "Capital letters (the un-shifted's siblings)" },
+    { "type": "heading", "level": 3, "text": "Home row" },
     {
-      "type": "prose", "text": "Most uppercase keys are *bigger* or *opposite* versions of their lowercase counterparts:\n\n  • {key:I} / {key:A} — Insert at line start / Append at line end (vs. cursor position).\n  • {key:O} — Open line above (vs. below).\n  • {key:E}/{key:W}/{key:B} — WORD-flavored versions of {key:e}/{key:w}/{key:b}.\n  • {key:F}/{key:T} — backward versions of {key:f}/{key:t}.\n  • {key:N} — previous search match.\n  • {key:G} — go to last line (vs. {key:g}{key:g} go to first)."
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:a}", "Append after cursor"],
+        ["{key:s}", "Substitute one character (delete + insert)"],
+        ["{key:d}", "Delete operator (cut)"],
+        ["{key:f}", "Find char on line forward (motion — lands *on* match)"],
+        ["{key:g}", "Prefix family (`gg`, `gd`, `gf`, `gv`, `gU`, `gu`, `g~`, `gq`, …)"],
+        ["{key:h}", "Left"],
+        ["{key:j}", "Down"],
+        ["{key:k}", "Up"],
+        ["{key:l}", "Right"],
+        ["{key:;}", "Repeat last `f`/`F`/`t`/`T` in same direction"],
+        ["{key:'}", "Jump to mark (line, first non-blank) — {key:'}{key:a} jumps to mark `a`, {key:'}{key:'} to last position"]
+      ]
     },
+
+    { "type": "heading", "level": 3, "text": "Bottom row" },
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:z}", "Prefix family (`zz` centre, `zt` top, `zb` bottom, `zf` fold, `zo`/`zc` open/close fold, `zM`/`zR` close/open all)"],
+        ["{key:x}", "Delete char under cursor"],
+        ["{key:c}", "Change operator (delete + enter *insert mode*)"],
+        ["{key:v}", "Visual mode (charwise)"],
+        ["{key:b}", "Word backward (motion)"],
+        ["{key:n}", "Next search match"],
+        ["{key:m}", "Set mark (`ma` marks current position as `a`)"],
+        ["{key:,}", "Reverse-repeat last `f`/`F`/`t`/`T`"],
+        ["{key:.}", "Repeat last change (the killer feature)"],
+        ["{key:/}", "Search forward"]
+      ]
+    },
+
+    { "type": "heading", "level": 3, "text": "Special keys (no shift, no row)" },
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:Esc}",       "Cancel / return to *normal mode*"],
+        ["{key:Enter}",     "Down to first non-blank of next line (same as `+`)"],
+        ["{key:Space}",     "Right one column (same as `l`)"],
+        ["{key:Backspace}", "Left one column (same as `h`)"],
+        ["{key:Tab}",       "Next jumplist entry (same as `Ctrl-I`)"]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "Pass 2 — Shifted keys" },
+
+    { "type": "prose", "text": "Once the unshifted keys feel automatic, walk the keyboard again with shift held. The pattern: shifted-letter = *bigger / opposite / line-flavored* version of its unshifted counterpart. Shifted-number = a punctuation symbol with its own meaning. Shifted-punctuation = often a paired motion or an operator." },
+
+    { "type": "heading", "level": 3, "text": "Tilde row" },
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:~}", "Toggle case of character under cursor (advances cursor)"]
+      ]
+    },
+
+    { "type": "heading", "level": 3, "text": "Shifted number row" },
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:!}", "Filter operator — run buffer range through external shell command (`!ap`)"],
+        ["{key:@}", "Play macro from register (`@a` plays register `a`, `@@` replays last)"],
+        ["{key:#}", "Search backward for word under cursor"],
+        ["{key:$}", "End of line"],
+        ["{key:%}", "Jump to matching `(`/`)`/`[`/`]`/`{`/`}`; also %-range in Ex"],
+        ["{key:^}", "First non-blank of line"],
+        ["{key:&}", "Repeat last `:s` substitution on current line"],
+        ["{key:*}", "Search forward for word under cursor"],
+        ["{key:(}", "Sentence backward"],
+        ["{key:)}", "Sentence forward"],
+        ["{key:_}", "Down to first non-blank (same as `-`, but next line)"],
+        ["{key:+}", "Down to first non-blank of next line (same as Enter)"]
+      ]
+    },
+
+    { "type": "heading", "level": 3, "text": "Shifted top letter row" },
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:Q}",  "In Neovim: replay last macro. In classic Vim: enter Ex mode"],
+        ["{key:W}",  "WORD forward (whitespace-delimited, vs lowercase `w` word-delimited)"],
+        ["{key:E}",  "End of WORD"],
+        ["{key:R}",  "Enter *replace mode* (overwrite as you type)"],
+        ["{key:T}",  "Till char backward"],
+        ["{key:Y}",  "Yank line (classic Vim) / yank to end of line (Neovim default)"],
+        ["{key:U}",  "Undo all changes on current line (rarely used)"],
+        ["{key:I}",  "Insert at first non-blank of line"],
+        ["{key:O}",  "Open new line *above* and insert"],
+        ["{key:P}",  "Paste *before* cursor"],
+        ["{key:{}", "Paragraph backward"],
+        ["{key:}}", "Paragraph forward"],
+        ["{key:|}", "Go to column N (`5|` = column 5)"]
+      ]
+    },
+
+    { "type": "heading", "level": 3, "text": "Shifted home row" },
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:A}",  "Append at end of line"],
+        ["{key:S}",  "Substitute whole line (delete + insert)"],
+        ["{key:D}",  "Delete to end of line"],
+        ["{key:F}",  "Find char on line backward"],
+        ["{key:G}",  "Go to last line (`5G` = line 5)"],
+        ["{key:H}",  "Top of screen (high)"],
+        ["{key:J}",  "Join current line with next"],
+        ["{key:K}",  "Lookup keyword under cursor (`man`, `:help`, or LSP hover)"],
+        ["{key:L}",  "Bottom of screen (low)"],
+        ["{key::}",  "Enter *command-line mode* — type an Ex command"],
+        ["{key:\"}", "Register prefix (`\"ap` paste from register `a`, `\"+y` yank to system clipboard)"]
+      ]
+    },
+
+    { "type": "heading", "level": 3, "text": "Shifted bottom row" },
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:Z}",  "Save/quit prefix (`ZZ` save + quit, `ZQ` quit without saving)"],
+        ["{key:X}",  "Delete char *before* cursor"],
+        ["{key:C}",  "Change to end of line"],
+        ["{key:V}",  "Visual-line mode"],
+        ["{key:B}",  "WORD backward"],
+        ["{key:N}",  "Previous search match"],
+        ["{key:M}",  "Middle of screen"],
+        ["{key:<}",  "Dedent operator (`<<` line, `<`+motion range)"],
+        ["{key:>}",  "Indent operator (`>>` line, `>`+motion range)"],
+        ["{key:?}",  "Search backward"]
+      ]
+    },
+
+    { "type": "heading", "level": 2, "text": "Pass 3 — Ctrl- variants" },
+
+    { "type": "prose", "text": "Most letters also have a Ctrl- variant. Many of them are useful, a handful are essential, and a few do nothing in *normal mode* at all. The most worthwhile to learn:" },
+
+    {
+      "type": "table",
+      "headers": ["Key", "Function"],
+      "rows": [
+        ["{key:Ctrl-W}", "Window prefix ({key:Ctrl-W}{key:h}/{key:j}/{key:k}/{key:l} navigate, {key:Ctrl-W}{key:s}/{key:v} split, {key:Ctrl-W}{key:c} close, …)"],
+        ["{key:Ctrl-R}", "Redo (undo of undo)"],
+        ["{key:Ctrl-D}", "Scroll half-page down"],
+        ["{key:Ctrl-U}", "Scroll half-page up"],
+        ["{key:Ctrl-F}", "Scroll full page forward"],
+        ["{key:Ctrl-B}", "Scroll full page backward"],
+        ["{key:Ctrl-E}", "Scroll one line down (cursor stays)"],
+        ["{key:Ctrl-Y}", "Scroll one line up (cursor stays)"],
+        ["{key:Ctrl-O}", "Jumplist backward — return to previous cursor location"],
+        ["{key:Ctrl-I}", "Jumplist forward (same key as {key:Tab})"],
+        ["{key:Ctrl-A}", "Increment number under or after cursor"],
+        ["{key:Ctrl-X}", "Decrement number under or after cursor"],
+        ["{key:Ctrl-G}", "Show file info (path, line number, total lines)"],
+        ["{key:Ctrl-]}", "Jump to tag under cursor (or LSP definition with plugin)"],
+        ["{key:Ctrl-T}", "Jump back from tag"],
+        ["{key:Ctrl-V}", "Visual-block mode (column selection)"]
+      ]
+    },
+
+    { "type": "prose", "text": "Every other Ctrl- combination — including the obscure and the rarely-useful — is catalogued in [Complete Key Reference](#appendix.complete-key-reference). When in doubt about what {key:Ctrl-X}, say, does in some context, look it up there." },
+
+    { "type": "tip", "text": "A few Ctrl- keys are stolen by the terminal or window manager before Vim sees them: {key:Ctrl-S} (XON flow control), {key:Ctrl-Q} (XOFF), {key:Ctrl-Z} (suspend), {key:Ctrl-C} (interrupt). If a mapping doesn't fire, that's the first thing to check." },
 
     { "type": "qr", "topic": "appendix.keyboard-walk" },
     { "type": "buy-prompt" }
