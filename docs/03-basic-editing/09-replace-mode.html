@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>*replace mode* — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-03-basic-editing">↑ Basic Editing</a>
+  &middot; <a href="../videos/03-basic-editing/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="08-replace-char.html" rel="prev">← Replace a Character</a></span>
+  <span class="pager-pos">19 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="../04-search-find/01-pattern.html" rel="next">Pattern Search →</a></span>
+</nav>
+<article>
+<h1><em>replace mode</em></h1>
+<p class="subtitle"><kbd>R</kbd> — overwrite as you type. <kbd>r</kbd>{c} — overwrite one character.</p>
+<p class="meta">Keys: <kbd>R</kbd>, <kbd>r</kbd></p>
+<blockquote class="summary">R enters <em>replace mode</em>: each typed key overwrites instead of inserting. r{c} overwrites a single character without entering <em>replace mode</em>.</blockquote>
+<p><em>insert mode</em> pushes characters around: typing in the middle of a word <em>grows</em> the word. <em>replace mode</em> is different — each typed character <em>overwrites</em> the one under the cursor, then advances. Typing 5 characters in <em>replace mode</em> replaces 5 existing characters.</p>
+<figure class="keys">
+<figcaption>Replace one char with x (stays in Normal)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>r</kbd></td><td></td></tr>
+<tr><td><kbd>x</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Enter <em>replace mode</em> (continuous overwrite)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>R</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="105"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/1-4yyxoKlFc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Replace Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>r — replace one character</figcaption></figure>
+<figure class="lesson-embed" data-lesson="106"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/yc93Pvgr6-g?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Single Replace" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>R — <em>replace mode</em></figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> <kbd>r</kbd> is one-shot: replace one character, stay in Normal. <kbd>R</kbd> is continuous: enter the mode, overwrite as long as you keep typing. Pick based on how many you have to fix.</aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="08-replace-char.html">Replace a Character</a>, <a href="../01-foundations/02-modes-overview.html">The Modes</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="08-replace-char.html" rel="prev">← Replace a Character</a></span>
+  <span class="pager-pos">19 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="../04-search-find/01-pattern.html" rel="next">Pattern Search →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-03-basic-editing">↑ back to Basic Editing</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

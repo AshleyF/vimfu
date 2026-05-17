@@ -9,83 +9,199 @@
   "summary": "The real product isn't the editor. It's the editing language: a small grammar of motions, operators, and text objects that composes into thousands of commands. The grammar runs in dozens of editors, browsers, and IDEs.",
   "keys": [],
   "lessons": [],
-  "see_also": ["foundations.you-dont-need-vim", "foundations.universal-grammar", "foundations.modal-editing"],
-
+  "see_also": [
+    "foundations.you-dont-need-vim",
+    "foundations.universal-grammar",
+    "foundations.modal-editing"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Vim Is a Language, Not an Editor" },
-
-    { "type": "prose", "text": "Stop thinking of Vim as a program. Start thinking of it as a language for manipulating text. The program *vim* on your terminal happens to be the most complete implementation of that language, but it isn't the only one. The language has implementations in browsers, in IDEs, in IDE-of-IDEs like Visual Studio Code, in shells, in pagers, and in editors that started life with completely different design goals." },
-
-    { "type": "prose", "text": "When you learn Vim, you are not learning *vim* the program. You are learning a grammar of edits — a way of expressing intent — that happens to be supported by hundreds of programs. The grammar is the asset. The program is one runtime among many." },
-
-    { "type": "heading", "level": 2, "text": "The Implementations" },
-
-    { "type": "prose", "text": "These tools all speak the same editing language. Most don't reach 100% coverage; the operator/motion/text-object core is universal." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Vim Is a Language, Not an Editor"
+    },
+    {
+      "type": "prose",
+      "text": "Stop thinking of Vim as a program. Start thinking of it as a language for manipulating text. The program *vim* on your terminal happens to be the most complete implementation of that language, but it isn't the only one. The language has implementations in browsers, in IDEs, in IDE-of-IDEs like Visual Studio Code, in shells, in pagers, and in editors that started life with completely different design goals."
+    },
+    {
+      "type": "prose",
+      "text": "When you learn Vim, you are not learning *vim* the program. You are learning a grammar of edits — a way of expressing intent — that happens to be supported by hundreds of programs. The grammar is the asset. The program is one runtime among many."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The Implementations"
+    },
+    {
+      "type": "prose",
+      "text": "These tools all speak the same editing language. Most don't reach 100% coverage; the operator/motion/text-object core is universal."
+    },
     {
       "type": "table",
-      "headers": ["Where",                       "How",                                                     "Coverage"],
+      "headers": [
+        "Where",
+        "How",
+        "Coverage"
+      ],
       "rows": [
-        ["VS Code",                              "VSCodeVim extension",                                      "Operators, motions, text objects, registers, marks, macros, ex"],
-        ["JetBrains (IntelliJ, PyCharm, ...)",  "IdeaVim plugin",                                           "Same as VSCodeVim, plus IDE-aware extensions like {key:g}{key:d} → Go to Definition"],
-        ["Visual Studio (Microsoft)",            "VsVim",                                                    "Operators, motions, ex commands, search & replace"],
-        ["Emacs",                                "evil-mode",                                                "The most complete non-vim implementation; even macros and registers"],
-        ["Sublime Text",                         "Vintageous (or built-in Vintage)",                         "Operators, motions, text objects"],
-        ["Xcode",                                "Built-in Vim mode (recent)",                               "Basic operators and motions"],
-        ["Browsers (Chrome, Firefox, Safari)",  "Vimium / Tridactyl / Surfingkeys",                         "Page-level: {key:j}/{key:k} scroll, {key:f} link-hint, {key:g}{key:g} top, {key:G} bottom, {key:/} search"],
-        ["Shell readline",                       "`set -o vi`",                       "{key:Esc} switches to a `vi`-mode line editor with operators and motions"],
-        ["zsh",                                  "`bindkey -v`",                            "Same idea, with better defaults"],
-        ["less / man pages",                     "Built-in",                                                 "{key:hjkl}, {key:gg}/{key:G}, {key:/}, {key:n}/{key:N}, marks"],
-        ["Helix editor",                         "Built-in (modal by design, slightly different grammar)",   "Selection-first variant of the same grammar"],
-        ["Kakoune",                              "Built-in (also selection-first)",                          "Different verb/noun order, same primitives"]
+        [
+          "VS Code",
+          "VSCodeVim extension",
+          "Operators, motions, text objects, registers, marks, macros, ex"
+        ],
+        [
+          "JetBrains (IntelliJ, PyCharm, ...)",
+          "IdeaVim plugin",
+          "Same as VSCodeVim, plus IDE-aware extensions like {key:g}{key:d} → Go to Definition"
+        ],
+        [
+          "Visual Studio (Microsoft)",
+          "VsVim",
+          "Operators, motions, ex commands, search & replace"
+        ],
+        [
+          "Emacs",
+          "evil-mode",
+          "The most complete non-vim implementation; even macros and registers"
+        ],
+        [
+          "Sublime Text",
+          "Vintageous (or built-in Vintage)",
+          "Operators, motions, text objects"
+        ],
+        [
+          "Xcode",
+          "Built-in Vim mode (recent)",
+          "Basic operators and motions"
+        ],
+        [
+          "Browsers (Chrome, Firefox, Safari)",
+          "Vimium / Tridactyl / Surfingkeys",
+          "Page-level: {key:j}/{key:k} scroll, {key:f} link-hint, {key:g}{key:g} top, {key:G} bottom, {key:/} search"
+        ],
+        [
+          "Shell readline",
+          "`set -o vi`",
+          "{key:Esc} switches to a `vi`-mode line editor with operators and motions"
+        ],
+        [
+          "zsh",
+          "`bindkey -v`",
+          "Same idea, with better defaults"
+        ],
+        [
+          "less / man pages",
+          "Built-in",
+          "{key:hjkl}, {key:gg}/{key:G}, {key:/}, {key:n}/{key:N}, marks"
+        ],
+        [
+          "Helix editor",
+          "Built-in (modal by design, slightly different grammar)",
+          "Selection-first variant of the same grammar"
+        ],
+        [
+          "Kakoune",
+          "Built-in (also selection-first)",
+          "Different verb/noun order, same primitives"
+        ]
       ]
     },
-
-    { "type": "prose", "text": "The pattern: anywhere people edit text seriously and somebody noticed, a Vim mode showed up. The grammar is too useful and too compact not to port." },
-
-    { "type": "heading", "level": 2, "text": "Why a Language Beats a Program" },
-
-    { "type": "prose", "text": "A program ships with a UI, a config format, an ecosystem of plugins, a community, and a runtime. All of that is downstream of one decision: *what does the input layer look like?* For Vim, the input layer is a small composable grammar with about 15 operators, 30 motions, and a dozen text objects. Everything else is implementation." },
-
-    { "type": "prose", "text": "If you internalize the grammar, you carry it across every editor and every machine. The investment is in your fingers and your model of editing — not in any particular configuration file. Move to a new computer, install the Vim extension for whatever editor your team uses, turn it on. You're productive in five minutes." },
-
+    {
+      "type": "prose",
+      "text": "The pattern: anywhere people edit text seriously and somebody noticed, a Vim mode showed up. The grammar is too useful and too compact not to port."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Why a Language Beats a Program"
+    },
+    {
+      "type": "prose",
+      "text": "A program ships with a UI, a config format, an ecosystem of plugins, a community, and a runtime. All of that is downstream of one decision: *what does the input layer look like?* For Vim, the input layer is a small composable grammar with about 15 operators, 30 motions, and a dozen text objects. Everything else is implementation."
+    },
+    {
+      "type": "prose",
+      "text": "If you internalize the grammar, you carry it across every editor and every machine. The investment is in your fingers and your model of editing — not in any particular configuration file. Move to a new computer, install the Vim extension for whatever editor your team uses, turn it on. You're productive in five minutes."
+    },
     {
       "type": "internals",
       "title": "Why So Many Implementations Exist",
       "text": "Modal editing is one of the few input designs that is *cheaper* to add to an editor than a complete custom shortcut system. The full Vim normal-mode core is about 50 commands. Once you implement an input state machine for `<count><operator><motion>`, you get hundreds of commands for free, because they compose. A non-modal editor with the equivalent expressive power needs hundreds of bespoke shortcuts, each individually documented, learned, and chorded.\n\nThis is also why every Vim implementation eventually grows beyond the basics. Once the operator/motion plumbing is in place, adding ex commands, registers, and macros is incremental work. The grammar pulls implementations toward feature parity by its own gravity."
     },
-
-    { "type": "heading", "level": 2, "text": "What Travels and What Doesn't" },
-
-    { "type": "prose", "text": "When you switch editors, the editing *grammar* travels: every operator, motion, text object, register, mark, search, and macro behaves identically. What stays behind is your configuration:" },
-
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "What Travels and What Doesn't"
+    },
+    {
+      "type": "prose",
+      "text": "When you switch editors, the editing *grammar* travels: every operator, motion, text object, register, mark, search, and macro behaves identically. What stays behind is your configuration:"
+    },
     {
       "type": "table",
-      "headers": ["Travels everywhere",                    "Stays in vim/Neovim only"],
+      "headers": [
+        "Travels everywhere",
+        "Stays in vim/Neovim only"
+      ],
       "rows": [
-        ["{key:d}{key:i}{key:w}",                          "Custom Vimscript autocmds"],
-        ["{key:c}{key:a}{key:p}",                          "Tree-sitter highlighting"],
-        ["{key:y}{key:i}{key:'}",                          "Built-in LSP integration"],
-        ["{key:gU}{key:a}{key:p}",                         "Plugin managers"],
-        ["{key:.}",                                        "init.lua / vimrc"],
-        ["{key:q}{key:a} ... {key:q}",                     "Themes"],
-        ["{key:@}{key:a}",                                 "Status line plugins"],
-        ["{key:/}, {key:n}, {key:N}",                      "{key::}{key:make}, {key::}{key:terminal}"]
+        [
+          "{key:d}{key:i}{key:w}",
+          "Custom Vimscript autocmds"
+        ],
+        [
+          "{key:c}{key:a}{key:p}",
+          "Tree-sitter highlighting"
+        ],
+        [
+          "{key:y}{key:i}{key:'}",
+          "Built-in LSP integration"
+        ],
+        [
+          "{key:gU}{key:a}{key:p}",
+          "Plugin managers"
+        ],
+        [
+          "{key:.}",
+          "init.lua / vimrc"
+        ],
+        [
+          "{key:q}{key:a} ... {key:q}",
+          "Themes"
+        ],
+        [
+          "{key:@}{key:a}",
+          "Status line plugins"
+        ],
+        [
+          "{key:/}, {key:n}, {key:N}",
+          "{key::}{key:make}, {key::}{key:terminal}"
+        ]
       ]
     },
-
-    { "type": "prose", "text": "If you're tempted to build a custom Vim configuration as your first move, don't. Learn the language first. The configuration only matters once you know what you're configuring." },
-
+    {
+      "type": "prose",
+      "text": "If you're tempted to build a custom Vim configuration as your first move, don't. Learn the language first. The configuration only matters once you know what you're configuring."
+    },
     {
       "type": "tip",
       "text": "If your team uses VS Code or a JetBrains IDE, install the Vim extension and stay there. Spending six months mastering Neovim configuration to get back to where you already were is a bad trade. The grammar is the prize. The program is interchangeable."
     },
-
-    { "type": "heading", "level": 2, "text": "Reading This Book" },
-
-    { "type": "prose", "text": "Throughout this book, when we say {key:d}{key:i}{key:w} or {key:c}{key:a}{key:p}, picture the keystrokes — not the editor running them. Whatever editor you have a Vim mode in is fine. The chapters on configuration, plugins, and Neovim-specific features (LSP, tree-sitter, terminal mode) are clearly marked. The other 80 percent of the book is about the language, and that 80 percent is where you should spend your attention." },
-
-    { "type": "qr", "topic": "foundations.editing-language" },
-    { "type": "buy-prompt" }
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reading This Book"
+    },
+    {
+      "type": "prose",
+      "text": "Throughout this book, when we say {key:d}{key:i}{key:w} or {key:c}{key:a}{key:p}, picture the keystrokes — not the editor running them. Whatever editor you have a Vim mode in is fine. The chapters on configuration, plugins, and Neovim-specific features (LSP, tree-sitter, *terminal mode*) are clearly marked. The other 80 percent of the book is about the language, and that 80 percent is where you should spend your attention."
+    },
+    {
+      "type": "qr",
+      "topic": "foundations.editing-language"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

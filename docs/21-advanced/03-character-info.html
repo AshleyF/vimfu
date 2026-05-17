@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Character Info ({key:ga}, {key:g8}, {key:g} {key:Ctrl-G}) — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-21-advanced">↑ Advanced</a>
+  &middot; <a href="../videos/21-advanced/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=caf%C3%A9%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-terminal.html" rel="prev">← Terminal Inside Vim</a></span>
+  <span class="pager-pos">118 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="04-gx-g-less.html" rel="next">{key:gx} and {key:g&lt;} →</a></span>
+</nav>
+<article>
+<h1>Character Info (<kbd>ga</kbd>, <kbd>g8</kbd>, <kbd>g</kbd> <kbd>Ctrl-G</kbd>)</h1>
+<p class="subtitle">What is this character? Where am I?</p>
+<p class="meta">Keys: <kbd>ga</kbd>, <kbd>g8</kbd>, <kbd>g Ctrl-G</kbd>, <kbd>Ctrl-G</kbd></p>
+<blockquote class="summary">ga shows the codepoint of the character under cursor (decimal/hex/octal). g8 shows the UTF-8 byte sequence. g Ctrl-G gives a verbose location report (line/col/word count/byte position).</blockquote>
+<h2>Character Info</h2>
+<p>Three diagnostic commands tell you what&#x27;s actually in the file at the cursor — useful when something <em>looks</em> normal but isn&#x27;t.</p>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Shows</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>g</kbd><kbd>a</kbd></td>
+<td>Codepoint of char under cursor (Dec, Hex, Oct)</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>8</kbd></td>
+<td>UTF-8 byte sequence of char under cursor</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-G</kbd></td>
+<td>Brief: filename, modified flag, position percentage</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>Ctrl-G</kbd></td>
+<td>Verbose: word/char/byte counts and cursor position</td>
+</tr>
+</tbody></table>
+<aside class="tip"><strong>Tip.</strong> <kbd>Ctrl-G</kbd> (no g) is the everyday &quot;where am I&quot; — show filename and position percentage. Quick and useful.</aside>
+<section class="example">
+<h3 class="example-title">Worked example — ga</h3>
+<p class="example-summary">Inspect the byte under the cursor.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot missing">[missing screenshot advanced.character-info/frame_01.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>ga</kbd> · <span class="step-cap">ga — decimal/hex/octal codepoint, plus digraph if any.</span></figcaption>
+<div class="screenshot missing">[missing screenshot advanced.character-info/frame_02.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=caf%C3%A9%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0491 Terminal Mode (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0492 ga / g8 — Character Info (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../15-prefix-families/01-g-overview.html">The {key:g} Family</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-terminal.html" rel="prev">← Terminal Inside Vim</a></span>
+  <span class="pager-pos">118 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="04-gx-g-less.html" rel="next">{key:gx} and {key:g&lt;} →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-21-advanced">↑ back to Advanced</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

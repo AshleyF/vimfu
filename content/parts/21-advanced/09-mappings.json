@@ -18,7 +18,7 @@
   ],
   "lessons": [],
   "see_also": [
-    "advanced.op-pending",
+    "text-objects.op-pending",
     "advanced.config",
     "ex.set"
   ],
@@ -72,7 +72,7 @@
         [
           "{key::}{key:s}{key:m}{key:a}{key:p}",
           "Select only",
-          "Almost never. Select mode behaves like a text-replacing selection (think other editors)."
+          "Almost never. *select mode* behaves like a text-replacing selection (think other editors)."
         ],
         [
           "{key::}{key:o}{key:m}{key:a}{key:p}",
@@ -155,7 +155,7 @@
     {
       "type": "internals",
       "title": "The mapping-mode matrix",
-      "text": "Vim's documentation summarizes the system with a 7×8 matrix. Each row is a mode; each column is a `:map` command that fires in that mode. The diagonal you want is the *minimum-overlap* set:\n\n```\n              Cmd        Normal  Visual  Select  Op-pending  Insert  Cmdline  Term-job\n              ---        ------  ------  ------  ----------  ------  -------  --------\n  :map         (-)         •       •       •         •\n  :nmap        n           •\n  :vmap        v                   •       •\n  :xmap        x                   •\n  :smap        s                           •\n  :omap        o                                     •\n  :map!        (-)                                              •        •\n  :imap        i                                              •\n  :cmap        c                                                        •\n  :tmap        t                                                                  •\n```\n\nRead it as: *which `:map` command fires in which mode*. Bare `:map` lights up four modes — that's why it's almost never the right answer. `:vmap` accidentally hits Select mode too, which is why `:xmap` (Visual-only) is what most people actually want. `:omap` is the only way to define a custom text object or operator-aware motion; it pairs with `:onoremap` and is the entire reason operator-pending (see [`advanced.op-pending`](#advanced.op-pending)) is exposed as its own mode in the first place.\n\nThe `nore` variants ({key::}{key:n}{key:n}{key:o}{key:r}{key:e}{key:m}{key:a}{key:p} etc.) occupy the same columns but disable recursive expansion of the right-hand side. Run {key::}{key:h}{key:e}{key:l}{key:p}{key: }{key:m}{key:a}{key:p}{key:-}{key:m}{key:o}{key:d}{key:e}{key:s} for the canonical version."
+      "text": "Vim's documentation summarizes the system with a 7×8 matrix. Each row is a mode; each column is a `:map` command that fires in that mode. The diagonal you want is the *minimum-overlap* set:\n\n```\n              Cmd        Normal  Visual  Select  Op-pending  Insert  Cmdline  Term-job\n              ---        ------  ------  ------  ----------  ------  -------  --------\n  :map         (-)         •       •       •         •\n  :nmap        n           •\n  :vmap        v                   •       •\n  :xmap        x                   •\n  :smap        s                           •\n  :omap        o                                     •\n  :map!        (-)                                              •        •\n  :imap        i                                              •\n  :cmap        c                                                        •\n  :tmap        t                                                                  •\n```\n\nRead it as: *which `:map` command fires in which mode*. Bare `:map` lights up four modes — that's why it's almost never the right answer. `:vmap` accidentally hits *select mode* too, which is why `:xmap` (Visual-only) is what most people actually want. `:omap` is the only way to define a custom text object or operator-aware motion; it pairs with `:onoremap` and is the entire reason operator-pending (see [`text-objects.op-pending`](#text-objects.op-pending)) is exposed as its own mode in the first place.\n\nThe `nore` variants ({key::}{key:n}{key:n}{key:o}{key:r}{key:e}{key:m}{key:a}{key:p} etc.) occupy the same columns but disable recursive expansion of the right-hand side. Run {key::}{key:h}{key:e}{key:l}{key:p}{key: }{key:m}{key:a}{key:p}{key:-}{key:m}{key:o}{key:d}{key:e}{key:s} for the canonical version."
     },
     {
       "type": "internals",

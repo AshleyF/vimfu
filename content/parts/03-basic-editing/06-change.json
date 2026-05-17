@@ -34,7 +34,7 @@
     },
     {
       "type": "prose",
-      "text": "{key:c} is what {key:d}-then-{key:i} would be if you didn't have to think. It deletes the same range {key:d} would, *and* drops you straight into Insert mode at that spot. Then {key:Esc} closes the change as one undoable, dot-repeatable unit."
+      "text": "{key:c} is what {key:d}-then-{key:i} would be if you didn't have to think. It deletes the same range {key:d} would, *and* drops you straight into *insert mode* at that spot. Then {key:Esc} closes the change as one undoable, dot-repeatable unit."
     },
     {
       "type": "keys",
@@ -96,7 +96,7 @@
     {
       "type": "internals",
       "title": "Change Is Delete + Insert as One Atomic \"Change\"",
-      "text": "Internally, {key:c}{motion} does three things:\n\n  1. Cuts the range covered by {motion} into the unnamed and numbered registers (just like {key:d}).\n  2. Switches to Insert mode at the start of the cut range.\n  3. Marks an undo boundary that closes when you press {key:Esc}.\n\nStep 3 is the important one. The whole episode — delete, type, leave Insert — becomes **one** entry in the undo tree. {key:u} reverts all of it. {key:.} replays all of it.\n\nThat's why {key:c}{key:w}-type-something-{key:Esc}-{key:n}-{key:.} is one of the most useful patterns in Vim: jump to next match, change-the-word, repeat. Each repeat is one undoable operation, not many. See [`patterns.cgn-dot`](#patterns.cgn-dot) for the polished form."
+      "text": "Internally, {key:c}{motion} does three things:\n\n  1. Cuts the range covered by {motion} into the unnamed and numbered registers (just like {key:d}).\n  2. Switches to *insert mode* at the start of the cut range.\n  3. Marks an undo boundary that closes when you press {key:Esc}.\n\nStep 3 is the important one. The whole episode — delete, type, leave Insert — becomes **one** entry in the undo tree. {key:u} reverts all of it. {key:.} replays all of it.\n\nThat's why {key:c}{key:w}-type-something-{key:Esc}-{key:n}-{key:.} is one of the most useful patterns in Vim: jump to next match, change-the-word, repeat. Each repeat is one undoable operation, not many. See [`patterns.cgn-dot`](#patterns.cgn-dot) for the polished form."
     },
     {
       "type": "tip",
@@ -171,7 +171,7 @@
     {
       "type": "internals",
       "title": "Change is delete-then-insert, with one historical quirk",
-      "text": "{key:c} is not a primitive: it runs the delete operator, then enters insert mode at the landing position. The famous {key:c}{key:w} = {key:c}{key:e} quirk falls out of this — change adjusts the motion's endpoint to drop the trailing whitespace so the inserted text doesn't push it. Knowing change is a composition lets you predict its behavior with any motion you've already learned."
+      "text": "{key:c} is not a primitive: it runs the delete operator, then enters *insert mode* at the landing position. The famous {key:c}{key:w} = {key:c}{key:e} quirk falls out of this — change adjusts the motion's endpoint to drop the trailing whitespace so the inserted text doesn't push it. Knowing change is a composition lets you predict its behavior with any motion you've already learned."
     },
     {
       "type": "qr",

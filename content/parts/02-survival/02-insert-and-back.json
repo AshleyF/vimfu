@@ -5,7 +5,7 @@
   "title": "Insert and Back Again",
   "subtitle": "{key:i} to type, {key:Esc} to come home",
   "part": "survival",
-  "summary": "Press i to enter Insert mode and type. Press Esc to return to Normal. Build the Esc reflex.",
+  "summary": "Press i to enter *insert mode* and type. Press Esc to return to Normal. Build the Esc reflex.",
   "keys": [
     "i",
     "Esc",
@@ -31,14 +31,14 @@
     },
     {
       "type": "prose",
-      "text": "You are in Normal mode. The cursor sits on a character. Keys do things — they are commands. You want to type some text. How?"
+      "text": "You are in *normal mode*. The cursor sits on a character. Keys do things — they are commands. You want to type some text. How?"
     },
     {
       "type": "keys",
       "sequence": [
         "i"
       ],
-      "label": "Enter Insert mode (before the cursor)"
+      "label": "Enter *insert mode* (before the cursor)"
     },
     {
       "type": "prose",
@@ -47,7 +47,7 @@
     {
       "type": "embed",
       "lesson": 4,
-      "caption": "Entering Insert mode with i"
+      "caption": "Entering *insert mode* with i"
     },
     {
       "type": "prose",
@@ -56,7 +56,7 @@
     {
       "type": "embed",
       "lesson": 5,
-      "caption": "Typing in Insert mode"
+      "caption": "Typing in *insert mode*"
     },
     {
       "type": "heading",
@@ -68,11 +68,11 @@
       "sequence": [
         "Esc"
       ],
-      "label": "Return to Normal mode"
+      "label": "Return to *normal mode*"
     },
     {
       "type": "prose",
-      "text": "{key:Esc} returns you to Normal mode. The status line empties. Keys are commands again. {key:Ctrl-[} does the same thing — handy if your {key:Esc} key is far away."
+      "text": "{key:Esc} returns you to *normal mode*. The status line empties. Keys are commands again. {key:Ctrl-[} does the same thing — handy if your {key:Esc} key is far away."
     },
     {
       "type": "embed",
@@ -90,7 +90,7 @@
     },
     {
       "type": "prose",
-      "text": "Build a reflex: **after every thought, press {key:Esc}.** Finished a sentence? Esc. Finished a function name? Esc. Done with that loop body? Esc. Normal mode is your resting state, not Insert. The minute you finish typing, get back to where you can move."
+      "text": "Build a reflex: **after every thought, press {key:Esc}.** Finished a sentence? Esc. Finished a function name? Esc. Done with that loop body? Esc. *normal mode* is your resting state, not Insert. The minute you finish typing, get back to where you can move."
     },
     {
       "type": "prose",
@@ -103,7 +103,7 @@
     },
     {
       "type": "internals",
-      "title": "What Insert Mode Is Buffering",
+      "title": "What *insert mode* Is Buffering",
       "text": "From the moment you press {key:i} until the moment you press {key:Esc}, Vim is recording the text you type into a small buffer. When you leave Insert, three things happen:\n\n  1. The text goes into the buffer (you see it).\n  2. The text is also stored in the {key:\"}{key:.} register — accessible as the *last-inserted-text* register, useful in mappings and for the {key:.} repeat command (registers as a system get their own treatment in Part 12).\n  3. If a count was applied (e.g. {key:3}{key:i}{key:hi}{key:Esc}), the buffered text is replayed `count - 1` more times so the final result is `hihihi`.\n\nThis is also what {key:.} (dot, repeat last change) replays for an Insert-mode change: not the keystrokes you pressed, but the *text* that ended up in the buffer.\n\nSpecial keys pressed during Insert ({key:Ctrl-W}, {key:Ctrl-U}, {key:Ctrl-T}, {key:Ctrl-D}, {key:Backspace}, {key:Enter}) are also buffered and replayed faithfully. {key:Ctrl-W} here is the *insert-mode* delete-word-back binding — unrelated to the {key:Ctrl-W} *window-prefix* you'll meet in Part 14. Insert is not just \"typed text\" — it is a recording of an editing action that happens to mostly be typing."
     },
     {
@@ -127,15 +127,15 @@
         ],
         [
           "{key:Esc}",
-          "Return to Normal mode"
+          "Return to *normal mode*"
         ],
         [
           "{key:Ctrl-[}",
-          "Return to Normal mode (alias)"
+          "Return to *normal mode* (alias)"
         ],
         [
           "{key:Ctrl-C}",
-          "Return to Normal mode (cancels pending state too — but does not run autocmds; usually use {key:Esc})"
+          "Return to *normal mode* (cancels pending state too — but does not run autocmds; usually use {key:Esc})"
         ]
       ]
     },
@@ -150,7 +150,7 @@
     {
       "type": "internals",
       "title": "Why Escape backs the cursor up one column",
-      "text": "Leaving insert mode is not a pure mode flip. The cursor lives in a virtual column while inserting (it can sit one cell past the last character), but normal mode requires the cursor to land on a real character. So Escape clamps the column back by one when you're past the line end. That single rule is why {key:a} then Esc leaves you under the character you appended past, and why {key:i}-Esc-{key:i} doesn't drift sideways."
+      "text": "Leaving *insert mode* is not a pure mode flip. The cursor lives in a virtual column while inserting (it can sit one cell past the last character), but *normal mode* requires the cursor to land on a real character. So Escape clamps the column back by one when you're past the line end. That single rule is why {key:a} then Esc leaves you under the character you appended past, and why {key:i}-Esc-{key:i} doesn't drift sideways."
     },
     {
       "type": "qr",

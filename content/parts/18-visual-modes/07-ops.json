@@ -6,42 +6,105 @@
   "subtitle": "Any operator works on a Visual range. Plus a few visual-only ones.",
   "part": "visual-modes",
   "summary": "After selecting visually, any operator (d, c, y, gU, etc.) acts on the selection. A few operators are visual-only: u/U for case, J for join, > / < for indent.",
-  "keys": ["d", "c", "y", "gU", "u", "U", ">", "<", "J", "="],
-  "lessons": [439, 442],
-  "see_also": ["text-objects.grammar", "transform.case", "transform.indent"],
-
+  "keys": [
+    "d",
+    "c",
+    "y",
+    "gU",
+    "u",
+    "U",
+    ">",
+    "<",
+    "J",
+    "="
+  ],
+  "lessons": [
+    439,
+    442
+  ],
+  "see_also": [
+    "text-objects.grammar",
+    "transform.case",
+    "transform.indent"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Operators on Visual Selections" },
-
-    { "type": "prose", "text": "After Visual selection, every operator key acts on the selection — no motion needed. The selection IS the range." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Operators on Visual Selections"
+    },
+    {
+      "type": "prose",
+      "text": "After Visual selection, every operator key acts on the selection — no motion needed. The selection IS the range."
+    },
     {
       "type": "table",
-      "headers": ["Key",    "Effect on selection"],
+      "headers": [
+        "Key",
+        "Effect on selection"
+      ],
       "rows": [
-        ["{key:d}",           "Delete"],
-        ["{key:c}",           "Change (delete + Insert)"],
-        ["{key:y}",           "Yank"],
-        ["{key:p}",           "Replace selection with register contents"],
-        ["{key:>}, {key:<}",  "Indent / outdent"],
-        ["{key:=}",           "Reindent (per `'indentexpr'`)"],
-        ["{key:gU}, {key:gu}, {key:g~}", "Uppercase / lowercase / toggle case"],
-        ["{key:U}, {key:u}",  "Same — but visual-only single-key shortcuts"],
-        ["{key:~}",           "Toggle case (visual-only single-key)"],
-        ["{key:J}",           "Join lines (with space)"],
-        ["{key:gJ}",          "Join lines (no space added)"]
+        [
+          "{key:d}",
+          "Delete"
+        ],
+        [
+          "{key:c}",
+          "Change (delete + Insert)"
+        ],
+        [
+          "{key:y}",
+          "Yank"
+        ],
+        [
+          "{key:p}",
+          "Replace selection with register contents"
+        ],
+        [
+          "{key:>}, {key:<}",
+          "Indent / outdent"
+        ],
+        [
+          "{key:=}",
+          "Reindent (per `'indentexpr'`)"
+        ],
+        [
+          "{key:gU}, {key:gu}, {key:g~}",
+          "Uppercase / lowercase / toggle case"
+        ],
+        [
+          "{key:U}, {key:u}",
+          "Same — but visual-only single-key shortcuts"
+        ],
+        [
+          "{key:~}",
+          "Toggle case (visual-only single-key)"
+        ],
+        [
+          "{key:J}",
+          "Join lines (with space)"
+        ],
+        [
+          "{key:gJ}",
+          "Join lines (no space added)"
+        ]
       ]
     },
-
     {
       "type": "internals",
       "title": "Visual-Only Single-Key Operators",
-      "text": "In Normal mode, lowercase {key:u} is *undo*. In Visual mode, {key:u} is *lowercase the selection* — a single-key shortcut for {key:g}{key:u}. Similarly:\n\n  • {key:u} = lowercase\n  • {key:U} = uppercase\n  • {key:~} = toggle case\n\nThese exist because the {key:g} prefix is awkward when you've already done the work of selecting. The same convenience: {key:>} and {key:<} act *once* in Visual without needing a motion (they need {key:>}{key:>} to act on a line in Normal mode)."
+      "text": "In *normal mode*, lowercase {key:u} is *undo*. In *visual mode*, {key:u} is *lowercase the selection* — a single-key shortcut for {key:g}{key:u}. Similarly:\n\n  • {key:u} = lowercase\n  • {key:U} = uppercase\n  • {key:~} = toggle case\n\nThese exist because the {key:g} prefix is awkward when you've already done the work of selecting. The same convenience: {key:>} and {key:<} act *once* in Visual without needing a motion (they need {key:>}{key:>} to act on a line in *normal mode*)."
     },
-
-    { "type": "tip", "text": "After indenting a Visual selection with {key:>}, the selection is lost — but {key:g}{key:v} brings it right back so you can {key:>} again." },
-
-    { "type": "qr", "topic": "visual.ops" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "After indenting a Visual selection with {key:>}, the selection is lost — but {key:g}{key:v} brings it right back so you can {key:>} again."
+    },
+    {
+      "type": "qr",
+      "topic": "visual.ops"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Indent and Auto-Indent — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-11-transform">↑ Transform</a>
+  &middot; <a href="../videos/11-transform/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=if+x%3A%0Aprint%28%27hi%27%29%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../10-marks-jumps/05-changelist.html" rel="prev">← The Change List</a></span>
+  <span class="pager-pos">51 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="02-case.html" rel="next">Case Changing →</a></span>
+</nav>
+<article>
+<h1>Indent and Auto-Indent</h1>
+<p class="subtitle"><kbd>&gt;&gt;</kbd> indents. <kbd>&lt;&lt;</kbd> dedents. <kbd>=</kbd>{motion} re-indents using the language indenter.</p>
+<p class="meta">Keys: <kbd>&gt;</kbd>, <kbd>&lt;</kbd>, <kbd>=</kbd>, <kbd>&gt;&gt;</kbd>, <kbd>&lt;&lt;</kbd>, <kbd>==</kbd></p>
+<blockquote class="summary">&gt;{motion} indents a range one shiftwidth. &lt;{motion} dedents. ={motion} runs the language&#x27;s indent function. Doubled forms (&gt;&gt;, &lt;&lt;, ==) act on the current line.</blockquote>
+<p><kbd>&gt;</kbd>, <kbd>&lt;</kbd>, and <kbd>=</kbd> are all <em>operators</em>. They take a motion or text object, like <kbd>d</kbd> and <kbd>y</kbd>. <kbd>&gt;</kbd><kbd>i</kbd><kbd>p</kbd> indents the inner paragraph. <kbd>=</kbd><kbd>a</kbd><kbd>{</kbd> re-indents the brace block.</p>
+<figure class="keys">
+<figcaption>Indent current line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>&gt;</kbd></td><td></td></tr>
+<tr><td><kbd>&gt;</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Dedent current line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>&lt;</kbd></td><td></td></tr>
+<tr><td><kbd>&lt;</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Indent inner paragraph</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>&gt;</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>p</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Re-indent inner paragraph (use language indenter)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>=</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>p</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Re-indent current line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>=</kbd></td><td></td></tr>
+<tr><td><kbd>=</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="107"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/3amTSefPdtA?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Indent Lines" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>&gt;&gt; — indent line</figcaption></figure>
+<figure class="lesson-embed" data-lesson="108"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/NL9A-ppWy0g?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Unindent Lines" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>&lt;&lt; — dedent line</figcaption></figure>
+<figure class="lesson-embed" data-lesson="109"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/TUw7_Wg0WLc?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Indent with Motion" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>&gt;{motion} — indent range</figcaption></figure>
+<figure class="lesson-embed" data-lesson="110"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/oKmc1vdGQMs?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Auto-Indent" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>={motion} — auto-indent</figcaption></figure>
+<figure class="lesson-embed" data-lesson="111"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/ehPhXUqy01Y?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Visual Indent" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>== — re-indent line</figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> In <em>visual mode</em>, <kbd>&gt;</kbd> and <kbd>&lt;</kbd> indent the selection. With a count: <kbd>3</kbd><kbd>&gt;</kbd> indents three times. <kbd>.</kbd> repeats the last indent.</aside>
+<section class="example">
+<h3 class="example-title">Worked example — &gt;&gt; and &lt;&lt;</h3>
+<p class="example-summary">Indent and dedent the current line.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot missing">[missing screenshot transform.indent/frame_01.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>&gt;&gt;</kbd> · <span class="step-cap">&gt;&gt; — indented one shiftwidth.</span></figcaption>
+<div class="screenshot missing">[missing screenshot transform.indent/frame_02.color.svg — run python content/render_screenshots.py]</div>
+<p class="narration">Doubled operator pattern. &gt;ip indents an inner paragraph; &gt;G indents to end of file.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=if+x%3A%0Aprint%28%27hi%27%29%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a>, <a href="../07-text-objects/06-grammar.html">The Vim Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../10-marks-jumps/05-changelist.html" rel="prev">← The Change List</a></span>
+  <span class="pager-pos">51 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="02-case.html" rel="next">Case Changing →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-11-transform">↑ back to Transform</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

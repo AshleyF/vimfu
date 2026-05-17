@@ -2,10 +2,10 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "visual-modes.char-visual",
-  "title": "Character Visual Mode",
+  "title": "Character *visual mode*",
   "subtitle": "{key:v} — select first, act second.",
   "part": "visual-modes",
-  "summary": "v enters character-wise Visual mode. Move to extend the selection. Press an operator (d, c, y, …) to act on it.",
+  "summary": "v enters character-wise *visual mode*. Move to extend the selection. Press an operator (d, c, y, …) to act on it.",
   "keys": [
     "v",
     "o"
@@ -24,18 +24,18 @@
     {
       "type": "heading",
       "level": 1,
-      "text": "Character Visual Mode"
+      "text": "Character *visual mode*"
     },
     {
       "type": "prose",
-      "text": "Visual mode flips the grammar around. Instead of \"verb then noun\" ({key:d}{key:w}), you do \"noun then verb\": select first, then act. {key:v} starts the selection, motions extend it, and an operator finishes the job."
+      "text": "*visual mode* flips the grammar around. Instead of \"verb then noun\" ({key:d}{key:w}), you do \"noun then verb\": select first, then act. {key:v} starts the selection, motions extend it, and an operator finishes the job."
     },
     {
       "type": "keys",
       "sequence": [
         "v"
       ],
-      "label": "Enter Visual mode"
+      "label": "Enter *visual mode*"
     },
     {
       "type": "keys",
@@ -66,7 +66,7 @@
     },
     {
       "type": "tip",
-      "text": "Press {key:Esc} or {key:v} again to leave Visual mode without acting. Press an operator to act and return to Normal."
+      "text": "Press {key:Esc} or {key:v} again to leave *visual mode* without acting. Press an operator to act and return to Normal."
     },
     {
       "type": "internals",
@@ -76,7 +76,7 @@
     {
       "type": "internals",
       "title": "The Last Visual Selection Is Remembered",
-      "text": "Whenever you exit Visual mode, Vim sets two automatic marks: {key:`}{key:<} (start) and {key:`}{key:>} (end). They live in the buffer until your next visual selection.\n\nThis means:\n\n  • {key:g}{key:v}  re-selects the last visual range.\n  • {key::}{key:'}{key:<}{key:,}{key:'}{key:>} (or just {key::} from Visual) targets it as an Ex range — useful for {key::}{key:s}{key:/}{key:foo}{key:/}{key:bar}{key:/}{key:g}.\n\nMost \"do an Ex command on what I just selected\" idioms work this way. See [`visual.range`](#visual.range)."
+      "text": "Whenever you exit *visual mode*, Vim sets two automatic marks: {key:`}{key:<} (start) and {key:`}{key:>} (end). They live in the buffer until your next visual selection.\n\nThis means:\n\n  • {key:g}{key:v}  re-selects the last visual range.\n  • {key::}{key:'}{key:<}{key:,}{key:'}{key:>} (or just {key::} from Visual) targets it as an Ex range — useful for {key::}{key:s}{key:/}{key:foo}{key:/}{key:bar}{key:/}{key:g}.\n\nMost \"do an Ex command on what I just selected\" idioms work this way. See [`visual.range`](#visual.range)."
     },
     {
       "type": "divider"
@@ -121,8 +121,8 @@
     },
     {
       "type": "internals",
-      "title": "Visual mode is anchor + endpoint",
-      "text": "Charwise visual mode stores two positions: the anchor (where you pressed {key:v}) and the current cursor. Motions move the cursor; the selection is always the inclusive range between the two. There's no selection object being copied around — the renderer paints whatever sits between anchor and cursor each frame. Operators consume the resolved range and exit back to normal mode."
+      "title": "*visual mode* is anchor + endpoint",
+      "text": "Charwise *visual mode* stores two positions: the anchor (where you pressed {key:v}) and the current cursor. Motions move the cursor; the selection is always the inclusive range between the two. There's no selection object being copied around — the renderer paints whatever sits between anchor and cursor each frame. Operators consume the resolved range and exit back to *normal mode*."
     },
     {
       "type": "qr",

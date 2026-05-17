@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Changing — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-11-transform">↑ Transform</a>
+  &middot; <a href="../videos/11-transform/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=hello+world%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="01-indent.html" rel="prev">← Indent and Auto-Indent</a></span>
+  <span class="pager-pos">52 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="03-join.html" rel="next">Joining Lines →</a></span>
+</nav>
+<article>
+<h1>Case Changing</h1>
+<p class="subtitle"><kbd>~</kbd> flips one character. <kbd>gU</kbd>/<kbd>gu</kbd>/<kbd>g~</kbd> are operators.</p>
+<p class="meta">Keys: <kbd>~</kbd>, <kbd>gU</kbd>, <kbd>gu</kbd>, <kbd>g~</kbd></p>
+<blockquote class="summary">~ toggles the case of the character under the cursor. gU is an uppercase operator; gu is lowercase; g~ toggles. Each takes a motion: gUiw uppercases the inner word.</blockquote>
+<p>Three operators for case: <kbd>g</kbd><kbd>U</kbd> uppercases, <kbd>g</kbd><kbd>u</kbd> lowercases, <kbd>g</kbd><kbd>~</kbd> toggles. Each takes a motion, just like <kbd>d</kbd> and <kbd>y</kbd>. <kbd>~</kbd> alone is a one-shot toggle of the character under the cursor.</p>
+<figure class="keys">
+<figcaption>Toggle case of cursor character</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>~</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Uppercase inner word</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>g</kbd></td><td></td></tr>
+<tr><td><kbd>U</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Lowercase inner word</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>g</kbd></td><td></td></tr>
+<tr><td><kbd>u</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Toggle inner word</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>g</kbd></td><td></td></tr>
+<tr><td><kbd>~</kbd></td><td></td></tr>
+<tr><td><kbd>i</kbd></td><td></td></tr>
+<tr><td><kbd>w</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Uppercase whole line</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>g</kbd></td><td></td></tr>
+<tr><td><kbd>U</kbd></td><td></td></tr>
+<tr><td><kbd>U</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="112"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/KbzmRKe6OZs?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Toggle Case" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>~ — toggle case</figcaption></figure>
+<figure class="lesson-embed" data-lesson="113"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/8oFJIkEL670?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Uppercase Motion" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>gU — uppercase operator</figcaption></figure>
+<figure class="lesson-embed" data-lesson="114"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/FWfjM4TYS5o?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Lowercase Motion" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>gu — lowercase operator</figcaption></figure>
+<figure class="lesson-embed" data-lesson="115"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/WhG9XILa6vw?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Toggle Case Motion" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>g~ — toggle case operator</figcaption></figure>
+<figure class="lesson-embed" data-lesson="116"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/pqKJVDq66Po?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Visual Case" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Doubled forms (gUU, guu, g~~)</figcaption></figure>
+<section class="example">
+<h3 class="example-title">Worked example — gUw and ~</h3>
+<p class="example-summary">Change case without retyping.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot missing">[missing screenshot transform.case/frame_01.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>gUw</kbd> · <span class="step-cap">gUw — uppercase one word.</span></figcaption>
+<div class="screenshot missing">[missing screenshot transform.case/frame_02.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>0~</kbd> · <span class="step-cap">~ — toggle one char&#x27;s case.</span></figcaption>
+<div class="screenshot missing">[missing screenshot transform.case/frame_03.color.svg — run python content/render_screenshots.py]</div>
+<p class="narration">gu/gU/g~ are operators; ~ is a one-shot toggle. With visual mode you can transform any selection.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=hello+world%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../01-foundations/03-universal-grammar.html">The Universal Grammar</a>, <a href="../07-text-objects/06-grammar.html">The Vim Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="01-indent.html" rel="prev">← Indent and Auto-Indent</a></span>
+  <span class="pager-pos">52 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="03-join.html" rel="next">Joining Lines →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-11-transform">↑ back to Transform</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

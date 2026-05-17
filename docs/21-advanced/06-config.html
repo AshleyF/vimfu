@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vim Configuration — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-21-advanced">↑ Advanced</a>
+  &middot; <a href="../videos/21-advanced/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="05-folding.html" rel="prev">← Folding</a></span>
+  <span class="pager-pos">121 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="07-spell.html" rel="next">Spell Checking →</a></span>
+</nav>
+<article>
+<h1>Vim Configuration</h1>
+<p class="subtitle">vimrc, runtime, plugins — where settings live.</p>
+<p class="meta">Keys: <kbd>:source</kbd>, <kbd>:scriptnames</kbd></p>
+<blockquote class="summary">Vim reads ~/.vimrc (or ~/.config/nvim/init.vim for Neovim) on startup. Plugins go in plugin folders inside &#x27;runtimepath&#x27;. Filetype plugins, syntax files, indent files all auto-load by name.</blockquote>
+<p>Vim is configured by a startup script and an extensible <em>runtime path</em>. Knowing where files live makes debugging much easier.</p>
+<h3>The startup file</h3>
+<table>
+<thead><tr>
+<th>Editor</th>
+<th>Config file</th>
+</tr></thead><tbody>
+<tr>
+<td>Vim (Unix)</td>
+<td><code>~/.vimrc</code> or <code>~/.vim/vimrc</code></td>
+</tr>
+<tr>
+<td>Vim (Windows)</td>
+<td><code>%USERPROFILE%\_vimrc</code></td>
+</tr>
+<tr>
+<td>Vim (Windows, alt.)</td>
+<td><code>%USERPROFILE%\vimfiles\vimrc</code></td>
+</tr>
+<tr>
+<td>Neovim</td>
+<td><code>~/.config/nvim/init.vim</code> (or <code>init.lua</code>)</td>
+</tr>
+</tbody></table>
+<h3>The runtime path</h3>
+<p><code>&#x27;runtimepath&#x27;</code> is a comma-separated list of directories Vim searches for plugins, syntax files, colorschemes, etc. By default it includes <code>~/.vim</code> and <code>$VIMRUNTIME</code>.</p>
+<table>
+<thead><tr>
+<th>Subfolder</th>
+<th>Auto-loads</th>
+</tr></thead><tbody>
+<tr>
+<td><code>plugin/</code></td>
+<td>Run on startup, every session</td>
+</tr>
+<tr>
+<td><code>autoload/</code></td>
+<td>Loaded on demand by name</td>
+</tr>
+<tr>
+<td><code>syntax/&lt;filetype&gt;.vim</code></td>
+<td>Loaded when buffer&#x27;s filetype matches</td>
+</tr>
+<tr>
+<td><code>ftplugin/&lt;filetype&gt;.vim</code></td>
+<td>Same — for buffer-local settings</td>
+</tr>
+<tr>
+<td><code>indent/&lt;filetype&gt;.vim</code></td>
+<td>Same — for indenting rules</td>
+</tr>
+<tr>
+<td><code>colors/&lt;name&gt;.vim</code></td>
+<td>Loaded by <code>:colorscheme name</code></td>
+</tr>
+<tr>
+<td><code>doc/</code></td>
+<td>Help files (run <code>:helptags ALL</code> after install)</td>
+</tr>
+</tbody></table>
+<aside class="tip"><strong>Tip.</strong> After editing your vimrc, <code>:source $MYVIMRC</code> reloads it without restarting Vim.</aside>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0498 The vimrc / init.lua (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0500 What&#x27;s Next? (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../17-ex-commands/07-set.html">Setting Options ({key::set})</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="05-folding.html" rel="prev">← Folding</a></span>
+  <span class="pager-pos">121 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="07-spell.html" rel="next">Spell Checking →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-21-advanced">↑ back to Advanced</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

@@ -1,11 +1,11 @@
 {
   "format": "vimfu-content-topic",
   "version": 1,
-  "id": "advanced.op-pending",
-  "title": "Operator-Pending Mode",
+  "id": "text-objects.op-pending",
+  "title": "*operator-pending mode*",
   "subtitle": "The fourth mode you didn't know about.",
-  "part": "advanced",
-  "summary": "Between pressing an operator (d/c/y/...) and pressing the motion, Vim is in operator-pending mode. It's a real mode with its own status (\"-- OPERATOR --\") and its own mappings.",
+  "part": "text-objects",
+  "summary": "Between pressing an operator (d/c/y/...) and pressing the motion, Vim is in *operator-pending mode*. It's a real mode with its own status (\"-- OPERATOR --\") and its own mappings.",
   "keys": [
     "d",
     "c",
@@ -23,7 +23,7 @@
     {
       "type": "heading",
       "level": 1,
-      "text": "Operator-Pending Mode"
+      "text": "*operator-pending mode*"
     },
     {
       "type": "prose",
@@ -32,7 +32,7 @@
     {
       "type": "internals",
       "title": "Why It's a Real Mode",
-      "text": "After you press {key:d}, Vim enters a state where it accepts only motions and text objects. The status line shows `-- OPERATOR --` (in many configurations) or remains blank, depending on your settings. {key:Esc} cancels and returns to Normal.\n\nThe op-pending state is a real mode for two reasons:\n\n  1. **Custom mappings.** You can define mappings that *only apply during operator-pending* with `onoremap`. For example, `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" — but {key:p} alone in Normal mode (which is paste) is unaffected.\n  2. **Motion modifiers** like {key:v}, {key:V}, {key:Ctrl-V} change the operator's character/line/block flavor — so {key:d}{key:v}{key:G} forces character-wise delete to end of file even though {key:G} is normally line-wise.\n\nThis is the mechanism Tim Pope's vim-surround and other plugins use to add custom text objects."
+      "text": "After you press {key:d}, Vim enters a state where it accepts only motions and text objects. The status line shows `-- OPERATOR --` (in many configurations) or remains blank, depending on your settings. {key:Esc} cancels and returns to Normal.\n\nThe op-pending state is a real mode for two reasons:\n\n  1. **Custom mappings.** You can define mappings that *only apply during operator-pending* with `onoremap`. For example, `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" — but {key:p} alone in *normal mode* (which is paste) is unaffected.\n  2. **Motion modifiers** like {key:v}, {key:V}, {key:Ctrl-V} change the operator's character/line/block flavor — so {key:d}{key:v}{key:G} forces character-wise delete to end of file even though {key:G} is normally line-wise.\n\nThis is the mechanism Tim Pope's vim-surround and other plugins use to add custom text objects."
     },
     {
       "type": "internals",
@@ -50,7 +50,7 @@
     },
     {
       "type": "qr",
-      "topic": "advanced.op-pending"
+      "topic": "text-objects.op-pending"
     },
     {
       "type": "buy-prompt"

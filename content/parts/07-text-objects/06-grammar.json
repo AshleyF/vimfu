@@ -6,53 +6,82 @@
   "subtitle": "[count] [register] operator [count] {motion | text-object}",
   "part": "text-objects",
   "summary": "Every editing command in Vim is one sentence: optional count, optional register, an operator (verb), then a motion or text object (noun). This is the grammar that makes Vim feel infinite from a small number of keys.",
-  "keys": ["[count]", "[reg]", "op", "motion", "text-object"],
-  "lessons": [85],
-  "see_also": ["foundations.universal-grammar", "appendix.grammar-matrix", "appendix.synonyms"],
-
+  "keys": [
+    "[count]",
+    "[reg]",
+    "op",
+    "motion",
+    "text-object"
+  ],
+  "lessons": [
+    85
+  ],
+  "see_also": [
+    "foundations.universal-grammar",
+    "appendix.grammar-matrix",
+    "appendix.synonyms"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "The Vim Grammar" },
-
-    { "type": "prose", "text": "Most editors have *commands*: \"delete word,\" \"select to end of line,\" \"comment block.\" Vim doesn't. Vim has a **grammar** — a small set of verbs and nouns that you compose into sentences. Once you see it, you stop memorizing keys." },
-
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "The Vim Grammar"
+    },
+    {
+      "type": "prose",
+      "text": "Most editors have *commands*: \"delete word,\" \"select to end of line,\" \"comment block.\" Vim doesn't. Vim has a **grammar** — a small set of verbs and nouns that you compose into sentences. Once you see it, you stop memorizing keys."
+    },
     {
       "type": "internals",
       "title": "The Grammar in One Line",
-      "text": "Every editing action in Normal mode follows the form:\n\n```\n[count] [\"register] operator [count] {motion | text-object}\n```\n\nAll the brackets are optional. Concrete examples:\n\n  • {key:d}{key:w} — delete one word (no count, default register, motion).\n  • {key:5}{key:d}{key:w} — delete five words.\n  • {key:\"}{key:a}{key:5}{key:d}{key:w} — delete five words *into register a*.\n  • {key:c}{key:i}{key:p} — change the inner paragraph (text object).\n  • {key:>}{key:a}{key:{} — indent the brace block including its braces.\n  • {key:g}{key:U}{key:t}{key:Z} — uppercase up to the next `Z`.\n\nThere is no command list to memorize. There are operators. There are motions and text objects. Multiplication is the count. The register is *where the result goes*."
+      "text": "Every editing action in *normal mode* follows the form:\n\n```\n[count] [\"register] operator [count] {motion | text-object}\n```\n\nAll the brackets are optional. Concrete examples:\n\n  • {key:d}{key:w} — delete one word (no count, default register, motion).\n  • {key:5}{key:d}{key:w} — delete five words.\n  • {key:\"}{key:a}{key:5}{key:d}{key:w} — delete five words *into register a*.\n  • {key:c}{key:i}{key:p} — change the inner paragraph (text object).\n  • {key:>}{key:a}{key:{} — indent the brace block including its braces.\n  • {key:g}{key:U}{key:t}{key:Z} — uppercase up to the next `Z`.\n\nThere is no command list to memorize. There are operators. There are motions and text objects. Multiplication is the count. The register is *where the result goes*."
     },
-
     {
       "type": "internals",
       "title": "The Operators",
       "text": "The full operator set (the verbs):\n\n  • {key:d} — delete (cut into a register).\n  • {key:c} — change (delete + Insert).\n  • {key:y} — yank (copy).\n  • {key:>} {key:<} — indent / dedent.\n  • {key:=} — re-indent (use language indenter).\n  • {key:g}{key:u} {key:g}{key:U} {key:g}{key:~} — lowercase / uppercase / toggle case.\n  • {key:g}{key:q} — reformat (text-wrap).\n  • {key:!} — filter through external command.\n  • {key:g}{key:@} — call user-defined `operatorfunc` (advanced).\n\nThat's it. ~10 verbs. Each one takes any motion or text object. Pair them up: that's the language."
     },
-
     {
       "type": "internals",
       "title": "Doubled Operators",
       "text": "Every operator has a *doubled* form that means \"act on the current line\":\n\n  • {key:d}{key:d} — delete line.\n  • {key:c}{key:c} — change line.\n  • {key:y}{key:y} — yank line.\n  • {key:>}{key:>} {key:<}{key:<} — indent / dedent line.\n  • {key:=}{key:=} — re-indent line.\n  • {key:g}{key:U}{key:U} or {key:g}{key:U}{key:u} — uppercase line.\n\nThis is a special case in the grammar, not a separate command. The pattern *is* the rule: doubled operator = current line."
     },
-
     {
       "type": "internals",
       "title": "Synonyms (Single-Key Aliases)",
       "text": "Some patterns are common enough to deserve a one-key shortcut:\n\n  • {key:D} = {key:d}{key:$}\n  • {key:C} = {key:c}{key:$}\n  • {key:Y} = {key:y}{key:y} *(classic `vi`)* / {key:y}{key:$} *(Neovim default)*\n  • {key:S} = {key:c}{key:c}\n  • {key:s} = {key:c}{key:l}\n  • {key:x} = {key:d}{key:l}\n  • {key:X} = {key:d}{key:h}\n\nThese are sugar over the grammar. Knowing both forms helps when reading other people's keystrokes — and explains why {key:Y} is a wart (broken symmetry, see [`editing.yank-put`](#editing.yank-put))."
     },
-
     {
       "type": "internals",
       "title": "Operator-Pending Is a Real Mode",
-      "text": "Between pressing the operator and pressing the motion or text object, Vim is in a fourth major mode: **operator-pending**. It's not a UI flourish — it's a named state in the editor's state machine, with its own keymap. Until a motion resolves, no buffer change has happened: the operator is staged with its count, the motion will produce `(start, end, type)`, and only then does the operator function execute.\n\nThe practical consequence is that op-pending has its *own* mapping table. {key::}{key:o}{key:n}{key:o}{key:r}{key:e}{key:m}{key:a}{key:p} (op-pending non-recursive map) defines mappings that *only fire after an operator*. So `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" without breaking {key:p} (paste) in Normal mode. This is the mechanism every custom text-object plugin uses — vim-surround, targets.vim, vim-textobj-* — and it's why operator-pending shows up in Vim's `:help map-modes` matrix as its own column (`o`). Full treatment in [`advanced.op-pending`](#advanced.op-pending)."
+      "text": "Between pressing the operator and pressing the motion or text object, Vim is in a fourth major mode: **operator-pending**. It's not a UI flourish — it's a named state in the editor's state machine, with its own keymap. Until a motion resolves, no buffer change has happened: the operator is staged with its count, the motion will produce `(start, end, type)`, and only then does the operator function execute.\n\nThe practical consequence is that op-pending has its *own* mapping table. {key::}{key:o}{key:n}{key:o}{key:r}{key:e}{key:m}{key:a}{key:p} (op-pending non-recursive map) defines mappings that *only fire after an operator*. So `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" without breaking {key:p} (paste) in *normal mode*. This is the mechanism every custom text-object plugin uses — vim-surround, targets.vim, vim-textobj-* — and it's why operator-pending shows up in Vim's `:help map-modes` matrix as its own column (`o`). Full treatment in [`text-objects.op-pending`](#text-objects.op-pending)."
     },
-
-    { "type": "tip", "text": "If you can answer \"what's the verb? what's the noun?\" for a command you want to run, you can usually type it. That's the test for whether you've internalized the grammar — and once you have, every new motion or text object is a free upgrade for *every* operator." },
-
-    { "type": "divider" },
-    { "type": "heading", "level": 2, "text": "Reference" },
-    { "type": "prose", "text": "See [`appendix.grammar-matrix`](#appendix.grammar-matrix) for the full operator × motion table, and [`appendix.synonyms`](#appendix.synonyms) for the complete list of single-key aliases." },
-
-    { "type": "example", "ref": "grammar.dw-then-dot" },
-    { "type": "qr", "topic": "text-objects.grammar" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "If you can answer \"what's the verb? what's the noun?\" for a command you want to run, you can usually type it. That's the test for whether you've internalized the grammar — and once you have, every new motion or text object is a free upgrade for *every* operator."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
+    {
+      "type": "prose",
+      "text": "See [`appendix.grammar-matrix`](#appendix.grammar-matrix) for the full operator × motion table, and [`appendix.synonyms`](#appendix.synonyms) for the complete list of single-key aliases."
+    },
+    {
+      "type": "example",
+      "ref": "grammar.dw-then-dot"
+    },
+    {
+      "type": "qr",
+      "topic": "text-objects.grammar"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

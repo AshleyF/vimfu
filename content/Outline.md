@@ -57,7 +57,7 @@ _Open, type, save, undo, move with `hjkl` — enough to not panic._
 | `survival.hjkl`               | Move with hjkl         | 13, 14        | `h`, `j`, `k`, `l`            |
 
 **Internals:** swapfiles and what `:q!` actually does; `u` walks the undo
-*tree* (not stack — full coverage in `advanced.undo-tree`); the buffer/window
+*tree* (not stack — full coverage in `survival.undo-tree`); the buffer/window
 distinction (one buffer, one window for now).
 
 ---
@@ -218,7 +218,7 @@ _Replace, indent, case-change, join — operators that aren't delete/change._
 
 | ID                            | Title                         | Lessons               | Keys                              |
 |-------------------------------|-------------------------------|-----------------------|-----------------------------------|
-| `transform.replace-mode`      | Replace Mode                  | 105, 106              | `R`, `r{char}`                    |
+| `basic-editing.replace-mode`      | Replace Mode                  | 105, 106              | `R`, `r{char}`                    |
 | `transform.indent`            | Indent and Auto-Indent        | 107, 108, 109, 110, 111 | `>>`, `<<`, `>{motion}`, `={motion}`, `==` |
 | `transform.case`              | Case Changing                 | 112, 113, 114, 115, 116 | `~`, `gU`, `gu`, `g~`            |
 | `transform.join`              | Joining Lines                 | 117, 118              | `J`, `gJ`                         |
@@ -395,9 +395,9 @@ _Undo trees, special registers, op-pending mode, terminal, folding, config._
 
 | ID                            | Title                          | Lessons        | Keys                              |
 |-------------------------------|--------------------------------|----------------|-----------------------------------|
-| `advanced.undo-tree`          | The Undo Tree                  | 481, 482       | `g-`, `g+`, `:earlier`, `:later`  |
+| `survival.undo-tree`          | The Undo Tree                  | 481, 482       | `g-`, `g+`, `:earlier`, `:later`  |
 | `advanced.special-registers`  | The Special Registers in Depth | 483–488        | `"/`, `":`, `".`, `"%`, `"#`, `"=` |
-| `advanced.op-pending`         | Operator-Pending Mode          | 489, 490       | `g@`, `operatorfunc`              |
+| `text-objects.op-pending`         | Operator-Pending Mode          | 489, 490       | `g@`, `operatorfunc`              |
 | `advanced.terminal`           | Terminal Mode                  | 491, 492       | `:term`, `Ctrl-\ Ctrl-N`          |
 | `advanced.character-info`     | Character Inspection           | (ga, g8 videos)| `ga`, `g8`                        |
 | `advanced.gx-g-less`          | Open URLs and Output History   | (gx, g< videos)| `gx`, `g<`                        |

@@ -6,41 +6,97 @@
   "subtitle": "Marks Vim sets for you automatically.",
   "part": "marks",
   "summary": "Some marks are set by Vim itself: '' for last jump, `` for last position, '. for last edit, '< / '> for last visual selection, and more.",
-  "keys": ["''", "``", "'.", "'^", "'<", "'>"],
-  "lessons": [101],
-  "see_also": ["marks.local-global", "marks.changelist", "visual-modes.tricks"],
-
+  "keys": [
+    "''",
+    "``",
+    "'.",
+    "'^",
+    "'<",
+    "'>"
+  ],
+  "lessons": [
+    101
+  ],
+  "see_also": [
+    "marks.local-global",
+    "marks.changelist",
+    "visual-modes.tricks"
+  ],
   "blocks": [
-    { "type": "heading", "level": 1, "text": "Special Marks" },
-
-    { "type": "prose", "text": "Most marks you set yourself. But Vim quietly sets a handful of *special* marks all the time. They're worth memorizing — they make navigation feel telepathic." },
-
-    { "type": "table",
-      "headers": ["Mark",      "What it tracks"],
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Special Marks"
+    },
+    {
+      "type": "prose",
+      "text": "Most marks you set yourself. But Vim quietly sets a handful of *special* marks all the time. They're worth memorizing — they make navigation feel telepathic."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Mark",
+        "What it tracks"
+      ],
       "rows": [
-        ["{key:'}{key:'}",     "Position before the last big jump"],
-        ["{key:`}{key:`}",     "Same, but exact position"],
-        ["{key:'}{key:.}",     "Line of the last change"],
-        ["{key:`}{key:.}",     "Exact position of the last change"],
-        ["{key:'}{key:^}",     "Line where Insert mode was last left"],
-        ["{key:`}{key:^}",     "Exact spot Insert was last left"],
-        ["{key:'}{key:<} / {key:'}{key:>}", "Start/end (line) of last visual selection"],
-        ["{key:`}{key:<} / {key:`}{key:>}", "Start/end (exact) of last visual selection"],
-        ["{key:'}{key:[} / {key:'}{key:]}", "Start/end of last yanked or changed text"]
+        [
+          "{key:'}{key:'}",
+          "Position before the last big jump"
+        ],
+        [
+          "{key:`}{key:`}",
+          "Same, but exact position"
+        ],
+        [
+          "{key:'}{key:.}",
+          "Line of the last change"
+        ],
+        [
+          "{key:`}{key:.}",
+          "Exact position of the last change"
+        ],
+        [
+          "{key:'}{key:^}",
+          "Line where *insert mode* was last left"
+        ],
+        [
+          "{key:`}{key:^}",
+          "Exact spot Insert was last left"
+        ],
+        [
+          "{key:'}{key:<} / {key:'}{key:>}",
+          "Start/end (line) of last visual selection"
+        ],
+        [
+          "{key:`}{key:<} / {key:`}{key:>}",
+          "Start/end (exact) of last visual selection"
+        ],
+        [
+          "{key:'}{key:[} / {key:'}{key:]}",
+          "Start/end of last yanked or changed text"
+        ]
       ]
     },
-
-    { "type": "embed", "lesson": 101, "caption": "Special marks" },
-
+    {
+      "type": "embed",
+      "lesson": 101,
+      "caption": "Special marks"
+    },
     {
       "type": "internals",
       "title": "These Power Many Familiar Commands",
-      "text": "Special marks aren't a separate feature — they *are* the feature. Many commands you already use are implemented in terms of them:\n\n  • {key:g}{key:v} re-selects the visual range stored in {key:'}{key:<} and {key:'}{key:>}.\n  • {key:g}{key:i} re-enters Insert mode at {key:`}{key:^}.\n  • {key::}{key:'}{key:<}{key:,}{key:'}{key:>} as an Ex range targets the last selection.\n  • {key:`}{key:.} after a jump returns you to the last edit.\n\nKnowing the marks gives you composability the docs don't always explain. Want to yank from the start of your last yank to here? {key:y}{key:`}{key:[}. Want to delete the most recent insertion? {key:d}{key:`}{key:[}."
+      "text": "Special marks aren't a separate feature — they *are* the feature. Many commands you already use are implemented in terms of them:\n\n  • {key:g}{key:v} re-selects the visual range stored in {key:'}{key:<} and {key:'}{key:>}.\n  • {key:g}{key:i} re-enters *insert mode* at {key:`}{key:^}.\n  • {key::}{key:'}{key:<}{key:,}{key:'}{key:>} as an Ex range targets the last selection.\n  • {key:`}{key:.} after a jump returns you to the last edit.\n\nKnowing the marks gives you composability the docs don't always explain. Want to yank from the start of your last yank to here? {key:y}{key:`}{key:[}. Want to delete the most recent insertion? {key:d}{key:`}{key:[}."
     },
-
-    { "type": "tip", "text": "{key:`}{key:`} (toggle-back-to-where-you-jumped-from) is one of the most useful marks. After almost any \"big\" motion ({key:G}, {key:/}, {key:%}, {key:`}{key:a}), {key:`}{key:`} reverses it." },
-
-    { "type": "qr", "topic": "marks.special" },
-    { "type": "buy-prompt" }
+    {
+      "type": "tip",
+      "text": "{key:`}{key:`} (toggle-back-to-where-you-jumped-from) is one of the most useful marks. After almost any \"big\" motion ({key:G}, {key:/}, {key:%}, {key:`}{key:a}), {key:`}{key:`} reverses it."
+    },
+    {
+      "type": "qr",
+      "topic": "marks.special"
+    },
+    {
+      "type": "buy-prompt"
+    }
   ]
 }

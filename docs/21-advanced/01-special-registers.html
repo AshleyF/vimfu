@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Special Registers Deep Dive — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-21-advanced">↑ Advanced</a>
+  &middot; <a href="../videos/21-advanced/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="../20-patterns-recipes/08-external-filter.html" rel="prev">← External Filter Tricks</a></span>
+  <span class="pager-pos">116 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="02-terminal.html" rel="next">Terminal Inside Vim →</a></span>
+</nav>
+<article>
+<h1>Special Registers Deep Dive</h1>
+<p class="subtitle"><kbd>%</kbd>, <kbd>#</kbd>, <kbd>:</kbd>, <kbd>.</kbd>, <kbd>/</kbd>, <kbd>=</kbd>, <kbd>_</kbd> — the read-only and computed ones.</p>
+<p class="meta">Keys: <kbd>%</kbd>, <kbd>#</kbd>, <kbd>:</kbd>, <kbd>.</kbd>, <kbd>/</kbd>, <kbd>=</kbd>, <kbd>_</kbd></p>
+<blockquote class="summary">Beyond the named and numbered registers, Vim has a set of special registers that hold computed or context-dependent values: filename (%), alternate file (#), last command (:), last insert (.), last search (/), expression (=), and the black hole (_).</blockquote>
+<p>Beyond <kbd>a</kbd>–<kbd>z</kbd> and <kbd>0</kbd>–<kbd>9</kbd>, Vim has a handful of <em>special</em> registers that hold computed values. Most are read-only.</p>
+<table>
+<thead><tr>
+<th>Register</th>
+<th>Holds</th>
+<th>Common use</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>%</kbd></td>
+<td>Current filename</td>
+<td><kbd>&quot;</kbd><kbd>%</kbd><kbd>p</kbd> to paste filename</td>
+</tr>
+<tr>
+<td><kbd>#</kbd></td>
+<td>Alternate filename</td>
+<td>Reference last edited file</td>
+</tr>
+<tr>
+<td><kbd>:</kbd></td>
+<td>Last Ex command</td>
+<td><kbd>@</kbd><kbd>:</kbd> replays it</td>
+</tr>
+<tr>
+<td><kbd>.</kbd></td>
+<td>Last inserted text</td>
+<td><kbd>&quot;</kbd><kbd>.</kbd><kbd>p</kbd> to paste what you just typed</td>
+</tr>
+<tr>
+<td><kbd>/</kbd></td>
+<td>Last search pattern</td>
+<td><kbd>&quot;</kbd><kbd>/</kbd><kbd>p</kbd> to see the regex</td>
+</tr>
+<tr>
+<td><kbd>=</kbd></td>
+<td>Expression evaluator</td>
+<td><kbd>&quot;</kbd><kbd>=</kbd><kbd>1</kbd><kbd>+</kbd><kbd>1</kbd><kbd>Enter</kbd><kbd>p</kbd> pastes <code>2</code></td>
+</tr>
+<tr>
+<td><kbd>_</kbd></td>
+<td>Black hole — writes vanish</td>
+<td><kbd>&quot;</kbd><kbd>_</kbd><kbd>d</kbd><kbd>d</kbd> delete without affecting any other register</td>
+</tr>
+<tr>
+<td><kbd>+</kbd></td>
+<td>System clipboard</td>
+<td>Cross-app cut/paste</td>
+</tr>
+<tr>
+<td><kbd>*</kbd></td>
+<td>X11 selection clipboard</td>
+<td>Linux selection (middle-click)</td>
+</tr>
+</tbody></table>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<section class="watch"><h2>Watch</h2><ul class="lesson-grid"><li class="lesson-pending"><div class="placeholder">📺 #0484 The : Register (not yet published)</div></li><li class="lesson-pending"><div class="placeholder">📺 #0486 The % Register (not yet published)</div></li></ul></section>
+<p class="see-also"><strong>See also:</strong> <a href="../12-registers/07-special.html">Special Registers</a>, <a href="../16-insert-mode-power/05-from-register.html">Inserting from a Register</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="../20-patterns-recipes/08-external-filter.html" rel="prev">← External Filter Tricks</a></span>
+  <span class="pager-pos">116 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="02-terminal.html" rel="next">Terminal Inside Vim →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-21-advanced">↑ back to Advanced</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>
