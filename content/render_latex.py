@@ -782,51 +782,112 @@ def render_block(b, *, index, examples) -> list[str]:
         headers = b.get("headers", [])
         rows = b.get("rows", [])
         if headers:
-            key_cols = set(b.get("keyColumns") or
-                           [i for i, h in enumerate(headers)
-                            if str(h).strip().lower() in ("key", "keys")])
+            explicit_key_cols = set(b.get("keyColumns") or [])
+            # Legacy auto-detect: columns headed exactly "Key" / "Keys"
+            # always count as key columns.
+            for i, h in enumerate(headers):
+                if str(h).strip().lower() in ("key", "keys"):
+                    explicit_key_cols.add(i)
             n = len(headers)
 
-            # Estimate how wide each key column needs to be (in em) so we
-            # don't waste page width on a fixed-size key column. Non-key
-            # columns become tabularx X columns: they absorb the rest of
-            # \linewidth and wrap their (typically prose) content.
+            # Measure the longest visible content per column. Strip our
+            # content markup (`{key:..}`, `**bold**`, `*em*`, backtick
+            # code) so widths reflect rendered text length.
             def _visible_len(s: str) -> int:
-                # Strip our content markup so widths reflect rendered text,
-                # not raw `{key:...}` / `**bold**` / `_em_` etc. \key pills
-                # have a few points of horizontal padding so we round up.
                 t = re.sub(r"\{key:([^}]+)\}", r"\1", str(s))
                 t = re.sub(r"\*\*([^*]+)\*\*", r"\1", t)
+                t = re.sub(r"\*([^*]+)\*", r"\1", t)
                 t = re.sub(r"`([^`]+)`", r"\1", t)
                 return len(t)
 
-            key_col_widths = {}
-            for i in key_cols:
-                longest = max(
+            def _has_key_markup(s: str) -> bool:
+                return "{key:" in str(s)
+
+            col_max = [
+                max(
                     [_visible_len(headers[i])]
                     + [_visible_len(row[i]) if i < len(row) else 0
                        for row in rows]
                 )
-                # ~0.7em per char (ttfamily + pill padding); clamp 3..14em.
-                em = max(3.0, min(14.0, longest * 0.7 + 1.0))
-                key_col_widths[i] = em
+                for i in range(n)
+            ]
+            col_has_keys = [
+                any(_has_key_markup(row[i]) for row in rows if i < len(row))
+                or _has_key_markup(headers[i])
+                for i in range(n)
+            ]
+
+            # A column is "narrow" (fixed-width, sized to its longest
+            # content) if any of these are true:
+            #   * it is explicitly listed in keyColumns / header == "Key(s)"
+            #   * any of its cells contain {key:...} key-pill markup
+            #     (those columns hold compact, non-wrapping key chords)
+            #   * its longest visible content fits in ~22 characters,
+            #     which is short enough that letting tabularx wrap it
+            #     across multiple lines would just waste vertical space.
+            # Everything else becomes a tabularx X column that absorbs
+            # the remaining horizontal space and wraps prose naturally.
+            NARROW_CHAR_LIMIT = 22
+            narrow_cols = set(explicit_key_cols)
+            for i in range(n):
+                if col_has_keys[i]:
+                    narrow_cols.add(i)
+                elif col_max[i] <= NARROW_CHAR_LIMIT:
+                    narrow_cols.add(i)
+
+            # If every column ended up narrow, demote the widest one to
+            # X so the table doesn't sit awkwardly half-empty on the
+            # page (and so longtable rules still apply for paging).
+            if narrow_cols == set(range(n)) and n > 1:
+                widest = max(range(n), key=lambda i: col_max[i])
+                narrow_cols.discard(widest)
+
+            def _col_em(i: int) -> float:
+                # ~0.7em per visible char + 1em slack for cell padding.
+                # Columns containing {key:...} pills need extra slack
+                # because each pill adds horizontal padding around the
+                # ttfamily char (border + fboxsep). Clamp to 3..16em so
+                # a freak long cell doesn't push the prose column off
+                # the page.
+                longest = col_max[i]
+                if col_has_keys[i]:
+                    em = longest * 0.95 + 1.5
+                else:
+                    em = longest * 0.7 + 1.0
+                return max(3.0, min(16.0, em))
+
+            # Compute every narrow column's width, then make sure their
+            # total leaves enough room for the prose X column to actually
+            # absorb width and wrap text. Our body text width is roughly
+            # 30em on the KDP trim, so cap total narrow width at 22em
+            # (leaves ~8em for the X column at minimum). If we're over,
+            # scale every narrow column down proportionally.
+            narrow_em = {i: _col_em(i) for i in narrow_cols}
+            has_x = any(i not in narrow_cols for i in range(n))
+            if has_x:
+                MAX_NARROW_TOTAL = 22.0
+                total = sum(narrow_em.values())
+                if total > MAX_NARROW_TOTAL:
+                    factor = MAX_NARROW_TOTAL / total
+                    narrow_em = {i: max(3.0, w * factor)
+                                 for i, w in narrow_em.items()}
 
             cols = []
             for i in range(n):
-                if i in key_cols:
+                if i in narrow_cols:
                     cols.append(
                         "@{}>{\\raggedright\\sloppy\\arraybackslash}"
-                        f"p{{{key_col_widths[i]:.1f}em}}@{{}}"
+                        f"p{{{narrow_em[i]:.1f}em}}@{{}}"
                     )
                 else:
                     cols.append(
                         "@{\\hspace{1em}}>{\\raggedright\\sloppy"
                         "\\arraybackslash}X"
                     )
-            # If there is NO X column (all columns are keys), fall back to
-            # a plain longtable so we don't ask tabularx to handle a row
-            # with no expanding column.
-            has_x = any(i not in key_cols for i in range(n))
+
+            # If there is NO X column (every column is narrow), fall
+            # back to a plain longtable so we don't ask tabularx to
+            # handle a row with no expanding column.
             spec = "".join(cols)
             if has_x:
                 out.append(
@@ -841,7 +902,11 @@ def render_block(b, *, index, examples) -> list[str]:
                 rendered = []
                 for i, c in enumerate(cells):
                     s = str(c)
-                    if i in key_cols and s and "{key:" not in s:
+                    # Cells in explicit "Key"/"Keys" columns get the
+                    # {key:...} wrapper added implicitly. Other narrow
+                    # columns (Command/Motion/Operator/etc.) already
+                    # carry their own key markup in the source.
+                    if i in explicit_key_cols and s and "{key:" not in s:
                         s = "{key:" + s + "}"
                     rendered.append(inl(s))
                 out.append(" & ".join(rendered) + " \\\\")
