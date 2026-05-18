@@ -1153,6 +1153,29 @@ class ScriptedDemo:
         # Give the reader thread a moment to finish processing any
         # remaining output from setup commands before we start logging.
         time.sleep(0.3)
+        # Fail loudly if Oh-My-Zsh has injected its "Would you like to
+        # update?" prompt into the screen before we start recording.
+        # Without this guard, the prompt sits at the top of the terminal
+        # for the entire video, the first SAY/KEYS step's keystrokes get
+        # eaten by the prompt's [Y/n] reader, and the recording silently
+        # completes with a broken video (see Instructions.md). Surface
+        # it as a hard error so the operator updates Oh-My-Zsh and
+        # re-runs instead of publishing a corrupted clip.
+        try:
+            screen_text = self.shell.get_screen_text()
+        except Exception:
+            screen_text = ""
+        if "[oh-my-zsh]" in screen_text.lower() and (
+            "would you like to update" in screen_text.lower()
+            or "would you like to check for updates" in screen_text.lower()
+        ):
+            raise RuntimeError(
+                "Oh-My-Zsh wants to update before this recording could "
+                "even start. Run `omz update` (or `zsh -ic 'omz update'`) "
+                "in the shell so the prompt is gone, then re-run this "
+                "video. Letting it through produces a silently broken "
+                "recording — the prompt steals the first keystrokes."
+            )
         # Log initial screen state so we can verify content is visible
         self.log.action('RECORDING_START', 'Screen state at recording start:')
         self.log.screen_snapshot()

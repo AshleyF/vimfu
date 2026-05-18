@@ -180,6 +180,14 @@ The player now defensively remaps `{"keys":"escape"}` → `Escape()` and `{"keys
 
 Note the doubled backslashes in JSON (`\\t`, `\\n`) so that `printf` sees `\t` and `\n` after JSON decoding.
 
+### Oh-My-Zsh update prompt corrupts recordings
+
+When Oh-My-Zsh decides it's time to check for updates (it runs auto-update on its own cadence), it injects a `[oh-my-zsh] Would you like to update? [Y/n]` prompt at the top of the terminal *before* the recording even begins. The prompt sits there for the whole video and — worse — the prompt's `[Y/n]` reader eats the first keystrokes the script sends, so the actual demo never runs as authored. The recording then completes "successfully" and you get a silently broken video.
+
+`shellpilot/viewer.py:start_recording` now hard-fails with a `RuntimeError` the moment it sees `[oh-my-zsh] Would you like to (update|check for updates)` in the screen text at recording start. If you hit this, run `omz update` in a regular shell (or `zsh -ic 'omz update'`) so the prompt is gone, then re-run the lesson.
+
+**Rule:** if shellpilot raises the Oh-My-Zsh guard, update Oh-My-Zsh once and re-record the affected lesson. Do not work around it.
+
 ### Never use `rm -f .../path/*` in setup (zsh `RM_STAR_WAIT`)
 
 Zsh's default `RM_STAR_WAIT` halts on `rm -f .../*` with a `[yn]?` prompt for ~10 seconds. The prompt steals the next keystrokes, which then eat the start of subsequent `cat << EOF > file` heredocs — so the **first multi-file `writeFile` lands empty in the buffer** while later ones look fine. This is the root cause of the `0,0-1 All` "empty buffer" symptom in multi-file `nvim a.py b.py c.py` setups.
