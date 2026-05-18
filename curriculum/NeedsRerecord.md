@@ -10,11 +10,7 @@ This was found by scanning all logs under `shellpilot/videos/` for `[oh-my-zsh]`
 
 ### Affected lessons
 
-| Lesson slug                  | Log file                                                           |
-| ---------------------------- | ------------------------------------------------------------------ |
-| `0530a_send_literal_prefix`  | `shellpilot/videos/0530a_send_literal_prefix/0530a_send_literal_prefix.log` |
-| `0530b_auto_unzoom`          | `shellpilot/videos/0530b_auto_unzoom/0530b_auto_unzoom.log`        |
-| `0530c_pane_auto_close`      | `shellpilot/videos/0530c_pane_auto_close/0530c_pane_auto_close.log` |
+*(none — all known affected lessons have been re-recorded and re-uploaded.)*
 
 ### To re-record
 
