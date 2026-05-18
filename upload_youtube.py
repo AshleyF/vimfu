@@ -1,17 +1,21 @@
 """
-Upload a VimFu video to YouTube using the curriculum JSON file.
+Upload (or delete) a VimFu video on YouTube using the curriculum JSON.
 
 Usage:
     python upload_youtube.py curriculum/shorts/0001_what_is_vim.json
     python upload_youtube.py --schedule 2025-07-20T12:00:00Z curriculum/shorts/*.json
     python upload_youtube.py --public curriculum/shorts/*.json
+    # Delete the YouTube video and clear youtube.videoId/url in the JSON:
+    python upload_youtube.py --delete curriculum/shorts/0530a_send_literal_prefix.json
+    # Force re-upload after a delete (or after the old video was removed manually):
+    python upload_youtube.py --reupload curriculum/shorts/0531a_split_window.json
 
 The lesson JSON contains both the lesson definition and a "youtube"
 section with upload settings.  Video and thumbnail files are located
 automatically at  shellpilot/videos/{stem}/{stem}.mp4 / .png.
 
 After upload the youtube.videoId and youtube.url fields are written
-back into the lesson JSON.
+back into the lesson JSON. --delete clears them.
 
 Privacy logic (highest priority first):
     --schedule <future>     private + publishAt (YouTube auto-publishes at the scheduled time)
@@ -274,6 +278,42 @@ def _find_or_create_playlist(youtube, title: str) -> str:
     return result["id"]
 
 
+def delete_video(lesson_path: Path) -> bool:
+    """Delete this lesson's video from YouTube (if uploaded) and clear
+    ``youtube.videoId``/``youtube.url`` in the curriculum JSON.
+
+    Returns True on success (video deleted or already-gone), False on
+    permission / quota / network failure.
+    """
+    data = json.loads(lesson_path.read_text(encoding="utf-8"))
+    yt = data.get("youtube", {})
+    video_id = yt.get("videoId")
+    if not video_id:
+        print(f"SKIP: {lesson_path.name} has no youtube.videoId — nothing to delete.")
+        return True
+    youtube = get_authenticated_service()
+    try:
+        youtube.videos().delete(id=video_id).execute()
+        print(f"DELETED: {lesson_path.name} -> {video_id}")
+    except Exception as e:
+        # If the video was already removed manually, treat 404 as success.
+        msg = str(e)
+        if "videoNotFound" in msg or "404" in msg:
+            print(f"GONE: {lesson_path.name} -> {video_id} (already removed on YouTube)")
+        else:
+            print(f"ERROR deleting {video_id}: {e}")
+            return False
+    # Clear the cached ids so a subsequent --reupload picks up fresh ones.
+    yt.pop("videoId", None)
+    yt.pop("url", None)
+    data["youtube"] = yt
+    lesson_path.write_text(
+        json.dumps(data, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Upload VimFu videos to YouTube from curriculum JSON files."
@@ -296,6 +336,17 @@ def main():
         "--no-sort", dest="no_sort", action="store_true",
         help="Process files in the order given on the command line, "
              "instead of sorting alphabetically."
+    )
+    parser.add_argument(
+        "--delete", dest="delete", action="store_true",
+        help="Delete each lesson's YouTube video (by its youtube.videoId) "
+             "and clear that field in the JSON. Does NOT touch the local mp4. "
+             "Use before re-uploading a corrupted recording."
+    )
+    parser.add_argument(
+        "--reupload", dest="reupload", action="store_true",
+        help="Force upload even when youtube.videoId is already set. "
+             "Implies that the old YouTube video has been removed."
     )
     privacy_group = parser.add_mutually_exclusive_group()
     privacy_group.add_argument(
@@ -320,13 +371,27 @@ def main():
             parser.error(f"Invalid datetime: {args.schedule}")
 
     lessons = args.lessons if args.no_sort else sorted(args.lessons)
+
+    # --delete: remove the YouTube videos and clear the videoId/url fields,
+    # then exit. (Re-upload is a separate invocation.)
+    if args.delete:
+        ok = True
+        for path in lessons:
+            if not path.exists():
+                print(f"ERROR: {path} not found, skipping.")
+                ok = False
+                continue
+            if not delete_video(path):
+                ok = False
+        sys.exit(0 if ok else 1)
+
     for idx, path in enumerate(lessons):
         if not path.exists():
             print(f"ERROR: {path} not found, skipping.")
             continue
-        # Skip lessons that are already uploaded
+        # Skip lessons that are already uploaded, unless --reupload was given.
         data = json.loads(path.read_text(encoding='utf-8'))
-        if data.get('youtube', {}).get('videoId'):
+        if data.get('youtube', {}).get('videoId') and not args.reupload:
             print(f"SKIP: {path.name} (already uploaded: {data['youtube']['videoId']})")
             continue
         # Compute per-video schedule datetime
