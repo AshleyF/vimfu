@@ -438,17 +438,23 @@ def _collapse_long_key_runs(text: str) -> str:
     single backtick-quoted code span.
 
     Author shortcut: many topics encode a literal Ex-mode command as
-    `{key::}{key:s}{key:e}{key:t} {key:s}{key:p}{key:e}{key:l}{key:l}`
+    ``{key::}{key:s}{key:e}{key:t} {key:s}{key:p}{key:e}{key:l}{key:l}``
     so each char gets its own pill. That looks awful: a row of 8+
     single-letter boxes for what is really a single command the user
-    types. When we see 4 or more single-char key tokens in a row
-    (allowing one literal space between them, as the author would
-    insert), fold the whole run into ``\\code{...}`` so it renders as
-    one ttfamily code block instead.
+    types. When that happens, fold the whole run into ``\\code{...}``
+    so it renders as one ttfamily code block instead.
 
-    Shorter runs are left alone — ``{key:g}{key:g}`` stays as two
-    pills; ``{key:c}{key:i}{key:p}`` stays as three pills (those read
-    fine as discrete keystrokes).
+    We only collapse runs that look like *typed text* on the command
+    line, never normal-mode key chords. The signal for "typed text" is
+    one of:
+
+      * the run contains a literal space between key markers
+        (real prose / Ex args almost always have one), or
+      * the run starts with one of the command-line-entering keys
+        ``:``, ``/``, ``?``, or ``!``.
+
+    Pure normal-mode chords like ``gUiw``, ``"ayy``, ``ddkP``, ``+yiw``
+    keep rendering as a row of touching key pills.
     """
     def repl(m: re.Match) -> str:
         chunk = m.group(0)
@@ -457,7 +463,12 @@ def _collapse_long_key_runs(text: str) -> str:
             chars.append(piece.group(1))
             if piece.group(2):
                 chars.append(piece.group(2))
-        return "`" + "".join(chars).rstrip() + "`"
+        joined = "".join(chars).rstrip()
+        has_space = " " in joined
+        starts_cmdline = bool(joined) and joined[0] in ":/?!"
+        if not (has_space or starts_cmdline):
+            return chunk  # leave normal-mode chord as individual pills
+        return "`" + joined + "`"
     return _LONG_KEY_RUN_RE.sub(repl, text)
 
 
