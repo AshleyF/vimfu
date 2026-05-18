@@ -140,7 +140,11 @@ def render_inline(text: str, *, current_part: str, index) -> str:
         raw = m.group(0)
         if kind == "key":
             k = _KEY_RE.match(raw).group(1)
-            out_parts.append(f'<kbd>{escape(k)}</kbd>')
+            if (len(k) >= 3 and k.startswith(":")
+                    and all(c.isalnum() or c in "_!" for c in k[1:])):
+                out_parts.append(f'<code>{escape(k)}</code>')
+            else:
+                out_parts.append(f'<kbd>{escape(k)}</kbd>')
         elif kind == "link":
             mm = _LINK_RE.match(raw)
             label, tid = mm.group(1), mm.group(2)
