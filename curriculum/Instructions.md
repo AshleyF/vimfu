@@ -457,3 +457,21 @@ Always short, lowercase `.py` files relevant to the lesson context: `typo.py`, `
 - [ ] No nvim launch visible in the recording (unless that's the lesson)
 - [ ] `WaitForScreen("All")` used (nvim status bar, never file content or command text)
 - [ ] **No garbled arrow key overlays** — search the log for `[OVERLAY]` lines containing `⎋[` (e.g., `⎋[1;5C`, `⎋[A`). These are raw escape sequences leaking into the display. The viewer's `KEY_DISPLAY` dict maps common arrow sequences (`\x1b[A`–`D`, `\x1b[1;5A`–`D`, etc.) to proper symbols (`↑`, `⌃→`, etc.), so the key display should show arrows, not escape codes. If you still see `⎋[` in an overlay, either the escape sequence isn't in `KEY_DISPLAY` (add it) or the JSON `keys` field uses a non-standard encoding (fix it).
+
+---
+
+## Publishing Pipeline (after a video is recorded and ready)
+
+Whenever you upload or re-upload a video (whether that's a single lesson or a batch), **always** run these four steps in order, even if the user only asked you to "upload" or "re-record". The QR codes in the book and the `/r/` short links on the site embed YouTube video IDs — a fresh upload changes the ID, so any link that isn't refreshed will silently point to the old (or deleted) video.
+
+1. **Upload to YouTube** — `python upload_youtube.py [--schedule … --schedule-daily] <json paths>`. This writes the new `youtube.videoId` back into each lesson JSON.
+2. **Refresh redirects** — `python content/render_redirects.py`. The `/r/v-XXXX/` pages embed the video ID from the JSON; if you skip this, every short URL still points at the old ID.
+3. **Deploy the site** — `python content/deploy_site.py --skip-sim` (omit `--skip-sim` if the simulator changed). This re-runs the renderers and syncs `content/output/html/` into `docs/`.
+4. **Update `unpublished_shorts.txt`** — remove the lines for the lessons you just uploaded (they're no longer unpublished). The file is hand-maintained; nothing regenerates it.
+
+Then `git add -A && git commit && git push`. Include the new video IDs and the schedule (if any) in the commit message so the audit trail is self-explanatory.
+
+If a re-recorded video reuses the same lesson JSON, **the YouTube ID changes** — the previous step 2 is not optional. Skipping it is the most common cause of "the QR code in the printed book opens the wrong video" reports.
+
+---
+
