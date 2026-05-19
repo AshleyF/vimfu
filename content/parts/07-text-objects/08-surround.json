@@ -5,7 +5,7 @@
   "title": "Surround",
   "subtitle": "{key:ds}, {key:cs}, {key:ys} — operate on surroundings as a first-class concept.",
   "part": "text-objects",
-  "summary": "Tim Pope's vim-surround adds three operators — ys (add), ds (delete), cs (change) — plus visual S. The trailing character names the surrounding kind: quotes, brackets, tags, or function calls. Once you have it, it feels like core Vim.",
+  "summary": "Tim Pope's vim-surround adds three operators — ys (add), ds (delete), cs (change) — plus visual S. The trailing key names the surrounding kind: quotes, brackets, tags, or function calls. Once you have it, it feels like core Vim.",
   "keys": [
     "ds",
     "cs",
@@ -40,7 +40,7 @@
     },
     {
       "type": "prose",
-      "text": "Every surround command is one sentence with two slots:\n\n  *operator* + *kind*\n\nThe **operator** says what to do. The **kind** is a single character naming the surrounding — `'`, `\"`, `(`, `[`, `{`, `<`, `t` (tag), `f` (function call). The {key:c}{key:s} operator takes *two* kinds because changing requires both an old and a new wrapper."
+      "text": "Every surround command is one sentence with two slots:\n\n  *operator* + *kind*\n\nThe **operator** says what to do. The **kind** is a single key naming the surrounding — {key:'}, {key:\"}, {key:(}, {key:[}, {key:{}, {key:<}, {key:t} (tag), {key:f} (function call). The {key:c}{key:s} operator takes *two* kinds because changing requires both an old and a new wrapper."
     },
     {
       "type": "table",
@@ -51,35 +51,35 @@
       ],
       "rows": [
         [
-          "`ds{kind}`",
+          "{key:d}{key:s}*kind*",
           "Delete",
-          "**d**elete-**s**urrounding-`{kind}`"
+          "**d**elete-**s**urrounding-*kind*"
         ],
         [
-          "`cs{old}{new}`",
+          "{key:c}{key:s}*old**new*",
           "Change",
-          "**c**hange-**s**urrounding-`{old}`-to-`{new}`"
+          "**c**hange-**s**urrounding-*old*-to-*new*"
         ],
         [
-          "`ys{motion}{kind}`",
+          "{key:y}{key:s}*motion**kind*",
           "Add",
-          "**y**ou-**s**urround the range with `{kind}`"
+          "**y**ou-**s**urround the range with *kind*"
         ],
         [
-          "`yss{kind}`",
+          "{key:y}{key:s}{key:s}*kind*",
           "Add (whole line)",
           "Surround the current line"
         ],
         [
-          "*visual* + `S{kind}`",
+          "*visual mode* + {key:S}*kind*",
           "Add (selection)",
-          "Surround the visual selection"
+          "With a selection already made in *visual mode*, press {key:S} then *kind* to wrap the selection."
         ]
       ]
     },
     {
       "type": "prose",
-      "text": "{key:y}{key:s} is the only operator that takes a *motion* (or text object) before the `{kind}` — the motion picks what gets wrapped. {key:d}{key:s} and {key:c}{key:s} need no motion: they search outward from the cursor and operate on the *nearest enclosing* surround."
+      "text": "{key:y}{key:s} is the only operator that takes a *motion* (or text object) before the *kind* — the motion picks what gets wrapped. {key:d}{key:s} and {key:c}{key:s} need no motion: they search outward from the cursor and operate on the *nearest enclosing* surround."
     },
     {
       "type": "divider"
@@ -91,7 +91,7 @@
     },
     {
       "type": "prose",
-      "text": "The `{kind}` character names a category of wrapper. Quotes are their own pair. Bracket pairs have two flavors: the *opener* form ({key:(}, {key:[}, {key:{}, {key:<}) adds a space on the inside; the *closer* form ({key:)}, {key:]}, {key:}}, {key:>}) does not. Tags and function calls *prompt* for the missing piece (tag name, function name)."
+      "text": "The *kind* key names a category of wrapper. Quotes are their own pair. Bracket pairs have two flavors: the *opener* form ({key:(}, {key:[}, {key:{}, {key:<}) adds a space on the inside; the *closer* form ({key:)}, {key:]}, {key:}}, {key:>}) does not. Tags and function calls *prompt* for the missing piece (tag name, function name)."
     },
     {
       "type": "table",
@@ -109,7 +109,7 @@
         [
           "{key:(} or {key:)} (alias {key:b})",
           "Parens",
-          "{key:(} adds spaces inside: `( x )`. {key:)} does not: `(x)`."
+          "{key:(} adds spaces inside: `( foo )`. {key:)} does not: `(foo)`."
         ],
         [
           "{key:[} or {key:]}",
@@ -196,18 +196,18 @@
         ],
         [
           "{key:y}{key:s}{key:s}{key:}}",
-          "`x = 1` → `{x = 1}` (whole line, no spaces)"
+          "`foo = 1` → `{foo = 1}` (whole line, no spaces)"
         ],
         [
           "{key:y}{key:s}{key:s}{key:{}",
-          "`x = 1` → `{ x = 1 }` (whole line, with spaces)"
+          "`foo = 1` → `{ foo = 1 }` (whole line, with spaces)"
         ],
         [
           "{key:y}{key:s}{key:i}{key:p}{key:<}{key:p}{key:>}",
           "wraps paragraph in `<p>…</p>`"
         ],
         [
-          "*visual* + {key:S}{key:'}",
+          "*visual mode* + {key:S}{key:'}",
           "wraps the selection in single quotes"
         ]
       ]
@@ -232,20 +232,20 @@
       ],
       "rows": [
         [
-          "`yss{kind}`",
+          "{key:y}{key:s}{key:s}*kind*",
           "Surround the **whole current line** (no motion needed)."
         ],
         [
-          "`yS{motion}{kind}`",
+          "{key:y}{key:S}*motion**kind*",
           "Like {key:y}{key:s} but place content on its **own indented lines**."
         ],
         [
-          "`ySS{kind}`",
+          "{key:y}{key:S}{key:S}*kind*",
           "Whole-line version of the above."
         ],
         [
-          "*visual* + `gS{kind}`",
-          "Surround selection, content on its own lines."
+          "*visual mode* + {key:g}{key:S}*kind*",
+          "From an existing *visual mode* selection, {key:g}{key:S} wraps it like {key:S} but puts the content on its own lines."
         ]
       ]
     },
@@ -257,7 +257,7 @@
     {
       "type": "internals",
       "title": "Why It Belongs in Core",
-      "text": "Vim's grammar already understands the *content* inside surroundings — `i\"`, `i(`, `it`, etc. select the inner content. Surround completes the grammar by treating the *delimiters themselves* as a first-class concept that can be deleted, changed, or added.\n\nThe operator names are mnemonic: **d**elete-**s**urrounding, **c**hange-**s**urrounding, **y**ank-**s**urrounding (\"surround with\"). The plugin makes surroundings as natural to manipulate as words or lines — which is why most Vim users add it day one."
+      "text": "Vim's grammar already understands the *content* inside surroundings — {key:i}{key:\"}, {key:i}{key:(}, {key:i}{key:t}, etc. select the inner content. Surround completes the grammar by treating the *delimiters themselves* as a first-class concept that can be deleted, changed, or added.\n\nThe operator names are mnemonic: **d**elete-**s**urrounding, **c**hange-**s**urrounding, **y**ank-**s**urrounding (\"surround with\"). The plugin makes surroundings as natural to manipulate as words or lines — which is why most Vim users add it day one."
     },
     {
       "type": "internals",
