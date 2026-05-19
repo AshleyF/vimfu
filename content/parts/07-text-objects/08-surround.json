@@ -1,0 +1,275 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "appendix.surround-plugin",
+  "title": "Surround",
+  "subtitle": "{key:ds}, {key:cs}, {key:ys} — operate on surroundings as a first-class concept.",
+  "part": "text-objects",
+  "summary": "Tim Pope's vim-surround adds three operators — ys (add), ds (delete), cs (change) — plus visual S. The trailing character names the surrounding kind: quotes, brackets, tags, or function calls. Once you have it, it feels like core Vim.",
+  "keys": [
+    "ds",
+    "cs",
+    "ys",
+    "yss",
+    "S"
+  ],
+  "lessons": [],
+  "see_also": [
+    "text-objects.quotes",
+    "text-objects.brackets",
+    "text-objects.tags",
+    "text-objects.grammar"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Surround"
+    },
+    {
+      "type": "prose",
+      "text": "Vim's text-object grammar already lets you talk about the *content* inside surroundings — {key:i}{key:\"}, {key:i}{key:(}, {key:i}{key:t} all select what's *between* the delimiters. But the delimiters themselves — the quotes, the brackets, the tags — are second-class: you can land your cursor on one with a motion, but you can't directly *operate* on \"the thing wrapped around this word.\"\n\nTim Pope's [vim-surround](https://github.com/tpope/vim-surround) plugin closes that gap. It adds three operators that treat *surroundings* as first-class targets, completing the grammar. It's the plugin most often cited as \"this should ship with Vim.\""
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The Grammar"
+    },
+    {
+      "type": "prose",
+      "text": "Every surround command is one sentence with two slots:\n\n  *operator* + *kind*\n\nThe **operator** says what to do. The **kind** is a single character naming the surrounding — `'`, `\"`, `(`, `[`, `{`, `<`, `t` (tag), `f` (function call). The {key:c}{key:s} operator takes *two* kinds because changing requires both an old and a new wrapper."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Form",
+        "Operator",
+        "Reads as"
+      ],
+      "rows": [
+        [
+          "`ds{kind}`",
+          "Delete",
+          "**d**elete-**s**urrounding-`{kind}`"
+        ],
+        [
+          "`cs{old}{new}`",
+          "Change",
+          "**c**hange-**s**urrounding-`{old}`-to-`{new}`"
+        ],
+        [
+          "`ys{motion}{kind}`",
+          "Add",
+          "**y**ou-**s**urround the range with `{kind}`"
+        ],
+        [
+          "`yss{kind}`",
+          "Add (whole line)",
+          "Surround the current line"
+        ],
+        [
+          "*visual* + `S{kind}`",
+          "Add (selection)",
+          "Surround the visual selection"
+        ]
+      ]
+    },
+    {
+      "type": "prose",
+      "text": "{key:y}{key:s} is the only operator that takes a *motion* (or text object) before the `{kind}` — the motion picks what gets wrapped. {key:d}{key:s} and {key:c}{key:s} need no motion: they search outward from the cursor and operate on the *nearest enclosing* surround."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Kinds — the Surround Alphabet"
+    },
+    {
+      "type": "prose",
+      "text": "The `{kind}` character names a category of wrapper. Quotes are their own pair. Bracket pairs have two flavors: the *opener* form ({key:(}, {key:[}, {key:{}, {key:<}) adds a space on the inside; the *closer* form ({key:)}, {key:]}, {key:}}, {key:>}) does not. Tags and function calls *prompt* for the missing piece (tag name, function name)."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Kind",
+        "Wrapper",
+        "Notes"
+      ],
+      "rows": [
+        [
+          "{key:'} {key:\"} {key:`}",
+          "Quotes",
+          "Self-pairing — same character on both sides."
+        ],
+        [
+          "{key:(} or {key:)} (alias {key:b})",
+          "Parens",
+          "{key:(} adds spaces inside: `( x )`. {key:)} does not: `(x)`."
+        ],
+        [
+          "{key:[} or {key:]}",
+          "Square brackets",
+          "{key:[} adds spaces, {key:]} does not."
+        ],
+        [
+          "{key:}} or {key:{} (alias {key:B})",
+          "Curly braces",
+          "Opener form adds spaces; closer form does not."
+        ],
+        [
+          "{key:<} or {key:>}",
+          "Angle brackets",
+          "Plain `<…>` — *not* a tag, just the symbols."
+        ],
+        [
+          "{key:t} or {key:T}",
+          "HTML/XML tag",
+          "Prompts: type `em>` (or `a href=\"...\">`) and press Enter. Closing tag generated. {key:T} keeps the full opening tag on change."
+        ],
+        [
+          "{key:f}",
+          "Function call",
+          "Prompts for a name; produces `name(content)`."
+        ],
+        [
+          "{key:F}",
+          "Function call (spaced)",
+          "Like {key:f} but `name( content )`."
+        ]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "The spaces-inside rule is mnemonic: an opening bracket *opens its arms* and leaves room; a closing bracket *closes tight*. If you remember which way the bracket is pointing, you remember whether you'll get spaces."
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Worked Examples"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Sequence",
+        "Before → After"
+      ],
+      "rows": [
+        [
+          "{key:d}{key:s}{key:'}",
+          "`'hello'` → `hello`"
+        ],
+        [
+          "{key:d}{key:s}{key:t}",
+          "`<em>hello</em>` → `hello`"
+        ],
+        [
+          "{key:c}{key:s}{key:'}{key:\"}",
+          "`'hello'` → `\"hello\"`"
+        ],
+        [
+          "{key:c}{key:s}{key:[}{key:(}",
+          "`[hello]` → `( hello )`"
+        ],
+        [
+          "{key:c}{key:s}{key:]}{key:)}",
+          "`[hello]` → `(hello)`"
+        ],
+        [
+          "{key:c}{key:s}{key:t}",
+          "`<em>hi</em>` → prompts for new tag → `<strong>hi</strong>`"
+        ],
+        [
+          "{key:y}{key:s}{key:i}{key:w}{key:'}",
+          "`hello` → `'hello'` (inner word)"
+        ],
+        [
+          "{key:y}{key:s}{key:i}{key:w}{key:f}",
+          "`hello` → `print(hello)` (prompts for `print`)"
+        ],
+        [
+          "{key:y}{key:s}{key:s}{key:}}",
+          "`x = 1` → `{x = 1}` (whole line, no spaces)"
+        ],
+        [
+          "{key:y}{key:s}{key:s}{key:{}",
+          "`x = 1` → `{ x = 1 }` (whole line, with spaces)"
+        ],
+        [
+          "{key:y}{key:s}{key:i}{key:p}{key:<}{key:p}{key:>}",
+          "wraps paragraph in `<p>…</p>`"
+        ],
+        [
+          "*visual* + {key:S}{key:'}",
+          "wraps the selection in single quotes"
+        ]
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Doubled and Capital Forms"
+    },
+    {
+      "type": "prose",
+      "text": "Some shortcuts and variants follow the same operator-doubling pattern as core Vim ({key:d}{key:d}, {key:y}{key:y}):"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Sequence",
+        "Effect"
+      ],
+      "rows": [
+        [
+          "`yss{kind}`",
+          "Surround the **whole current line** (no motion needed)."
+        ],
+        [
+          "`yS{motion}{kind}`",
+          "Like {key:y}{key:s} but place content on its **own indented lines**."
+        ],
+        [
+          "`ySS{kind}`",
+          "Whole-line version of the above."
+        ],
+        [
+          "*visual* + `gS{kind}`",
+          "Surround selection, content on its own lines."
+        ]
+      ]
+    },
+    {
+      "type": "internals",
+      "title": "Repeat Works",
+      "text": "All three operators integrate with Tim Pope's [repeat.vim](https://github.com/tpope/vim-repeat), so {key:.} repeats the last surround command. {key:c}{key:s}{key:'}{key:\"} on one string, then {key:n} to find the next single-quoted string, then {key:.} to convert it too. The grammar composes with the rest of Vim, exactly like a built-in operator."
+    },
+    {
+      "type": "internals",
+      "title": "Why It Belongs in Core",
+      "text": "Vim's grammar already understands the *content* inside surroundings — `i\"`, `i(`, `it`, etc. select the inner content. Surround completes the grammar by treating the *delimiters themselves* as a first-class concept that can be deleted, changed, or added.\n\nThe operator names are mnemonic: **d**elete-**s**urrounding, **c**hange-**s**urrounding, **y**ank-**s**urrounding (\"surround with\"). The plugin makes surroundings as natural to manipulate as words or lines — which is why most Vim users add it day one."
+    },
+    {
+      "type": "internals",
+      "title": "Where You Already Have It",
+      "text": "Surround is so universally adopted that it ships baked into several Vim emulations:\n\n  - **VS Code Vim extension** (vscodevim/Vim) — surround commands ({key:y}{key:s}, {key:c}{key:s}, {key:d}{key:s}) work out of the box, no separate plugin needed. Enable with `\"vim.surround\": true` (default on).\n  - **IdeaVim** (JetBrains IDEs) — bundled as the IdeaVim-Surround plugin, one click to install.\n  - **Vim** and **Neovim** (the actual editors) — *not* built in. You still need a plugin. The two living maintained options are [`tpope/vim-surround`](https://github.com/tpope/vim-surround) (the original, works in both) and [`kylechui/nvim-surround`](https://github.com/kylechui/nvim-surround) (Lua rewrite for Neovim, slightly different defaults — see Strategy notes in the codebase). Some users prefer [`echasnovski/mini.surround`](https://github.com/echasnovski/mini.surround) as part of the `mini.nvim` collection.\n\nNeovim has discussed adopting a built-in surround module several times but as of Neovim 0.10/0.11 it remains a plugin choice."
+    },
+    {
+      "type": "qr",
+      "topic": "appendix.surround-plugin"
+    },
+    {
+      "type": "buy-prompt"
+    }
+  ]
+}

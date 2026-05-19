@@ -140,12 +140,13 @@ _The grammar in full: verbs × nouns. The conceptual climax._
 
 | ID                                  | Title                        | Lessons              | Keys                     |
 |-------------------------------------|------------------------------|----------------------|--------------------------|
-| `text-objects.iw-aw`       | Inner Word vs A Word         | 74                   | `iw`, `aw`               |
+| `text-objects.iw-aw`       | Inner Word vs Around Word    | 74                   | `iw`, `aw`               |
 | `text-objects.quotes`      | Quote Text Objects           | 75, 76, 77           | `i"`, `a"`, `i'`, `a'`, `` i` ``, `` a` `` |
 | `text-objects.brackets`    | Bracket Text Objects         | 78, 79, 80, 81       | `i(`, `i{`, `i[`, `i<`, `ib`, `iB` |
 | `text-objects.sentence-paragraph` | Sentence and Paragraph | 82, 83             | `is`, `as`, `ip`, `ap`   |
 | `text-objects.tags`        | HTML/XML Tag Objects         | 84                   | `it`, `at`               |
 | `text-objects.grammar`     | The Vim Grammar              | 85                   | `[count] [reg] op [count] motion` |
+| `appendix.surround-plugin` | Surround                     | —                    | `ds`, `cs`, `ys`, `yss`, visual `S` |
 
 **Internals:** every operator is a function `(start, end, type) → effect`;
 every motion produces `(start, end, type)`; text objects produce `(start,
@@ -442,7 +443,6 @@ deliberately — set `mode-keys vi` in `~/.tmux.conf` to make it complete.
 | `appendix.grammar-matrix`       | The Vim Grammar Matrix         | Operators × motions/text-objects table. |
 | `appendix.learning-path`        | Suggested Learning Path        | A 120-day plan from zero to fluency. |
 | `appendix.motion-classification`| Motion Classification          | Inclusive vs exclusive vs linewise. |
-| `appendix.surround-plugin`      | The Surround Plugin            | `ys`, `cs`, `ds`, visual `S`. |
 | `appendix.vim-in-other-editors` | Vim in Other Editors           | VS Code, JetBrains, etc. — site has a setup-guides section per editor. |
 | `appendix.complete-key-reference`| Complete Key Reference        | Alphabetical index of every key. Site's main "search" target; book's last appendix. |
 
