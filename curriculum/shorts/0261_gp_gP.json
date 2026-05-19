@@ -1,6 +1,6 @@
 {
   "title": "VimFu — gp gP Put and Move",
-  "description": "gp and gP paste like p and P, but leave the cursor after the pasted text instead of on it. Great for sequential pastes.",
+  "description": "gp and gP paste like p and P, but leave the cursor just past the pasted text instead of on it — handy when you want to keep going. Works for both lines and characters.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -8,71 +8,252 @@
   "seed": 402,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "g commands", "paste"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "paste"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f todo.py .todo.py.swp .todo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "todo.py", "content": "# Task List\ntasks = [\n    \"fix login bug\",\n    \"add dark mode\",\n    \"write tests\",\n]\n\npriority = [\n    \"deploy hotfix\",\n]" },
-    { "line": "clear" },
-    { "line": "nvim todo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f todo.py .todo.py.swp .todo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "todo.py",
+      "content": "# Task List\ntasks = [\n    \"fix login bug\",\n    \"add dark mode\",\n    \"write tests\",\n]\n\npriority = [\n    \"deploy hotfix\",\n]\n\next = \"Score\"\napi = \"call get(x)\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim todo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "gp gP — Put and Move", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "G P pastes like P, but leaves the cursor after the pasted text. Normal P leaves the cursor on the pasted text. G P moves past it." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: yank a line, paste with p vs gp ---" },
-    { "say": "Yank line three. The fix login bug task.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "3G", "overlay": "line 3" },
-    { "wait": 0.3 },
-    { "keys": "yy", "overlay": "yank line" },
-    { "wait": 0.5 },
-    { "say": "Normal P. Paste below.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "p", "overlay": "paste below" },
-    { "wait": 0.5 },
-    { "say": "The cursor is on the pasted line. Undo.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "say": "Now G P. Paste below, but cursor moves after.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "gp", "overlay": "paste + move after" },
-    { "wait": 0.6 },
-    { "say": "The pasted line is above, and the cursor is on the next line. Ready to keep pasting." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: multiple pastes ---" },
-    { "say": "Where G P shines. Paste the same line three times. G P, dot, dot.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "gp", "overlay": "gp" },
-    { "wait": 0.3 },
-    { "keys": ".", "overlay": "repeat" },
-    { "wait": 0.3 },
-    { "keys": ".", "overlay": "repeat" },
-    { "wait": 0.6 },
-    { "say": "Three copies, stacked in order. With normal P you'd paste on top of each other." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "G P. Paste and move past. G capital P pastes above and moves past. Use them when you need to paste repeatedly." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gp gP — Put and Move",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G p pastes like p, but leaves the cursor just past the new text. Capital G capital P does the same trick pasting above."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: linewise paste ---"
+    },
+    {
+      "say": "Yank line three.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": "line 3"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "yy",
+      "overlay": "yank line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Plain p pastes below. The cursor stays on the new line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "paste below"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now G p. Same paste, but the cursor steps past it onto the next line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gp",
+      "overlay": "gp"
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 2: characterwise paste ---"
+    },
+    {
+      "say": "Same idea for characters. Yank one word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/Score\r",
+      "overlay": "find Score"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "yiw",
+      "overlay": "yank word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Paste it onto the end of get to build a method name.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "/get\r",
+      "overlay": "find get"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "e",
+      "overlay": "end of get"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "paste after"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Plain p stops on the last letter of the pasted word.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gp",
+      "overlay": "gp"
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "G p drops the same word, but jumps past it onto the next character. Ready to keep typing.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Reach for G p or G capital P when you want a paste that leaves you ready to move on."
+    },
+    {
+      "wait": 1.0
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f todo.py" }
-  ]
+    {
+      "line": "rm -f todo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "rsD9jTI48-g",
+    "url": "https://youtube.com/watch?v=rsD9jTI48-g"
+  }
 }

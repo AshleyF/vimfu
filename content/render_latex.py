@@ -790,13 +790,17 @@ def render_block(b, *, index, examples) -> list[str]:
         else:
             if label:
                 out.append("\\par\\textbf{" + inl(label) + "}")
-            out.append("\\begin{keytable}")
+            kt_lines: list[str] = ["\\begin{keytable}"]
             for key, note in pairs:
                 key_run = _split_key_for_wrap(key) if key else ""
                 if key:
                     key_run += _index_key_entry(key)
-                out.append(f"  {key_run} & {note} \\\\")
-            out.append("\\end{keytable}")
+                kt_lines.append(f"  {key_run} & {note} \\\\")
+            kt_lines.append("\\end{keytable}")
+            # Emit as one block so the outer "\n\n" join doesn't insert
+            # blank lines between rows (which trigger \parskip and push
+            # the key cell down relative to the note cell).
+            out.append("\n".join(kt_lines))
 
     elif bt == "table":
         headers = b.get("headers", [])
@@ -896,12 +900,12 @@ def render_block(b, *, index, examples) -> list[str]:
             for i in range(n):
                 if i in narrow_cols:
                     cols.append(
-                        "@{}>{\\raggedright\\sloppy\\arraybackslash}"
+                        "@{}>{\\strut\\raggedright\\sloppy\\arraybackslash}"
                         f"p{{{narrow_em[i]:.1f}em}}@{{}}"
                     )
                 else:
                     cols.append(
-                        "@{\\hspace{1em}}>{\\raggedright\\sloppy"
+                        "@{\\hspace{1em}}>{\\strut\\raggedright\\sloppy"
                         "\\arraybackslash}X"
                     )
 
@@ -909,14 +913,15 @@ def render_block(b, *, index, examples) -> list[str]:
             # back to a plain longtable so we don't ask tabularx to
             # handle a row with no expanding column.
             spec = "".join(cols)
+            table_lines: list[str] = []
             if has_x:
-                out.append(
+                table_lines.append(
                     "\\par\\begin{tabularx}{\\linewidth}{" + spec + "}"
                 )
             else:
-                out.append("\\par\\begin{longtable}{" + spec + "}")
-            out.append(" & ".join(f"\\textbf{{{inl(h)}}}" for h in headers) + " \\\\")
-            out.append("\\hline")
+                table_lines.append("\\par\\begin{longtable}{" + spec + "}")
+            table_lines.append(" & ".join(f"\\textbf{{{inl(h)}}}" for h in headers) + " \\\\")
+            table_lines.append("\\hline")
             for row in rows:
                 cells = list(row) + [""] * (n - len(row))
                 rendered = []
@@ -929,8 +934,14 @@ def render_block(b, *, index, examples) -> list[str]:
                     if i in explicit_key_cols and s and "{key:" not in s:
                         s = "{key:" + s + "}"
                     rendered.append(inl(s))
-                out.append(" & ".join(rendered) + " \\\\")
-            out.append("\\end{tabularx}" if has_x else "\\end{longtable}")
+                table_lines.append(" & ".join(rendered) + " \\\\")
+            table_lines.append("\\end{tabularx}" if has_x else "\\end{longtable}")
+            # Emit the whole table as ONE block so the outer block-join
+            # ("\n\n") doesn't insert blank lines between rows -- blank
+            # lines inside longtable/tabularx trigger \parskip and
+            # disturb the row baselines (keys appear shifted below their
+            # description text).
+            out.append("\n".join(table_lines))
 
     elif bt == "embed":
         lesson = b.get("lesson", "")
@@ -1020,14 +1031,15 @@ def render_topic_body(t, index, examples) -> str:
 
     title = t.get("title", "(untitled)")
     tid = t.get("id", t["__file_stem"])
-    # Chapter title: pills inside the body heading; plain monospace
-    # (\texttt) in the optional [short] form which feeds the TOC,
-    # running headers, and PDF bookmarks. TikZ \key{} pills don't
-    # survive into hyperref's bookmark strings, so plain_keys=True is
-    # used for that short form only.
+    # Chapter title: pills in the body heading AND in the typeset TOC.
+    # PDF bookmarks (hyperref) can't render TikZ \key{} pills, so we use
+    # \texorpdfstring to give the bookmark a plain-monospace fallback
+    # while the TOC still gets real pills.
     body_title = render_inline(title, index=index, with_key_index=False, plain_keys=False)
-    toc_title = render_inline(title, index=index, with_key_index=False, plain_keys=True)
-    out.append(f"\\chapter[{toc_title}]{{{body_title}}}\\label{{topic:{tex_escape(tid)}}}")
+    toc_title  = render_inline(title, index=index, with_key_index=False, plain_keys=False)
+    pdf_title  = render_inline(title, index=index, with_key_index=False, plain_keys=True)
+    short_title = f"\\texorpdfstring{{{toc_title}}}{{{pdf_title}}}"
+    out.append(f"\\chapter[{short_title}]{{{body_title}}}\\label{{topic:{tex_escape(tid)}}}")
     # Index every key the topic claims to be about (keys[] array on the JSON
     # frontmatter). We deliberately do NOT index the chapter title itself --
     # that would just duplicate the table of contents. The index is for
@@ -1667,20 +1679,20 @@ def main() -> int:
         "{\\sffamily vimfubook.com}, that hosts a short screen-recorded "
         "video for every technique in the book and a browser-based Vim "
         "simulator where you can practice everything you read about "
-        "directly in the web page---no installation, no signup, no setup. "
+        "directly on the web page---no installation, no signup, no setup. "
         "QR codes throughout the book---not "
         "just at the end of each part---let you jump straight to that "
         "material from wherever you are reading.\n\n"
         "There are three kinds of QR codes you will see:\n\n"
         "\\begin{itemize}\n"
         "\\item \\textbf{Videos.} Each part of the book ends with a QR that "
-        "opens the collection of videos for that part. Inline embeds (the "
-        "boxed \\textit{Watch} callouts) point at one specific clip when a "
-        "single demo is worth pausing for.\n"
+        "opens the collection of videos for that part. Inline video "
+        "callouts (the boxed ones marked with \\playicon) point at one "
+        "specific clip when a single demo is worth pausing for.\n"
         "\\item \\textbf{Worked examples.} Many topics include a worked "
         "example with a QR beside it. Scan it and the simulator opens with "
         "\\emph{that exact example preloaded}, so you can try the keystrokes "
-        "yourself instead of just reading them.\n"
+        "yourself instead of just reading about them.\n"
         "\\item \\textbf{The simulator and the website.} A handful of QRs "
         "send you to the live simulator itself, the errata page for this "
         "edition, or other reference material on the site.\n"
@@ -1688,13 +1700,6 @@ def main() -> int:
         "Cross-references between topics appear as \\textit{(p.~NN)} so you "
         "can flip to them directly---there's a full alphabetical index in "
         "the back of the book as well.\n\n"
-        "Every QR in this book points at a short, stable URL on the domain "
-        "{\\sffamily vimfubook.com} (under the {\\sffamily /r/} prefix)---a "
-        "redirect we own. That means if a video moves or a page is "
-        "restructured we can re-aim the link without ever invalidating a "
-        "printed code.\n\n"
-        "\\noindent\\textbf{Try one:}"
-        "\\par\\medskip\n"
         + sample_qr_callout + "\n"
         "\\clearpage\n"
         "\\tableofcontents\n"
