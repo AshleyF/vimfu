@@ -1,8 +1,9 @@
 """Build a print-ready KDP paperback cover PDF for VimFu.
 
 Generates a single-page wrap-around cover (back + spine + front) sized
-to KDP's specs for a 6×9 paperback on white paper, with 0.125" bleed
-on all outside edges. The spine width is computed from the page count.
+to KDP's specs for a 7.5×9.25 paperback on white paper, with 0.125"
+bleed on all outside edges. The spine width is computed from the page
+count.
 
 KDP formula for white paper paperbacks:
     spine_inches = page_count * 0.002252
@@ -29,15 +30,18 @@ import io
 from pathlib import Path
 
 from PIL import Image
-from reportlab.lib.colors import Color, white
+from reportlab.lib.colors import Color, black, white
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import inch
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.utils import ImageReader
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Frame, Paragraph
 
 ROOT = Path(__file__).resolve().parent
+FONT_DIR = ROOT / "fonts"
 DOCS_ICON = ROOT.parent.parent / "docs" / "icon.png"
 FRONT_ART = ROOT / "VimFu Cover.png"
 AUTHOR_PHOTO = ROOT / "me2.JPG"
@@ -46,8 +50,8 @@ AUTHOR_BIO_MD = ROOT / "author_bio.md"
 DEFAULT_OUT = ROOT / "output" / "vimfu-cover.pdf"
 
 # --- KDP specs (inches) -------------------------------------------------
-TRIM_W = 6.0
-TRIM_H = 9.0
+TRIM_W = 7.5
+TRIM_H = 9.25
 BLEED = 0.125
 # Inside text/image safe area, measured in from the trim edge.
 SAFE = 0.25
@@ -58,8 +62,19 @@ SPINE_SAFE = 0.0625
 SPINE_PER_PAGE = 0.002252
 
 # --- Visual style -------------------------------------------------------
-BG_COLOR = Color(0.04, 0.04, 0.04)  # near-black (slight grey reads as ink rather than punch-out)
+BG_COLOR = black  # match the solid black in the cover artwork
 TEXT_COLOR = white
+
+# Fonts — Ubuntu, matching the original book/cover branding.
+FONT_REG = "Ubuntu"
+FONT_BOLD = "Ubuntu-Bold"
+FONT_ITAL = "Ubuntu-Italic"
+
+
+def register_fonts() -> None:
+    pdfmetrics.registerFont(TTFont(FONT_REG, str(FONT_DIR / "Ubuntu-Regular.ttf")))
+    pdfmetrics.registerFont(TTFont(FONT_BOLD, str(FONT_DIR / "Ubuntu-Bold.ttf")))
+    pdfmetrics.registerFont(TTFont(FONT_ITAL, str(FONT_DIR / "Ubuntu-Italic.ttf")))
 
 
 def spine_inches(pages: int) -> float:
@@ -122,6 +137,7 @@ def draw_paragraph(c: canvas.Canvas, text: str, x: float, y: float,
 
 
 def build_cover(pages: int, out_path: Path) -> None:
+    register_fonts()
     spine = spine_inches(pages)
     page_w = (BLEED + TRIM_W + spine + TRIM_W + BLEED)
     page_h = (BLEED + TRIM_H + BLEED)
@@ -139,34 +155,46 @@ def build_cover(pages: int, out_path: Path) -> None:
     front_x = BLEED + TRIM_W + spine                # front cover starts after spine
 
     # --- 2. Front-cover artwork ---------------------------------------
-    # The front-cover image bleeds off the top, bottom, and outside
-    # (right) edges, but is flush to the spine on the inside.
-    front_region_w = TRIM_W + BLEED   # includes outer bleed
-    front_region_h = TRIM_H + 2 * BLEED
+    # Fit the art inside the trim (with a small SAFE margin) so it sits
+    # on a black field rather than bleeding off the page. The image is
+    # uniformly scaled and centered within the front-cover trim box.
+    front_trim_left = BLEED + TRIM_W + spine
+    front_trim_bottom = BLEED
+    front_avail_w = TRIM_W - 2 * SAFE
+    front_avail_h = TRIM_H - 2 * SAFE
     art = Image.open(FRONT_ART)
-    art_cropped = cover_aspect_crop(art, front_region_w, front_region_h)
+    art_ratio = art.width / art.height
+    if art_ratio > front_avail_w / front_avail_h:
+        # Wider — fit width.
+        draw_w = front_avail_w
+        draw_h = front_avail_w / art_ratio
+    else:
+        draw_h = front_avail_h
+        draw_w = front_avail_h * art_ratio
+    art_x = front_trim_left + (TRIM_W - draw_w) / 2
+    art_y = front_trim_bottom + (TRIM_H - draw_h) / 2
     c.drawImage(
-        pil_to_reader(art_cropped),
-        front_x * inch, 0,
-        front_region_w * inch, front_region_h * inch,
+        pil_to_reader(art),
+        art_x * inch, art_y * inch,
+        draw_w * inch, draw_h * inch,
         mask=None,
     )
 
     # --- 3. Spine ------------------------------------------------------
-    # Spine is purely text + small mascot icon at the top. Content is
-    # constrained to the spine width minus a 1/16" fold-safety margin
-    # on each side. Text runs rotated 90° (reads top-to-bottom on the
-    # shelf, which is the standard direction for English titles).
+    # Spine content: mascot icon at top, "VimFu" centered along the
+    # spine's length, author name below. Text is rotated -90° so it
+    # reads top-to-bottom on the shelf.
     spine_inner_x = spine_x + SPINE_SAFE
     spine_inner_w = spine - 2 * SPINE_SAFE
+    spine_center_x_in = spine_x + spine / 2   # spine horizontal centerline (in inches)
+    spine_top_in = BLEED + TRIM_H + BLEED     # top edge of cover sheet
+    spine_bottom_in = BLEED                   # bottom edge of trim
 
     # 3a. Round mascot at the top of the spine.
     icon = Image.open(DOCS_ICON)
-    # Size: square that fits the spine inner width.
-    icon_size = spine_inner_w        # in inches
+    icon_size = spine_inner_w        # in inches, fits the spine width
     icon_x = spine_inner_x
-    icon_y = (BLEED + TRIM_H + BLEED) - (BLEED + 0.35 + icon_size)
-    # (Place ~0.35" below the top trim, inside the safe area.)
+    icon_y = spine_top_in - BLEED - 0.35 - icon_size
     c.drawImage(
         pil_to_reader(icon),
         icon_x * inch, icon_y * inch,
@@ -174,35 +202,40 @@ def build_cover(pages: int, out_path: Path) -> None:
         mask="auto",
     )
 
-    # 3b. Title "VimFu" — large, rotated 90° clockwise so it reads
-    # top-to-bottom when the book is shelved spine-up.
-    c.saveState()
-    title_y_top = icon_y - 0.4    # start of title block below the icon
-    # Rotation pivot: somewhere in the spine. Rotated text origin is
-    # the baseline. We translate to the start point and rotate -90°
-    # (text now reads downward as we move along its new x-axis).
-    title_size = max(20, int(spine_inner_w * inch * 0.55))
-    c.setFillColor(TEXT_COLOR)
-    c.setFont("Helvetica-Bold", title_size)
-    # Place the title baseline along the spine's centerline.
-    title_baseline_x = (spine_x + spine / 2) * inch + title_size * 0.35
-    title_top_y = title_y_top * inch
-    c.translate(title_baseline_x, title_top_y)
-    c.rotate(-90)
-    c.drawString(0, 0, "VimFu")
-    c.restoreState()
+    def draw_rotated_centered(text: str, font: str, size_pt: float,
+                              center_y_in: float) -> None:
+        """Draw rotated (reads top-to-bottom) text centered both on the
+        spine's horizontal centerline and on a target y (inches from the
+        bottom of the sheet, in user space).
+        """
+        c.saveState()
+        c.setFillColor(TEXT_COLOR)
+        c.setFont(font, size_pt)
+        text_w_pt = c.stringWidth(text, font, size_pt)
+        # After rotate(-90), the text's height (cap + descender) lies
+        # along user +x and its width lies along user -y. To center the
+        # visible glyphs horizontally on the spine centerline we offset
+        # the baseline back by ~0.36 * size (cap-half).
+        baseline_x_pt = spine_center_x_in * inch - size_pt * 0.36
+        # To center the text's length on a target y, start the baseline
+        # half-width above it (text grows downward from baseline).
+        baseline_y_pt = center_y_in * inch + text_w_pt / 2
+        c.translate(baseline_x_pt, baseline_y_pt)
+        c.rotate(-90)
+        c.drawString(0, 0, text)
+        c.restoreState()
 
-    # 3c. Author name — smaller, lower on the spine.
-    c.saveState()
+    # 3b. Title "VimFu" — centered along the spine length, but biased
+    # slightly above midpoint so the mascot+title combo reads as a block
+    # with the author name balancing below.
+    title_size = max(20, int(spine_inner_w * inch * 0.55))
+    title_center_y = spine_bottom_in + (TRIM_H + 2 * BLEED) / 2 + 0.4
+    draw_rotated_centered("VimFu", FONT_BOLD, title_size, title_center_y)
+
+    # 3c. Author name — sits below the title, near the bottom.
     author_size = max(10, int(spine_inner_w * inch * 0.22))
-    c.setFillColor(TEXT_COLOR)
-    c.setFont("Helvetica", author_size)
-    author_baseline_x = (spine_x + spine / 2) * inch + author_size * 0.35
-    author_top_y = (BLEED + 1.5) * inch       # ~1.5" up from bottom trim
-    c.translate(author_baseline_x, author_top_y)
-    c.rotate(-90)
-    c.drawString(0, 0, "Ashley Feniello")
-    c.restoreState()
+    draw_rotated_centered("Ashley Feniello", FONT_REG, author_size,
+                          spine_bottom_in + 1.8)
 
     # --- 4. Back cover -------------------------------------------------
     # Critical content lives inside SAFE from the trim edges. The trim
@@ -233,7 +266,7 @@ def build_cover(pages: int, out_path: Path) -> None:
     bio_w = (safe_right - photo_x - photo_size - 0.2) * inch
     bio_h = photo_size * inch
     bio_style = ParagraphStyle(
-        "bio", fontName="Helvetica", fontSize=10, leading=12.5,
+        "bio", fontName=FONT_REG, fontSize=12, leading=15,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
     )
     draw_paragraph(c, bio_text, bio_x, photo_y * inch, bio_w, bio_h, bio_style)
@@ -247,14 +280,14 @@ def build_cover(pages: int, out_path: Path) -> None:
     blurb_h = (blurb_top - blurb_bottom) * inch
 
     heading_style = ParagraphStyle(
-        "heading", fontName="Helvetica-Bold", fontSize=12.5, leading=15,
+        "heading", fontName=FONT_BOLD, fontSize=15, leading=18,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
-        spaceAfter=10,
+        spaceAfter=12,
     )
     body_style = ParagraphStyle(
-        "blurb", fontName="Helvetica", fontSize=10.2, leading=13.2,
+        "blurb", fontName=FONT_REG, fontSize=12.5, leading=16,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
-        spaceAfter=9,
+        spaceAfter=11,
     )
     paragraphs = [Paragraph(first_line.strip(), heading_style)]
     for chunk in rest.split("\n\n"):
@@ -274,7 +307,7 @@ def build_cover(pages: int, out_path: Path) -> None:
     # the book. The barcode area sits in the bottom-right (KDP adds the
     # actual barcode automatically when uploaded).
     c.setFillColor(TEXT_COLOR)
-    c.setFont("Helvetica-Oblique", 10)
+    c.setFont(FONT_ITAL, 11)
     c.drawString(safe_left * inch, (safe_bottom + 0.15) * inch,
                  "vimfubook.com")
 
