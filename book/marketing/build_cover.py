@@ -53,8 +53,12 @@ DEFAULT_OUT = ROOT / "output" / "vimfu-cover.pdf"
 TRIM_W = 7.5
 TRIM_H = 9.25
 BLEED = 0.125
-# Inside text/image safe area, measured in from the trim edge.
+# Inside text/image safe area, measured in from the trim edge. KDP's
+# hard minimum is 0.25"; we use that for the front-cover art but allow
+# the back-cover content to sit closer to the trim (still well inside
+# the printable area) to make better use of the larger 7.5"-wide trim.
 SAFE = 0.25
+BACK_SAFE = 0.4
 # Spine safety: keep critical content this far from the fold on each
 # side (KDP recommends 0.0625"; we use a little more for comfort).
 SPINE_SAFE = 0.0625
@@ -225,10 +229,11 @@ def build_cover(pages: int, out_path: Path) -> None:
         c.drawString(0, 0, text)
         c.restoreState()
 
-    # 3b. Title "VimFu" — centered along the spine length, but biased
-    # slightly above midpoint so the mascot+title combo reads as a block
-    # with the author name balancing below.
-    title_size = max(20, int(spine_inner_w * inch * 0.55))
+    # 3b. Title "VimFu" — large, taking ~75% of the spine width, centered
+    # both horizontally between the folds and vertically along the spine.
+    # Ubuntu Bold cap-height ≈ 0.72 × font size, so a size of ~1.0 × the
+    # spine inner width (in pt) lands the cap-height near 75%.
+    title_size = spine_inner_w * inch * 1.05
     title_center_y = spine_bottom_in + (TRIM_H + 2 * BLEED) / 2 + 0.4
     draw_rotated_centered("VimFu", FONT_BOLD, title_size, title_center_y)
 
@@ -238,13 +243,13 @@ def build_cover(pages: int, out_path: Path) -> None:
                           spine_bottom_in + 1.8)
 
     # --- 4. Back cover -------------------------------------------------
-    # Critical content lives inside SAFE from the trim edges. The trim
-    # on the back cover runs from x = BLEED (outer) to x = BLEED + TRIM_W
-    # (spine fold). So the safe rect is:
-    safe_left = back_x + SAFE
-    safe_right = back_x + TRIM_W - SAFE
-    safe_bottom = BLEED + SAFE
-    safe_top = BLEED + TRIM_H - SAFE
+    # Critical content lives inside BACK_SAFE from the trim edges. The
+    # back-cover trim runs from x = BLEED (outer) to x = BLEED + TRIM_W
+    # (spine fold).
+    safe_left = back_x + BACK_SAFE
+    safe_right = back_x + TRIM_W - BACK_SAFE
+    safe_bottom = BLEED + BACK_SAFE
+    safe_top = BLEED + TRIM_H - BACK_SAFE
     safe_w = safe_right - safe_left
 
     # 4a. Author photo (top-left of back cover, square).
@@ -266,7 +271,7 @@ def build_cover(pages: int, out_path: Path) -> None:
     bio_w = (safe_right - photo_x - photo_size - 0.2) * inch
     bio_h = photo_size * inch
     bio_style = ParagraphStyle(
-        "bio", fontName=FONT_REG, fontSize=12, leading=15,
+        "bio", fontName=FONT_REG, fontSize=13.5, leading=17,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
     )
     draw_paragraph(c, bio_text, bio_x, photo_y * inch, bio_w, bio_h, bio_style)
@@ -280,14 +285,14 @@ def build_cover(pages: int, out_path: Path) -> None:
     blurb_h = (blurb_top - blurb_bottom) * inch
 
     heading_style = ParagraphStyle(
-        "heading", fontName=FONT_BOLD, fontSize=15, leading=18,
+        "heading", fontName=FONT_BOLD, fontSize=17, leading=20.5,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
-        spaceAfter=12,
+        spaceAfter=13,
     )
     body_style = ParagraphStyle(
-        "blurb", fontName=FONT_REG, fontSize=12.5, leading=16,
+        "blurb", fontName=FONT_REG, fontSize=14, leading=18,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
-        spaceAfter=11,
+        spaceAfter=12,
     )
     paragraphs = [Paragraph(first_line.strip(), heading_style)]
     for chunk in rest.split("\n\n"):
@@ -307,7 +312,7 @@ def build_cover(pages: int, out_path: Path) -> None:
     # the book. The barcode area sits in the bottom-right (KDP adds the
     # actual barcode automatically when uploaded).
     c.setFillColor(TEXT_COLOR)
-    c.setFont(FONT_ITAL, 11)
+    c.setFont(FONT_ITAL, 12.5)
     c.drawString(safe_left * inch, (safe_bottom + 0.15) * inch,
                  "vimfubook.com")
 
