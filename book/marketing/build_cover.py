@@ -53,15 +53,23 @@ DEFAULT_OUT = ROOT / "output" / "vimfu-cover.pdf"
 TRIM_W = 7.5
 TRIM_H = 9.25
 BLEED = 0.125
-# Inside text/image safe area, measured in from the trim edge. KDP's
-# hard minimum is 0.25"; we use that for the front-cover art but allow
-# the back-cover content to sit closer to the trim (still well inside
-# the printable area) to make better use of the larger 7.5"-wide trim.
-SAFE = 0.25
-BACK_SAFE = 0.4
+# KDP's official safe-area inset from the trim edge for this trim size
+# (per the cover calculator): 0.0625" horizontal, 0.125" vertical. Any
+# text or critical artwork must stay inside this.
+KDP_SAFE_H = 0.0625
+KDP_SAFE_V = 0.125
 # Spine safety: keep critical content this far from the fold on each
-# side (KDP recommends 0.0625"; we use a little more for comfort).
+# side (KDP value for this trim/page count).
 SPINE_SAFE = 0.0625
+# How far the front-cover art is inset from the trim. Just enough to
+# guarantee we never bleed — slightly larger than KDP's minimum so a
+# minor mis-cut won't crop into the art.
+ART_INSET = 0.125
+# Back-cover text inset from trim. Tighter than the previous 0.4" so
+# we use more of the 7.5"-wide trim, but still comfortably outside
+# KDP's safe-area minimum.
+BACK_SAFE_H = 0.375
+BACK_SAFE_V = 0.4
 # White paper, B&W interior: 0.002252" per page.
 SPINE_PER_PAGE = 0.002252
 
@@ -164,8 +172,8 @@ def build_cover(pages: int, out_path: Path) -> None:
     # uniformly scaled and centered within the front-cover trim box.
     front_trim_left = BLEED + TRIM_W + spine
     front_trim_bottom = BLEED
-    front_avail_w = TRIM_W - 2 * SAFE
-    front_avail_h = TRIM_H - 2 * SAFE
+    front_avail_w = TRIM_W - 2 * ART_INSET
+    front_avail_h = TRIM_H - 2 * ART_INSET
     art = Image.open(FRONT_ART)
     art_ratio = art.width / art.height
     if art_ratio > front_avail_w / front_avail_h:
@@ -246,10 +254,10 @@ def build_cover(pages: int, out_path: Path) -> None:
     # Critical content lives inside BACK_SAFE from the trim edges. The
     # back-cover trim runs from x = BLEED (outer) to x = BLEED + TRIM_W
     # (spine fold).
-    safe_left = back_x + BACK_SAFE
-    safe_right = back_x + TRIM_W - BACK_SAFE
-    safe_bottom = BLEED + BACK_SAFE
-    safe_top = BLEED + TRIM_H - BACK_SAFE
+    safe_left = back_x + BACK_SAFE_H
+    safe_right = back_x + TRIM_W - BACK_SAFE_H
+    safe_bottom = BLEED + BACK_SAFE_V
+    safe_top = BLEED + TRIM_H - BACK_SAFE_V
     safe_w = safe_right - safe_left
 
     # 4a. Author photo (top-left of back cover, square).
@@ -326,7 +334,7 @@ def build_cover(pages: int, out_path: Path) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--pages", type=int, default=421,
+    ap.add_argument("--pages", type=int, default=420,
                     help="interior page count (drives spine width)")
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT,
                     help="output PDF path")
