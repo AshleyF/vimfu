@@ -163,8 +163,22 @@ def compile_pdf() -> int:
               file=sys.stderr)
         return 2
 
-    print(f"[3/3] Compiling with {driver} (xelatex → makeindex → xelatex × 2)…")
-    # 3 compile passes around a makeindex run so imakeidx's index resolves.
+    print(f"[3/3] Compiling with {driver} (xelatex → makeindex → xelatex, +1 if unstable)…")
+    # Three xelatex passes around a makeindex are the safe upper bound for
+    # imakeidx + \pageref crossrefs to settle. In practice the book is
+    # stable after pass 2, so we hash the .aux / .toc after each pass and
+    # skip pass 3 when nothing changed. Each saved pass is ~3-4 minutes on
+    # a 400-page TikZ-heavy build.
+    import hashlib
+
+    def _state_hash() -> str:
+        h = hashlib.sha1()
+        for ext in (".aux", ".toc", ".out"):
+            p = LATEX_DIR / f"book{ext}"
+            h.update(p.read_bytes() if p.exists() else b"")
+            h.update(b"|")
+        return h.hexdigest()
+
     for n in (1, 2, 3):
         rc, tail = run(
             [driver, "-interaction=nonstopmode", "-halt-on-error",
@@ -178,6 +192,11 @@ def compile_pdf() -> int:
             return rc
         if n == 1 and have("makeindex") and (LATEX_DIR / "book.idx").exists():
             run(["makeindex", "book.idx"], cwd=LATEX_DIR)
+            post_makeindex_state = _state_hash()
+        elif n == 2:
+            if _state_hash() == post_makeindex_state:
+                print("  ✓ aux/toc stable after pass 2 — skipping pass 3.")
+                break
     print(f"  ✓ {LATEX_DIR}/book.pdf")
     return 0
 
