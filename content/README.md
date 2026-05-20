@@ -365,15 +365,49 @@ Inspect `content/output/latex/book.log` for overfull boxes and
 - **MiKTeX** (xelatex + makeindex) with the Libertinus, TikZ, tcolorbox,
   microtype, longtable, and newunicodechar packages.
 
-#### KDP layout constants (7.5×9.25, 501–700 page bucket — book is ~520 pages)
+#### KDP layout constants (7.5×9.25, 301–500 page bucket — book is ~422 pages)
 
 - **Trim size**: 7.5" × 9.25" (KDP "B6+" / non-standard, larger than 6×9).
-- **Inner (gutter) ≥ 0.875"** — set to **0.875"** at the bucket minimum.
+- **Inner (gutter) ≥ 0.625"** for 301–500 pages — we use **0.875"** for generous headroom.
 - Outer/top/bottom ≥ 0.25" minimum, 0.5" recommended — we use **0.625"** outer, **0.75"** top/bottom.
 - `twoside,openany`. Defined in `render_latex.py` `\geometry{...}` (paperwidth=7.5in, paperheight=9.25in).
-- **Watch the page-count buckets:** if the book grows past 700 pages the
-  minimum gutter jumps to 1.0" (KDP table: 24–150=0.375, 151–300=0.5,
+- **Watch the page-count buckets:** if the book ever grows past 500 the
+  minimum gutter jumps to 0.875" (KDP table: 24–150=0.375, 151–300=0.5,
   301–500=0.625, 501–700=0.875, 701–828=1.0").
+
+#### PDF-page parity must match physical-binding parity (KDP gutter check)
+
+KDP's automated preflight reads the **PDF page number** and assumes
+PDF page 1 = recto (right-hand). It then checks each page's inner
+margin (left on odd PDF pages, right on even PDF pages).
+
+LaTeX assigns `oddsidemargin` (inner = 0.875") to its **own** odd
+pages and `evensidemargin` (outer = 0.625") to its own even pages.
+If the frontmatter has an **odd** number of PDF pages, LaTeX page 1
+of the mainmatter (odd → LaTeX recto, inner on left) lands on an
+**even** PDF page — and KDP, looking at the right side as the gutter,
+sees only 0.625" and flags the entire mainmatter as
+"insufficient gutter."
+
+The fix is in `render_latex.py`:
+
+```latex
+\renewcommand\mainmatter{\cleardoublepage\@mainmattertrue\pagenumbering{arabic}}
+```
+
+`\cleardoublepage` (instead of plain `\clearpage`) forces a blank
+verso when needed so the mainmatter always starts on a recto **and**
+on an odd PDF page. Do not change this back to `\clearpage` even if
+the resulting blank verso looks like a "stranded blank page" — it is
+load-bearing for KDP gutter compliance. `\frontmatter` and
+`\backmatter` deliberately still use `\clearpage` because openany
+doesn't need them aligned.
+
+Symptom if this regresses: KDP flags 10–30 specific mainmatter pages
+with "insufficient gutter" — typically pages where the (now-outer)
+margin dips slightly under 0.625" because of italic overshoot, key
+pills, or callout rules. The pages themselves look fine in the PDF;
+KDP is just reading the wrong side as the gutter.
 
 #### Inkscape PDF export flags
 

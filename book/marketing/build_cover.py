@@ -10,8 +10,8 @@ KDP formula for white paper paperbacks:
 
 Usage:
     python build_cover.py                       # uses default page count
-    python build_cover.py --pages 421
-    python build_cover.py --pages 421 --out my-cover.pdf
+    python build_cover.py --pages 422
+    python build_cover.py --pages 422 --out my-cover.pdf
 
 The PDF goes to ``book/marketing/output/vimfu-cover.pdf`` by default
 (the ``output/`` folder is git-ignored, this is a build artifact).
@@ -426,7 +426,7 @@ def build_cover(pages: int, out_path: Path) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--pages", type=int, default=420,
+    ap.add_argument("--pages", type=int, default=422,
                     help="interior page count (drives spine width)")
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT,
                     help="output PDF path")
