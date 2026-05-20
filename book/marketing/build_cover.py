@@ -45,6 +45,7 @@ FONT_DIR = ROOT / "fonts"
 DOCS_ICON = ROOT.parent.parent / "docs" / "icon.png"
 FRONT_ART = ROOT / "VimFu Cover.png"
 AUTHOR_PHOTO = ROOT / "me2.JPG"
+BACK_WISP = ROOT / "whisp.png"
 BACK_COVER_MD = ROOT / "back_cover.md"
 AUTHOR_BIO_MD = ROOT / "author_bio.md"
 DEFAULT_OUT = ROOT / "output" / "vimfu-cover.pdf"
@@ -296,7 +297,7 @@ def build_cover(pages: int, out_path: Path) -> None:
     author_size = max(10, int(spine_inner_w * inch * 0.22))
     draw_rotated_centered("Ashley Feniello", FONT_REG, author_size,
                           spine_bottom_in + 1.8,
-                          color=Color(0.70, 0.70, 0.70))
+                          color=Color(0.45, 0.45, 0.45))
 
     # --- 4. Back cover -------------------------------------------------
     # Critical content lives inside BACK_SAFE from the trim edges. The
@@ -332,12 +333,13 @@ def build_cover(pages: int, out_path: Path) -> None:
     )
     draw_paragraph(c, bio_text, bio_x, photo_y * inch, bio_w, bio_h, bio_style)
 
-    # 4c. Back-cover blurb (below the photo, full safe width).
+    # 4c. Back-cover blurb (below the photo). We reserve a taller bottom
+    # band (~2.5") so the wisp flourish + QR/URL row + KDP-auto barcode
+    # all have room without crowding.
     blurb_text = read_md_body(BACK_COVER_MD)
-    # First sentence as the hook — render as a heading-ish line.
     first_line, _, rest = blurb_text.partition("\n")
-    blurb_top = photo_y - 0.4   # 0.4" gap below photo, in inches
-    blurb_bottom = safe_bottom + 1.2  # leave ~1.2" at bottom for ISBN/barcode area
+    blurb_top = photo_y - 0.4
+    blurb_bottom = safe_bottom + 2.5
     blurb_h = (blurb_top - blurb_bottom) * inch
 
     heading_style = ParagraphStyle(
@@ -363,13 +365,43 @@ def build_cover(pages: int, out_path: Path) -> None:
     )
     frame.addFromList(paragraphs, c)
 
-    # 4d. URL footer + small QR code at the bottom-left of the safe
+    # 4d. Decorative wisp between the blurb and the QR/URL/barcode row.
+    # Echoes the colored flourishes on the front cover, tying the two
+    # sides together visually. The PNG is already on solid black so it
+    # blends seamlessly into the cover background.
+    qr_size_in = 0.75
+    qr_x = safe_left
+    qr_y = safe_bottom + 0.15
+    wisp_top = blurb_bottom - 0.1
+    wisp_bottom = qr_y + qr_size_in + 0.15
+    wisp_band_h = wisp_top - wisp_bottom
+    wisp = Image.open(BACK_WISP)
+    wisp_ratio = wisp.width / wisp.height
+    # Fit inside the band, leaving the bottom-right barcode zone alone.
+    barcode_reserve_w = 2.2   # KDP barcode reserve (bottom-right of back)
+    max_w = safe_w   # wisp can span full safe width since it's centered
+    if max_w / wisp_band_h >= wisp_ratio:
+        wisp_h_in = wisp_band_h
+        wisp_w_in = wisp_h_in * wisp_ratio
+    else:
+        wisp_w_in = max_w
+        wisp_h_in = wisp_w_in / wisp_ratio
+    # Pull the wisp slightly left of center so its decorative core sits
+    # over the empty area rather than overlapping the (right-aligned)
+    # KDP barcode zone below it.
+    wisp_x = safe_left + (safe_w - wisp_w_in) / 2 - 0.3
+    wisp_y = wisp_bottom + (wisp_band_h - wisp_h_in) / 2
+    c.drawImage(
+        pil_to_reader(wisp),
+        wisp_x * inch, wisp_y * inch,
+        wisp_w_in * inch, wisp_h_in * inch,
+        mask=None,
+    )
+
+    # 4e. URL footer + small QR code at the bottom-left of the safe
     # area. The QR encodes the same URL so a phone scan jumps straight
     # to the companion site. KDP auto-stamps its barcode at the
     # bottom-right at print time, so we keep that quadrant empty.
-    qr_size_in = 0.75      # small but reliably scannable
-    qr_x = safe_left
-    qr_y = safe_bottom + 0.15
     qr_img = make_qr_image("https://vimfubook.com")
     c.drawImage(
         pil_to_reader(qr_img),

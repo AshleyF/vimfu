@@ -52,6 +52,7 @@ trim:
 |------|------|
 | `book/marketing/VimFu Cover.png` | Front-cover artwork. The non-ornate raccoon. (Not `VimFu Cover Ornate.png`.) |
 | `book/marketing/me2.JPG` | Back-cover author photo. |
+| `book/marketing/whisp.png` | Decorative wispy flourish placed between the back-cover blurb and the QR/URL row. Echoes the colored swirls on the front cover to tie front and back together. Source PNG is already on solid black so it blends seamlessly. Filename historical — keep the `wh` spelling. |
 | `book/marketing/back_cover.md` | Back-cover blurb text. First line is rendered as the hook (large bold). |
 | `book/marketing/author_bio.md` | "About the Author" paragraph next to the photo. |
 | `book/marketing/fonts/Ubuntu-{Regular,Bold,Italic}.ttf` | Ubuntu Font Family (Ubuntu Font Licence) — matches the original cover branding. Bundled because Ubuntu is not available system-wide on Windows. |
