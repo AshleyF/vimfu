@@ -56,11 +56,17 @@ the reader will type, see, or refer to:
     makes it a command, not a series of key presses, so it goes in
     monospace, not boxed.
 - **Operator/motion placeholders.** When describing the grammar
-  generically, the *whole template* — placeholder word, braces, and
-  all — goes in monospace.
-  - `r{c}` — replace with `{c}`
-  - `c{motion}` — change over `{motion}`
-  - `"{r}p` — paste from register `{r}`
+  generically, write the leading typed key(s) as **pills** and the
+  placeholder (in braces) as plain prose right next to it — no
+  backticks, no monospace on the placeholder. The braces and
+  placeholder name are themselves the visual hint that it's a slot.
+  - `{key:r}{c}` — replace with `{c}`
+  - `{key:c}{motion}` — change over `{motion}`
+  - `{key:"}{r}{key:p}` — paste from register `{r}`
+  - `{n}{key:G}` — jump to line `{n}`
+  Do **not** wrap the whole template in backticks (`` `r{c}` ``) — that
+  hides the leading key as monospace and contradicts the rule that
+  keys-you-press are pills.
 - **Named registers when referred to as registers** (not as the
   sequence you'd type to use them). `""`, `"/`, `":`, `"+`, `"_`,
   `"0`, `"a`. The double quote here is part of the register's *name*,
@@ -242,18 +248,23 @@ sequence, and are fine.
 
 ## Placeholders in grammar templates
 
-When showing a generic grammar/formula, write the *entire* template as
-a single monospace token (backticks), with curly-braced parameter
-names inside it.
+When showing a generic grammar/formula, write each typed key as a
+**pill** and the placeholder (curly-braced parameter name) as plain
+prose immediately adjacent — no backticks, no monospace on the
+placeholder. The braces around the placeholder name are themselves the
+visual cue that it's a slot.
 
-- ✅ `` `f{c}` ``, `` `t{c}` ``, `` `r{c}` ``, `` `c{motion}` `` —
-  the placeholder word and braces are *part of* the template.
-- ✅ `` `/{pattern}` ``, `` `?{pattern}` ``, `` `{n}G` `` — counts and
-  patterns also use the same `{name}` form.
-- ❌ `{key:f}{c}` — mixing a pill with a stray `{c}` in prose. The
-  reader can't tell whether `{c}` is monospace, a literal brace, or a
-  pill.
-- ❌ `{key:/}pattern` — same problem. Use `` `/{pattern}` ``.
+- ✅ `{key:f}{c}`, `{key:t}{c}`, `{key:r}{c}`, `{key:c}{motion}` —
+  the typed key is a pill; the placeholder is plain.
+- ✅ `{key:/}{pattern}`, `{key:?}{pattern}`, `{n}{key:G}` — counts
+  and patterns use the same `{name}` form, the typed key stays a pill.
+- ✅ `{key:"}{r}{key:p}` — paste from register `{r}`. The leading `"`
+  and trailing `p` are typed, so they're pills; `{r}` is plain.
+- ❌ `` `f{c}` ``, `` `r{c}` ``, `` `/{pattern}` `` — wrapping the
+  whole template in backticks hides the leading typed key as monospace
+  and breaks the rule that keys-you-press are pills.
+- ❌ `{key:/}pattern` — bare `pattern` with no braces reads as prose.
+  Use `{key:/}{pattern}` so the placeholder is visible.
 
 Multi-form grammar formulas (Backus-Naur style) go in a fenced code
 block:

@@ -24,7 +24,7 @@
     },
     {
       "type": "prose",
-      "text": "The dot register stores the change *with* its count. When you press {key:{n}}{key:.}, the new count *replaces* the original. This is rarely the first thing people learn but it's a force multiplier."
+      "text": "The dot register stores the change *with* its count. When you press {n}{key:.}, the new count *replaces* the original. This is rarely the first thing people learn but it's a force multiplier."
     },
     {
       "type": "keys",
@@ -46,7 +46,7 @@
     {
       "type": "internals",
       "title": "How the Count Substitution Works",
-      "text": "Internally the dot register holds the change as a sequence: optional count, optional register, the operator, the motion (with its own optional count), and any inserted text.\n\nWhen you press {key:.}, Vim replays the recorded sequence verbatim. When you press {key:{n}}{key:.}, the prefix you just typed becomes the *outer* count for the replay — the operator-side count, not the motion-side count. The motion's own internal count is preserved.\n\nSo if your original change was {key:d}{key:3}{key:w} (delete 3 words), {key:.} repeats it as 3 words; {key:5}{key:.} repeats it as 5 × 3 = 15 words. Counts multiply, just like in [`counts.counts`](#counts.counts)."
+      "text": "Internally the dot register holds the change as a sequence: optional count, optional register, the operator, the motion (with its own optional count), and any inserted text.\n\nWhen you press {key:.}, Vim replays the recorded sequence verbatim. When you press {n}{key:.}, the prefix you just typed becomes the *outer* count for the replay — the operator-side count, not the motion-side count. The motion's own internal count is preserved.\n\nSo if your original change was {key:d}{key:3}{key:w} (delete 3 words), {key:.} repeats it as 3 words; {key:5}{key:.} repeats it as 5 × 3 = 15 words. Counts multiply, just like in [`counts.counts`](#counts.counts)."
     },
     {
       "type": "tip",
@@ -72,11 +72,11 @@
           "Repeat last change as recorded"
         ],
         [
-          "{key:{n}}{key:.}",
+          "{n}{key:.}",
           "Repeat with count {n} (replaces outer count)"
         ],
         [
-          "{key:{n}}{key:.}, {key:{m}}{key:.}",
+          "{n}{key:.}, {m}{key:.}",
           "Each dot can have its own count — they don't accumulate"
         ]
       ]

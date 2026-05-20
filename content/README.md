@@ -365,7 +365,7 @@ Inspect `content/output/latex/book.log` for overfull boxes and
 - **MiKTeX** (xelatex + makeindex) with the Libertinus, TikZ, tcolorbox,
   microtype, longtable, and newunicodechar packages.
 
-#### KDP layout constants (7.5×9.25, 301–500 page bucket — book is ~422 pages)
+#### KDP layout constants (7.5×9.25, 301–500 page bucket — book is ~393 pages)
 
 - **Trim size**: 7.5" × 9.25" (KDP "B6+" / non-standard, larger than 6×9).
 - **Inner (gutter) ≥ 0.625"** for 301–500 pages — we use **0.875"** for generous headroom.
