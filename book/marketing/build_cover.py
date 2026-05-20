@@ -64,7 +64,7 @@ SPINE_SAFE = 0.0625
 # How far the front-cover art is inset from the trim. Just enough to
 # guarantee we never bleed — slightly larger than KDP's minimum so a
 # minor mis-cut won't crop into the art.
-ART_INSET = 0.125
+ART_INSET = 0.0625
 # Back-cover text inset from trim. Tighter than the previous 0.4" so
 # we use more of the 7.5"-wide trim, but still comfortably outside
 # KDP's safe-area minimum.
@@ -100,6 +100,36 @@ def read_md_body(path: Path) -> str:
     body = [ln for ln in lines if not ln.startswith("#")]
     # Join non-empty groups with blank-line separators preserved.
     return "\n".join(body).strip()
+
+
+def trim_black_border(img: Image.Image, threshold: int = 16) -> Image.Image:
+    """Strip uniform near-black borders from the four edges of ``img``.
+
+    The VimFu front-cover PNG has a ~3-5% solid-black margin baked in
+    around the actual art. We don't want that margin to compound with
+    the cover background, so we detect it (rows/columns where every
+    pixel has max channel < ``threshold``) and crop it away.
+    """
+    import numpy as np
+    rgb = img.convert("RGB")
+    a = np.asarray(rgb)
+    is_black = a.max(axis=2) < threshold
+    h, w = is_black.shape
+    top = 0
+    while top < h and is_black[top].all():
+        top += 1
+    bottom = h - 1
+    while bottom >= 0 and is_black[bottom].all():
+        bottom -= 1
+    left = 0
+    while left < w and is_black[:, left].all():
+        left += 1
+    right = w - 1
+    while right >= 0 and is_black[:, right].all():
+        right -= 1
+    if top == 0 and bottom == h - 1 and left == 0 and right == w - 1:
+        return img
+    return img.crop((left, top, right + 1, bottom + 1))
 
 
 def cover_aspect_crop(img: Image.Image, target_w: float, target_h: float) -> Image.Image:
@@ -167,17 +197,19 @@ def build_cover(pages: int, out_path: Path) -> None:
     front_x = BLEED + TRIM_W + spine                # front cover starts after spine
 
     # --- 2. Front-cover artwork ---------------------------------------
-    # Fit the art inside the trim (with a small SAFE margin) so it sits
-    # on a black field rather than bleeding off the page. The image is
-    # uniformly scaled and centered within the front-cover trim box.
+    # Source PNG has ~4-5% solid-black borders baked in around its
+    # content. We auto-trim those before fitting so the actual painted
+    # art reaches the trim instead of sitting on a double black margin.
+    # The art is then uniformly scaled to fit inside the trim and
+    # centered. (Background black behind it provides any remaining
+    # margin for a clean look without bleeding off the page.)
     front_trim_left = BLEED + TRIM_W + spine
     front_trim_bottom = BLEED
     front_avail_w = TRIM_W - 2 * ART_INSET
     front_avail_h = TRIM_H - 2 * ART_INSET
-    art = Image.open(FRONT_ART)
+    art = trim_black_border(Image.open(FRONT_ART))
     art_ratio = art.width / art.height
     if art_ratio > front_avail_w / front_avail_h:
-        # Wider — fit width.
         draw_w = front_avail_w
         draw_h = front_avail_w / art_ratio
     else:
@@ -279,7 +311,7 @@ def build_cover(pages: int, out_path: Path) -> None:
     bio_w = (safe_right - photo_x - photo_size - 0.2) * inch
     bio_h = photo_size * inch
     bio_style = ParagraphStyle(
-        "bio", fontName=FONT_REG, fontSize=13.5, leading=17,
+        "bio", fontName=FONT_REG, fontSize=12.5, leading=16,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
     )
     draw_paragraph(c, bio_text, bio_x, photo_y * inch, bio_w, bio_h, bio_style)
@@ -293,14 +325,14 @@ def build_cover(pages: int, out_path: Path) -> None:
     blurb_h = (blurb_top - blurb_bottom) * inch
 
     heading_style = ParagraphStyle(
-        "heading", fontName=FONT_BOLD, fontSize=17, leading=20.5,
-        textColor=TEXT_COLOR, alignment=TA_LEFT,
-        spaceAfter=13,
-    )
-    body_style = ParagraphStyle(
-        "blurb", fontName=FONT_REG, fontSize=14, leading=18,
+        "heading", fontName=FONT_BOLD, fontSize=15.5, leading=19,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
         spaceAfter=12,
+    )
+    body_style = ParagraphStyle(
+        "blurb", fontName=FONT_REG, fontSize=13, leading=17,
+        textColor=TEXT_COLOR, alignment=TA_LEFT,
+        spaceAfter=11,
     )
     paragraphs = [Paragraph(first_line.strip(), heading_style)]
     for chunk in rest.split("\n\n"):
