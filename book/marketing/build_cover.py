@@ -30,6 +30,10 @@ import io
 from pathlib import Path
 
 from PIL import Image
+# The upscaled (~16K, 192 MP) front-cover JPG exceeds PIL's default 178 MP
+# decompression-bomb guard. The image is ours, not untrusted input, so
+# bump the limit; otherwise Image.open raises DecompressionBombError.
+Image.MAX_IMAGE_PIXELS = 400_000_000
 from reportlab.lib.colors import Color, black, white
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import inch
@@ -43,7 +47,11 @@ from reportlab.platypus import Frame, Paragraph
 ROOT = Path(__file__).resolve().parent
 FONT_DIR = ROOT / "fonts"
 DOCS_ICON = ROOT.parent.parent / "docs" / "icon.png"
-FRONT_ART = ROOT / "VimFu Cover.png"
+# Upscaled (192-megapixel) source so the print at 7.5x9.25 stays sharp at
+# KDP's 300dpi target. The original ``VimFu Cover.png`` is kept alongside
+# as a smaller fallback. Both have a ~3-5% baked-in black border that
+# ``trim_black_border`` strips before fitting.
+FRONT_ART = ROOT / "VimFu Cover 16K.jpg"
 AUTHOR_PHOTO = ROOT / "me2.JPG"
 BACK_WISP = ROOT / "whisp.png"
 BACK_COVER_MD = ROOT / "back_cover.md"
@@ -230,6 +238,15 @@ def build_cover(pages: int, out_path: Path) -> None:
     else:
         draw_h = front_avail_h
         draw_w = front_avail_h * art_ratio
+    # Downsample the embedded image to ~600 dpi for the actual print size.
+    # KDP requires >= 300 dpi; 600 is a generous safety margin and keeps
+    # the PDF small enough to upload. The 16K source (~192 MP) would
+    # otherwise bloat the cover PDF past 200 MB.
+    target_dpi = 600
+    max_w_px = int(draw_w * target_dpi)
+    max_h_px = int(draw_h * target_dpi)
+    if art.width > max_w_px or art.height > max_h_px:
+        art = art.resize((max_w_px, max_h_px), Image.LANCZOS)
     art_x = front_trim_left + (TRIM_W - draw_w) / 2
     art_y = front_trim_bottom + (TRIM_H - draw_h) / 2
     c.drawImage(

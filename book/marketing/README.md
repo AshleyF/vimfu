@@ -50,7 +50,9 @@ trim:
 
 | Path | What |
 |------|------|
-| `book/marketing/VimFu Cover.png` | Front-cover artwork. The non-ornate raccoon. (Not `VimFu Cover Ornate.png`.) |
+| `book/marketing/VimFu Cover 16K.jpg` | Front-cover artwork (upscaled ~16K / 192 MP source for sharp print at 7.5×9.25). |
+| `book/marketing/VimFu Cover.png` | Original-resolution front-cover artwork. Kept as a fallback / source of truth; not used by the build. |
+| `book/marketing/VimFu Cover Ornate.png` | Ornate variant of the front cover with a decorative frame. Unused — kept for reference only. |
 | `book/marketing/me2.JPG` | Back-cover author photo. |
 | `book/marketing/whisp.png` | Decorative wispy flourish placed between the back-cover blurb and the QR/URL row. Echoes the colored swirls on the front cover to tie front and back together. Source PNG is already on solid black so it blends seamlessly. Filename historical — keep the `wh` spelling. |
 | `book/marketing/back_cover.md` | Back-cover blurb text. First line is rendered as the hook (large bold). |
@@ -65,24 +67,29 @@ trim:
   own black field) and the spine/back is invisible. Don't use a
   near-black — true `(0, 0, 0)` is what the cover art uses and any
   deviation shows up as a visible band.
-- **Auto-trim the front-cover PNG.** The source `VimFu Cover.png`
-  ships with a 3–5% solid-black border baked around the actual
-  painted artwork. The script detects rows/columns of uniformly
-  near-black pixels (`max channel < 16`) on all four edges and
-  crops them off before fitting (`trim_black_border()`), so the
-  visible art reaches the trim. If the cover artwork is ever
-  re-exported without that border, the helper is a no-op (it
-  returns the image unchanged) — leave it in.
+- **Auto-trim the front-cover art.** The source has a 3–5% solid-black
+  border baked around the actual painted artwork. The script detects
+  rows/columns of uniformly near-black pixels (`max channel < 16`) on
+  all four edges and crops them off before fitting
+  (`trim_black_border()`), so the visible art reaches the trim. If the
+  cover art is ever re-exported without that border the helper is a
+  no-op (it returns the image unchanged) — leave it in.
+- **Downsample the embedded art to ~600 dpi.** The 16K source is ~192
+  megapixels; embedded raw it bloats the cover PDF past 200 MB. The
+  build resizes it to `print_size × 600 dpi` (well above KDP's 300 dpi
+  minimum) before `drawImage` so the final cover PDF stays around
+  40 MB. PIL's decompression-bomb guard is also raised to 400 MP
+  because the unmodified 178 MP limit rejects the source outright.
 - **No bleed of the cover art.** The trimmed artwork is uniformly
   scaled to fit inside the trim minus `ART_INSET` (`0.0625"`,
   matching KDP's horizontal safe-area minimum) and centered. The
   art must never reach the trim edge — KDP can shift the cut by a
   fraction of an inch and would crop into the art.
 - **Use the non-ornate front cover.** The marketing folder contains
-  both `VimFu Cover.png` (this one — flat black field, used) and
-  `VimFu Cover Ornate.png` (with a decorative border, unused). The
-  ornate version's frame conflicts with the spine, so we always use
-  the non-ornate file.
+  both `VimFu Cover 16K.jpg` (the upscaled non-ornate raccoon, used)
+  and `VimFu Cover Ornate.png` (with a decorative border, unused).
+  The ornate version's frame conflicts with the spine, so we always
+  use the non-ornate file.
 - **Spine title** "VimFu" is sized at `≈1.05 × spine_inner_width`
   (in points) so it occupies about three-quarters of the spine
   width regardless of page count, and is centered both horizontally
