@@ -31,6 +31,10 @@ the guide is meant to grow with every new convention discovered.
 - **Website:** `python content\deploy_site.py --skip-sim` (~30 s).
 - **Screenshots:** `python content\render_screenshots.py` — run if
   `content/output/html/screenshots/` has been wiped.
+- **Print cover PDF (KDP):** `python book\marketing\build_cover.py
+  --pages N`. See `book/marketing/README.md` for the full spec —
+  KDP-accurate constants are baked into the script and must change
+  in lockstep with the interior trim/paper/page count.
 
 ## Repository layout (highlights)
 
@@ -39,6 +43,9 @@ the guide is meant to grow with every new convention discovered.
 - `content/lib/parts.py` — part display labels.
 - `content/StyleGuide.md` — style rules.
 - `book/illustrations/<part>.png` — chapter-opener illustrations.
+- `book/marketing/` — back-cover copy, author bio, KDP listing copy,
+  and the `build_cover.py` cover-PDF generator (see its README for
+  cover specs / KDP constants).
 - `docs/` — published website (overwritten by `deploy_site.py`; see
   `PRESERVE` set there for files that survive deploys).
 - `curriculum/`, `shellpilot/`, `sim/` — adjacent tooling, not the
