@@ -102,6 +102,20 @@ def read_md_body(path: Path) -> str:
     return "\n".join(body).strip()
 
 
+def make_qr_image(text: str) -> Image.Image:
+    """Render ``text`` as a black-on-white PIL QR code with a small quiet zone."""
+    import qrcode
+    qr = qrcode.QRCode(
+        version=None,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=10,
+        border=2,
+    )
+    qr.add_data(text)
+    qr.make(fit=True)
+    return qr.make_image(fill_color="black", back_color="white").convert("RGB")
+
+
 def trim_black_border(img: Image.Image, threshold: int = 16) -> Image.Image:
     """Strip uniform near-black borders from the four edges of ``img``.
 
@@ -247,13 +261,13 @@ def build_cover(pages: int, out_path: Path) -> None:
     )
 
     def draw_rotated_centered(text: str, font: str, size_pt: float,
-                              center_y_in: float) -> None:
+                              center_y_in: float, color=TEXT_COLOR) -> None:
         """Draw rotated (reads top-to-bottom) text centered both on the
         spine's horizontal centerline and on a target y (inches from the
         bottom of the sheet, in user space).
         """
         c.saveState()
-        c.setFillColor(TEXT_COLOR)
+        c.setFillColor(color)
         c.setFont(font, size_pt)
         text_w_pt = c.stringWidth(text, font, size_pt)
         # After rotate(-90), the text's height (cap + descender) lies
@@ -277,10 +291,12 @@ def build_cover(pages: int, out_path: Path) -> None:
     title_center_y = spine_bottom_in + (TRIM_H + 2 * BLEED) / 2 + 0.4
     draw_rotated_centered("VimFu", FONT_BOLD, title_size, title_center_y)
 
-    # 3c. Author name — sits below the title, near the bottom.
+    # 3c. Author name — sits below the title, near the bottom. Rendered
+    # slightly muted (warm grey) so it doesn't compete with the title.
     author_size = max(10, int(spine_inner_w * inch * 0.22))
     draw_rotated_centered("Ashley Feniello", FONT_REG, author_size,
-                          spine_bottom_in + 1.8)
+                          spine_bottom_in + 1.8,
+                          color=Color(0.70, 0.70, 0.70))
 
     # --- 4. Back cover -------------------------------------------------
     # Critical content lives inside BACK_SAFE from the trim edges. The
@@ -311,7 +327,7 @@ def build_cover(pages: int, out_path: Path) -> None:
     bio_w = (safe_right - photo_x - photo_size - 0.2) * inch
     bio_h = photo_size * inch
     bio_style = ParagraphStyle(
-        "bio", fontName=FONT_REG, fontSize=12.5, leading=16,
+        "bio", fontName=FONT_REG, fontSize=13.5, leading=17,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
     )
     draw_paragraph(c, bio_text, bio_x, photo_y * inch, bio_w, bio_h, bio_style)
@@ -325,14 +341,14 @@ def build_cover(pages: int, out_path: Path) -> None:
     blurb_h = (blurb_top - blurb_bottom) * inch
 
     heading_style = ParagraphStyle(
-        "heading", fontName=FONT_BOLD, fontSize=15.5, leading=19,
+        "heading", fontName=FONT_BOLD, fontSize=16.5, leading=20,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
-        spaceAfter=12,
+        spaceAfter=13,
     )
     body_style = ParagraphStyle(
-        "blurb", fontName=FONT_REG, fontSize=13, leading=17,
+        "blurb", fontName=FONT_REG, fontSize=14, leading=18,
         textColor=TEXT_COLOR, alignment=TA_LEFT,
-        spaceAfter=11,
+        spaceAfter=12,
     )
     paragraphs = [Paragraph(first_line.strip(), heading_style)]
     for chunk in rest.split("\n\n"):
@@ -347,13 +363,25 @@ def build_cover(pages: int, out_path: Path) -> None:
     )
     frame.addFromList(paragraphs, c)
 
-    # 4d. URL footer at the bottom-left of the safe area, so a reader
-    # always sees where the companion site lives even before opening
-    # the book. The barcode area sits in the bottom-right (KDP adds the
-    # actual barcode automatically when uploaded).
+    # 4d. URL footer + small QR code at the bottom-left of the safe
+    # area. The QR encodes the same URL so a phone scan jumps straight
+    # to the companion site. KDP auto-stamps its barcode at the
+    # bottom-right at print time, so we keep that quadrant empty.
+    qr_size_in = 0.75      # small but reliably scannable
+    qr_x = safe_left
+    qr_y = safe_bottom + 0.15
+    qr_img = make_qr_image("https://vimfubook.com")
+    c.drawImage(
+        pil_to_reader(qr_img),
+        qr_x * inch, qr_y * inch,
+        qr_size_in * inch, qr_size_in * inch,
+        mask=None,
+    )
     c.setFillColor(TEXT_COLOR)
-    c.setFont(FONT_ITAL, 12.5)
-    c.drawString(safe_left * inch, (safe_bottom + 0.15) * inch,
+    c.setFont(FONT_ITAL, 13)
+    # Baseline aligned roughly with the vertical center of the QR.
+    c.drawString((qr_x + qr_size_in + 0.18) * inch,
+                 (qr_y + qr_size_in / 2 - 0.07) * inch,
                  "vimfubook.com")
 
     c.showPage()
