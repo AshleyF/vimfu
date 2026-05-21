@@ -6,7 +6,7 @@
   "subtitle": "Why a 50-year-old editing language matters more, not less",
   "part": "foundations",
   "audience": "book",
-  "summary": "LLMs write code. People dictate commits. Pair programming is a chat tab. None of that changes the fact that the bottleneck is reviewing, restructuring, and steering text — exactly what Vim is best at.",
+  "summary": "Agents write the code. You write the specs, the prompts, the skills, the docs — and sometimes still the code itself. The text that drives the agents is text someone has to edit. For now, that someone is you.",
   "keys": [],
   "lessons": [],
   "see_also": [
@@ -21,74 +21,88 @@
     },
     {
       "type": "prose",
-      "text": "It is reasonable to ask, in 2025: why learn an editor designed for a 1976 terminal, in an era where you can describe a feature to an LLM and get a working implementation back in under a minute? If the AI is doing the typing, who needs an editor? If voice dictation is faster than touch typing, who needs keystrokes?"
+      "text": "It is reasonable to ask, in 2026: why learn an editor designed for a 1976 terminal, in an era where agents in your IDE write whole features from a one-line prompt, command-line agents like `claude`, `codex`, `aider`, and `copilot` do entire refactors while you read email, and the loudest voices in the field will tell you that staring at source code is already a quaint hobby?"
     },
     {
       "type": "prose",
-      "text": "The answer is that the actual work of programming has never primarily been *typing*. It has always been understanding existing code, deciding what should change, and steering the result toward something correct. AI shifts the ratios — fewer characters typed, more characters generated — but it makes the steering job harder, not easier. You spend less time writing and more time editing what something else wrote. That is exactly what Vim is for."
+      "text": "Let's not pretend otherwise: the future of programming probably is not people typing code. It may not even be people *reading* code. For a lot of glue code, internal tooling, and one-off scripts, the honest answer is that nobody is going to look at the source — not the diff, not the file, not ever. \"Vibe coding\" gets dunked on, but it is where this is heading for a meaningful slice of work. Your employer will expect agent-speed output, and the human typing characters into a buffer will be the bottleneck."
+    },
+    {
+      "type": "prose",
+      "text": "So why is this book in your hands?"
+    },
+    {
+      "type": "prose",
+      "text": "Because *somebody* is still editing text. Even when the agent writes every line of code, the spec it reads, the prompt it follows, the markdown that defines the project, the skill files that shape its behavior, the system instructions, the design doc, the commit message that explains the change — all of that is text, and most of it is text you wrote. English is the new programming language, and English files want to be edited just as badly as C files ever did."
     },
     {
       "type": "heading",
       "level": 2,
-      "text": "What's Actually Changed"
+      "text": "What the Loop Actually Looks Like Now"
     },
     {
       "type": "table",
       "headers": [
-        "Old loop",
-        "New loop"
+        "Old loop (1995)",
+        "Recent loop (2022)",
+        "Current loop (2026)"
       ],
       "rows": [
         [
           "Type code",
-          "Prompt LLM, paste output"
+          "Type code with autocomplete",
+          "Describe intent in English"
         ],
         [
           "Read code",
-          "Read code (still)"
+          "Read code",
+          "Skim a diff (maybe)"
         ],
         [
-          "Edit code by hand",
-          "Edit AI's output by hand"
+          "Edit by hand",
+          "Edit by hand",
+          "Edit the *prompt*, the *spec*, the *skill file*"
         ],
         [
           "Run, test, debug",
-          "Run, test, debug (still)"
+          "Run, test, debug",
+          "Run, test, debug"
         ],
         [
-          "Rewrite based on feedback",
-          "Re-prompt + edit again"
+          "Commit, write message",
+          "Commit, write message",
+          "Review the agent's commit message"
         ]
       ]
     },
     {
       "type": "prose",
-      "text": "Three of those five steps are unchanged. One — typing new code from scratch — has shrunk dramatically. The other — editing — has *expanded*. Almost every AI-assisted change requires manual cleanup: variable renames, structural rearrangement, removing AI hedging, fixing the parts the model got subtly wrong. You spend more time wrangling existing text, not less."
+      "text": "The volume of code authored per developer is going up. The fraction of it typed by a human is going down. The volume of *driving text* — prompts, specs, agents.md files, design docs, runbooks, READMEs the agent reads before doing anything — is exploding. If you spend any meaningful part of your day editing that text, Vim is the most precise instrument for the job."
     },
     {
       "type": "prose",
-      "text": "If the bulk of your day is reading and editing rather than authoring, you want the most precise editing instrument you can get. That instrument is Vim. The grammar that lets you say {key:c}{key:i}{key:(} (\"change everything inside these parentheses\") in three keystrokes is precisely the grammar you want when an LLM hands you a function and you need to rewrite its body in place."
+      "text": "And for the work where you *do* still touch the code — reviewing a critical patch, fixing something the agent got subtly wrong, rewriting a hot path the agent made correct-but-slow, working on the agent itself — the keystroke economics of Vim are the same as they ever were. {key:c}{key:i}{key:(} still rewrites the inside of a function call in three keystrokes. The grammar does not care whether the surrounding code was typed by you, generated by `copilot`, or hallucinated by a model that ran while you slept."
     },
     {
       "type": "heading",
       "level": 2,
-      "text": "Voice and Dictation"
+      "text": "Voice, Dictation, and the Grammar Match"
     },
     {
       "type": "prose",
-      "text": "Speech-to-text is now good enough that some authors and developers dictate the prose part of their work — including parts of this book. Dictation is great for prose. It is *terrible* for code. You cannot reliably dictate `if (x === 0) { return -1; }` and have it come out as code. You cannot dictate a regex. You cannot dictate `:%s/foo\\(bar\\)/\\1baz/g`."
+      "text": "These very words are being dictated. It is much faster than typing them, and your author types fast. The interesting thing about voice is not that you are going to dictate `if (x === 0) return -1;` — nobody is going to do that, and nobody should. You will dictate English at an agent and the agent will write the code. That is fine. That is good."
     },
     {
       "type": "prose",
-      "text": "What dictation *can* do is feed *insert mode*. The pattern that emerges: speak prose into *insert mode*, then drop to *normal mode* and edit it like code. Modal editing turns out to be exactly the right shape for hybrid voice/keyboard workflows — the modes that already separate \"I am inputting characters\" from \"I am manipulating structure\" map naturally onto \"voice mode\" vs. \"keystroke mode\"."
+      "text": "What is genuinely interesting is how cleanly Vim's grammar maps onto spoken commands. Operators, motions, counts, text objects — they already have names, because Vim already treats editing as a language. So when someone bolts a voice layer onto an editor and tries to make it sound natural, the editor that fits best is the one whose internal model was already linguistic."
     },
     {
       "type": "tip",
-      "text": "Talon Voice is the most polished voice-coding system in 2025, and it ships with deep Vim integration. Its grammar mirrors Vim's: you can say \"delete inside parens\" and have it issue {key:d}{key:i}{key:(}. The two systems compose because they share a model: name the operation, name the target, execute."
+      "text": "Talon Voice is the most polished voice-driven editing system going. Its grammar mirrors Vim's directly — \"delete inside parens\" issues {key:d}{key:i}{key:(} — because both systems share a model: name the operation, name the target, execute. The match is not coincidence; it is what happens when two designs converge on the same underlying structure."
     },
     {
       "type": "prose",
-      "text": "As a small proof of the idea: the author once ran a Vim Golf challenge using only his voice, via an experimental dictation layer called *VimSpeak*. The recording shows the modal grammar surviving the translation to speech almost intact — operations, motions, and counts map cleanly to spoken commands because Vim already names them."
+      "text": "As a small proof, the author once ran a Vim Golf challenge using only his voice via an experimental dictation layer called *VimSpeak*. The recording is more historical curiosity than recommendation — but it shows the modal grammar surviving translation into speech almost intact, because Vim already named the operations."
     },
     {
       "type": "qr",
@@ -98,68 +112,40 @@
     {
       "type": "heading",
       "level": 2,
-      "text": "AI as a Generator, Vim as the Edit Loop"
+      "text": "Why Many AI Tools Ship Vim Bindings"
     },
     {
       "type": "prose",
-      "text": "The most productive AI-coding workflow is not \"the AI does everything.\" It is a tight loop:"
-    },
-    {
-      "type": "table",
-      "headers": [
-        "Step",
-        "Tool",
-        "Why"
-      ],
-      "rows": [
-        [
-          "1",
-          "AI generates a candidate",
-          "Cheap, fast, gets you 80% there"
-        ],
-        [
-          "2",
-          "You read it",
-          "AI confidence ≠ correctness"
-        ],
-        [
-          "3",
-          "You edit it (Vim)",
-          "Targeted fixes are 10× faster than re-prompting"
-        ],
-        [
-          "4",
-          "You re-run / re-test",
-          "Validate the edit"
-        ],
-        [
-          "5",
-          "Goto 1 if needed",
-          "Iterate on what the AI didn't get"
-        ]
-      ]
+      "text": "Cursor, Zed, VS Code, Helix, JetBrains, Aider, Neovim's own AI plugins — almost every editor and IDE in the agent era ships with Vim-key support, often by default. The honest reason is not nostalgia. It is that the audience for serious agent-assisted work overlaps heavily with the audience that already speaks Vim, and the grammar composes neatly with the operations that AI editing adds: jumping to a hunk, accepting or rejecting a suggestion, applying a patch, navigating a diff."
     },
     {
       "type": "prose",
-      "text": "Step 3 is where Vim earns its keep. A targeted edit — \"change this variable name everywhere in this function,\" \"swap these two arguments,\" \"unindent this block,\" \"yank these tests, paste them somewhere else\" — takes two to five keystrokes in Vim and ten to fifty in a non-modal editor. When you are running this loop fifty times an hour, the keystroke savings compound into hours."
-    },
-    {
-      "type": "internals",
-      "title": "Why AI Models Themselves Often Have Vim Modes",
-      "text": "Many code-completion and code-editing AI tools (GitHub Copilot, Cursor, Aider, Claude Code, etc.) ship Vim-key support out of the box. This is not nostalgia. It is because the people building them know that the audience for serious AI-assisted coding overlaps heavily with the audience that already uses Vim. The grammar is so widespread among professional developers that ignoring it would lose a meaningful slice of users.\n\nThe grammar also composes well with AI-generated diffs and patches: applying an edit, navigating to a hunk, accepting or rejecting suggestions — these are all motion-and-operator gestures, and they fit neatly into the same key vocabulary you already know."
+      "text": "These are motion-and-operator gestures. They fit the same key vocabulary you already know."
     },
     {
       "type": "heading",
       "level": 2,
-      "text": "What This Means for You"
+      "text": "An Honest Word About the Future"
     },
     {
       "type": "prose",
-      "text": "If you are deciding whether to invest in learning Vim in an AI-assisted world, the trade is better than ever, not worse. The grammar's value scales with the amount of editing you do. AI generates more text for you to edit. The two compound."
+      "text": "This book is not going to pretend that humans typing characters is the future of software. It very likely is not. The trajectory is clear: less code read by humans, less code typed by humans, more software written per unit of human effort, more decisions made at the level of intent rather than implementation. Eventually the question \"which text editor do you use?\" will sound the way \"which assembler do you use?\" sounds today."
     },
     {
       "type": "prose",
-      "text": "Treat Vim the way you treat touch typing: a once-in-a-career investment that compounds for the rest of your working life, regardless of how the surrounding tools evolve."
+      "text": "So who is this book for?"
+    },
+    {
+      "type": "prose",
+      "text": "It is for people who, *for now*, want to stay in control of the machine. People who write enough prose, code, spec, prompt, or config that the keystroke-level cost of editing actually matters. People whose employer expects high output and who would rather not be the slow part of the pipeline. People who enjoy the craft of editing for its own sake."
+    },
+    {
+      "type": "prose",
+      "text": "Your author, when he retires, intends to spend his time on retro computing — old machines, old tools, programs that fit in your head, for the pure pleasure of it. Hobby projects deserve the slow path. Work, for the moment, does not. The point of Vim today is that it can serve both: it is the fastest editor available, *and* it is a deep enough craft to enjoy on its own terms. That combination is rare, and as long as text is still a thing humans touch, it is worth learning."
+    },
+    {
+      "type": "prose",
+      "text": "Treat Vim the way you treat touch typing: a once-in-a-career investment that compounds for as long as you still type. Whatever fraction of your day that is — and it is probably shrinking — make that fraction as fast and as pleasant as it can possibly be."
     },
     {
       "type": "qr",
