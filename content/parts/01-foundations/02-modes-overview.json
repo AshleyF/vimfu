@@ -135,13 +135,13 @@
     },
     {
       "type": "internals",
-      "title": "The Ctrl-O Trick",
-      "text": "The most useful transition not obvious from the diagram is {key:Ctrl-O} from *insert mode*: it pops you into *normal mode* for *exactly one command*, then automatically returns. So {key:Ctrl-O}{key:d}{key:d} from *insert mode* deletes the current line and continues typing where the new cursor lands -- without the round trip of Esc, then {key:d}{key:d}, then {key:i}."
+      "title": "The {key:Ctrl-O} Trick",
+      "text": "The most useful transition not obvious from the diagram is {key:Ctrl-O} from *insert mode*: it pops you into *normal mode* for *exactly one command*, then automatically returns. So {key:Ctrl-O}{key:d}{key:d} from *insert mode* deletes the current line and continues typing where the new cursor lands -- without the round trip of {key:Esc}, then {key:d}{key:d}, then {key:i}."
     },
     {
       "type": "internals",
       "title": "Per-Mode State",
-      "text": "Each mode carries its own state. *Normal mode* tracks the count being typed (`5` then `j` is two keystrokes; the `5` is buffered). *Insert mode* buffers the inserted text so it can be repeated with {key:.} and so {key:Ctrl-O} can briefly leave and return. *Visual mode* tracks the *anchor* (where you started) and the *cursor* (where you are now); the selection is the range between them, recomputed every keystroke. Operator-pending tracks which operator is pending, plus its count and any selected register.\n\nWhen the mode ends, this state is either committed (Insert → Normal commits the typed text and the count's repetitions; operator-pending → Normal applies the operator to the motion's range) or discarded (Visual → Normal without an operator just throws the selection away, though {key:gv} can recover it from the {key:'<} / {key:'>} marks)."
+      "text": "Each mode carries its own state. *Normal mode* tracks the count being typed ({key:5}{key:j} is two keystrokes; the {key:5} is buffered). *Insert mode* buffers the inserted text so it can be repeated with {key:.} and so {key:Ctrl-O} can briefly leave and return. *Visual mode* tracks the *anchor* (where you started) and the *cursor* (where you are now); the selection is the range between them, recomputed every keystroke. Operator-pending tracks which operator is pending, plus its count and any selected register.\n\nWhen the mode ends, this state is either committed (Insert → Normal commits the typed text and the count's repetitions; operator-pending → Normal applies the operator to the motion's range) or discarded (Visual → Normal without an operator just throws the selection away, though {key:gv} can recover it from the {key:'<} / {key:'>} marks)."
     },
     {
       "type": "divider"

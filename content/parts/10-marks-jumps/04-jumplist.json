@@ -5,7 +5,7 @@
   "title": "The Jump List",
   "subtitle": "{key:Ctrl-O} / {key:Ctrl-I} — walk back and forward through your big jumps.",
   "part": "marks",
-  "summary": "Vim records every \"big jump\" you make in a per-window jump list. {key:Ctrl-O} moves backward through it; {key:Ctrl-I} (Tab) moves forward.",
+  "summary": "Vim records every \"big jump\" you make in a per-window jump list. {key:Ctrl-O} moves backward through it; {key:Ctrl-I} ({key:Tab}) moves forward.",
   "keys": [
     "{key:Ctrl-O}",
     "{key:Ctrl-I}",
@@ -43,7 +43,7 @@
       "sequence": [
         "{key:Ctrl-I}"
       ],
-      "label": "Jump forward (= Tab in most terminals)"
+      "label": "Jump forward (= {key:Tab} in most terminals)"
     },
     {
       "type": "keys",
@@ -80,8 +80,8 @@
     },
     {
       "type": "internals",
-      "title": "{key:Ctrl-I} and Tab Are the Same Key",
-      "text": "Terminals send Tab and {key:Ctrl-I} as the *same* byte (0x09). Vim historically treats them as one keystroke. So if you remap Tab in *normal mode*, you also remap {key:Ctrl-I} — including its jump-list-forward behavior. This catches a lot of plugin users by surprise.\n\nGUI Vim and Neovim with `tui-input` distinguish them. In a terminal, you usually can't."
+      "title": "{key:Ctrl-I} and {key:Tab} Are the Same Key",
+      "text": "Terminals send {key:Tab} and {key:Ctrl-I} as the *same* byte (0x09). Vim historically treats them as one keystroke. So if you remap {key:Tab} in *normal mode*, you also remap {key:Ctrl-I} — including its jump-list-forward behavior. This catches a lot of plugin users by surprise.\n\nGUI Vim and Neovim with `tui-input` distinguish them. In a terminal, you usually can't."
     },
     {
       "type": "tip",
@@ -94,7 +94,7 @@
     {
       "type": "internals",
       "title": "The jump list is a bounded ring buffer",
-      "text": "Vim records every 'big' jump (search, {key:G}, marks, {key:Ctrl-O} reach) into a per-window history capped at ~100 entries with duplicate suppression on the top. {key:Ctrl-O} walks back through the list; {key:Ctrl-I} (Tab) walks forward. Adding a new jump while in the middle of the history truncates the forward portion — same semantics as a browser back/forward stack."
+      "text": "Vim records every 'big' jump (search, {key:G}, marks, {key:Ctrl-O} reach) into a per-window history capped at ~100 entries with duplicate suppression on the top. {key:Ctrl-O} walks back through the list; {key:Ctrl-I} ({key:Tab}) walks forward. Adding a new jump while in the middle of the history truncates the forward portion — same semantics as a browser back/forward stack."
     },
     {
       "type": "qr",
