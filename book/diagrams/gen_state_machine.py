@@ -152,20 +152,20 @@ def diagonal_pair(n_attach: tuple[float, float],
                   entry_tokens: list[tuple[str, str]],
                   exit_tokens: list[tuple[str, str]],
                   line_offset: float = 9,
-                  label_offset: float = 22) -> list[str]:
+                  label_offset: float = 34) -> list[str]:
     """Two parallel offset arrows between a node and its satellite, plus
     two labels rotated to follow the line direction.
 
-    ``entry_tokens`` describes the N→satellite arrow's label; it sits on
-    the upper-left side of the pair. ``exit_tokens`` describes the return
-    arrow's label on the lower-right side.
+    ``entry_tokens`` (N→satellite) is rendered on the visually-upper side
+    of the line. ``exit_tokens`` (satellite→N) is rendered on the lower
+    side. This matches the horizontal pairs: leave on top, return on
+    bottom.
     """
     nx, ny = n_attach
     sx, sy = s_attach
 
     # Normalize the "rightward" reading direction of the line so text
-    # never ends up upside down. We pick the endpoint with the smaller x
-    # as "left", the other as "right".
+    # never ends up upside down.
     if nx <= sx:
         lx, ly, rx_, ry = nx, ny, sx, sy
     else:
@@ -173,33 +173,32 @@ def diagonal_pair(n_attach: tuple[float, float],
     dx, dy = rx_ - lx, ry - ly
     L = math.hypot(dx, dy) or 1
     ux, uy = dx / L, dy / L      # along the line, L -> R
-    px, py = -uy, ux             # perpendicular (rotated 90° CCW)
+    # Perpendicular pointing visually "up" on screen (negative-y side).
+    # Rotating 90° CW from (ux, uy) gives (uy, -ux); that vector has
+    # py = -ux which is negative whenever ux > 0, i.e. always points up.
+    px, py = uy, -ux
 
     angle_deg = math.degrees(math.atan2(dy, dx))
 
-    # Offset the two arrows perpendicular to the line so they're parallel
-    # rather than coincident.
     def shift(p, d):
         x, y = p
         return (x + px * d, y + py * d)
 
-    # Entry arrow: N -> S, offset to one side
+    # Entry arrow on the UPPER side (+offset along upward-pointing px,py)
     n1 = shift(n_attach, +line_offset)
     s1 = shift(s_attach, +line_offset)
-    # Exit arrow: S -> N, offset to the other side
+    # Exit arrow on the LOWER side
     s2 = shift(s_attach, -line_offset)
     n2 = shift(n_attach, -line_offset)
 
     out: list[str] = []
-    out.append(arrow(*n1, *s1, shorten=6))
-    out.append(arrow(*s2, *n2, shorten=6))
+    out.append(arrow(*n1, *s1, shorten=14))
+    out.append(arrow(*s2, *n2, shorten=14))
 
-    # Midpoint of the abstract line
     mx, my = (nx + sx) / 2, (ny + sy) / 2
 
-    # Labels at the midpoint, offset perpendicular further from the line.
-    ex, ey = mx + px * label_offset, my + py * label_offset
-    xx, xy = mx - px * label_offset, my - py * label_offset
+    ex, ey = mx + px * label_offset, my + py * label_offset   # upper
+    xx, xy = mx - px * label_offset, my - py * label_offset   # lower
 
     out.append(rotated_tokens(ex, ey, angle_deg, entry_tokens))
     out.append(rotated_tokens(xx, xy, angle_deg, exit_tokens))
