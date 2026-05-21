@@ -258,6 +258,15 @@ class Demo:
             target_width=self.target_width,
             target_height=self.target_height,
         ) as demo:
+            # Pre-setup: silently dismiss any pending Oh-My-Zsh update prompt
+            # in the outer shell so it cannot leak into a fresh tmux pane or
+            # window spawned by the setup steps below. The start_recording
+            # guard only inspects the visible pane at recording start, so
+            # prompts that surface in `tmux new-window`/`tmux split-window`
+            # would otherwise slip through and be captured in the video.
+            _omz_prime = Line("zsh -ic 'omz update --unattended >/dev/null 2>&1' >/dev/null 2>&1 || true")
+            self._run_fast(demo, [_omz_prime])
+
             # Setup (not recorded) — fast, silent
             self._run_fast(demo, self.setup)
 
