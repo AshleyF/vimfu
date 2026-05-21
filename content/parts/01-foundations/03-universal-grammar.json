@@ -200,6 +200,10 @@
       ]
     },
     {
+      "type": "prose",
+      "text": "Text objects (the {key:i} / {key:a} rows) are nouns that describe *structure* rather than a path: {key:i} means the inner contents (e.g. {key:i}{key:w} = the word the cursor is in), {key:a} means the object plus its delimiters (e.g. {key:a}{key:\"} = a quoted string including the quotes). The full treatment is in Part 7 — for now, treat them as nouns like any other."
+    },
+    {
       "type": "internals",
       "title": "Why It Composes",
       "text": "Operators and motions live behind a clean interface. A motion is a function `cursor → (start, end, type)`, where *type* is `char`, `line`, or `block`. A text object is a function `cursor → (start, end, type)` that doesn't have to use the cursor as one of the endpoints. An operator is a function `(start, end, type) → effect-on-buffer`.\n\nThis is why every operator works with every motion and every text object. Vim's source code does not have a giant switch statement of \"if d, then handle w specially.\" It has *one* operator dispatch and *one* motion dispatch, and they meet through the `(start, end, type)` triple. When you learn a new operator, you've learned its combination with every motion you already know. When you learn a new text object, you've learned its combination with every operator. The grammar scales multiplicatively."

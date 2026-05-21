@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Surround — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-07-text-objects">↑ Text Objects</a>
+  &middot; <a href="../videos/07-text-objects/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="07-op-pending.html" rel="prev">← Operator-Pending Mode</a></span>
+  <span class="pager-pos">35 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="../08-wider-motions/01-sentence-paragraph.html" rel="next">Sentence and Paragraph Motions →</a></span>
+</nav>
+<article>
+<h1>Surround</h1>
+<p class="subtitle"><kbd>ds</kbd>, <kbd>cs</kbd>, <kbd>ys</kbd> — operate on surroundings as a first-class concept.</p>
+<p class="meta">Keys: <kbd>ds</kbd>, <kbd>cs</kbd>, <kbd>ys</kbd>, <kbd>yss</kbd>, <kbd>S</kbd></p>
+<blockquote class="summary">Tim Pope&#x27;s vim-surround adds three operators — ys (add), ds (delete), cs (change) — plus visual S. The trailing key names the surrounding kind: quotes, brackets, tags, or function calls. Once you have it, it feels like core Vim.</blockquote>
+<p>Vim&#x27;s text-object grammar already lets you talk about the <em>content</em> inside surroundings — <kbd>i</kbd><kbd>&quot;</kbd>, <kbd>i</kbd><kbd>(</kbd>, <kbd>i</kbd><kbd>t</kbd> all select what&#x27;s <em>between</em> the delimiters. But the delimiters themselves — the quotes, the brackets, the tags — are second-class: you can land your cursor on one with a motion, but you can&#x27;t directly <em>operate</em> on &quot;the thing wrapped around this word.&quot;
+
+Tim Pope&#x27;s [vim-surround](https://github.com/tpope/vim-surround) plugin closes that gap. It adds three operators that treat <em>surroundings</em> as first-class targets, completing the grammar. It&#x27;s the plugin most often cited as &quot;this should ship with Vim.&quot;</p>
+<hr>
+<h3>The Grammar</h3>
+<p>Every surround command is one sentence with two slots:
+
+  <em>operator</em> + <em>kind</em>
+
+The <strong>operator</strong> says what to do. The <strong>kind</strong> is a single key naming the surrounding — <kbd>&#x27;</kbd>, <kbd>&quot;</kbd>, <kbd>(</kbd>, <kbd>[</kbd>, <kbd>{</kbd>, <kbd>&lt;</kbd>, <kbd>t</kbd> (tag), <kbd>f</kbd> (function call). The <kbd>c</kbd><kbd>s</kbd> operator takes <em>two</em> kinds because changing requires both an old and a new wrapper.</p>
+<table>
+<thead><tr>
+<th>Form</th>
+<th>Operator</th>
+<th>Reads as</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>d</kbd><kbd>s</kbd><em>kind</em></td>
+<td>Delete</td>
+<td><strong>d</strong>elete-<strong>s</strong>urrounding-<em>kind</em></td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>s</kbd>*old**new*</td>
+<td>Change</td>
+<td><strong>c</strong>hange-<strong>s</strong>urrounding-<em>old</em>-to-<em>new</em></td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd>*motion**kind*</td>
+<td>Add</td>
+<td><strong>y</strong>ou-<strong>s</strong>urround the range with <em>kind</em></td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd><kbd>s</kbd><em>kind</em></td>
+<td>Add (whole line)</td>
+<td>Surround the current line</td>
+</tr>
+<tr>
+<td><em>visual mode</em> + <kbd>S</kbd><em>kind</em></td>
+<td>Add (selection)</td>
+<td>With a selection already made in <em>visual mode</em>, press <kbd>S</kbd> then <em>kind</em> to wrap the selection.</td>
+</tr>
+</tbody></table>
+<p><kbd>y</kbd><kbd>s</kbd> is the only operator that takes a <em>motion</em> (or text object) before the <em>kind</em> — the motion picks what gets wrapped. <kbd>d</kbd><kbd>s</kbd> and <kbd>c</kbd><kbd>s</kbd> need no motion: they search outward from the cursor and operate on the <em>nearest enclosing</em> surround.</p>
+<hr>
+<h3>Kinds — the Surround Alphabet</h3>
+<p>The <em>kind</em> key names a category of wrapper. Quotes are their own pair. Bracket pairs have two flavors: the <em>opener</em> form (<kbd>(</kbd>, <kbd>[</kbd>, <kbd>{</kbd>, <kbd>&lt;</kbd>) adds a space on the inside; the <em>closer</em> form (<kbd>)</kbd>, <kbd>]</kbd>, <kbd>}</kbd>, <kbd>&gt;</kbd>) does not. Tags and function calls <em>prompt</em> for the missing piece (tag name, function name).</p>
+<table>
+<thead><tr>
+<th>Kind</th>
+<th>Wrapper</th>
+<th>Notes</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>&#x27;</kbd> <kbd>&quot;</kbd> <kbd>`</kbd></td>
+<td>Quotes</td>
+<td>Self-pairing — same character on both sides.</td>
+</tr>
+<tr>
+<td><kbd>(</kbd> or <kbd>)</kbd> (alias <kbd>b</kbd>)</td>
+<td>Parens</td>
+<td><kbd>(</kbd> adds spaces inside: <code>( foo )</code>. <kbd>)</kbd> does not: <code>(foo)</code>.</td>
+</tr>
+<tr>
+<td><kbd>[</kbd> or <kbd>]</kbd></td>
+<td>Square brackets</td>
+<td><kbd>[</kbd> adds spaces, <kbd>]</kbd> does not.</td>
+</tr>
+<tr>
+<td><kbd>}</kbd> or <kbd>{</kbd> (alias <kbd>B</kbd>)</td>
+<td>Curly braces</td>
+<td>Opener form adds spaces; closer form does not.</td>
+</tr>
+<tr>
+<td><kbd>&lt;</kbd> or <kbd>&gt;</kbd></td>
+<td>Angle brackets</td>
+<td>Plain <code>&lt;…&gt;</code> — <em>not</em> a tag, just the symbols.</td>
+</tr>
+<tr>
+<td><kbd>t</kbd> or <kbd>T</kbd></td>
+<td>HTML/XML tag</td>
+<td>Prompts: type <code>em&gt;</code> (or <code>a href=&quot;...&quot;&gt;</code>) and press Enter. Closing tag generated. <kbd>T</kbd> keeps the full opening tag on change.</td>
+</tr>
+<tr>
+<td><kbd>f</kbd></td>
+<td>Function call</td>
+<td>Prompts for a name; produces <code>name(content)</code>.</td>
+</tr>
+<tr>
+<td><kbd>F</kbd></td>
+<td>Function call (spaced)</td>
+<td>Like <kbd>f</kbd> but <code>name( content )</code>.</td>
+</tr>
+</tbody></table>
+<aside class="tip"><strong>Tip.</strong> The spaces-inside rule is mnemonic: an opening bracket <em>opens its arms</em> and leaves room; a closing bracket <em>closes tight</em>. If you remember which way the bracket is pointing, you remember whether you&#x27;ll get spaces.</aside>
+<hr>
+<h3>Worked Examples</h3>
+<table>
+<thead><tr>
+<th>Sequence</th>
+<th>Before → After</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>d</kbd><kbd>s</kbd><kbd>&#x27;</kbd></td>
+<td><code>&#x27;hello&#x27;</code> → <code>hello</code></td>
+</tr>
+<tr>
+<td><kbd>d</kbd><kbd>s</kbd><kbd>t</kbd></td>
+<td><code>&lt;em&gt;hello&lt;/em&gt;</code> → <code>hello</code></td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>s</kbd><kbd>&#x27;</kbd><kbd>&quot;</kbd></td>
+<td><code>&#x27;hello&#x27;</code> → <code>&quot;hello&quot;</code></td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>s</kbd><kbd>[</kbd><kbd>(</kbd></td>
+<td><code>[hello]</code> → <code>( hello )</code></td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>s</kbd><kbd>]</kbd><kbd>)</kbd></td>
+<td><code>[hello]</code> → <code>(hello)</code></td>
+</tr>
+<tr>
+<td><kbd>c</kbd><kbd>s</kbd><kbd>t</kbd></td>
+<td><code>&lt;em&gt;hi&lt;/em&gt;</code> → prompts for new tag → <code>&lt;strong&gt;hi&lt;/strong&gt;</code></td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd><kbd>i</kbd><kbd>w</kbd><kbd>&#x27;</kbd></td>
+<td><code>hello</code> → <code>&#x27;hello&#x27;</code> (inner word)</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd><kbd>i</kbd><kbd>w</kbd><kbd>f</kbd></td>
+<td><code>hello</code> → <code>print(hello)</code> (prompts for <code>print</code>)</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd><kbd>s</kbd><kbd>}</kbd></td>
+<td><code>foo = 1</code> → <code>{foo = 1}</code> (whole line, no spaces)</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd><kbd>s</kbd><kbd>{</kbd></td>
+<td><code>foo = 1</code> → <code>{ foo = 1 }</code> (whole line, with spaces)</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd><kbd>i</kbd><kbd>p</kbd><kbd>&lt;</kbd><kbd>p</kbd><kbd>&gt;</kbd></td>
+<td>wraps paragraph in <code>&lt;p&gt;…&lt;/p&gt;</code></td>
+</tr>
+<tr>
+<td><em>visual mode</em> + <kbd>S</kbd><kbd>&#x27;</kbd></td>
+<td>wraps the selection in single quotes</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>Doubled and Capital Forms</h3>
+<p>Some shortcuts and variants follow the same operator-doubling pattern as core Vim (<kbd>d</kbd><kbd>d</kbd>, <kbd>y</kbd><kbd>y</kbd>):</p>
+<table>
+<thead><tr>
+<th>Sequence</th>
+<th>Effect</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>y</kbd><kbd>s</kbd><kbd>s</kbd><em>kind</em></td>
+<td>Surround the <strong>whole current line</strong> (no motion needed).</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>S</kbd>*motion**kind*</td>
+<td>Like <kbd>y</kbd><kbd>s</kbd> but place content on its <strong>own indented lines</strong>.</td>
+</tr>
+<tr>
+<td><kbd>y</kbd><kbd>S</kbd><kbd>S</kbd><em>kind</em></td>
+<td>Whole-line version of the above.</td>
+</tr>
+<tr>
+<td><em>visual mode</em> + <kbd>g</kbd><kbd>S</kbd><em>kind</em></td>
+<td>From an existing <em>visual mode</em> selection, <kbd>g</kbd><kbd>S</kbd> wraps it like <kbd>S</kbd> but puts the content on its own lines.</td>
+</tr>
+</tbody></table>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="02-quotes.html">Quote Text Objects</a>, <a href="03-brackets.html">Bracket Text Objects</a>, <a href="05-tags.html">HTML/XML Tag Objects</a>, <a href="06-grammar.html">The Vim Grammar</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="07-op-pending.html" rel="prev">← Operator-Pending Mode</a></span>
+  <span class="pager-pos">35 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="../08-wider-motions/01-sentence-paragraph.html" rel="next">Sentence and Paragraph Motions →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-07-text-objects">↑ back to Text Objects</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

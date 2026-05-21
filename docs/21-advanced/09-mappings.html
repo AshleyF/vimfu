@@ -52,14 +52,14 @@
 </nav>
 <nav class="pager pager-top">
   <span class="pager-prev"><a class="pager-link" href="08-tags.html" rel="prev">← Tag Navigation</a></span>
-  <span class="pager-pos">124 / 139</span>
+  <span class="pager-pos">125 / 139</span>
   <span class="pager-next"><a class="pager-link" href="../22-tmux/01-what-is-tmux.html" rel="next">What Is tmux? →</a></span>
 </nav>
 <article>
 <h1>Mappings — <code>:map</code>, <code>:noremap</code>, and Friends</h1>
 <p class="subtitle">How to bind a keystroke to a command in every mode, and what the modifiers actually do.</p>
-<p class="meta">Keys: <kbd>:map</kbd>, <kbd>:nmap</kbd>, <kbd>:nnoremap</kbd>, <kbd>:vnoremap</kbd>, <kbd>:xnoremap</kbd>, <kbd>:onoremap</kbd>, <kbd>:inoremap</kbd>, <kbd>:cnoremap</kbd></p>
-<blockquote class="summary">Vim has one mapping system with a per-mode entry point. :nnoremap is the workhorse — non-recursive normal-mode map. &lt;silent&gt;, &lt;expr&gt;, and &lt;buffer&gt; are the three modifiers that cover 90% of real mappings.</blockquote>
+<p class="meta">Keys: <kbd>`:map`</kbd>, <kbd>`:nmap`</kbd>, <kbd>`:nnoremap`</kbd>, <kbd>`:vnoremap`</kbd>, <kbd>`:xnoremap`</kbd>, <kbd>`:onoremap`</kbd>, <kbd>`:inoremap`</kbd>, <kbd>`:cnoremap`</kbd></p>
+<blockquote class="summary">Vim has one mapping system with a per-mode entry point. <code>:nnoremap</code> is the workhorse — non-recursive normal-mode map. &lt;silent&gt;, &lt;expr&gt;, and &lt;buffer&gt; are the three modifiers that cover 90% of real mappings.</blockquote>
 <h2>Mappings</h2>
 <p>A <em>mapping</em> binds a keystroke (or short sequence) to a command. It&#x27;s how you build a personal layer on top of Vim&#x27;s grammar — leader shortcuts, plugin bindings, language-specific helpers. The mapping system has more knobs than most people realize, and most of the bugs in handwritten vimrcs come from picking the wrong knob.</p>
 <h3>Per-mode commands</h3>
@@ -71,58 +71,58 @@
 <th>When to use</th>
 </tr></thead><tbody>
 <tr>
-<td><kbd>:</kbd><kbd>n</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd></td>
+<td><code>:nmap</code></td>
 <td>Normal</td>
 <td>Bindings that act on the buffer from rest. The default for almost every leader mapping.</td>
 </tr>
 <tr>
-<td><kbd>:</kbd><kbd>i</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd></td>
+<td><code>:imap</code></td>
 <td>Insert</td>
 <td>Live-while-typing shortcuts — autopairs, abbreviation-like helpers, completion triggers.</td>
 </tr>
 <tr>
-<td><kbd>:</kbd><kbd>v</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd></td>
+<td><code>:vmap</code></td>
 <td>Visual <em>and</em> Select</td>
 <td>Rarely what you want; the Select half eats keystrokes meant as text. Prefer <code>xmap</code>.</td>
 </tr>
 <tr>
-<td><kbd>:</kbd><kbd>x</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd></td>
+<td><code>:xmap</code></td>
 <td>Visual only (not Select)</td>
 <td>Visual-mode bindings (e.g. <code>&gt;</code> to indent and re-select).</td>
 </tr>
 <tr>
-<td><kbd>:</kbd><kbd>s</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd></td>
+<td><code>:smap</code></td>
 <td>Select only</td>
 <td>Almost never. <em>Select mode</em> behaves like a text-replacing selection (think other editors).</td>
 </tr>
 <tr>
-<td><kbd>:</kbd><kbd>o</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd></td>
+<td><code>:omap</code></td>
 <td>Operator-pending</td>
 <td>Custom motions and text objects. After <kbd>d</kbd>/<kbd>c</kbd>/<kbd>y</kbd>, your map fires.</td>
 </tr>
 <tr>
-<td><kbd>:</kbd><kbd>c</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd></td>
+<td><code>:cmap</code></td>
 <td>Command-line</td>
 <td>Bindings on the <kbd>:</kbd> / <kbd>/</kbd> / <kbd>?</kbd> prompt.</td>
 </tr>
 <tr>
-<td><kbd>:</kbd><kbd>t</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd></td>
+<td><code>:tmap</code></td>
 <td>Terminal-job</td>
 <td>Bindings inside <code>:terminal</code> buffers (Neovim and newer Vim).</td>
 </tr>
 <tr>
-<td><kbd>:</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd></td>
+<td><code>:map</code></td>
 <td>Normal + Visual + Select + Op-pending</td>
 <td>The bare form. Almost always too broad.</td>
 </tr>
 <tr>
-<td><kbd>:</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd><kbd>!</kbd></td>
+<td><code>:map!</code></td>
 <td>Insert + Command-line</td>
 <td>The other broad form. Sometimes useful for <kbd>Ctrl</kbd>-chords you want everywhere you type.</td>
 </tr>
 </tbody></table>
 <h3><code>map</code> vs <code>noremap</code> — the one you almost always want</h3>
-<p>Every mode has a <code>nore</code> variant: <kbd>:</kbd><kbd>n</kbd><kbd>n</kbd><kbd>o</kbd><kbd>r</kbd><kbd>e</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd>, <kbd>:</kbd><kbd>i</kbd><kbd>n</kbd><kbd>o</kbd><kbd>r</kbd><kbd>e</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd>, <kbd>:</kbd><kbd>v</kbd><kbd>n</kbd><kbd>o</kbd><kbd>r</kbd><kbd>e</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd>, etc. The <code>nore</code> prefix means <em>non-recursive</em>: the right-hand side is interpreted using Vim&#x27;s built-in commands, not other mappings.</p>
+<p>Every mode has a <code>nore</code> variant: <code>:nnoremap</code>, <code>:inoremap</code>, <code>:vnoremap</code>, etc. The <code>nore</code> prefix means <em>non-recursive</em>: the right-hand side is interpreted using Vim&#x27;s built-in commands, not other mappings.</p>
 <p>Without <code>nore</code>, your mapping can be re-mapped by another mapping. <code>:nmap j gj</code> then <code>:nmap gj jjj</code> will loop. With <code>:nnoremap j gj</code>, the <code>gj</code> on the right is the <em>built-in</em> <code>gj</code>, and the mapping is safe. <strong>Use <code>nore</code> everywhere unless you have a specific reason not to.</strong> &quot;Specific reason&quot; is almost always: you want to invoke another plugin&#x27;s mapping deliberately.</p>
 <h3>The three modifiers that matter</h3>
 <table>
@@ -134,7 +134,7 @@
 <tr>
 <td><code>&lt;silent&gt;</code></td>
 <td>Don&#x27;t echo the right-hand side on the command line as the mapping runs.</td>
-<td>Almost always for mappings that call commands. Without it, the <kbd>:</kbd><kbd>s</kbd><kbd>o</kbd><kbd>m</kbd><kbd>e</kbd><kbd>c</kbd><kbd>m</kbd><kbd>d</kbd><kbd>Enter</kbd> flicker is visible every keystroke.</td>
+<td>Almost always for mappings that call commands. Without it, the <code>:somecmd</code><kbd>Enter</kbd> flicker is visible every keystroke.</td>
 </tr>
 <tr>
 <td><code>&lt;expr&gt;</code></td>
@@ -151,13 +151,13 @@
 <pre><code>nnoremap &lt;silent&gt; &lt;leader&gt;w :write&lt;CR&gt;
 inoremap &lt;silent&gt; &lt;expr&gt; &lt;Tab&gt; pumvisible() ? &quot;\&lt;C-n&gt;&quot; : &quot;\&lt;Tab&gt;&quot;
 nnoremap &lt;silent&gt; &lt;buffer&gt; &lt;leader&gt;r :!python %&lt;CR&gt;</code></pre>
-<aside class="tip"><strong>Tip.</strong> If a mapping &quot;doesn&#x27;t work,&quot; the first debug step is <kbd>:</kbd><kbd>v</kbd><kbd>e</kbd><kbd>r</kbd><kbd>b</kbd><kbd>o</kbd><kbd>s</kbd><kbd>e</kbd><kbd> </kbd><kbd>n</kbd><kbd>m</kbd><kbd>a</kbd><kbd>p</kbd><kbd> </kbd><kbd>l</kbd><kbd>h</kbd><kbd>s</kbd>. It will name the file that defined whatever currently owns that keystroke — usually a plugin you forgot you installed.</aside>
+<aside class="tip"><strong>Tip.</strong> If a mapping &quot;doesn&#x27;t work,&quot; the first debug step is <code>:verbose nmap lhs</code>. It will name the file that defined whatever currently owns that keystroke — usually a plugin you forgot you installed.</aside>
 <aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="../07-text-objects/07-op-pending.html">Operator-Pending Mode</a>, <a href="06-config.html">Vim Configuration</a>, <a href="../17-ex-commands/07-set.html">Setting Options (`:set`)</a></p>
 </article>
 <nav class="pager pager-bottom">
   <span class="pager-prev"><a class="pager-link" href="08-tags.html" rel="prev">← Tag Navigation</a></span>
-  <span class="pager-pos">124 / 139</span>
+  <span class="pager-pos">125 / 139</span>
   <span class="pager-next"><a class="pager-link" href="../22-tmux/01-what-is-tmux.html" rel="next">What Is tmux? →</a></span>
 </nav>
 <nav class="bottomnav">

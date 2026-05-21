@@ -133,12 +133,13 @@ PART_THESES: dict[str, str] = {
         "commands that work without ever leaving *insert mode.*"
     ),
     "17-ex-commands": (
-        "Now we reach the {key::} line. Everything from saving a file "
-        "to running a substitution to executing arbitrary normal-mode "
-        "keystrokes against an arbitrary range of lines lives here. "
-        "*Ex mode* is the \"everything else\" mode -- and once you "
-        "can read an *ex* command, half of Vim's reputation for "
-        "arcaneness disappears."
+        "You've been using the {key::} line since Part 2 -- `:w`, `:q`, "
+        "`:wq`, `:s`, `:set`, `:ls`, `:b`. Here is the full model: "
+        "ranges, address arithmetic, executing arbitrary normal-mode "
+        "keystrokes against arbitrary lines, and the complete operator "
+        "set that makes *ex* a language in its own right. Once you can "
+        "read an *ex* command, half of Vim's reputation for arcaneness "
+        "disappears."
     ),
     "18-visual-modes": (
         "Sometimes the cleanest move is to highlight first and "
@@ -149,8 +150,8 @@ PART_THESES: dict[str, str] = {
     ),
     "19-command-line-power": (
         "Here is the interactive {key::} line itself: history, the "
-        "wildmenu, ranges, the command-line window ({key:q}{key::}), "
-        "and *ex mode* editing tricks. Learning these turns the colon "
+        "wildmenu, the command-line window ({key:q}{key::}), and "
+        "*ex mode* editing tricks. Learning these turns the colon "
         "line from an oracle you consult into a tool you wield."
     ),
     "20-patterns-recipes": (

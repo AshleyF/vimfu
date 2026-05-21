@@ -1915,14 +1915,12 @@ def main() -> int:
         "\\frontmatter\n"
         + title_block +
         # The "About the QR codes" chapter is part of the front matter and
-        # should appear physically BEFORE the table of contents (and thus be
-        # listed at the top of the TOC, as a front-matter peer of "Contents"
-        # itself). Emitting it after \tableofcontents put it after the TOC
-        # both physically and visually — and made it look like a peer to the
-        # numbered parts. \addcontentsline still routes the entry into the
-        # generated .toc on the next pass.
+        # should appear physically BEFORE the table of contents — but it is
+        # NOT listed in the TOC. The TOC opens facing the start of "About
+        # the QR codes" (TOC begins on a right-hand page, About sits on
+        # the facing left-hand page), so listing it would be redundant —
+        # the reader is literally looking at it while reading the TOC.
         "\\chapter*{About the QR codes}\n"
-        "\\addcontentsline{toc}{chapter}{About the QR codes}\n"
         "This book stands on its own---you can read it cover to cover "
         "without ever picking up a phone. It also has a companion website, "
         "{\\sffamily vimfubook.com}, that hosts a short screen-recorded "
