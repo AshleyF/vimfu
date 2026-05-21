@@ -5,8 +5,8 @@
   "title": "Tag Navigation",
   "subtitle": "Jump to definitions across files using a tags index.",
   "part": "advanced",
-  "summary": "ctags builds a tags file mapping symbols to file:line. Ctrl-] jumps to the symbol under the cursor; Ctrl-T pops back. The whole jump history forms a stack you can browse with :tags.",
-  "keys": ["Ctrl-]", "Ctrl-T", ":tag", ":tags", ":tnext", ":tprev"],
+  "summary": "ctags builds a tags file mapping symbols to file:line. Ctrl-] jumps to the symbol under the cursor; {key:Ctrl-T} pops back. The whole jump history forms a stack you can browse with `:tags`.",
+  "keys": ["Ctrl-]", "{key:Ctrl-T}", "`:tag`", "`:tags`", "`:tnext`", "`:tprev`"],
   "lessons": [],
   "see_also": ["marks.jumplist"],
 
@@ -29,7 +29,7 @@
       ]
     },
 
-    { "type": "prose", "text": "Vim looks for the `tags` file in the current directory, then walks parents. Configure with {key::}{key:s}{key:e}{key:t} {key:t}{key:a}{key:g}{key:s}{key:=}{key:.}{key:/}{key:t}{key:a}{key:g}{key:s}{key:;}{key:/}{key:t}{key:a}{key:g}{key:s} to search both adjacent and root tags files." },
+    { "type": "prose", "text": "Vim looks for the `tags` file in the current directory, then walks parents. Configure with `:set` {key:t}{key:a}{key:g}{key:s}{key:=}{key:.}{key:/}{key:t}{key:a}{key:g}{key:s}{key:;}{key:/}{key:t}{key:a}{key:g}{key:s} to search both adjacent and root tags files." },
 
     { "type": "heading", "level": 2, "text": "Jump and return" },
     {
@@ -37,11 +37,11 @@
       "label": "The core two keys",
       "sequence": [
         { "key": "Ctrl-]", "note": "Jump to the definition of the identifier under the cursor" },
-        { "key": "Ctrl-T", "note": "Pop back to where you came from (one level)" },
-        { "key": ":tag NAME", "note": "Jump to a named tag (Tab-completes)" },
+        { "key": "{key:Ctrl-T}", "note": "Pop back to where you came from (one level)" },
+        { "key": "`:tag` NAME", "note": "Jump to a named tag (Tab-completes)" },
         { "key": "g]",      "note": "Show menu of all matching tags (when the name is ambiguous)" },
-        { "key": "Ctrl-W ]", "note": "Open the tag in a new horizontal split" },
-        { "key": "Ctrl-W }", "note": "Show the tag's definition in a preview window without leaving" }
+        { "key": "{key:Ctrl-W} ]", "note": "Open the tag in a new horizontal split" },
+        { "key": "{key:Ctrl-W} }", "note": "Show the tag's definition in a preview window without leaving" }
       ]
     },
 
@@ -50,11 +50,11 @@
       "type": "keys",
       "label": "Browse the history",
       "sequence": [
-        { "key": ":tags",   "note": "Show the full tag stack with current position marked" },
-        { "key": ":tnext",  "note": "Next match when the tag was ambiguous" },
-        { "key": ":tprev",  "note": "Previous match" },
-        { "key": ":tlast",  "note": "Last match" },
-        { "key": ":tfirst", "note": "First match" }
+        { "key": "`:tags`",   "note": "Show the full tag stack with current position marked" },
+        { "key": "`:tnext`",  "note": "Next match when the tag was ambiguous" },
+        { "key": "`:tprev`",  "note": "Previous match" },
+        { "key": "`:tlast`",  "note": "Last match" },
+        { "key": "`:tfirst`", "note": "First match" }
       ]
     },
 
@@ -67,10 +67,10 @@
     {
       "type": "internals",
       "title": "The tag stack is a real stack",
-      "text": "{key:Ctrl-]} pushes `(buffer, position, tag)` onto the per-window tag stack and jumps. {key:Ctrl-T} pops. {key::}{key:t}{key:a}{key:g}{key:s} prints the whole stack. Unlike the jump list (a ring buffer with duplicate suppression), the tag stack is a true LIFO — go down ten levels into a definition trail, hit {key:Ctrl-T} ten times to retrace exactly. Each window has its own stack, which is why splitting via {key:Ctrl-W}{key:]} starts a fresh trail in the new window."
+      "text": "{key:Ctrl-]} pushes `(buffer, position, tag)` onto the per-window tag stack and jumps. {key:Ctrl-T} pops. `:tags` prints the whole stack. Unlike the jump list (a ring buffer with duplicate suppression), the tag stack is a true LIFO — go down ten levels into a definition trail, hit {key:Ctrl-T} ten times to retrace exactly. Each window has its own stack, which is why splitting via {key:Ctrl-W}{key:]} starts a fresh trail in the new window."
     },
 
-    { "type": "tip", "text": "Pair tags with the quickfix list ({key::}{key:t}{key:s}{key:e}{key:l}{key:e}{key:c}{key:t} fills it with all matches) for cross-file refactor sweeps." },
+    { "type": "tip", "text": "Pair tags with the quickfix list (`:tselect` fills it with all matches) for cross-file refactor sweeps." },
 
     { "type": "qr", "topic": "advanced.tags" },
     { "type": "buy-prompt" }

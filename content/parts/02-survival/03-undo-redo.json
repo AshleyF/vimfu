@@ -5,10 +5,10 @@
   "title": "Undo and Redo",
   "subtitle": "{key:u} to undo. {key:Ctrl-R} to redo. You cannot lose work.",
   "part": "survival",
-  "summary": "u undoes the last change. Ctrl-R redoes it. Vim's undo is a tree, not a stack — you literally cannot lose work.",
+  "summary": "u undoes the last change. {key:Ctrl-R} redoes it. Vim's undo is a tree, not a stack — you literally cannot lose work.",
   "keys": [
     "u",
-    "Ctrl-R",
+    "{key:Ctrl-R}",
     "U"
   ],
   "lessons": [
@@ -40,7 +40,7 @@
     {
       "type": "keys",
       "sequence": [
-        "Ctrl-R"
+        "{key:Ctrl-R}"
       ],
       "label": "Redo (the change you just undid)"
     },
@@ -56,7 +56,7 @@
     {
       "type": "embed",
       "lesson": 12,
-      "caption": "Redo with Ctrl-R"
+      "caption": "Redo with {key:Ctrl-R}"
     },
     {
       "type": "tip",
@@ -65,7 +65,7 @@
     {
       "type": "internals",
       "title": "Vim's Undo Is a Tree",
-      "text": "In every other editor, undo is a stack. Undo pops; redo pushes. If you undo three steps and then make a new edit, the redo stack is destroyed — those three changes are gone forever.\n\nVim's undo is a *tree*. Every change creates a new node. Undo walks toward the root. Redo walks back the way you came. **Branching changes do not destroy history**: when you undo three steps and then make a new edit, you create a new branch from that point. The old branch is still there, and Vim can walk to it.\n\nThe practical consequences:\n\n  • {key:u} and {key:Ctrl-R} walk along the *current branch*.\n  • {key:g}{key:-} and {key:g}{key:+} walk *chronologically* — they can hop to a different branch if it was edited more recently.\n  • :earlier {N}{m,s,h} jumps the buffer to its state N minutes/seconds/hours ago — across branches.\n  • :later does the opposite.\n  • If you have `'undofile'` set, the undo tree is saved to disk between sessions. Reopen the file tomorrow and you can still undo today's edits. (`'undofile'` and `'undodir'` are options — the option system itself is covered in Part 17.)\n\nFull treatment in `survival.undo-tree`. For now: you literally cannot lose work in Vim. If you make a change you regret, {key:u}. If you regret the undo, {key:Ctrl-R}. If hours have passed and you don't even remember the right sequence of presses, :earlier {key:1}{key:0}{key:m} ({key:Enter})."
+      "text": "In every other editor, undo is a stack. Undo pops; redo pushes. If you undo three steps and then make a new edit, the redo stack is destroyed — those three changes are gone forever.\n\nVim's undo is a *tree*. Every change creates a new node. Undo walks toward the root. Redo walks back the way you came. **Branching changes do not destroy history**: when you undo three steps and then make a new edit, you create a new branch from that point. The old branch is still there, and Vim can walk to it.\n\nThe practical consequences:\n\n  • {key:u} and {key:Ctrl-R} walk along the *current branch*.\n  • {key:g}{key:-} and {key:g}{key:+} walk *chronologically* — they can hop to a different branch if it was edited more recently.\n  • `:earlier` {N}{m,s,h} jumps the buffer to its state N minutes/seconds/hours ago — across branches.\n  • `:later` does the opposite.\n  • If you have `'undofile'` set, the undo tree is saved to disk between sessions. Reopen the file tomorrow and you can still undo today's edits. (`'undofile'` and `'undodir'` are options — the option system itself is covered in Part 17.)\n\nFull treatment in `survival.undo-tree`. For now: you literally cannot lose work in Vim. If you make a change you regret, {key:u}. If you regret the undo, {key:Ctrl-R}. If hours have passed and you don't even remember the right sequence of presses, `:earlier` {key:1}{key:0}{key:m} ({key:Enter})."
     },
     {
       "type": "heading",
@@ -116,11 +116,11 @@
           "Later in time"
         ],
         [
-          ":earlier {N}m",
+          "`:earlier` {N}m",
           "Jump back N minutes"
         ],
         [
-          ":later {N}s",
+          "`:later` {N}s",
           "Jump forward N seconds"
         ]
       ]

@@ -5,8 +5,8 @@
   "title": "Quickfix and Location Lists",
   "subtitle": "A typed list of file:line:message — the spine of grep, make, and lint workflows.",
   "part": "ex-commands",
-  "summary": ":make, :grep, and :vimgrep populate the quickfix list. :copen shows it; :cnext / :cprev step through entries. The location list is the per-window twin.",
-  "keys": [":make", ":grep", ":vimgrep", ":copen", ":cnext", ":cprev", ":cclose"],
+  "summary": "`:make`, `:grep`, and `:vimgrep` populate the quickfix list. `:copen` shows it; `:cnext` / `:cprev` step through entries. The location list is the per-window twin.",
+  "keys": ["`:make`", "`:grep`", "`:vimgrep`", "`:copen`", "`:cnext`", "`:cprev`", "`:cclose`"],
   "lessons": [],
   "see_also": ["ex.shell", "advanced.tags"],
 
@@ -20,12 +20,12 @@
       "type": "table",
       "headers": ["Command",                       "Effect"],
       "rows": [
-        [":make",                                  "Run `'makeprg'` (default `make`), capture errors via `'errorformat'`"],
-        [":make test",                             "Pass arguments to the make program"],
-        [":grep PATTERN [PATH]",                   "Run external grep (`'grepprg'`), populate from results"],
-        [":vimgrep /PATTERN/ FILES",               "Run Vim's internal grep (no shell)"],
-        [":vimgrep /TODO/ **/*.py",                "Recursively find TODO in Python files"],
-        [":cexpr system('rg --vimgrep PATTERN')",  "Inject any tool's output via `'errorformat'`"]
+        ["`:make`",                                  "Run `'makeprg'` (default `make`), capture errors via `'errorformat'`"],
+        ["`:make` test",                             "Pass arguments to the make program"],
+        ["`:grep` PATTERN [PATH]",                   "Run external grep (`'grepprg'`), populate from results"],
+        ["`:vimgrep` /PATTERN/ FILES",               "Run Vim's internal grep (no shell)"],
+        ["`:vimgrep` /TODO/ **/*.py",                "Recursively find TODO in Python files"],
+        ["`:cexpr` system('rg --vimgrep PATTERN')",  "Inject any tool's output via `'errorformat'`"]
       ]
     },
 
@@ -34,21 +34,21 @@
       "type": "keys",
       "label": "Step through entries",
       "sequence": [
-        { "key": ":copen",  "note": "Open the quickfix window (fills the bottom)" },
-        { "key": ":cclose", "note": "Close it" },
-        { "key": ":cnext",  "note": "Jump to the next entry" },
-        { "key": ":cprev",  "note": "Jump to the previous entry" },
-        { "key": ":cfirst", "note": "Jump to the first" },
-        { "key": ":clast",  "note": "Jump to the last" },
-        { "key": ":cc N",   "note": "Jump to entry number N" }
+        { "key": "`:copen`",  "note": "Open the quickfix window (fills the bottom)" },
+        { "key": "`:cclose`", "note": "Close it" },
+        { "key": "`:cnext`",  "note": "Jump to the next entry" },
+        { "key": "`:cprev`",  "note": "Jump to the previous entry" },
+        { "key": "`:cfirst`", "note": "Jump to the first" },
+        { "key": "`:clast`",  "note": "Jump to the last" },
+        { "key": "`:cc` N",   "note": "Jump to entry number N" }
       ]
     },
 
-    { "type": "tip", "text": "In the quickfix window, {key:Enter} opens the entry under the cursor. {key:p} previews it without leaving. {key::}{key:c}{key:o}{key:l}{key:d}{key:e}{key:r} restores a previous quickfix list — Vim keeps a stack of them." },
+    { "type": "tip", "text": "In the quickfix window, {key:Enter} opens the entry under the cursor. {key:p} previews it without leaving. `:colder` restores a previous quickfix list — Vim keeps a stack of them." },
 
     { "type": "heading", "level": 2, "text": "Location list — same idea, scoped to a window" },
 
-    { "type": "prose", "text": "Replace every {key:c}-prefixed command with {key:l}: {key::}{key:l}{key:m}{key:a}{key:k}{key:e}, {key::}{key:l}{key:g}{key:r}{key:e}{key:p}, {key::}{key:l}{key:o}{key:p}{key:e}{key:n}, {key::}{key:l}{key:n}{key:e}{key:x}{key:t}, {key::}{key:l}{key:p}{key:r}{key:e}{key:v}. The list lives on the window, not the editor, so two splits can run two greps without stepping on each other." },
+    { "type": "prose", "text": "Replace every {key:c}-prefixed command with {key:l}: `:lmake`, `:lgrep`, `:lopen`, `:lnext`, `:lprev`. The list lives on the window, not the editor, so two splits can run two greps without stepping on each other." },
 
     {
       "type": "internals",
@@ -62,7 +62,7 @@
       "text": "Vim keeps two parallel data structures: one global quickfix list (shared by all windows) and one location list per window. They use identical entry structure, identical commands modulo prefix, identical errorformat parsing. The duplication is intentional: it lets you run a project-wide search in the quickfix list while simultaneously running a file-local search in the location list of one window, without overwrites. The window-tied lifetime also means closing the window discards its location list."
     },
 
-    { "type": "tip", "text": "Set {key::}{key:s}{key:e}{key:t} {key:g}{key:r}{key:e}{key:p}{key:p}{key:r}{key:g}{key:=}{key:r}{key:g} {key:--vimgrep} to use ripgrep — it's massively faster than grep and produces output matching Vim's default `'grepformat'`." },
+    { "type": "tip", "text": "Set `:set` {key:g}{key:r}{key:e}{key:p}{key:p}{key:r}{key:g}{key:=}{key:r}{key:g} {key:--vimgrep} to use ripgrep — it's massively faster than grep and produces output matching Vim's default `'grepformat'`." },
 
     { "type": "qr", "topic": "ex.quickfix" },
     { "type": "buy-prompt" }

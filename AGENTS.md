@@ -4,10 +4,13 @@ VimFu is one source of truth (the JSON topic files in `content/parts/`)
 rendered to a website, a book, intermediate markdown, InDesign Tagged
 Text, and SVG screenshots. Treat the JSON as canonical.
 
-## Style guide — read first
+## Style guide — read first, every time
 
-Before editing any prose, table, heading, title, caption, or example
-in the book or website, **read [`content/StyleGuide.md`](content/StyleGuide.md)**.
+Before editing **any** prose, table, heading, title, caption, summary,
+or example in the book, website, or theses
+(`content/lib/theses.py`), **read [`content/StyleGuide.md`](content/StyleGuide.md)**
+in full. Even if you remember it. The style guide is the contract.
+
 It is the authoritative reference for:
 
 - Keys (boxed pills) vs commands (monospace) vs plain prose.
@@ -18,6 +21,16 @@ It is the authoritative reference for:
 - Placeholder templates (`f{c}`, `c{motion}`, `/{pattern}`).
 - Lowercase Unix command names (`vi`, `ed`, `ex`, `nvim`, `tmux`).
 - Chapter/heading titles use `{key:...}` markup, never plain text.
+- Ex commands (anything starting with `:` and followed by command
+  letters) are **monospace**, never split into pills. `` `:wq` ``,
+  never `{key::}{key:w}{key:q}`.
+- No trailing prepositions in narrative sentences.
+
+### Before-commit checklist (run for every edit)
+
+For every prose change, run through the checklist at the bottom of
+`StyleGuide.md` ("Author/agent checklist"). If you can't tick every
+box for the lines you touched, fix them before committing.
 
 If you observe an inconsistency that the style guide doesn't yet
 cover, add a rule for it to `StyleGuide.md` *before* the fix lands —

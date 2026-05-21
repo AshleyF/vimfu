@@ -75,7 +75,7 @@
     {
       "type": "internals",
       "title": "How gv Works",
-      "text": "Whenever you leave *visual mode*, Vim writes two marks ({key:`}{key:<}, {key:`}{key:>}) and remembers the *type* of the selection. {key:g}{key:v} re-enters that type of Visual with the cursor and anchor restored from those marks.\n\nBecause it's just two marks, anything that updates them updates {key:g}{key:v}'s target. {key::}{key:s} commands run on the visual range update them implicitly — so you can {key::}{key:'}{key:<}{key:,}{key:'}{key:>}{key:s}{key:/}{key:foo}{key:/}{key:bar}{key:/}{key:g} and then {key:g}{key:v} to grab the same range again.\n\nThe range works *per buffer*. Open a different buffer; come back; {key:g}{key:v} still works."
+      "text": "Whenever you leave *visual mode*, Vim writes two marks ({key:`}{key:<}, {key:`}{key:>}) and remembers the *type* of the selection. {key:g}{key:v} re-enters that type of Visual with the cursor and anchor restored from those marks.\n\nBecause it's just two marks, anything that updates them updates {key:g}{key:v}'s target. `:s` commands run on the visual range update them implicitly — so you can `:'<,'>s/foo/bar/g` and then {key:g}{key:v} to grab the same range again.\n\nThe range works *per buffer*. Open a different buffer; come back; {key:g}{key:v} still works."
     },
     {
       "type": "divider"

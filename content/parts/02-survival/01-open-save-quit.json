@@ -7,12 +7,12 @@
   "part": "survival",
   "summary": "Open a file with `nvim`. Write with `:w`. Quit with `:q`. Combine with `:wq`, `:x`, or `ZZ`. Discard with `:q!` or `ZQ`.",
   "keys": [
-    ":w",
-    ":q",
-    ":wq",
-    ":x",
+    "`:w`",
+    "`:q`",
+    "`:wq`",
+    "`:x`",
     "ZZ",
-    ":q!",
+    "`:q!`",
     "ZQ"
   ],
   "lessons": [
@@ -76,12 +76,12 @@
     },
     {
       "type": "prose",
-      "text": "{key::}{key:w} \"writes\" — Vim's word for save. {key::}{key:w} {filename} writes to a different filename (Save As). {key::}{key:w}{key:!} forces a write through read-only flags."
+      "text": "`:w` \"writes\" — Vim's word for save. `:w` {filename} writes to a different filename (Save As). `:w!` forces a write through read-only flags."
     },
     {
       "type": "embed",
       "lesson": 7,
-      "caption": "Saving with :w"
+      "caption": "Saving with `:w`"
     },
     {
       "type": "heading",
@@ -99,7 +99,7 @@
     },
     {
       "type": "prose",
-      "text": "{key::}{key:q} quits — *if* the buffer is clean. If there are unsaved changes, Vim refuses and tells you to save or force-quit. Force-quit with {key::}{key:q}{key:!} discards changes and exits."
+      "text": "`:q` quits — *if* the buffer is clean. If there are unsaved changes, Vim refuses and tells you to save or force-quit. Force-quit with `:q!` discards changes and exits."
     },
     {
       "type": "embed",
@@ -119,11 +119,11 @@
       ],
       "rows": [
         [
-          "{key::}{key:w}{key:q}",
+          "`:wq`",
           "Write, then quit. Always writes (even if nothing changed)."
         ],
         [
-          "{key::}{key:x}",
+          "`:x`",
           "Write *if changed*, then quit. Quieter than `:wq`."
         ],
         [
@@ -139,7 +139,7 @@
     {
       "type": "embed",
       "lesson": 9,
-      "caption": "Save-and-quit: :wq, :x, ZZ"
+      "caption": "Save-and-quit: `:wq`, `:x`, {key:Z}{key:Z}"
     },
     {
       "type": "heading",
@@ -154,7 +154,7 @@
       ],
       "rows": [
         [
-          "{key::}{key:q}{key:!}",
+          "`:q!`",
           "Discard changes and quit."
         ],
         [
@@ -170,7 +170,7 @@
     },
     {
       "type": "tip",
-      "text": "If you ever quit with {key::}{key:q}{key:!} and regret it, remember: Vim writes a per-session swapfile. The next time you open the file, Vim may offer to recover. The undo *file* (if you have `'undofile'` set) survives quit, so you can even reopen and undo back to a state before the changes you discarded."
+      "text": "If you ever quit with `:q!` and regret it, remember: Vim writes a per-session swapfile. The next time you open the file, Vim may offer to recover. The undo *file* (if you have `'undofile'` set) survives quit, so you can even reopen and undo back to a state before the changes you discarded."
     },
     {
       "type": "divider"
@@ -193,47 +193,47 @@
         ],
         [
           "Save",
-          "{key::}{key:w}"
+          "`:w`"
         ],
         [
           "Save as",
-          "{key::}{key:w} new-name"
+          "`:w` new-name"
         ],
         [
           "Save (force, e.g. read-only)",
-          "{key::}{key:w}{key:!}"
+          "`:w!`"
         ],
         [
           "Quit (clean buffer)",
-          "{key::}{key:q} or {key::}{key:q}{key:a} for all"
+          "`:q` or `:qa` for all"
         ],
         [
           "Save then quit (always writes)",
-          "{key::}{key:w}{key:q}"
+          "`:wq`"
         ],
         [
           "Save then quit (only if changed)",
-          "{key::}{key:x} or {key:Z}{key:Z}"
+          "`:x` or {key:Z}{key:Z}"
         ],
         [
           "Quit, discarding changes",
-          "{key::}{key:q}{key:!} or {key:Z}{key:Q}"
+          "`:q!` or {key:Z}{key:Q}"
         ],
         [
           "Reload from disk (lose changes)",
-          "{key::}{key:e}{key:!}"
+          "`:e!`"
         ]
       ]
     },
     {
       "type": "internals",
-      "title": "Buffers, Files, and What :w Actually Does",
-      "text": "When you open a file, Vim copies it into memory as a *buffer* — an in-memory list of lines. Your edits change the buffer, not the file. {key::}{key:w} (write) flushes the buffer to disk; until then, the on-disk file is unchanged.\n\nVim also creates a *swapfile* (`.<filename>.swp`) next to the buffer's file. The swapfile is a periodic snapshot of unsaved changes; if Vim or your machine crashes, the swapfile lets the next `nvim <file>` invocation recover. This is also what causes the \"swap file already exists\" prompt — usually Vim was killed without exiting cleanly, and the swap is still on disk.\n\nThe *undofile* (separate from the swap, controlled by `'undofile'`) persists the undo *tree* across sessions: open a file tomorrow and {key:u} can still walk back through today's edits.\n\nQuitting with {key:Z}{key:Z} (or {key::}{key:x}) writes the buffer if it's modified and exits. Quitting with {key:Z}{key:Q} (or {key::}{key:q}{key:!}) deletes the swapfile and exits without writing — your unsaved buffer changes are gone, but the on-disk file is intact (it never got written this session)."
+      "title": "Buffers, Files, and What `:w` Actually Does",
+      "text": "When you open a file, Vim copies it into memory as a *buffer* — an in-memory list of lines. Your edits change the buffer, not the file. `:w` (write) flushes the buffer to disk; until then, the on-disk file is unchanged.\n\nVim also creates a *swapfile* (`.<filename>.swp`) next to the buffer's file. The swapfile is a periodic snapshot of unsaved changes; if Vim or your machine crashes, the swapfile lets the next `nvim <file>` invocation recover. This is also what causes the \"swap file already exists\" prompt — usually Vim was killed without exiting cleanly, and the swap is still on disk.\n\nThe *undofile* (separate from the swap, controlled by `'undofile'`) persists the undo *tree* across sessions: open a file tomorrow and {key:u} can still walk back through today's edits.\n\nQuitting with {key:Z}{key:Z} (or `:x`) writes the buffer if it's modified and exits. Quitting with {key:Z}{key:Q} (or `:q!`) deletes the swapfile and exits without writing — your unsaved buffer changes are gone, but the on-disk file is intact (it never got written this session)."
     },
     {
       "type": "internals",
       "title": "Multiple Files",
-      "text": "Vim can hold many buffers at once. {key::}{key:e} {file} opens *another* file in a new buffer, leaving the previous one in memory. {key::}{key:l}{key:s} lists all loaded buffers. {key::}{key:b} {n} switches to buffer N.\n\nThis matters for quitting: {key::}{key:q} closes the current *window*; if other windows or buffers are open, Vim is still running. {key::}{key:q}{key:a} (quit-all) closes everything. {key::}{key:w}{key:q}{key:a} writes-all-then-quits-all. If you've ever pressed {key::}{key:q} expecting Vim to exit and gotten \"E37: No write since last change\" or seen it switch to another buffer instead — it's because the buffer/window distinction matters even at this level.\n\nFull treatment in `windows.buffers`."
+      "text": "Vim can hold many buffers at once. `:e` {file} opens *another* file in a new buffer, leaving the previous one in memory. `:ls` lists all loaded buffers. `:b` {n} switches to buffer N.\n\nThis matters for quitting: `:q` closes the current *window*; if other windows or buffers are open, Vim is still running. `:qa` (quit-all) closes everything. `:wqa` writes-all-then-quits-all. If you've ever pressed `:q` expecting Vim to exit and gotten \"E37: No write since last change\" or seen it switch to another buffer instead — it's because the buffer/window distinction matters even at this level.\n\nFull treatment in `windows.buffers`."
     },
     {
       "type": "example",
@@ -242,13 +242,13 @@
     {
       "type": "internals",
       "audience": "book",
-      "title": "Why It's Spelled :w, :q, :wq",
-      "text": "The colon-prefixed commands are not Vim's invention. They are *ex* commands — Bill Joy's line editor from 1976 — that `vi` inherited and that Vim/Neovim still implement faithfully. Ex itself was an extension of *ed*, Ken Thompson's 1969 line editor.\n\nIn ex, you addressed lines with line numbers and ran commands on them: `1,$s/foo/bar/g` (\"on lines 1 to last, substitute foo with bar globally\"). The single-letter command names — `w` for write, `q` for quit, `s` for substitute, `d` for delete, `y` for yank — were chosen for terseness, because users were typing on slow serial lines where every character cost real time.\n\nThis is why colon commands feel like a different language inside Vim: they *are* a different language, descended from a different lineage. The {key::} keystroke is a gear-shift. To the left of the colon you are speaking visual-mode `vi`; to the right, you are speaking ex. Both languages compose: {key::}{key:w} writes, {key::}{key:5}{key:,}{key:1}{key:0}{key:w} writes lines 5–10 to a file, {key::}{key:%}{key:s}{key:/}{key:foo}{key:/}{key:bar}{key:/}{key:g} runs an ex substitution on the whole buffer."
+      "title": "Why It's Spelled `:w`, `:q`, `:wq`",
+      "text": "The colon-prefixed commands are not Vim's invention. They are *ex* commands — Bill Joy's line editor from 1976 — that `vi` inherited and that Vim/Neovim still implement faithfully. Ex itself was an extension of *ed*, Ken Thompson's 1969 line editor.\n\nIn ex, you addressed lines with line numbers and ran commands on them: `1,$s/foo/bar/g` (\"on lines 1 to last, substitute foo with bar globally\"). The single-letter command names — `w` for write, `q` for quit, `s` for substitute, `d` for delete, `y` for yank — were chosen for terseness, because users were typing on slow serial lines where every character cost real time.\n\nThis is why colon commands feel like a different language inside Vim: they *are* a different language, descended from a different lineage. The {key::} keystroke is a gear-shift. To the left of the colon you are speaking visual-mode `vi`; to the right, you are speaking ex. Both languages compose: `:w` writes, `:5,10w` writes lines 5–10 to a file, `:%s/foo/bar/g` runs an ex substitution on the whole buffer."
     },
     {
       "type": "internals",
       "title": "Buffers carry a dirty bit",
-      "text": "Saving and quitting aren't symmetric. The buffer carries a `modified` flag that flips on the first edit and clears on a successful write. {key::q} consults that flag and refuses to exit (E37) unless you force it with {key:!}; {key::x} is a conditional `write-then-quit` that skips the write when the flag is already clear. {key:Z}{key:Z} is the same conditional path as {key::x}; {key:Z}{key:Q} is the unconditional discard path of {key::q}{key:!}. Internally these are four code paths, not four shortcuts."
+      "text": "Saving and quitting aren't symmetric. The buffer carries a `modified` flag that flips on the first edit and clears on a successful write. `:q` consults that flag and refuses to exit (E37) unless you force it with {key:!}; `:x` is a conditional `write-then-quit` that skips the write when the flag is already clear. {key:Z}{key:Z} is the same conditional path as `:x`; {key:Z}{key:Q} is the unconditional discard path of `:q!`. Internally these are four code paths, not four shortcuts."
     },
     {
       "type": "qr",

@@ -27,7 +27,10 @@ for:
   - `dw` (delete word) → <kbd>d</kbd><kbd>w</kbd>
   - `ci"` (change inside quotes) → <kbd>c</kbd><kbd>i</kbd><kbd>"</kbd>
   - `hjkl` → <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd>
-  - `gg`, `gU`, `:wq` → each character its own pill
+  - `gg`, `gU`, `ZZ`, `ZQ` → each character its own pill
+  - **Ex commands are *not* in this set** — see §2 below. Anything
+    starting with `:` (the line that enters command-line mode and types
+    something) is a monospace command, not a string of pills.
 - **Listed sets of keys.** Even when prose says "the keys h, j, k, l,"
   each one gets a pill. *Never* run `hjkl` together as plaintext.
 - **Modifier chords.** A modifier held with another key is one
@@ -49,12 +52,22 @@ Use `\code{...}` / `<code>...</code>` / Markdown backticks for anything
 that is *not* "press this key" but *is* a literal string of characters
 the reader will type, see, or refer to:
 
-- **Ex commands**, including abbreviated forms.
-  - `:set hlsearch`, `:nohlsearch`, `:noh`, `:wq`, `:%s/foo/bar/g`,
-    `:e file.txt`. Even though `:noh` looks like a "key sequence", it
-    is an *abbreviation* for `:nohlsearch` — it spells something. That
-    makes it a command, not a series of key presses, so it goes in
-    monospace, not boxed.
+- **Ex commands**, including abbreviated forms. **Always** monospace,
+  **never** rendered as a series of `{key::}{key:X}...` pills. The
+  reason: an ex command spells *something* — it has a name, often an
+  abbreviation of a longer name (`:noh` ↔ `:nohlsearch`) — so it
+  identifies a command rather than directing a sequence of presses.
+  - ✅ `` `:set hlsearch` ``, `` `:nohlsearch` ``, `` `:noh` ``,
+    `` `:wq` ``, `` `:q!` ``, `` `:x` ``, `` `:%s/foo/bar/g` ``,
+    `` `:e file.txt` ``.
+  - ❌ `{key::}{key:w}{key:q}`, `{key::}{key:q}{key:!}` — splits an
+    ex command into pills, contradicting the rule above. Use the
+    backtick form.
+  - The bare `:` *alone*, before any command letters are typed, is a
+    key press (transition into command-line mode). When the prose is
+    "press `:` to open the command line" with no command following,
+    it can be a pill: `{key::}`. Once command letters follow, the
+    whole thing is monospace.
 - **Operator/motion placeholders.** When describing the grammar
   generically, write the leading typed key(s) as **pills** and the
   placeholder (in braces) as plain prose right next to it — no
@@ -305,3 +318,50 @@ clutter the page when the text already differs by font.
 
 Keep monospace purely typographic: same color as body text, no fill,
 no border. The font shift alone is enough signal.
+
+---
+
+## Prose grammar
+
+The book is read for pleasure as well as reference; the prose has to
+sound right. Two rules that often slip in agent-written paragraphs:
+
+- **No trailing prepositions** in narrative sentences. Rework to put
+  the preposition before its object.
+  - ✅ "The verb-and-motion grammar from which the rest of the book
+    is just remixes."
+  - ❌ "The verb-and-motion grammar that the rest of the book is just
+    remixes of."
+  Acceptable trailing prepositions are fine when removing them would
+  make the sentence stilted (Churchill's "up with which I will not
+  put" rule) — apply judgement, not dogma.
+
+- **Em dashes**, not hyphens. The source uses ` -- ` (two ASCII
+  hyphens with spaces) which the renderer turns into a real em dash.
+  Don't leave `---` (three) or a single `-` in the middle of a
+  sentence where you meant an em dash.
+
+---
+
+## Author/agent checklist
+
+When editing or generating any prose, table cell, heading, caption,
+title, summary, or example anywhere in `content/parts/`,
+`content/lib/theses.py`, or LaTeX rendered into the book:
+
+1. Are all key presses written as pills (`{key:X}` in JSON, `\key{X}`
+   in LaTeX)? **No bare `i`, `a`, `I`, `A`, `o`, `O`, `hjkl`, `dd`,
+   `gg`, `ZZ`, `ZQ`, etc.** in narrative prose.
+2. Are all ex commands written as backticked monospace
+   (`` `:wq` ``)? **No `{key::}{key:w}{key:q}` pill chains.**
+3. Are mode names in lowercase italic with punctuation inside the
+   span (`*insert mode.*`)?
+4. Are option names, file paths, unix command names, and family
+   names in backticks (`` `hlsearch` ``, `` `~/.vimrc` ``, `` `nvim` ``,
+   `` `g` family ``)?
+5. Do titles and headings use `{key:...}` markup where they reference
+   keys?
+6. No trailing prepositions in narrative sentences.
+
+If you can't tick every box, do not commit the change. The style
+guide is the contract; this checklist is how you verify it.

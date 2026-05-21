@@ -5,9 +5,9 @@
   "title": "Normal (`:norm`)",
   "subtitle": "Run Normal-mode keystrokes from Ex.",
   "part": "ex-commands",
-  "summary": ":norm runs a sequence of Normal-mode keystrokes on each line in a range. Combine with :g for surgical bulk edits — anything you can do with keys, you can do over thousands of lines.",
+  "summary": "`:norm` runs a sequence of Normal-mode keystrokes on each line in a range. Combine with `:g` for surgical bulk edits — anything you can do with keys, you can do over thousands of lines.",
   "keys": [
-    ":norm"
+    "`:norm`"
   ],
   "lessons": [
     426,
@@ -26,7 +26,7 @@
     },
     {
       "type": "prose",
-      "text": "{key::}{key:n}{key:o}{key:r}{key:m} (or `:normal`) runs a string of Normal-mode keys on every line in the range. It's the bridge between *Ex's bulk processing* and *Normal mode's surgical edits*."
+      "text": "`:norm` (or `:normal`) runs a string of Normal-mode keys on every line in the range. It's the bridge between *Ex's bulk processing* and *Normal mode's surgical edits*."
     },
     {
       "type": "table",
@@ -59,8 +59,8 @@
     },
     {
       "type": "internals",
-      "title": "Why It Pairs So Well With :g",
-      "text": "{key::}{key:g}/pattern/{key::}{key:n}{key:o}{key:r}{key:m} {keys} = \"on every line matching pattern, execute these Normal-mode keys.\"\n\nThe {keys} can be **anything** you'd type in *normal mode*: motions, operators, text-object combos, even macro invocations ({key:@}{reg}). It's faster to read than a substitute regex with backreferences, and infinitely more powerful for non-trivial transforms.\n\n**The `!` matters here too.** `:norm!` ignores user-defined mappings — important if you've remapped {key:I} or {key:o} and want the *built-in* behavior. As a rule, scripts always use `:norm!`."
+      "title": "Why It Pairs So Well With `:g`",
+      "text": "`:g`/pattern/`:norm` {keys} = \"on every line matching pattern, execute these Normal-mode keys.\"\n\nThe {keys} can be **anything** you'd type in *normal mode*: motions, operators, text-object combos, even macro invocations ({key:@}{reg}). It's faster to read than a substitute regex with backreferences, and infinitely more powerful for non-trivial transforms.\n\n**The `!` matters here too.** `:norm!` ignores user-defined mappings — important if you've remapped {key:I} or {key:o} and want the *built-in* behavior. As a rule, scripts always use `:norm!`."
     },
     {
       "type": "tip",

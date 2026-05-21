@@ -93,12 +93,12 @@
     {
       "type": "internals",
       "title": "Search Is a Motion",
-      "text": "{key:/}{pattern}{key:Enter} is a *motion*: it produces a (start, end) pair just like {key:w} or {key:G}. So every operator pairs with it.\n\n  • {key:d}{key:/}{key:E}{key:N}{key:D}{key:Enter} — delete from here through the next `END`.\n  • {key:c}{key:/}{key:fn}{key:Enter} — change from here to the next `fn`.\n  • {key:y}{key:?}{key:def}{key:Enter} — yank from here back to the previous `def`.\n\nSearch is also a *jump* — it pushes the previous position to the jumplist, so {key:Ctrl-O} returns you. And the pattern itself is stored in the **`/` register** ({key:\"}{key:/}), reusable in {key::}{key:s} commands."
+      "text": "{key:/}{pattern}{key:Enter} is a *motion*: it produces a (start, end) pair just like {key:w} or {key:G}. So every operator pairs with it.\n\n  • {key:d}{key:/}{key:E}{key:N}{key:D}{key:Enter} — delete from here through the next `END`.\n  • {key:c}{key:/}{key:fn}{key:Enter} — change from here to the next `fn`.\n  • {key:y}{key:?}{key:def}{key:Enter} — yank from here back to the previous `def`.\n\nSearch is also a *jump* — it pushes the previous position to the jumplist, so {key:Ctrl-O} returns you. And the pattern itself is stored in the **`/` register** ({key:\"}{key:/}), reusable in `:s` commands."
     },
     {
       "type": "internals",
       "title": "Settings That Change How Search Feels",
-      "text": "  • `'incsearch'` — show matches as you type. On by default in Neovim.\n  • `'hlsearch'` — highlight all matches after Enter. {key::}{key:n}{key:o}{key:h}{key:Enter} clears the highlight without losing the search history.\n  • `'ignorecase'` — case-insensitive search.\n  • `'smartcase'` — combined with `ignorecase`, search is case-insensitive *unless* you typed a capital letter. The pragmatic default.\n  • `'wrapscan'` — when the search hits the end of file, wrap to the top. On by default; turn off if you want hard stops.\n\n(All five are Vim *options* set with `:set`; the option system gets a proper introduction in Part 17.)\n\nThe pattern syntax has four \"magic\" levels: `\\v` (very magic — most regex chars are special), default `\\m`, `\\M` (nomagic), `\\V` (very nomagic — almost everything literal). For complex patterns prefer `\\v`."
+      "text": "  • `'incsearch'` — show matches as you type. On by default in Neovim.\n  • `'hlsearch'` — highlight all matches after Enter. `:noh`{key:Enter} clears the highlight without losing the search history.\n  • `'ignorecase'` — case-insensitive search.\n  • `'smartcase'` — combined with `ignorecase`, search is case-insensitive *unless* you typed a capital letter. The pragmatic default.\n  • `'wrapscan'` — when the search hits the end of file, wrap to the top. On by default; turn off if you want hard stops.\n\n(All five are Vim *options* set with `:set`; the option system gets a proper introduction in Part 17.)\n\nThe pattern syntax has four \"magic\" levels: `\\v` (very magic — most regex chars are special), default `\\m`, `\\M` (nomagic), `\\V` (very nomagic — almost everything literal). For complex patterns prefer `\\v`."
     },
     {
       "type": "tip",
@@ -140,7 +140,7 @@
           "Repeat last search backward"
         ],
         [
-          "{key::}{key:n}{key:o}{key:h}",
+          "`:noh`",
           "Clear highlights"
         ],
         [

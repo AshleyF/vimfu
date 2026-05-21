@@ -1171,7 +1171,7 @@ def render_topic_body(t, index, examples, *, thesis: str | None = None) -> str:
     short_title = f"\\texorpdfstring{{{toc_title}}}{{{pdf_title}}}"
     out.append(f"\\chapter[{short_title}]{{{body_title}}}\\label{{topic:{tex_escape(tid)}}}")
     if thesis:
-        out.append("\\partthesis{" + thesis + "}")
+        out.append("\\partthesis{" + render_inline(thesis, index=index) + "}")
     # Index every key the topic claims to be about (keys[] array on the JSON
     # frontmatter). We deliberately do NOT index the chapter title itself --
     # that would just duplicate the table of contents. The index is for

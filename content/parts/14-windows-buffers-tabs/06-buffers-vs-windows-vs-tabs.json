@@ -32,7 +32,7 @@
     {
       "type": "internals",
       "title": "Why This Matters",
-      "text": "Once you treat *buffers* as your unit of work and *windows*/*tabs* as transient layout decisions:\n\n  • You stop trying to \"close the tab\" and start \"closing the window, the file's still there.\"\n  • You can have 50 buffers loaded with no UI clutter — they're invisible until you {key::}{key:b} to one.\n  • You arrange splits the way that helps your *current task*, not your *file inventory*.\n  • You stop fighting Vim's defaults.\n\nYour mental model: buffers are the data; windows are the UI; tabs are the saved UI layouts. Most professional Vim users live in 1–3 windows and zero tabs, switching between many buffers."
+      "text": "Once you treat *buffers* as your unit of work and *windows*/*tabs* as transient layout decisions:\n\n  • You stop trying to \"close the tab\" and start \"closing the window, the file's still there.\"\n  • You can have 50 buffers loaded with no UI clutter — they're invisible until you `:b` to one.\n  • You arrange splits the way that helps your *current task*, not your *file inventory*.\n  • You stop fighting Vim's defaults.\n\nYour mental model: buffers are the data; windows are the UI; tabs are the saved UI layouts. Most professional Vim users live in 1–3 windows and zero tabs, switching between many buffers."
     },
     {
       "type": "table",
@@ -45,24 +45,24 @@
         [
           "Buffer",
           "File / tab",
-          "{key::}{key:l}{key:s}, {key::}{key:b}, {key::}{key:e}, {key::}{key:b}{key:d}"
+          "`:ls`, `:b`, `:e`, `:bd`"
         ],
         [
           "Window",
           "Pane / split",
-          "{key:Ctrl-W} family, {key::}{key:s}{key:p}, {key::}{key:v}{key:s}"
+          "{key:Ctrl-W} family, `:sp`, `:vs`"
         ],
         [
           "Tab",
           "Workspace / project",
-          "{key::}{key:t}{key:a}{key:b}{key:n}{key:e}{key:w}, {key:g}{key:t}, {key:g}{key:T}"
+          "`:tabnew`, {key:g}{key:t}, {key:g}{key:T}"
         ]
       ]
     },
     {
       "type": "internals",
       "title": "Three nested containers, not three competing concepts",
-      "text": "The data model is strictly nested: tabs contain windows, windows show buffers, buffers hold lines. A tab is a window-layout container; it doesn't own text. A window is a viewport into a buffer; it doesn't own text either. Only the buffer owns text. This explains every navigation command: {key::}{key:b}-prefixed jumps switch buffer in the current window; {key:Ctrl-W} jumps switch window in the current tab; {key:g}{key:t} jumps switch tab."
+      "text": "The data model is strictly nested: tabs contain windows, windows show buffers, buffers hold lines. A tab is a window-layout container; it doesn't own text. A window is a viewport into a buffer; it doesn't own text either. Only the buffer owns text. This explains every navigation command: `:b`-prefixed jumps switch buffer in the current window; {key:Ctrl-W} jumps switch window in the current tab; {key:g}{key:t} jumps switch tab."
     },
     {
       "type": "internals",

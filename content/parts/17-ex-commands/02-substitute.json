@@ -2,12 +2,12 @@
   "format": "vimfu-content-topic",
   "version": 1,
   "id": "ex.substitute",
-  "title": "Substitute ({key::s})",
+  "title": "Substitute (`:s`)",
   "subtitle": "The most powerful single command in Vim.",
   "part": "ex-commands",
   "summary": ":s/pattern/replacement/flags is the workhorse for text transformation. Combine with ranges (% for whole file) and flags (g for global, c for confirm, i for case-insensitive).",
   "keys": [
-    ":s",
+    "`:s`",
     ":%s"
   ],
   "lessons": [
@@ -27,7 +27,7 @@
     },
     {
       "type": "prose",
-      "text": "{key::}{key:s} is Vim's find-and-replace. The full form is:\n\n```\n:[range]s/pattern/replacement/flags\n```\n\nMaster it and you can rewrite a file in one keystroke."
+      "text": "`:s` is Vim's find-and-replace. The full form is:\n\n```\n:[range]s/pattern/replacement/flags\n```\n\nMaster it and you can rewrite a file in one keystroke."
     },
     {
       "type": "table",
@@ -108,7 +108,7 @@
         ],
         [
           "&",
-          "Reuse flags from last :s"
+          "Reuse flags from last `:s`"
         ]
       ]
     },
@@ -160,12 +160,12 @@
     },
     {
       "type": "internals",
-      "title": "What :s Actually Does",
-      "text": "`:s` runs the regex engine over each line in `[range]` exactly once (unless `g` flag), substituting matches in place. The buffer's lines are rewritten line-by-line; the cursor lands on the last line changed.\n\n  • Without `[range]`, the range is the **current line only** (this trips up beginners — they expect file-wide and get one line).\n  • The `%` range is shorthand for `1,$` (whole file).\n  • The `c` flag enters an interactive prompt — `y` = yes, `n` = no, `a` = all (rest), `q` = quit, `l` = last (do this then quit).\n\n**Re-running:** {key::}{key:&} repeats the last substitute on the current line. {key::}{key:%}{key:&} repeats on the whole file. {key:&} in *normal mode* = same as {key::}{key:&}."
+      "title": "What `:s` Actually Does",
+      "text": "`:s` runs the regex engine over each line in `[range]` exactly once (unless `g` flag), substituting matches in place. The buffer's lines are rewritten line-by-line; the cursor lands on the last line changed.\n\n  • Without `[range]`, the range is the **current line only** (this trips up beginners — they expect file-wide and get one line).\n  • The `%` range is shorthand for `1,$` (whole file).\n  • The `c` flag enters an interactive prompt — `y` = yes, `n` = no, `a` = all (rest), `q` = quit, `l` = last (do this then quit).\n\n**Re-running:** `:&` repeats the last substitute on the current line. `:%&` repeats on the whole file. {key:&} in *normal mode* = same as `:&`."
     },
     {
       "type": "tip",
-      "text": "{key::}{key:%}{key:s}{key://}{key:bar}{key:/}{key:g} reuses the last search pattern as the substitute pattern. Pair with {key:*} (search word under cursor) for a 5-keystroke replace-all."
+      "text": "`:%s//bar/g` reuses the last search pattern as the substitute pattern. Pair with {key:*} (search word under cursor) for a 5-keystroke replace-all."
     },
     {
       "type": "example",
@@ -174,7 +174,7 @@
     {
       "type": "internals",
       "title": "Substitute is search-pattern + replacement-template + flags",
-      "text": "{key::}{key:s} composes three subsystems: the regex engine (same one driving {key:/}); a small templating layer that expands `\\0`, `\\1`–`\\9`, `&`, `~`, `\\u`, `\\U`, `\\l`, `\\L`, `\\E`; and a flag-driven loop controller (`g`, `c`, `i`, `e`, `n`, `p`, `&`). Empty pattern reuses the last search — that's the global search-pattern slot again."
+      "text": "`:s` composes three subsystems: the regex engine (same one driving {key:/}); a small templating layer that expands `\\0`, `\\1`–`\\9`, `&`, `~`, `\\u`, `\\U`, `\\l`, `\\L`, `\\E`; and a flag-driven loop controller (`g`, `c`, `i`, `e`, `n`, `p`, `&`). Empty pattern reuses the last search — that's the global search-pattern slot again."
     },
     {
       "type": "qr",
