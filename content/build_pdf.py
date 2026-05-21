@@ -41,6 +41,7 @@ LATEX_DIR = ROOT / "output" / "latex"
 BOOK_TEX = LATEX_DIR / "book.tex"
 SCREENSHOTS_DIR = ROOT / "output" / "html" / "screenshots"
 QRCODES_DIR = ROOT / "output" / "qrcodes"
+DIAGRAMS_DIR = ROOT.parent / "book" / "diagrams"
 
 
 def have(tool: str) -> bool:
@@ -82,6 +83,8 @@ def convert_svgs() -> int:
         svgs += [p for p in SCREENSHOTS_DIR.rglob("*.svg") if p.name.endswith(".bw.svg")]
     if QRCODES_DIR.exists():
         svgs += list(QRCODES_DIR.rglob("*.svg"))
+    if DIAGRAMS_DIR.exists():
+        svgs += list(DIAGRAMS_DIR.rglob("*.svg"))
 
     if not svgs:
         print("[2/3] No SVGs to convert.")

@@ -123,9 +123,20 @@
       "label": "Operator d → operator-pending → text object iw → execute"
     },
     {
+      "type": "heading",
+      "level": 2,
+      "text": "The State Machine, Drawn"
+    },
+    {
+      "type": "figure",
+      "path": "book/diagrams/state-machine.svg",
+      "width": "0.95",
+      "caption": "Vim's seven modes and the transitions between them. *Normal mode* is the hub: every other mode is one keystroke away, and {key:Esc} always returns. *Visual mode* has three sub-modes — char, line, block — switched between by pressing {key:v} / {key:V} / {key:Ctrl-V} again while already in *visual mode*. *Terminal mode* is the one place {key:Esc} doesn't escape: use {key:Ctrl-\\}{key:Ctrl-N}."
+    },
+    {
       "type": "internals",
-      "title": "The State Machine, Drawn",
-      "text": "The transition graph is small enough to memorize. From Normal you can reach Insert ({key:i}, {key:a}, {key:o}, …), Visual ({key:v}, {key:V}, {key:Ctrl-V}), Replace ({key:R}), Command-line ({key::}, {key:/}, {key:?}), Operator-pending (any operator), or Terminal (`:term`). From everywhere else, {key:Esc} returns you to Normal.\n\nVisual has three sub-modes (char, line, block); pressing {key:v}/{key:V}/{key:Ctrl-V} while already in Visual switches between them. Insert has a sub-state called *Replace-Insert* (toggle with {key:Insert}) — you almost never want it.\n\nThe deepest transition is {key:Ctrl-O} from *insert mode*: it pops you into Normal *for exactly one command*, then automatically returns. So {key:Ctrl-O}{key:dd} from *insert mode* deletes the current line and continues typing where the new cursor lands."
+      "title": "The Ctrl-O Trick",
+      "text": "The most useful transition not obvious from the diagram is {key:Ctrl-O} from *insert mode*: it pops you into *normal mode* for *exactly one command*, then automatically returns. So {key:Ctrl-O}{key:d}{key:d} from *insert mode* deletes the current line and continues typing where the new cursor lands -- without the round trip of Esc, then {key:d}{key:d}, then {key:i}."
     },
     {
       "type": "internals",
