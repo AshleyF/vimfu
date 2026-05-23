@@ -5,7 +5,7 @@
   "title": "Vim Configuration",
   "subtitle": "vimrc, runtime, plugins — where settings live.",
   "part": "advanced",
-  "summary": "Vim reads ~/.vimrc (or ~/.config/nvim/init.vim for Neovim) on startup. Plugins go in plugin folders inside 'runtimepath'. Filetype plugins, syntax files, indent files all auto-load by name.",
+  "summary": "Vim reads ~/.vimrc (or ~/.config/nvim/init.vim for Neovim) on startup. Plugins go in plugin folders inside `runtimepath`. Filetype plugins, syntax files, indent files all auto-load by name.",
   "keys": [
     "`:source`",
     "`:scriptnames`"
@@ -64,7 +64,7 @@
     },
     {
       "type": "prose",
-      "text": "`'runtimepath'` is a comma-separated list of directories Vim searches for plugins, syntax files, colorschemes, etc. By default it includes `~/.vim` and `$VIMRUNTIME`."
+      "text": "`runtimepath` is a comma-separated list of directories Vim searches for plugins, syntax files, colorschemes, etc. By default it includes `~/.vim` and `$VIMRUNTIME`."
     },
     {
       "type": "table",
@@ -106,7 +106,7 @@
     {
       "type": "internals",
       "title": "Debugging Mystery Behavior",
-      "text": "When Vim does something unexpected:\n\n  • `:scriptnames` — list every script that's been loaded, in load order. Find out what set the option.\n  • `:verbose set X?` — show value of option X *and* the file where it was last assigned. Top tool.\n  • `:verbose imap <C-J>` — show what set a particular mapping (great for figuring out which plugin stole your binding).\n  • `vim --noplugin` or `vim -u NONE` — start Vim without any vimrc or plugins. If the bug disappears, it's in your config.\n\n**Plugin managers** (vim-plug, packer, lazy.nvim) all work by adding plugin directories to `'runtimepath'`. The mechanism is the same; only the convenience wrapper differs."
+      "text": "When Vim does something unexpected:\n\n  • `:scriptnames` — list every script that's been loaded, in load order. Find out what set the option.\n  • `:verbose set X?` — show value of option X *and* the file where it was last assigned. Top tool.\n  • `:verbose imap <C-J>` — show what set a particular mapping (great for figuring out which plugin stole your binding).\n  • `vim --noplugin` or `vim -u NONE` — start Vim without any vimrc or plugins. If the bug disappears, it's in your config.\n\n**Plugin managers** (vim-plug, packer, lazy.nvim) all work by adding plugin directories to `runtimepath`. The mechanism is the same; only the convenience wrapper differs."
     },
     {
       "type": "tip",
@@ -115,7 +115,7 @@
     {
       "type": "internals",
       "title": "Options partition into rendering, editing, and behavior",
-      "text": "Vim's option set is not flat. Rendering options (`'number'`, `'wrap'`, `'cursorline'`) only affect what the window draws. Editing options (`'shiftwidth'`, `'expandtab'`, `'autoindent'`) feed into the operator/insert layer. Behavior options (`'ignorecase'`, `'hlsearch'`, `'incsearch'`) configure subsystems like search. The `:set` command is one interface, but it dispatches across three subsystems with different reload semantics."
+      "text": "Vim's option set is not flat. Rendering options (`number`, `wrap`, `cursorline`) only affect what the window draws. Editing options (`shiftwidth`, `expandtab`, `autoindent`) feed into the operator/insert layer. Behavior options (`ignorecase`, `hlsearch`, `incsearch`) configure subsystems like search. The `:set` command is one interface, but it dispatches across three subsystems with different reload semantics."
     },
     {
       "type": "qr",

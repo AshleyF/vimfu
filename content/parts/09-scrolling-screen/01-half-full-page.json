@@ -83,7 +83,7 @@
     {
       "type": "internals",
       "title": "These Move the Cursor *and* the Viewport",
-      "text": "Vim doesn't have a separate scroll position from the cursor. The viewport's top line is just `getline(1) … (top + winheight - 1)`. When you scroll, both the *visible top line* and the *cursor* move. The two stay in step so the cursor never goes off-screen.\n\nThe distance for {key:Ctrl-D}/{key:Ctrl-U} comes from the `'scroll'` option (default: half the window height). You can change it with `:set scroll=10` or with a count: {key:1}{key:0}{key:Ctrl-D} sets `'scroll'` to 10 *and* scrolls 10. So the count is sticky for next time.\n\n{key:Ctrl-F}/{key:Ctrl-B} are full page. They're slightly less smooth than the half-page ones because the cursor and visible region jump farther in one keystroke."
+      "text": "Vim doesn't have a separate scroll position from the cursor. The viewport's top line is just `getline(1) … (top + winheight - 1)`. When you scroll, both the *visible top line* and the *cursor* move. The two stay in step so the cursor never goes off-screen.\n\nThe distance for {key:Ctrl-D}/{key:Ctrl-U} comes from the `scroll` option (default: half the window height). You can change it with `:set scroll=10` or with a count: {key:1}{key:0}{key:Ctrl-D} sets `scroll` to 10 *and* scrolls 10. So the count is sticky for next time.\n\n{key:Ctrl-F}/{key:Ctrl-B} are full page. They're slightly less smooth than the half-page ones because the cursor and visible region jump farther in one keystroke."
     },
     {
       "type": "tip",
@@ -106,7 +106,7 @@
       "rows": [
         [
           "{key:Ctrl-D}",
-          "Down half a screen (and update `'scroll'`)"
+          "Down half a screen (and update `scroll`)"
         ],
         [
           "{key:Ctrl-U}",

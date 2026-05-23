@@ -5,7 +5,7 @@
   "title": "The Modes",
   "subtitle": "A small finite state machine you carry in your head",
   "part": "foundations",
-  "summary": "Normal, Insert, Visual, Replace, Command-line, Operator-pending, Terminal. What each is for and how to move between them.",
+  "summary": "*Normal*, *insert*, *visual*, *replace*, *command-line*, *operator-pending*, *terminal*. What each is for and how to move between them.",
   "keys": [
     "Esc",
     "Ctrl-[",
@@ -37,7 +37,7 @@
     },
     {
       "type": "prose",
-      "text": "Vim has seven modes. You will spend essentially all your time in two of them — Normal and Insert. The other five matter for specific jobs. Knowing they exist, and how the transitions work, is more important than memorizing every command in each."
+      "text": "Vim has seven modes. You will spend essentially all your time in two of them — *normal* and *insert*. The other five matter for specific jobs. Knowing they exist, and how the transitions work, is more important than memorizing every command in each."
     },
     {
       "type": "table",
@@ -48,37 +48,37 @@
       ],
       "rows": [
         [
-          "Normal",
+          "*normal*",
           "*(empty)*",
           "The default. Keys are commands."
         ],
         [
-          "Insert",
+          "*insert*",
           "`-- INSERT --`",
           "Keys type text."
         ],
         [
-          "Visual",
+          "*visual*",
           "`-- VISUAL --` / `-- V-LINE --` / `-- V-BLOCK --`",
           "Select text, then act on it."
         ],
         [
-          "Replace",
+          "*replace*",
           "`-- REPLACE --`",
           "Overtype existing characters."
         ],
         [
-          "Command-line",
+          "*command-line*",
           "shows typed `:` / `/` / `?`",
           "Run an Ex command or search."
         ],
         [
-          "Operator-pending",
+          "*operator-pending*",
           "*(empty, but last key was an operator)*",
           "Waiting for a motion or text object."
         ],
         [
-          "Terminal",
+          "*terminal*",
           "`-- TERMINAL --`",
           "An interactive shell inside Vim."
         ]
@@ -91,7 +91,7 @@
     },
     {
       "type": "prose",
-      "text": "From any mode except Normal, {key:Esc} returns to Normal. From Insert and Visual, {key:Ctrl-[} does the same. Build the {key:Esc} reflex: after every thought, escape."
+      "text": "From any mode except *normal mode*, {key:Esc} returns to *normal mode*. From *insert* and *visual mode*, {key:Ctrl-[} does the same. Build the {key:Esc} reflex: after every thought, escape."
     },
     {
       "type": "prose",
@@ -111,7 +111,7 @@
     },
     {
       "type": "prose",
-      "text": "When you press an operator like {key:d}, {key:c}, {key:y}, or {key:>}, Vim enters *operator-pending mode* and waits for a motion or text object. You're in *normal mode* no longer — keys do different things in this state. {key:i} no longer enters Insert; it begins a text object (inner ...). {key:a} no longer appends; it begins around-text-objects. The operator and motion together form a single change, which is what {key:.} repeats."
+      "text": "When you press an operator like {key:d}, {key:c}, {key:y}, or {key:>}, Vim enters *operator-pending mode* and waits for a motion or text object. You're in *normal mode* no longer — keys do different things in this state. {key:i} no longer enters *insert mode*; it begins a text object (inner ...). {key:a} no longer appends; it begins around-text-objects. The operator and motion together form a single change, which is what {key:.} repeats."
     },
     {
       "type": "keys",
@@ -141,7 +141,7 @@
     {
       "type": "internals",
       "title": "Per-Mode State",
-      "text": "Each mode carries its own state. *Normal mode* tracks the count being typed ({key:5}{key:j} is two keystrokes; the {key:5} is buffered). *Insert mode* buffers the inserted text so it can be repeated with {key:.} and so {key:Ctrl-O} can briefly leave and return. *Visual mode* tracks the *anchor* (where you started) and the *cursor* (where you are now); the selection is the range between them, recomputed every keystroke. Operator-pending tracks which operator is pending, plus its count and any selected register.\n\nWhen the mode ends, this state is either committed (Insert → Normal commits the typed text and the count's repetitions; operator-pending → Normal applies the operator to the motion's range) or discarded (Visual → Normal without an operator just throws the selection away, though {key:gv} can recover it from the {key:'<} / {key:'>} marks)."
+      "text": "Each mode carries its own state. *Normal mode* tracks the count being typed ({key:5}{key:j} is two keystrokes; the {key:5} is buffered). *Insert mode* buffers the inserted text so it can be repeated with {key:.} and so {key:Ctrl-O} can briefly leave and return. *Visual mode* tracks the *anchor* (where you started) and the *cursor* (where you are now); the selection is the range between them, recomputed every keystroke. *Operator-pending mode* tracks which operator is pending, plus its count and any selected register.\n\nWhen the mode ends, this state is either committed (*insert* → *normal* commits the typed text and the count's repetitions; *operator-pending* → *normal* applies the operator to the motion's range) or discarded (*visual* → *normal* without an operator just throws the selection away, though {key:gv} can recover it from the {key:'<} / {key:'>} marks)."
     },
     {
       "type": "divider"
@@ -153,7 +153,7 @@
     },
     {
       "type": "prose",
-      "text": "When something surprises you in Vim — a key doesn't do what you expected — nine times out of ten you misjudged the current mode. \"I pressed {key:dd} and it just typed two d's\" → you were in Insert. \"I pressed {key:i} and a word disappeared\" → you were in operator-pending after {key:d}. The fix is always the same: press {key:Esc} (sometimes twice) and start over from Normal."
+      "text": "When something surprises you in Vim — a key doesn't do what you expected — nine times out of ten you misjudged the current mode. \"I pressed {key:dd} and it just typed two `d`s\" → you were in *insert mode*. \"I pressed {key:i} and a word disappeared\" → you were in *operator-pending mode* after {key:d}. The fix is always the same: press {key:Esc} (sometimes twice) and start over from *normal mode*."
     },
     {
       "type": "example",

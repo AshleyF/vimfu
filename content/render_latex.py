@@ -414,6 +414,11 @@ def _split_key_for_wrap(s: str) -> str:
         body = (s.replace(" ", "\u2423") if s else "\u2423")
         return f"\\key{{{tex_escape_inline_code(body)}}}"
     if len(words) > 1:
+        # If the spaces are part of a multi-word key name (e.g. "Caps
+        # Lock", "Num Lock", "Page Up"), render as a single pill.
+        joined = "".join(words)
+        if joined in _NAMED_KEYS:
+            return f"\\key{{{tex_escape_inline_code(s)}}}"
         pills: list[str] = []
         for w in words:
             if not w:
@@ -648,7 +653,15 @@ def _smart_quotes(s: str, *, prev_char: str = "") -> str:
             elif prev and prev.isalnum():
                 out.append("\u2019")
             elif at_word_boundary:
-                out.append("\u2018")
+                # An opening quote can't be immediately followed by
+                # whitespace, terminal punctuation, or end-of-string —
+                # in that case it's actually a closing quote that just
+                # happens to sit after a space (e.g. `'quick '`).
+                nxt2 = s[i + 1] if i + 1 < n else ""
+                if (not nxt2) or nxt2.isspace() or nxt2 in ".,;:!?)]}>":
+                    out.append("\u2019")
+                else:
+                    out.append("\u2018")
             else:
                 out.append("\u2019")
         else:
@@ -691,10 +704,24 @@ def render_inline(text: str, *, index, with_key_index: bool = True, plain_keys: 
                 out.append(f"\\texttt{{{tex_escape_inline_code(k)}}}{idx}")
             else:
                 out.append(f"{_split_key_for_wrap(k)}{idx}")
+            # Glue trailing punctuation to the pill so a line break can't
+            # separate them — \key{} ends with \allowbreak, which would
+            # otherwise let "{key:D}, on the other hand" wrap the comma
+            # alone onto the next line.
+            nxt = text[m.end():m.end() + 1]
+            if nxt in ",.:;!?":
+                out.append("\\nobreak{}")
             last_char = " "  # treat markup as a word boundary
         elif kind == "link":
             mm = _LINK_RE.match(raw)
             label, tid = mm.group(1), mm.group(2)
+            # If the markdown label is just a backticked internal slug
+            # matching the link target's topic id, replace it with that
+            # topic's real title — otherwise readers see opaque slugs
+            # like "basic-editing.replace-mode" in print.
+            stripped = label.strip("`")
+            if stripped == tid and tid in index:
+                label = index[tid].get("title", label)
             out.append(
                 f"{tex_escape(label)}~(p.~\\pageref{{topic:{tex_escape(tid)}}})"
             )
@@ -798,7 +825,7 @@ def render_block(b, *, index, examples) -> list[str]:
         if not ex:
             out.append(f"\\par\\textit{{[example not found: {tex_escape(str(ex_id))}]}}")
             return out
-        out.append("\\begin{example}{" + tex_escape(ex.get("title", ex_id)) + "}")
+        out.append("\\begin{example}{" + inl(ex.get("title", ex_id)) + "}")
         if ex.get("summary"):
             out.append("\\examplesummary{" + inl(ex["summary"]) + "}")
         for i, fr in enumerate(ex.get("frames", []), start=1):
@@ -810,13 +837,39 @@ def render_block(b, *, index, examples) -> list[str]:
             # step header. Strip that leading "<keys> —" (or em-dash variants)
             # so the head reads "Step N — {keys} — description" instead of
             # "Step N — {keys} — keys — description".
+            #
+            # Captions usually open with the keys as pill markup like
+            # "{key:i} — ...". We extract any leading {key:...} pills, join
+            # their inner names (ignoring whitespace), and compare against the
+            # normalized keys string. If they match, drop those pills plus the
+            # following separator.
             if keys and cap:
-                stripped = cap.lstrip()
-                for sep in (" \u2014 ", " \u2013 ", " - ", "\u2014", "\u2013", "-"):
-                    prefix = keys + sep
-                    if stripped.startswith(prefix):
-                        cap = stripped[len(prefix):].lstrip()
+                _pill_re = re.compile(r"^\{key:([^}]*)\}\s*")
+                rest = cap.lstrip()
+                extracted: list[str] = []
+                while True:
+                    m = _pill_re.match(rest)
+                    if not m:
                         break
+                    extracted.append(m.group(1))
+                    rest = rest[m.end():]
+                if extracted and "".join(extracted).replace(" ", "") == keys.replace(" ", ""):
+                    rest = rest.lstrip()
+                    for sep in (" \u2014 ", " \u2013 ", " - ", "\u2014 ", "\u2013 ", "- ",
+                                "\u2014", "\u2013", "-", ", "):
+                        if rest.startswith(sep):
+                            rest = rest[len(sep):].lstrip()
+                            break
+                    cap = rest
+                else:
+                    # Fall back to the old raw-string match for captions that
+                    # spell out the keys literally (no pill markup).
+                    stripped = cap.lstrip()
+                    for sep in (" \u2014 ", " \u2013 ", " - ", "\u2014", "\u2013", "-"):
+                        prefix = keys + sep
+                        if stripped.startswith(prefix):
+                            cap = stripped[len(prefix):].lstrip()
+                            break
             head_bits = [f"\\textbf{{Step {i}}}"]
             if keys:
                 head_bits.append(_split_key_for_wrap(keys))
@@ -881,6 +934,33 @@ def render_block(b, *, index, examples) -> list[str]:
                     "\\par\\textit{[missing figure: "
                     + tex_escape(raw_path) + "]}"
                 )
+
+    elif bt == "_keys_panel":
+        items = b.get("items", [])
+        kt_lines: list[str] = ["\\begin{keypanel}", "\\begin{keytable}"]
+        for item in items:
+            sequence = item.get("sequence", [])
+            label = item.get("label", "")
+            key_runs: list[str] = []
+            for step in sequence:
+                if isinstance(step, str):
+                    k = step
+                    note = ""
+                else:
+                    k = step.get("key", "")
+                    note = step.get("note", "")
+                if not k:
+                    continue
+                key_runs.append(_split_key_for_wrap(k) + _index_key_entry(k))
+                if note:
+                    # Per-step notes are rare in this path, but keep them
+                    # attached so we don't drop information.
+                    label = (label + " " if label else "") + inl(note)
+            run = "\\,".join(key_runs)
+            kt_lines.append(f"  {run} & {inl(label)} \\\\")
+        kt_lines.append("\\end{keytable}")
+        kt_lines.append("\\end{keypanel}")
+        out.append("\n".join(kt_lines))
 
     elif bt == "keys":
         label = b.get("label")
@@ -1060,8 +1140,13 @@ def render_block(b, *, index, examples) -> list[str]:
                     # Cells in explicit "Key"/"Keys" columns get the
                     # {key:...} wrapper added implicitly. Other narrow
                     # columns (Command/Motion/Operator/etc.) already
-                    # carry their own key markup in the source.
-                    if i in explicit_key_cols and s and "{key:" not in s:
+                    # carry their own key markup in the source. Skip
+                    # cells that already contain {key:...} markup OR
+                    # backticked monospace (e.g. `:undolist`, `:earlier 5m`):
+                    # those are typed commands, not key chords.
+                    if (i in explicit_key_cols and s
+                            and "{key:" not in s
+                            and "`" not in s):
                         s = "{key:" + s + "}"
                     rendered.append(inl(s))
                 table_lines.append(" & ".join(rendered) + " \\\\")
@@ -1076,7 +1161,14 @@ def render_block(b, *, index, examples) -> list[str]:
     elif bt == "embed":
         lesson = b.get("lesson", "")
         v = video_for_lesson(lesson) if lesson != "" else None
-        title = (v["title"] if v else f"Lesson {lesson}")
+        # Prefer book_title (which may contain {key:...} pill markup) over
+        # the YouTube-facing title so we can render keys as pills in print.
+        if v and v.get("book_title"):
+            title_tex = inl(v["book_title"])
+        elif v:
+            title_tex = tex_escape(v["title"])
+        else:
+            title_tex = tex_escape(f"Lesson {lesson}")
         # In a print book a video link is useless without a QR. We always
         # encode the redirect URL (vimfubook.com/r/v-NNNN) — the redirect
         # map handles "not yet published" with a coming-soon page, so we
@@ -1087,11 +1179,11 @@ def render_block(b, *, index, examples) -> list[str]:
             qr_p, qr_url = _qr_for_slug(video_slug(int(lesson)))
             out.append(
                 "\\qrcallout{" + latex_path(qr_p)
-                + "}{\\playicon}{" + tex_escape(title) + "}{" + tex_escape(qr_url) + "}"
+                + "}{\\playicon}{" + title_tex + "}{" + tex_escape(qr_url) + "}"
             )
         else:
             out.append("\\begin{videocallout}")
-            out.append(f"\\playicon\\iconsep {tex_escape(title)}")
+            out.append(f"\\playicon\\iconsep {title_tex}")
             out.append("\\end{videocallout}")
 
     elif bt == "internals":
@@ -1207,9 +1299,18 @@ def render_topic_body(t, index, examples, *, thesis: str | None = None) -> str:
     # still match a body heading authored as plain "*, cw, …".
     _norm_title = re.sub(r"\{key:([^}]+)\}", r"\1", title).strip()
 
-    for b in t.get("blocks", []):
-        if not _visible(b, AUDIENCE):
-            continue
+    # Inline `{"type":"keys"}` blocks duplicate the Reference table that
+    # appears at the end of most topics. Drop them in the print book when
+    # a table is present, so the same keys aren't summarised three times
+    # (prose, mid-topic key blocks, end-of-topic Reference table). When a
+    # topic has no table, the `keys` blocks ARE the summary — keep them.
+    _blocks_src = list(t.get("blocks", []))
+    _has_ref_table = any(b.get("type") == "table" for b in _blocks_src)
+    raw_blocks = [b for b in _blocks_src
+                  if _visible(b, AUDIENCE)
+                  and not (_has_ref_table and b.get("type") == "keys")]
+
+    for b in raw_blocks:
         if b.get("type") == "heading" and int(b.get("level", 2)) == 1:
             heading_text = re.sub(r"\{key:([^}]+)\}", r"\1",
                                   b.get("text", "")).strip()
@@ -1297,7 +1398,7 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 % (serif/sans/mono share metrics), giving us a polished, book-like look.
 \setmainfont{Libertinus Serif}
 \setsansfont{Libertinus Sans}
-\setmonofont{Libertinus Mono}
+\setmonofont{Libertinus Mono}[Scale=0.93, FakeBold=1.3]
 % KDP paperback 7.5x9.25, ~301-500 page bucket at this larger trim:
 % inside >= 0.625", outside/top/bottom >= 0.25". We use generous values.
 %   inner  (spine side):    0.875"
@@ -1564,6 +1665,19 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \newenvironment{keytable}{%
   \par\medskip\begin{tabular}{@{}>{\strut\centering\arraybackslash}p{\keycolwidth}@{\hspace{1em}}>{\strut}p{\dimexpr\linewidth-\keycolwidth-2.6em\relax}@{}}}{%
   \end{tabular}\par\medskip}
+
+% --- Keys reference panel ---------------------------------------------------
+% Light gray callout wrapping a series of `{"type":"keys"}` blocks so a
+% sequence like {i — insert before}, {a — append after}, ... visually
+% separates from the surrounding prose instead of reading as more body
+% paragraphs.
+\definecolor{keypanelbg}{HTML}{F4F4F4}
+\definecolor{keypanelborder}{HTML}{C8C8C8}
+\newtcolorbox{keypanel}{enhanced,breakable,colback=keypanelbg,colframe=keypanelborder,
+  arc=2pt,boxrule=0.5pt,
+  left=10pt,right=8pt,top=6pt,bottom=6pt,
+  fontupper={\setlength{\parskip}{0pt}\setlength{\parindent}{0pt}}}
+\BeforeBeginEnvironment{keypanel}{\calloutneedspace}
 
 % --- Video callout ----------------------------------------------------------
 \newtcolorbox{videocallout}{enhanced,colback=accentcolor!5,colframe=accentcolor!50,

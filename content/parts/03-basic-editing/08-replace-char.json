@@ -3,9 +3,9 @@
   "version": 1,
   "id": "editing.replace-char",
   "title": "Replace a Character",
-  "subtitle": "{key:r}{char} — overwrite one character without entering *insert mode*.",
+  "subtitle": "{key:r}{c} — overwrite one character without entering *insert mode*.",
   "part": "editing",
-  "summary": "r{char} replaces the character under the cursor with {char} and stays in *normal mode*. Perfect for fixing a typo without an i…Esc dance.",
+  "summary": "{key:r}{c} replaces the character under the cursor with {c} and stays in *normal mode*. Perfect for fixing a typo without a {key:i}…{key:Esc} dance.",
   "keys": [
     "r"
   ],
@@ -24,7 +24,7 @@
     },
     {
       "type": "prose",
-      "text": "Typo? Cursor on the wrong letter? {key:r}{c} swaps it for {c} and leaves you in *normal mode*. No Insert-mode round-trip, no {key:Esc}. One change, one keystroke past the new character."
+      "text": "Typo? Cursor on the wrong letter? {key:r}{c} swaps it for {c} and leaves you in *normal mode*. No *insert mode* round-trip, no {key:Esc}. One change, one keystroke past the new character."
     },
     {
       "type": "keys",
@@ -32,7 +32,7 @@
         "r",
         "x"
       ],
-      "label": "Replace the character under cursor with x"
+      "label": "Replace the character under cursor with `x`"
     },
     {
       "type": "keys",
@@ -46,7 +46,7 @@
     {
       "type": "embed",
       "lesson": 45,
-      "caption": "r{char} — replace one character"
+      "caption": "{key:r}{c} — replace one character"
     },
     {
       "type": "tip",
@@ -54,12 +54,12 @@
     },
     {
       "type": "internals",
-      "title": "Why r Doesn't Enter *insert mode*",
+      "title": "Why {key:r} Doesn't Enter *insert mode*",
       "text": "{key:r} is a *one-shot* operation: it consumes exactly one keystroke as its argument and applies it as a literal replacement. Internally it's not the same as {key:s} (substitute), which deletes the character and switches to *insert mode*. {key:r} stays in *normal mode* the entire time and produces a single change in the undo tree.\n\nWith a count, {n}{key:r}{c} replaces {n} characters with the same {c} repeated. Useful for `--------` style separators."
     },
     {
       "type": "tip",
-      "text": "If you need to overwrite many characters with different ones, use *replace mode* ({key:R}) — it's like *insert mode* but each typed character overwrites instead of pushing. See [`basic-editing.replace-mode`](#basic-editing.replace-mode)."
+      "text": "If you need to overwrite many characters with different ones, use *replace mode* ({key:R}) — it's like *insert mode* but each typed character overwrites instead of pushing. See [*Replace Mode*](#basic-editing.replace-mode)."
     },
     {
       "type": "divider"
@@ -78,11 +78,11 @@
       "rows": [
         [
           "{key:r}{c}",
-          "Replace one character with c"
+          "Replace one character with {c}"
         ],
         [
           "{n}{key:r}{c}",
-          "Replace next n characters with c (repeated)"
+          "Replace next {n} characters with {c} (repeated)"
         ],
         [
           "{key:r}{key:Enter}",
@@ -104,7 +104,7 @@
     },
     {
       "type": "internals",
-      "title": "*replace mode* keeps a shadow buffer",
+      "title": "*Replace mode* keeps a shadow buffer",
       "text": "{key:R} can't be implemented as 'overwrite forward' alone, because Backspace must restore each original character. So *replace mode* tracks a small shadow region — the line as it was at entry — and the Backspace handler diffs against that shadow to put back what you replaced. The shadow also clamps how far Backspace can go: you can never erase past your entry point."
     },
     {

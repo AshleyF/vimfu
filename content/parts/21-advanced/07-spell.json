@@ -13,7 +13,7 @@
   "blocks": [
     { "type": "heading", "level": 1, "text": "Spell Checking" },
 
-    { "type": "prose", "text": "Vim has a real spell checker built in — not an after-thought, not a plugin. Turn it on with `:set` {key:s}{key:p}{key:e}{key:l}{key:l}, and misspelled words get a wavy underline (or whatever your `'spell'` highlight defines)." },
+    { "type": "prose", "text": "Vim has a real spell checker built in — not an after-thought, not a plugin. Turn it on with `:set` {key:s}{key:p}{key:e}{key:l}{key:l}, and misspelled words get a wavy underline (or whatever your `spell` highlight defines)." },
 
     { "type": "heading", "level": 2, "text": "Toggle and language" },
     {
@@ -46,7 +46,7 @@
       "label": "Suggest, accept, undo",
       "sequence": [
         { "key": "z=", "note": "Show suggestions for the word under cursor (numbered list, type a digit + Enter)" },
-        { "key": "zg", "note": "Good word — add to your personal dictionary (file at 'spellfile')" },
+        { "key": "zg", "note": "Good word — add to your personal dictionary (file at `spellfile`)" },
         { "key": "zw", "note": "Wrong word — mark as misspelled in your personal dictionary" },
         { "key": "zug", "note": "Undo a previous zg" },
         { "key": "zuw", "note": "Undo a previous zw" }
@@ -56,7 +56,7 @@
     {
       "type": "internals",
       "title": "Spell as window-layer state",
-      "text": "Spell checking lives in the same `z`-prefixed family as folds and viewport scroll because, internally, it's the same kind of thing: presentation metadata layered over the buffer. The spell checker doesn't modify text — it asks the highlighter to mark certain ranges. The misspelling list is recomputed lazily as the window scrolls, against the merged dictionary set in `'spelllang'`. Adding a word with {key:z}{key:g} writes to your personal `'spellfile'` (default `~/.config/nvim/spell/<lang>.utf-8.add`) and triggers a recompile of the binary spell file, then re-runs the highlighter over visible lines."
+      "text": "Spell checking lives in the same `z`-prefixed family as folds and viewport scroll because, internally, it's the same kind of thing: presentation metadata layered over the buffer. The spell checker doesn't modify text — it asks the highlighter to mark certain ranges. The misspelling list is recomputed lazily as the window scrolls, against the merged dictionary set in `spelllang`. Adding a word with {key:z}{key:g} writes to your personal `spellfile` (default `~/.config/nvim/spell/<lang>.utf-8.add`) and triggers a recompile of the binary spell file, then re-runs the highlighter over visible lines."
     },
 
     {

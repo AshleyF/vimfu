@@ -57,6 +57,7 @@ def _index() -> dict:
                 "suffix": suffix,
                 "slug": slug,
                 "title": _strip_vimfu_prefix(data.get("title", slug.replace("_", " ").title())),
+                "book_title": data.get("book_title", ""),
                 "description": data.get("description", ""),
                 "kind": "long" if d == LONGS_DIR else "short",
                 "videoId": video_id,

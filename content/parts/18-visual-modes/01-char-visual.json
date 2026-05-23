@@ -76,7 +76,7 @@
     {
       "type": "internals",
       "title": "The Last Visual Selection Is Remembered",
-      "text": "Whenever you exit *visual mode*, Vim sets two automatic marks: {key:`}{key:<} (start) and {key:`}{key:>} (end). They live in the buffer until your next visual selection.\n\nThis means:\n\n  • {key:g}{key:v}  re-selects the last visual range.\n  • `:'<,'>` (or just {key::} from Visual) targets it as an Ex range — useful for `:s/foo/bar/g`.\n\nMost \"do an Ex command on what I just selected\" idioms work this way. See [`visual.range`](#visual.range)."
+      "text": "Whenever you exit *visual mode*, Vim sets two automatic marks: {key:`}{key:<} (start) and {key:`}{key:>} (end). They live in the buffer until your next visual selection.\n\nThis means:\n\n  • {key:g}{key:v}  re-selects the last visual range.\n  • `:'<,'>` (or just {key::} from Visual) targets it as an Ex range — useful for `:s/foo/bar/g`.\n\nMost \"do an Ex command on what I just selected\" idioms work this way. See [*Visual + Ex Range*](#visual.range)."
     },
     {
       "type": "divider"
@@ -121,7 +121,7 @@
     },
     {
       "type": "internals",
-      "title": "*visual mode* is anchor + endpoint",
+      "title": "*Visual mode* is anchor + endpoint",
       "text": "Charwise *visual mode* stores two positions: the anchor (where you pressed {key:v}) and the current cursor. Motions move the cursor; the selection is always the inclusive range between the two. There's no selection object being copied around — the renderer paints whatever sits between anchor and cursor each frame. Operators consume the resolved range and exit back to *normal mode*."
     },
     {

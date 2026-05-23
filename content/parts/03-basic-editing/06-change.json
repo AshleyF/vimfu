@@ -5,7 +5,7 @@
   "title": "Change",
   "subtitle": "{key:c} is delete-then-insert, atomically.",
   "part": "editing",
-  "summary": "c is the change operator. cw changes a word; cc changes a line; C changes to end of line. S and s are short forms that change a whole line and a single character respectively.",
+  "summary": "{key:c} is the change operator. {key:c}{key:w} changes a word; {key:c}{key:c} changes a line; {key:C} changes to end of line. {key:S} and {key:s} are short forms that change a whole line and a single character respectively.",
   "keys": [
     "c",
     "cw",
@@ -34,7 +34,7 @@
     },
     {
       "type": "prose",
-      "text": "{key:c} is what {key:d}-then-{key:i} would be if you didn't have to think. It deletes the same range {key:d} would, *and* drops you straight into *insert mode* at that spot. Then {key:Esc} closes the change as one undoable, dot-repeatable unit."
+      "text": "{key:c} is the shortcut for {key:d}-then-{key:i}: it deletes the same range {key:d} would, *and* drops you straight into *insert mode* at that spot. Then {key:Esc} closes the change as one undoable, dot-repeatable unit."
     },
     {
       "type": "keys",
@@ -49,7 +49,7 @@
       "sequence": [
         "C"
       ],
-      "label": "= c$  (change to end of line)"
+      "label": "Change to end of line (same as {key:c}{key:$})"
     },
     {
       "type": "keys",
@@ -64,39 +64,39 @@
       "sequence": [
         "S"
       ],
-      "label": "= cc (change whole line)"
+      "label": "Change a whole line (same as {key:c}{key:c})"
     },
     {
       "type": "keys",
       "sequence": [
         "s"
       ],
-      "label": "Substitute character (= cl)"
+      "label": "Substitute one character (same as {key:c}{key:l})"
     },
     {
       "type": "embed",
       "lesson": 36,
-      "caption": "cw — change a word"
+      "caption": "{key:c}{key:w} — change a word"
     },
     {
       "type": "embed",
       "lesson": 37,
-      "caption": "C — change to end of line"
+      "caption": "{key:C} — change to end of line"
     },
     {
       "type": "embed",
       "lesson": 38,
-      "caption": "cc / S — change a line"
+      "caption": "{key:c}{key:c} / {key:S} — change a line"
     },
     {
       "type": "embed",
       "lesson": 39,
-      "caption": "s — substitute a char"
+      "caption": "{key:s} — substitute a char"
     },
     {
       "type": "internals",
       "title": "Change Is Delete + Insert as One Atomic \"Change\"",
-      "text": "Internally, {key:c}{motion} does three things:\n\n  1. Cuts the range covered by {motion} into the unnamed and numbered registers (just like {key:d}).\n  2. Switches to *insert mode* at the start of the cut range.\n  3. Marks an undo boundary that closes when you press {key:Esc}.\n\nStep 3 is the important one. The whole episode — delete, type, leave Insert — becomes **one** entry in the undo tree. {key:u} reverts all of it. {key:.} replays all of it.\n\nThat's why {key:c}{key:w}-type-something-{key:Esc}-{key:n}-{key:.} is one of the most useful patterns in Vim: jump to next match, change-the-word, repeat. Each repeat is one undoable operation, not many. See [`patterns.cgn-dot`](#patterns.cgn-dot) for the polished form."
+      "text": "Internally, {key:c}{motion} does three things:\n\n  1. Cuts the range covered by {motion} into the unnamed and numbered registers (just like {key:d}).\n  2. Switches to *insert mode* at the start of the cut range.\n  3. Marks an undo boundary that closes when you press {key:Esc}.\n\nStep 3 is the important one. The whole episode — delete, type, leave *insert mode* — becomes **one** entry in the undo tree. {key:u} reverts all of it. {key:.} replays all of it.\n\nThat's why changing a word, pressing {key:Esc}, moving to the next match with {key:n}, and pressing {key:.} is one of the most useful patterns in Vim: jump to next match, change the word, repeat. Each repeat is one undoable operation, not many. See [*Change-Next-Match Loop — {key:cgn}*](#patterns.cgn-dot) for the polished form."
     },
     {
       "type": "tip",
@@ -104,7 +104,7 @@
     },
     {
       "type": "tip",
-      "text": "Synonyms to memorize: {key:C} = {key:c}{key:$}. {key:S} = {key:c}{key:c}. {key:s} = {key:c}{key:l}. {key:s} doesn't get a lot of love — it's a one-character substitute, useful when you want to type a replacement immediately and skip the explicit {key:r}-then-look-around."
+      "text": "Three handy shortcuts to remember: {key:C} is the same as {key:c}{key:$} (change to end of line). {key:S} is the same as {key:c}{key:c} (change the whole line). {key:s} is the same as {key:c}{key:l} (substitute one character). {key:s} doesn't get a lot of love — it's a one-character substitute, useful when you want to type a replacement immediately and skip the explicit {key:r}-then-look-around."
     },
     {
       "type": "divider"
@@ -154,12 +154,12 @@
         ],
         [
           "{key:c}{key:i}{key:w}",
-          "Change inner word (text object; see Part 7)",
+          "Change inner word (text object; see *Text Objects*)",
           "—"
         ],
         [
           "{key:c}{key:a}{key:'}",
-          "Change around quotes (text object; see Part 7)",
+          "Change around quotes (text object; see *Text Objects*)",
           "—"
         ]
       ]
@@ -171,7 +171,7 @@
     {
       "type": "internals",
       "title": "Change is delete-then-insert, with one historical quirk",
-      "text": "{key:c} is not a primitive: it runs the delete operator, then enters *insert mode* at the landing position. The famous {key:c}{key:w} = {key:c}{key:e} quirk falls out of this — change adjusts the motion's endpoint to drop the trailing whitespace so the inserted text doesn't push it. Knowing change is a composition lets you predict its behavior with any motion you've already learned."
+      "text": "{key:c} is not a primitive: it runs the delete operator, then enters *insert mode* at the landing position. The famous quirk that {key:c}{key:w} behaves like {key:c}{key:e} falls out of this — change adjusts the motion's endpoint to drop the trailing whitespace so the inserted text doesn't push it. Knowing change is a composition lets you predict its behavior with any motion you've already learned."
     },
     {
       "type": "qr",

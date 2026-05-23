@@ -68,6 +68,19 @@ the reader will type, see, or refer to:
     "press `:` to open the command line" with no command following,
     it can be a pill: `{key::}`. Once command letters follow, the
     whole thing is monospace.
+- **Typed-text payloads inside a key sequence.** When a key sequence
+  embeds a literal phrase the reader will *type* — like the pattern
+  text after `{key:/}`, the inserted text after `{key:i}`, or a tag
+  name — render the payload as **monospace** (backticks) inside the
+  sequence of pills, not as a run of one-letter pills.
+  - ✅ `{key:d}{key:/}\`END\`{key:Enter}` — delete to the next `END`.
+  - ✅ `{key:c}{key:/}\`fn\`{key:Enter}` — change to next `fn`.
+  - ✅ `{key:3}{key:i}\`hi\`{key:Esc}` — insert `hi` three times.
+  - ❌ `{key:d}{key:/}{key:E}{key:N}{key:D}{key:Enter}` — each typed
+    letter becomes its own key pill, which reads like a chord.
+  - ❌ `{key:c}{key:/}{key:fn}{key:Enter}` — single multi-letter pill
+    for a typed phrase. Pills are for *keys you press*, monospace is
+    for *text you type*.
 - **Operator/motion placeholders.** When describing the grammar
   generically, write the leading typed key(s) as **pills** and the
   placeholder (in braces) as plain prose right next to it — no
@@ -365,3 +378,61 @@ title, summary, or example anywhere in `content/parts/`,
 
 If you can't tick every box, do not commit the change. The style
 guide is the contract; this checklist is how you verify it.
+
+## Other conventions
+
+### Use keyboard names, not Vim internal notation
+
+In prose, write the names that appear on a real keyboard. **Never**
+use Vim's `<CR>` / `<Esc>` / `<Tab>` / `<C-w>` notation outside of
+literal code blocks (mappings like `nnoremap <leader>w :write<CR>`,
+where the angle-bracket form is required syntax).
+
+- ✅ `{key:Enter}`, `{key:Esc}`, `{key:Tab}`, `{key:Ctrl-W}`
+- ❌ `{key:<CR>}`, `{key:<Esc>}`, `{key:<Tab>}`, `{key:<C-w>}`
+
+### Don't use equation notation in prose
+
+Synonyms like `{key:D} = {key:d}{key:$}` look natural in a math
+context but parse badly when each side is a pill and the `=` is bare
+text. Write them out:
+
+- ✅ "{key:D} is the same as {key:d}{key:$}."
+- ✅ "{key:D} (same as {key:d}{key:$})."
+- ❌ "{key:D} = {key:d}{key:$}."
+
+Structured *Equivalent* columns in reference tables are fine — the
+table cells already isolate the relation visually.
+
+### Ex commands keep their parameters inside the backticks
+
+When an ex command has parameters, include them in the same monospace
+span — the whole thing is one command you type.
+
+- ✅ `` `:earlier 5m` ``, `` `:set nrformats-=octal` ``
+- ❌ `` `:earlier` 5m ``, `` `:set` nrformats-=octal ``
+
+### Option names: backticks only, no single quotes
+
+Vim documentation wraps option names in single quotes (`'incsearch'`)
+to disambiguate them from regex literals. In the book, the monospace
+font already disambiguates them, so the quotes are noise.
+
+- ✅ `` `incsearch` ``, `` `wildmenu` ``, `` `autoindent` ``
+- ❌ `` `'incsearch'` ``, `` `'wildmenu'` ``
+
+### Cross-references use the section title, not the slug
+
+When linking to another topic with a markdown link, the label should
+be the topic's spoken-aloud name, not its internal slug. The renderer
+auto-rewrites `` [`topic.id`](#topic.id) `` to the real title for
+print, but new authoring should still prefer the readable form:
+
+- ✅ `[Undo as a Tree](#survival.undo-tree)`
+- ❌ `` [`survival.undo-tree`](#survival.undo-tree) ``
+
+Also: never refer to a part by its number (`Part 12`). Part numbers
+aren't shown anywhere readers can see — neither the contents page nor
+the chapter openers print them. Refer to the part by its title in
+italics (`*Registers*`, `*Windows, Buffers and Tabs*`) or by the
+specific section name.

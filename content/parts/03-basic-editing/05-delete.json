@@ -5,7 +5,7 @@
   "title": "Delete",
   "subtitle": "{key:d} is the verb. Pair it with any motion.",
   "part": "editing",
-  "summary": "d is the delete operator. It takes a motion: dw deletes a word, d$ deletes to end of line. Doubling the operator (dd) makes it linewise. x and X are convenience deletes for single characters.",
+  "summary": "{key:d} is the delete operator. It takes a motion: {key:d}{key:w} deletes a word, {key:d}{key:$} deletes to end of line. Doubling the operator ({key:d}{key:d}) makes it linewise. {key:x} and {key:X} are convenience deletes for single characters.",
   "keys": [
     "x",
     "X",
@@ -35,7 +35,7 @@
     },
     {
       "type": "prose",
-      "text": "{key:d} is the *delete operator*. It's a verb that needs a noun. The noun is any motion — and once you reach Part 7, any text object as well. {key:d}{key:w} deletes a word. {key:d}{key:$} deletes to end of line. {key:d}{key:G} deletes from the cursor to the end of the file. The grammar carries you here, and it keeps composing as you learn more nouns."
+      "text": "{key:d} is the *delete operator*. It's a verb that needs a noun. The noun is any motion — and once you reach *Text Objects*, any text object as well. {key:d}{key:w} deletes a word. {key:d}{key:$} deletes to end of line. {key:d}{key:G} deletes from the cursor to the end of the file. The grammar carries you here, and it keeps composing as you learn more nouns."
     },
     {
       "type": "keys",
@@ -72,7 +72,7 @@
       "sequence": [
         "D"
       ],
-      "label": "= d$  (delete to end of line)"
+      "label": "Delete to end of line (same as {key:d}{key:$})"
     },
     {
       "type": "keys",
@@ -85,27 +85,27 @@
     {
       "type": "embed",
       "lesson": 31,
-      "caption": "x — delete a character"
+      "caption": "{key:x} — delete a character"
     },
     {
       "type": "embed",
       "lesson": 32,
-      "caption": "X — backspace-delete"
+      "caption": "{key:X} — backspace-delete"
     },
     {
       "type": "embed",
       "lesson": 33,
-      "caption": "dw — delete a word"
+      "caption": "{key:d}{key:w} — delete a word"
     },
     {
       "type": "embed",
       "lesson": 34,
-      "caption": "D — delete to end of line"
+      "caption": "{key:D} — delete to end of line"
     },
     {
       "type": "embed",
       "lesson": 35,
-      "caption": "dd — delete a line"
+      "caption": "{key:d}{key:d} — delete a line"
     },
     {
       "type": "tip",
@@ -114,11 +114,11 @@
     {
       "type": "internals",
       "title": "Delete Doesn't Delete — It *Moves to a Register*",
-      "text": "When you press {key:d}{key:w}, Vim cuts the deleted text and stores it in **two** registers:\n\n  1. The **unnamed register** ({key:\"}{key:\"}) — your most-recent yank-or-delete.\n  2. Either the **small-delete register** ({key:\"}{key:-}) if the delete was less than one line, **or** the **numbered registers** ({key:\"}{key:1}–{key:\"}{key:9}, a rolling buffer of the last nine deletes) if the delete was a whole line or larger. Line- and block-wise deletes always go to the numbered registers regardless of size.\n\nSo {key:p} after {key:d}{key:w} pastes the word back. {key:\"}{key:1}{key:p} pastes the most-recent line-or-larger delete. {key:\"}{key:2}{key:p} the one before. **Delete is just \"cut.\"** This is also why deleting and then pasting elsewhere is the standard Vim move-text idiom.\n\nThe one register *not* touched by delete is the **yank register** ({key:\"}{key:0}), which only updates on actual yanks. So if you yank, then delete, then paste, you get the *delete*. Use {key:\"}{key:0}{key:p} to get the yank back. Full treatment: [`registers.numbered`](#registers.numbered), [`registers.small-delete`](#registers.small-delete), and [`registers.unnamed`](#registers.unnamed)."
+      "text": "When you press {key:d}{key:w}, Vim cuts the deleted text and stores it in **two** registers:\n\n  1. The **unnamed register** ({key:\"}{key:\"}) — your most-recent yank-or-delete.\n  2. Either the **small-delete register** ({key:\"}{key:-}) if the delete was less than one line, **or** the **numbered registers** ({key:\"}{key:1}–{key:\"}{key:9}, a rolling buffer of the last nine deletes) if the delete was a whole line or larger. Line- and block-wise deletes always go to the numbered registers regardless of size.\n\nSo {key:p} after {key:d}{key:w} pastes the word back. {key:\"}{key:1}{key:p} pastes the most-recent line-or-larger delete. {key:\"}{key:2}{key:p} the one before. **Delete is just \"cut.\"** This is also why deleting and then pasting elsewhere is the standard Vim move-text idiom.\n\nThe one register *not* touched by delete is the **yank register** ({key:\"}{key:0}), which only updates on actual yanks. So if you yank, then delete, then paste, you get the *delete*. Use {key:\"}{key:0}{key:p} to get the yank back. Full treatment: [*Numbered Registers*](#registers.numbered), [*The Small Delete Register*](#registers.small-delete), and [*The Unnamed Register*](#registers.unnamed)."
     },
     {
       "type": "tip",
-      "text": "{key:D} = {key:d}{key:$}. {key:dd} (linewise delete) is the doubled-operator form. *Every* operator follows that pattern: a doubled operator means \"act on this whole line.\" {key:c}{key:c}, {key:y}{key:y}, {key:>}{key:>}, {key:=}{key:=}, etc."
+      "text": "{key:D} is the same as {key:d}{key:$} — both delete to end of line. {key:d}{key:d} (linewise delete) is the doubled-operator form. *Every* operator follows that pattern: a doubled operator means \"act on this whole line.\" {key:c}{key:c}, {key:y}{key:y}, {key:>}{key:>}, {key:=}{key:=}, etc."
     },
     {
       "type": "tip",
@@ -157,15 +157,15 @@
         ],
         [
           "{key:D}",
-          "Delete to end of line (= {key:d}{key:$})"
+          "Delete to end of line (same as {key:d}{key:$})"
         ],
         [
           "{key:d}{key:i}{key:w}",
-          "Delete inner word (text object; see Part 7)"
+          "Delete inner word (text object; see *Text Objects*)"
         ],
         [
           "{key:d}{key:a}{key:p}",
-          "Delete around paragraph (text object; see Part 7)"
+          "Delete around paragraph (text object; see *Text Objects*)"
         ],
         [
           "{n}{key:d}{key:d}",

@@ -35,7 +35,7 @@
           "1969",
           "`ed`",
           "Ken Thompson",
-          "The original Unix line editor — Vim's `:Ex` commands are direct descendants."
+          "The original Unix line editor — Vim's colon commands are direct descendants."
         ],
         [
           "1976",
@@ -47,7 +47,7 @@
           "1991",
           "Vim",
           "Bram Moolenaar",
-          "Vi IMproved: *Visual mode*, multi-level undo, scripting, plugins, syntax highlighting."
+          "Vi IMproved: *visual mode*, multi-level undo, scripting, plugins, syntax highlighting."
         ],
         [
           "2014",
@@ -82,16 +82,16 @@
     },
     {
       "type": "prose",
-      "text": "Bram Moolenaar wrote Vim — *Vi IMproved* — to add the things `vi` was missing: *Visual mode* for selecting before acting, multi-level undo, syntax highlighting, a real scripting language (Vimscript), and a plugin ecosystem. Bram maintained Vim almost single-handedly for 32 years until his passing in 2023. Vim is still actively maintained by a small team."
+      "text": "Bram Moolenaar wrote Vim — *Vi IMproved* — to add the things `vi` was missing: *visual mode* for selecting before acting, multi-level undo, syntax highlighting, a real scripting language (Vimscript), and a plugin ecosystem. Bram maintained Vim almost single-handedly for 32 years until his passing in 2023. Vim is still actively maintained by a small team."
     },
     {
       "type": "anecdote",
       "title": "Bram, STevie, and the meandering path from `vi`",
-      "text": "The soul of Vim comes from `vi` — modal editing, {key:hjkl}, the colon command line — but the *code* took a long detour. In the early 1980s, a programmer named Tim Thompson wrote a `vi` clone called *STevie* (\"ST editor for VI enthusiasts\") for the Atari ST. Tim eventually moved on, and a coworker of mine from Microsoft, *Tony Andrews*, picked up the project: he added most of the features and ported STevie to DOS, OS/2, and Minix, turning it into a proper full-featured `vi` clone in its own right. Later, somebody at Microsoft pulled STevie into the early Windows NT SDK as the in-house `vi`, where it shipped for years.\n\nMeanwhile, in the Netherlands in 1988, Bram Moolenaar bought a new Amiga 2000 and wanted a `vi` he could use on it. He took STevie as his starting code base and began *improving* it. That became *Vi IMproved* — Vim 1.0 in 1991. Two years later he added multi-level undo. Then visual mode. Then text objects, a scripting language, plugins. Vim kept growing because Bram kept improving it — for 32 years, almost single-handedly, until his death in 2023. Tim and Tony are still credited in `:help credits` today.\n\nFor most of those years Vim was *charityware*: the program was free, but every startup screen invited you to make a donation to *ICCF Holland*, a small charity Bram founded to support children in Kakoge, a village in Uganda. He visited, he ran the books, he wrote the receipts. The slogan `:help iccf` still ships with Vim. A generation of programmers learned the word *Kakoge* not from a news report but from an editor's splash screen. That, more than any feature, is the texture of the Vim project: one engineer, three decades, an editor and a village both quietly improving on the same schedule."
+      "text": "The soul of Vim comes from `vi` — modal editing, {key:hjkl}, the colon command line — but the *code* took a long detour. In the early 1980s, a programmer named Tim Thompson wrote a `vi` clone called *STevie* (\"ST editor for VI enthusiasts\") for the Atari ST. Tim eventually moved on, and a coworker of mine from Microsoft, *Tony Andrews*, picked up the project: he added most of the features and ported STevie to DOS, OS/2, and Minix, turning it into a proper full-featured `vi` clone in its own right. Later, somebody at Microsoft pulled STevie into the early Windows NT SDK as the in-house `vi`, where it shipped for years.\n\nMeanwhile, in the Netherlands in 1988, Bram Moolenaar bought a new Amiga 2000 and wanted a `vi` he could use on it. He took STevie as his starting code base and began *improving* it. That became *Vi IMproved* — Vim 1.0 in 1991. Two years later he added multi-level undo. Then *visual mode*. Then text objects, a scripting language, plugins. Vim kept growing because Bram kept improving it — for 32 years, almost single-handedly, until his death in 2023. Tim and Tony are still credited in `:help credits` today.\n\nFor most of those years Vim was *charityware*: the program was free, but every startup screen invited you to make a donation to *ICCF Holland*, a small charity Bram founded to support children in Kakoge, a village in Uganda. He visited, he ran the books, he wrote the receipts. The slogan `:help iccf` still ships with Vim. A generation of programmers learned the word *Kakoge* not from a news report but from an editor's splash screen. That, more than any feature, is the texture of the Vim project: one engineer, three decades, an editor and a village both quietly improving on the same schedule."
     },
     {
       "type": "prose",
-      "text": "Vim is still the default `vi` on macOS, BSD, and many Linux distributions. When you type `vi` at a terminal and get something that supports `u` and {key:Ctrl-R}, you have Vim. Pure 1976 `vi` has not shipped on a normal Unix install in decades."
+      "text": "Vim is still the default `vi` on macOS, BSD, and many Linux distributions — usually as a symlink or compatibility-mode binary. When you type `vi` at a terminal on a modern Unix system, you are almost certainly getting Vim. Pure 1976 `vi` has not shipped on a normal Unix install in decades. If you want to confirm what your system actually runs, try `:version` — if you see a banner naming *Vim* or *Neovim*, that's what `vi` resolves to."
     },
     {
       "type": "heading",
@@ -100,7 +100,7 @@
     },
     {
       "type": "prose",
-      "text": "Neovim started in 2014 as a refactor: split the editor core from the UI so multiple front-ends could exist; add an async event loop so plugins could call out to LSP servers and language tools without freezing the editor; replace Vimscript-only configuration with first-class Lua. It also took the chance to flip a few defaults that had been frozen for backward compatibility — better terminal mouse handling, sane `'incsearch'`, hybrid line numbers, fixing the {key:Y} = {key:y}{key:y} historical wart, etc."
+      "text": "Neovim started in 2014 as a refactor: split the editor core from the UI so multiple front-ends could exist; add an async event loop so plugins could call out to LSP servers and language tools without freezing the editor; replace Vimscript-only configuration with first-class Lua. It also took the chance to flip a few defaults that had been frozen for backward compatibility — better terminal mouse handling, sane `incsearch`, hybrid line numbers, fixing the historical wart where {key:Y} meant {key:y}{key:y}, etc."
     },
     {
       "type": "prose",
@@ -109,7 +109,7 @@
     {
       "type": "internals",
       "title": "What Actually Differs (and What Doesn't)",
-      "text": "For everything in this book through Part 14 — every operator, motion, text object, register, mark, macro, and visual-mode command — Vim and Neovim are indistinguishable. The differences live in:\n\n  • **Defaults.** Neovim ships with `'incsearch'`, hybrid line numbers, true-color terminal support, sane `'sessionoptions'`, etc. on by default. Vanilla Vim does not.\n  • **Config language.** Neovim's `init.lua` vs Vim's `vimrc`. (Both still understand Vimscript.)\n  • **LSP.** Neovim 0.5+ ships a built-in LSP client; Vim users use plugins (coc.nvim, vim-lsp, ALE).\n  • **Terminal.** Neovim's `:terminal` is async and well-integrated; Vim's is bolted on.\n  • **Tree-sitter.** Neovim ships built-in Tree-sitter highlighting; Vim relies on regex syntax files.\n  • **Plugin host model.** Neovim plugins can be Lua libraries that call back into Neovim; Vim plugins are typically Vimscript or `+python`/`+ruby` -compiled subroutines.\n\nNone of this changes how {key:d}{key:a}{key:w} behaves. The *editing language* — what this book is about — is the same. The differences matter when you are configuring and extending the editor, not when you are editing text."
+      "text": "For everything in this book through *Windows, Buffers and Tabs* — every operator, motion, text object, register, mark, macro, and visual-mode command — Vim and Neovim are indistinguishable. The differences live in:\n\n  • **Defaults.** Neovim ships with `incsearch`, hybrid line numbers, true-color terminal support, sane `sessionoptions`, etc. on by default. Vanilla Vim does not.\n  • **Config language.** Neovim's `init.lua` vs Vim's `vimrc`. (Both still understand Vimscript.)\n  • **LSP.** Neovim 0.5+ ships a built-in LSP client; Vim users use plugins (coc.nvim, vim-lsp, ALE).\n  • **Terminal.** Neovim's `:terminal` is async and well-integrated; Vim's is bolted on.\n  • **Tree-sitter.** Neovim ships built-in Tree-sitter highlighting; Vim relies on regex syntax files.\n  • **Plugin host model.** Neovim plugins can be Lua libraries that call back into Neovim; Vim plugins are typically Vimscript or `+python`/`+ruby` -compiled subroutines.\n\nNone of this changes how {key:d}{key:a}{key:w} behaves. The *editing language* — what this book is about — is the same. The differences matter when you are configuring and extending the editor, not when you are editing text."
     },
     {
       "type": "tip",

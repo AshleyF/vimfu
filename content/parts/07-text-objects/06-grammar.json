@@ -49,12 +49,12 @@
     {
       "type": "internals",
       "title": "Synonyms (Single-Key Aliases)",
-      "text": "Some patterns are common enough to deserve a one-key shortcut:\n\n  • {key:D} = {key:d}{key:$}\n  • {key:C} = {key:c}{key:$}\n  • {key:Y} = {key:y}{key:y} *(classic `vi`)* / {key:y}{key:$} *(Neovim default)*\n  • {key:S} = {key:c}{key:c}\n  • {key:s} = {key:c}{key:l}\n  • {key:x} = {key:d}{key:l}\n  • {key:X} = {key:d}{key:h}\n\nThese are sugar over the grammar. Knowing both forms helps when reading other people's keystrokes — and explains why {key:Y} is a wart (broken symmetry, see [`editing.yank-put`](#editing.yank-put))."
+      "text": "Some patterns are common enough to deserve a one-key shortcut:\n\n  • {key:D} is the same as {key:d}{key:$}.\n  • {key:C} is the same as {key:c}{key:$}.\n  • {key:Y} is {key:y}{key:y} in classic `vi`, and {key:y}{key:$} in Neovim by default.\n  • {key:S} is the same as {key:c}{key:c}.\n  • {key:s} is the same as {key:c}{key:l}.\n  • {key:x} is the same as {key:d}{key:l}.\n  • {key:X} is the same as {key:d}{key:h}.\n\nThese are sugar over the grammar. Knowing both forms helps when reading other people's keystrokes — and explains why {key:Y} is a wart (broken symmetry, see [*Yank and Put*](#editing.yank-put))."
     },
     {
       "type": "internals",
       "title": "Operator-Pending Is a Real Mode",
-      "text": "Between pressing the operator and pressing the motion or text object, Vim is in a fourth major mode: **operator-pending**. It's not a UI flourish — it's a named state in the editor's state machine, with its own keymap. Until a motion resolves, no buffer change has happened: the operator is staged with its count, the motion will produce `(start, end, type)`, and only then does the operator function execute.\n\nThe practical consequence is that op-pending has its *own* mapping table. `:onoremap` (op-pending non-recursive map) defines mappings that *only fire after an operator*. So `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" without breaking {key:p} (paste) in *normal mode*. This is the mechanism every custom text-object plugin uses — vim-surround, targets.vim, vim-textobj-* — and it's why operator-pending shows up in Vim's `:help map-modes` matrix as its own column (`o`). Full treatment in [`text-objects.op-pending`](#text-objects.op-pending)."
+      "text": "Between pressing the operator and pressing the motion or text object, Vim is in a fourth major mode: **operator-pending**. It's not a UI flourish — it's a named state in the editor's state machine, with its own keymap. Until a motion resolves, no buffer change has happened: the operator is staged with its count, the motion will produce `(start, end, type)`, and only then does the operator function execute.\n\nThe practical consequence is that op-pending has its *own* mapping table. `:onoremap` (op-pending non-recursive map) defines mappings that *only fire after an operator*. So `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" without breaking {key:p} (paste) in *normal mode*. This is the mechanism every custom text-object plugin uses — vim-surround, targets.vim, vim-textobj-* — and it's why operator-pending shows up in Vim's `:help map-modes` matrix as its own column (`o`). Full treatment in [*Operator-Pending Mode*](#text-objects.op-pending)."
     },
     {
       "type": "tip",
@@ -70,7 +70,7 @@
     },
     {
       "type": "prose",
-      "text": "See [`appendix.grammar-matrix`](#appendix.grammar-matrix) for the full operator × motion table, and [`appendix.synonyms`](#appendix.synonyms) for the complete list of single-key aliases."
+      "text": "See [*The Grammar Matrix*](#appendix.grammar-matrix) for the full operator × motion table, and [*Synonyms and Shortcuts*](#appendix.synonyms) for the complete list of single-key aliases."
     },
     {
       "type": "example",

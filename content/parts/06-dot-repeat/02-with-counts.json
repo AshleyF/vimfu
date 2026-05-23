@@ -3,9 +3,9 @@
   "version": 1,
   "id": "dot.with-counts",
   "title": "Dot with Counts",
-  "subtitle": "{n}{key:.} — replay the change with a new count.",
+  "subtitle": "Dot lets you change your mind about the count.",
   "part": "dot",
-  "summary": "Pressing a count before . replaces the count baked into the original change. So 5dw then 10. deletes 10 words, not 5.",
+  "summary": "Pressing a count before {key:.} replaces the count baked into the original change. So {key:5}{key:d}{key:w} then {key:1}{key:0}{key:.} deletes 10 words, not 5.",
   "keys": [
     "{n}."
   ],
@@ -46,7 +46,7 @@
     {
       "type": "internals",
       "title": "How the Count Substitution Works",
-      "text": "Internally the dot register holds the change as a sequence: optional count, optional register, the operator, the motion (with its own optional count), and any inserted text.\n\nWhen you press {key:.}, Vim replays the recorded sequence verbatim. When you press {n}{key:.}, the prefix you just typed becomes the *outer* count for the replay — the operator-side count, not the motion-side count. The motion's own internal count is preserved.\n\nSo if your original change was {key:d}{key:3}{key:w} (delete 3 words), {key:.} repeats it as 3 words; {key:5}{key:.} repeats it as 5 × 3 = 15 words. Counts multiply, just like in [`counts.counts`](#counts.counts)."
+      "text": "Internally the dot register holds the change as a sequence: optional count, optional register, the operator, the motion (with its own optional count), and any inserted text.\n\nWhen you press {key:.}, Vim replays the recorded sequence verbatim. When you press {n}{key:.}, the prefix you just typed becomes the *outer* count for the replay — the operator-side count, not the motion-side count. The motion's own internal count is preserved.\n\nSo if your original change was {key:d}{key:3}{key:w} (delete 3 words), {key:.} repeats it as 3 words; {key:5}{key:.} repeats it as 5 × 3 = 15 words. Counts multiply, just like in [*Counts*](#counts.counts)."
     },
     {
       "type": "tip",

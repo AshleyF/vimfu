@@ -39,6 +39,10 @@
       "text": "That is what \"modal\" means. In **normal mode**, every key on your keyboard is a command. {key:j} moves down. {key:w} jumps forward by a word. {key:d}{key:w} deletes a word. {key:c}{key:i}{key:\"} changes the text inside quotes. No mouse. No Ctrl-Shift-Arrow. Just keystrokes."
     },
     {
+      "type": "tip",
+      "text": "Don't try to memorize the key sequences sprinkled through these early chapters — they're just examples, here to give the flavor of the language. Each one gets its own section later in the book."
+    },
+    {
       "type": "prose",
       "text": "When you need to type, press {key:i} to enter **insert mode**. Type what you need. Press {key:Esc} to come back. *Normal mode* is your resting state — the mode you spend most of your time in."
     },
@@ -54,7 +58,7 @@
     {
       "type": "internals",
       "title": "Vim Is a State Machine",
-      "text": "Vim is a finite state machine. The states are the modes — Normal, Insert, Visual (with three sub-states: char / line / block), Replace, Command-line, Operator-pending, Terminal. Every keystroke is interpreted *relative to the current state*. {key:i} in *normal mode* enters *insert mode*; in *insert mode* it inserts the letter 'i'. The transition function is, in effect, the entire Vim manual.\n\nThis is why learning Vim feels different from learning an editor. You're learning a state machine. Once you have the states in your head, the individual keys fall into place: each one is just an edge in the graph."
+      "text": "Vim is a finite state machine. The states are the modes — *normal*, *insert*, *visual* (with three sub-states: char / line / block), *replace*, *command-line*, *operator-pending*, *terminal*. Every keystroke is interpreted *relative to the current state*. {key:i} in *normal mode* enters *insert mode*; in *insert mode* it inserts the letter `i`. The transition function is, in effect, the entire Vim manual.\n\nThis is why learning Vim feels different from learning an editor. You're learning a state machine. Once you have the states in your head, the individual keys fall into place: each one is just an edge in the graph."
     },
     {
       "type": "internals",
@@ -83,7 +87,7 @@
     },
     {
       "type": "prose",
-      "text": "Every other editor starts in what Vim calls *insert mode*: keys type text. Vim starts in what every other editor would call *command mode*: keys do things. The learning curve is real. New users press {key:j} expecting a 'j' and instead see the cursor move. They press {key:dd} expecting two letters and the line vanishes."
+      "text": "Every other editor starts in what Vim calls *insert mode*: keys type text. Vim starts in what every other editor would call *command mode*: keys do things. The learning curve is real. New users press {key:j} expecting a `j` and instead see the cursor move. They press {key:dd} expecting two letters and the line vanishes."
     },
     {
       "type": "prose",
@@ -116,27 +120,27 @@
       "rows": [
         [
           "{key:i}",
-          "Normal",
-          "Enter *insert mode* (before cursor)"
+          "*normal*",
+          "Enter *insert mode* with {key:i} (before cursor)"
         ],
         [
           "{key:Esc}",
-          "Insert / Visual / Replace",
+          "*insert* / *visual* / *replace*",
           "Return to *normal mode*"
         ],
         [
           "{key:Ctrl-[}",
-          "Insert / Visual / Replace",
-          "Same as Esc"
+          "*insert* / *visual* / *replace*",
+          "Same as {key:Esc}"
         ],
         [
           "{key:v}",
-          "Normal",
-          "Enter Visual (character) mode"
+          "*normal*",
+          "Enter *visual mode* (character-wise) with {key:v}"
         ],
         [
           "{key::}",
-          "Normal",
+          "*normal*",
           "Enter *command-line mode*"
         ]
       ]

@@ -25,7 +25,7 @@
     },
     {
       "type": "prose",
-      "text": "*Note: this topic builds on macros, which are introduced in Part 13. If you're reading sequentially, skim it and return after Part 13 for the full payoff — it's the insight that turns macros from a recording feature into something you can edit by hand.*"
+      "text": "*Note: this topic builds on macros, which are introduced in *Macros*. If you're reading sequentially, skim it and return after *Macros* for the full payoff — it's the insight that turns macros from a recording feature into something you can edit by hand.*"
     },
     {
       "type": "prose",
@@ -70,7 +70,7 @@
     {
       "type": "internals",
       "title": "Why This Works",
-      "text": "Recording a macro **just** appends each typed key to the register, encoded as a Vim keystroke string ({key:<Esc>} is one byte 0x1b, etc.). Playback is a function `feedkeys(getreg('a'))` — feed those keystrokes back into the input buffer.\n\nNothing about a macro is \"compiled.\" There's no AST, no special structure. So:\n\n  • Yank works on macros: {key:\"}{key:a}{key:y}{key:$} writes whatever's selected.\n  • Append works on macros: {key:q}{key:A}…{key:q} appends to register `a`'s existing contents — extending the macro.\n  • `:let` {key:@}{key:a}{key:=}{string} sets the macro programmatically.\n  • You can yank a macro from a comment in your file by selecting the keystroke text and {key:\"}{key:a}{key:y}.\n\nSpecial keys appear as {key:<Esc>}, {key:<CR>}, etc. in normal display, but as raw bytes in the register. Use `:let` {key:@}{key:a}{key:=}\"ciw foo<Esc>\" to type-set special keys (the {key:<Esc>} is interpreted by Vim's parser)."
+      "text": "Recording a macro **just** appends each typed key to the register, encoded as a Vim keystroke string ({key:Esc} is one byte 0x1b, etc.). Playback is a function `feedkeys(getreg('a'))` — feed those keystrokes back into the input buffer.\n\nNothing about a macro is \"compiled.\" There's no AST, no special structure. So:\n\n  • Yank works on macros: {key:\"}{key:a}{key:y}{key:$} writes whatever's selected.\n  • Append works on macros: {key:q}{key:A}…{key:q} appends to register `a`'s existing contents — extending the macro.\n  • `:let` {key:@}{key:a}{key:=}{string} sets the macro programmatically.\n  • You can yank a macro from a comment in your file by selecting the keystroke text and {key:\"}{key:a}{key:y}.\n\nSpecial keys appear as {key:Esc}, {key:Enter}, etc. in normal display, but as raw bytes in the register. Use `:let` {key:@}{key:a}{key:=}\"ciw foo<Esc>\" to type-set special keys (the {key:Esc} there is interpreted by Vim's parser)."
     },
     {
       "type": "tip",

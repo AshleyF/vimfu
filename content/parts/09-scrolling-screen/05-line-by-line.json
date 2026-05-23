@@ -3,7 +3,7 @@
   "version": 1,
   "id": "scroll.line-by-line",
   "title": "Line-by-Line Scroll",
-  "subtitle": "{key:Ctrl-E} and {key:Ctrl-Y} — scroll without moving the cursor (until you have to).",
+  "subtitle": "Peek at what's just off-screen without moving the cursor.",
   "part": "scroll",
   "summary": "{key:Ctrl-E} scrolls the screen down one line; {key:Ctrl-Y} scrolls it up. The cursor stays on its file line until the screen would have to push it off — then it moves with the screen.",
   "keys": [
@@ -41,12 +41,12 @@
     },
     {
       "type": "tip",
-      "text": "Counts work: {key:5}{key:Ctrl-E} scrolls down 5 lines. With `'scrolloff'` set, the cursor will follow as needed to stay within the offset zone."
+      "text": "Counts work: {key:5}{key:Ctrl-E} scrolls down 5 lines. With `scrolloff` set, the cursor will follow as needed to stay within the offset zone."
     },
     {
       "type": "internals",
       "title": "Cursor Sticks Until Forced",
-      "text": "{key:Ctrl-E} just decrements the window's *visible top line*. The cursor's buffer position doesn't change. Result: the screen scrolls; the cursor appears to climb upward in the visible region.\n\nWhen the cursor's line is about to scroll off the *top* (or fall below the bottom for {key:Ctrl-Y}), Vim moves the cursor to keep it visible. So you can scroll past the cursor's line and the cursor follows along.\n\nWith `'scrolloff'` > 0, the cursor moves earlier — the offset acts as a margin. Combined with `'cursorline'`, this is a very tactile way to read code while keeping a position marked."
+      "text": "{key:Ctrl-E} just decrements the window's *visible top line*. The cursor's buffer position doesn't change. Result: the screen scrolls; the cursor appears to climb upward in the visible region.\n\nWhen the cursor's line is about to scroll off the *top* (or fall below the bottom for {key:Ctrl-Y}), Vim moves the cursor to keep it visible. So you can scroll past the cursor's line and the cursor follows along.\n\nWith `scrolloff` > 0, the cursor moves earlier — the offset acts as a margin. Combined with `cursorline`, this is a very tactile way to read code while keeping a position marked."
     },
     {
       "type": "divider"

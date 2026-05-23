@@ -3,9 +3,9 @@
   "version": 1,
   "id": "text-objects.iw-aw",
   "title": "Inner Word vs Around Word",
-  "subtitle": "{key:iw} and {key:aw} — the first text objects.",
+  "subtitle": "Name a chunk of text directly instead of motioning to its ends.",
   "part": "text-objects",
-  "summary": "Text objects produce a (start, end) range *without* using the cursor. iw is the word the cursor is in. aw is that word plus surrounding whitespace.",
+  "summary": "Text objects produce a (start, end) range *without* using the cursor. {key:i}{key:w} is the word the cursor is in. {key:a}{key:w} is that word plus surrounding whitespace.",
   "keys": [
     "iw",
     "aw"
@@ -72,8 +72,8 @@
     },
     {
       "type": "internals",
-      "title": "i Means \"Inner.\" a Means \"Around.\"",
-      "text": "Every text object comes in two flavors:\n\n  • {key:i}{noun} — **inner**: the noun itself, *without* delimiters or surrounding whitespace.\n  • {key:a}{noun} — **around**: the noun *with* its delimiters or trailing whitespace.\n\nFor a word ({key:i}{key:w} / {key:a}{key:w}), there are no delimiters — just whitespace. So:\n\n  • {key:i}{key:w} = the keyword characters under the cursor.\n  • {key:a}{key:w} = the word + the trailing space (or leading space if at end of line).\n\nFor a quoted string, {key:i}{key:\"} is what's between the quotes; {key:a}{key:\"} includes the quotes. For parens, {key:i}{key:(} is the contents; {key:a}{key:(} includes the parens themselves. Same `i`/`a` rule everywhere."
+      "title": "{key:i} Means \"Inner.\" {key:a} Means \"Around.\"",
+      "text": "Every text object comes in two flavors:\n\n  • {key:i}{noun} — **inner**: the noun itself, *without* delimiters or surrounding whitespace.\n  • {key:a}{noun} — **around**: the noun *with* its delimiters or trailing whitespace.\n\nFor a word ({key:i}{key:w} / {key:a}{key:w}), there are no delimiters — just whitespace. So:\n\n  • {key:i}{key:w} = the keyword characters under the cursor.\n  • {key:a}{key:w} = the word + the trailing space (or leading space if at end of line).\n\nFor a quoted string, {key:i}{key:\"} is what's between the quotes; {key:a}{key:\"} includes the quotes. For parens, {key:i}{key:(} is the contents; {key:a}{key:(} includes the parens themselves. Same {key:i}/{key:a} rule everywhere."
     },
     {
       "type": "internals",
@@ -82,7 +82,7 @@
     },
     {
       "type": "tip",
-      "text": "Word objects use the same `'iskeyword'` setting as {key:w}. So in `foo->bar`, {key:c}{key:i}{key:w} on `foo` changes just `foo`. WORD objects ({key:i}{key:W}, {key:a}{key:W}) treat anything-not-whitespace as the word — change the whole `foo->bar`."
+      "text": "Word objects use the same `iskeyword` setting as {key:w}. So in `foo->bar`, {key:c}{key:i}{key:w} on `foo` changes just `foo`. WORD objects ({key:i}{key:W}, {key:a}{key:W}) treat anything-not-whitespace as the word — change the whole `foo->bar`."
     },
     {
       "type": "divider"

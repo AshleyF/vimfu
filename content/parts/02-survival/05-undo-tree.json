@@ -3,9 +3,9 @@
   "version": 1,
   "id": "survival.undo-tree",
   "title": "Undo as a Tree",
-  "subtitle": "{key:g-} and {key:g+} walk by time. `:undolist` shows the branches.",
+  "subtitle": "{key:g}{key:-} and {key:g}{key:+} walk by time. `:undolist` shows the branches.",
   "part": "survival",
-  "summary": "Vim's undo isn't a stack — it's a tree. Every undo branch is preserved. g- and g+ walk by chronological time; `:undolist` shows all branches; :earlier/:later jump by time intervals.",
+  "summary": "Vim's undo isn't a stack — it's a tree. Every undo branch is preserved. {key:g}{key:-} and {key:g}{key:+} walk by chronological time; `:undolist` shows all branches; `:earlier`/`:later` jump by time intervals.",
   "keys": [
     "u",
     "{key:Ctrl-R}",
@@ -57,15 +57,15 @@
           "Show the undo tree"
         ],
         [
-          "`:earlier` 5m",
+          "`:earlier 5m`",
           "State as of 5 minutes ago"
         ],
         [
-          "`:later` 30s",
+          "`:later 30s`",
           "30 seconds forward"
         ],
         [
-          "`:earlier` 10",
+          "`:earlier 10`",
           "10 changes back"
         ]
       ]
@@ -73,7 +73,7 @@
     {
       "type": "internals",
       "title": "The Tree Structure",
-      "text": "Each *change* (one Insert session, one delete, one substitute, etc.) creates a new **node** in the undo tree. {key:u} walks toward the parent of the current node; {key:Ctrl-R} walks back toward the most recent child.\n\nWhen you edit, undo, then **edit again**, the new edit becomes a *new branch* — and the previous redo path is preserved as a sibling. Without `g-`/`g+`, you'd never reach that sibling again.\n\n  • {key:g}{key:-} / {key:g}{key:+} walk **by time** — they ignore the tree shape and visit nodes in chronological creation order. This lets you reach any state regardless of branching.\n  • `:undolist` shows the tree as a table: number, time, save count, branch info. Use `:undo N` to jump to a specific node.\n  • `:earlier 5m` and `:later 30s` jump by wall-clock time — *priceless* when you realize you broke something a few minutes ago.\n\nThe undo tree is persisted across sessions if you `:set undofile` — Vim writes a `.<filename>.un~` file beside each saved file. Real time-travel."
+      "text": "Each *change* (one Insert session, one delete, one substitute, etc.) creates a new **node** in the undo tree. {key:u} walks toward the parent of the current node; {key:Ctrl-R} walks back toward the most recent child.\n\nWhen you edit, undo, then **edit again**, the new edit becomes a *new branch* — and the previous redo path is preserved as a sibling. Without {key:g}{key:-}/{key:g}{key:+}, you'd never reach that sibling again.\n\n  • {key:g}{key:-} / {key:g}{key:+} walk **by time** — they ignore the tree shape and visit nodes in chronological creation order. This lets you reach any state regardless of branching.\n  • `:undolist` shows the tree as a table: number, time, save count, branch info. Use `:undo N` to jump to a specific node.\n  • `:earlier 5m` and `:later 30s` jump by wall-clock time — *priceless* when you realize you broke something a few minutes ago.\n\nThe undo tree is persisted across sessions if you `:set undofile` — Vim writes a `.<filename>.un~` file beside each saved file. Real time-travel."
     },
     {
       "type": "tip",
@@ -82,7 +82,7 @@
     {
       "type": "internals",
       "title": "Undo is a tree, not a stack",
-      "text": "Each undo unit creates a node in a directed graph. Linear edits build a chain; an edit after an undo creates a branch. {key:u}/{key:Ctrl-R} walk one chain; {key:g}{key:-}/{key:g}{key:+} walk by chronological time across branches; :earlier/:later walk by wall-clock time. Most editors throw away post-undo edits — Vim preserves them as branches you can navigate back to."
+      "text": "Each undo unit creates a node in a directed graph. Linear edits build a chain; an edit after an undo creates a branch. {key:u}/{key:Ctrl-R} walk one chain; {key:g}{key:-}/{key:g}{key:+} walk by chronological time across branches; `:earlier`/`:later` walk by wall-clock time. Most editors throw away post-undo edits — Vim preserves them as branches you can navigate back to."
     },
     {
       "type": "qr",

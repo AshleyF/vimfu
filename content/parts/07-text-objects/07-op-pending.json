@@ -5,7 +5,7 @@
   "title": "Operator-Pending Mode",
   "subtitle": "The fourth mode you didn't know about.",
   "part": "text-objects",
-  "summary": "Between pressing an operator (d/c/y/...) and pressing the motion, Vim is in *operator-pending mode*. It's a real mode with its own status (\"-- OPERATOR --\") and its own mappings.",
+  "summary": "Between pressing an operator ({key:d}/{key:c}/{key:y}/...) and pressing the motion, Vim is in *operator-pending mode*. It's a real mode with its own status (\"-- OPERATOR --\") and its own mappings.",
   "keys": [
     "d",
     "c",
@@ -32,11 +32,11 @@
     {
       "type": "internals",
       "title": "Why It's a Real Mode",
-      "text": "After you press {key:d}, Vim enters a state where it accepts only motions and text objects. The status line shows `-- OPERATOR --` (in many configurations) or remains blank, depending on your settings. {key:Esc} cancels and returns to Normal.\n\nThe op-pending state is a real mode for two reasons:\n\n  1. **Custom mappings.** You can define mappings that *only apply during operator-pending* with `onoremap`. For example, `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" — but {key:p} alone in *normal mode* (which is paste) is unaffected.\n  2. **Motion modifiers** like {key:v}, {key:V}, {key:Ctrl-V} change the operator's character/line/block flavor — so {key:d}{key:v}{key:G} forces character-wise delete to end of file even though {key:G} is normally line-wise.\n\nThis is the mechanism Tim Pope's vim-surround and other plugins use to add custom text objects."
+      "text": "After you press {key:d}, Vim enters a state where it accepts only motions and text objects. The status line shows `-- OPERATOR --` (in many configurations) or remains blank, depending on your settings. {key:Esc} cancels and returns to *normal mode.*\n\nThe op-pending state is a real mode for two reasons:\n\n  1. **Custom mappings.** You can define mappings that *only apply during operator-pending* with `onoremap`. For example, `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" — but {key:p} alone in *normal mode* (which is paste) is unaffected.\n  2. **Motion modifiers** like {key:v}, {key:V}, {key:Ctrl-V} change the operator's character/line/block flavor — so {key:d}{key:v}{key:G} forces character-wise delete to end of file even though {key:G} is normally line-wise.\n\nThis is the mechanism Tim Pope's vim-surround and other plugins use to add custom text objects."
     },
     {
       "type": "internals",
-      "title": "The Modifiers v / V / {key:Ctrl-V}",
+      "title": "The Modifiers {key:v} / {key:V} / {key:Ctrl-V}",
       "text": "After an operator, you can press {key:v}, {key:V}, or {key:Ctrl-V} *before* the motion to override the motion's natural shape:\n\n  • {key:d}{key:V}{key:f}{key:x} — delete linewise from cursor through next `x` (whole lines, not character range).\n  • {key:d}{key:v}{key:G} — delete character-wise to end of file (would normally be linewise).\n  • {key:d}{key:Ctrl-V}{key:G}{key:5}{key:l} — delete a block.\n\nUseful when the default \"motion shape\" doesn't match what you want."
     },
     {

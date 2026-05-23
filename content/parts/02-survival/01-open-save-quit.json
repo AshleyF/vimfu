@@ -170,7 +170,7 @@
     },
     {
       "type": "tip",
-      "text": "If you ever quit with `:q!` and regret it, remember: Vim writes a per-session swapfile. The next time you open the file, Vim may offer to recover. The undo *file* (if you have `'undofile'` set) survives quit, so you can even reopen and undo back to a state before the changes you discarded."
+      "text": "If you ever quit with `:q!` and regret it, remember: Vim writes a per-session swapfile. The next time you open the file, Vim may offer to recover. The undo *file* (if you have `undofile` set) survives quit, so you can even reopen and undo back to a state before the changes you discarded."
     },
     {
       "type": "divider"
@@ -189,7 +189,7 @@
       "rows": [
         [
           "Open a file",
-          "{key:`}nvim file{key:`} from the shell"
+          "`nvim file` from the shell"
         ],
         [
           "Save",
@@ -228,7 +228,7 @@
     {
       "type": "internals",
       "title": "Buffers, Files, and What `:w` Actually Does",
-      "text": "When you open a file, Vim copies it into memory as a *buffer* — an in-memory list of lines. Your edits change the buffer, not the file. `:w` (write) flushes the buffer to disk; until then, the on-disk file is unchanged.\n\nVim also creates a *swapfile* (`.<filename>.swp`) next to the buffer's file. The swapfile is a periodic snapshot of unsaved changes; if Vim or your machine crashes, the swapfile lets the next `nvim <file>` invocation recover. This is also what causes the \"swap file already exists\" prompt — usually Vim was killed without exiting cleanly, and the swap is still on disk.\n\nThe *undofile* (separate from the swap, controlled by `'undofile'`) persists the undo *tree* across sessions: open a file tomorrow and {key:u} can still walk back through today's edits.\n\nQuitting with {key:Z}{key:Z} (or `:x`) writes the buffer if it's modified and exits. Quitting with {key:Z}{key:Q} (or `:q!`) deletes the swapfile and exits without writing — your unsaved buffer changes are gone, but the on-disk file is intact (it never got written this session)."
+      "text": "When you open a file, Vim copies it into memory as a *buffer* — an in-memory list of lines. Your edits change the buffer, not the file. `:w` (write) flushes the buffer to disk; until then, the on-disk file is unchanged.\n\nVim also creates a *swapfile* (`.<filename>.swp`) next to the buffer's file. The swapfile is a periodic snapshot of unsaved changes; if Vim or your machine crashes, the swapfile lets the next `nvim <file>` invocation recover. This is also what causes the \"swap file already exists\" prompt — usually Vim was killed without exiting cleanly, and the swap is still on disk.\n\nThe *undofile* (separate from the swap, controlled by `undofile`) persists the undo *tree* across sessions: open a file tomorrow and {key:u} can still walk back through today's edits.\n\nQuitting with {key:Z}{key:Z} (or `:x`) writes the buffer if it's modified and exits. Quitting with {key:Z}{key:Q} (or `:q!`) deletes the swapfile and exits without writing — your unsaved buffer changes are gone, but the on-disk file is intact (it never got written this session)."
     },
     {
       "type": "internals",
