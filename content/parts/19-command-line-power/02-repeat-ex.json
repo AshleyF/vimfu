@@ -5,10 +5,10 @@
   "title": "Repeat Last Ex ({key:@:})",
   "subtitle": "{key:@:} replays your last `:command`. Then {key:@@} repeats again.",
   "part": "command-line-power",
-  "summary": "@: replays the last Ex command. After running it once, @@ does it again. The same as macro replay — because Ex history is essentially a macro of one command.",
+  "summary": "{key:@}{key::} replays the last Ex command. After running it once, {key:@}{key:@} does it again. The same as macro replay — because Ex history is essentially a macro of one command.",
   "keys": [
-    "@:",
-    "@@"
+    "{key:@}{key::}",
+    "{key:@}{key:@}"
   ],
   "lessons": [
     448,
@@ -33,19 +33,19 @@
       "label": "Replay the last `:command`",
       "sequence": [
         {
-          "key": "@:",
+          "key": "{key:@}{key::}",
           "note": "Re-runs the last Ex command"
         },
         {
-          "key": "@@",
-          "note": "Repeats whatever @: just ran"
+          "key": "{key:@}{key:@}",
+          "note": "Repeats whatever {key:@}{key::} just ran"
         }
       ]
     },
     {
       "type": "internals",
-      "title": "Why It's @ and Not .",
-      "text": "{key:.} replays the last *change* — the last edit that modified the buffer through Normal-mode editing. Ex commands aren't part of that history; they're a separate, parallel stream.\n\n{key:@}{reg} runs the contents of register `reg` as keystrokes. The colon register `:` always holds the last Ex command typed. So {key:@}{key::} just runs that register — the same mechanism as macro playback ({key:@}{key:q}).\n\nAfter {key:@}{key::}, the macro-replay register becomes `:`, so {key:@}{key:@} (replay last macro) runs the same Ex command again. This is why bulk operations chain naturally: `:s/foo/bar/` then `nnn` (search next) {key:@}{key::} {key:@}{key::} {key:@}{key::}."
+      "title": "Why It's {key:@} and Not {key:.}",
+      "text": "{key:.} replays the last *change* — the last edit that modified the buffer through *normal mode* editing. Ex commands aren't part of that history; they're a separate, parallel stream.\n\n{key:@}{reg} runs the contents of register `reg` as keystrokes. The colon register `:` always holds the last Ex command typed. So {key:@}{key::} just runs that register — the same mechanism as macro playback ({key:@}{key:q}).\n\nAfter {key:@}{key::}, the macro-replay register becomes `:`, so {key:@}{key:@} (replay last macro) runs the same Ex command again. This is why bulk operations chain naturally: `:s/foo/bar/` then {key:n}{key:n}{key:n} (search next) {key:@}{key::} {key:@}{key::} {key:@}{key::}."
     },
     {
       "type": "qr",
