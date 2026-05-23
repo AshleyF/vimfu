@@ -623,15 +623,46 @@ def _index_key_atom_entry(k: str) -> str:
         "\u2423": "Space",
     }
     k_for_sort = "".join(_glyph_to_name.get(c, c) for c in k_for_sort)
+
+    # Group prefix so the index reads top-to-bottom in a natural order:
+    #   A letters · B digits · C symbols · D named keys · E F-keys ·
+    #   F modifier chords.
+    # Letter prefixes (not digits) because makeindex's default sort
+    # tends to fold leading digits and produces inconsistent ordering.
+    mod_m = _MODIFIER_RE.match(k_for_sort)
+    if mod_m:
+        group = "F"
+        within = k_for_sort
+    elif _FNKEY_RE.match(k_for_sort):
+        group = "E"
+        within = k_for_sort
+    elif k_for_sort in _NAMED_KEYS:
+        group = "D"
+        within = k_for_sort
+    else:
+        first = k_for_sort[:1]
+        if first.isalpha():
+            group = "A"
+            within = first.lower() + ("U" if first.isupper() else "L") + k_for_sort[1:]
+        elif first.isdigit():
+            group = "B"
+            within = k_for_sort
+        else:
+            group = "C"
+            within = f"{ord(first):03d}" + k_for_sort[1:]
+
+    # makeindex-safe encoding of the within-group key: quote `!@|"` and
+    # collapse special chars to ASCII names so the .ind file doesn't
+    # try to emit accents (\^x) or unbalanced braces in the sort half.
     _sort_subst = {
         "{": "lbrace", "}": "rbrace", "\\": "bslash",
         "^": "caret", "~": "tilde", "|": "bar",
         "#": "hash", "%": "percent", "$": "dollar",
         "_": "underscore", "&": "amp",
     }
-    sort_key = "".join(
+    sort_key = group + "".join(
         _sort_subst.get(c, ('"' + c if c in '!@|"' else c))
-        for c in k_for_sort
+        for c in within
     )
 
     def _esc(c: str) -> str:
