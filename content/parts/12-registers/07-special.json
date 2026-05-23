@@ -5,7 +5,7 @@
   "title": "Special Registers",
   "subtitle": "{key:\"/} {key:\":} {key:\".} {key:\"%} {key:\"#} {key:\"=} {key:\"_} — the read-only and weird ones.",
   "part": "registers",
-  "summary": "Vim provides several read-only registers that contain useful state: \"/ is the last search, \": the last Ex command, \". the last inserted text, \"% the current filename, \"# the alternate file, \"= the expression register, and \"_ the black hole.",
+  "summary": "Vim provides several read-only registers that contain useful state: {key:\"}{key:/} is the last search, {key:\"}{key::} the last Ex command, {key:\"}{key:.} the last inserted text, {key:\"}{key:%} the current filename, {key:\"}{key:#} the alternate file, {key:\"}{key:=} the expression register, and {key:\"}{key:_} the black hole.",
   "keys": [
     "\"/",
     "\":",
@@ -116,7 +116,7 @@
     },
     {
       "type": "internals",
-      "title": "The Two Most Useful: \"_ and \"=",
+      "title": "The Two Most Useful: {key:\"}{key:_} and {key:\"}{key:=}",
       "text": "**{key:\"}{key:_} (black hole)**. Anything written here disappears. Anything read from it is empty. Use it to delete *without affecting any other register*:\n\n  • {key:\"}{key:_}{key:d}{key:d} — delete this line, but don't update unnamed/numbered.\n  • {key:\"}{key:_}{key:c}{key:i}{key:w} — change this word, but keep the previous yank ready to paste.\n  • Visual select something, then {key:\"}{key:_}{key:d}{key:p} — replace selection with the unnamed register's content (delete to black hole, then put).\n\n**{key:\"}{key:=} (expression)**. In *insert mode*, {key:Ctrl-R}{key:=} pops up a `=` prompt. Type any Vim expression, hit {key:Enter}, and the result is inserted as text. Examples:\n\n  • {key:Ctrl-R}{key:=}`5*7+1`{key:Enter} → inserts `36`.\n  • {key:Ctrl-R}{key:=}`strftime('%Y-%m-%d')`{key:Enter} → today's date.\n  • {key:Ctrl-R}{key:=}`getreg('a')`{key:Enter} → contents of register a (programmatic access).\n\nThis is Vim as a calculator inside its editor."
     },
     {

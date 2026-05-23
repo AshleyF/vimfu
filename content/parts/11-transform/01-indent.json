@@ -5,7 +5,7 @@
   "title": "Indent and Auto-Indent",
   "subtitle": "{key:>>} indents. {key:<<} dedents. {key:=}{motion} re-indents using the language indenter.",
   "part": "transform",
-  "summary": ">{motion} indents a range one shiftwidth. <{motion} dedents. ={motion} runs the language's indent function. Doubled forms (>>, <<, ==) act on the current line.",
+  "summary": "{key:>}{motion} indents a range one `shiftwidth`. {key:<}{motion} dedents. {key:=}{motion} runs the language's indent function. Doubled forms ({key:>}{key:>}, {key:<}{key:<}, {key:=}{key:=}) act on the current line.",
   "keys": [
     ">",
     "<",
@@ -80,31 +80,31 @@
     {
       "type": "embed",
       "lesson": 107,
-      "caption": ">> — indent line"
+      "caption": "{key:>}{key:>} — indent line"
     },
     {
       "type": "embed",
       "lesson": 108,
-      "caption": "<< — dedent line"
+      "caption": "{key:<}{key:<} — dedent line"
     },
     {
       "type": "embed",
       "lesson": 109,
-      "caption": ">{motion} — indent range"
+      "caption": "{key:>}{motion} — indent range"
     },
     {
       "type": "embed",
       "lesson": 110,
-      "caption": "={motion} — auto-indent"
+      "caption": "{key:=}{motion} — auto-indent"
     },
     {
       "type": "embed",
       "lesson": 111,
-      "caption": "== — re-indent line"
+      "caption": "{key:=}{key:=} — re-indent line"
     },
     {
       "type": "internals",
-      "title": ">, <, = Are Operators — That's the Whole Insight",
+      "title": "{key:>}, {key:<}, {key:=} Are Operators — That's the Whole Insight",
       "text": "Once you internalize that {key:>}, {key:<}, and {key:=} are operators (verbs), every motion you know becomes an indenter:\n\n  • {key:>}{key:G} — indent from here to end of file.\n  • {key:>}{key:i}{key:{} — indent inside the next brace block.\n  • {key:>}{key:%} — indent everything between this brace and its match.\n  • {key:=}{key:a}{key:p} — auto-indent the surrounding paragraph.\n  • {key:=}{key:G} — auto-indent the rest of the file.\n\nThe **shift width** (how much {key:>} indents) comes from `shiftwidth`. With `expandtab` set, tabs are expanded to spaces.\n\n{key:=} delegates to whatever `indentexpr` or `cindent` is configured. For most languages, ftplugin sets this up automatically — pressing {key:=}{key:i}{key:p} on Python or JavaScript does the right thing."
     },
     {
