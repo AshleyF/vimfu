@@ -194,6 +194,7 @@ def compile_pdf() -> int:
                   file=sys.stderr)
             return rc
         if n == 1 and have("makeindex") and (LATEX_DIR / "book.idx").exists():
+            _normalize_idx(LATEX_DIR / "book.idx")
             run(["makeindex", "book.idx"], cwd=LATEX_DIR)
             post_makeindex_state = _state_hash()
         elif n == 2:
@@ -202,6 +203,42 @@ def compile_pdf() -> int:
                 break
     print(f"  ✓ {LATEX_DIR}/book.pdf")
     return 0
+
+
+def _normalize_idx(idx: Path) -> None:
+    """Canonicalize ``\\key`` forms in the .idx so makeindex doesn't
+    treat ``\\protect\\key{h}`` and ``\\key {h}`` as two distinct
+    display strings (which then become two ``\\subitem`` lines under
+    the same sort key — visible as duplicated pills in the rendered
+    index).
+
+    LaTeX writes ``\\index{Keys!h@\\protect\\key{h}}`` differently
+    depending on whether the surrounding context had ``\\@sanitize``
+    catcodes active when ``\\index`` was called:
+
+      * sanitized   →   ``\\protect\\key{h}``  (chars written verbatim)
+      * unsanitized →   ``\\key {h}``          (control word + space)
+
+    Both forms render identically once LaTeX reads .ind back in, but
+    makeindex sees different strings and emits separate subitems with
+    different page lists. Rewrite both into the single canonical form
+    ``\\protect\\key{...}`` here, before makeindex runs.
+    """
+    import re
+    raw = idx.read_text(encoding="utf-8")
+    # Normalize ``\key {X}`` (with space) → ``\protect\key{X}``.
+    raw = re.sub(r"\\key \{", r"\\protect\\key{", raw)
+    # Some entries land as bare ``\key{X}`` (no space, no protect).
+    # Promote them too so every entry shares the canonical form.
+    raw = re.sub(r"(?<!\\protect)\\key\{", r"\\protect\\key{", raw)
+    # Same issue inside the pill body: ``\textbackslash {}`` (with space)
+    # vs ``\textbackslash{}`` — written differently depending on whether
+    # ``\@sanitize`` was active. Collapse the spaced form to the canonical
+    # un-spaced form so the two index entries merge.
+    for cs in ("textbackslash", "textbraceleft", "textbraceright",
+               "textasciicircum", "textasciitilde", "textbar"):
+        raw = re.sub(rf"\\{cs} \{{}}", f"\\\\{cs}{{}}", raw)
+    idx.write_text(raw, encoding="utf-8")
 
 
 def main() -> int:

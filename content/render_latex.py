@@ -390,6 +390,79 @@ def _split_code_for_wrap(s: str) -> str:
     return "".join(out)
 
 
+_ARROW_GLYPH = {
+    "Left": "\u2190",   # ←
+    "Up": "\u2191",     # ↑
+    "Right": "\u2192",  # →
+    "Down": "\u2193",   # ↓
+}
+
+
+def _arrow_pill_body(name: str) -> str:
+    """For a named arrow key, return the TikZ-safe body for `\\key{...}`
+    that renders the Unicode arrow glyph. The glyphs live in the body
+    font (Libertinus) which has them. Returns ``None`` for non-arrows.
+    """
+    return _ARROW_GLYPH.get(name)
+
+
+def _atomize_key(s: str) -> list[str]:
+    """Split a key string into atomic keystrokes for body rendering and
+    index emission.
+
+    Multi-character alpha sequences like ``hjkl`` or ``gg`` become one
+    element per character. A modifier chord whose suffix is multi-alpha
+    like ``Ctrl-hjkl`` becomes ``[Ctrl-h, Ctrl-j, Ctrl-k, Ctrl-l]``.
+    Space-separated tokens (``Ctrl-W Ctrl-W``) are recursed on. Named
+    keys (``Esc``, ``Tab``, ``Left``), F-keys, ``<...>`` angle-bracket
+    forms, and short tokens stay atomic.
+    """
+    if not s:
+        return []
+    if " " in s:
+        words = s.split(" ")
+        if not all(words):
+            return [s]
+        if "".join(words) in _NAMED_KEYS:
+            return [s]
+        out: list[str] = []
+        for w in words:
+            out.extend(_atomize_key(w))
+        return out
+    if s in _NAMED_KEYS:
+        return [s]
+    if _FNKEY_RE.match(s):
+        return [s]
+    if s.startswith("<") and s.endswith(">"):
+        return [s]
+    m = _MODIFIER_RE.match(s)
+    if m:
+        prefix = s[:m.end()]
+        rest = s[m.end():]
+        # Suffix that's itself a named key (``Space``, ``Esc``, ``Up``)
+        # or wrapped in angle brackets (``<C-W>``) is one atomic chord,
+        # not a sequence of separate per-character chords.
+        if rest in _NAMED_KEYS or _FNKEY_RE.match(rest):
+            return [s]
+        if rest.startswith("<") and rest.endswith(">"):
+            return [s]
+        if len(rest) >= 2 and rest.isascii() and all(c > " " for c in rest):
+            return [prefix + c for c in rest]
+        return [s]
+    if (
+        len(s) >= 2
+        and s.isascii()
+        and all(c > " " for c in s)
+    ):
+        # Multi-character sequences like ``hjkl``, ``gg``, ``:wq``,
+        # ``'a``, ``[c``, ``gU`` are each *a sequence of separate
+        # keystrokes*, not one key labelled with the whole string. Split
+        # them so body pills show one cap per keystroke and the index
+        # gets one entry per atomic key.
+        return list(s)
+    return [s]
+
+
 def _split_key_for_wrap(s: str) -> str:
     """Render `s` as one or more `\\key{}` caps with breakpoints.
 
@@ -404,45 +477,55 @@ def _split_key_for_wrap(s: str) -> str:
 
     Multi-letter alpha-only tokens like ``hjkl`` or ``gg`` are split
     into per-character pills — those represent a sequence of separate
-    keystrokes, not a single key labelled "hjkl".
+    keystrokes, not a single key labelled "hjkl". Modifier chords whose
+    suffix is multi-alpha (``Ctrl-hjkl``) are similarly expanded into
+    one chord per letter.
     """
-    words = s.split(" ")
-    # If any split segment is empty, the spaces aren't pill-separators
-    # — render the whole token as one pill with `␣` (U+2423) for each
-    # literal space so the space character is visible.
-    if not s or any(p == "" for p in words):
-        body = (s.replace(" ", "\u2423") if s else "\u2423")
+    atoms = _atomize_key(s)
+    if not atoms:
+        body = "\u2423"
         return f"\\key{{{tex_escape_inline_code(body)}}}"
-    if len(words) > 1:
-        # If the spaces are part of a multi-word key name (e.g. "Caps
-        # Lock", "Num Lock", "Page Up"), render as a single pill.
-        joined = "".join(words)
-        if joined in _NAMED_KEYS:
-            return f"\\key{{{tex_escape_inline_code(s)}}}"
-        pills: list[str] = []
-        for w in words:
-            if not w:
-                continue
-            pills.append(_split_key_for_wrap(w))
-        return " ".join(pills)
-    # Single token: see if it's a sequence of plain letters that should
-    # render as separate pills. Skip named keys ("Esc", "Tab"), modifier
-    # chords ("Ctrl-W"), angle-bracket forms ("<C-W>"), and any token
-    # containing punctuation (":wq", "//", "g~").
-    if (
-        len(s) >= 2
-        and s.isascii()
-        and s.isalpha()
-        and s not in _NAMED_KEYS
-        and not _FNKEY_RE.match(s)
-        and not _MODIFIER_RE.match(s)
-    ):
-        pills = [f"\\key{{{tex_escape_inline_code(c)}}}" for c in s]
-        # Pills in a key sequence render touching (no thin space): per
-        # the style guide, a sequence like {key:dd} or {key:ciw} reads
-        # as one continuous chord-of-keystrokes.
-        return "".join(pills)
-    return f"\\key{{{tex_escape_inline_code(s)}}}"
+
+    def _render_atom(a: str) -> str:
+        # Single named arrow → Unicode glyph in the pill.
+        m = _MODIFIER_RE.match(a)
+        if m:
+            prefix = a[:m.end()]
+            rest = a[m.end():]
+            glyph = _arrow_pill_body(rest)
+            if glyph is not None:
+                return (
+                    f"\\key{{{tex_escape_inline_code(prefix)}"
+                    f"{glyph}}}"
+                )
+            # ``Ctrl- `` (literal space suffix) renders the space with
+            # the visible-space glyph so the chord doesn't appear as a
+            # bare ``Ctrl-`` pill in the index/body.
+            body = prefix + rest.replace(" ", chr(0x2423))
+            return f"\\key{{{tex_escape_inline_code(body)}}}"
+        glyph = _arrow_pill_body(a)
+        if glyph is not None:
+            return f"\\key{{{glyph}}}"
+        if not a:
+            return f"\\key{{{tex_escape_inline_code(chr(0x2423))}}}"
+        body = a.replace(" ", chr(0x2423))
+        return f"\\key{{{tex_escape_inline_code(body)}}}"
+
+    # Decide spacing between atoms. Atoms split out of a single string
+    # (``hjkl`` → 4 pills) read as one continuous chord and render
+    # touching. Atoms separated by a literal space in the source
+    # (``Ctrl-W Ctrl-W``) get a real space so TeX has a breakpoint.
+    words = s.split(" ")
+    if len(words) <= 1:
+        return "".join(_render_atom(a) for a in atoms)
+    # Reconstruct: group atoms per word, join word-groups with " ".
+    groups: list[str] = []
+    for w in words:
+        if not w:
+            continue
+        wa = _atomize_key(w)
+        groups.append("".join(_render_atom(a) for a in wa))
+    return " ".join(groups)
 
 
 # A whitelist for what counts as an actual Vim key worth indexing under
@@ -490,11 +573,20 @@ def _is_vim_key(k: str) -> bool:
 
 
 def _index_key_entry(k: str) -> str:
-    """Build an \\index entry for a key keystroke, sub-grouped under "Keys".
+    """Build one or more \\index entries (concatenated) for a key
+    keystroke, sub-grouped under "Keys".
 
     Returns an empty string for non-key tokens (e.g. literal text like
     "foo" / "bar" inside example commands) so the index stays focused on
     real Vim keys.
+
+    The key string is *atomized* first — ``hjkl`` produces four entries
+    (``h``, ``j``, ``k``, ``l``), ``Ctrl-hjkl`` produces four ``Ctrl-X``
+    entries — so the index stays consistent with the per-pill body
+    rendering. Without this, every multi-keystroke chord like ``gg``,
+    ``ZZ``, ``Ctrl-WW`` would clutter the index with bogus compound
+    "keys" that aren't real Vim keys, while still being absent from the
+    individual-letter entries readers actually want to look up.
 
     Uses makeindex's `sort@display` syntax. In the display half we must
     keep raw `{` and `}` balanced from makeindex's point of view, so any
@@ -503,13 +595,34 @@ def _index_key_entry(k: str) -> str:
     """
     if not _is_vim_key(k):
         return ""
-    # Strip control characters (newline, tab, …) from the sort key so they
-    # don't end up sorting next to NULs in makeindex's output.
+    atoms = _atomize_key(k)
+    if not atoms:
+        return ""
+    out: list[str] = []
+    for atom in atoms:
+        entry = _index_key_atom_entry(atom)
+        if entry:
+            out.append(entry)
+    return "".join(out)
+
+
+def _index_key_atom_entry(k: str) -> str:
+    """Emit a single ``\\index{Keys!sort@display}`` entry for one atomic
+    keystroke. Internal helper for `_index_key_entry`.
+    """
+    if not k:
+        return ""
     k_for_sort = "".join(c for c in k if c >= " ")
-    # Sort key: must have balanced braces (LaTeX parses the \index argument).
-    # Substitute brace/backslash/caret/tilde/etc with ASCII placeholders so
-    # they sort sensibly *and* don't survive into the rendered index page
-    # as combining accents (\^x / \~x).
+    # Arrow glyphs collapse to their English names so ``{key:↑}`` and
+    # ``{key:Up}`` index together. Likewise the visible-space glyph
+    # collapses to the literal name "Space" so a Ctrl-Space chord
+    # sorts as Ctrl-Space rather than Ctrl-␣.
+    _glyph_to_name = {
+        "\u2190": "Left", "\u2191": "Up",
+        "\u2192": "Right", "\u2193": "Down",
+        "\u2423": "Space",
+    }
+    k_for_sort = "".join(_glyph_to_name.get(c, c) for c in k_for_sort)
     _sort_subst = {
         "{": "lbrace", "}": "rbrace", "\\": "bslash",
         "^": "caret", "~": "tilde", "|": "bar",
@@ -520,9 +633,7 @@ def _index_key_entry(k: str) -> str:
         _sort_subst.get(c, ('"' + c if c in '!@|"' else c))
         for c in k_for_sort
     )
-    # Escape each char for inside \key{...}; split on spaces so multi-key
-    # sequences (e.g. "Ctrl-W Ctrl-W") render as separate pills with a
-    # visible gap, instead of one long unbreakable pill.
+
     def _esc(c: str) -> str:
         if c == "{": return "\\textbraceleft{}"
         if c == "}": return "\\textbraceright{}"
@@ -531,22 +642,34 @@ def _index_key_entry(k: str) -> str:
         if c == "^": return "\\textasciicircum{}"
         if c == "~": return "\\textasciitilde{}"
         if c in "#$%&_": return "\\" + c
-        # NUL/Tab/etc. don't have a renderable glyph; if such a char
-        # ever sneaks into a key string, substitute the visible-space
-        # symbol so the index entry shows SOMETHING rather than a blank
-        # pill that points readers at a page number with no caption.
         if c < " ": return "\u2423"
+        # makeindex treats unescaped `"`, `!`, `@`, `|` as special even
+        # inside the display argument. `"` quotes the next char (so `{"}`
+        # means literal `}` and the inner `{` ends up unmatched, which
+        # blows up makeindex with "premature LFD"). Double the quote and
+        # prefix the others so makeindex passes them through verbatim.
+        if c == '"': return '""'
+        if c in "!@|": return '"' + c
         return c
 
-    # Render display half. Spaces are usually a separator between distinct
-    # keystrokes ("Ctrl-W Ctrl-W"), but they can also BE the keystroke
-    # (the Space bar) or part of a chord ("Ctrl- " = Ctrl-Space). If any
-    # split segment is empty, the spaces aren't separators — render the
-    # whole token as a single pill with `\textvisiblespace` for spaces.
+    # Modifier chord with arrow suffix → Unicode arrow glyph.
+    m = _MODIFIER_RE.match(k)
+    if m:
+        prefix = k[:m.end()]
+        rest = k[m.end():]
+        glyph = _arrow_pill_body(rest)
+        if glyph is not None:
+            body = "".join(_esc(c) for c in prefix) + glyph
+            display = "\\protect\\key{" + body + "}"
+            return f"\\index{{Keys!{sort_key}@{display}}}"
+    # Bare arrow name → Unicode arrow glyph.
+    glyph = _arrow_pill_body(k)
+    if glyph is not None:
+        display = "\\protect\\key{" + glyph + "}"
+        return f"\\index{{Keys!{sort_key}@{display}}}"
+
     parts = k.split(" ")
     if not k or any(p == "" for p in parts):
-        # Single pill: replace every literal space with the visible-space
-        # glyph ␣ so the index entry isn't an empty box.
         body = "".join(
             "\u2423" if c == " " else _esc(c)
             for c in (k if k else "\u2423")
@@ -558,6 +681,25 @@ def _index_key_entry(k: str) -> str:
             pills.append("\\protect\\key{" + "".join(_esc(c) for c in word) + "}")
         display = " ".join(pills)
     return f"\\index{{Keys!{sort_key}@{display}}}"
+
+
+def _extract_key_index_entries(text: str) -> list[str]:
+    """Return a list of ``\\index{Keys!...}`` lines for every ``{key:X}``
+    pill in *text*. Used by heading-like blocks (``\\section*``,
+    ``\\begin{internals}{...}``, etc.) so we can emit the index entries
+    *outside* the fragile title argument. Inside a fragile arg, LaTeX
+    strips our ``\\protect`` from ``\\protect\\key{...}`` while writing the
+    title to .aux, which produces a duplicate ``\\key {X}`` entry in the
+    index — every key indexed from a heading would appear twice.
+    """
+    if not text:
+        return []
+    entries: list[str] = []
+    for m in _KEY_RE.finditer(_collapse_long_key_runs(text)):
+        e = _index_key_entry(m.group(1))
+        if e:
+            entries.append(e)
+    return entries
 
 
 _LONG_KEY_RUN_RE = re.compile(r"(?:\{key:[^{}\s]\} ?){4,}")
@@ -825,7 +967,9 @@ def render_block(b, *, index, examples) -> list[str]:
         if not ex:
             out.append(f"\\par\\textit{{[example not found: {tex_escape(str(ex_id))}]}}")
             return out
-        out.append("\\begin{example}{" + inl(ex.get("title", ex_id)) + "}")
+        raw_ex_title = ex.get("title", ex_id)
+        out.extend(_extract_key_index_entries(raw_ex_title))
+        out.append("\\begin{example}{" + render_inline(raw_ex_title, index=index, with_key_index=False) + "}")
         if ex.get("summary"):
             out.append("\\examplesummary{" + inl(ex["summary"]) + "}")
         for i, fr in enumerate(ex.get("frames", []), start=1):
@@ -900,7 +1044,16 @@ def render_block(b, *, index, examples) -> list[str]:
     if bt == "heading":
         level = int(b.get("level", 2))
         cmd = "section" if level <= 1 else "subsection" if level == 2 else "subsubsection"
-        out.append(f"\\{cmd}*{{{inl(b.get('text', ''))}}}")
+        raw_title = b.get("text", "")
+        # Render the visible title with key indexing OFF, then emit the
+        # `\index{Keys!...}` calls AFTER the heading. Index calls inside
+        # `\section*{...}` get re-written by LaTeX as the title is moved
+        # into .aux/running-headers, and the inner `\protect\key{...}`
+        # loses its protection — producing a duplicate `\key {X}`
+        # variant for every key (see _extract_key_index_entries).
+        title_tex = render_inline(raw_title, index=index, with_key_index=False)
+        out.append(f"\\{cmd}*{{{title_tex}}}")
+        out.extend(_extract_key_index_entries(raw_title))
 
     elif bt == "prose":
         out.extend(emit_paragraphs(b.get("text", ""), index=index))
@@ -1187,8 +1340,10 @@ def render_block(b, *, index, examples) -> list[str]:
             out.append("\\end{videocallout}")
 
     elif bt == "internals":
-        title = inl(b.get("title", "Under the Hood"))
+        raw_title = b.get("title", "Under the Hood")
+        title = render_inline(raw_title, index=index, with_key_index=False)
         text = b.get("text", "") or ""
+        out.extend(_extract_key_index_entries(raw_title))
         out.append("\\begin{internals}{" + title + "}")
         for chunk in text.split("\n\n"):
             chunk = chunk.rstrip()
@@ -1207,9 +1362,11 @@ def render_block(b, *, index, examples) -> list[str]:
         out.append("\\end{internals}")
 
     elif bt == "anecdote":
-        title = inl(b.get("title", ""))
+        raw_title = b.get("title", "")
+        title = render_inline(raw_title, index=index, with_key_index=False)
         text = b.get("text", "") or ""
         title_arg = title if title else ""
+        out.extend(_extract_key_index_entries(raw_title))
         out.append("\\begin{anecdote}{" + title_arg + "}")
         for chunk in text.split("\n\n"):
             chunk = chunk.rstrip()
@@ -1417,7 +1574,7 @@ PREAMBLE = r"""% Auto-generated by content/render_latex.py --- do not edit by ha
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{imakeidx}
-\makeindex[title=Index, columns=2, intoc]
+\makeindex[title=Index, columns=2, intoc, noautomatic]
 \usepackage{longtable}
 \usepackage{tabularx}
 \usepackage{ltablex} % longtable + tabularx: X columns that page-break
