@@ -7,8 +7,8 @@
   "part": "visual-modes",
   "summary": "Two tricks that make *visual mode* much more useful: {key:O} in block mode swaps to the opposite diagonal corner, and {key:g}{key:v} re-selects the previous selection.",
   "keys": [
-    "O",
-    "gv"
+    "{key:O}",
+    "{key:g}{key:v}"
   ],
   "lessons": [
     69,
@@ -41,19 +41,19 @@
     {
       "type": "keys",
       "sequence": [
-        "O"
+        "{key:O}"
       ],
-      "label": "(in Block Visual) Move cursor to opposite corner of rectangle"
+      "label": "(in *visual-block mode*) Move cursor to opposite corner of rectangle"
     },
     {
       "type": "embed",
       "lesson": 69,
-      "caption": "O — block-visual diagonal"
+      "caption": "{key:O} — *visual-block mode* diagonal"
     },
     {
       "type": "heading",
       "level": 2,
-      "text": "gv — re-select last visual"
+      "text": "{key:g}{key:v} — re-select last visual"
     },
     {
       "type": "prose",
@@ -62,19 +62,19 @@
     {
       "type": "keys",
       "sequence": [
-        "g",
-        "v"
+        "{key:g}",
+        "{key:v}"
       ],
       "label": "Re-select previous visual range"
     },
     {
       "type": "embed",
       "lesson": 70,
-      "caption": "gv — re-select previous visual"
+      "caption": "{key:g}{key:v} — re-select previous visual"
     },
     {
       "type": "internals",
-      "title": "How gv Works",
+      "title": "How {key:g}{key:v} Works",
       "text": "Whenever you leave *visual mode*, Vim writes two marks ({key:`}{key:<}, {key:`}{key:>}) and remembers the *type* of the selection. {key:g}{key:v} re-enters that type of Visual with the cursor and anchor restored from those marks.\n\nBecause it's just two marks, anything that updates them updates {key:g}{key:v}'s target. `:s` commands run on the visual range update them implicitly — so you can `:'<,'>s/foo/bar/g` and then {key:g}{key:v} to grab the same range again.\n\nThe range works *per buffer*. Open a different buffer; come back; {key:g}{key:v} still works."
     },
     {
@@ -98,7 +98,7 @@
         ],
         [
           "{key:O}",
-          "Move to opposite corner (block visual only)"
+          "Move to opposite corner (*visual-block mode* only)"
         ],
         [
           "{key:g}{key:v}",

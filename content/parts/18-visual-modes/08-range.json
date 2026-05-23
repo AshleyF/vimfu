@@ -5,9 +5,9 @@
   "title": "Visual + Ex Range",
   "subtitle": "Pressing {key::} from Visual auto-fills the range.",
   "part": "visual-modes",
-  "summary": "When you press : while in *visual mode*, Vim drops you to the command line with `:'<,'>` already typed — the range covering the selection. Just type your command after.",
+  "summary": "When you press {key::} while in *visual mode*, Vim drops you to the command line with `:'<,'>` already typed — the range covering the selection. Just type your command after.",
   "keys": [
-    ":"
+    "{key::}"
   ],
   "lessons": [
     443,
@@ -33,19 +33,19 @@
       "label": "From Visual to substitute",
       "sequence": [
         {
-          "key": "V",
-          "note": "Line Visual"
+          "key": "{key:V}",
+          "note": "*visual-line mode*"
         },
         {
-          "key": "5j",
+          "key": "{key:5}{key:j}",
           "note": "Extend down 5 lines"
         },
         {
-          "key": ":",
+          "key": "{key::}",
           "note": "Vim shows `:'<,'>`"
         },
         {
-          "key": "s/foo/bar/g",
+          "key": "`s/foo/bar/g`",
           "note": "Operate on those lines only"
         }
       ]
@@ -53,11 +53,11 @@
     {
       "type": "internals",
       "title": "What '< and '> Are",
-      "text": "{key:'}{key:<} and {key:'}{key:>} are *special marks* — they always point at the **first** and **last** line of the **most recent visual selection**. They persist until you make another selection.\n\nThis means:\n\n  • Even after exiting Visual, you can do `:'<,'>s/foo/bar/g` from *normal mode* and operate on the last selection.\n  • You can move elsewhere, do other work, then come back with {key:g}{key:v} or use `'<` and `'>` as marks in motions ({key:`}{key:<}, {key:`}{key:>})."
+      "text": "{key:'}{key:<} and {key:'}{key:>} are *special marks* — they always point at the first and last line of the most recent visual selection. They persist until you make another selection.\n\nThis means:\n\n  • Even after exiting Visual, you can do `:'<,'>s/foo/bar/g` from *normal mode* and operate on the last selection.\n  • You can move elsewhere, do other work, then come back with {key:g}{key:v} or use `'<` and `'>` as marks in motions ({key:`}{key:<}, {key:`}{key:>})."
     },
     {
       "type": "tip",
-      "text": "Block Visual + {key::} also gets `:'<,'>` — but most Ex commands are line-oriented and don't honor the column boundaries."
+      "text": "*Visual-block mode* + {key::} also gets `:'<,'>` — but most Ex commands are line-oriented and don't honor the column boundaries."
     },
     {
       "type": "qr",

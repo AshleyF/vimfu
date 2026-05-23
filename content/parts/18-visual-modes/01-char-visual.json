@@ -5,10 +5,10 @@
   "title": "Character Visual Mode",
   "subtitle": "{key:v} — select first, act second.",
   "part": "visual-modes",
-  "summary": "v enters character-wise *visual mode*. Move to extend the selection. Press an operator (d, c, y, …) to act on it.",
+  "summary": "{key:v} enters character-wise *visual mode*. Move to extend the selection. Press an operator ({key:d}, {key:c}, {key:y}, …) to act on it.",
   "keys": [
-    "v",
-    "o"
+    "{key:v}",
+    "{key:o}"
   ],
   "lessons": [
     64,
@@ -33,50 +33,50 @@
     {
       "type": "keys",
       "sequence": [
-        "v"
+        "{key:v}"
       ],
       "label": "Enter *visual mode*"
     },
     {
       "type": "keys",
       "sequence": [
-        "v",
-        "w",
-        "w",
-        "d"
+        "{key:v}",
+        "{key:w}",
+        "{key:w}",
+        "{key:d}"
       ],
       "label": "Select two words, delete them"
     },
     {
       "type": "keys",
       "sequence": [
-        "o"
+        "{key:o}"
       ],
       "label": "Switch which end of the selection moves"
     },
     {
       "type": "embed",
       "lesson": 64,
-      "caption": "v — character Visual"
+      "caption": "{key:v} — character *visual mode*"
     },
     {
       "type": "embed",
       "lesson": 68,
-      "caption": "o — switch endpoints"
+      "caption": "{key:o} — switch endpoints"
     },
     {
       "type": "tip",
-      "text": "Press {key:Esc} or {key:v} again to leave *visual mode* without acting. Press an operator to act and return to Normal."
+      "text": "Press {key:Esc} or {key:v} again to leave *visual mode* without acting. Press an operator to act and return to *normal mode*."
     },
     {
       "type": "internals",
-      "title": "Visual Is Just an Anchored Cursor",
-      "text": "When you press {key:v}, Vim sets an **anchor** at the cursor and remembers it. Every motion now updates the *cursor* while the *anchor* stays put. The selection is the (anchor → cursor) range — and Vim keeps it sorted so the lower position is always the start.\n\n{key:o} *swaps* the anchor and cursor. So if you started a selection going forward and realize you need to extend it backward, {key:o} flips which end your motions move.\n\nWhen you finally press an operator, Vim hands the operator the (start, end) pair just like a motion would. **Visual mode and operator+motion are the same thing internally** — they just package the range differently."
+      "title": "*Visual mode* Is Just an Anchored Cursor",
+      "text": "When you press {key:v}, Vim sets an *anchor* at the cursor and remembers it. Every motion now updates the *cursor* while the *anchor* stays put. The selection is the (anchor → cursor) range — and Vim keeps it sorted so the lower position is always the start.\n\n{key:o} *swaps* the anchor and cursor. So if you started a selection going forward and realize you need to extend it backward, {key:o} flips which end your motions move.\n\nWhen you finally press an operator, Vim hands the operator the (start, end) pair just like a motion would. *Visual mode* and operator+motion are the same thing internally — they just package the range differently."
     },
     {
       "type": "internals",
       "title": "The Last Visual Selection Is Remembered",
-      "text": "Whenever you exit *visual mode*, Vim sets two automatic marks: {key:`}{key:<} (start) and {key:`}{key:>} (end). They live in the buffer until your next visual selection.\n\nThis means:\n\n  • {key:g}{key:v}  re-selects the last visual range.\n  • `:'<,'>` (or just {key::} from Visual) targets it as an Ex range — useful for `:s/foo/bar/g`.\n\nMost \"do an Ex command on what I just selected\" idioms work this way. See [*Visual + Ex Range*](#visual.range)."
+      "text": "Whenever you exit *visual mode*, Vim sets two automatic marks: {key:`}{key:<} (start) and {key:`}{key:>} (end). They live in the buffer until your next visual selection.\n\nThis means:\n\n  • {key:g}{key:v}  re-selects the last visual range.\n  • `:'<,'>` (or just {key::} from *visual mode*) targets it as an Ex range — useful for `:s/foo/bar/g`.\n\nMost \"do an Ex command on what I just selected\" idioms work this way. See [*Visual + Ex Range*](#visual.range)."
     },
     {
       "type": "divider"
@@ -95,7 +95,7 @@
       "rows": [
         [
           "{key:v}",
-          "Enter character-wise Visual"
+          "Enter character-wise *visual mode*"
         ],
         [
           "{key:o}",
@@ -103,7 +103,7 @@
         ],
         [
           "{key:Esc}",
-          "Leave Visual without acting"
+          "Leave *visual mode* without acting"
         ],
         [
           "{key:g}{key:v}",
