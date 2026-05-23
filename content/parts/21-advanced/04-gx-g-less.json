@@ -5,10 +5,10 @@
   "title": "{key:gx} and {key:g<}",
   "subtitle": "Open URLs and recall command output.",
   "part": "advanced",
-  "summary": "gx opens the URL or filename under cursor in the system handler (browser/etc.). g< re-displays the output of the last `:command` — handy when a long message scrolled past.",
+  "summary": "{key:g}{key:x} opens the URL or filename under cursor in the system handler (browser/etc.). {key:g}{key:<} re-displays the output of the last `:command` — handy when a long message scrolled past.",
   "keys": [
-    "gx",
-    "g<"
+    "{key:g}{key:x}",
+    "{key:g}{key:<}"
   ],
   "lessons": [
     493,
@@ -30,7 +30,7 @@
     {
       "type": "heading",
       "level": 2,
-      "text": "gx — Open URL"
+      "text": "{key:g}{key:x} — Open URL"
     },
     {
       "type": "prose",
@@ -38,8 +38,8 @@
     },
     {
       "type": "internals",
-      "title": "How gx Decides What to Open",
-      "text": "The implementation is in `$VIMRUNTIME/plugin/netrwPlugin.vim` — Vim's netrw plugin defines `gx` as a Normal-mode mapping that calls `netrw#BrowseX(netrw#GX(), 0)`.\n\nThe URL/path is found by looking at the WORD under the cursor (not just word) — so URLs with `.`, `?`, `&`, etc. are captured whole. The handler is selected by `browser` if set, otherwise by platform defaults."
+      "title": "How {key:g}{key:x} Decides What to Open",
+      "text": "The implementation is in `$VIMRUNTIME/plugin/netrwPlugin.vim` — Vim's netrw plugin defines {key:g}{key:x} as a *normal mode* mapping that calls `netrw#BrowseX(netrw#GX(), 0)`.\n\nThe URL/path is found by looking at the WORD under the cursor (not just word) — so URLs with `.`, `?`, `&`, etc. are captured whole. The handler is selected by `browser` if set, otherwise by platform defaults."
     },
     {
       "type": "heading",

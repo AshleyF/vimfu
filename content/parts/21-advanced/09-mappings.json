@@ -5,7 +5,7 @@
   "title": "Mappings — `:map`, `:noremap`, and Friends",
   "subtitle": "How to bind a keystroke to a command in every mode, and what the modifiers actually do.",
   "part": "advanced",
-  "summary": "Vim has one mapping system with a per-mode entry point. `:nnoremap` is the workhorse — non-recursive normal-mode map. <silent>, <expr>, and <buffer> are the three modifiers that cover 90% of real mappings.",
+  "summary": "Vim has one mapping system with a per-mode entry point. `:nnoremap` is the workhorse — non-recursive *normal mode* map. `<silent>`, `<expr>`, and `<buffer>` are the three modifiers that cover 90% of real mappings.",
   "keys": [
     "`:map`",
     "`:nmap`",
@@ -51,32 +51,32 @@
       "rows": [
         [
           "`:nmap`",
-          "Normal",
+          "*Normal mode*",
           "Bindings that act on the buffer from rest. The default for almost every leader mapping."
         ],
         [
           "`:imap`",
-          "Insert",
+          "*Insert mode*",
           "Live-while-typing shortcuts — autopairs, abbreviation-like helpers, completion triggers."
         ],
         [
           "`:vmap`",
-          "Visual *and* Select",
-          "Rarely what you want; the Select half eats keystrokes meant as text. Prefer `xmap`."
+          "*Visual* and *Select*",
+          "Rarely what you want; the Select half eats keystrokes meant as text. Prefer `:xmap`."
         ],
         [
           "`:xmap`",
-          "Visual only (not Select)",
-          "Visual-mode bindings (e.g. `>` to indent and re-select)."
+          "*Visual mode* only (not Select)",
+          "Visual-mode bindings (e.g. {key:>} to indent and re-select)."
         ],
         [
           "`:smap`",
-          "Select only",
+          "*Select mode* only",
           "Almost never. *Select mode* behaves like a text-replacing selection (think other editors)."
         ],
         [
           "`:omap`",
-          "Operator-pending",
+          "*Operator-pending mode*",
           "Custom motions and text objects. After {key:d}/{key:c}/{key:y}, your map fires."
         ],
         [
@@ -96,7 +96,7 @@
         ],
         [
           "`:map!`",
-          "Insert + Command-line",
+          "*Insert mode* + Command-line",
           "The other broad form. Sometimes useful for {key:Ctrl}-chords you want everywhere you type."
         ]
       ]
@@ -112,7 +112,7 @@
     },
     {
       "type": "prose",
-      "text": "Without `nore`, your mapping can be re-mapped by another mapping. `:nmap j gj` then `:nmap gj jjj` will loop. With `:nnoremap j gj`, the `gj` on the right is the *built-in* `gj`, and the mapping is safe. **Use `nore` everywhere unless you have a specific reason not to.** \"Specific reason\" is almost always: you want to invoke another plugin's mapping deliberately."
+      "text": "Without `nore`, your mapping can be re-mapped by another mapping. `:nmap j gj` then `:nmap gj jjj` will loop. With `:nnoremap j gj`, the `gj` on the right is the *built-in* {key:g}{key:j}, and the mapping is safe. *Use `nore` everywhere unless you have a specific reason not to.* \"Specific reason\" is almost always: you want to invoke another plugin's mapping deliberately."
     },
     {
       "type": "heading",
@@ -160,7 +160,7 @@
     {
       "type": "internals",
       "title": "Useful read-only commands",
-      "text": "Same per-mode prefix, but without arguments lists every mapping in that mode:\n\n  • `:nmap` — list every Normal-mode mapping.\n  • `:nmap <leader>` — list every mapping that starts with your leader.\n  • `:verbose nmap <leader>w` — show the binding *and* the file/line where it was last set. Indispensable for figuring out which plugin stole your shortcut.\n  • `:map <buffer>` — list buffer-local mappings only.\n\nIn Neovim, the Lua spelling is:\n\n```\nvim.keymap.set('n', '<leader>w', ':write<CR>', { silent = true })\n```\n\n— same matrix, same modifiers (`silent`, `expr`, `buffer`, plus `desc` for which-key style helpers)."
+      "text": "Same per-mode prefix, but without arguments lists every mapping in that mode:\n\n  • `:nmap` — list every *normal mode* mapping.\n  • `:nmap <leader>` — list every mapping that starts with your leader.\n  • `:verbose nmap <leader>w` — show the binding *and* the file/line where it was last set. Indispensable for figuring out which plugin stole your shortcut.\n  • `:map <buffer>` — list buffer-local mappings only.\n\nIn Neovim, the Lua spelling is:\n\n```\nvim.keymap.set('n', '<leader>w', ':write<CR>', { silent = true })\n```\n\n— same matrix, same modifiers (`silent`, `expr`, `buffer`, plus `desc` for which-key style helpers)."
     },
     {
       "type": "tip",

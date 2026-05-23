@@ -5,8 +5,8 @@
   "title": "Tag Navigation",
   "subtitle": "Jump to definitions across files using a tags index.",
   "part": "advanced",
-  "summary": "ctags builds a tags file mapping symbols to file:line. Ctrl-] jumps to the symbol under the cursor; {key:Ctrl-T} pops back. The whole jump history forms a stack you can browse with `:tags`.",
-  "keys": ["Ctrl-]", "{key:Ctrl-T}", "`:tag`", "`:tags`", "`:tnext`", "`:tprev`"],
+  "summary": "ctags builds a tags file mapping symbols to file:line. {key:Ctrl-]} jumps to the symbol under the cursor; {key:Ctrl-T} pops back. The whole jump history forms a stack you can browse with `:tags`.",
+  "keys": ["{key:Ctrl-]}", "{key:Ctrl-T}", "`:tag`", "`:tags`", "`:tnext`", "`:tprev`"],
   "lessons": [],
   "see_also": ["marks.jumplist"],
 
@@ -23,25 +23,25 @@
       "type": "table",
       "headers": ["Command", "Effect"],
       "rows": [
-        ["ctags -R .",                "Recursively index everything under . into a file called `tags`"],
-        ["ctags -R --languages=python,go .",  "Limit to specific languages"],
-        ["ctags -R --exclude=node_modules --exclude=.git .",  "Skip noise"]
+        ["`ctags -R .`",                "Recursively index everything under `.` into a file called `tags`"],
+        ["`ctags -R --languages=python,go .`",  "Limit to specific languages"],
+        ["`ctags -R --exclude=node_modules --exclude=.git .`",  "Skip noise"]
       ]
     },
 
-    { "type": "prose", "text": "Vim looks for the `tags` file in the current directory, then walks parents. Configure with `:set` {key:t}{key:a}{key:g}{key:s}{key:=}{key:.}{key:/}{key:t}{key:a}{key:g}{key:s}{key:;}{key:/}{key:t}{key:a}{key:g}{key:s} to search both adjacent and root tags files." },
+    { "type": "prose", "text": "Vim looks for the `tags` file in the current directory, then walks parents. Configure with `:set tags=./tags;/tags` to search both adjacent and root tags files." },
 
     { "type": "heading", "level": 2, "text": "Jump and return" },
     {
       "type": "keys",
       "label": "The core two keys",
       "sequence": [
-        { "key": "Ctrl-]", "note": "Jump to the definition of the identifier under the cursor" },
+        { "key": "{key:Ctrl-]}", "note": "Jump to the definition of the identifier under the cursor" },
         { "key": "{key:Ctrl-T}", "note": "Pop back to where you came from (one level)" },
-        { "key": "`:tag` NAME", "note": "Jump to a named tag (Tab-completes)" },
-        { "key": "g]",      "note": "Show menu of all matching tags (when the name is ambiguous)" },
-        { "key": "{key:Ctrl-W} ]", "note": "Open the tag in a new horizontal split" },
-        { "key": "{key:Ctrl-W} }", "note": "Show the tag's definition in a preview window without leaving" }
+        { "key": "`:tag` `NAME`", "note": "Jump to a named tag ({key:Tab}-completes)" },
+        { "key": "{key:g}{key:]}",      "note": "Show menu of all matching tags (when the name is ambiguous)" },
+        { "key": "{key:Ctrl-W}{key:]}", "note": "Open the tag in a new horizontal split" },
+        { "key": "{key:Ctrl-W}{key:}}", "note": "Show the tag's definition in a preview window without leaving" }
       ]
     },
 
