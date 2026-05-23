@@ -3,9 +3,9 @@
   "version": 1,
   "id": "ex.norm",
   "title": "Normal (`:norm`)",
-  "subtitle": "Run Normal-mode keystrokes from Ex.",
+  "subtitle": "Run *normal mode* keystrokes from Ex.",
   "part": "ex-commands",
-  "summary": "`:norm` runs a sequence of Normal-mode keystrokes on each line in a range. Combine with `:g` for surgical bulk edits — anything you can do with keys, you can do over thousands of lines.",
+  "summary": "`:norm` runs a sequence of *normal mode* keystrokes on each line in a range. Combine with `:g` for surgical bulk edits — anything you can do with keys, you can do over thousands of lines.",
   "keys": [
     "`:norm`"
   ],
@@ -26,7 +26,7 @@
     },
     {
       "type": "prose",
-      "text": "`:norm` (or `:normal`) runs a string of Normal-mode keys on every line in the range. It's the bridge between *Ex's bulk processing* and *Normal mode's surgical edits*."
+      "text": "`:norm` (or `:normal`) runs a string of *normal mode* keys on every line in the range. It's the bridge between *Ex's bulk processing* and *normal mode's surgical edits*."
     },
     {
       "type": "table",
@@ -36,23 +36,23 @@
       ],
       "rows": [
         [
-          ":%norm A;",
+          "`:%norm A;`",
           "Append `;` to every line in file"
         ],
         [
-          ":'<,'>norm I// ",
+          "`:'<,'>norm I// `",
           "Comment out the visual selection"
         ],
         [
-          ":g/TODO/norm dd",
-          "Delete every line containing TODO (= :g/TODO/d)"
+          "`:g/TODO/norm dd`",
+          "Delete every line containing `TODO` (= `:g/TODO/d`)"
         ],
         [
-          ":5,10norm @q",
-          "Run macro q on lines 5–10"
+          "`:5,10norm @q`",
+          "Run macro `q` on lines 5–10"
         ],
         [
-          ":%norm! 0xx",
+          "`:%norm! 0xx`",
           "Strip 2 chars from start of every line, ignoring user mappings"
         ]
       ]
@@ -60,7 +60,7 @@
     {
       "type": "internals",
       "title": "Why It Pairs So Well With `:g`",
-      "text": "`:g`/pattern/`:norm` {keys} = \"on every line matching pattern, execute these Normal-mode keys.\"\n\nThe {keys} can be **anything** you'd type in *normal mode*: motions, operators, text-object combos, even macro invocations ({key:@}{reg}). It's faster to read than a substitute regex with backreferences, and infinitely more powerful for non-trivial transforms.\n\n**The `!` matters here too.** `:norm!` ignores user-defined mappings — important if you've remapped {key:I} or {key:o} and want the *built-in* behavior. As a rule, scripts always use `:norm!`."
+      "text": "`:g/pattern/norm {keys}` = \"on every line matching pattern, execute these *normal mode* keys.\"\n\nThe `{keys}` can be anything you'd type in *normal mode*: motions, operators, text-object combos, even macro invocations ({key:@}{reg}). It's faster to read than a substitute regex with backreferences, and infinitely more powerful for non-trivial transforms.\n\nThe `!` matters here too. `:norm!` ignores user-defined mappings — important if you've remapped {key:I} or {key:o} and want the *built-in* behavior. As a rule, scripts always use `:norm!`."
     },
     {
       "type": "tip",

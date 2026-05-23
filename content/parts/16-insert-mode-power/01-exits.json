@@ -7,8 +7,8 @@
   "part": "insert-mode-power",
   "summary": "{key:Esc}, {key:Ctrl-[}, and {key:Ctrl-C} all exit *insert mode* — but they're not identical. {key:Esc} and {key:Ctrl-[} trigger InsertLeave; {key:Ctrl-C} bypasses it.",
   "keys": [
-    "Esc",
-    "Ctrl-[",
+    "{key:Esc}",
+    "{key:Ctrl-[}",
     "{key:Ctrl-C}"
   ],
   "lessons": [
@@ -49,12 +49,12 @@
     },
     {
       "type": "internals",
-      "title": "Why Ctrl-[ Exists",
+      "title": "Why {key:Ctrl-[} Exists",
       "text": "On old terminals, {key:Esc} sent the byte `0x1b` — same byte produced by {key:Ctrl-[}. Vim never had to distinguish them; both still trigger the same exit logic. The {key:Ctrl-[} alias survives because (a) {key:Esc} is far away on modern keyboards, and (b) {key:Ctrl-[} is more comfortable for fast typists with Caps Lock remapped to Ctrl."
     },
     {
       "type": "internals",
-      "title": "{key:Ctrl-C} Is NOT the Same",
+      "title": "{key:Ctrl-C} Is Not the Same",
       "text": "{key:Ctrl-C} exits *insert mode* but **skips the `InsertLeave` autocommand**. Plugins that auto-format, save, or update status on Insert-leave will not fire. It also doesn't abbreviate: typed `:abbreviate` expansions don't trigger. For everyday text editing, prefer {key:Esc} or {key:Ctrl-[}."
     },
     {

@@ -3,9 +3,9 @@
   "version": 1,
   "id": "insert.one-shot-normal",
   "title": "One-Shot Normal Mode",
-  "subtitle": "{key:Ctrl-O} runs one Normal command without leaving Insert.",
+  "subtitle": "{key:Ctrl-O} runs one *normal mode* command without leaving *insert mode*.",
   "part": "insert-mode-power",
-  "summary": "{key:Ctrl-O} from *insert mode* lets you fire one Normal-mode command and snap right back to insertion. The pinnacle of stay-in-flow editing.",
+  "summary": "{key:Ctrl-O} from *insert mode* lets you fire one *normal mode* command and snap right back to insertion. The pinnacle of stay-in-flow editing.",
   "keys": [
     "{key:Ctrl-O}"
   ],
@@ -25,7 +25,7 @@
     },
     {
       "type": "prose",
-      "text": "{key:Ctrl-O} from *insert mode* runs *exactly one* Normal-mode command, then drops you back into Insert at the new cursor position. It's the express elevator between modes."
+      "text": "{key:Ctrl-O} from *insert mode* runs exactly one *normal mode* command, then drops you back into *insert mode* at the new cursor position. It's the express elevator between modes."
     },
     {
       "type": "keys",
@@ -33,7 +33,7 @@
       "sequence": [
         {
           "key": "{key:Ctrl-O}",
-          "note": "Enter one-shot Normal"
+          "note": "Enter one-shot *normal mode*"
         },
         {
           "key": "d",
@@ -41,20 +41,20 @@
         },
         {
           "key": "w",
-          "note": "…delete word; back in Insert"
+          "note": "…delete word; back in *insert mode*"
         }
       ]
     },
     {
       "type": "table",
       "headers": [
-        "From Insert",
+        "From *insert mode*",
         "Effect"
       ],
       "rows": [
         [
           "{key:Ctrl-O}{key:d}{key:i}{key:w}",
-          "Delete inner word, stay in Insert"
+          "Delete inner word, stay in *insert mode*"
         ],
         [
           "{key:Ctrl-O}{key:z}{key:z}",
@@ -70,14 +70,14 @@
         ],
         [
           "{key:Ctrl-O}{key:u}",
-          "Undo last Normal-mode edit"
+          "Undo last *normal mode* edit"
         ]
       ]
     },
     {
       "type": "internals",
       "title": "Why It Counts as One Command",
-      "text": "The Insert-mode {key:Ctrl-O} sets an internal flag (`restart_edit`) that says: *finish exactly one Normal-mode operation, then resume Insert at the cursor*. Operator + motion still counts as one — {key:d}{key:i}{key:w} is one command. But {key:.} (dot-repeat) executed via {key:Ctrl-O} replays whatever the previous Normal command was, which can surprise you.\n\nNote: any Insert-mode change you've already made *up to this point* is committed to the undo tree as a single edit. The next character you type starts a fresh undo unit."
+      "text": "The *insert mode* {key:Ctrl-O} sets an internal flag (`restart_edit`) that says: *finish exactly one normal-mode operation, then resume insert mode at the cursor*. Operator + motion still counts as one — {key:d}{key:i}{key:w} is one command. But {key:.} (dot-repeat) executed via {key:Ctrl-O} replays whatever the previous Normal command was, which can surprise you.\n\nNote: any *insert mode* change you've already made *up to this point* is committed to the undo tree as a single edit. The next character you type starts a fresh undo unit."
     },
     {
       "type": "tip",
