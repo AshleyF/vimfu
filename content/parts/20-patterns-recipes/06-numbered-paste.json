@@ -7,11 +7,11 @@
   "part": "patterns-recipes",
   "summary": "After a deletion, {key:\"}{key:1}{key:p} pastes the most recent cut. Press {key:u} then {key:.} — Vim undoes and pastes from the next-older numbered register. Walks all 9 cuts.",
   "keys": [
-    "\"",
-    "1",
-    "p",
-    "u",
-    "."
+    "{key:\"}",
+    "{key:1}",
+    "{key:p}",
+    "{key:u}",
+    "{key:.}"
   ],
   "lessons": [
     471,
@@ -36,35 +36,35 @@
       "label": "Walk the cut history",
       "sequence": [
         {
-          "key": "\"1p",
+          "key": "{key:\"}{key:1}{key:p}",
           "note": "Paste the most recent cut"
         },
         {
-          "key": "u",
+          "key": "{key:u}",
           "note": "Undo it"
         },
         {
-          "key": ".",
+          "key": "{key:.}",
           "note": "Repeat — but the dot bumps to register 2 next"
         },
         {
-          "key": "u",
+          "key": "{key:u}",
           "note": "Undo"
         },
         {
-          "key": ".",
+          "key": "{key:.}",
           "note": "Bumps to register 3"
         },
         {
-          "key": "...",
+          "key": "…",
           "note": "…all the way to register 9"
         }
       ]
     },
     {
       "type": "internals",
-      "title": "Why . Bumps the Number",
-      "text": "When you do `\"1p`, the dot register saves *that exact command* including the register name. Normally {key:.} would re-paste from {key:\"}{key:1}. But Vim has a special case for the numbered-register paste: each time you {key:.} after a `\"Np`, it **increments N** to the next numbered register.\n\nThis is implemented for exactly this use case — browsing the cut history. After {key:.} pastes from {key:\"}{key:2}, the next {key:.} pastes from {key:\"}{key:3}, and so on, until {key:\"}{key:9}.\n\nThe undo before each dot rolls back the previous paste, so you're seeing one cut at a time, in order."
+      "title": "Why {key:.} Bumps the Number",
+      "text": "When you do `\"1p`, the dot register saves *that exact command* including the register name. Normally {key:.} would re-paste from {key:\"}{key:1}. But Vim has a special case for the numbered-register paste: each time you {key:.} after a `\"Np`, it *increments N* to the next numbered register.\n\nThis is implemented for exactly this use case — browsing the cut history. After {key:.} pastes from {key:\"}{key:2}, the next {key:.} pastes from {key:\"}{key:3}, and so on, until {key:\"}{key:9}.\n\nThe undo before each dot rolls back the previous paste, so you're seeing one cut at a time, in order."
     },
     {
       "type": "tip",

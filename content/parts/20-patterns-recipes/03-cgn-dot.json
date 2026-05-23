@@ -3,14 +3,14 @@
   "version": 1,
   "id": "patterns.cgn-dot",
   "title": "Change-Next-Match Loop — {key:cgn}",
-  "subtitle": "Like {key:*}{key:cw}, but {key:.} jumps AND changes in one step.",
+  "subtitle": "Like {key:*}{key:c}{key:w}, but {key:.} jumps and changes in one step.",
   "part": "patterns-recipes",
-  "summary": "After a /search, cgn changes the next match. Then . by itself jumps to the next match AND changes it — no need for separate n. The pinnacle of dot-repeat refactoring.",
+  "summary": "After a {key:/}search, {key:c}{key:g}{key:n} changes the next match. Then {key:.} by itself jumps to the next match and changes it — no need for separate {key:n}. The pinnacle of dot-repeat refactoring.",
   "keys": [
-    "c",
-    "g",
-    "n",
-    "."
+    "{key:c}",
+    "{key:g}",
+    "{key:n}",
+    "{key:.}"
   ],
   "lessons": [
     465,
@@ -36,47 +36,47 @@
       "label": "The full workflow",
       "sequence": [
         {
-          "key": "/old",
+          "key": "{key:/}`old`",
           "note": "Search for the thing you want to change"
         },
         {
-          "key": "Enter",
+          "key": "{key:Enter}",
           "note": ""
         },
         {
-          "key": "cgn",
+          "key": "{key:c}{key:g}{key:n}",
           "note": "Change next match"
         },
         {
-          "key": "NEW",
+          "key": "`NEW`",
           "note": "Type replacement"
         },
         {
-          "key": "Esc",
+          "key": "{key:Esc}",
           "note": "Commit"
         },
         {
-          "key": ".",
-          "note": "Jump to next match AND change it"
+          "key": "{key:.}",
+          "note": "Jump to next match and change it"
         },
         {
-          "key": ".",
+          "key": "{key:.}",
           "note": "Again"
         },
         {
-          "key": "n",
+          "key": "{key:n}",
           "note": "Skip a match — move to the one after"
         },
         {
-          "key": ".",
+          "key": "{key:.}",
           "note": "Change it"
         }
       ]
     },
     {
       "type": "internals",
-      "title": "What gn Is",
-      "text": "{key:g}{key:n} is a **motion** that selects the next search match (forward; {key:g}{key:N} for backward). It works as both a Normal-mode motion *and* a text object — when used after an operator, it becomes the range to operate on.\n\nSo {key:c}{key:g}{key:n} = \"change the next search match.\" The dot-repeat record is *the whole thing*: \"find next match, delete it, insert NEW.\" Every {key:.} after that re-runs the entire sequence.\n\nThis is strictly better than the {key:*}{key:c}{key:w} loop because:\n\n  • {key:.} alone advances + changes (no separate {key:n}).\n  • Works when the match isn't a word (regex, multi-word, partial)."
+      "title": "What {key:g}{key:n} Is",
+      "text": "{key:g}{key:n} is a *motion* that selects the next search match (forward; {key:g}{key:N} for backward). It works as both a *normal mode* motion *and* a text object — when used after an operator, it becomes the range to operate on.\n\nSo {key:c}{key:g}{key:n} = \"change the next search match.\" The dot-repeat record is *the whole thing*: \"find next match, delete it, insert `NEW`.\" Every {key:.} after that re-runs the entire sequence.\n\nThis is strictly better than the {key:*}{key:c}{key:w} loop because:\n\n  • {key:.} alone advances + changes (no separate {key:n}).\n  • Works when the match isn't a word (regex, multi-word, partial)."
     },
     {
       "type": "tip",
