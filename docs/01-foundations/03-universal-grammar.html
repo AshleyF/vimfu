@@ -62,7 +62,7 @@
 <blockquote class="summary">Vim is a tiny language: verbs (operators) compose with nouns (motions and text objects). Once you see the grammar, every key falls into place.</blockquote>
 <p>Almost every command in Vim follows one shape:</p>
 <pre><code>[count] [&quot;reg] operator [count] motion</code></pre>
-<p>Read it as a sentence: <em>do this thing</em>, optionally <em>to register r</em>, <em>this many times</em>, <em>to this stretch of text</em>. (Registers are named clipboards — the <code>&quot;a</code> prefix means &quot;into register <code>a</code>&quot;; the full treatment is in Part 12.) Concrete examples:</p>
+<p>Read it as a sentence: <em>do this thing</em>, optionally <em>to register r</em>, <em>this many times</em>, <em>to this stretch of text</em>. (Registers are named clipboards — the <code>&quot;a</code> prefix means &quot;into register <code>a</code>&quot;; the full treatment is in <em>Registers</em>.) Concrete examples:</p>
 <table>
 <thead><tr>
 <th>Command</th>
@@ -113,7 +113,7 @@
 </tr>
 <tr>
 <td><kbd>c</kbd></td>
-<td>Change (delete then enter Insert)</td>
+<td>Change (delete then enter <em>insert mode</em>)</td>
 </tr>
 <tr>
 <td><kbd>y</kbd></td>
@@ -192,26 +192,26 @@
 <td><kbd>i</kbd><kbd>w</kbd>, <kbd>a</kbd><kbd>w</kbd>, <kbd>i</kbd><kbd>&quot;</kbd>, <kbd>a</kbd><kbd>(</kbd>, <kbd>i</kbd><kbd>p</kbd>, <kbd>a</kbd><kbd>t</kbd></td>
 </tr>
 </tbody></table>
-<p>Text objects (the <kbd>i</kbd> / <kbd>a</kbd> rows) are nouns that describe <em>structure</em> rather than a path: <kbd>i</kbd> means the inner contents (e.g. <kbd>i</kbd><kbd>w</kbd> = the word the cursor is in), <kbd>a</kbd> means the object plus its delimiters (e.g. <kbd>a</kbd><kbd>&quot;</kbd> = a quoted string including the quotes). The full treatment is in Part 7 — for now, treat them as nouns like any other.</p>
+<p>Text objects (the <kbd>i</kbd> / <kbd>a</kbd> rows) are nouns that describe <em>structure</em> rather than a path: <kbd>i</kbd> means the inner contents (e.g. <kbd>i</kbd><kbd>w</kbd> = the word the cursor is in), <kbd>a</kbd> means the object plus its delimiters (e.g. <kbd>a</kbd><kbd>&quot;</kbd> = a quoted string including the quotes). The full treatment is in <em>Text Objects</em> — for now, treat them as nouns like any other.</p>
 <aside class="tip"><strong>Tip.</strong> When you want to learn a new key, ask: is it a <em>verb</em> (operator), a <em>noun</em> (motion / text object), or a <em>complete command</em> (like <kbd>x</kbd> or <kbd>p</kbd>)? If it&#x27;s the first two, you&#x27;ve immediately doubled the size of your vocabulary by combining it with everything you already know.</aside>
 <figure class="lesson-embed" data-lesson="85"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/dwhaSnH-BT8?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The Vim Grammar" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>The Vim Grammar in Action</figcaption></figure>
 <section class="example">
 <h3 class="example-title">Worked example — operator + motion = sentence</h3>
 <p class="example-summary">The grammar in three keystrokes.</p>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Cursor on &#x27;q&#x27;.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/foundations.grammar/frame_01.color.svg" alt="Cursor on &#x27;q&#x27;."></div>
-<p class="narration">Normal mode. We will run d-w: the delete operator with the word motion.</p>
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Cursor on <code>quick</code>.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/foundations.grammar/frame_01.color.svg" alt="Cursor on `quick`."></div>
+<p class="narration"><em>Normal mode</em>. We will run <kbd>d</kbd><kbd>w</kbd>: the <kbd>d</kbd> delete operator with the <kbd>w</kbd> word motion.</p>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 2</span> · <kbd>dw</kbd> · <span class="step-cap">dw — &#x27;quick &#x27; deleted.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/foundations.grammar/frame_02.color.svg" alt="dw — &#x27;quick &#x27; deleted."></div>
-<p class="narration">Operator d (verb) plus motion w (noun). Same grammar applies for any operator+motion pair.</p>
+<figcaption><span class="step-n">Step 2</span> · <kbd>dw</kbd> · <span class="step-cap"><kbd>d</kbd><kbd>w</kbd> — <code>quick</code> deleted.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/foundations.grammar/frame_02.color.svg" alt="{key:d}{key:w} — `quick` deleted."></div>
+<p class="narration">Operator <kbd>d</kbd> (verb) plus motion <kbd>w</kbd> (noun). Same grammar applies for any operator+motion pair.</p>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 3</span> · <kbd>gUw</kbd> · <span class="step-cap">gUw — &#x27;BROWN&#x27; uppercased.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/foundations.grammar/frame_03.color.svg" alt="gUw — &#x27;BROWN&#x27; uppercased."></div>
-<p class="narration">Swap the operator for gU (uppercase), keep motion w. Free upgrade — every motion works with every operator.</p>
+<figcaption><span class="step-n">Step 3</span> · <kbd>gUw</kbd> · <span class="step-cap"><kbd>g</kbd><kbd>U</kbd><kbd>w</kbd> — <code>BROWN</code> uppercased.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/foundations.grammar/frame_03.color.svg" alt="{key:g}{key:U}{key:w} — `BROWN` uppercased."></div>
+<p class="narration">Swap the operator for <kbd>g</kbd><kbd>U</kbd> (uppercase), keep motion <kbd>w</kbd>. Free upgrade — every motion works with every operator.</p>
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=the+quick+brown+fox%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>

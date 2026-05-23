@@ -58,46 +58,46 @@
 <article>
 <h1>The Replace Loop — <kbd>*</kbd>, <kbd>cw</kbd>, then <kbd>.</kbd> <kbd>.</kbd> <kbd>.</kbd></h1>
 <p class="subtitle">Search a word, change one, repeat with dot.</p>
-<p class="meta">Keys: <kbd>*</kbd>, <kbd>c</kbd>, <kbd>w</kbd>, <kbd>n</kbd>, <kbd>.</kbd></p>
-<blockquote class="summary">*cwNEW Esc, then n.n.n. — change every occurrence of a word, one at a time, with confirmation. The most-loved Vim refactoring loop.</blockquote>
-<h2>*, cw, then . . . — The Replace Loop</h2>
+<p class="meta">Keys: <kbd>{key:*}</kbd>, <kbd>{key:c}</kbd>, <kbd>{key:w}</kbd>, <kbd>{key:n}</kbd>, <kbd>{key:.}</kbd></p>
+<blockquote class="summary"><kbd>*</kbd><kbd>c</kbd><kbd>w</kbd><code>NEW</code><kbd>Esc</kbd>, then <kbd>n</kbd><kbd>.</kbd><kbd>n</kbd><kbd>.</kbd> — change every occurrence of a word, one at a time, with confirmation. The most-loved Vim refactoring loop.</blockquote>
+<h2><kbd>*</kbd>, <kbd>c</kbd><kbd>w</kbd>, then <kbd>.</kbd> <kbd>.</kbd> <kbd>.</kbd> — The Replace Loop</h2>
 <p>The classic Vim refactoring loop. Searches for a word, changes one instance, then jumps to each next match where you decide whether to dot-repeat (apply) or skip.</p>
 <figure class="keys">
 <figcaption>Step by step</figcaption>
 <table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
-<tr><td><kbd>*</kbd></td><td>Cursor on word: search next exact match</td></tr>
-<tr><td><kbd>cw</kbd></td><td>Change word — Vim drops you in Insert</td></tr>
-<tr><td><kbd>NEW</kbd></td><td>Type replacement</td></tr>
-<tr><td><kbd>Esc</kbd></td><td>Back to Normal — change is saved as the dot-target</td></tr>
-<tr><td><kbd>n</kbd></td><td>Jump to next match</td></tr>
-<tr><td><kbd>.</kbd></td><td>Apply the same change</td></tr>
-<tr><td><kbd>n</kbd></td><td>Skip this one — just move to next</td></tr>
-<tr><td><kbd>.</kbd></td><td>Apply…</td></tr>
+<tr><td><kbd>{key:*}</kbd></td><td>Cursor on word: search next exact match</td></tr>
+<tr><td><kbd>{key:c}{key:w}</kbd></td><td>Change word — Vim drops you in <em>insert mode</em></td></tr>
+<tr><td><kbd>`NEW`</kbd></td><td>Type replacement</td></tr>
+<tr><td><kbd>{key:Esc}</kbd></td><td>Back to <em>normal mode</em> — change is saved as the dot-target</td></tr>
+<tr><td><kbd>{key:n}</kbd></td><td>Jump to next match</td></tr>
+<tr><td><kbd>{key:.}</kbd></td><td>Apply the same change</td></tr>
+<tr><td><kbd>{key:n}</kbd></td><td>Skip this one — just move to next</td></tr>
+<tr><td><kbd>{key:.}</kbd></td><td>Apply…</td></tr>
 </tbody></table></figure>
 <aside class="tip"><strong>Tip.</strong> Need word boundaries to be loose? Use <kbd>g</kbd><kbd>*</kbd> instead of <kbd>*</kbd> — finds the word as a substring, not just whole-word matches.</aside>
 <section class="example">
-<h3 class="example-title">Worked example — * cw . . .</h3>
+<h3 class="example-title">Worked example — <kbd>*</kbd> <kbd>c</kbd><kbd>w</kbd> <kbd>.</kbd><kbd>.</kbd><kbd>.</kbd></h3>
 <p class="example-summary">Search-cursor-change-repeat — mass rename.</p>
 <figure class="example-step">
 <figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
 <div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_01.color.svg" alt="pattern.star-cw-dot"></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 2</span> · <kbd>*</kbd> · <span class="step-cap">* — search for &#x27;foo&#x27;.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_02.color.svg" alt="* — search for &#x27;foo&#x27;."></div>
+<figcaption><span class="step-n">Step 2</span> · <kbd>*</kbd> · <span class="step-cap"><kbd>*</kbd> — search for &#x27;foo&#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_02.color.svg" alt="{key:*} — search for &#x27;foo&#x27;."></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 3</span> · <kbd>cwbar Esc</kbd> · <span class="step-cap">cwbar — change to bar.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_03.color.svg" alt="cwbar — change to bar."></div>
+<figcaption><span class="step-n">Step 3</span> · <kbd>cw Esc</kbd> · <span class="step-cap"><kbd>c</kbd><kbd>w</kbd>, type <code>bar</code>, <kbd>Esc</kbd>.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_03.color.svg" alt="{key:c}{key:w}, type `bar`, {key:Esc}."></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 4</span> · <kbd>n .</kbd> · <span class="step-cap">n then . — next match, dot.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_04.color.svg" alt="n then . — next match, dot."></div>
+<figcaption><span class="step-n">Step 4</span> · <kbd>n .</kbd> · <span class="step-cap"><kbd>n</kbd> then <kbd>.</kbd> — next match, dot.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_04.color.svg" alt="{key:n} then {key:.} — next match, dot."></div>
 </figure>
 <figure class="example-step">
 <figcaption><span class="step-n">Step 5</span> · <kbd>n .</kbd> · <span class="step-cap">And again. The Replace Loop.</span></figcaption>
 <div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_05.color.svg" alt="And again. The Replace Loop."></div>
-<p class="narration">The classic Vim mass-edit. cgn is similar and even slicker — see cgn-dot.</p>
+<p class="narration">The classic Vim mass-edit. <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> is similar and even slicker — see the <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> variant.</p>
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo%28%29%0Afoo%28%29%0Afoo%28%29%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>

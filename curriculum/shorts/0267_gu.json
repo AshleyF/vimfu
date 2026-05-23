@@ -8,64 +8,196 @@
   "seed": 408,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "g commands", "case"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "case"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f shout.py .shout.py.swp .shout.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "shout.py", "content": "# Angry Code\nMESSAGE = \"HELLO WORLD\"\nSTATUS = \"ALL SYSTEMS GO\"\nERROR = \"SOMETHING BROKE\"\nprint(MESSAGE)" },
-    { "line": "clear" },
-    { "line": "nvim shout.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f shout.py .shout.py.swp .shout.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "shout.py",
+      "content": "# Angry Code\nMESSAGE = \"HELLO WORLD\"\nSTATUS = \"ALL SYSTEMS GO\"\nERROR = \"SOMETHING BROKE\"\nprint(MESSAGE)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim shout.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "gu — Lowercase", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "G U with a motion converts text to lowercase. It's an operator, so it takes a motion or text object." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: lowercase a word ---" },
-    { "say": "Go to the word HELLO. G U W. Lowercase one word.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "2Gf\"l", "overlay": "on HELLO" },
-    { "wait": 0.3 },
-    { "keys": "guw", "overlay": "lowercase word" },
-    { "wait": 0.5 },
-    { "say": "Hello is now lowercase. The rest is untouched." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: lowercase entire line ---" },
-    { "say": "G U U lowercases the whole line.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "3G", "overlay": "line 3" },
-    { "wait": 0.3 },
-    { "keys": "guu", "overlay": "lowercase line" },
-    { "wait": 0.5 },
-    { "say": "The whole line is lowercase now." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 3: lowercase with text object ---" },
-    { "say": "Inside quotes on line four. G U I quote.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "4Gf\"", "overlay": "inside quotes" },
-    { "wait": 0.3 },
-    { "keys": "gui\"", "overlay": "lowercase inside quotes" },
-    { "wait": 0.6 },
-    { "say": "Only the text inside the quotes changed. Precise." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "G U. Lowercase operator. G U W for a word. G U U for a line. G U plus any motion or text object." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gu — Lowercase",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G U with a motion converts text to lowercase. It's an operator, so it takes a motion or text object."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: lowercase a word ---"
+    },
+    {
+      "say": "Go to the word HELLO. G U W. Lowercase one word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2Gf\"l",
+      "overlay": "on HELLO"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "guw",
+      "overlay": "lowercase word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Hello is now lowercase. The rest is untouched."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: lowercase entire line ---"
+    },
+    {
+      "say": "G U U lowercases the whole line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": "line 3"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "guu",
+      "overlay": "lowercase line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The whole line is lowercase now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: lowercase with text object ---"
+    },
+    {
+      "say": "Inside quotes on line four. G U I quote.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4Gf\"",
+      "overlay": "inside quotes"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gui\"",
+      "overlay": "lowercase inside quotes"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Only the text inside the quotes changed. Precise."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G U. Lowercase operator. G U W for a word. G U U for a line. G U plus any motion or text object."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f shout.py" }
-  ]
+    {
+      "line": "rm -f shout.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "WYYN1q3Dffo",
+    "url": "https://youtube.com/watch?v=WYYN1q3Dffo"
+  }
 }

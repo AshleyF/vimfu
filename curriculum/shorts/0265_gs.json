@@ -8,51 +8,151 @@
   "seed": 406,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "g commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f nap.py .nap.py.swp .nap.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "nap.py", "content": "# Nap Time\nimport time\n\ndef take_a_nap(seconds):\n    print(\"Sleeping...\")\n    time.sleep(seconds)\n    print(\"Awake!\")" },
-    { "line": "clear" },
-    { "line": "nvim nap.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f nap.py .nap.py.swp .nap.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "nap.py",
+      "content": "# Nap Time\nimport time\n\ndef take_a_nap(seconds):\n    print(\"Sleeping...\")\n    time.sleep(seconds)\n    print(\"Awake!\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim nap.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "gs — Sleep", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "G S makes Vim go to sleep. Yes, sleep. It freezes for N seconds. It's one of the most useless commands in Vim." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: sleep for 2 seconds ---" },
-    { "say": "Two G S. Sleep for two seconds.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "2gs", "overlay": "sleep 2 seconds" },
-    { "wait": 2.5 },
-    { "say": "Vim just froze for two seconds. Nothing happened. That's the whole command." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: sleep for 1 second ---" },
-    { "say": "One G S.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "1gs", "overlay": "sleep 1 second" },
-    { "wait": 1.5 },
-    { "say": "One second nap. You can't type anything while Vim is sleeping. Control C to wake it up early." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "G S. Make Vim sleep. Nobody uses this on purpose, but now you know it exists. Every key in Vim does something." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gs — Sleep",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G S makes Vim go to sleep. Yes, sleep. It freezes for N seconds. It's one of the most useless commands in Vim."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: sleep for 2 seconds ---"
+    },
+    {
+      "say": "Two G S. Sleep for two seconds.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2gs",
+      "overlay": "sleep 2 seconds"
+    },
+    {
+      "wait": 2.5
+    },
+    {
+      "say": "Vim just froze for two seconds. Nothing happened. That's the whole command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: sleep for 1 second ---"
+    },
+    {
+      "say": "One G S.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "1gs",
+      "overlay": "sleep 1 second"
+    },
+    {
+      "wait": 1.5
+    },
+    {
+      "say": "One second nap. You can't type anything while Vim is sleeping. Control C to wake it up early."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G S. Make Vim sleep. Nobody uses this on purpose, but now you know it exists. Every key in Vim does something."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f nap.py" }
-  ]
+    {
+      "line": "rm -f nap.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "JIEJc7A1RNQ",
+    "url": "https://youtube.com/watch?v=JIEJc7A1RNQ"
+  }
 }

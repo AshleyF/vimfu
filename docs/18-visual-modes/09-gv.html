@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Re-Select — {key:gv} — VimFu</title>
+<title>Re-Select — {key:g}{key:v} — VimFu</title>
 <link rel="icon" type="image/png" href="../icon.png">
 <link rel="stylesheet" href="../style.css">
 <script>
@@ -56,20 +56,20 @@
   <span class="pager-next"><a class="pager-link" href="../19-command-line-power/01-history-window.html" rel="next">Command-Line History →</a></span>
 </nav>
 <article>
-<h1>Re-Select — <kbd>gv</kbd></h1>
-<p class="subtitle">Bring back the last visual selection.</p>
-<p class="meta">Keys: <kbd>gv</kbd></p>
-<blockquote class="summary">gv re-enters <em>visual mode</em> with the same selection you last had — same shape, same endpoints. Essential for re-applying an operator to the same region.</blockquote>
-<h2>gv — Re-Select</h2>
+<h1>Re-Select — <kbd>g</kbd><kbd>v</kbd></h1>
+<p class="subtitle">Bring back the exact selection you just dismissed.</p>
+<p class="meta">Keys: <kbd>{key:g}{key:v}</kbd></p>
+<blockquote class="summary"><kbd>g</kbd><kbd>v</kbd> re-enters <em>visual mode</em> with the same selection you last had — same shape, same endpoints. Essential for re-applying an operator to the same region.</blockquote>
+<h2><kbd>g</kbd><kbd>v</kbd> — Re-Select</h2>
 <p><kbd>g</kbd><kbd>v</kbd> re-enters <em>visual mode</em> with the <em>exact same selection</em> you last had — same shape, same lines, same characters.</p>
 <figure class="keys">
 <figcaption>Re-indent without re-selecting</figcaption>
 <table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
-<tr><td><kbd>V5j</kbd></td><td>Select 6 lines</td></tr>
-<tr><td><kbd>&gt;</kbd></td><td>Indent — selection lost</td></tr>
-<tr><td><kbd>gv</kbd></td><td>Bring it back</td></tr>
-<tr><td><kbd>&gt;</kbd></td><td>Indent again</td></tr>
-<tr><td><kbd>gv&gt;</kbd></td><td>Or just <code>gv&gt;</code> repeatedly</td></tr>
+<tr><td><kbd>{key:V}{key:5}{key:j}</kbd></td><td>Select 6 lines</td></tr>
+<tr><td><kbd>{key:&gt;}</kbd></td><td>Indent — selection lost</td></tr>
+<tr><td><kbd>{key:g}{key:v}</kbd></td><td>Bring it back</td></tr>
+<tr><td><kbd>{key:&gt;}</kbd></td><td>Indent again</td></tr>
+<tr><td><kbd>{key:g}{key:v}{key:&gt;}</kbd></td><td>Or just <kbd>g</kbd><kbd>v</kbd><kbd>&gt;</kbd> repeatedly</td></tr>
 </tbody></table></figure>
 <aside class="tip"><strong>Tip.</strong> After a <code>:s</code> substitution that you ran on a visual selection, <kbd>g</kbd><kbd>v</kbd> brings the (modified) selection back so you can re-substitute or re-indent.</aside>
 <section class="example">
@@ -84,13 +84,13 @@
 <div class="screenshot"><img src="../screenshots/visual.gv/frame_02.color.svg" alt="Selected &#x27;dolor &#x27;."></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 3</span> · <kbd>U</kbd> · <span class="step-cap">U — uppercased the selection.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/visual.gv/frame_03.color.svg" alt="U — uppercased the selection."></div>
+<figcaption><span class="step-n">Step 3</span> · <kbd>U</kbd> · <span class="step-cap"><kbd>U</kbd> — uppercased the selection.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/visual.gv/frame_03.color.svg" alt="{key:U} — uppercased the selection."></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 4</span> · <kbd>gv</kbd> · <span class="step-cap">gv — same region selected again.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/visual.gv/frame_04.color.svg" alt="gv — same region selected again."></div>
-<p class="narration">gv is great for chained visual operations.</p>
+<figcaption><span class="step-n">Step 4</span> · <kbd>gv</kbd> · <span class="step-cap"><kbd>g</kbd><kbd>v</kbd> — same region selected again.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/visual.gv/frame_04.color.svg" alt="{key:g}{key:v} — same region selected again."></div>
+<p class="narration"><kbd>g</kbd><kbd>v</kbd> is great for chained visual operations.</p>
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=lorem+ipsum+dolor+sit+amet%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>

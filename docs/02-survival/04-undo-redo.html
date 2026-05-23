@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Undo and Redo — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-02-survival">↑ Survival</a>
+  &middot; <a href="../videos/02-survival/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=3&file=practice.txt&content=alpha%0Abravo%0Acharlie%0A" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="03-hjkl.html" rel="prev">← Move with {key:hjkl}</a></span>
+  <span class="pager-pos">9 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="05-undo-tree.html" rel="next">Undo as a Tree →</a></span>
+</nav>
+<article>
+<h1>Undo and Redo</h1>
+<p class="subtitle"><kbd>u</kbd> to undo. <kbd>Ctrl-R</kbd> to redo. You cannot lose work.</p>
+<p class="meta">Keys: <kbd>u</kbd>, <kbd>{key:Ctrl-R}</kbd>, <kbd>U</kbd></p>
+<blockquote class="summary"><kbd>u</kbd> undoes the last change. <kbd>Ctrl-R</kbd> redoes it. Vim&#x27;s undo is a tree, not a stack — you literally cannot lose work.</blockquote>
+<p>Vim is safe. Whatever you just did, you can undo. Whatever you just undid, you can redo. There is no &quot;oh no&quot; key — only <kbd>u</kbd>.</p>
+<figure class="keys">
+<figcaption>Undo last change</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>u</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Redo (the change you just undid)</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>{key:Ctrl-R}</kbd></td><td></td></tr>
+</tbody></table></figure>
+<p>Press <kbd>u</kbd> repeatedly to undo further. Press <kbd>Ctrl-R</kbd> repeatedly to redo. Counts work too: <kbd>5</kbd><kbd>u</kbd> undoes the last five changes.</p>
+<figure class="lesson-embed" data-lesson="11"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/gNWH_h95dgU?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Undo" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Undo with u</figcaption></figure>
+<figure class="lesson-embed" data-lesson="12"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/-tkbSu_IdnE?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Redo" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Redo with <kbd>Ctrl-R</kbd></figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> What counts as &quot;a change&quot;? An entire Insert-mode session, from <kbd>i</kbd> to <kbd>Esc</kbd>, is one change. An operator+motion (like <kbd>d</kbd><kbd>w</kbd>) is one change. A single <kbd>x</kbd> or <kbd>r</kbd> is one change. So <kbd>u</kbd> undoes the <em>last meaningful action</em>, not the last keystroke.</aside>
+<h3><kbd>U</kbd> — undo the line</h3>
+<p><kbd>U</kbd> (capital) is a less-common command: it undoes <em>all changes on the current line</em> since you last moved off it. Useful occasionally; the regular <kbd>u</kbd> is what you&#x27;ll use 99% of the time.</p>
+<hr>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>u</kbd></td>
+<td>Undo last change</td>
+</tr>
+<tr>
+<td><kbd>Ctrl-R</kbd></td>
+<td>Redo last undone change</td>
+</tr>
+<tr>
+<td><kbd>U</kbd></td>
+<td>Undo all changes on the current line</td>
+</tr>
+<tr>
+<td>{n}<kbd>u</kbd></td>
+<td>Undo last <em>n</em> changes</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>-</kbd></td>
+<td>Earlier in time (across branches)</td>
+</tr>
+<tr>
+<td><kbd>g</kbd><kbd>+</kbd></td>
+<td>Later in time</td>
+</tr>
+<tr>
+<td><kbd>`:earlier {N</kbd>m`}</td>
+<td>Jump back N minutes</td>
+</tr>
+<tr>
+<td><kbd>`:later {N</kbd>s`}</td>
+<td>Jump forward N seconds</td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — <kbd>u</kbd> and <kbd>Ctrl-R</kbd></h3>
+<p class="example-summary">Undo, then redo.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.undo-redo/frame_01.color.svg" alt="survival.undo-redo"></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>dd</kbd> · <span class="step-cap"><kbd>d</kbd><kbd>d</kbd> deletes &#x27;bravo&#x27;.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.undo-redo/frame_02.color.svg" alt="{key:d}{key:d} deletes &#x27;bravo&#x27;."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>u</kbd> · <span class="step-cap"><kbd>u</kbd> — bravo back.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.undo-redo/frame_03.color.svg" alt="{key:u} — bravo back."></div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 4</span> · <kbd>Ctrl-R</kbd> · <span class="step-cap"><kbd>Ctrl-R</kbd> — redo (gone again).</span></figcaption>
+<div class="screenshot"><img src="../screenshots/survival.undo-redo/frame_04.color.svg" alt="{key:Ctrl-R} — redo (gone again)."></div>
+<p class="narration">Undo and redo navigate the change history. Vim keeps a tree, not just a stack — see undo-tree.</p>
+</figure>
+<p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=alpha%0Abravo%0Acharlie%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
+</section>
+<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="05-undo-tree.html">Undo as a Tree</a>, <a href="../06-dot-repeat/01-repeat.html">Repeat Last Change</a>, <a href="01-open-save-quit.html">Open, Save, Quit</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="03-hjkl.html" rel="prev">← Move with {key:hjkl}</a></span>
+  <span class="pager-pos">9 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="05-undo-tree.html" rel="next">Undo as a Tree →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-02-survival">↑ back to Survival</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

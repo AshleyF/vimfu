@@ -57,48 +57,48 @@
 </nav>
 <article>
 <h1>Change-Next-Match Loop — <kbd>cgn</kbd></h1>
-<p class="subtitle">Like <kbd>*</kbd><kbd>cw</kbd>, but <kbd>.</kbd> jumps AND changes in one step.</p>
-<p class="meta">Keys: <kbd>c</kbd>, <kbd>g</kbd>, <kbd>n</kbd>, <kbd>.</kbd></p>
-<blockquote class="summary">After a /search, cgn changes the next match. Then . by itself jumps to the next match AND changes it — no need for separate n. The pinnacle of dot-repeat refactoring.</blockquote>
-<h2>cgn</h2>
+<p class="subtitle">Like <kbd>*</kbd><kbd>c</kbd><kbd>w</kbd>, but <kbd>.</kbd> jumps and changes in one step.</p>
+<p class="meta">Keys: <kbd>{key:c}</kbd>, <kbd>{key:g}</kbd>, <kbd>{key:n}</kbd>, <kbd>{key:.}</kbd></p>
+<blockquote class="summary">After a <kbd>/</kbd>search, <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> changes the next match. Then <kbd>.</kbd> by itself jumps to the next match and changes it — no need for separate <kbd>n</kbd>. The pinnacle of dot-repeat refactoring.</blockquote>
+<h2><kbd>c</kbd><kbd>g</kbd><kbd>n</kbd></h2>
 <p><kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> is the <em>better</em> version of the <kbd>*</kbd><kbd>c</kbd><kbd>w</kbd> loop. It rolls <em>jump-to-next</em> and <em>change</em> into a single dot-repeatable action.</p>
 <figure class="keys">
 <figcaption>The full workflow</figcaption>
 <table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
-<tr><td><kbd>/old</kbd></td><td>Search for the thing you want to change</td></tr>
-<tr><td><kbd>Enter</kbd></td><td></td></tr>
-<tr><td><kbd>cgn</kbd></td><td>Change next match</td></tr>
-<tr><td><kbd>NEW</kbd></td><td>Type replacement</td></tr>
-<tr><td><kbd>Esc</kbd></td><td>Commit</td></tr>
-<tr><td><kbd>.</kbd></td><td>Jump to next match AND change it</td></tr>
-<tr><td><kbd>.</kbd></td><td>Again</td></tr>
-<tr><td><kbd>n</kbd></td><td>Skip a match — move to the one after</td></tr>
-<tr><td><kbd>.</kbd></td><td>Change it</td></tr>
+<tr><td><kbd>{key:/}`old`</kbd></td><td>Search for the thing you want to change</td></tr>
+<tr><td><kbd>{key:Enter}</kbd></td><td></td></tr>
+<tr><td><kbd>{key:c}{key:g}{key:n}</kbd></td><td>Change next match</td></tr>
+<tr><td><kbd>`NEW`</kbd></td><td>Type replacement</td></tr>
+<tr><td><kbd>{key:Esc}</kbd></td><td>Commit</td></tr>
+<tr><td><kbd>{key:.}</kbd></td><td>Jump to next match and change it</td></tr>
+<tr><td><kbd>{key:.}</kbd></td><td>Again</td></tr>
+<tr><td><kbd>{key:n}</kbd></td><td>Skip a match — move to the one after</td></tr>
+<tr><td><kbd>{key:.}</kbd></td><td>Change it</td></tr>
 </tbody></table></figure>
 <aside class="tip"><strong>Tip.</strong> <kbd>d</kbd><kbd>g</kbd><kbd>n</kbd> for delete-next-match. <kbd>y</kbd><kbd>g</kbd><kbd>n</kbd> for yank-next-match. The motion is composable like any other.</aside>
 <section class="example">
-<h3 class="example-title">Worked example — *  then  cgn  then  . . .</h3>
-<p class="example-summary">Change-next-match — fewer keystrokes than star-cw-dot.</p>
+<h3 class="example-title">Worked example — <kbd>*</kbd> then <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> then <kbd>.</kbd><kbd>.</kbd><kbd>.</kbd></h3>
+<p class="example-summary">Change-next-match — fewer keystrokes than the star-then-<kbd>c</kbd><kbd>w</kbd>-then-dot loop.</p>
 <figure class="example-step">
 <figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
 <div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_01.color.svg" alt="pattern.cgn-dot"></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 2</span> · <kbd>*</kbd> · <span class="step-cap">* — pattern set.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_02.color.svg" alt="* — pattern set."></div>
+<figcaption><span class="step-n">Step 2</span> · <kbd>*</kbd> · <span class="step-cap"><kbd>*</kbd> — pattern set.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_02.color.svg" alt="{key:*} — pattern set."></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 3</span> · <kbd>cgnbar Esc</kbd> · <span class="step-cap">cgn — change next match.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_03.color.svg" alt="cgn — change next match."></div>
+<figcaption><span class="step-n">Step 3</span> · <kbd>cgn Esc</kbd> · <span class="step-cap"><kbd>c</kbd><kbd>g</kbd><kbd>n</kbd>, type <code>bar</code>, <kbd>Esc</kbd> — change next match.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_03.color.svg" alt="{key:c}{key:g}{key:n}, type `bar`, {key:Esc} — change next match."></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 4</span> · <kbd>.</kbd> · <span class="step-cap">. — finds next AND changes it.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_04.color.svg" alt=". — finds next AND changes it."></div>
+<figcaption><span class="step-n">Step 4</span> · <kbd>.</kbd> · <span class="step-cap"><kbd>.</kbd> — finds next AND changes it.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_04.color.svg" alt="{key:.} — finds next AND changes it."></div>
 </figure>
 <figure class="example-step">
 <figcaption><span class="step-n">Step 5</span> · <kbd>.</kbd> · <span class="step-cap">One key per replacement.</span></figcaption>
 <div class="screenshot"><img src="../screenshots/pattern.cgn-dot/frame_05.color.svg" alt="One key per replacement."></div>
-<p class="narration">cgn = c + gn (motion: &#x27;next match&#x27;). Dot replays the whole thing — search-and-change in one keystroke.</p>
+<p class="narration"><kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> is <kbd>c</kbd> plus the <kbd>g</kbd><kbd>n</kbd> motion (next match). <kbd>.</kbd> replays the whole thing — search-and-change in one keystroke.</p>
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=foo%28%29%0Afoo%28%29%0Afoo%28%29%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>

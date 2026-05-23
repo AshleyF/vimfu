@@ -57,49 +57,49 @@
 </nav>
 <article>
 <h1>Normal (<code>:norm</code>)</h1>
-<p class="subtitle">Run Normal-mode keystrokes from Ex.</p>
+<p class="subtitle">Run <em>normal mode</em> keystrokes from Ex.</p>
 <p class="meta">Keys: <kbd>`:norm`</kbd></p>
-<blockquote class="summary"><code>:norm</code> runs a sequence of Normal-mode keystrokes on each line in a range. Combine with <code>:g</code> for surgical bulk edits — anything you can do with keys, you can do over thousands of lines.</blockquote>
+<blockquote class="summary"><code>:norm</code> runs a sequence of <em>normal mode</em> keystrokes on each line in a range. Combine with <code>:g</code> for surgical bulk edits — anything you can do with keys, you can do over thousands of lines.</blockquote>
 <h2>Normal</h2>
-<p><code>:norm</code> (or <code>:normal</code>) runs a string of Normal-mode keys on every line in the range. It&#x27;s the bridge between <em>Ex&#x27;s bulk processing</em> and <em>Normal mode&#x27;s surgical edits</em>.</p>
+<p><code>:norm</code> (or <code>:normal</code>) runs a string of <em>normal mode</em> keys on every line in the range. It&#x27;s the bridge between <em>Ex&#x27;s bulk processing</em> and <em>normal mode&#x27;s surgical edits</em>.</p>
 <table>
 <thead><tr>
 <th>Command</th>
 <th>Effect</th>
 </tr></thead><tbody>
 <tr>
-<td>:%norm A;</td>
+<td><code>:%norm A;</code></td>
 <td>Append <code>;</code> to every line in file</td>
 </tr>
 <tr>
-<td>:&#x27;&lt;,&#x27;&gt;norm I// </td>
+<td><code>:&#x27;&lt;,&#x27;&gt;norm I// </code></td>
 <td>Comment out the visual selection</td>
 </tr>
 <tr>
-<td>:g/TODO/norm dd</td>
-<td>Delete every line containing TODO (= :g/TODO/d)</td>
+<td><code>:g/TODO/norm dd</code></td>
+<td>Delete every line containing <code>TODO</code> (= <code>:g/TODO/d</code>)</td>
 </tr>
 <tr>
-<td>:5,10norm @q</td>
-<td>Run macro q on lines 5–10</td>
+<td><code>:5,10norm @q</code></td>
+<td>Run macro <code>q</code> on lines 5–10</td>
 </tr>
 <tr>
-<td>:%norm! 0xx</td>
+<td><code>:%norm! 0xx</code></td>
 <td>Strip 2 chars from start of every line, ignoring user mappings</td>
 </tr>
 </tbody></table>
 <aside class="tip"><strong>Tip.</strong> Recorded a macro into register q? <code>:%norm @q</code> runs it on every line. It&#x27;s how Vim does bulk transformations.</aside>
 <section class="example">
-<h3 class="example-title">Worked example — :%norm I// </h3>
-<p class="example-summary">Run a Normal-mode sequence on every line.</p>
+<h3 class="example-title">Worked example — <code>:%norm I// </code></h3>
+<p class="example-summary">Run a <em>normal mode</em> sequence on every line.</p>
 <figure class="example-step">
 <figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
 <div class="screenshot"><img src="../screenshots/ex.norm/frame_01.color.svg" alt="ex.norm"></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 2</span> · <kbd>:%norm I// Enter</kbd> · <span class="step-cap">:%norm prefixes every line with &#x27;// &#x27;.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/ex.norm/frame_02.color.svg" alt=":%norm prefixes every line with &#x27;// &#x27;."></div>
-<p class="narration">Like a macro that doesn&#x27;t need recording. Combine with :g for selective application.</p>
+<figcaption><span class="step-n">Step 2</span> · <kbd>:%norm I// Enter</kbd> · <span class="step-cap"><code>:%norm</code> prefixes every line with <code>// </code>.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/ex.norm/frame_02.color.svg" alt="`:%norm` prefixes every line with `// `."></div>
+<p class="narration">Like a macro that doesn&#x27;t need recording. Combine with <code>:g</code> for selective application.</p>
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=x+%3D+1%0Ay+%3D+2%0Az+%3D+3%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>

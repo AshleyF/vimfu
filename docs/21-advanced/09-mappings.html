@@ -59,7 +59,7 @@
 <h1>Mappings — <code>:map</code>, <code>:noremap</code>, and Friends</h1>
 <p class="subtitle">How to bind a keystroke to a command in every mode, and what the modifiers actually do.</p>
 <p class="meta">Keys: <kbd>`:map`</kbd>, <kbd>`:nmap`</kbd>, <kbd>`:nnoremap`</kbd>, <kbd>`:vnoremap`</kbd>, <kbd>`:xnoremap`</kbd>, <kbd>`:onoremap`</kbd>, <kbd>`:inoremap`</kbd>, <kbd>`:cnoremap`</kbd></p>
-<blockquote class="summary">Vim has one mapping system with a per-mode entry point. <code>:nnoremap</code> is the workhorse — non-recursive normal-mode map. &lt;silent&gt;, &lt;expr&gt;, and &lt;buffer&gt; are the three modifiers that cover 90% of real mappings.</blockquote>
+<blockquote class="summary">Vim has one mapping system with a per-mode entry point. <code>:nnoremap</code> is the workhorse — non-recursive <em>normal mode</em> map. <code>&lt;silent&gt;</code>, <code>&lt;expr&gt;</code>, and <code>&lt;buffer&gt;</code> are the three modifiers that cover 90% of real mappings.</blockquote>
 <h2>Mappings</h2>
 <p>A <em>mapping</em> binds a keystroke (or short sequence) to a command. It&#x27;s how you build a personal layer on top of Vim&#x27;s grammar — leader shortcuts, plugin bindings, language-specific helpers. The mapping system has more knobs than most people realize, and most of the bugs in handwritten vimrcs come from picking the wrong knob.</p>
 <h3>Per-mode commands</h3>
@@ -72,32 +72,32 @@
 </tr></thead><tbody>
 <tr>
 <td><code>:nmap</code></td>
-<td>Normal</td>
+<td><em>Normal mode</em></td>
 <td>Bindings that act on the buffer from rest. The default for almost every leader mapping.</td>
 </tr>
 <tr>
 <td><code>:imap</code></td>
-<td>Insert</td>
+<td><em>Insert mode</em></td>
 <td>Live-while-typing shortcuts — autopairs, abbreviation-like helpers, completion triggers.</td>
 </tr>
 <tr>
 <td><code>:vmap</code></td>
-<td>Visual <em>and</em> Select</td>
-<td>Rarely what you want; the Select half eats keystrokes meant as text. Prefer <code>xmap</code>.</td>
+<td><em>Visual</em> and <em>Select</em></td>
+<td>Rarely what you want; the Select half eats keystrokes meant as text. Prefer <code>:xmap</code>.</td>
 </tr>
 <tr>
 <td><code>:xmap</code></td>
-<td>Visual only (not Select)</td>
-<td>Visual-mode bindings (e.g. <code>&gt;</code> to indent and re-select).</td>
+<td><em>Visual mode</em> only (not Select)</td>
+<td>Visual-mode bindings (e.g. <kbd>&gt;</kbd> to indent and re-select).</td>
 </tr>
 <tr>
 <td><code>:smap</code></td>
-<td>Select only</td>
+<td><em>Select mode</em> only</td>
 <td>Almost never. <em>Select mode</em> behaves like a text-replacing selection (think other editors).</td>
 </tr>
 <tr>
 <td><code>:omap</code></td>
-<td>Operator-pending</td>
+<td><em>Operator-pending mode</em></td>
 <td>Custom motions and text objects. After <kbd>d</kbd>/<kbd>c</kbd>/<kbd>y</kbd>, your map fires.</td>
 </tr>
 <tr>
@@ -117,13 +117,13 @@
 </tr>
 <tr>
 <td><code>:map!</code></td>
-<td>Insert + Command-line</td>
+<td><em>Insert mode</em> + Command-line</td>
 <td>The other broad form. Sometimes useful for <kbd>Ctrl</kbd>-chords you want everywhere you type.</td>
 </tr>
 </tbody></table>
 <h3><code>map</code> vs <code>noremap</code> — the one you almost always want</h3>
 <p>Every mode has a <code>nore</code> variant: <code>:nnoremap</code>, <code>:inoremap</code>, <code>:vnoremap</code>, etc. The <code>nore</code> prefix means <em>non-recursive</em>: the right-hand side is interpreted using Vim&#x27;s built-in commands, not other mappings.</p>
-<p>Without <code>nore</code>, your mapping can be re-mapped by another mapping. <code>:nmap j gj</code> then <code>:nmap gj jjj</code> will loop. With <code>:nnoremap j gj</code>, the <code>gj</code> on the right is the <em>built-in</em> <code>gj</code>, and the mapping is safe. <strong>Use <code>nore</code> everywhere unless you have a specific reason not to.</strong> &quot;Specific reason&quot; is almost always: you want to invoke another plugin&#x27;s mapping deliberately.</p>
+<p>Without <code>nore</code>, your mapping can be re-mapped by another mapping. <code>:nmap j gj</code> then <code>:nmap gj jjj</code> will loop. With <code>:nnoremap j gj</code>, the <code>gj</code> on the right is the <em>built-in</em> <kbd>g</kbd><kbd>j</kbd>, and the mapping is safe. <em>Use <code>nore</code> everywhere unless you have a specific reason not to.</em> &quot;Specific reason&quot; is almost always: you want to invoke another plugin&#x27;s mapping deliberately.</p>
 <h3>The three modifiers that matter</h3>
 <table>
 <thead><tr>

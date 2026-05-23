@@ -8,59 +8,180 @@
   "seed": 403,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "g commands", "format"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "format"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f notes.txt .notes.txt.swp .notes.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with long lines" },
-    { "writeFile": "notes.txt", "content": "# Project Notes\n\nThis is a very long line that goes on and on and really should be wrapped to a reasonable width so that it is easy to read on any screen size.\n\nThis line is fine.\n\nAnother extremely long line of text that keeps going and going and nobody wants to scroll horizontally to read this kind of thing in a terminal." },
-    { "line": "clear" },
-    { "line": "nvim -c 'set textwidth=35' notes.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f notes.txt .notes.txt.swp .notes.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with long lines"
+    },
+    {
+      "writeFile": "notes.txt",
+      "content": "# Project Notes\n\nThis is a very long line that goes on and on and really should be wrapped to a reasonable width so that it is easy to read on any screen size.\n\nThis line is fine.\n\nAnother extremely long line of text that keeps going and going and nobody wants to scroll horizontally to read this kind of thing in a terminal."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set textwidth=35' notes.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "gq — Format Text", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "G Q formats text to fit within the text width. Give it a motion and it reflows the text to wrap at the right column." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: format a paragraph ---" },
-    { "say": "Line three is way too long. Go there.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "3G", "overlay": "line 3" },
-    { "wait": 0.3 },
-    { "say": "G Q Q formats the current line.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "gqq", "overlay": "format line" },
-    { "wait": 0.6 },
-    { "say": "The long line is now wrapped to thirty five columns. Multiple shorter lines." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: format with motion ---" },
-    { "say": "The other long line is further down. Use G Q with a motion. Go to it.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "G", "overlay": "last line" },
-    { "wait": 0.3 },
-    { "say": "G Q dollar. Format to the end of the line.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "gq$", "overlay": "format to end" },
-    { "wait": 0.6 },
-    { "say": "Wrapped. Clean and readable." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "G Q with a motion. G Q Q for the current line. G Q A P for a whole paragraph. Set text width first, then format." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gq — Format Text",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G Q formats text to fit within the text width. Give it a motion and it reflows the text to wrap at the right column."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: format a paragraph ---"
+    },
+    {
+      "say": "Line three is way too long. Go there.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": "line 3"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G Q Q formats the current line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gqq",
+      "overlay": "format line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The long line is now wrapped to thirty five columns. Multiple shorter lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: format with motion ---"
+    },
+    {
+      "say": "The other long line is further down. Use G Q with a motion. Go to it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "last line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "G Q dollar. Format to the end of the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gq$",
+      "overlay": "format to end"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Wrapped. Clean and readable."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G Q with a motion. G Q Q for the current line. G Q A P for a whole paragraph. Set text width first, then format."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f notes.txt" }
-  ]
+    {
+      "line": "rm -f notes.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "EIU__eUbG8k",
+    "url": "https://youtube.com/watch?v=EIU__eUbG8k"
+  }
 }

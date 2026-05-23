@@ -58,8 +58,8 @@
 <article>
 <h1>Shell Commands (<code>:!</code>)</h1>
 <p class="subtitle">Bang sends to the shell. Use as a filter or a one-shot.</p>
-<p class="meta">Keys: <kbd>:!</kbd>, <kbd>!</kbd></p>
-<blockquote class="summary">:!cmd runs cmd in a shell. <code>:r</code> !cmd inserts its output. :%!cmd filters the buffer through cmd. !{motion}cmd does the same in <em>normal mode</em>.</blockquote>
+<p class="meta">Keys: <kbd>`:!`</kbd>, <kbd>`!`</kbd></p>
+<blockquote class="summary"><code>:!cmd</code> runs <code>cmd</code> in a shell. <code>:r !cmd</code> inserts its output. <code>:%!cmd</code> filters the buffer through <code>cmd</code>. <code>!{motion}cmd</code> does the same in <em>normal mode</em>.</blockquote>
 <h2>Shell Commands</h2>
 <p>Vim doesn&#x27;t try to do everything itself — it gives you the shell as a tool you can pipe through. Three patterns: run, insert output, filter buffer.</p>
 <table>
@@ -68,36 +68,36 @@
 <th>Effect</th>
 </tr></thead><tbody>
 <tr>
-<td>:!ls -la</td>
+<td><code>:!ls -la</code></td>
 <td>Run shell command, show output</td>
 </tr>
 <tr>
-<td>:!python %</td>
-<td>Run current file (% expands to filename)</td>
+<td><code>:!python %</code></td>
+<td>Run current file (<code>%</code> expands to filename)</td>
 </tr>
 <tr>
-<td><code>:r</code> !date</td>
+<td><code>:r !date</code></td>
 <td>Insert output of <code>date</code> below cursor</td>
 </tr>
 <tr>
-<td><code>:r</code> !curl -s https://api...</td>
+<td><code>:r !curl -s https://api...</code></td>
 <td>Pull URL response into buffer</td>
 </tr>
 <tr>
-<td>:%!sort</td>
+<td><code>:%!sort</code></td>
 <td>Replace buffer with shell-sorted version</td>
 </tr>
 <tr>
-<td>:%!jq .</td>
+<td><code>:%!jq .</code></td>
 <td>Pretty-print the JSON buffer</td>
 </tr>
 <tr>
-<td>:&#x27;&lt;,&#x27;&gt;!sort -u</td>
+<td><code>:&#x27;&lt;,&#x27;&gt;!sort -u</code></td>
 <td>Sort + dedup visual selection</td>
 </tr>
 <tr>
-<td>!}sort</td>
-<td>Normal-mode: filter to next paragraph through sort</td>
+<td><code>!}sort</code></td>
+<td><em>Normal mode</em>: filter to next paragraph through <code>sort</code></td>
 </tr>
 </tbody></table>
 <aside class="tip"><strong>Tip.</strong> <kbd>!</kbd><kbd>!</kbd><kbd>s</kbd><kbd>o</kbd><kbd>r</kbd><kbd>t</kbd><kbd>Enter</kbd> sorts the current line through <code>sort</code> (the doubled bang means &quot;current line&quot;).</aside>

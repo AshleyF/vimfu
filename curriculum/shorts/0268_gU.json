@@ -8,64 +8,196 @@
   "seed": 409,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "g commands", "case"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "case"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f quiet.py .quiet.py.swp .quiet.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "quiet.py", "content": "# Quiet Code\nwarning = \"disk almost full\"\nerror = \"connection lost\"\nstatus = \"all good\"\nprint(warning)" },
-    { "line": "clear" },
-    { "line": "nvim quiet.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f quiet.py .quiet.py.swp .quiet.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "quiet.py",
+      "content": "# Quiet Code\nwarning = \"disk almost full\"\nerror = \"connection lost\"\nstatus = \"all good\"\nprint(warning)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim quiet.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "gU — Uppercase", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "G shift U converts text to uppercase. The opposite of G U. Give it a motion and it shouts." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: uppercase a word ---" },
-    { "say": "Line two. Move to warning. G shift U W. Uppercase one word.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "2G0", "overlay": "line 2" },
-    { "wait": 0.3 },
-    { "keys": "gUw", "overlay": "uppercase word" },
-    { "wait": 0.5 },
-    { "say": "Warning is now capital WARNING. A proper constant name." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: uppercase whole line ---" },
-    { "say": "G shift U U. The whole line.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "3G", "overlay": "line 3" },
-    { "wait": 0.3 },
-    { "keys": "gUU", "overlay": "uppercase line" },
-    { "wait": 0.5 },
-    { "say": "Everything on line three is uppercase now." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 3: uppercase inside quotes ---" },
-    { "say": "Inside quotes on line four. G shift U I quote.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "4Gf\"", "overlay": "inside quotes" },
-    { "wait": 0.3 },
-    { "keys": "gUi\"", "overlay": "uppercase inside quotes" },
-    { "wait": 0.6 },
-    { "say": "Only the string content changed. All good became ALL GOOD." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "G shift U. Uppercase operator. Pair with any motion. G U for lower. G shift U for upper." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gU — Uppercase",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G shift U converts text to uppercase. The opposite of G U. Give it a motion and it shouts."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: uppercase a word ---"
+    },
+    {
+      "say": "Line two. Move to warning. G shift U W. Uppercase one word.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G0",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gUw",
+      "overlay": "uppercase word"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Warning is now capital WARNING. A proper constant name."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: uppercase whole line ---"
+    },
+    {
+      "say": "G shift U U. The whole line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G",
+      "overlay": "line 3"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gUU",
+      "overlay": "uppercase line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Everything on line three is uppercase now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: uppercase inside quotes ---"
+    },
+    {
+      "say": "Inside quotes on line four. G shift U I quote.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "4Gf\"",
+      "overlay": "inside quotes"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gUi\"",
+      "overlay": "uppercase inside quotes"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Only the string content changed. All good became ALL GOOD."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G shift U. Uppercase operator. Pair with any motion. G U for lower. G shift U for upper."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f quiet.py" }
-  ]
+    {
+      "line": "rm -f quiet.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "UzLoMnmTcRw",
+    "url": "https://youtube.com/watch?v=UzLoMnmTcRw"
+  }
 }

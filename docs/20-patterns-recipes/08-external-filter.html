@@ -58,52 +58,52 @@
 <article>
 <h1>External Filter Tricks</h1>
 <p class="subtitle"><kbd>!</kbd>{motion}cmd — let any Unix tool transform your text.</p>
-<p class="meta">Keys: <kbd>!</kbd></p>
-<blockquote class="summary">Vim&#x27;s filter command !{motion} sends the text covered by motion as stdin to a shell command, replacing it with stdout. Sort, dedup, format, encode, decode — any tool works.</blockquote>
-<p>Vim&#x27;s filter operator (Normal-mode <kbd>!</kbd>) sends a chunk of the buffer through a shell command and replaces it with the result. Combined with Unix tools, you have unlimited transforms.</p>
+<p class="meta">Keys: <kbd>{key:!}</kbd></p>
+<blockquote class="summary">Vim&#x27;s filter command <kbd>!</kbd>{motion} sends the text covered by motion as stdin to a shell command, replacing it with stdout. Sort, dedup, format, encode, decode — any tool works.</blockquote>
+<p>Vim&#x27;s filter operator (<em>normal mode</em> <kbd>!</kbd>) sends a chunk of the buffer through a shell command and replaces it with the result. Combined with Unix tools, you have unlimited transforms.</p>
 <table>
 <thead><tr>
 <th>Sequence</th>
 <th>Effect</th>
 </tr></thead><tbody>
 <tr>
-<td><kbd>!</kbd><kbd>!</kbd>sort</td>
+<td><kbd>!</kbd><kbd>!</kbd><code>sort</code></td>
 <td>Sort current line through <code>sort</code> (no-op for one line, but legal)</td>
 </tr>
 <tr>
-<td><kbd>!</kbd><kbd>i</kbd><kbd>p</kbd>sort</td>
+<td><kbd>!</kbd><kbd>i</kbd><kbd>p</kbd><code>sort</code></td>
 <td>Sort the inner paragraph</td>
 </tr>
 <tr>
-<td><kbd>!</kbd><kbd>G</kbd>sort</td>
+<td><kbd>!</kbd><kbd>G</kbd><code>sort</code></td>
 <td>Sort from cursor to end of file</td>
 </tr>
 <tr>
-<td>:%!sort</td>
+<td><code>:%!sort</code></td>
 <td>Sort the whole file</td>
 </tr>
 <tr>
-<td>:%!sort -u</td>
+<td><code>:%!sort -u</code></td>
 <td>Sort + dedup</td>
 </tr>
 <tr>
-<td>:%!jq .</td>
+<td><code>:%!jq .</code></td>
 <td>Pretty-print JSON in place</td>
 </tr>
 <tr>
-<td>:%!python -m json.tool</td>
+<td><code>:%!python -m json.tool</code></td>
 <td>Same, with Python</td>
 </tr>
 <tr>
-<td>:%!xmllint --format -</td>
+<td><code>:%!xmllint --format -</code></td>
 <td>Pretty-print XML</td>
 </tr>
 <tr>
-<td>:%!fmt -w 80</td>
+<td><code>:%!fmt -w 80</code></td>
 <td>Reflow to 80-column lines</td>
 </tr>
 <tr>
-<td>:&#x27;&lt;,&#x27;&gt;!base64</td>
+<td><code>:&#x27;&lt;,&#x27;&gt;!base64</code></td>
 <td>Base64-encode the visual selection</td>
 </tr>
 </tbody></table>

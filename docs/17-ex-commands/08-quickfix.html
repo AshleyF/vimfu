@@ -69,27 +69,27 @@
 </tr></thead><tbody>
 <tr>
 <td><code>:make</code></td>
-<td>Run <code>&#x27;makeprg&#x27;</code> (default <code>make</code>), capture errors via <code>&#x27;errorformat&#x27;</code></td>
+<td>Run <code>makeprg</code> (default <code>make</code>), capture errors via <code>errorformat</code></td>
 </tr>
 <tr>
-<td><code>:make</code> test</td>
+<td><code>:make test</code></td>
 <td>Pass arguments to the make program</td>
 </tr>
 <tr>
-<td><code>:grep</code> PATTERN [PATH]</td>
-<td>Run external grep (<code>&#x27;grepprg&#x27;</code>), populate from results</td>
+<td><code>:grep PATTERN [PATH]</code></td>
+<td>Run external grep (<code>grepprg</code>), populate from results</td>
 </tr>
 <tr>
-<td><code>:vimgrep</code> /PATTERN/ FILES</td>
+<td><code>:vimgrep /PATTERN/ FILES</code></td>
 <td>Run Vim&#x27;s internal grep (no shell)</td>
 </tr>
 <tr>
-<td><code>:vimgrep</code> /TODO/ **/*.py</td>
-<td>Recursively find TODO in Python files</td>
+<td><code>:vimgrep /TODO/ **/*.py</code></td>
+<td>Recursively find <code>TODO</code> in Python files</td>
 </tr>
 <tr>
-<td><code>:cexpr</code> system(&#x27;rg --vimgrep PATTERN&#x27;)</td>
-<td>Inject any tool&#x27;s output via <code>&#x27;errorformat&#x27;</code></td>
+<td><code>:cexpr system(&#x27;rg --vimgrep PATTERN&#x27;)</code></td>
+<td>Inject any tool&#x27;s output via <code>errorformat</code></td>
 </tr>
 </tbody></table>
 <h3>Navigate the list</h3>
@@ -102,12 +102,12 @@
 <tr><td><kbd>`:cprev`</kbd></td><td>Jump to the previous entry</td></tr>
 <tr><td><kbd>`:cfirst`</kbd></td><td>Jump to the first</td></tr>
 <tr><td><kbd>`:clast`</kbd></td><td>Jump to the last</td></tr>
-<tr><td><kbd>`:cc` N</kbd></td><td>Jump to entry number N</td></tr>
+<tr><td><kbd>`:cc N`</kbd></td><td>Jump to entry number N</td></tr>
 </tbody></table></figure>
 <aside class="tip"><strong>Tip.</strong> In the quickfix window, <kbd>Enter</kbd> opens the entry under the cursor. <kbd>p</kbd> previews it without leaving. <code>:colder</code> restores a previous quickfix list — Vim keeps a stack of them.</aside>
 <h3>Location list — same idea, scoped to a window</h3>
-<p>Replace every <kbd>c</kbd>-prefixed command with <kbd>l</kbd>: <code>:lmake</code>, <code>:lgrep</code>, <code>:lopen</code>, <code>:lnext</code>, <code>:lprev</code>. The list lives on the window, not the editor, so two splits can run two greps without stepping on each other.</p>
-<aside class="tip"><strong>Tip.</strong> Set <code>:set</code> <kbd>g</kbd><kbd>r</kbd><kbd>e</kbd><kbd>p</kbd><kbd>p</kbd><kbd>r</kbd><kbd>g</kbd><kbd>=</kbd><kbd>r</kbd><kbd>g</kbd> <kbd>--vimgrep</kbd> to use ripgrep — it&#x27;s massively faster than grep and produces output matching Vim&#x27;s default <code>&#x27;grepformat&#x27;</code>.</aside>
+<p>Replace every <code>c</code>-prefixed command with <code>l</code>: <code>:lmake</code>, <code>:lgrep</code>, <code>:lopen</code>, <code>:lnext</code>, <code>:lprev</code>. The list lives on the window, not the editor, so two splits can run two greps without stepping on each other.</p>
+<aside class="tip"><strong>Tip.</strong> <code>:set grepprg=rg\ --vimgrep</code> to use ripgrep — it&#x27;s massively faster than grep and produces output matching Vim&#x27;s default <code>grepformat</code>.</aside>
 <aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>
 <p class="see-also"><strong>See also:</strong> <a href="06-shell.html">Shell Commands (`:!`)</a>, <a href="../21-advanced/08-tags.html">Tag Navigation</a></p>
 </article>

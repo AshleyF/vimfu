@@ -58,8 +58,8 @@
 <article>
 <h1>Substitute (<code>:s</code>)</h1>
 <p class="subtitle">The most powerful single command in Vim.</p>
-<p class="meta">Keys: <kbd>`:s`</kbd>, <kbd>:%s</kbd></p>
-<blockquote class="summary">:s/pattern/replacement/flags is the workhorse for text transformation. Combine with ranges (% for whole file) and flags (g for global, c for confirm, i for case-insensitive).</blockquote>
+<p class="meta">Keys: <kbd>`:s`</kbd>, <kbd>`:%s`</kbd></p>
+<blockquote class="summary"><code>:s/pattern/replacement/flags</code> is the workhorse for text transformation. Combine with ranges (<code>%</code> for whole file) and flags (<code>g</code> for global, <code>c</code> for confirm, <code>i</code> for case-insensitive).</blockquote>
 <h2>Substitute</h2>
 <p><code>:s</code> is Vim&#x27;s find-and-replace. The full form is:</p>
 <pre><code>:[range]s/pattern/replacement/flags</code></pre>
@@ -70,35 +70,35 @@
 <th>Meaning</th>
 </tr></thead><tbody>
 <tr>
-<td>:s/foo/bar/</td>
+<td><code>:s/foo/bar/</code></td>
 <td>First match on current line</td>
 </tr>
 <tr>
-<td>:s/foo/bar/g</td>
+<td><code>:s/foo/bar/g</code></td>
 <td>All matches on current line</td>
 </tr>
 <tr>
-<td>:%s/foo/bar/g</td>
+<td><code>:%s/foo/bar/g</code></td>
 <td>All matches in whole file</td>
 </tr>
 <tr>
-<td>:%s/foo/bar/gc</td>
+<td><code>:%s/foo/bar/gc</code></td>
 <td>…with confirmation per match</td>
 </tr>
 <tr>
-<td>:&#x27;&lt;,&#x27;&gt;s/foo/bar/g</td>
+<td><code>:&#x27;&lt;,&#x27;&gt;s/foo/bar/g</code></td>
 <td>All matches in last visual selection</td>
 </tr>
 <tr>
-<td>:5,10s/foo/bar/g</td>
+<td><code>:5,10s/foo/bar/g</code></td>
 <td>Lines 5-10</td>
 </tr>
 <tr>
-<td>:.,$s/foo/bar/g</td>
+<td><code>:.,$s/foo/bar/g</code></td>
 <td>Cursor line to EOF</td>
 </tr>
 <tr>
-<td>:g/TODO/s/foo/bar/g</td>
+<td><code>:g/TODO/s/foo/bar/g</code></td>
 <td>Only on lines matching <code>TODO</code></td>
 </tr>
 </tbody></table>
@@ -109,31 +109,31 @@
 <th>Effect</th>
 </tr></thead><tbody>
 <tr>
-<td>g</td>
-<td>Replace <strong>all</strong> matches on each line (not just first)</td>
+<td><code>g</code></td>
+<td>Replace all matches on each line (not just first)</td>
 </tr>
 <tr>
-<td>c</td>
-<td><strong>Confirm</strong> each match (y/n/a/q/l)</td>
+<td><code>c</code></td>
+<td>Confirm each match (<code>y</code>/<code>n</code>/<code>a</code>/<code>q</code>/<code>l</code>)</td>
 </tr>
 <tr>
-<td>i</td>
+<td><code>i</code></td>
 <td>Case-insensitive for this command</td>
 </tr>
 <tr>
-<td>I</td>
+<td><code>I</code></td>
 <td>Case-sensitive for this command</td>
 </tr>
 <tr>
-<td>e</td>
-<td><strong>Errors</strong> suppressed (no &quot;pattern not found&quot;)</td>
+<td><code>e</code></td>
+<td>Errors suppressed (no &quot;pattern not found&quot;)</td>
 </tr>
 <tr>
-<td>n</td>
-<td>Don&#x27;t substitute — just <strong>count</strong> matches</td>
+<td><code>n</code></td>
+<td>Don&#x27;t substitute — just count matches</td>
 </tr>
 <tr>
-<td>&amp;</td>
+<td><code>&amp;</code></td>
 <td>Reuse flags from last <code>:s</code></td>
 </tr>
 </tbody></table>
@@ -144,41 +144,41 @@
 <th>Means</th>
 </tr></thead><tbody>
 <tr>
-<td>&amp;</td>
+<td><code>&amp;</code></td>
 <td>The whole match</td>
 </tr>
 <tr>
-<td>\0</td>
-<td>Same as &amp;</td>
+<td><code>\0</code></td>
+<td>Same as <code>&amp;</code></td>
 </tr>
 <tr>
-<td>\1, \2…</td>
+<td><code>\1</code>, <code>\2</code>…</td>
 <td>Capture groups from <code>\(...\)</code></td>
 </tr>
 <tr>
-<td>\u</td>
+<td><code>\u</code></td>
 <td>Uppercase next character</td>
 </tr>
 <tr>
-<td>\U</td>
-<td>Uppercase until \E</td>
+<td><code>\U</code></td>
+<td>Uppercase until <code>\E</code></td>
 </tr>
 <tr>
-<td>\l, \L</td>
+<td><code>\l</code>, <code>\L</code></td>
 <td>Lowercase versions</td>
 </tr>
 <tr>
-<td>\r</td>
+<td><code>\r</code></td>
 <td>Newline (for splitting lines)</td>
 </tr>
 <tr>
-<td>~</td>
+<td><code>~</code></td>
 <td>Reuse previous replacement</td>
 </tr>
 </tbody></table>
 <aside class="tip"><strong>Tip.</strong> <code>:%s//bar/g</code> reuses the last search pattern as the substitute pattern. Pair with <kbd>*</kbd> (search word under cursor) for a 5-keystroke replace-all.</aside>
 <section class="example">
-<h3 class="example-title">Worked example — :s/foo/bar/g</h3>
+<h3 class="example-title">Worked example — <kbd>:</kbd><kbd>s</kbd>/foo/bar/<kbd>g</kbd></h3>
 <p class="example-summary">Find and replace on the current line.</p>
 <figure class="example-step">
 <figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>

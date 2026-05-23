@@ -59,8 +59,8 @@
 <h1>The Modes</h1>
 <p class="subtitle">A small finite state machine you carry in your head</p>
 <p class="meta">Keys: <kbd>Esc</kbd>, <kbd>Ctrl-[</kbd>, <kbd>{key:Ctrl-C}</kbd>, <kbd>i</kbd>, <kbd>v</kbd>, <kbd>V</kbd>, <kbd>{key:Ctrl-V}</kbd>, <kbd>R</kbd>, <kbd>:</kbd>, <kbd>{key:Ctrl-O}</kbd></p>
-<blockquote class="summary">Normal, Insert, Visual, Replace, Command-line, Operator-pending, Terminal. What each is for and how to move between them.</blockquote>
-<p>Vim has seven modes. You will spend essentially all your time in two of them — Normal and Insert. The other five matter for specific jobs. Knowing they exist, and how the transitions work, is more important than memorizing every command in each.</p>
+<blockquote class="summary"><em>Normal</em>, <em>insert</em>, <em>visual</em>, <em>replace</em>, <em>command-line</em>, <em>operator-pending</em>, <em>terminal</em>. What each is for and how to move between them.</blockquote>
+<p>Vim has seven modes. You will spend essentially all your time in two of them — <em>normal</em> and <em>insert</em>. The other five matter for specific jobs. Knowing they exist, and how the transitions work, is more important than memorizing every command in each.</p>
 <table>
 <thead><tr>
 <th>Mode</th>
@@ -68,48 +68,48 @@
 <th>What it&#x27;s for</th>
 </tr></thead><tbody>
 <tr>
-<td>Normal</td>
+<td><em>normal</em></td>
 <td><em>(empty)</em></td>
 <td>The default. Keys are commands.</td>
 </tr>
 <tr>
-<td>Insert</td>
+<td><em>insert</em></td>
 <td><code>-- INSERT --</code></td>
 <td>Keys type text.</td>
 </tr>
 <tr>
-<td>Visual</td>
+<td><em>visual</em></td>
 <td><code>-- VISUAL --</code> / <code>-- V-LINE --</code> / <code>-- V-BLOCK --</code></td>
 <td>Select text, then act on it.</td>
 </tr>
 <tr>
-<td>Replace</td>
+<td><em>replace</em></td>
 <td><code>-- REPLACE --</code></td>
 <td>Overtype existing characters.</td>
 </tr>
 <tr>
-<td>Command-line</td>
+<td><em>command-line</em></td>
 <td>shows typed <code>:</code> / <code>/</code> / <code>?</code></td>
 <td>Run an Ex command or search.</td>
 </tr>
 <tr>
-<td>Operator-pending</td>
+<td><em>operator-pending</em></td>
 <td><em>(empty, but last key was an operator)</em></td>
 <td>Waiting for a motion or text object.</td>
 </tr>
 <tr>
-<td>Terminal</td>
+<td><em>terminal</em></td>
 <td><code>-- TERMINAL --</code></td>
 <td>An interactive shell inside Vim.</td>
 </tr>
 </tbody></table>
 <h3>Getting Out</h3>
-<p>From any mode except Normal, <kbd>Esc</kbd> returns to Normal. From Insert and Visual, <kbd>Ctrl-[</kbd> does the same. Build the <kbd>Esc</kbd> reflex: after every thought, escape.</p>
+<p>From any mode except <em>normal mode</em>, <kbd>Esc</kbd> returns to <em>normal mode</em>. From <em>insert</em> and <em>visual mode</em>, <kbd>Ctrl-[</kbd> does the same. Build the <kbd>Esc</kbd> reflex: after every thought, escape.</p>
 <p><em>Terminal mode</em> is the exception — <kbd>Esc</kbd> is forwarded to the shell. Use <kbd>Ctrl-\</kbd><kbd>Ctrl-N</kbd> to escape from a Vim terminal.</p>
 <aside class="tip"><strong>Tip.</strong> If you want a visual cue for what mode you&#x27;re in, configure your status line to show it. Most users learn the mode by feel — but for the first week, having <code>[INSERT]</code> or <code>[NORMAL]</code> in the corner removes a lot of confusion.</aside>
 <hr>
 <h3>Operator-pending: the secret seventh mode</h3>
-<p>When you press an operator like <kbd>d</kbd>, <kbd>c</kbd>, <kbd>y</kbd>, or <kbd>&gt;</kbd>, Vim enters <em>operator-pending mode</em> and waits for a motion or text object. You&#x27;re in <em>normal mode</em> no longer — keys do different things in this state. <kbd>i</kbd> no longer enters Insert; it begins a text object (inner ...). <kbd>a</kbd> no longer appends; it begins around-text-objects. The operator and motion together form a single change, which is what <kbd>.</kbd> repeats.</p>
+<p>When you press an operator like <kbd>d</kbd>, <kbd>c</kbd>, <kbd>y</kbd>, or <kbd>&gt;</kbd>, Vim enters <em>operator-pending mode</em> and waits for a motion or text object. You&#x27;re in <em>normal mode</em> no longer — keys do different things in this state. <kbd>i</kbd> no longer enters <em>insert mode</em>; it begins a text object (inner ...). <kbd>a</kbd> no longer appends; it begins around-text-objects. The operator and motion together form a single change, which is what <kbd>.</kbd> repeats.</p>
 <figure class="keys">
 <figcaption>Operator d → operator-pending → text object iw → execute</figcaption>
 <table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
@@ -124,24 +124,24 @@
 </figure>
 <hr>
 <h3>Why this matters</h3>
-<p>When something surprises you in Vim — a key doesn&#x27;t do what you expected — nine times out of ten you misjudged the current mode. &quot;I pressed <kbd>dd</kbd> and it just typed two d&#x27;s&quot; → you were in Insert. &quot;I pressed <kbd>i</kbd> and a word disappeared&quot; → you were in operator-pending after <kbd>d</kbd>. The fix is always the same: press <kbd>Esc</kbd> (sometimes twice) and start over from Normal.</p>
+<p>When something surprises you in Vim — a key doesn&#x27;t do what you expected — nine times out of ten you misjudged the current mode. &quot;I pressed <kbd>dd</kbd> and it just typed two <code>d</code>s&quot; → you were in <em>insert mode</em>. &quot;I pressed <kbd>i</kbd> and a word disappeared&quot; → you were in <em>operator-pending mode</em> after <kbd>d</kbd>. The fix is always the same: press <kbd>Esc</kbd> (sometimes twice) and start over from <em>normal mode</em>.</p>
 <section class="example">
-<h3 class="example-title">Worked example — Normal -&gt; Insert -&gt; Normal</h3>
+<h3 class="example-title">Worked example — <em>normal mode</em> → <em>insert mode</em> → <em>normal mode</em></h3>
 <p class="example-summary">The mode transition every editing change goes through.</p>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Normal mode. Cursor as a block on the space.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/foundations.modes/frame_01.color.svg" alt="Normal mode. Cursor as a block on the space."></div>
-<p class="narration">When you open a file, you start in Normal mode. Keystrokes are commands.</p>
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"><em>Normal mode.</em> Cursor as a block on the space.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/foundations.modes/frame_01.color.svg" alt="*Normal mode.* Cursor as a block on the space."></div>
+<p class="narration">When you open a file, you start in <em>normal mode.</em> Keystrokes are commands.</p>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 2</span> · <kbd>i, vim</kbd> · <span class="step-cap">i then &#x27;, vim&#x27; — Insert mode, text added.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/foundations.modes/frame_02.color.svg" alt="i then &#x27;, vim&#x27; — Insert mode, text added."></div>
-<p class="narration">i enters Insert at the cursor; subsequent keys produce text. The status line below advertises the mode.</p>
+<figcaption><span class="step-n">Step 2</span> · <kbd>i</kbd> · <span class="step-cap"><kbd>i</kbd>, then type <code>, vim</code> — <em>insert mode,</em> text added.</span></figcaption>
+<div class="screenshot"><img src="../screenshots/foundations.modes/frame_02.color.svg" alt="{key:i}, then type `, vim` — *insert mode,* text added."></div>
+<p class="narration"><kbd>i</kbd> enters <em>insert mode</em> at the cursor; subsequent keys produce text. The status line below advertises the mode.</p>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 3</span> · <kbd>Esc</kbd> · <span class="step-cap">Esc — back to Normal mode.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/foundations.modes/frame_03.color.svg" alt="Esc — back to Normal mode."></div>
-<p class="narration">Esc commits the insert and returns to Normal. The whole insertion is one undoable change.</p>
+<figcaption><span class="step-n">Step 3</span> · <kbd>Esc</kbd> · <span class="step-cap"><kbd>Esc</kbd> — back to <em>normal mode.</em></span></figcaption>
+<div class="screenshot"><img src="../screenshots/foundations.modes/frame_03.color.svg" alt="{key:Esc} — back to *normal mode.*"></div>
+<p class="narration"><kbd>Esc</kbd> commits the insert and returns to <em>normal mode.</em> The whole insertion is one undoable change.</p>
 </figure>
 <p class="example-try"><a class="practice-link" href="../sim/?v=3&file=practice.txt&content=Hello+world%0A" target="_blank" rel="noopener">▶ Try this in the simulator</a></p>
 </section>
