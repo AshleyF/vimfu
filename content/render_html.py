@@ -430,9 +430,16 @@ def render_block(b, *, current_part, index, examples) -> str:
         except OSError:
             pass
         href = f"../images/{src.name}"
+        dim_attrs = ""
+        try:
+            from PIL import Image
+            with Image.open(src) as im:
+                dim_attrs = f' width="{im.width}" height="{im.height}"'
+        except Exception:
+            pass
         parts = [
             '<figure class="photo">',
-            f'<img src="{escape(href)}" alt="{escape(b.get("caption") or src.stem)}">',
+            f'<img src="{escape(href)}"{dim_attrs} alt="{escape(b.get("caption") or src.stem)}">',
         ]
         if caption or credit:
             cap_html = f'<figcaption>{caption}'
@@ -556,7 +563,7 @@ def render_block(b, *, current_part, index, examples) -> str:
         return (
             '<aside class="buy-prompt">'
             '<a class="buy-prompt-link" href="../r/book/">'
-            '<img class="buy-prompt-cover" src="../cover_thumb.jpg" alt="VimFu book cover">'
+            '<img class="buy-prompt-cover" src="../cover_thumb.jpg" width="200" height="245" alt="VimFu book cover">'
             '<span class="buy-prompt-text">'
             '<span class="buy-prompt-headline">📖 Want the full story?</span>'
             '<span class="buy-prompt-cta">Get the VimFu book →</span>'
@@ -793,15 +800,15 @@ THEME_INIT_PLACEHOLDER
 THEME_TOGGLE_PLACEHOLDER
 <article>
 <h1 class="site-banner">
-  <img class="banner-light" src="vimfu_light.png" alt="VimFu — Master Your Editor. Unleash Your Flow.">
-  <img class="banner-dark" src="vimfu_dark.png" alt="" aria-hidden="true">
+  <img class="banner-light" src="vimfu_light.png" width="1916" height="821" alt="VimFu — Master Your Editor. Unleash Your Flow.">
+  <img class="banner-dark" src="vimfu_dark.png" width="1916" height="821" alt="" aria-hidden="true">
 </h1>
 <!-- Auto-generated from content/parts/**/*.json -->
 <p class="tagline">The Vim &amp; Neovim reference for programmers &mdash; companion to <a href="r/book/">the book</a>.</p>
 
 <section class="hero">
   <a class="hero-book" href="r/book/" aria-label="Get the VimFu book">
-    <img class="hero-book-cover" src="cover_thumb.jpg" alt="VimFu book cover">
+    <img class="hero-book-cover" src="cover_thumb.jpg" width="200" height="245" alt="VimFu book cover">
     <span class="hero-book-text">
       <span class="hero-book-headline">Get the VimFu book</span>
       <span class="hero-book-sub">History, internals, mental models &amp; worked examples for every concept.</span>
@@ -911,7 +918,7 @@ def _video_card(v: dict, topic_link_html: str = "") -> str:
         vid = escape(v["videoId"])
         thumb = (f'<a href="{escape(v["url"])}" target="_blank" rel="noopener" '
                  f'class="video-thumb" data-video-id="{vid}" aria-label="Play video">'
-                 f'<img loading="lazy" alt="" '
+                 f'<img loading="lazy" alt="" width="480" height="360" '
                  f'src="https://i.ytimg.com/vi/{vid}/hqdefault.jpg">'
                  f'<span class="video-play" aria-hidden="true">▶</span></a>')
         link = (f'<a href="{escape(v["url"])}" target="_blank" rel="noopener">'
