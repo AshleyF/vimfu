@@ -707,7 +707,19 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
 
     meta = []
     if keys := t.get("keys"):
-        meta.append("Keys: " + ", ".join(_emit_key_pills(k) for k in keys))
+        rendered_keys = []
+        for k in keys:
+            ks = str(k)
+            # The keys[] array carries a mix of plain key names (`gg`, `Esc`),
+            # explicit markup (`{key:Ctrl-R}`), placeholders (`{n}G`), and
+            # backticked code (`` `:wq` ``). Route anything with markup through
+            # render_inline so it resolves the same way prose does; wrap plain
+            # names in `{key:...}` first so the splitter still atomizes them.
+            if any(c in ks for c in "{`*["):
+                rendered_keys.append(inl(ks))
+            else:
+                rendered_keys.append(_emit_key_pills(ks))
+        meta.append("Keys: " + ", ".join(rendered_keys))
     if meta:
         body.append('<p class="meta">' + " &middot; ".join(meta) + "</p>")
     # Note: id, part, and lessons are intentionally not shown on the web —
