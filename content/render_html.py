@@ -556,7 +556,7 @@ def render_block(b, *, current_part, index, examples) -> str:
         return (
             '<aside class="buy-prompt">'
             '<a class="buy-prompt-link" href="../r/book/">'
-            '<img class="buy-prompt-cover" src="../cover_thumb.png" alt="VimFu book cover">'
+            '<img class="buy-prompt-cover" src="../cover_thumb.jpg" alt="VimFu book cover">'
             '<span class="buy-prompt-text">'
             '<span class="buy-prompt-headline">📖 Want the full story?</span>'
             '<span class="buy-prompt-cta">Get the VimFu book →</span>'
@@ -801,7 +801,7 @@ THEME_TOGGLE_PLACEHOLDER
 
 <section class="hero">
   <a class="hero-book" href="r/book/" aria-label="Get the VimFu book">
-    <img class="hero-book-cover" src="cover_thumb.png" alt="VimFu book cover">
+    <img class="hero-book-cover" src="cover_thumb.jpg" alt="VimFu book cover">
     <span class="hero-book-text">
       <span class="hero-book-headline">Get the VimFu book</span>
       <span class="hero-book-sub">History, internals, mental models &amp; worked examples for every concept.</span>
