@@ -45,7 +45,7 @@
     },
     {
       "writeFile": "tower.py",
-      "content": "# Tower Defense\nimport math\n\nclass Tower:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n        self.range = 5\n        self.damage = 10\n        self.cooldown = 1.0\n        self.level = 1\n\n    def upgrade(self):\n        self.level += 1\n        self.damage *= 1.5\n        self.range += 1\n\n    def in_range(self, enemy):\n        dx = self.x - enemy.x\n        dy = self.y - enemy.y\n        dist = math.sqrt(dx*dx + dy*dy)\n        return dist <= self.range\n\n    def fire(self, enemy):\n        if self.in_range(enemy):\n            enemy.hp -= self.damage\n            return True\n        return False"
+      "content": "# Tower Defense\n# Small example for the VimFu zb demo.\nimport math\nimport random\n\n\nclass Enemy:\n    def __init__(self, x, y, hp):\n        self.x = x\n        self.y = y\n        self.hp = hp\n        self.alive = True\n\n    def take_damage(self, amount):\n        self.hp -= amount\n        if self.hp <= 0:\n            self.alive = False\n        return self.alive\n\n    def step(self, dx, dy):\n        self.x += dx\n        self.y += dy\n\n\nclass Tower:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n        self.range = 5\n        self.damage = 10\n        self.cooldown = 1.0\n        self.level = 1\n\n    def upgrade(self):\n        self.level += 1\n        self.damage *= 1.5\n        self.range += 1\n\n    def in_range(self, enemy):\n        dx = self.x - enemy.x\n        dy = self.y - enemy.y\n        dist = math.sqrt(dx*dx + dy*dy)\n        return dist <= self.range\n\n    def fire(self, enemy):\n        if self.in_range(enemy):\n            enemy.hp -= self.damage\n            return True\n        return False"
     },
     {
       "line": "clear"
@@ -84,21 +84,35 @@
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 1: jump to end of function, zb ---"
+      "comment": "--- Demo: scroll past init, jump back, zb ---"
     },
     {
-      "say": "Go to the end of the upgrade method. Line seventeen.",
+      "say": "Jump to the end of the file first.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "17G",
-      "overlay": "line 17"
+      "keys": "G",
+      "overlay": "to end"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now back to the upgrade method on line thirty-four. The init method is way off the top of the screen.",
+      "wait": false
     },
     {
       "wait": 0.3
+    },
+    {
+      "keys": "34G",
+      "overlay": "line 34"
+    },
+    {
+      "wait": 0.5
     },
     {
       "keys": "zb",
@@ -108,20 +122,10 @@
       "wait": 0.6
     },
     {
-      "say": "Cursor at the bottom. The whole method and the class above it are visible. Full backward context."
+      "say": "Cursor at the bottom. The whole Tower class above it is visible --- including the init method I wanted to check."
     },
     {
       "wait": 0.3
-    },
-    {
-      "comment": "--- Demo 2: use case ---"
-    },
-    {
-      "say": "Z B is perfect when you need to see what came before. Like checking the init method while editing upgrade.",
-      "wait": false
-    },
-    {
-      "wait": 0.5
     },
     {
       "comment": "--- Summary ---"

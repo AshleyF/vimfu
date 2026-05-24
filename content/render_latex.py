@@ -748,16 +748,19 @@ def _collapse_long_key_runs(text: str) -> str:
     so it renders as one ttfamily code block instead.
 
     We only collapse runs that look like *typed text* on the command
-    line, never normal-mode key chords. The signal for "typed text" is
-    one of:
+    line. The signal for "typed text" is BOTH:
 
-      * the run contains a literal space between key markers
-        (real prose / Ex args almost always have one), or
       * the run starts with one of the command-line-entering keys
-        ``:``, ``/``, ``?``, or ``!``.
+        ``:``, ``/``, ``?``, or ``!``, AND
+      * the run contains at least one multi-character word (so
+        ``:set spell`` collapses, but a chord list like
+        ``{key:/} {key:?} {key:n} {key:N}`` — all single-character
+        pills — does not).
 
-    Pure normal-mode chords like ``gUiw``, ``"ayy``, ``ddkP``, ``+yiw``
-    keep rendering as a row of touching key pills.
+    Pure normal-mode chord lists like ``{key:h} {key:j} {key:k}
+    {key:l}`` (the "remap to hjkl" row in the tmux table) or
+    ``gUiw``, ``"ayy``, ``ddkP``, ``+yiw`` keep rendering as a row
+    of touching key pills.
     """
     def repl(m: re.Match) -> str:
         chunk = m.group(0)
@@ -767,10 +770,10 @@ def _collapse_long_key_runs(text: str) -> str:
             if piece.group(2):
                 chars.append(piece.group(2))
         joined = "".join(chars).rstrip()
-        has_space = " " in joined
         starts_cmdline = bool(joined) and joined[0] in ":/?!"
-        if not (has_space or starts_cmdline):
-            return chunk  # leave normal-mode chord as individual pills
+        has_multichar_word = any(len(w) >= 2 for w in joined.split())
+        if not (starts_cmdline and has_multichar_word):
+            return chunk  # leave chord list as individual pills
         return "`" + joined + "`"
     return _LONG_KEY_RUN_RE.sub(repl, text)
 

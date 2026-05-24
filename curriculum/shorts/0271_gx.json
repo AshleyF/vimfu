@@ -8,50 +8,148 @@
   "seed": 412,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "g commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f links.md .links.md.swp .links.md.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "links.md", "content": "# Bookmarks\n\nhttps://neovim.io\nhttps://vim.org\nhttps://github.com\n\nLocal: ~/vimfu/links.md" },
-    { "line": "clear" },
-    { "line": "nvim links.md" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f links.md .links.md.swp .links.md.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "links.md",
+      "content": "# Bookmarks\n\nhttps://neovim.io\nhttps://vim.org\nhttps://github.com\n\nLocal: ~/vimfu/links.md"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim links.md"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "gx — Open URL or File", "duration": 2.0 },
-    { "wait": 0.6 },
-    { "comment": "--- Intro ---" },
-    { "say": "G X opens whatever the cursor is on — a URL, a file path, anything — using your system's default handler." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: open a URL ---" },
-    { "say": "Cursor on the neovim URL.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "3G0", "overlay": "on URL" },
-    { "wait": 0.3 },
-    { "say": "Press G X. On your normal machine, your browser pops open to that page.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "gx", "overlay": "open URL" },
-    { "wait": 0.8 },
-    { "say": "Quick disclaimer — the recording environment for these videos has no GUI to launch into, so the screen just sits there. On your machine that browser would already be open." },
-    { "wait": 0.4 },
-    { "say": "G X works the same way on file paths and anything else your system knows how to open — markdown previews, images, PDFs, you name it." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "G X. Follow a link or open a file without ever leaving Vim." },
-    { "wait": 1.2 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gx — Open URL or File",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G X opens whatever the cursor is on — a URL, a file path, anything — using your system's default handler."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: open a URL ---"
+    },
+    {
+      "say": "Cursor on the neovim URL.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3G0",
+      "overlay": "on URL"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Press G X. On your normal machine, your browser pops open to that page.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gx",
+      "overlay": "open URL"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Quick disclaimer — the recording environment for these videos has no GUI to launch into, so the screen just sits there. On your machine that browser would already be open."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "G X works the same way on file paths and anything else your system knows how to open — markdown previews, images, PDFs, you name it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G X. Follow a link or open a file without ever leaving Vim."
+    },
+    {
+      "wait": 1.2
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f links.md" }
-  ]
+    {
+      "line": "rm -f links.md"
+    }
+  ],
+  "youtube": {
+    "videoId": "uu6gr7imMd4",
+    "url": "https://youtube.com/watch?v=uu6gr7imMd4"
+  }
 }
