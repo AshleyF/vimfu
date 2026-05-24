@@ -107,6 +107,31 @@ def build_index(topics):
     return idx
 
 
+# Set of part_dir values that have at least one published video. Populated by
+# main() before pages are rendered; used to gate "Videos" links so we don't
+# emit links to empty per-part videos pages.
+_PARTS_WITH_VIDEOS: set[str] = set()
+
+
+def _compute_parts_with_videos(parts_map) -> set[str]:
+    out: set[str] = set()
+    for part_dir, plist in parts_map.items():
+        for t in plist:
+            if not _visible(t, AUDIENCE):
+                continue
+            for n in (t.get("lessons") or []):
+                try:
+                    ni = int(n)
+                except (TypeError, ValueError):
+                    continue
+                if video_for_lesson(ni) is not None:
+                    out.add(part_dir)
+                    break
+            if part_dir in out:
+                break
+    return out
+
+
 # -------- inline markup --------------------------------------------------- #
 
 # Order matters: do `code`, **strong**, *em* AFTER escape, BEFORE link/key
@@ -637,8 +662,7 @@ THEME_INIT_PLACEHOLDER
 THEME_TOGGLE_PLACEHOLDER
 <nav class="topnav">
   <a href="{root_index}">📚 Contents</a>
-  &middot; <a href="{root_index}#part-{part_dir}">↑ {part_label}</a>
-  &middot; <a href="{root_index_dir}videos/{part_dir}/">🎬 Videos</a>
+  &middot; <a href="{root_index}#part-{part_dir}">↑ {part_label}</a>{videos_link}
   &middot; <a class="practice-link" href="../sim/?{practice_qs}" target="_blank" rel="noopener">▶ Practice in the simulator</a>
 </nav>
 <nav class="pager pager-top">
@@ -767,6 +791,10 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
     part_label = _part_label(current_part)
     practice_qs = _practice_query(t, examples)
     prev_link, next_link, pos_label = _pager_links(current_part, t["__file_stem"], ordered or [], index)
+    videos_link = (
+        f'\n  &middot; <a href="../videos/{current_part}/">🎬 Videos</a>'
+        if current_part in _PARTS_WITH_VIDEOS else ""
+    )
     return PAGE.format(
         title=escape(title),
         css="../style.css",
@@ -778,6 +806,7 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
         prev_link=prev_link,
         next_link=next_link,
         pos_label=escape(pos_label),
+        videos_link=videos_link,
         body="\n".join(body),
         footer=_report_footer(prefix="../"),
     )
@@ -855,8 +884,9 @@ def render_root_index(parts_map, index) -> str:
         label = _part_label(part_dir)
         nn = part_dir.split("-", 1)[0]
         sections.append(f'<!-- part {escape(nn)} ({escape(part_dir)}) -->')
-        sections.append(f'<h2 id="part-{escape(part_dir)}">{escape(label)} '
-                        f'<a class="part-videos-link" href="videos/{escape(part_dir)}/">🎬 videos</a></h2>')
+        videos_h2 = (f' <a class="part-videos-link" href="videos/{escape(part_dir)}/">🎬 videos</a>'
+                     if part_dir in _PARTS_WITH_VIDEOS else "")
+        sections.append(f'<h2 id="part-{escape(part_dir)}">{escape(label)}{videos_h2}</h2>')
         sections.append("<ul>")
         for t in topics:
             stem = t["__file_stem"]
@@ -1603,6 +1633,10 @@ def main() -> int:
     written = 0
     visible_parts = [p for p in sorted(parts_map.keys())
                      if any(_visible(t, AUDIENCE) for t in parts_map[p])]
+    # Pre-compute which parts have at least one published video so we
+    # can suppress dead "Videos" links to empty per-part videos pages.
+    global _PARTS_WITH_VIDEOS
+    _PARTS_WITH_VIDEOS = _compute_parts_with_videos(parts_map)
     for part_dir, plist in parts_map.items():
         plist = [t for t in plist if _visible(t, AUDIENCE)]
         if not plist:
@@ -1646,6 +1680,11 @@ def main() -> int:
     videos_dir = out_dir / "videos"
     videos_dir.mkdir(parents=True, exist_ok=True)
     for part_dir in parts_map.keys():
+        # Skip parts with no published videos — the "Videos" link in the
+        # topnav and TOC is also suppressed for these, so the empty page
+        # would only be reachable by guessing the URL.
+        if part_dir not in _PARTS_WITH_VIDEOS:
+            continue
         lessons = part_lessons.get(part_dir, [])
         pvdir = videos_dir / part_dir
         pvdir.mkdir(parents=True, exist_ok=True)

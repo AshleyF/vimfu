@@ -9,6 +9,7 @@ Features:
 
 import hashlib
 import os
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -26,6 +27,91 @@ CACHE_DIR = Path(__file__).parent / ".tts_cache"
 # ---------------------------------------------------------------------------
 # TTS text normalization — make Vim commands pronounceable
 # ---------------------------------------------------------------------------
+
+# Phonetic spelling of single ASCII letters so OpenAI TTS pronounces
+# letter-by-letter ("zee eye") instead of guessing a syllable ("zai").
+_LETTER_PHONETIC = {
+    "a": "eh", "b": "bee", "c": "see", "d": "dee", "e": "ee",
+    "f": "eff", "g": "jee", "h": "aitch", "i": "eye", "j": "jay",
+    "k": "kay", "l": "ell", "m": "em", "n": "en", "o": "oh",
+    "p": "pee", "q": "cue", "r": "arr", "s": "ess", "t": "tee",
+    "u": "you", "v": "vee", "w": "double-you", "x": "eks",
+    "y": "why", "z": "zee",
+}
+
+# Named keys that get a single spoken word.
+_NAMED_KEY_PHONETIC = {
+    "Esc": "escape", "Enter": "enter", "Return": "return", "Tab": "tab",
+    "Space": "space", "BS": "backspace", "Backspace": "backspace",
+    "CR": "enter", "Up": "up arrow", "Down": "down arrow",
+    "Left": "left arrow", "Right": "right arrow",
+    "Home": "home", "End": "end", "PageUp": "page up", "PageDown": "page down",
+    "PgUp": "page up", "PgDn": "page down",
+    "Del": "delete", "Delete": "delete", "Ins": "insert", "Insert": "insert",
+}
+
+_MODIFIER_SPOKEN = {
+    "ctrl": "control", "alt": "alt", "shift": "shift",
+    "cmd": "command", "meta": "meta", "super": "super",
+}
+
+
+def _spell_key_token(tok: str) -> str:
+    """Expand one atomic key token like 'z', 'N', 'Esc', 'Ctrl-W' into
+    spoken phonetic words."""
+    if not tok:
+        return ""
+    # Modifier chord like 'Ctrl-W' or 'Ctrl-Shift-F'. Humans say
+    # "control W" not "control capital W" regardless of case in the chord
+    # suffix, so spell single-letter suffixes without the "capital" marker.
+    if "-" in tok:
+        parts = tok.split("-")
+        mods = []
+        for p in parts[:-1]:
+            mods.append(_MODIFIER_SPOKEN.get(p.lower(), p.lower()))
+        tail_tok = parts[-1]
+        if len(tail_tok) == 1 and tail_tok.isalpha() and tail_tok.isascii():
+            tail = _LETTER_PHONETIC[tail_tok.lower()]
+        else:
+            tail = _spell_key_token(tail_tok)
+        return " ".join(mods + [tail])
+    # Named key like 'Esc', 'Tab'.
+    if tok in _NAMED_KEY_PHONETIC:
+        return _NAMED_KEY_PHONETIC[tok]
+    # Function key like F2.
+    if re.fullmatch(r"F\d{1,2}", tok):
+        return f"F {tok[1:]}"
+    # Single character: ASCII letter spelled out, capitalization marked.
+    if len(tok) == 1:
+        if tok.isalpha() and tok.isascii():
+            phon = _LETTER_PHONETIC[tok.lower()]
+            return f"capital {phon}" if tok.isupper() else phon
+        return tok  # punctuation / digit — TTS reads it fine
+    # Multi-char run like 'zn', 'gg', 'cw': spell each character.
+    return " ".join(_spell_key_token(c) for c in tok)
+
+
+def _expand_key_markup(text: str) -> str:
+    """Expand `{key:...}` markup in narration to spoken phonetic form.
+
+    Examples:
+        {key:zn}       -> "zee en"
+        {key:zN}       -> "zee capital en"
+        {key:Ctrl-W}   -> "control double-you"
+        {key:Esc}      -> "escape"
+        {key:gg}       -> "jee jee"
+    """
+    def _sub(m: re.Match) -> str:
+        body = m.group(1)
+        # Split on whitespace to support multi-chord forms like
+        # `{key:Ctrl-W h}`; recurse atomization per chunk.
+        chunks = body.split()
+        spoken = []
+        for ch in chunks:
+            spoken.append(_spell_key_token(ch))
+        return " ".join(spoken)
+    return re.sub(r"\{key:([^}]+)\}", _sub, text)
+
 
 _TTS_REPLACEMENTS = [
     # Brand / product names — help TTS pronounce clearly
@@ -57,6 +143,9 @@ def normalize_for_tts(text: str) -> str:
     *original* text so scripts stay readable.
     """
     out = text
+    # Expand {key:...} markup first so the replacements below can still
+    # match things like "Ctrl-R" inside narration that didn't use markup.
+    out = _expand_key_markup(out)
     for old, new in _TTS_REPLACEMENTS:
         out = out.replace(old, new)
     return out
