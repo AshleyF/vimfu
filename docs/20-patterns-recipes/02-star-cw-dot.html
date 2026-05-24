@@ -56,23 +56,23 @@
   <span class="pager-next"><a class="pager-link" href="03-cgn-dot.html" rel="next">Change-Next-Match Loop — {key:cgn} →</a></span>
 </nav>
 <article>
-<h1>The Replace Loop — <kbd>*</kbd>, <kbd>cw</kbd>, then <kbd>.</kbd> <kbd>.</kbd> <kbd>.</kbd></h1>
+<h1>The Replace Loop — <kbd>*</kbd>, <kbd>c</kbd><kbd>w</kbd>, then <kbd>.</kbd> <kbd>.</kbd> <kbd>.</kbd></h1>
 <p class="subtitle">Search a word, change one, repeat with dot.</p>
-<p class="meta">Keys: <kbd>{key:*}</kbd>, <kbd>{key:c}</kbd>, <kbd>{key:w}</kbd>, <kbd>{key:n}</kbd>, <kbd>{key:.}</kbd></p>
+<p class="meta">Keys: <kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>*</kbd><kbd>}</kbd>, <kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>c</kbd><kbd>}</kbd>, <kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>w</kbd><kbd>}</kbd>, <kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>n</kbd><kbd>}</kbd>, <kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>.</kbd><kbd>}</kbd></p>
 <blockquote class="summary"><kbd>*</kbd><kbd>c</kbd><kbd>w</kbd><code>NEW</code><kbd>Esc</kbd>, then <kbd>n</kbd><kbd>.</kbd><kbd>n</kbd><kbd>.</kbd> — change every occurrence of a word, one at a time, with confirmation. The most-loved Vim refactoring loop.</blockquote>
 <h2><kbd>*</kbd>, <kbd>c</kbd><kbd>w</kbd>, then <kbd>.</kbd> <kbd>.</kbd> <kbd>.</kbd> — The Replace Loop</h2>
 <p>The classic Vim refactoring loop. Searches for a word, changes one instance, then jumps to each next match where you decide whether to dot-repeat (apply) or skip.</p>
 <figure class="keys">
 <figcaption>Step by step</figcaption>
 <table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
-<tr><td><kbd>{key:*}</kbd></td><td>Cursor on word: search next exact match</td></tr>
-<tr><td><kbd>{key:c}{key:w}</kbd></td><td>Change word — Vim drops you in <em>insert mode</em></td></tr>
-<tr><td><kbd>`NEW`</kbd></td><td>Type replacement</td></tr>
-<tr><td><kbd>{key:Esc}</kbd></td><td>Back to <em>normal mode</em> — change is saved as the dot-target</td></tr>
-<tr><td><kbd>{key:n}</kbd></td><td>Jump to next match</td></tr>
-<tr><td><kbd>{key:.}</kbd></td><td>Apply the same change</td></tr>
-<tr><td><kbd>{key:n}</kbd></td><td>Skip this one — just move to next</td></tr>
-<tr><td><kbd>{key:.}</kbd></td><td>Apply…</td></tr>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>*</kbd><kbd>}</kbd></td><td>Cursor on word: search next exact match</td></tr>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>c</kbd><kbd>}</kbd><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>w</kbd><kbd>}</kbd></td><td>Change word — Vim drops you in <em>insert mode</em></td></tr>
+<tr><td><kbd>`</kbd><kbd>N</kbd><kbd>E</kbd><kbd>W</kbd><kbd>`</kbd></td><td>Type replacement</td></tr>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>E</kbd><kbd>s</kbd><kbd>c</kbd><kbd>}</kbd></td><td>Back to <em>normal mode</em> — change is saved as the dot-target</td></tr>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>n</kbd><kbd>}</kbd></td><td>Jump to next match</td></tr>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>.</kbd><kbd>}</kbd></td><td>Apply the same change</td></tr>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>n</kbd><kbd>}</kbd></td><td>Skip this one — just move to next</td></tr>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>.</kbd><kbd>}</kbd></td><td>Apply…</td></tr>
 </tbody></table></figure>
 <aside class="tip"><strong>Tip.</strong> Need word boundaries to be loose? Use <kbd>g</kbd><kbd>*</kbd> instead of <kbd>*</kbd> — finds the word as a substring, not just whole-word matches.</aside>
 <section class="example">
@@ -87,15 +87,15 @@
 <div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_02.color.svg" alt="{key:*} — search for &#x27;foo&#x27;."></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 3</span> · <kbd>cw Esc</kbd> · <span class="step-cap"><kbd>c</kbd><kbd>w</kbd>, type <code>bar</code>, <kbd>Esc</kbd>.</span></figcaption>
+<figcaption><span class="step-n">Step 3</span> · <kbd>c</kbd><kbd>w</kbd><kbd>Esc</kbd> · <span class="step-cap"><kbd>c</kbd><kbd>w</kbd>, type <code>bar</code>, <kbd>Esc</kbd>.</span></figcaption>
 <div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_03.color.svg" alt="{key:c}{key:w}, type `bar`, {key:Esc}."></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 4</span> · <kbd>n .</kbd> · <span class="step-cap"><kbd>n</kbd> then <kbd>.</kbd> — next match, dot.</span></figcaption>
+<figcaption><span class="step-n">Step 4</span> · <kbd>n</kbd><kbd>.</kbd> · <span class="step-cap"><kbd>n</kbd> then <kbd>.</kbd> — next match, dot.</span></figcaption>
 <div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_04.color.svg" alt="{key:n} then {key:.} — next match, dot."></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 5</span> · <kbd>n .</kbd> · <span class="step-cap">And again. The Replace Loop.</span></figcaption>
+<figcaption><span class="step-n">Step 5</span> · <kbd>n</kbd><kbd>.</kbd> · <span class="step-cap">And again. The Replace Loop.</span></figcaption>
 <div class="screenshot"><img src="../screenshots/pattern.star-cw-dot/frame_05.color.svg" alt="And again. The Replace Loop."></div>
 <p class="narration">The classic Vim mass-edit. <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> is similar and even slicker — see the <kbd>c</kbd><kbd>g</kbd><kbd>n</kbd> variant.</p>
 </figure>

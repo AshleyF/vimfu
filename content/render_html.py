@@ -28,6 +28,7 @@ except Exception:
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from lib.videos import _index as _videos_index, video_for_lesson, videos_for_topic  # noqa: E402
+from render_latex import _atomize_key  # noqa: E402  shared key-splitting rules
 from lib.audience import visible as _visible  # noqa: E402
 from lib.site_config import contact_email  # noqa: E402
 from lib.sim_link import SIM_LINK_VERSION as _SIM_LINK_VERSION, practice_filename  # noqa: E402
@@ -115,6 +116,20 @@ _CODE_RE  = re.compile(r"`([^`]+)`")
 _STRONG_RE = re.compile(r"\*\*([^*]+)\*\*")
 _EM_RE    = re.compile(r"(?<!\*)\*([^*\n]+)\*(?!\*)")
 
+def _emit_key_pills(k: str) -> str:
+    """Render a `{key:...}` payload as one or more <kbd> pills.
+
+    Multi-character pure-ASCII runs like ``hjkl``, ``gg``, ``zz``,
+    ``Ctrl-hjkl`` represent a sequence of separate keystrokes and split
+    into one pill per atomic key — matching the LaTeX renderer and the
+    style guide.
+    """
+    atoms = _atomize_key(k)
+    if not atoms:
+        return f'<kbd>{escape(k)}</kbd>'
+    return "".join(f'<kbd>{escape(a)}</kbd>' for a in atoms)
+
+
 def render_inline(text: str, *, current_part: str, index) -> str:
     if text is None:
         return ""
@@ -144,7 +159,7 @@ def render_inline(text: str, *, current_part: str, index) -> str:
                     and all(c.isalnum() or c in "_!" for c in k[1:])):
                 out_parts.append(f'<code>{escape(k)}</code>')
             else:
-                out_parts.append(f'<kbd>{escape(k)}</kbd>')
+                out_parts.append(_emit_key_pills(k))
         elif kind == "link":
             mm = _LINK_RE.match(raw)
             label, tid = mm.group(1), mm.group(2)
@@ -360,7 +375,7 @@ def render_block(b, *, current_part, index, examples) -> str:
             out.append('<figure class="example-step">')
             head = [f'<span class="step-n">Step {i}</span>']
             if keys:
-                head.append(f'<kbd>{escape(keys)}</kbd>')
+                head.append(_emit_key_pills(keys))
             head.append(f'<span class="step-cap">{inl(cap)}</span>')
             out.append(f'<figcaption>{" · ".join(head)}</figcaption>')
             if exists:
@@ -439,7 +454,7 @@ def render_block(b, *, current_part, index, examples) -> str:
             else:
                 key = step.get("key", "")
                 note = inl(step.get("note", ""))
-            key_html = f"<kbd>{escape(key)}</kbd>" if key else ""
+            key_html = _emit_key_pills(key) if key else ""
             out.append(f"<tr><td>{key_html}</td><td>{note}</td></tr>")
         out.append("</tbody></table></figure>")
         return "\n".join(out)
@@ -685,7 +700,7 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
 
     meta = []
     if keys := t.get("keys"):
-        meta.append("Keys: " + ", ".join(f"<kbd>{escape(k)}</kbd>" for k in keys))
+        meta.append("Keys: " + ", ".join(_emit_key_pills(k) for k in keys))
     if meta:
         body.append('<p class="meta">' + " &middot; ".join(meta) + "</p>")
     # Note: id, part, and lessons are intentionally not shown on the web —

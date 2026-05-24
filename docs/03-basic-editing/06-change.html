@@ -58,7 +58,7 @@
 <article>
 <h1>Change</h1>
 <p class="subtitle"><kbd>c</kbd> is delete-then-insert, atomically.</p>
-<p class="meta">Keys: <kbd>c</kbd>, <kbd>cw</kbd>, <kbd>C</kbd>, <kbd>cc</kbd>, <kbd>S</kbd>, <kbd>s</kbd></p>
+<p class="meta">Keys: <kbd>c</kbd>, <kbd>c</kbd><kbd>w</kbd>, <kbd>C</kbd>, <kbd>c</kbd><kbd>c</kbd>, <kbd>S</kbd>, <kbd>s</kbd></p>
 <blockquote class="summary"><kbd>c</kbd> is the change operator. <kbd>c</kbd><kbd>w</kbd> changes a word; <kbd>c</kbd><kbd>c</kbd> changes a line; <kbd>C</kbd> changes to end of line. <kbd>S</kbd> and <kbd>s</kbd> are short forms that change a whole line and a single character respectively.</blockquote>
 <p><kbd>c</kbd> is the shortcut for <kbd>d</kbd>-then-<kbd>i</kbd>: it deletes the same range <kbd>d</kbd> would, <em>and</em> drops you straight into <em>insert mode</em> at that spot. Then <kbd>Esc</kbd> closes the change as one undoable, dot-repeatable unit.</p>
 <figure class="keys">
@@ -92,7 +92,7 @@
 <figure class="lesson-embed" data-lesson="37"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/L3YSNw0dKMU?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Change to End of Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption><kbd>C</kbd> — change to end of line</figcaption></figure>
 <figure class="lesson-embed" data-lesson="38"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/yOoWC6_5dho?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Change Entire Line" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption><kbd>c</kbd><kbd>c</kbd> / <kbd>S</kbd> — change a line</figcaption></figure>
 <figure class="lesson-embed" data-lesson="39"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/ezZGHEoc2j4?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Substitute Character" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption><kbd>s</kbd> — substitute a char</figcaption></figure>
-<aside class="tip"><strong>Tip.</strong> Watch out: <kbd>cw</kbd> <em>behaves like</em> <kbd>ce</kbd> (change to end of word) — not what <kbd>dw</kbd> does. This is a deliberate, ancient quirk. The change operator with a word motion changes <em>just the word</em>, not the trailing whitespace. Most people prefer it that way.</aside>
+<aside class="tip"><strong>Tip.</strong> Watch out: <kbd>c</kbd><kbd>w</kbd> <em>behaves like</em> <kbd>c</kbd><kbd>e</kbd> (change to end of word) — not what <kbd>d</kbd><kbd>w</kbd> does. This is a deliberate, ancient quirk. The change operator with a word motion changes <em>just the word</em>, not the trailing whitespace. Most people prefer it that way.</aside>
 <aside class="tip"><strong>Tip.</strong> Three handy shortcuts to remember: <kbd>C</kbd> is the same as <kbd>c</kbd><kbd>$</kbd> (change to end of line). <kbd>S</kbd> is the same as <kbd>c</kbd><kbd>c</kbd> (change the whole line). <kbd>s</kbd> is the same as <kbd>c</kbd><kbd>l</kbd> (substitute one character). <kbd>s</kbd> doesn&#x27;t get a lot of love — it&#x27;s a one-character substitute, useful when you want to type a replacement immediately and skip the explicit <kbd>r</kbd>-then-look-around.</aside>
 <hr>
 <h3>Reference</h3>
@@ -151,12 +151,12 @@
 <div class="screenshot"><img src="../screenshots/editing.change/frame_01.color.svg" alt="editing.change"></div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 2</span> · <kbd>cw</kbd> · <span class="step-cap"><kbd>c</kbd><kbd>w</kbd> — &#x27;quick&#x27; gone, <em>insert mode</em> on.</span></figcaption>
+<figcaption><span class="step-n">Step 2</span> · <kbd>c</kbd><kbd>w</kbd> · <span class="step-cap"><kbd>c</kbd><kbd>w</kbd> — &#x27;quick&#x27; gone, <em>insert mode</em> on.</span></figcaption>
 <div class="screenshot"><img src="../screenshots/editing.change/frame_02.color.svg" alt="{key:c}{key:w} — &#x27;quick&#x27; gone, *insert mode* on."></div>
 <p class="narration">Note the trailing space stays — <kbd>c</kbd><kbd>w</kbd> stops <em>just before</em> the next word. (One of <kbd>c</kbd><kbd>w</kbd>&#x27;s well-known quirks.)</p>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 3</span> · <kbd>slow</kbd> · <span class="step-cap">Type <code>slow</code>.</span></figcaption>
+<figcaption><span class="step-n">Step 3</span> · <kbd>s</kbd><kbd>l</kbd><kbd>o</kbd><kbd>w</kbd> · <span class="step-cap">Type <code>slow</code>.</span></figcaption>
 <div class="screenshot"><img src="../screenshots/editing.change/frame_03.color.svg" alt="Type `slow`."></div>
 </figure>
 <figure class="example-step">
