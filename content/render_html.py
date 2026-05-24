@@ -1485,6 +1485,7 @@ aside.buy-prompt a.buy-prompt-link:hover .buy-prompt-cta { text-decoration: unde
 aside.buy-prompt .buy-prompt-cover {
   width: 56px; height: auto; flex-shrink: 0; border-radius: 2px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  border: 1px solid var(--rule);
 }
 aside.buy-prompt .buy-prompt-text { display: flex; flex-direction: column; gap: 0.1rem; }
 aside.buy-prompt .buy-prompt-headline { font-style: italic; color: var(--muted); font-size: 0.95rem; }
@@ -1500,6 +1501,7 @@ a.hero-book:hover { background: var(--accent-soft); text-decoration: none; }
 a.hero-book .hero-book-cover {
   width: 76px; height: auto; flex-shrink: 0; border-radius: 3px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  border: 1px solid var(--rule);
 }
 a.hero-book .hero-book-text { display: flex; flex-direction: column; gap: 0.2rem; }
 a.hero-book .hero-book-headline { font-weight: 700; font-size: 1.15rem; color: var(--accent); }
