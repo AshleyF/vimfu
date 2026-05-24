@@ -538,7 +538,17 @@ def render_block(b, *, current_part, index, examples) -> str:
         return f'<aside class="qr"><span>→ See also {link}</span></aside>'
 
     if bt == "buy-prompt":
-        return '<aside class="buy-prompt">📖 Want the full story? <a href="../r/book/">Get the VimFu book.</a></aside>'
+        return (
+            '<aside class="buy-prompt">'
+            '<a class="buy-prompt-link" href="../r/book/">'
+            '<img class="buy-prompt-cover" src="../cover_thumb.png" alt="VimFu book cover">'
+            '<span class="buy-prompt-text">'
+            '<span class="buy-prompt-headline">📖 Want the full story?</span>'
+            '<span class="buy-prompt-cta">Get the VimFu book →</span>'
+            '</span>'
+            '</a>'
+            '</aside>'
+        )
 
     return f"<!-- unknown block type: {escape(str(bt))} -->"
 
@@ -775,8 +785,15 @@ THEME_TOGGLE_PLACEHOLDER
 <p class="tagline">The Vim &amp; Neovim reference for programmers &mdash; companion to <a href="r/book/">the book</a>.</p>
 
 <section class="hero">
+  <a class="hero-book" href="r/book/" aria-label="Get the VimFu book">
+    <img class="hero-book-cover" src="cover_thumb.png" alt="VimFu book cover">
+    <span class="hero-book-text">
+      <span class="hero-book-headline">Get the VimFu book</span>
+      <span class="hero-book-sub">History, internals, mental models &amp; worked examples for every concept.</span>
+    </span>
+  </a>
   <p>This is the <strong>online reference</strong> half of <em>VimFu</em>. Quick to scan, deep-linkable, packed with embedded videos. Every topic in the book has a page here so you can look something up without flipping pages.</p>
-  <p>The <a href="r/book/">printed book</a> goes deeper &mdash; history, internals, mental models, and worked examples for every concept. The site is the cheat sheet; the book is the why.</p>
+  <p>The site is the cheat sheet; the book is the why.</p>
   <p class="hero-cta">
     <a class="practice-link" href="sim/" target="_blank" rel="noopener">▶ Open the simulator</a>
     <a class="practice-link" href="videos/">🎬 All videos</a>
@@ -1437,8 +1454,34 @@ li.video-card-pending .video-pending-title { color: var(--muted); }
 aside.buy-prompt {
   background: var(--buy-bg); border: 1px dashed var(--buy-border);
   padding: 0.6rem 1rem; margin: 1.5rem 0; border-radius: 4px;
-  text-align: center; font-style: italic;
 }
+aside.buy-prompt a.buy-prompt-link {
+  display: flex; align-items: center; gap: 0.9rem;
+  color: var(--fg); text-decoration: none;
+}
+aside.buy-prompt a.buy-prompt-link:hover .buy-prompt-cta { text-decoration: underline; }
+aside.buy-prompt .buy-prompt-cover {
+  width: 56px; height: auto; flex-shrink: 0; border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+aside.buy-prompt .buy-prompt-text { display: flex; flex-direction: column; gap: 0.1rem; }
+aside.buy-prompt .buy-prompt-headline { font-style: italic; color: var(--muted); font-size: 0.95rem; }
+aside.buy-prompt .buy-prompt-cta { font-weight: 600; color: var(--accent); font-size: 1.02rem; }
+
+a.hero-book {
+  display: flex; align-items: center; gap: 1rem; text-decoration: none;
+  background: var(--bg-elev); border: 1px solid var(--accent-border);
+  border-radius: 6px; padding: 0.7rem 1rem; margin: 0 0 1rem;
+  color: var(--fg);
+}
+a.hero-book:hover { background: var(--accent-soft); text-decoration: none; }
+a.hero-book .hero-book-cover {
+  width: 76px; height: auto; flex-shrink: 0; border-radius: 3px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+a.hero-book .hero-book-text { display: flex; flex-direction: column; gap: 0.2rem; }
+a.hero-book .hero-book-headline { font-weight: 700; font-size: 1.15rem; color: var(--accent); }
+a.hero-book .hero-book-sub { color: var(--muted); font-size: 0.92rem; }
 
 section.example {
   margin: 1.6rem 0; padding: 1rem 1.2rem;
