@@ -553,7 +553,7 @@ def render_block(b, *, current_part, index, examples) -> str:
         if info:
             href = (f"../{info['part_dir']}/{info['file_stem']}.html"
                     if info["part_dir"] != current_part else f"{info['file_stem']}.html")
-        link = f'<a href="{escape(href)}">{escape(label)}</a>' if href else escape(label)
+        link = f'<a href="{escape(href)}">{inl(label)}</a>' if href else inl(label)
         # No QR image in HTML -- readers can just click the link. QR codes are
         # generated for the printed book where scanning is the only path back
         # to the site.
@@ -664,7 +664,7 @@ THEME_TOGGLE_PLACEHOLDER
 """.replace("THEME_INIT_PLACEHOLDER", THEME_INIT_SCRIPT).replace("THEME_TOGGLE_PLACEHOLDER", THEME_TOGGLE_BUTTON)
 
 
-def _pager_links(current_part: str, current_stem: str, ordered: list[tuple[str,str,str]]) -> tuple[str,str,str]:
+def _pager_links(current_part: str, current_stem: str, ordered: list[tuple[str,str,str]], index) -> tuple[str,str,str]:
     """Return (prev_link_html, next_link_html, pos_label) for the topic.
 
     `ordered` is a flat list of (part_dir, stem, title) for every web-visible
@@ -678,15 +678,18 @@ def _pager_links(current_part: str, current_stem: str, ordered: list[tuple[str,s
     def _href(p: str, s: str) -> str:
         return f"{s}.html" if p == current_part else f"../{p}/{s}.html"
 
+    def _ttl(p: str, t: str) -> str:
+        return render_inline(t, current_part=p, index=index)
+
     if idx > 0:
         p, s, t = ordered[idx - 1]
-        prev_html = f'<a class="pager-link" href="{escape(_href(p, s))}" rel="prev">← {escape(t)}</a>'
+        prev_html = f'<a class="pager-link" href="{escape(_href(p, s))}" rel="prev">← {_ttl(p, t)}</a>'
     else:
         prev_html = '<span class="pager-disabled">← start of book</span>'
 
     if idx < len(ordered) - 1:
         p, s, t = ordered[idx + 1]
-        next_html = f'<a class="pager-link" href="{escape(_href(p, s))}" rel="next">{escape(t)} →</a>'
+        next_html = f'<a class="pager-link" href="{escape(_href(p, s))}" rel="next">{_ttl(p, t)} →</a>'
     else:
         next_html = '<span class="pager-disabled">end of book →</span>'
 
@@ -756,14 +759,14 @@ def render_topic_page(t, index, examples, ordered=None) -> str:
                 href = (f"{info['file_stem']}.html"
                         if info["part_dir"] == current_part
                         else f"../{info['part_dir']}/{info['file_stem']}.html")
-                links.append(f'<a href="{escape(href)}">{escape(info["title"])}</a>')
+                links.append(f'<a href="{escape(href)}">{inl(info["title"])}</a>')
             else:
                 links.append(f'<span class="broken">{escape(ref_id)}</span>')
         body.append('<p class="see-also"><strong>See also:</strong> ' + ", ".join(links) + "</p>")
 
     part_label = _part_label(current_part)
     practice_qs = _practice_query(t, examples)
-    prev_link, next_link, pos_label = _pager_links(current_part, t["__file_stem"], ordered or [])
+    prev_link, next_link, pos_label = _pager_links(current_part, t["__file_stem"], ordered or [], index)
     return PAGE.format(
         title=escape(title),
         css="../style.css",
