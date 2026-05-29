@@ -36,6 +36,7 @@ a token is cached in youtube_token.json for reuse.
 
 import argparse
 import json
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -64,6 +65,12 @@ SCOPES = [
 REPO_ROOT = Path(__file__).parent
 CLIENT_SECRET = REPO_ROOT / "client_secret.json"
 TOKEN_CACHE = REPO_ROOT / "youtube_token.json"
+
+
+def youtube_metadata_title(title: str) -> str:
+    """Return a YouTube-safe title without changing the canonical lesson title."""
+    title = title.replace("<", " less-than ").replace(">", " greater-than ")
+    return re.sub(r"\s+", " ", title).strip()
 
 
 def get_authenticated_service():
@@ -131,7 +138,11 @@ def upload_video(lesson_path: Path, schedule_dt: datetime = None,
     else:
         privacy = yt.get("privacyStatus", "private")
 
+    upload_title = youtube_metadata_title(meta["title"])
+
     print(f"Title:     {meta['title']}")
+    if upload_title != meta["title"]:
+        print(f"YT title:  {upload_title}")
     print(f"Video:     {video_path.name}")
     print(f"Thumbnail: {thumb_path.name if thumb_path.exists() else '(none)'}")
     print(f"Privacy:   {privacy}")
@@ -146,7 +157,7 @@ def upload_video(lesson_path: Path, schedule_dt: datetime = None,
     # --- Upload video ---
     body = {
         "snippet": {
-            "title": meta["title"],
+            "title": upload_title,
             "description": meta.get("description", ""),
             "tags": meta.get("tags", []),
             "categoryId": yt.get("categoryId", "27"),
