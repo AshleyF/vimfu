@@ -45,7 +45,7 @@
     },
     {
       "writeFile": "game.c",
-      "content": "// Game Engine\nint result = ATTACK * 2;\nint block = DEFEND + 5;\nint hp = HP_MAX;\n\n#define ATTACK 25\n#define DEFEND 10\n#define HP_MAX 100"
+      "content": "// Game Engine\nint result = ATTACK * 2;\nint block = DEFEND + 5;\nint hp = HP_MAX;\nint base_dmg = 10;\nint base_def = 5;\n\nvoid swing(void) {\n    base_dmg += 1;\n}\n\nvoid parry(void) {\n    base_def += 1;\n}\n\nvoid rest(void) {\n    hp = HP_MAX;\n}\n\nvoid step(void) {\n    swing();\n    parry();\n}\n\nint main(void) {\n    step();\n    rest();\n    return 0;\n}\n\n#define ATTACK 25\n#define DEFEND 10\n#define HP_MAX 100"
     },
     {
       "line": "clear"

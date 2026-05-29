@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 zug zuw Undo Spelling Mark",
+  "title": "VimFu — zug zuw Undo Spelling Mark",
   "description": "zug undoes a zg mark. zuw undoes a zw mark. Remove words from your spell file.",
   "speed": 0.55,
   "rows": 20,
@@ -41,6 +41,12 @@
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
     },
     {
+      "comment": "Use a fresh temp spellfile so demo is independent of any persistent user dictionary"
+    },
+    {
+      "line": "rm -f /tmp/vimfu-spell.add /tmp/vimfu-spell.add.spl"
+    },
+    {
       "comment": "Create demo file"
     },
     {
@@ -54,7 +60,7 @@
       "comment": "Launch nvim with spell checking"
     },
     {
-      "line": "nvim -c 'set spell' notes.txt"
+      "line": "nvim -c 'set spellfile=/tmp/vimfu-spell.add' -c 'set spell' notes.txt"
     },
     {
       "waitForScreen": "All",
@@ -71,7 +77,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "zug zuw \u2014 Undo Spelling Mark",
+      "caption": "zug zuw — Undo Spelling Mark",
       "duration": 2.0
     },
     {
@@ -90,15 +96,15 @@
       "comment": "--- Demo 1: mark then undo with zug ---"
     },
     {
-      "say": "Mark fireball as correct with Z G.",
+      "say": "Mark katana as correct with Z G.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "4w",
-      "overlay": "to fireball"
+      "keys": "j04w",
+      "overlay": "to katana"
     },
     {
       "wait": 0.3
@@ -141,14 +147,7 @@
       "wait": 0.3
     },
     {
-      "keys": "2j0",
-      "overlay": "line 3"
-    },
-    {
-      "wait": 0.2
-    },
-    {
-      "keys": "4w",
+      "keys": "j04w",
       "overlay": "to potion"
     },
     {
@@ -197,5 +196,9 @@
     {
       "line": "rm -f notes.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "tmUynDuXV6Y",
+    "url": "https://youtube.com/watch?v=tmUynDuXV6Y"
+  }
 }

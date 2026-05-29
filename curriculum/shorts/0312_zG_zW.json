@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 zG zW Temporary Spelling",
+  "title": "VimFu — zG zW Temporary Spelling",
   "description": "zG temporarily marks a word as correct. zW temporarily marks it incorrect. Both last only for the session.",
   "speed": 0.55,
   "rows": 20,
@@ -41,11 +41,17 @@
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
     },
     {
+      "comment": "Use a fresh temp spellfile so demo is independent of any persistent user dictionary"
+    },
+    {
+      "line": "rm -f /tmp/vimfu-spell.add /tmp/vimfu-spell.add.spl"
+    },
+    {
       "comment": "Create demo file"
     },
     {
       "writeFile": "log.txt",
-      "content": "Server recv the webhook data.\nThe middleware parsed the json.\nAPI returned a statuscode error.\nRetry after backoff delay."
+      "content": "Server recv the webhook data.\nThe parser handled the response.\nRetry after a backoff delay.\nClose the socket on errors."
     },
     {
       "line": "clear"
@@ -54,7 +60,7 @@
       "comment": "Launch nvim with spell checking"
     },
     {
-      "line": "nvim -c 'set spell' log.txt"
+      "line": "nvim -c 'set spellfile=/tmp/vimfu-spell.add' -c 'set spell' log.txt"
     },
     {
       "waitForScreen": "All",
@@ -71,7 +77,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "zG zW \u2014 Temporary Spelling",
+      "caption": "zG zW — Temporary Spelling",
       "duration": 2.0
     },
     {
@@ -120,7 +126,7 @@
       "comment": "--- Demo 2: temporarily flag json ---"
     },
     {
-      "say": "Capital Z capital W for the opposite. Temporarily flag a word.",
+      "say": "Capital Z capital W for the opposite. Temporarily flag response.",
       "wait": false
     },
     {
@@ -128,7 +134,7 @@
     },
     {
       "keys": "j$b",
-      "overlay": "to json"
+      "overlay": "to response"
     },
     {
       "wait": 0.3
@@ -168,5 +174,9 @@
     {
       "line": "rm -f log.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "dgxawCyksoI",
+    "url": "https://youtube.com/watch?v=dgxawCyksoI"
+  }
 }

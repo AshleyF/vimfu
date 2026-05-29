@@ -41,7 +41,7 @@
     },
     {
       "writeFile": "demo.py",
-      "content": "# Demo File\ndef greet():\n    print(\"hello\")\n    print(\"world\")\n    return True"
+      "content": "# Demo File\ngreet()\n    print(\"hello\")\n    print(\"world\")\n    return True\n"
     },
     {
       "line": "clear"
@@ -74,16 +74,16 @@
       "comment": "--- Intro ---"
     },
     {
-      "say": "Control O lets you run one normal mode command without leaving insert mode. Type it, it runs, and you're back in insert."
+      "say": "{key:Ctrl-O} lets you run one normal mode command without leaving insert mode. One shot, then back to typing."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 1: jump to end of line ---"
+      "comment": "--- Demo 1: fix greet() into a real def ---"
     },
     {
-      "say": "Enter insert mode on line two.",
+      "say": "Move down to the broken function and insert at the start of the line.",
       "wait": false
     },
     {
@@ -97,14 +97,21 @@
       "wait": 0.2
     },
     {
-      "keys": "i",
-      "overlay": "insert mode"
+      "keys": "I",
+      "overlay": "insert at start"
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Now Control O, then dollar to jump to the end of the line.",
+      "type": "def ",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now {key:Ctrl-O} then dollar to jump to the end of the line, without leaving insert.",
       "wait": false
     },
     {
@@ -118,13 +125,6 @@
       "wait": 0.5
     },
     {
-      "say": "Cursor moved to the end. Still in insert mode. Keep typing.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
       "type": ":",
       "overlay": ""
     },
@@ -132,24 +132,79 @@
       "wait": 0.4
     },
     {
-      "comment": "--- Demo 2: delete a line ---"
+      "say": "The function is fixed. {key:Ctrl-O} ran dollar, then dropped us back in insert mode to add the colon."
     },
     {
-      "say": "Control O again. This time D D to delete a line.",
+      "wait": 0.3
+    },
+    {
+      "keys": "escape",
+      "overlay": "Esc"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo 2: expand string, then dd the redundant print ---"
+    },
+    {
+      "say": "Now let's expand the first print to hello world, and remove the redundant second print.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
+      "keys": "j$",
+      "overlay": "down, end of line"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "F\"",
+      "overlay": "back to quote"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "i",
+      "overlay": "insert"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": " world",
+      "overlay": ""
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now {key:Ctrl-O} J to step down, then {key:Ctrl-O} D D to delete the duplicate line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u000fj",
+      "overlay": "Ctrl-O j"
+    },
+    {
+      "wait": 0.4
+    },
+    {
       "keys": "\u000fdd",
-      "overlay": "delete line"
+      "overlay": "Ctrl-O dd"
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Line deleted. Still in insert mode. One command, then right back to typing."
+      "say": "Duplicate gone. Still in insert mode, ready to keep typing."
     },
     {
       "wait": 0.3
@@ -165,7 +220,7 @@
       "comment": "--- Wrap up ---"
     },
     {
-      "say": "Control O. Run one normal mode command from insert mode. Jump, delete, yank. One shot, then back to insert."
+      "say": "{key:Ctrl-O}. Run one normal mode command from insert. Jump, delete, yank. One shot, then back to insert."
     },
     {
       "wait": 1.5

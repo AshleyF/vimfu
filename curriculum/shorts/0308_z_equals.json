@@ -1,8 +1,8 @@
 {
-  "title": "VimFu \u2014 z= Spelling Suggestions",
+  "title": "VimFu — z= Spelling Suggestions",
   "description": "z= shows spelling suggestions for the word under the cursor. Pick a number to replace the misspelled word.",
   "speed": 0.55,
-  "rows": 20,
+  "rows": 24,
   "cols": 40,
   "humanize": 0.7,
   "seed": 449,
@@ -54,7 +54,7 @@
       "comment": "Launch nvim with spell checking"
     },
     {
-      "line": "nvim -c 'set spell' story.txt"
+      "line": "nvim -c 'set spell' -c 'set spellsuggest=best,9' story.txt"
     },
     {
       "waitForScreen": "All",
@@ -71,7 +71,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "z= \u2014 Spelling Suggestions",
+      "caption": "z= — Spelling Suggestions",
       "duration": 2.0
     },
     {
@@ -81,16 +81,16 @@
       "comment": "--- Intro ---"
     },
     {
-      "say": "Z equals shows spelling suggestions for the word under the cursor. A count picks a suggestion directly."
+      "say": "Z equals shows spelling suggestions for the word under the cursor. A count up front skips the menu and picks directly."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 1: fix brav ---"
+      "comment": "--- Demo 1: plain z= shows the menu, pick 1 ---"
     },
     {
-      "say": "The word brav is misspelled. Put the cursor on it and press one Z equals to auto-pick the first suggestion.",
+      "say": "Brav on line one is misspelled. Press Z equals to see the suggestion menu.",
       "wait": false
     },
     {
@@ -104,23 +104,37 @@
       "wait": 0.3
     },
     {
-      "keys": "1z=",
-      "overlay": "fix spelling"
+      "keys": "z=",
+      "overlay": "suggestion menu"
     },
     {
-      "wait": 0.8
+      "wait": 1.4
     },
     {
-      "say": "Fixed. Brav is now brave. The count one picks the first suggestion automatically."
+      "say": "A numbered list of candidates. Type the number and enter to pick one. One for brave.",
+      "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 2: fix drak ---"
+      "type": "1"
+    },
+    "enter",
+    {
+      "wait": 0.6
     },
     {
-      "say": "Fix the next one. Darkk on line two.",
+      "say": "Fixed. Brav is now brave."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: skip the menu with a count ---"
+    },
+    {
+      "say": "Power-user shortcut: prefix with the number to auto-pick without seeing the menu. One Z equals.",
       "wait": false
     },
     {
@@ -128,14 +142,14 @@
     },
     {
       "keys": "j",
-      "overlay": "next misspelling"
+      "overlay": "next line"
     },
     {
       "wait": 0.3
     },
     {
       "keys": "1z=",
-      "overlay": "fix spelling"
+      "overlay": "auto-pick first"
     },
     {
       "wait": 0.6
@@ -144,7 +158,7 @@
       "comment": "--- Wrap up ---"
     },
     {
-      "say": "Z equals. See suggestions and pick a fix. Spell check built right into Vim."
+      "say": "Z equals for the menu. Count Z equals to skip it. Spell check built right into Vim."
     },
     {
       "wait": 1.5
@@ -162,5 +176,9 @@
     {
       "line": "rm -f story.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "12VeqJpWM98",
+    "url": "https://youtube.com/watch?v=12VeqJpWM98"
+  }
 }

@@ -35,30 +35,34 @@
       "line": "mkdir -p ~/vimfu && cd ~/vimfu"
     },
     {
-      "line": "rm -f north.py south.py .north.py.swp .south.py.swp"
+      "line": "rm -f north.py south.py east.py .north.py.swp .south.py.swp .east.py.swp"
     },
     {
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
     },
     {
-      "comment": "Create two demo files"
+      "comment": "Create three demo files"
     },
     {
       "writeFile": "north.py",
       "content": "# North Kingdom\ncastle = \"Winterhold\"\nking = \"Frost King\"\narmy = 5000"
     },
     {
+      "writeFile": "east.py",
+      "content": "# East Kingdom\ncastle = \"Sunspire\"\nqueen = \"Sun Queen\"\narmy = 3000"
+    },
+    {
       "writeFile": "south.py",
-      "content": "# South Kingdom\ncastle = \"Sunspire\"\nqueen = \"Sun Queen\"\narmy = 3000"
+      "content": "# South Kingdom\ncastle = \"Stonehold\"\nlord = \"Stone Lord\"\narmy = 2000"
     },
     {
       "line": "clear"
     },
     {
-      "comment": "Launch nvim with horizontal split"
+      "comment": "Launch nvim with left pane + vertical split + horizontal split on right"
     },
     {
-      "line": "nvim -o north.py south.py"
+      "line": "nvim -c 'set splitright splitbelow' -c 'vsplit east.py' -c 'split south.py' -c 'wincmd t' north.py"
     },
     {
       "waitForScreen": "All",
@@ -91,10 +95,33 @@
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 1: move down ---"
+      "comment": "--- Demo 1: L right ---"
     },
     {
-      "say": "Two files open. Cursor is in the top pane. Control W J to go down.",
+      "say": "Three panes. Cursor starts in the left pane. Control W L to go right.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0017l",
+      "overlay": "right"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Top right pane. East kingdom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: J down ---"
+    },
+    {
+      "say": "Control W J to go down.",
       "wait": false
     },
     {
@@ -108,13 +135,13 @@
       "wait": 0.6
     },
     {
-      "say": "Now in the bottom pane. South kingdom."
+      "say": "Bottom right pane. South kingdom."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 2: move back up ---"
+      "comment": "--- Demo 3: K up ---"
     },
     {
       "say": "Control W K to go back up.",
@@ -131,34 +158,33 @@
       "wait": 0.6
     },
     {
-      "say": "Back in the top pane. North kingdom."
+      "say": "Back to east."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 3: down and up again ---"
+      "comment": "--- Demo 4: H left ---"
     },
     {
-      "say": "J down. K up. Same muscle memory as normal mode.",
+      "say": "Control W H to go all the way left.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "\u0017j",
-      "overlay": "down"
-    },
-    {
-      "wait": 0.4
-    },
-    {
-      "keys": "\u0017k",
-      "overlay": "up"
+      "keys": "\u0017h",
+      "overlay": "left"
     },
     {
       "wait": 0.6
+    },
+    {
+      "say": "Back to north. Same muscle memory as normal mode."
+    },
+    {
+      "wait": 0.3
     },
     {
       "comment": "--- Wrap up ---"
@@ -180,7 +206,7 @@
     },
     "enter",
     {
-      "line": "rm -f north.py south.py"
+      "line": "rm -f north.py south.py east.py"
     }
   ]
 }

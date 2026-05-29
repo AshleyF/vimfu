@@ -8,62 +8,189 @@
   "seed": 425,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "g commands", "encoding"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "encoding"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f secret.txt .secret.txt.swp .secret.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "secret.txt", "content": "# Spoiler Alert\nThe butler did it.\nThe cake is a lie.\nSoylent green is people." },
-    { "line": "clear" },
-    { "line": "nvim secret.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f secret.txt .secret.txt.swp .secret.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "secret.txt",
+      "content": "# Spoiler Alert\nThe butler did it.\nThe cake is a lie.\nSoylent green is people."
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim secret.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "g? — ROT13 Encoding", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "G question mark applies ROT thirteen encoding. Each letter shifts thirteen places in the alphabet. A becomes N, B becomes O, and so on." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: encode a line ---" },
-    { "say": "Line two. The butler did it. G question mark, question mark. Encode the line.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "2G", "overlay": "line 2" },
-    { "wait": 0.3 },
-    { "keys": "g??", "overlay": "ROT13 line" },
-    { "wait": 0.6 },
-    { "say": "Scrambled. Unreadable. The spoiler is hidden." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: decode it back ---" },
-    { "say": "Apply it again to decode. G question mark, question mark.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "g??", "overlay": "decode!" },
-    { "wait": 0.6 },
-    { "say": "Back to the original. ROT thirteen is its own inverse. Apply twice to get back." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 3: encode multiple lines ---" },
-    { "say": "Encode the whole file. G G, then G question mark, G. From top to bottom.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "gg", "overlay": "top" },
-    { "wait": 0.3 },
-    { "keys": "g?G", "overlay": "ROT13 entire file" },
-    { "wait": 0.6 },
-    { "say": "Everything encoded. No spoilers here." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "G question mark. ROT thirteen operator. Fun for hiding spoilers. Not real encryption though." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "g? — ROT13 Encoding",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G question mark applies ROT thirteen encoding. Each letter shifts thirteen places in the alphabet. A becomes N, B becomes O, and so on."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: encode a line ---"
+    },
+    {
+      "say": "Line two. The butler did it. G question mark, question mark. Encode the line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g??",
+      "overlay": "ROT13 line"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Scrambled. Unreadable. The spoiler is hidden."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: decode it back ---"
+    },
+    {
+      "say": "Apply it again to decode. G question mark, question mark.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g??",
+      "overlay": "decode!"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back to the original. ROT thirteen is its own inverse. Apply twice to get back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: encode multiple lines ---"
+    },
+    {
+      "say": "Encode the whole file. G G, then G question mark, G. From top to bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gg",
+      "overlay": "top"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "g?G",
+      "overlay": "ROT13 entire file"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything encoded. No spoilers here."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G question mark. ROT thirteen operator. Fun for hiding spoilers. Not real encryption though."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f secret.txt" }
-  ]
+    {
+      "line": "rm -f secret.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "hdswuri4jro",
+    "url": "https://youtube.com/watch?v=hdswuri4jro"
+  }
 }

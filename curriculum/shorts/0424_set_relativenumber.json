@@ -1,40 +1,140 @@
 {
   "title": "VimFu — :set relativenumber",
   "description": "Show relative line numbers with :set relativenumber in Vim for easier motion commands.",
-  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 565,
-  "ttsVoice": "echo", "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "settings"],
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 565,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "settings"
+  ],
   "setup": [
-    { "line": "export TERM=xterm-256color" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "writeFile": "demo.py", "content": "# Demo\ndef greet(name):\n    return f\"Hello {name}\"\n\nresult = greet(\"World\")\nprint(result)" },
-    { "line": "clear" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Player module\nimport math\n\nMAX_HP = 100\nMAX_MP = 50\n\ndef greet(name):\n    return f\"Hello {name}\"\n\ndef heal(hp, amount):\n    return min(hp + amount, MAX_HP)\n\ndef damage(hp, hit):\n    return max(hp - hit, 0)\n\nresult = greet(\"World\")\nprint(result)\n"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "overlay": "VimFu", "caption": ":set relativenumber", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "say": "Relative line numbers show how far each line is from your cursor. This makes it easy to use motions like 3 j or 5 k." },
-    { "wait": 0.3 },
-    { "type": ":set relativenumber", "overlay": ":set relativenumber" },
+    {
+      "overlay": "VimFu",
+      "caption": ":set relativenumber",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Relative line numbers show how far each line is from your cursor. Now motions like 9 j or 3 k just need a quick glance."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set relativenumber",
+      "overlay": ":set relativenumber"
+    },
     "enter",
-    { "wait": 1.0 },
-    { "say": "Notice the current line shows zero, and other lines show their distance. Watch the numbers change as I move." },
-    { "wait": 0.3 },
-    { "keys": "j" }, { "wait": 0.5 },
-    { "keys": "j" }, { "wait": 0.5 },
-    { "keys": "j" }, { "wait": 0.5 },
-    { "keys": "k" }, { "wait": 0.5 },
-    { "keys": "k" }, { "wait": 0.5 },
-    { "say": "To turn it off, use set norelativenumber. The shorthand is set rnu and set nornu." },
-    { "wait": 0.3 },
-    { "type": ":set norelativenumber", "overlay": ":set norelativenumber" },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Current line shows zero. I want to reach the heal function. Its line shows 9, so I type 9 j."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "9j",
+      "overlay": "9j"
+    },
+    {
+      "wait": 1.2
+    },
+    {
+      "say": "Now back up to greet. Its line shows 3, so 3 k."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3k",
+      "overlay": "3k"
+    },
+    {
+      "wait": 1.2
+    },
+    {
+      "say": "No counting, no mental math. Just read the number and go."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "To turn it off, set norelativenumber. Shorthand is rnu and nornu."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set norelativenumber",
+      "overlay": ":set norelativenumber"
+    },
     "enter",
-    { "wait": 1.5 }
+    {
+      "wait": 1.2
+    }
   ],
-  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.py" } ]
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "eKRYfpJO1Oo",
+    "url": "https://youtube.com/watch?v=eKRYfpJO1Oo"
+  }
 }

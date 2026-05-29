@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 zw Mark Word Incorrect",
+  "title": "VimFu — zw Mark Word Incorrect",
   "description": "zw marks a word as incorrect in your spell file. Vim will flag it as misspelled from now on.",
   "speed": 0.55,
   "rows": 20,
@@ -41,11 +41,17 @@
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
     },
     {
+      "comment": "Use a fresh temp spellfile so demo is independent of any persistent user dictionary"
+    },
+    {
+      "line": "rm -f /tmp/vimfu-spell.add /tmp/vimfu-spell.add.spl"
+    },
+    {
       "comment": "Create demo file"
     },
     {
       "writeFile": "rules.txt",
-      "content": "Do not use goto in production.\nAvoid eval in user input.\nNever hardcode passwords here.\nAlways sanitize form data."
+      "content": "We really need to ship this.\nIt was very easy to fix.\nNever hardcode passwords here.\nAlways sanitize form data."
     },
     {
       "line": "clear"
@@ -54,7 +60,7 @@
       "comment": "Launch nvim with spell checking"
     },
     {
-      "line": "nvim -c 'set spell' rules.txt"
+      "line": "nvim -c 'set spellfile=/tmp/vimfu-spell.add' -c 'set spell' rules.txt"
     },
     {
       "waitForScreen": "All",
@@ -71,7 +77,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "zw \u2014 Mark Word Incorrect",
+      "caption": "zw — Mark Word Incorrect",
       "duration": 2.0
     },
     {
@@ -87,18 +93,18 @@
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 1: mark goto ---"
+      "comment": "--- Demo 1: mark really ---"
     },
     {
-      "say": "The word goto passes spell check. But we banned it. Z W to flag it.",
+      "say": "The word really is valid English. But style guides ban it as a filler. Z W to flag it.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "3w",
-      "overlay": "to goto"
+      "keys": "w",
+      "overlay": "to really"
     },
     {
       "wait": 0.3
@@ -111,24 +117,24 @@
       "wait": 0.6
     },
     {
-      "say": "Now goto is highlighted as misspelled. Your personal rule."
+      "say": "Now really is highlighted as misspelled. Your personal style rule."
     },
     {
       "wait": 0.3
     },
     {
-      "comment": "--- Demo 2: mark eval ---"
+      "comment": "--- Demo 2: mark very ---"
     },
     {
-      "say": "Flag eval too.",
+      "say": "Flag very too.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "j0w",
-      "overlay": "to eval"
+      "keys": "j02w",
+      "overlay": "to very"
     },
     {
       "wait": 0.3
@@ -141,7 +147,7 @@
       "wait": 0.6
     },
     {
-      "say": "Eval is flagged. Vim will highlight it every time you open a file."
+      "say": "Very is flagged. Vim will highlight it every time you open a file."
     },
     {
       "wait": 0.3
@@ -166,7 +172,11 @@
     },
     "enter",
     {
-      "line": "rm -f rules.txt"
+      "line": "rm -f rules.txt ~/.config/nvim/spell/en.utf-8.add ~/.config/nvim/spell/en.utf-8.add.spl"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "CDE0j8tf7aw",
+    "url": "https://youtube.com/watch?v=CDE0j8tf7aw"
+  }
 }

@@ -41,7 +41,8 @@ _LETTER_PHONETIC = {
 
 # Named keys that get a single spoken word.
 _NAMED_KEY_PHONETIC = {
-    "Esc": "escape", "Enter": "enter", "Return": "return", "Tab": "tab",
+    "Esc": "escape", "Escape": "escape",
+    "Enter": "enter", "Return": "return", "Tab": "tab",
     "Space": "space", "BS": "backspace", "Backspace": "backspace",
     "CR": "enter", "Up": "up arrow", "Down": "down arrow",
     "Left": "left arrow", "Right": "right arrow",
@@ -53,6 +54,22 @@ _NAMED_KEY_PHONETIC = {
 _MODIFIER_SPOKEN = {
     "ctrl": "control", "alt": "alt", "shift": "shift",
     "cmd": "command", "meta": "meta", "super": "super",
+}
+
+# Spoken form for punctuation / symbol keys so TTS doesn't silently skip
+# them. Used when a single-character key token is not a letter.
+_PUNCT_PHONETIC = {
+    "[": "open bracket", "]": "close bracket",
+    "(": "open paren", ")": "close paren",
+    "{": "open brace", "}": "close brace",
+    "<": "less than", ">": "greater than",
+    "=": "equals", "+": "plus", "-": "dash", "_": "underscore",
+    "*": "star", "&": "ampersand", "#": "pound", "@": "at",
+    "$": "dollar", "%": "percent", "^": "caret", "~": "tilde",
+    "!": "bang", "?": "question mark",
+    "|": "pipe", "\\": "backslash", "/": "slash",
+    ".": "dot", ",": "comma", ";": "semicolon", ":": "colon",
+    "'": "apostrophe", "`": "backtick", "\"": "double quote",
 }
 
 
@@ -86,7 +103,9 @@ def _spell_key_token(tok: str) -> str:
         if tok.isalpha() and tok.isascii():
             phon = _LETTER_PHONETIC[tok.lower()]
             return f"capital {phon}" if tok.isupper() else phon
-        return tok  # punctuation / digit — TTS reads it fine
+        if tok in _PUNCT_PHONETIC:
+            return _PUNCT_PHONETIC[tok]
+        return tok  # digit / other — TTS reads it fine
     # Multi-char run like 'zn', 'gg', 'cw': spell each character.
     return " ".join(_spell_key_token(c) for c in tok)
 
@@ -94,15 +113,21 @@ def _spell_key_token(tok: str) -> str:
 def _expand_key_markup(text: str) -> str:
     """Expand `{key:...}` markup in narration to spoken phonetic form.
 
+    To include a literal `}` in the body, escape it as `\\}`. Likewise
+    `\\\\` for a literal backslash.
+
     Examples:
         {key:zn}       -> "zee en"
         {key:zN}       -> "zee capital en"
         {key:Ctrl-W}   -> "control double-you"
         {key:Esc}      -> "escape"
         {key:gg}       -> "jee jee"
+        {key:]\\}}     -> "close bracket close brace"
     """
     def _sub(m: re.Match) -> str:
         body = m.group(1)
+        # Unescape \} and \\
+        body = body.replace("\\}", "}").replace("\\\\", "\\")
         # Split on whitespace to support multi-chord forms like
         # `{key:Ctrl-W h}`; recurse atomization per chunk.
         chunks = body.split()
@@ -110,7 +135,8 @@ def _expand_key_markup(text: str) -> str:
         for ch in chunks:
             spoken.append(_spell_key_token(ch))
         return " ".join(spoken)
-    return re.sub(r"\{key:([^}]+)\}", _sub, text)
+    # Body is one or more of: a backslash-escape (\\.), or any non-}/non-\ char.
+    return re.sub(r"\{key:((?:\\.|[^}\\])+)\}", _sub, text)
 
 
 _TTS_REPLACEMENTS = [
@@ -131,7 +157,11 @@ _TTS_REPLACEMENTS = [
     ("Ctrl-",  "control "),
     ("ZZ", "shift Z shift Z"),
     ("ZQ", "shift Z shift Q"),
-    ("Esc", "escape"),
+]
+
+_TTS_REGEX_REPLACEMENTS = [
+    (re.compile(r"\bEscape\b"), "escape"),
+    (re.compile(r"\bEsc\b"), "escape"),
 ]
 
 
@@ -148,13 +178,19 @@ def normalize_for_tts(text: str) -> str:
     out = _expand_key_markup(out)
     for old, new in _TTS_REPLACEMENTS:
         out = out.replace(old, new)
+    for pattern, new in _TTS_REGEX_REPLACEMENTS:
+        out = pattern.sub(new, out)
     return out
 
 
 def get_cache_path(text: str, voice: str, model: str) -> Path:
-    """Generate a cache file path based on text and voice settings."""
-    # Create hash of text + settings for unique filename
-    content = f"{text}|{voice}|{model}"
+    """Generate a cache file path based on text and voice settings.
+
+    The cache key uses the *normalized* (TTS-ready) text so that changes
+    to normalization rules (e.g., new `{key:...}` expansions) invalidate
+    cached audio automatically.
+    """
+    content = f"{normalize_for_tts(text)}|{voice}|{model}"
     hash_value = hashlib.md5(content.encode()).hexdigest()[:16]
     return CACHE_DIR / f"{hash_value}.mp3"
 

@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 [i ]i Show Include",
+  "title": "VimFu — [i ]i Show Include",
   "description": "[i shows the first line matching the word under the cursor in included files. ]i searches from the cursor.",
   "speed": 0.55,
   "rows": 20,
@@ -71,7 +71,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "[i ]i \u2014 Show Include",
+      "caption": "[i ]i — Show Include",
       "duration": 2.0
     },
     {
@@ -81,7 +81,7 @@
       "comment": "--- Intro ---"
     },
     {
-      "say": "Open bracket I shows the first line in the file that matches the word under the cursor. Useful for finding where something is defined."
+      "say": "{key:[i} searches the current file and any included headers for the first line matching the word under the cursor. It echoes that line to the command line."
     },
     {
       "wait": 0.3
@@ -90,7 +90,7 @@
       "comment": "--- Demo 1: find printf ---"
     },
     {
-      "say": "Cursor on printf on line five. Open bracket I to find the first match.",
+      "say": "Cursor on printf on line five. {key:[i} to find the first match.",
       "wait": false
     },
     {
@@ -115,10 +115,17 @@
       "overlay": "show match"
     },
     {
-      "wait": 0.8
+      "wait": 0.5
     },
     {
-      "say": "It shows the include line for stdio at the bottom. That's where printf comes from."
+      "say": "Watch the bottom of the screen. Vim followed the include and pulled in the printf declaration from stdio dot h."
+    },
+    {
+      "wait": 2.5
+    },
+    {
+      "keys": "\r",
+      "overlay": "dismiss"
     },
     {
       "wait": 0.3
@@ -127,7 +134,7 @@
       "comment": "--- Demo 2: find malloc ---"
     },
     {
-      "say": "Try malloc on line six.",
+      "say": "Try malloc on line six. {key:[i} again.",
       "wait": false
     },
     {
@@ -152,10 +159,17 @@
       "overlay": "show match"
     },
     {
-      "wait": 0.8
+      "wait": 0.5
     },
     {
-      "say": "Found the stdlib include. Quick way to trace where functions come from."
+      "say": "Vim found the first mention of malloc inside stdlib dot h and echoed that line. Cursor never moved."
+    },
+    {
+      "wait": 2.5
+    },
+    {
+      "keys": "\r",
+      "overlay": "dismiss"
     },
     {
       "wait": 0.3
@@ -164,7 +178,7 @@
       "comment": "--- Wrap up ---"
     },
     {
-      "say": "Open bracket I. Show the first matching line. Trace function origins in C code."
+      "say": "{key:[i}. Echo the first matching line from this file or any header it includes. Use {key:gd} to actually jump."
     },
     {
       "wait": 1.5
@@ -182,5 +196,9 @@
     {
       "line": "rm -f main.c"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "nFyMkBbrOU0",
+    "url": "https://youtube.com/watch?v=nFyMkBbrOU0"
+  }
 }

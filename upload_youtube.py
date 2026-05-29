@@ -404,7 +404,11 @@ def main():
         print(f"{'=' * 60}")
         print(f"Processing: {path.name}")
         print(f"{'=' * 60}")
-        upload_video(path, schedule_dt=video_schedule, privacy_override=args.privacy)
+        try:
+            upload_video(path, schedule_dt=video_schedule, privacy_override=args.privacy)
+        except Exception as e:
+            print(f"FAILED to upload {path.name}: {e}")
+            print("Continuing to next video...")
         print()
 
 

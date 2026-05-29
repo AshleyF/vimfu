@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 [s ]s Navigate Misspelled",
+  "title": "VimFu — [s ]s Navigate Misspelled",
   "description": "[s jumps to the previous misspelled word. ]s jumps to the next one. Quick spelling navigation.",
   "speed": 0.55,
   "rows": 20,
@@ -41,6 +41,12 @@
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
     },
     {
+      "comment": "Use a fresh temp spellfile so demo is independent of any persistent user dictionary"
+    },
+    {
+      "line": "rm -f /tmp/vimfu-spell.add /tmp/vimfu-spell.add.spl"
+    },
+    {
       "comment": "Create demo file with several misspellings"
     },
     {
@@ -54,7 +60,7 @@
       "comment": "Launch nvim with spell checking"
     },
     {
-      "line": "nvim -c 'set spell' review.txt"
+      "line": "nvim -c 'set spellfile=/tmp/vimfu-spell.add' -c 'set spell' review.txt"
     },
     {
       "waitForScreen": "All",
@@ -71,7 +77,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "[s ]s \u2014 Navigate Misspelled",
+      "caption": "[s ]s — Navigate Misspelled",
       "duration": 2.0
     },
     {
@@ -81,7 +87,7 @@
       "comment": "--- Intro ---"
     },
     {
-      "say": "Close bracket S jumps to the next misspelled word. Open bracket S jumps to the previous one."
+      "say": "{key:]s} jumps to the next misspelled word. {key:[s} jumps to the previous one."
     },
     {
       "wait": 0.3
@@ -90,7 +96,7 @@
       "comment": "--- Demo 1: jump forward with ]s ---"
     },
     {
-      "say": "Start at the top. Close bracket S to find the first typo.",
+      "say": "Start at the top. {key:]s} to find the first typo.",
       "wait": false
     },
     {
@@ -141,7 +147,7 @@
       "comment": "--- Demo 2: jump backward with [s ---"
     },
     {
-      "say": "Open bracket S goes back.",
+      "say": "{key:[s} goes back.",
       "wait": false
     },
     {
@@ -171,7 +177,7 @@
       "comment": "--- Wrap up ---"
     },
     {
-      "say": "Close bracket S forward. Open bracket S backward. Hop between misspelled words and fix them with Z equals."
+      "say": "{key:]s} forward. {key:[s} backward. Hop between misspelled words and fix them with {key:z=}."
     },
     {
       "wait": 1.5
@@ -189,5 +195,9 @@
     {
       "line": "rm -f review.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "cJf8l-v9j_Y",
+    "url": "https://youtube.com/watch?v=cJf8l-v9j_Y"
+  }
 }

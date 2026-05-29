@@ -8,53 +8,159 @@
   "seed": 420,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "g commands", "visual"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "visual"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f gv.py .gv.py.swp .gv.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "gv.py", "content": "# Selection Demo\nalpha = 1\nbeta = 2\ngamma = 3\ndelta = 4\nepsilon = 5" },
-    { "line": "clear" },
-    { "line": "nvim gv.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f gv.py .gv.py.swp .gv.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "gv.py",
+      "content": "# Selection Demo\nalpha = 1\nbeta = 2\ngamma = 3\ndelta = 4\nepsilon = 5"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim gv.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "gV — Avoid Reselect", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "G shift V is used in mappings to prevent the previous visual area from being reselected. It's a mapping helper, not a standalone command." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: show the concept ---" },
-    { "say": "When you run a colon command from visual mode, Vim can auto-reselect the visual area. G shift V prevents that. Let's see the difference.", "wait": false },
-    { "wait": 0.3 },
-    { "say": "Select three lines.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "2GV2j", "overlay": "select 3 lines" },
-    { "wait": 0.3 },
-    { "say": "Run a substitution. Colon S, alpha, omega.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":s/alpha/omega/", "overlay": "substitute" },
-    { "keys": "enter" },
-    { "wait": 0.5 },
-    { "say": "Done. Now if a mapping were to reselect here, G shift V would prevent it. It clears the pending visual selection inside a mapping." },
-    { "wait": 0.5 },
-    { "say": "This is mainly useful when writing custom mappings that execute colon commands on visual selections. You add G shift V at the end of the mapping to prevent re-highlighting." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "G shift V. A mapping tool to suppress visual reselection. Niche, but handy for clean custom visual mode mappings." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gV — Avoid Reselect",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G shift V is used in mappings to prevent the previous visual area from being reselected. It's a mapping helper, not a standalone command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: show the concept ---"
+    },
+    {
+      "say": "When you run a colon command from visual mode, Vim can auto-reselect the visual area. G shift V prevents that. Let's see the difference.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Select three lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2GV2j",
+      "overlay": "select 3 lines"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Run a substitution. Colon S, alpha, omega.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":s/alpha/omega/",
+      "overlay": "substitute"
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Done. Now if a mapping were to reselect here, G shift V would prevent it. It clears the pending visual selection inside a mapping."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "This is mainly useful when writing custom mappings that execute colon commands on visual selections. You add G shift V at the end of the mapping to prevent re-highlighting."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G shift V. A mapping tool to suppress visual reselection. Niche, but handy for clean custom visual mode mappings."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f gv.py" }
-  ]
+    {
+      "line": "rm -f gv.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "hd1JQXNTQ10",
+    "url": "https://youtube.com/watch?v=hd1JQXNTQ10"
+  }
 }

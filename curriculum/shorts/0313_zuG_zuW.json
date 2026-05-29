@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 zuG zuW Undo Temp Spelling",
+  "title": "VimFu — zuG zuW Undo Temp Spelling",
   "description": "zuG undoes a temporary zG mark. zuW undoes a temporary zW mark. Revert session-only spelling changes.",
   "speed": 0.55,
   "rows": 20,
@@ -41,11 +41,17 @@
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
     },
     {
+      "comment": "Use a fresh temp spellfile so demo is independent of any persistent user dictionary"
+    },
+    {
+      "line": "rm -f /tmp/vimfu-spell.add /tmp/vimfu-spell.add.spl"
+    },
+    {
       "comment": "Create demo file"
     },
     {
       "writeFile": "draft.txt",
-      "content": "Enable autosave for the workspace.\nThe plugin handles linting.\nRefactor the navbar component.\nDeploy the hotfix to staging."
+      "content": "Deploy the hotfix to staging.\nThe plugin handles errors.\nRefactor the navbar component.\nEnable autosave for the workspace."
     },
     {
       "line": "clear"
@@ -54,7 +60,7 @@
       "comment": "Launch nvim with spell checking"
     },
     {
-      "line": "nvim -c 'set spell' draft.txt"
+      "line": "nvim -c 'set spellfile=/tmp/vimfu-spell.add' -c 'set spell' draft.txt"
     },
     {
       "waitForScreen": "All",
@@ -71,7 +77,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": "zuG zuW \u2014 Undo Temp Spelling",
+      "caption": "zuG zuW — Undo Temp Spelling",
       "duration": 2.0
     },
     {
@@ -90,15 +96,15 @@
       "comment": "--- Demo 1: temp mark then undo ---"
     },
     {
-      "say": "Mark autosave as temporarily correct.",
+      "say": "Mark hotfix as temporarily correct.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "w",
-      "overlay": "to autosave"
+      "keys": "2w",
+      "overlay": "to hotfix"
     },
     {
       "wait": 0.3
@@ -134,7 +140,7 @@
       "comment": "--- Demo 2: temp flag then undo ---"
     },
     {
-      "say": "Temporarily flag linting with capital Z capital W, then undo.",
+      "say": "Temporarily flag errors with capital Z capital W, then undo.",
       "wait": false
     },
     {
@@ -142,7 +148,7 @@
     },
     {
       "keys": "j$b",
-      "overlay": "to linting"
+      "overlay": "to errors"
     },
     {
       "wait": 0.3
@@ -183,5 +189,9 @@
     {
       "line": "rm -f draft.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "IefXNKDOLbQ",
+    "url": "https://youtube.com/watch?v=IefXNKDOLbQ"
+  }
 }

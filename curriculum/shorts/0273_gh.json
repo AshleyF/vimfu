@@ -8,58 +8,176 @@
   "seed": 414,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "g commands", "select mode"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "select mode"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f edit.py .edit.py.swp .edit.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "edit.py", "content": "# Editor\ncolor = \"red\"\nsize = \"large\"\nshape = \"circle\"\nprint(color)" },
-    { "line": "clear" },
-    { "line": "nvim edit.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f edit.py .edit.py.swp .edit.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "edit.py",
+      "content": "# Editor\ncolor = \"red\"\nsize = \"large\"\nshape = \"circle\"\nprint(color)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim edit.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "gh — Select Mode", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "G H starts select mode character wise. It works like visual mode, but typing replaces the selection. Like how selection works in normal text editors." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: select and replace ---" },
-    { "say": "Go to red. Select it with v 2 l.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "2Gf\"l", "overlay": "on red" },
-    { "wait": 0.3 },
-    { "keys": "v2l", "overlay": "visual select red" },
-    { "wait": 0.4 },
-    { "say": "Now Ctrl G. Switch from visual to select mode.", "wait": false },
-    { "wait": 0.3 },
-    { "ctrl": "g", "overlay": "to select mode" },
-    { "wait": 0.5 },
-    { "say": "Notice the status says select. Now just type blue.", "wait": false },
-    { "wait": 0.3 },
-    { "type": "blue", "overlay": "type replaces!" },
-    { "wait": 0.6 },
-    { "say": "Red replaced with blue. No C I W, no delete. Just select and type." },
-    { "wait": 0.3 },
-    { "keys": "escape" },
-    { "comment": "--- Demo 2: compare with visual mode ---" },
-    { "say": "In visual mode, typing runs commands. In select mode, typing inserts. That's the key difference." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "G H. Select mode. If you miss how other editors handle selections, this is the closest Vim gets." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gh — Select Mode",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G H starts select mode character wise. It works like visual mode, but typing replaces the selection. Like how selection works in normal text editors."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: select and replace ---"
+    },
+    {
+      "say": "Go to red. Select it with v 2 l.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2Gf\"l",
+      "overlay": "on red"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "v2l",
+      "overlay": "visual select red"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now Ctrl G. Switch from visual to select mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ctrl": "g",
+      "overlay": "to select mode"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Notice the status says select. Now just type blue.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "blue",
+      "overlay": "type replaces!"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Red replaced with blue. No C I W, no delete. Just select and type."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "comment": "--- Demo 2: compare with visual mode ---"
+    },
+    {
+      "say": "In visual mode, typing runs commands. In select mode, typing inserts. That's the key difference."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G H. Select mode. If you miss how other editors handle selections, this is the closest Vim gets."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f edit.py" }
-  ]
+    {
+      "line": "rm -f edit.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "tGjnaXPA-Bk",
+    "url": "https://youtube.com/watch?v=tGjnaXPA-Bk"
+  }
 }

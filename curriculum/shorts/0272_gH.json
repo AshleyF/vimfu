@@ -8,75 +8,234 @@
   "seed": 413,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "g commands", "select mode"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "g commands",
+    "select mode"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f list.md .list.md.swp .list.md.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "list.md", "content": "# shopping\n- apples\n- bananas\n- cherries\n- dates\n- eggs" },
-    { "line": "clear" },
-    { "line": "nvim -c 'set keymodel=startsel,stopsel' list.md" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f list.md .list.md.swp .list.md.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "list.md",
+      "content": "# shopping\n- apples\n- bananas\n- cherries\n- dates\n- eggs"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set keymodel=startsel,stopsel' list.md"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "gH — Select Line Mode", "duration": 2.0 },
-    { "wait": 0.6 },
-    { "comment": "--- Intro ---" },
-    { "say": "G shift H drops you into select-line mode — like visual-line, but typing replaces the selection." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: gH, type to replace ---" },
-    { "say": "Cursor on apples.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "2G", "overlay": "line 2" },
-    { "wait": 0.3 },
-    { "keys": "gH", "overlay": "select line" },
-    { "wait": 0.9 },
-    { "say": "Status bar shows SELECT LINE. Now type a replacement and press Enter — the selected line is swapped out and we land in insert mode.", "wait": false },
-    { "wait": 0.4 },
-    { "type": "- pears" },
-    { "wait": 0.3 },
-    { "keys": "\r", "overlay": "⏎" },
-    { "wait": 0.7 },
-    { "keys": "escape" },
-    { "wait": 0.5 },
-    { "comment": "--- Demo 2: extend with Shift-Down ---" },
-    { "say": "Undo. This time we extend the selection before replacing.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.4 },
-    { "keys": "2G", "overlay": "line 2" },
-    { "wait": 0.3 },
-    { "keys": "gH", "overlay": "select line" },
-    { "wait": 0.5 },
-    { "say": "Shift down extends one line at a time.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "\u001b[1;2B", "overlay": "shift+down" },
-    { "wait": 0.5 },
-    { "keys": "\u001b[1;2B", "overlay": "shift+down" },
-    { "wait": 0.8 },
-    { "say": "Three lines selected. Type a replacement and Enter to collapse all three into one.", "wait": false },
-    { "wait": 0.3 },
-    { "type": "- mixed fruit" },
-    { "wait": 0.3 },
-    { "keys": "\r", "overlay": "⏎" },
-    { "wait": 0.7 },
-    { "keys": "escape" },
-    { "wait": 0.6 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "G shift H. Type to replace, shift arrows to extend. Vim's closest match to a GUI editor's selection." },
-    { "wait": 1.0 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "gH — Select Line Mode",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "G shift H drops you into select-line mode — like visual-line, but typing replaces the selection."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: gH, type to replace ---"
+    },
+    {
+      "say": "Cursor on apples.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2G",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gH",
+      "overlay": "select line"
+    },
+    {
+      "wait": 0.9
+    },
+    {
+      "say": "Status bar shows SELECT LINE. Now type a replacement and press Enter — the selected line is swapped out and we land in insert mode.",
+      "wait": false
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "- pears"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": "⏎"
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: extend with Shift-Down ---"
+    },
+    {
+      "say": "Undo. This time we extend the selection before replacing.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "2G",
+      "overlay": "line 2"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "gH",
+      "overlay": "select line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Shift down extends one line at a time.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[1;2B",
+      "overlay": "shift+down"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\u001b[1;2B",
+      "overlay": "shift+down"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Three lines selected. Type a replacement and Enter to collapse all three into one.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "- mixed fruit"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\r",
+      "overlay": "⏎"
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "keys": "escape"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "G shift H. Type to replace, shift arrows to extend. Vim's closest match to a GUI editor's selection."
+    },
+    {
+      "wait": 1.0
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f list.md" }
-  ]
+    {
+      "line": "rm -f list.md"
+    }
+  ],
+  "youtube": {
+    "videoId": "E1230OPmxLo",
+    "url": "https://youtube.com/watch?v=E1230OPmxLo"
+  }
 }
