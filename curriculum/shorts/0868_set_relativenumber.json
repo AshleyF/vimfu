@@ -8,61 +8,178 @@
   "seed": 770,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.py", "content": "import os\nimport sys\n\ndef add(a, b):\n    return a + b\n\ndef subtract(a, b):\n    return a - b\n\ndef multiply(a, b):\n    return a * b\n\ndef main():\n    print(add(2, 3))\n    print(subtract(5, 1))" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "import os\nimport sys\n\ndef add(a, b):\n    return a + b\n\ndef subtract(a, b):\n    return a - b\n\ndef multiply(a, b):\n    return a * b\n\ndef main():\n    print(add(2, 3))\n    print(subtract(5, 1))"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":set relativenumber", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Relative line numbers show the distance from the cursor. This makes jump commands like 5 J or 3 K instant." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: turn on relative numbers ---" },
-    { "say": "Enable relative numbers.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set relativenumber", "overlay": ":set relativenumber" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":set relativenumber",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Relative line numbers show the distance from the cursor. This makes jump commands like 5 J or 3 K instant."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: turn on relative numbers ---"
+    },
+    {
+      "say": "Enable relative numbers.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set relativenumber",
+      "overlay": ":set relativenumber"
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Now each line shows its distance from the cursor. The cursor line shows zero." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: move and show numbers update ---" },
-    { "say": "Move down five lines. Watch the numbers update.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "5j" },
-    { "wait": 0.8 },
-    { "say": "The numbers shifted. The short form is set R N U." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: combine with number for hybrid ---" },
-    { "say": "Combine with set number to get hybrid mode. The current line shows its absolute number.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set number", "overlay": ":set number" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now each line shows its distance from the cursor. The cursor line shows zero."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: move and show numbers update ---"
+    },
+    {
+      "say": "Move down five lines. Watch the numbers update.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5j"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The numbers shifted. The short form is set R N U."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: combine with number for hybrid ---"
+    },
+    {
+      "say": "Combine with set number to get hybrid mode. The current line shows its absolute number.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set number",
+      "overlay": ":set number"
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Set relative number. Relative distances for easy jumps. Combine with set number for the best of both." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Set relative number. Relative distances for easy jumps. Combine with set number for the best of both."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "l_p4wv_CxAk",
+    "url": "https://youtube.com/watch?v=l_p4wv_CxAk"
+  }
 }

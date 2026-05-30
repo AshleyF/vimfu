@@ -67,10 +67,10 @@ CLIENT_SECRET = REPO_ROOT / "client_secret.json"
 TOKEN_CACHE = REPO_ROOT / "youtube_token.json"
 
 
-def youtube_metadata_title(title: str) -> str:
-    """Return a YouTube-safe title without changing the canonical lesson title."""
-    title = title.replace("<", " less-than ").replace(">", " greater-than ")
-    return re.sub(r"\s+", " ", title).strip()
+def youtube_metadata_text(text: str) -> str:
+    """Return YouTube-safe metadata without changing canonical lesson text."""
+    text = text.replace("<", " less-than ").replace(">", " greater-than ")
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def get_authenticated_service():
@@ -138,7 +138,8 @@ def upload_video(lesson_path: Path, schedule_dt: datetime = None,
     else:
         privacy = yt.get("privacyStatus", "private")
 
-    upload_title = youtube_metadata_title(meta["title"])
+    upload_title = youtube_metadata_text(meta["title"])
+    upload_description = youtube_metadata_text(meta.get("description", ""))
 
     print(f"Title:     {meta['title']}")
     if upload_title != meta["title"]:
@@ -158,7 +159,7 @@ def upload_video(lesson_path: Path, schedule_dt: datetime = None,
     body = {
         "snippet": {
             "title": upload_title,
-            "description": meta.get("description", ""),
+            "description": upload_description,
             "tags": meta.get("tags", []),
             "categoryId": yt.get("categoryId", "27"),
             "defaultLanguage": yt.get("language", "en"),
