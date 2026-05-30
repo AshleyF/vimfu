@@ -8,40 +8,170 @@
   "seed": 525,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "insert mode", "undo"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "undo"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "writeFile": "demo.py", "content": "# Demo\ntext = \"\"" },
-    { "line": "clear" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\ntext = \"\""
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Ctrl-G U — Keep Undo", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Control G capital U tells Vim that the next cursor motion should not break the undo sequence. Normally, arrow keys in insert mode create undo breaks. This prevents that." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo ---" },
-    { "say": "This is an advanced technique. Some people map it so that arrow keys in insert mode don't break undo. The idea is: keep your entire insert session as one undoable action, even if you move around." },
-    { "wait": 0.3 },
-    { "say": "Without this, pressing left or right arrow in insert mode starts a new undo block. Control G capital U before the motion keeps it all together." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Control G capital U. Prevent cursor motions from breaking undo. An advanced tweak for custom insert mode mappings." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-G U — Keep Undo",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "{key:Ctrl-G}{key:U} tells Vim that the next cursor motion should not break the undo sequence. Normally, arrow keys in *insert mode* create undo breaks. This prevents that."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo ---"
+    },
+    {
+      "say": "Type a short value inside the quoted string, then keep the undo block before moving the cursor.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j$i",
+      "overlay": "inside quotes"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "abc",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now {key:Ctrl-G}{key:U}, then {key:Left}. The cursor moves, but the insert stays one undoable change.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0007U",
+      "overlay": "keep undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u001b[D",
+      "overlay": "move left"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "X",
+      "overlay": ""
+    },
+    {
+      "wait": 0.4
+    },
+    "escape",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "One undo removes the whole insert session, including the text after the cursor move.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo once"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "{key:Ctrl-G}{key:U}. Keep the next cursor movement inside the current undo block."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "ZIHz0FDwvWw",
+    "url": "https://youtube.com/watch?v=ZIHz0FDwvWw"
+  }
 }
