@@ -74,7 +74,7 @@
       "comment": "--- Intro ---"
     },
     {
-      "say": "Control at sign does two things. It inserts the previously typed text, then immediately leaves insert mode. Control A plus Escape in one keystroke."
+      "say": "{key:Ctrl-@} does two things. It inserts the previously typed text, then immediately leaves insert mode."
     },
     {
       "wait": 0.3
@@ -111,7 +111,7 @@
       "wait": 0.3
     },
     {
-      "say": "Now on line three. Enter insert and use Control at.",
+      "say": "Now on line three. Enter insert and use {key:Ctrl-@}.",
       "wait": false
     },
     {
@@ -125,8 +125,12 @@
       "wait": 0.3
     },
     {
-      "keys": "\u0000",
-      "overlay": "insert + leave"
+      "comment": "ConPTY drops NUL, so send Ctrl-A then Esc while displaying Vim's Ctrl-@ command."
+    },
+    {
+      "ctrl": "@",
+      "overlay": "insert + leave",
+      "send": "\u0001\u001b"
     },
     {
       "wait": 0.6
@@ -141,7 +145,7 @@
       "comment": "--- Wrap up ---"
     },
     {
-      "say": "Control at. Insert previously typed text and leave insert mode. A combo move for quick repetition."
+      "say": "{key:Ctrl-@}. Insert previously typed text and leave insert mode. A combo move for quick repetition."
     },
     {
       "wait": 1.5

@@ -131,6 +131,7 @@ class TerminalViewer:
         # Control characters (Ctrl+letter) — display as ⌃ + letter
         # \x08=\b(⌫), \x09=\t(⇥), \x0a=\n(⏎), \x0d=\r(⏎) are mapped above
         # with friendly symbols; Ctrl steps use the modifier path instead.
+        '\x00': '⌃@',
         '\x01': '⌃a', '\x02': '⌃b', '\x03': '⌃c', '\x04': '⌃d',
         '\x05': '⌃e', '\x06': '⌃f', '\x07': '⌃g',
         '\x0b': '⌃k', '\x0c': '⌃l',
@@ -1328,7 +1329,8 @@ class ScriptedDemo:
         self.log.screen_snapshot()
         return self
     
-    def send_ctrl(self, char: str, delay: float = None, caption: str = None) -> 'ScriptedDemo':
+    def send_ctrl(self, char: str, delay: float = None, caption: str = None,
+                  send: str = None) -> 'ScriptedDemo':
         """Send a control character with key display."""
         self.log.action('CTRL', char)
         self._show_key(char, ['ctrl'], caption=caption)
@@ -1337,7 +1339,10 @@ class ScriptedDemo:
             displayed = self.viewer._current_keys[0] if self.viewer._current_keys else ''
             caption_text = self.viewer._current_caption or ''
             self.log.action('OVERLAY', f'{displayed}  {caption_text}' if caption_text else displayed)
-        self.shell.send_ctrl(char)
+        if send is None:
+            self.shell.send_ctrl(char)
+        else:
+            self.shell.send_keys(send)
         self.wait(delay if delay is not None else self.base_delay)
         self.log.screen_snapshot()
         return self
