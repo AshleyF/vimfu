@@ -138,7 +138,7 @@ class TerminalViewer:
         '\x0e': '⌃n', '\x0f': '⌃o', '\x10': '⌃p',
         '\x11': '⌃q', '\x12': '⌃r', '\x13': '⌃s', '\x14': '⌃t',
         '\x15': '⌃u', '\x16': '⌃v', '\x17': '⌃w',
-        '\x18': '⌃x', '\x19': '⌃y', '\x1a': '⌃z',
+        '\x18': '⌃x', '\x19': '⌃y', '\x1a': '⌃z', '\x1d': '⌃]',
         # Arrow key escape sequences (prevent garbled ⎋[A display)
         '\x1b[A': '↑', '\x1b[B': '↓', '\x1b[C': '→', '\x1b[D': '←',
         # Ctrl+Arrow
@@ -1281,7 +1281,22 @@ class ScriptedDemo:
         self.log.action('LINE', repr(command))
         self.log.screen_snapshot()
         return self
-    
+
+    def ex_command(self, command: str, overlay: str = None,
+                   open_delay: float = 0.55,
+                   before_enter: float = 0.45) -> 'ScriptedDemo':
+        """Type an Ex command with visible pauses after ':' and before Enter."""
+        if not command.startswith(':'):
+            command = ':' + command
+        self.send_keys(':', overlay=overlay or 'command line', delay=open_delay)
+        if len(command) > 1:
+            self.type_text(command[1:])
+        self.wait(before_enter)
+        self.log.action('EX_READY', repr(command))
+        self.log.screen_snapshot()
+        self.send_enter()
+        return self
+     
     def type_text(self, text: str, char_delay: float = None) -> 'ScriptedDemo':
         """
         Type visible text content character by character (human-like) with click sounds.

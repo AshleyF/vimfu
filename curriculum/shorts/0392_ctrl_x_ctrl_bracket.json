@@ -8,40 +8,167 @@
   "seed": 533,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "insert mode", "completion", "tags"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "completion",
+    "tags"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py tags .demo.py.swp" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "writeFile": "demo.py", "content": "# Demo\ndef calculate_sum(a, b):\n    return a + b\ndef calculate_avg(a, b):\n    return (a + b) / 2\nx = " },
-    { "line": "clear" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py tags .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\ndef calculate_sum(a, b):\n    return a + b\ndef calculate_avg(a, b):\n    return (a + b) / 2\nx ="
+    },
+    {
+      "line": "printf 'calculate_sum\\tdemo.py\\t/^def calculate_sum(a, b):$/;\"\\tf\\ncalculate_avg\\tdemo.py\\t/^def calculate_avg(a, b):$/;\"\\tf\\n' > tags"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Ctrl-X Ctrl-] — Tag Complete", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Control X Control close bracket completes from your tags file. If you've generated tags with c tags, this gives you project-wide completion." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo ---" },
-    { "say": "This requires a tags file. Run c tags on your project to generate one. Then in insert mode, type a prefix and Control X Control close bracket to complete from your tag names." },
-    { "wait": 0.3 },
-    { "say": "Tags include function names, class names, and variables from your entire project. Not just the current file." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Control X Control close bracket. Tag completion. Generate tags with c tags, then complete any symbol across your whole project." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-X Ctrl-] — Tag Complete",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Press {key:Ctrl-X}, then {key:Ctrl-]} to complete from your `tags` file. That gives you project-wide symbol completion."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo ---"
+    },
+    {
+      "say": "This demo already has a `tags` file with two functions: `calculate_sum` and `calculate_avg`.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G$",
+      "overlay": "target line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "a",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": " cal",
+      "overlay": "prefix"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "With the prefix typed, press {key:Ctrl-X}, then {key:Ctrl-]} to complete from tag names.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0018\u001d",
+      "overlay": "tag complete"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "keys": "\u000e",
+      "overlay": "next match"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "\u0019",
+      "overlay": "accept"
+    },
+    {
+      "wait": 0.4
+    },
+    "escape",
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "{key:Ctrl-X}, then {key:Ctrl-]}. Tag completion. Generate `tags`, type a prefix, then complete a symbol from the project."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py tags" }
-  ]
+    {
+      "line": "rm -f demo.py tags"
+    }
+  ],
+  "youtube": {
+    "videoId": "QJy81_T-TlY",
+    "url": "https://youtube.com/watch?v=QJy81_T-TlY"
+  }
 }

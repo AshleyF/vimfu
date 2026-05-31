@@ -77,6 +77,23 @@ class Line:
 
 
 @dataclass
+class Ex:
+    """Type an Ex command slowly enough for the command line to be visible."""
+    command: str
+    overlay: str = None
+    open_delay: float = 0.55
+    before_enter: float = 0.45
+
+    def execute(self, demo):
+        demo.ex_command(
+            self.command,
+            overlay=self.overlay,
+            open_delay=self.open_delay,
+            before_enter=self.before_enter,
+        )
+
+
+@dataclass
 class Wait:
     """Pause for a duration (seconds, adjusted by speed)."""
     seconds: float = 0.5
@@ -439,6 +456,13 @@ def _parse_step(item):
         return Keys(item["keys"], overlay=item.get("overlay", None))
     if "line" in item:
         return Line(item["line"], delay=item.get("delay", None))
+    if "ex" in item:
+        return Ex(
+            item["ex"],
+            overlay=item.get("overlay", None),
+            open_delay=item.get("openDelay", 0.55),
+            before_enter=item.get("beforeEnter", 0.45),
+        )
     if "wait" in item:
         return Wait(item["wait"])
     if "backspace" in item:

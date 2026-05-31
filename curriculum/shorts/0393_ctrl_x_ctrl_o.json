@@ -8,42 +8,149 @@
   "seed": 534,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "insert mode", "completion"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "insert mode",
+    "completion"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "writeFile": "demo.py", "content": "# Demo\nimport os\nos." },
-    { "line": "clear" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.html .demo.html.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.html",
+      "content": "<!doctype html>\n<html>\n<body>\n<a h\n</body>\n</html>"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim +'setlocal omnifunc=htmlcomplete#CompleteTags' demo.html"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Ctrl-X Ctrl-O — Omni Complete", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Control X Control O triggers omni completion. This is language-aware completion. It understands your programming language." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo ---" },
-    { "say": "With proper language support, omni completion knows about methods, properties, and types. For Python, it can suggest attributes after a dot." },
-    { "wait": 0.3 },
-    { "say": "In practice, most Neovim users use L S P for this kind of smart completion. But Control X Control O is the built-in way, no plugins required." },
-    { "wait": 0.3 },
-    { "say": "The quality depends on the omni function set for your file type. HTML and CSS have good built-in omni functions. Other languages vary." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Control X Control O. Omni completion. Language-aware smart completion built into Vim. For modern Neovim, L S P usually replaces this." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-X Ctrl-O — Omni Complete",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Press {key:Ctrl-X}, then {key:Ctrl-O} to trigger omni completion. This is language-aware completion."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo ---"
+    },
+    {
+      "say": "Here the HTML omni function can complete an attribute name. The line starts with an anchor tag and the prefix `h`.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "3j$",
+      "overlay": "anchor tag"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "a",
+      "overlay": "insert"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "say": "Use omni completion now.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\u0018\u000f",
+      "overlay": "omni complete"
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "keys": "\u0019",
+      "overlay": "accept"
+    },
+    {
+      "wait": 0.6
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "{key:Ctrl-X}, then {key:Ctrl-O}. Omni completion uses the current file type's omni function, so the results depend on the language."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.html"
+    }
+  ],
+  "youtube": {
+    "videoId": "pJx27tpasLc",
+    "url": "https://youtube.com/watch?v=pJx27tpasLc"
+  }
 }
