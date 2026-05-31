@@ -148,6 +148,25 @@ To send an Escape or Enter key, use the **bare string** form, not a `keys` objec
 
 The player now defensively remaps `{"keys":"escape"}` → `Escape()` and `{"keys":"enter"}` → `Enter()` so old broken scripts don't silently corrupt the demo, but new scripts should use the bare-string form. If you need a custom overlay, send the actual control byte instead: `{"keys": "\u001b", "overlay": "back to normal"}`.
 
+### Ex commands must pause before Enter
+
+When a recorded step demonstrates an Ex command, do **not** type the entire command and immediately press Enter. The viewer needs time to see `{key::}` open the command line and read the full command before it runs.
+
+Use the dedicated `ex` step for visible commands:
+
+```json
+{ "ex": ":%s/old/new/g", "overlay": ":%s/old/new/g", "beforeEnter": 1.4 }
+```
+
+Do not use this fast pattern in recorded `steps`:
+
+```json
+{ "type": ":%s/old/new/g", "overlay": ":%s/old/new/g" },
+"enter"
+```
+
+The log should show `[KEYS] ':'`, `[TYPE] ...`, then `[EX_READY]` with the full command visible before `[ENTER]`.
+
 ### Use deterministic positioning when targets are non-letter characters
 
 `f<char>` motions can be unreliable when chained with the rest of a script — especially when the target character is one that has its own normal-mode meaning (`@`, `0`, `:`, `/`, `<Esc>`, etc.) or when the previous step left Vim at a more-prompt (`Press ENTER to continue`, common after `ga`, `:!`, multi-line `:set`, etc.). The first key sent often gets consumed by the prompt and the rest of the keystrokes execute in an unexpected order.
@@ -475,4 +494,3 @@ Then `git add -A && git commit && git push`. Include the new video IDs and the s
 If a re-recorded video reuses the same lesson JSON, **the YouTube ID changes** — the previous step 2 is not optional. Skipping it is the most common cause of "the QR code in the printed book opens the wrong video" reports.
 
 ---
-
