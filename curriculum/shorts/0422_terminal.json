@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 :terminal Terminal Inside Vim",
+  "title": "VimFu — :terminal Terminal Inside Vim",
   "description": "The :terminal command opens a terminal emulator inside Vim.",
   "speed": 0.55,
   "rows": 20,
@@ -56,28 +56,56 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": ":terminal \u2014 Terminal",
+      "caption": ":terminal — Terminal",
       "duration": 2.0
     },
     {
       "wait": 0.7
     },
     {
-      "say": "Colon terminal opens a full terminal inside Vim. A shell right in your editor."
+      "say": "`:terminal` opens a full terminal inside Vim. A shell right in your editor."
     },
     {
       "wait": 0.3
     },
     {
-      "type": ":terminal",
-      "overlay": ":terminal"
+      "ex": ":terminal",
+      "overlay": ":terminal",
+      "beforeEnter": 1.1
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Neovim opens the terminal buffer in *normal mode,* so press {key:i} before typing shell commands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "i",
+      "overlay": "terminal input"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now run `ls` inside the embedded shell.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": "ls",
+      "overlay": ""
     },
     "enter",
     {
       "wait": 0.8
     },
     {
-      "say": "A terminal buffer. You can run commands here. To get back to normal mode, press Control backslash, Control N."
+      "say": "That command ran in the terminal buffer. To return to terminal *normal mode,* press {key:Ctrl-\\\\}, then {key:Ctrl-N}."
     },
     {
       "wait": 0.3
@@ -90,13 +118,13 @@
       "wait": 0.4
     },
     {
-      "say": "Now you can navigate with Vim keys. Close it with colon B D or colon Q."
+      "say": "Now you can navigate the terminal buffer with Vim keys. Close it with `:bd!` or `:q`."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Colon terminal. A shell inside Vim. Perfect with tmux or on its own."
+      "say": "`:terminal`. Open a shell, press {key:i} to type shell commands, and use {key:Ctrl-\\\\}, then {key:Ctrl-N} to get back."
     },
     {
       "wait": 1.5
@@ -111,5 +139,9 @@
     {
       "line": "rm -f demo.py"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "lN36WuDqf5Q",
+    "url": "https://youtube.com/watch?v=lN36WuDqf5Q"
+  }
 }

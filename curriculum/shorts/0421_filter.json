@@ -1,33 +1,113 @@
 {
   "title": "VimFu — :%!filter Filter Lines",
   "description": "Filter buffer lines through an external program like sort.",
-  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 562,
-  "ttsVoice": "echo", "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "filter"],
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 562,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "filter"
+  ],
   "setup": [
-    { "line": "export TERM=xterm-256color" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.txt .demo.txt.swp" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "writeFile": "demo.txt", "content": "cherry\napple\nbanana\ndate\nelderberry" },
-    { "line": "clear" },
-    { "line": "nvim demo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "cherry\napple\nbanana\ndate\nelderberry"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "overlay": "VimFu", "caption": ":%!sort — Filter", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "say": "Pipe your buffer through an external command. The output replaces the original text." },
-    { "wait": 0.3 },
-    { "say": "These fruits are unsorted. Sort them.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%!sort", "overlay": ":%!sort" }, "enter",
-    { "wait": 0.6 },
-    { "say": "Alphabetical. The entire file was piped through sort and replaced with the output." },
-    { "wait": 0.3 },
-    { "say": "Percent bang filter. Any command that reads from standard in works. Sort, uniq, grep, awk." },
-    { "wait": 1.5 }
+    {
+      "overlay": "VimFu",
+      "caption": ":%!sort — Filter",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Pipe your buffer through an external command. The output replaces the original text."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "These fruits are unsorted. Sort them.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%!sort",
+      "overlay": ":%!sort"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Alphabetical. The entire file was piped through sort and replaced with the output."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Percent bang filter. Any command that reads from standard in works. Sort, uniq, grep, awk."
+    },
+    {
+      "wait": 1.5
+    }
   ],
-  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.txt" } ]
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "CeX-KLUrCh8",
+    "url": "https://youtube.com/watch?v=CeX-KLUrCh8"
+  }
 }
