@@ -1,43 +1,136 @@
 {
   "title": "VimFu — :set number",
   "description": "Toggle line numbers on and off with :set number and :set nonumber in Vim.",
-  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 564,
-  "ttsVoice": "echo", "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "settings"],
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 564,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "settings"
+  ],
   "setup": [
-    { "line": "export TERM=xterm-256color" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "writeFile": "demo.py", "content": "# Demo\ndef greet(name):\n    return f\"Hello {name}\"\n\nresult = greet(\"World\")\nprint(result)" },
-    { "line": "clear" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\ndef greet(name):\n    return f\"Hello {name}\"\n\nresult = greet(\"World\")\nprint(result)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "overlay": "VimFu", "caption": ":set number", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "say": "The set number command displays line numbers in the gutter." },
-    { "wait": 0.3 },
-    { "type": ":set number", "overlay": ":set number" },
+    {
+      "overlay": "VimFu",
+      "caption": ":set number",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "The set number command displays line numbers in the gutter."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set number",
+      "overlay": ":set number"
+    },
     "enter",
-    { "wait": 1.0 },
-    { "say": "Now every line has a number on the left side. This is useful for jumping to specific lines." },
-    { "wait": 0.5 },
-    { "say": "To turn them off, use set nonumber." },
-    { "wait": 0.3 },
-    { "type": ":set nonumber", "overlay": ":set nonumber" },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Now every line has a number on the left side. This is useful for jumping to specific lines."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "To turn them off, use set nonumber."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set nonumber",
+      "overlay": ":set nonumber"
+    },
     "enter",
-    { "wait": 1.0 },
-    { "say": "The line numbers are gone. You can also use the shorthand set nu and set nonu." },
-    { "wait": 0.3 },
-    { "type": ":set nu", "overlay": ":set nu" },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "The line numbers are gone. You can also use the shorthand set nu and set nonu."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set nu",
+      "overlay": ":set nu"
+    },
     "enter",
-    { "wait": 1.0 },
-    { "type": ":set nonu", "overlay": ":set nonu" },
+    {
+      "wait": 1.0
+    },
+    {
+      "type": ":set nonu",
+      "overlay": ":set nonu"
+    },
     "enter",
-    { "wait": 1.5 }
+    {
+      "wait": 1.5
+    }
   ],
-  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.py" } ]
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "tLShrzP7xkA",
+    "url": "https://youtube.com/watch?v=tLShrzP7xkA"
+  }
 }

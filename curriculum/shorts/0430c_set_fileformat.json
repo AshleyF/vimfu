@@ -1,35 +1,122 @@
 {
   "title": "VimFu — :set fileformat",
   "description": "Control line endings — unix (LF) or dos (CRLF).",
-  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 574,
-  "ttsVoice": "echo", "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "settings"],
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 574,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "settings"
+  ],
   "setup": [
-    { "line": "export TERM=xterm-256color" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "writeFile": "demo.py", "content": "# Demo\nprint(\"hi\")" },
-    { "line": "clear" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nprint(\"hi\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "overlay": "VimFu", "caption": ":set fileformat", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "say": "Set file format controls line endings. Unix uses L F. Dos uses C R L F. This matters when sharing files between operating systems." },
-    { "wait": 0.3 },
-    { "say": "Check the current format.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set ff?", "overlay": ":set ff?" }, "enter",
-    { "wait": 0.5 },
-    { "say": "Change to unix format.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set ff=unix", "overlay": ":set ff=unix" }, "enter",
-    { "wait": 0.5 },
-    { "say": "Set F F equals unix for Linux and Mac. Set F F equals dos for Windows." },
-    { "wait": 1.5 }
+    {
+      "overlay": "VimFu",
+      "caption": ":set fileformat",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Set file format controls line endings. Unix uses L F. Dos uses C R L F. This matters when sharing files between operating systems."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Check the current format.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set ff?",
+      "overlay": ":set ff?"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Change to unix format.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set ff=unix",
+      "overlay": ":set ff=unix"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Set F F equals unix for Linux and Mac. Set F F equals dos for Windows."
+    },
+    {
+      "wait": 1.5
+    }
   ],
-  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.py" } ]
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "URrLUBalI60",
+    "url": "https://youtube.com/watch?v=URrLUBalI60"
+  }
 }

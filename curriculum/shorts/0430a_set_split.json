@@ -1,37 +1,128 @@
 {
   "title": "VimFu — :set splitbelow / splitright",
   "description": "Control where new splits open — below or to the right.",
-  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 572,
-  "ttsVoice": "echo", "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "settings"],
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 572,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "settings"
+  ],
   "setup": [
-    { "line": "export TERM=xterm-256color" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "writeFile": "demo.py", "content": "# Demo\nprint(\"hello\")" },
-    { "line": "clear" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nprint(\"hello\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "overlay": "VimFu", "caption": ":set splitbelow/right", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "say": "By default, horizontal splits open above and vertical splits open left. Most people find this backwards." },
-    { "wait": 0.3 },
-    { "say": "Set split below and split right for natural behavior.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set splitbelow splitright", "overlay": ":set sb spr" }, "enter",
-    { "wait": 0.4 },
-    { "say": "Now open a vertical split. Watch where it appears.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":vsplit", "overlay": ":vsplit" }, "enter",
-    { "wait": 0.6 },
-    { "say": "The new split opened on the right, just as we configured. Without these settings it would have opened on the left." },
-    { "wait": 0.3 },
-    { "say": "Set split below and split right. Two settings every Vim config should have." },
-    { "wait": 1.5 }
+    {
+      "overlay": "VimFu",
+      "caption": ":set splitbelow/right",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "By default, horizontal splits open above and vertical splits open left. Most people find this backwards."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Set split below and split right for natural behavior.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set splitbelow splitright",
+      "overlay": ":set sb spr"
+    },
+    "enter",
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Now open a vertical split. Watch where it appears.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":vsplit",
+      "overlay": ":vsplit"
+    },
+    "enter",
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The new split opened on the right, just as we configured. Without these settings it would have opened on the left."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Set split below and split right. Two settings every Vim config should have."
+    },
+    {
+      "wait": 1.5
+    }
   ],
-  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.py" } ]
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "WhOhhzGO9SM",
+    "url": "https://youtube.com/watch?v=WhOhhzGO9SM"
+  }
 }

@@ -1,31 +1,107 @@
 {
   "title": "VimFu — :set spell Spell Check",
   "description": "Enable spell checking to highlight misspelled words.",
-  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 573,
-  "ttsVoice": "echo", "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "settings", "spell"],
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 573,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "settings",
+    "spell"
+  ],
   "setup": [
-    { "line": "export TERM=xterm-256color" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.txt .demo.txt.swp" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "writeFile": "demo.txt", "content": "The quik brown fox\njumps over the layz dog\nspeling is hard" },
-    { "line": "clear" },
-    { "line": "nvim demo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "The quik brown fox\njumps over the layz dog\nspeling is hard"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "overlay": "VimFu", "caption": ":set spell", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "say": "Set spell enables spell checking. Misspelled words get highlighted." },
-    { "wait": 0.3 },
-    { "type": ":set spell", "overlay": ":set spell" }, "enter",
-    { "wait": 0.5 },
-    { "say": "Misspelled words are highlighted. Use bracket S and close bracket S to jump between them. Z equals for suggestions." },
-    { "wait": 0.3 },
-    { "say": "Set no spell to turn it off. Set spell for prose, set no spell for code." },
-    { "wait": 1.5 }
+    {
+      "overlay": "VimFu",
+      "caption": ":set spell",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Set spell enables spell checking. Misspelled words get highlighted."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set spell",
+      "overlay": ":set spell"
+    },
+    "enter",
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Misspelled words are highlighted. Use bracket S and close bracket S to jump between them. Z equals for suggestions."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Set no spell to turn it off. Set spell for prose, set no spell for code."
+    },
+    {
+      "wait": 1.5
+    }
   ],
-  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.txt" } ]
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "s3yIXpz396g",
+    "url": "https://youtube.com/watch?v=s3yIXpz396g"
+  }
 }
