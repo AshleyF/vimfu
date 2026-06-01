@@ -1,6 +1,6 @@
 {
-  "title": "VimFu \u2014 v_d / v_c \u2014 Delete/Change",
-  "description": "In visual mode, d deletes the selected text. c deletes the selection and drops you into insert mode to type a replacement.",
+  "title": "VimFu — Visual Delete/Change",
+  "description": "Use visual delete or change when the range is awkward enough that selecting it first makes sense.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -34,7 +34,7 @@
       "line": "mkdir -p ~/vimfu && cd ~/vimfu"
     },
     {
-      "line": "rm -f pets.py .pets.py.swp .pets.py.swo"
+      "line": "rm -f note.txt .note.txt.swp .note.txt.swo"
     },
     {
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
@@ -43,8 +43,8 @@
       "comment": "Create demo file"
     },
     {
-      "writeFile": "pets.py",
-      "content": "# pets\ncat = \"whiskers\"\ndog = \"buddy\"\nfish = \"nemo\"\nbird = \"tweety\""
+      "writeFile": "note.txt",
+      "content": "# launch note\nPlease replace the old staging setup\nbefore the demo, then notify QA."
     },
     {
       "line": "clear"
@@ -53,7 +53,7 @@
       "comment": "Launch nvim"
     },
     {
-      "line": "nvim pets.py"
+      "line": "nvim note.txt"
     },
     {
       "waitForScreen": "All",
@@ -67,74 +67,58 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "v_d / v_c",
+      "caption": "visual delete/change",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "In visual mode, D deletes the selection. C deletes and enters insert mode for a replacement."
+      "say": "Visual delete and change are for ranges you want to see before you commit."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Select the fish line. Capital V, then D.",
+      "say": "This edit changes from `old` through `demo` across the line break.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "3j"
+      "keys": "jwww",
+      "overlay": "start"
     },
     {
-      "keys": "V",
-      "overlay": "select line"
-    },
-    {
-      "wait": 0.4
-    },
-    {
-      "keys": "d",
-      "overlay": "delete"
-    },
-    {
-      "wait": 0.6
-    },
-    {
-      "say": "Line gone. D removes the selection completely."
+      "keys": "v",
+      "overlay": "visual"
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "u",
-      "overlay": "undo"
+      "keys": "/",
+      "overlay": "search end"
+    },
+    {
+      "type": "demo"
+    },
+    {
+      "keys": "enter"
     },
     {
       "wait": 0.4
     },
     {
-      "say": "Now let's use C. Select the name whiskers.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "gg0jf\""
-    },
-    {
-      "keys": "vi\"",
-      "overlay": "select inside quotes"
+      "keys": "e",
+      "overlay": "extend"
     },
     {
       "wait": 0.5
     },
     {
-      "say": "C to change it.",
+      "say": "If one motion names the range -- a word, a line, text inside quotes -- use the operator and that motion. Here, the visible selection is the point.",
       "wait": false
     },
     {
@@ -145,39 +129,23 @@
       "overlay": "change"
     },
     {
+      "type": "production backup"
+    },
+    {
       "wait": 0.4
-    },
-    {
-      "type": "mittens"
-    },
-    {
-      "wait": 0.5
-    },
-    {
-      "say": "Selection deleted, typed the replacement. Now escape.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
     },
     "escape",
     {
       "wait": 0.5
     },
     {
-      "say": "Whiskers became mittens. C is select, delete, insert, all in one."
+      "say": "{key:c} replaced the selected range. {key:d} would delete the same awkward span."
     },
     {
-      "wait": 0.3
+      "wait": 0.4
     },
     {
-      "keys": "u"
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "say": "D to delete a selection. C to change it. Two essential visual mode operations."
+      "say": "Use visual delete and change when the shape is easier to see than to name."
     },
     {
       "wait": 1.0
@@ -196,7 +164,11 @@
       "comment": "Clean up"
     },
     {
-      "line": "rm -f pets.py"
+      "line": "rm -f note.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "yVSJmFG6JgQ",
+    "url": "https://youtube.com/watch?v=yVSJmFG6JgQ"
+  }
 }

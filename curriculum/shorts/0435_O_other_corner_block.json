@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 O \u2014 Other Corner (Block)",
+  "title": "VimFu — O — Other Corner (Block)",
   "description": "In blockwise visual mode, capital O moves the cursor to the other end of the current row. Lowercase o jumps diagonally to the opposite corner.",
   "speed": 0.55,
   "rows": 20,
@@ -67,43 +67,45 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "O \u2014 Other Corner",
+      "caption": "O — Other Corner",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "In block visual mode, capital O flips the cursor horizontally to the other end of the same row. Lowercase O jumps to the diagonally opposite corner."
+      "say": "In *visual-block mode,* {key:O} flips the cursor horizontally to the other end of the same row. {key:o} jumps diagonally to the opposite corner."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Control V on row 1, then select a block down and right.",
+      "say": "Start with only the middle scores selected, then use the corners to grow the block.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "j07l"
+      "keys": "2j012l",
+      "overlay": "middle score"
     },
     {
       "keys": "\u0016"
     },
     {
-      "keys": "2j"
+      "keys": "jl",
+      "overlay": "small block"
     },
     {
-      "keys": "4l"
+      "wait": 0.4
     },
     {
-      "wait": 0.5
-    },
-    {
-      "say": "Cursor is at the bottom right corner. Capital O.",
+      "say": "The active corner is bottom right. Press {key:O} to jump to the bottom left, then extend left.",
       "wait": false
+    },
+    {
+      "wait": 0.3
     },
     {
       "wait": 0.3
@@ -113,35 +115,17 @@
       "overlay": "flip horizontal"
     },
     {
-      "wait": 0.6
-    },
-    {
-      "say": "Jumped to the bottom left. Same row, opposite side."
-    },
-    {
       "wait": 0.3
     },
     {
-      "say": "Capital O again.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "O"
+      "keys": "4h",
+      "overlay": "extend left"
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Back to the right. Capital O toggles left and right."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "say": "Now lowercase O.",
+      "say": "Now {key:o} jumps diagonally to the top right. From that corner, extend upward and right.",
       "wait": false
     },
     {
@@ -149,19 +133,41 @@
     },
     {
       "keys": "o",
-      "overlay": "opposite corner"
-    },
-    {
-      "wait": 0.6
-    },
-    {
-      "say": "Jumped to the diagonally opposite corner."
+      "overlay": "diagonal"
     },
     {
       "wait": 0.3
     },
     {
-      "say": "In block mode, lowercase O jumps to the diagonally opposite corner. Capital O flips left and right within the current row. Four corners, two keys."
+      "keys": "k4l",
+      "overlay": "top and right"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "One more diagonal jump puts the cursor at the lower left, so {key:j} can add the last row.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o",
+      "overlay": "diagonal"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j",
+      "overlay": "last row"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now the block covers every score inside the brackets. {key:O} and {key:o} let you choose which corner grows next."
     },
     {
       "wait": 0.3
@@ -171,7 +177,7 @@
       "wait": 0.3
     },
     {
-      "say": "O and capital O. Navigate all four corners of a block selection."
+      "say": "{key:o} and {key:O}. Navigate the corners of a block selection."
     },
     {
       "wait": 1.0
@@ -192,5 +198,9 @@
     {
       "line": "rm -f grid.py"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "mFU8uX4mCtE",
+    "url": "https://youtube.com/watch?v=mFU8uX4mCtE"
+  }
 }

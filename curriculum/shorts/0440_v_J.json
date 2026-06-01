@@ -1,6 +1,6 @@
 {
-  "title": "VimFu \u2014 v_J \u2014 Join Selection",
-  "description": "In visual mode, J joins the selected lines into one line, separated by spaces.",
+  "title": "VimFu \u2014 Visual Join",
+  "description": "Use visual {key:J} to join a selected block of lines, such as a pasted paragraph with hard breaks.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -34,7 +34,7 @@
       "line": "mkdir -p ~/vimfu && cd ~/vimfu"
     },
     {
-      "line": "rm -f addr.py .addr.py.swp .addr.py.swo"
+      "line": "rm -f note.md .note.md.swp .note.md.swo"
     },
     {
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
@@ -43,8 +43,8 @@
       "comment": "Create demo file"
     },
     {
-      "writeFile": "addr.py",
-      "content": "# address\nstreet = \"123\"\ncity = \"Main St\"\nstate = \"CA\"\nzip_code = \"90210\"\ncountry = \"US\""
+      "writeFile": "note.md",
+      "content": "The retry worker\ncaught up after the deploy\nand payment webhooks are current.\n\nKeep this line separate."
     },
     {
       "line": "clear"
@@ -53,7 +53,7 @@
       "comment": "Launch nvim"
     },
     {
-      "line": "nvim addr.py"
+      "line": "nvim note.md"
     },
     {
       "waitForScreen": "All",
@@ -67,39 +67,34 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "v_J \u2014 Join Selection",
+      "caption": "visual join",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "In visual mode, J joins the selected lines into one. Line breaks become spaces."
+      "say": "If a simple command already names the range, use it. Visual {key:J} is for a block you want to see first."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Select street, city, and state. Capital V then J J.",
+      "say": "After pasting prose with hard breaks, select the paragraph and join just that block.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "j"
-    },
-    {
-      "keys": "V"
-    },
-    {
-      "keys": "jj"
+      "keys": "vip",
+      "overlay": "select paragraph"
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Three lines selected. Press J.",
+      "say": "{key:J} turns those selected lines into one sentence. The line after the blank stays separate.",
       "wait": false
     },
     {
@@ -107,71 +102,13 @@
     },
     {
       "keys": "J",
-      "overlay": "join lines"
+      "overlay": "join paragraph"
     },
     {
-      "wait": 0.6
+      "wait": 0.8
     },
     {
-      "say": "Three lines merged into one, joined by spaces."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "u",
-      "overlay": "undo"
-    },
-    {
-      "wait": 0.4
-    },
-    {
-      "say": "Now select all the data lines. V then G.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "j"
-    },
-    {
-      "keys": "V"
-    },
-    {
-      "keys": "G"
-    },
-    {
-      "wait": 0.4
-    },
-    {
-      "say": "J to join them all.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "J",
-      "overlay": "join all"
-    },
-    {
-      "wait": 0.6
-    },
-    {
-      "say": "Everything on one line. Visual J. Select lines, join them."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "u"
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "say": "J in visual mode. Select the lines, then join."
+      "say": "Use visual join when seeing the block is clearer than naming or counting it."
     },
     {
       "wait": 1.0
@@ -190,7 +127,7 @@
       "comment": "Clean up"
     },
     {
-      "line": "rm -f addr.py"
+      "line": "rm -f note.md"
     }
   ]
 }
