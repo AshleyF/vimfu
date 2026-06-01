@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 :delmarks Delete Marks",
+  "title": "VimFu — :delmarks Delete Marks",
   "description": "Remove marks you no longer need.",
   "speed": 0.55,
   "rows": 20,
@@ -42,7 +42,7 @@
       "line": "clear"
     },
     {
-      "line": "nvim demo.py"
+      "line": "nvim -i NONE +'silent! delmarks!' demo.py"
     },
     {
       "waitForScreen": "All",
@@ -56,14 +56,14 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": ":delmarks \u2014 Delete Marks",
+      "caption": ":delmarks — Delete Marks",
       "duration": 2.0
     },
     {
       "wait": 0.7
     },
     {
-      "say": "Del marks removes marks you no longer need. Set a couple marks first."
+      "say": "`:delmarks` removes marks you no longer need. Start by setting three lowercase marks."
     },
     {
       "wait": 0.3
@@ -83,58 +83,77 @@
       "wait": 0.3
     },
     {
-      "say": "Check the marks.",
+      "keys": "jjmc",
+      "overlay": "set mark c"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ex": ":marks",
+      "overlay": ":marks",
+      "beforeEnter": 1.1
+    },
+    {
+      "wait": 2.2
+    },
+    "enter",
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Delete only mark `a`.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "type": ":marks",
-      "overlay": ":marks"
+      "ex": ":delmarks a",
+      "overlay": ":delmarks a",
+      "beforeEnter": 1.1
     },
-    "enter",
     {
       "wait": 0.5
     },
     {
-      "keys": "q",
-      "overlay": ""
+      "ex": ":marks",
+      "overlay": ":marks",
+      "beforeEnter": 1.1
     },
+    {
+      "wait": 2.2
+    },
+    "enter",
     {
       "wait": 0.3
     },
     {
-      "say": "Delete mark A.",
+      "say": "Now `:delmarks!` deletes all lowercase marks in this buffer.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "type": ":delmarks a",
-      "overlay": ":delmarks a"
+      "ex": ":delmarks!",
+      "overlay": ":delmarks!",
+      "beforeEnter": 1.1
     },
-    "enter",
     {
       "wait": 0.5
     },
     {
-      "say": "Delete all lowercase marks with del marks bang."
+      "ex": ":marks",
+      "overlay": ":marks",
+      "beforeEnter": 1.1
     },
     {
-      "wait": 0.3
-    },
-    {
-      "type": ":delmarks!",
-      "overlay": ":delmarks!"
+      "wait": 2.2
     },
     "enter",
     {
-      "wait": 0.5
-    },
-    {
-      "say": "Del marks cleans up specific marks. Del marks bang clears them all."
+      "say": "`:delmarks a` removes one mark. `:delmarks!` clears the lowercase marks."
     },
     {
       "wait": 1.5
@@ -149,5 +168,9 @@
     {
       "line": "rm -f demo.py"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "_AQV8JDqwvk",
+    "url": "https://youtube.com/watch?v=_AQV8JDqwvk"
+  }
 }

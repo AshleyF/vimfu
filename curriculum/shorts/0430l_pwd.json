@@ -1,31 +1,105 @@
 {
   "title": "VimFu — :pwd Print Directory",
   "description": "Show Vim's current working directory.",
-  "speed": 0.55, "rows": 20, "cols": 40, "humanize": 0.7, "seed": 583,
-  "ttsVoice": "echo", "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "speed": 0.55,
+  "rows": 20,
+  "cols": 40,
+  "humanize": 0.7,
+  "seed": 583,
+  "ttsVoice": "echo",
+  "playlist": "VimFu",
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "line": "export TERM=xterm-256color" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "writeFile": "demo.py", "content": "# Demo\nprint(\"hello\")" },
-    { "line": "clear" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "# Demo\nprint(\"hello\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "overlay": "VimFu", "caption": ":pwd — Working Dir", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "say": "Colon P W D shows Vim's current working directory. Same as pwd in the shell." },
-    { "wait": 0.3 },
-    { "type": ":pwd", "overlay": ":pwd" }, "enter",
-    { "wait": 0.5 },
-    { "say": "The working directory affects relative paths for colon E, colon R, and shell commands." },
-    { "wait": 0.3 },
-    { "say": "Change it with colon cd. Colon pwd tells you where you are right now." },
-    { "wait": 1.5 }
+    {
+      "overlay": "VimFu",
+      "caption": ":pwd — Working Dir",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Colon P W D shows Vim's current working directory. Same as pwd in the shell."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ex": ":pwd",
+      "overlay": ":pwd",
+      "beforeEnter": 1.4
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The working directory affects relative paths for colon E, colon R, and shell commands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Change it with colon cd. Colon pwd tells you where you are right now."
+    },
+    {
+      "wait": 1.5
+    }
   ],
-  "teardown": [ "escape", { "type": ":q!" }, "enter", { "line": "rm -f demo.py" } ]
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "pmoTur0tfx0",
+    "url": "https://youtube.com/watch?v=pmoTur0tfx0"
+  }
 }

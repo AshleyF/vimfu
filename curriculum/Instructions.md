@@ -22,6 +22,10 @@ Every video goes through a generate → inspect → fix cycle:
    - The right characters were deleted/changed/inserted.
    - Navigation was efficient (see below).
    - Narration matches what's actually happening on screen.
+   - **Show demonstrable claims; don't just narrate them.** If narration says
+     "command X does the same thing" or "you can also use Y," the video should
+     actually run X or Y when it is practical. This is a video: prove the
+     claim on screen instead of asking the viewer to trust the voiceover.
    - **CRITICAL: Trace every `[SAY]` against the surrounding `[KEYS]` and cursor lines.** If narration says "change this to level", the log MUST show the text actually changing to "level" in the screen state lines that follow. If the narration says "skip this one", the cursor MUST actually move past that match without a `.` (dot). Don't trust the script — trust the log. The log is what the viewer sees. Common failures:
      - Saying "change X to Y" but `cw` + type lands on the wrong word due to cursor column carry-over from a previous demo.
      - Saying "skip" but `n` wraps around to the same match (not enough matches in the file).

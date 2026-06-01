@@ -144,6 +144,7 @@ _TTS_REPLACEMENTS = [
     ("VimFu", "Vim-Fu"),
     ("Neovim", "Neo-vim"),
     # Vim commands with colon — spell out for clarity
+    (":delmarks!", "colon delmarks bang"),
     (":wq", "colon W Q"),
     (":q!", "colon Q bang"),
     (":w!", "colon W bang"),
