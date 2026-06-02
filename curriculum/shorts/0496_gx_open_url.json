@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 gx \u2014 Open URL",
+  "title": "VimFu — gx — Open URL",
   "description": "Use gx to open the URL or file path under the cursor with your system's default application.",
   "speed": 0.55,
   "rows": 20,
@@ -34,7 +34,7 @@
       "line": "mkdir -p ~/vimfu && cd ~/vimfu"
     },
     {
-      "line": "rm -f urls.txt .urls.txt.swp .urls.txt.swo"
+      "line": "rm -f urls.txt notes.txt .urls.txt.swp .urls.txt.swo .notes.txt.swp .notes.txt.swo"
     },
     {
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
@@ -44,7 +44,11 @@
     },
     {
       "writeFile": "urls.txt",
-      "content": "Check out these links:\nhttps://neovim.io\nhttps://vim.org\n/etc/hosts"
+      "content": "Open a local file:\nnotes.txt\n\nWeb link example:\nhttps://neovim.io"
+    },
+    {
+      "writeFile": "notes.txt",
+      "content": "Opened by gx\n\nThis is a local file."
     },
     {
       "line": "clear"
@@ -53,7 +57,7 @@
       "comment": "Launch nvim"
     },
     {
-      "line": "nvim urls.txt"
+      "line": "nvim --cmd 'lua vim.ui.open = function(path) vim.cmd.edit(path) end' urls.txt"
     },
     {
       "waitForScreen": "All",
@@ -67,20 +71,20 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "gx \u2014 Open URL",
+      "caption": "gx — Open URL",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "G X opens whatever is under the cursor with your system's default application. URLs open in your browser, files open in their associated app."
+      "say": "The g key, then the x key, opens the file path or URL under the cursor with your system's default application."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Move to the neovim dot io link.",
+      "say": "First, use it on a local file path. Move to `notes.txt`.",
       "wait": false
     },
     {
@@ -94,7 +98,7 @@
       "wait": 0.4
     },
     {
-      "say": "In a live session, pressing G X here would open this URL in your default browser.",
+      "say": "Press the g key, then the x key. For this recording, local files open back inside Neovim so you can see it happen.",
       "wait": false
     },
     {
@@ -102,25 +106,25 @@
     },
     {
       "keys": "gx",
-      "overlay": "open URL"
+      "overlay": "open file"
     },
     {
-      "wait": 1.0
+      "wait": 1.3
     },
     {
-      "say": "Vim detected the URL under the cursor and handed it to the system."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "say": "G X also works with file paths. If you have a path like slash etc slash hosts, G X would open that file."
+      "say": "`notes.txt` opened in this Neovim window. On a normal desktop, the same keys hand the path to the system opener."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "In Neovim, G X is built in. In classic Vim, it comes from the netrw plugin. G X. One keystroke to open links and files."
+      "say": "The same key works on web links too; in a desktop session, the URL opens in your browser."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The g key, then the x key: one command for opening file paths and URLs."
     },
     {
       "wait": 1.0
@@ -139,7 +143,11 @@
       "comment": "Clean up"
     },
     {
-      "line": "rm -f urls.txt"
+      "line": "rm -f urls.txt notes.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "oyI57kmEpdk",
+    "url": "https://youtube.com/watch?v=oyI57kmEpdk"
+  }
 }

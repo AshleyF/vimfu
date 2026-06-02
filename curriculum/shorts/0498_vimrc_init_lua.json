@@ -44,7 +44,11 @@
     },
     {
       "writeFile": "config.txt",
-      "content": "Vim Configuration Guide"
+      "content": "Vim Configuration Guide\nalpha\nbeta\ngamma"
+    },
+    {
+      "writeFile": "init.lua",
+      "content": "vim.opt.number = true\nvim.opt.relativenumber = true\nvim.opt.cursorline = true"
     },
     {
       "line": "clear"
@@ -58,6 +62,9 @@
     {
       "waitForScreen": "All",
       "timeout": 30.0
+    },
+    {
+      "wait": 0.8
     },
     {
       "ifScreen": "swap file",
@@ -74,63 +81,60 @@
       "wait": 0.5
     },
     {
-      "say": "Every set command, every mapping, every setting you've learned so far — you can make them permanent in your config file."
+      "say": "Every setting and mapping you've learned can live in your config file."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "For classic Vim, the config file is dot vimrc in your home directory. Tilde slash dot vimrc."
+      "say": "Classic Vim uses `~/.vimrc`. Neovim usually uses `init.lua` in its config directory."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "For Neovim, it's either init dot vim or init dot lua inside dot config slash nvim."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "say": "Let's check where Neovim looks. Run the version command.",
+      "say": "Here is a tiny `init.lua`: line numbers, relative numbers, and cursorline.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "type": ":echo stdpath('config')"
+      "ex": ":edit init.lua",
+      "beforeEnter": 0.8
     },
-    "enter",
     {
       "wait": 0.8
     },
     {
-      "say": "That's the config directory for Neovim on this system."
+      "say": "Now go back to the text file. No line numbers yet."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Common settings to put in your config: set number for line numbers, set relative number for relative lines, set ignorecase and smartcase for better searching."
+      "ex": ":edit config.txt",
+      "beforeEnter": 0.8
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Load that config with `:luafile init.lua`.",
+      "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "say": "You can also add key mappings. For example, map space as your leader key, or remap Y to yank to end of line."
+      "ex": ":luafile init.lua",
+      "beforeEnter": 1.1
     },
     {
-      "wait": 0.3
+      "wait": 0.8
     },
     {
-      "say": "In Neovim with init dot lua, you use Lua syntax. vim dot opt dot number equals true. vim dot keymap dot set for mappings."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "say": "Start small. Add one setting at a time. Understand what each line does. Your config file is your personal Vim. Make it yours."
+      "say": "Now the config visibly changed the editor: line numbers and relative numbers are on. Your startup config makes those choices permanent."
     },
     {
       "wait": 1.0
@@ -149,7 +153,11 @@
       "comment": "Clean up"
     },
     {
-      "line": "rm -f config.txt"
+      "line": "rm -f config.txt init.lua"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "ulJs5xsshUk",
+    "url": "https://youtube.com/watch?v=ulJs5xsshUk"
+  }
 }

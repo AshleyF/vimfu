@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 Terminal Mode",
+  "title": "VimFu — Terminal Mode",
   "description": "Use :term to open a terminal inside Vim and Ctrl-\\ Ctrl-N to switch back to normal mode.",
   "speed": 0.55,
   "rows": 20,
@@ -68,49 +68,62 @@
     {
       "overlay": "VimFu",
       "caption": "Terminal Mode",
-      "duration": 2.0
+      "duration": 1.2
     },
     {
-      "wait": 0.5
+      "wait": 0.2
     },
     {
-      "say": "Vim and Neovim can run a full terminal emulator inside the editor. Open one with colon term."
+      "say": "Vim and Neovim can run a terminal inside the editor. Open one with `:term`."
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "ex": ":term",
+      "beforeEnter": 0.7
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The terminal buffer is open. Press {key:i} so your keys go to the shell."
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "i",
+      "overlay": "terminal mode"
     },
     {
       "wait": 0.3
     },
     {
-      "type": ":term"
-    },
-    "enter",
-    {
-      "wait": 1.5
+      "say": "Now type a shell command."
     },
     {
-      "say": "We're now in terminal mode. You can type shell commands directly."
-    },
-    {
-      "wait": 0.3
+      "wait": 0.2
     },
     {
       "type": "echo hello from the terminal"
     },
     "enter",
     {
-      "wait": 0.8
+      "wait": 0.6
     },
     {
-      "say": "The shell ran inside Vim. But notice you can't use normal mode keys. You're in terminal mode."
+      "say": "The shell ran inside Vim. To use normal-mode keys here, leave terminal mode first."
     },
     {
-      "wait": 0.3
+      "wait": 0.2
     },
     {
-      "say": "To escape terminal mode, press Control backslash, then Control N.",
+      "say": "Hold Control and press backslash. Then hold Control and press the N key.",
       "wait": false
     },
     {
-      "wait": 0.3
+      "wait": 0.2
     },
     {
       "keys": "ctrl+\\",
@@ -121,33 +134,33 @@
       "overlay": "normal mode"
     },
     {
-      "wait": 0.6
+      "wait": 0.4
     },
     {
-      "say": "Now we're in normal mode in the terminal buffer. You can navigate, yank text, and use all your normal mode keys."
+      "say": "Now normal-mode keys work in the terminal buffer."
     },
     {
-      "wait": 0.3
+      "wait": 0.2
     },
     {
-      "say": "Press I to go back to terminal mode and type commands again.",
+      "say": "Press {key:i} to send keys back to the shell.",
       "wait": false
     },
     {
-      "wait": 0.3
+      "wait": 0.2
     },
     {
       "keys": "i",
       "overlay": "back to terminal mode"
     },
     {
-      "wait": 0.5
+      "wait": 0.3
     },
     {
-      "say": "Control backslash Control N to exit. I to re-enter. That's the terminal mode cycle."
+      "say": "Control plus backslash, then Control plus the N key, exits. The {key:i} key re-enters. That's the cycle."
     },
     {
-      "wait": 1.0
+      "wait": 0.6
     }
   ],
   "teardown": [
@@ -170,5 +183,9 @@
     {
       "line": "rm -f termtest.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "dEEM-aZ54VY",
+    "url": "https://youtube.com/watch?v=dEEM-aZ54VY"
+  }
 }
