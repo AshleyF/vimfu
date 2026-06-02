@@ -1,6 +1,6 @@
 {
-  "title": "VimFu \u2014 Align Text with :norm",
-  "description": "Use :'<,'>norm with column placement to align text to a specific column, creating neat tables from messy data.",
+  "title": "VimFu — Align Text with Substitute",
+  "description": "Use a visual-range substitute with an expression replacement to align text to a specific column.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -67,14 +67,14 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "Align Text with :norm",
+      "caption": "Align with :s",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "You can use norm with substitute commands to align text. Let's align the equals signs so they all line up."
+      "say": "A visual-range substitute can align text when the replacement is an expression. Let's align the equals signs."
     },
     {
       "wait": 0.3
@@ -101,22 +101,46 @@
       "wait": 0.4
     },
     {
-      "say": "Now use a substitute to pad spaces before the equals sign. We'll replace the space-equals with enough padding.",
+      "say": "First, type the command so we can read it.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "type": ":s/\\s*=/\\=repeat(' ',10-col('.')).'='/",
-      "overlay": "align equals"
+      "keys": ":",
+      "overlay": "command line"
     },
     {
-      "wait": 0.5
+      "wait": 0.3
+    },
+    {
+      "type": "s/\\s*=/\\=repeat(' ',6-col('.')).'='/"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The pattern `\\s*=` finds any spaces before each equals sign. The replacement starts with `\\=`, so Vim evaluates code instead of inserting literal text.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "`repeat(' ', 6-col('.'))` makes enough spaces to put the equals sign in column 6. Now pause, read it, then run it.",
+      "wait": false
+    },
+    {
+      "wait": 1.4
     },
     "enter",
     {
-      "wait": 0.6
+      "wait": 0.4
+    },
+    "enter",
+    {
+      "wait": 0.4
     },
     {
       "say": "The equals signs are now aligned. Each line has the right number of spaces so the equals column lines up neatly."
@@ -146,5 +170,9 @@
     {
       "line": "rm -f data.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "5fyzUNYSkRE",
+    "url": "https://youtube.com/watch?v=5fyzUNYSkRE"
+  }
 }

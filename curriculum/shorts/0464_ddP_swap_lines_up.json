@@ -1,6 +1,6 @@
 {
-  "title": "VimFu \u2014 ddP \u2014 Swap Lines Up",
-  "description": "Use ddP (capital P) to move the current line up one position. dd deletes the line, P puts it above the previous line.",
+  "title": "VimFu — ddkP — Swap Lines Up",
+  "description": "Use ddkP to move the current line up one position. dd deletes the line, k moves to the previous line, and P puts it above.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -67,14 +67,14 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "ddP \u2014 Swap Lines Up",
+      "caption": "ddkP — Swap Lines Up",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "D D capital P moves the current line up one. D D deletes, and capital P puts it above."
+      "say": "{key:d}{key:d}{key:k}{key:P} moves the current line up one. {key:d}{key:d} deletes, {key:k} moves up, and {key:P} puts it above."
     },
     {
       "wait": 0.3
@@ -93,14 +93,14 @@
       "wait": 0.3
     },
     {
-      "say": "Now type D D capital P.",
+      "say": "Now type {key:d}{key:d}{key:k}{key:P}.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "ddP",
+      "keys": "ddkP",
       "overlay": "swap up"
     },
     {
@@ -113,35 +113,35 @@
       "wait": 0.3
     },
     {
-      "say": "Let's undo and try on the last line.",
+      "say": "Reset to the original order, then try on fourth.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "u",
-      "overlay": "undo"
+      "keys": "2u",
+      "overlay": "undo both edits"
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "G",
-      "overlay": "last line"
+      "keys": "j",
+      "overlay": "fourth line"
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "ddP",
+      "keys": "ddkP",
       "overlay": "swap up"
     },
     {
       "wait": 0.6
     },
     {
-      "say": "Fifth moved above fourth. Lowercase P swaps down, capital P swaps up."
+      "say": "Fourth moved above third. Use {key:d}{key:d}{key:p} to move down; add {key:k}{key:P} to move up."
     },
     {
       "wait": 1.0
@@ -162,5 +162,9 @@
     {
       "line": "rm -f order.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "SOjlfZEHOlc",
+    "url": "https://youtube.com/watch?v=SOjlfZEHOlc"
+  }
 }
