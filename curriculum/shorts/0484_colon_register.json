@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 The : Register",
+  "title": "VimFu — The : Register",
   "description": "The \": register contains the last Ex command you ran. Use it to recall or paste your previous command.",
   "speed": 0.55,
   "rows": 20,
@@ -87,71 +87,51 @@
       "wait": 0.3
     },
     {
-      "type": ":%s/two/TWO/g"
+      "ex": ":%s/two/TWO/g",
+      "beforeEnter": 1.1
     },
-    "enter",
     {
       "wait": 0.5
     },
     {
-      "say": "Now check the colon register.",
+      "say": "That command is now in the colon register. It stores the last Ex command, without the leading colon.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "type": ":echo @:"
-    },
-    "enter",
-    {
-      "wait": 0.6
-    },
-    {
-      "say": "It shows the substitution command. Percent S slash two slash TWO slash G."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "say": "You can re-execute it with at colon.",
+      "say": "Open a note line. In insert mode, {key:Ctrl-R} then {key::} inserts that register.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "type": ":@:"
-    },
-    "enter",
-    {
-      "wait": 0.5
-    },
-    {
-      "say": "At colon reruns the last ex command. You can also paste the command into your file with quote colon P."
+      "keys": "Go",
+      "overlay": "new note line"
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "o"
+      "type": "Last command: "
+    },
+    {
+      "keys": "ctrl+r",
+      "overlay": "insert register"
+    },
+    {
+      "type": ":"
     },
     {
       "keys": "escape"
     },
     {
-      "keys": "\":",
-      "overlay": "colon register"
-    },
-    {
-      "keys": "p",
-      "overlay": "paste"
-    },
-    {
       "wait": 0.6
     },
     {
-      "say": "The command is now in the file. Quote colon. The last ex command, always available."
+      "say": "The command is now in the file. {key:Ctrl-R}{key::} inserted the colon register."
     },
     {
       "wait": 1.0
@@ -172,5 +152,9 @@
     {
       "line": "rm -f cmdreg.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "uL3Fk2ZhuBc",
+    "url": "https://youtube.com/watch?v=uL3Fk2ZhuBc"
+  }
 }

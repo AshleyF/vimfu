@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 Record-and-Apply Macro",
+  "title": "VimFu — Record-and-Apply Macro",
   "description": "Record a macro with qa...q, then apply it to every line in the file with :%norm @a.",
   "speed": 0.55,
   "rows": 20,
@@ -127,26 +127,30 @@
       "wait": 0.5
     },
     {
-      "say": "The macro adds a quote at the start and before the comma. Line one is done. Now apply to all lines."
+      "say": "The macro adds a quote at the start and before the comma. Undo the demo edit first, so line one will not get processed twice."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Type colon percent norm at A.",
+      "keys": "2u",
+      "overlay": "reset line one"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now run `:%norm @a`. Percent means every line; `norm @a` replays macro register `a` as normal-mode input on each line.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "type": ":%norm @a",
-      "overlay": ":%norm @a"
+      "ex": ":%norm @a",
+      "overlay": ":%norm @a",
+      "beforeEnter": 1.2
     },
-    {
-      "wait": 0.5
-    },
-    "enter",
     {
       "wait": 0.6
     },
@@ -172,5 +176,9 @@
     {
       "line": "rm -f names.csv"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "bRIXN4cVk3Q",
+    "url": "https://youtube.com/watch?v=bRIXN4cVk3Q"
+  }
 }

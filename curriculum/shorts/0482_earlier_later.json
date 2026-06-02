@@ -1,6 +1,6 @@
 {
-  "title": "VimFu \u2014 :earlier / :later",
-  "description": "Use :earlier and :later to travel backward and forward in time through your undo history by time or change count.",
+  "title": "VimFu — :earlier / :later",
+  "description": "Use :earlier and :later to travel backward and forward through undo history by change count or time.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -44,7 +44,7 @@
     },
     {
       "writeFile": "timeline.txt",
-      "content": "original text"
+      "content": ""
     },
     {
       "line": "clear"
@@ -74,111 +74,105 @@
       "wait": 0.5
     },
     {
-      "say": "Vim can time travel. The earlier command takes the file back in time, and later brings it forward."
+      "say": "Vim can time travel through undo states. `:earlier` moves to an older state; `:later` moves forward again."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Let's make some changes first. Add a second line.",
+      "say": "Type three chunks. Between chunks, press {key:Ctrl-G}, then {key:u}. That creates separate undo states.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "o",
-      "overlay": "open line below"
+      "keys": "i",
+      "overlay": "insert"
     },
     {
-      "type": "first edit"
+      "type": "one"
     },
     {
-      "keys": "escape"
+      "ctrl": "g",
+      "overlay": "undo break"
     },
     {
-      "wait": 0.4
+      "keys": "u",
+      "overlay": "finish break"
     },
     {
-      "say": "Add another line.",
-      "wait": false
+      "type": " two"
     },
     {
-      "wait": 0.3
+      "ctrl": "g",
+      "overlay": "undo break"
     },
     {
-      "keys": "o"
+      "keys": "u",
+      "overlay": "finish break"
     },
     {
-      "type": "second edit"
-    },
-    {
-      "keys": "escape"
-    },
-    {
-      "wait": 0.4
-    },
-    {
-      "keys": "o"
-    },
-    {
-      "type": "third edit"
+      "type": " three"
     },
     {
       "keys": "escape"
     },
-    {
-      "wait": 0.4
-    },
-    {
-      "say": "Now roll back two changes with earlier two.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "type": ":earlier 2"
-    },
-    "enter",
     {
       "wait": 0.6
     },
     {
-      "say": "We jumped back two edits. Only original text and first edit remain."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "say": "You can also use time units. Earlier five M goes back five minutes. Earlier ten S goes back ten seconds.",
+      "say": "Now the line says `one two three`. Run `:earlier 2` to go back two undo states.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Now move forward with later.",
-      "wait": false
+      "ex": ":earlier 2",
+      "beforeEnter": 1.2
     },
     {
       "wait": 0.3
-    },
-    {
-      "type": ":later 2"
     },
     "enter",
     {
-      "wait": 0.6
+      "ctrl": "l",
+      "overlay": "redraw"
     },
     {
-      "say": "All edits are back. Later two moved us forward two changes."
+      "wait": 0.5
+    },
+    {
+      "say": "`two three` disappears. We are back at the first chunk."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Earlier and later. Time travel for your text. Use change counts or time units like S, M, and H."
+      "say": "Run `:later 2` to move forward again.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "ex": ":later 2",
+      "beforeEnter": 1.2
+    },
+    {
+      "wait": 0.3
+    },
+    "enter",
+    {
+      "ctrl": "l",
+      "overlay": "redraw"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "`three` is back. You can use counts, or time units like `:earlier 10s` and `:later 5m`."
     },
     {
       "wait": 1.0
@@ -199,5 +193,9 @@
     {
       "line": "rm -f timeline.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "K42WOcFwS9Y",
+    "url": "https://youtube.com/watch?v=K42WOcFwS9Y"
+  }
 }
