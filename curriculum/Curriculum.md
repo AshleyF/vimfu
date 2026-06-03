@@ -864,7 +864,7 @@ _Real-world editing patterns that combine what you've learned._
 
 ---
 
-## Part 18 — Advanced Topics (Lessons 481–500)
+## Part 18 — Advanced Topics (Lessons 481–499)
 
 | #   | Title | Keys | Description |
 |-----|-------|------|-------------|
@@ -887,7 +887,6 @@ _Real-world editing patterns that combine what you've learned._
 | 497 | `g<` — Previous Output | `g<` | Redisplay previous command output. |
 | 498 | The `vimrc` / `init.lua` | — | Where to put your personal configuration. |
 | 499 | `:help` — The Help System | `:help` `:h {topic}` | Navigate Vim's built-in help. |
-| 500 | What's Next? | — | Plugins, LSP, Treesitter, and the endless journey. |
 
 ---
 

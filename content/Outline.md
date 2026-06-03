@@ -403,7 +403,7 @@ _Undo trees, special registers, op-pending mode, terminal, folding, config._
 | `advanced.character-info`     | Character Inspection           | (ga, g8 videos)| `ga`, `g8`                        |
 | `advanced.gx-g-less`          | Open URLs and Output History   | (gx, g< videos)| `gx`, `g<`                        |
 | `advanced.folding`            | Folding in Practice            | 493, 494, 495  | `:set fdm=indent`, `zo`, `zc`, `zM`, `zR`, `zf`, `zd` |
-| `advanced.config`             | Configuration                  | 498, 499, 500  | `:help`, `vimrc`, `init.lua`      |
+| `advanced.config`             | Configuration                  | 498, 499       | `:help`, `vimrc`, `init.lua`      |
 | `advanced.spell`              | Spell Checking                 | —              | `:set spell`, `]s`, `[s`, `z=`, `zg`, `zw` |
 | `advanced.tags`               | Tags and Code Navigation       | —              | `Ctrl-]`, `Ctrl-T`, `:tag`, `:tags`, `:tselect` |
 | `advanced.mappings`           | Mappings — :map, :noremap, and Friends | —      | `:nnoremap`, `:vnoremap`, `:xnoremap`, `:onoremap`, `:inoremap`, `:cnoremap`, `<silent>`, `<expr>`, `<buffer>` |
