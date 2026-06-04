@@ -21,58 +21,150 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f counter.py .counter.py.swp .counter.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f counter.py .counter.py.swp .counter.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "counter.py",
       "content": "# Counter\n\ncount = 0\n\ndef increment():\n    global count\n    count += 1\n    return count\n\ndef reset():\n    global count\n    count = 0"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim counter.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim counter.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Running a Command", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "To run an Ex command, type colon, your command, and press Enter." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: set number ---" },
-    { "say": "Turn on line numbers. Colon, set number, Enter.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set number" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Running a Command",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "To run an Ex command, type colon, your command, and press Enter."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: set number ---"
+    },
+    {
+      "say": "Turn on line numbers. Colon, set number, Enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set number"
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Line numbers appeared. The command ran instantly." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: set cursorline ---" },
-    { "say": "Another one. Colon, set cursorline, Enter.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set cursorline" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line numbers appeared. The command ran instantly."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: set cursorline ---"
+    },
+    {
+      "say": "Another one. Colon, set cursorline, Enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set cursorline"
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "The current line is highlighted. Each command takes effect immediately." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon, command, Enter. That's the pattern for every Ex command in Vim." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The current line is highlighted. Each command takes effect immediately."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon, command, Enter. That's the pattern for every Ex command in Vim."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f counter.py" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f counter.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "_sdiVDSiq7I",
+    "url": "https://youtube.com/watch?v=_sdiVDSiq7I"
+  }
 }

@@ -21,64 +21,167 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f lines.txt .lines.txt.swp .lines.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with numbered lines" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f lines.txt .lines.txt.swp .lines.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with numbered lines"
+    },
     {
       "writeFile": "lines.txt",
       "content": "line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' lines.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' lines.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Go to a Line Number", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Type colon followed by a number to jump to that line." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: go to line 5 ---" },
-    { "say": "Colon five. Go to line five.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":5" },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Go to a Line Number",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Type colon followed by a number to jump to that line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: go to line 5 ---"
+    },
+    {
+      "say": "Colon five. Go to line five.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":5"
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "The cursor jumped to line five." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: go to line 10 ---" },
-    { "say": "Colon ten.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":10" },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The cursor jumped to line five."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: go to line 10 ---"
+    },
+    {
+      "say": "Colon ten.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":10"
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Now on line ten." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 3: go back to line 1 ---" },
-    { "say": "Colon one to go back to the top.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":1" },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now on line ten."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 3: go back to line 1 ---"
+    },
+    {
+      "say": "Colon one to go back to the top.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":1"
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Back at line one." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon followed by a line number. Quick way to jump anywhere in the file." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Back at line one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon followed by a line number. Quick way to jump anywhere in the file."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f lines.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f lines.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "Eak2wDIE_k0",
+    "url": "https://youtube.com/watch?v=Eak2wDIE_k0"
+  }
 }

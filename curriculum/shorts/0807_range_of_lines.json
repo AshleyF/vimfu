@@ -21,60 +21,164 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f list.txt .list.txt.swp .list.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f list.txt .list.txt.swp .list.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "list.txt",
       "content": "line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' list.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' list.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "A Range of Lines", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Use two numbers separated by a comma to specify a range of lines." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: delete lines 3-7 ---" },
-    { "say": "Colon three comma seven d. Delete lines three through seven.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":3,7d" },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "A Range of Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Use two numbers separated by a comma to specify a range of lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: delete lines 3-7 ---"
+    },
+    {
+      "say": "Colon three comma seven d. Delete lines three through seven.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":3,7d"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Five lines gone. Charlie through golf, deleted." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Demo 2: delete lines 1-3 ---" },
-    { "say": "Another range. Colon one comma three d.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":1,3d" },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Five lines gone. Charlie through golf, deleted."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: delete lines 1-3 ---"
+    },
+    {
+      "say": "Another range. Colon one comma three d.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":1,3d"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "The first three lines are gone." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Comma separates the from and to line numbers. The range is inclusive. Both ends are included." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The first three lines are gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Comma separates the from and to line numbers. The range is inclusive. Both ends are included."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f list.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f list.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "aXmYJdly9DI",
+    "url": "https://youtube.com/watch?v=aXmYJdly9DI"
+  }
 }

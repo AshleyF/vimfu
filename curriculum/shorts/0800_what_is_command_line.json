@@ -21,58 +21,151 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f greeting.py .greeting.py.swp .greeting.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f greeting.py .greeting.py.swp .greeting.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "greeting.py",
       "content": "# Greeting App\n\ndef hello(name):\n    return f\"Hello, {name}!\"\n\ndef goodbye(name):\n    return f\"Goodbye, {name}!\"\n\nprint(hello(\"world\"))\nprint(goodbye(\"world\"))"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim greeting.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim greeting.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "What Is the Command Line?", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "In Vim, pressing colon opens the command line at the bottom of the screen. This is where you type Ex commands." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: press colon ---" },
-    { "say": "Watch the bottom of the screen. Press colon.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": ":", "overlay": ": command line" },
-    { "wait": 0.8 },
-    { "say": "See the colon at the bottom? Vim is waiting for a command. Press Escape to cancel." },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "What Is the Command Line?",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "In Vim, pressing colon opens the command line at the bottom of the screen. This is where you type Ex commands."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: press colon ---"
+    },
+    {
+      "say": "Watch the bottom of the screen. Press colon.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": ":",
+      "overlay": ": command line"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "See the colon at the bottom? Vim is waiting for a command. Press Escape to cancel."
+    },
+    {
+      "wait": 0.3
+    },
     "escape",
-    { "wait": 0.5 },
-    { "comment": "--- Demo 2: run a command ---" },
-    { "say": "Try again. Colon, then type set number, then Enter.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set number" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: run a command ---"
+    },
+    {
+      "say": "Try again. Colon, then type set number, then Enter.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set number"
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Line numbers appeared. The command executed." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon opens the command line. Type a command and press Enter. This is the gateway to hundreds of powerful Ex commands." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line numbers appeared. The command executed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon opens the command line. Type a command and press Enter. This is the gateway to hundreds of powerful Ex commands."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f greeting.py" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f greeting.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "qeBRJsfdh_Y",
+    "url": "https://youtube.com/watch?v=qeBRJsfdh_Y"
+  }
 }

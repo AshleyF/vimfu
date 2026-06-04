@@ -1080,7 +1080,7 @@ _**Installing in Neovim:** Neovim ships with [lazy.nvim](https://github.com/folk
 | 737 | Visual Surround — Characterwise | `v` → select → `S)` | In characterwise visual mode, `S` then a character wraps just the selection. |
 | 738 | Visual Surround — Linewise | `V` → select → `S<p>` | In linewise visual mode, `S` places the surroundings on separate lines with the content indented. |
 | 739 | Visual Surround — Blockwise | `Ctrl-V` → select → `S"` | In blockwise visual mode, each line of the selection is individually surrounded. |
-| 740 | Visual `gS` | `gS` | In linewise visual mode, `gS` suppresses the automatic indenting that `S` does. In blockwise visual mode, `gS` enables surrounding past the end of the line (with `virtualedit`). |
+| 740 | Visual `gS` | `gS` | In visual mode, `gS` surrounds the selection on separate lines; use `gv` to reselect and compare with inline `S`. |
 
 ### Insert Mode Surround
 
