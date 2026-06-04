@@ -1065,11 +1065,11 @@ _**Installing in Neovim:** Neovim ships with [lazy.nvim](https://github.com/folk
 | 727 | Surround with Self-Closing Tag | `ysiw<br/>` | End the tag with `/` to produce a self-closing tag like `<br />` with no closing pair. |
 | 728 | Surround with Function Call | `ysiwfprint↵` | Wrap a word in a function call: `print(word)`. `f` prompts for the function name and wraps in `name(...)`. |
 | 729 | Change Function Name | `csf` then `debug` | Change an existing function-call surround name through the bottom prompt while keeping the arguments. |
-| 730 | Surround — Function Inside Parens | `ysiw<C-f>print↵` | Inverted function style: `(print word)`. The function name goes inside the parentheses. Useful for Lisp-like syntax. |
+| 730 | Delete Function Call | `dsf` | Remove a surrounding function call and keep its arguments. `print(value)` becomes `value`. |
 | 731 | Surround with Arbitrary Character | `ysiw/` `ysiw\|` | Any undefined, non-alphabetic character wraps symmetrically. `ysiw/` → `/word/`, `ysiw\|` → `\|word\|`. Great for Markdown emphasis, Ruby symbols, etc. |
-| 732 | Surround with Code Block | `ysiw<C-]>` | Wraps in braces on separate lines — `{` and `}` each on their own line with the content indented. Perfect for C-style code blocks. (`<C-]>` is really `<C-}>`.) |
+| 732 | Surround with Code Block | `ySS{` | Wrap the current line in braces on separate lines, with the content indented like a code block. |
 | 733 | Surround with LaTeX Environment | `ysiwl` or `ysiw\` | Prompts for an environment name and wraps in `\begin{env}...\end{env}`. Both `l` and `\` trigger the LaTeX prompt. |
-| 734 | Surround — Leading Space Only | `ysiws` | The `s` replacement adds a leading space but no trailing space. Useful for: `csbs` removes parentheses from a function call like `func(x)` → `func x`. |
+| 734 | Delete with s Alias | `dss` | Delete the nearest common surround using `s` as an alias set for brackets, parens, braces, angle brackets, and quotes. |
 | 735 | Surround on Separate Lines | `ySiw(` | Like `ys`, but `yS` indents the surrounded text and places it on its own line between the surround characters. |
 | 736 | Surround Entire Line on Separate Lines | `ySS{` | Wrap the current line in braces, each on a new line with proper indentation. Perfect for wrapping a statement in a block. |
 

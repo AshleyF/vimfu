@@ -1,6 +1,6 @@
 {
   "title": "VimFu — Visual Surround — Characterwise",
-  "description": "In characterwise visual mode, S wraps the selection in the given character.",
+  "description": "In characterwise visual mode, {key:S} wraps an arbitrary selection in the given surround.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -44,7 +44,7 @@
     },
     {
       "writeFile": "visual.py",
-      "content": "msg = hello world\nval = x + y + z"
+      "content": "total = red + green + blue + alpha\nroute = /api/v1/users"
     },
     {
       "line": "clear"
@@ -74,96 +74,77 @@
       "wait": 0.5
     },
     {
-      "say": "In visual mode, capital S surrounds the selection. Select text with V, then press S and the character."
+      "say": "In *visual mode,* {key:S} surrounds the selection. If one motion fits, use {key:y}{key:s} with that motion. Use visual surround for awkward spans or text you already highlighted."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Select hello world with visual mode.",
+      "say": "Select just `green + blue` from the middle of this expression.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "fh",
+      "keys": "fg",
       "overlay": ""
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "ve",
-      "overlay": "v → select"
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "e",
-      "overlay": ""
-    },
-    {
-      "wait": 0.5
-    },
-    {
-      "say": "Capital S, close paren.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "S)",
-      "overlay": "S)"
-    },
-    {
-      "wait": 0.8
-    },
-    {
-      "say": "The selection is wrapped in parentheses."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "u",
-      "overlay": "undo"
-    },
-    {
-      "wait": 0.5
-    },
-    {
-      "say": "Try quotes. Select and S double quote.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "fh",
-      "overlay": ""
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "veee",
+      "keys": "v11l",
       "overlay": "v → select"
     },
     {
       "wait": 0.5
     },
     {
-      "keys": "S\"",
-      "overlay": "S\""
+      "say": "{key:S}{key:]} surrounds the selected expression with brackets.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "S]"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Wrapped in quotes. Visual S. Select, then surround."
+      "say": "Only the selected span was wrapped. The rest of the expression stayed outside."
+    },
+    {
+      "say": "Another awkward selection: quote only `/api/v1` inside the route.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0f/",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "v6l",
+      "overlay": "v → select"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "S\""
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "That kind of oddly shaped substring is where *visual mode* earns its keep: select exactly what you mean, then press {key:S} and the surround."
     },
     {
       "wait": 1.0
@@ -184,5 +165,9 @@
     {
       "line": "rm -f visual.py"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "9UaHTAZIv9Y",
+    "url": "https://youtube.com/watch?v=9UaHTAZIv9Y"
+  }
 }

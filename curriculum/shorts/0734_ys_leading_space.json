@@ -1,6 +1,6 @@
 {
-  "title": "VimFu — Surround — Leading Space Only",
-  "description": "ysiws adds a leading space before the word but no trailing space.",
+  "title": "VimFu — Delete with s Alias",
+  "description": "{key:d}{key:s}{key:s} deletes the nearest common surround, using {key:s} as an alias set.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -44,7 +44,7 @@
     },
     {
       "writeFile": "lead.txt",
-      "content": "hello world\nfoo bar"
+      "content": "one = (hello)\ntwo = \"world\""
     },
     {
       "line": "clear"
@@ -67,54 +67,72 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "Leading Space Only",
+      "caption": "Delete with s Alias",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Lowercase S as the surround character adds a leading space before the surrounded region. No trailing space, just a space in front."
+      "say": "For deleting and changing, {key:s} is an alias for common surrounds: brackets, parens, braces, angle brackets, and quotes."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Y S I W S. Add a leading space before the word.",
+      "say": "Cursor inside parentheses. {key:d}{key:s}{key:s} deletes the nearest surround from that alias set.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "fw",
+      "keys": "fh",
       "overlay": ""
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "ysiws",
-      "overlay": "ysiws"
+      "overlay": "dss"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "A space was added before world. Useful for inserting padding."
+      "keys": "dss"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The parentheses are gone. Line two uses the same {key:d}{key:s}{key:s} command on quotes.",
+      "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "u",
-      "overlay": "undo"
+      "keys": "jfw",
+      "overlay": ""
     },
     {
-      "wait": 0.5
+      "wait": 0.3
     },
     {
-      "say": "S for space. A simple but useful surround target."
+      "overlay": "dss"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "keys": "dss"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Same command, different surround. {key:s} picks the nearest matching pair from the alias set."
     },
     {
       "wait": 1.0
@@ -135,5 +153,9 @@
     {
       "line": "rm -f lead.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "GoZQLM0Rz1Q",
+    "url": "https://youtube.com/watch?v=GoZQLM0Rz1Q"
+  }
 }

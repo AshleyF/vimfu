@@ -1,6 +1,6 @@
 {
-  "title": "VimFu — Function Inside Parens",
-  "description": "ysiw<C-f>print↵ wraps the word with the function name inside the parens: (print word).",
+  "title": "VimFu — Delete Function Call",
+  "description": "{key:d}{key:s}{key:f} removes a surrounding function call and keeps the arguments.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -44,7 +44,7 @@
     },
     {
       "writeFile": "lisp.el",
-      "content": "result = value\noutput = name"
+      "content": "result = print(value)\noutput = len(name)"
     },
     {
       "line": "clear"
@@ -67,20 +67,20 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "Function Inside Parens",
+      "caption": "Delete Function Call",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Control F places the function name inside the parentheses. This is the Lisp style. Instead of print paren word paren, you get open paren print space word close paren."
+      "say": "Lowercase {key:f} is the function-call surround. {key:d}{key:s}{key:f} removes the function name and parentheses, but keeps the arguments."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Y S I W, control F, type print, enter.",
+      "say": "Cursor inside `print(value)`. Press {key:d}{key:s}{key:f}.",
       "wait": false
     },
     {
@@ -94,37 +94,33 @@
       "wait": 0.3
     },
     {
-      "keys": "ysiw\u0006",
-      "overlay": "ysiw<C-f>"
+      "keys": "dsf"
     },
-    {
-      "wait": 0.3
-    },
-    {
-      "type": "print"
-    },
-    {
-      "wait": 0.3
-    },
-    "enter",
     {
       "wait": 0.8
     },
     {
-      "say": "Open paren, print, space, value, close paren. Function name inside the parens."
+      "say": "`print(value)` became just `value`. Line two: do the same to `len(name)`.",
+      "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "u",
-      "overlay": "undo"
+      "keys": "jfn",
+      "overlay": ""
     },
     {
-      "wait": 0.5
+      "wait": 0.3
     },
     {
-      "say": "Useful for Lisp, Scheme, or any S expression style code."
+      "keys": "dsf"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now both function wrappers are gone and both arguments remain."
     },
     {
       "wait": 1.0
@@ -145,5 +141,9 @@
     {
       "line": "rm -f lisp.el"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "F_T8E7ZyNh8",
+    "url": "https://youtube.com/watch?v=F_T8E7ZyNh8"
+  }
 }
