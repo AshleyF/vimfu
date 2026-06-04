@@ -1,6 +1,6 @@
 {
   "title": "VimFu — Delete with Count",
-  "description": "2ds) targets the 2nd enclosing parentheses. 2dst targets the 2nd enclosing tag.",
+  "description": "{key:2}{key:d}{key:s}{key:)} deletes two enclosing parenthesis levels. {key:2}{key:d}{key:s}{key:t} deletes two enclosing tag levels.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -44,7 +44,7 @@
     },
     {
       "writeFile": "nested.py",
-      "content": "val = ((x + y))\nhtml = <div><p>hi</p></div>"
+      "content": "one = ((x + y) * z)\ntwo = ((x + y) * z)\nhtml1 = <div><span>hi</span></div>\nhtml2 = <div><span>hi</span></div>"
     },
     {
       "line": "clear"
@@ -74,13 +74,13 @@
       "wait": 0.5
     },
     {
-      "say": "A count before D S targets the Nth enclosing pair. Useful for nested structures."
+      "say": "A count before {key:d}{key:s} deletes that many enclosing surrounds, moving outward through nested structures."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Double parens around x plus y. D S paren removes the inner pair.",
+      "say": "Line one: {key:d}{key:s}{key:)} removes one parenthesis level.",
       "wait": false
     },
     {
@@ -94,52 +94,49 @@
       "wait": 0.3
     },
     {
-      "keys": "ds)",
       "overlay": "ds)"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Inner parens gone, outer still there. Undo.",
-      "wait": false
+      "keys": "ds)"
     },
     {
-      "keys": "u",
-      "overlay": "undo"
+      "wait": 0.8
     },
     {
-      "wait": 0.5
-    },
-    {
-      "say": "Now two D S paren to target the outer pair.",
+      "say": "The outer pair remains. Line two: {key:2}{key:d}{key:s}{key:)} removes two parenthesis levels.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "2ds)",
+      "keys": "jfx",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
       "overlay": "2ds)"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Outer parens removed, inner still there."
+      "keys": "2ds)",
+      "overlay": ""
     },
     {
-      "wait": 0.3
+      "wait": 0.8
     },
     {
-      "keys": "u",
-      "overlay": "undo"
+      "say": "Compare the two lines. One level leaves outer parentheses; two levels removes both."
     },
     {
-      "wait": 0.5
-    },
-    {
-      "say": "Tags too. Two D S T on the nested tags.",
+      "say": "Tags work the same way. Line three: {key:d}{key:s}{key:t} removes the inner span tag.",
       "wait": false
     },
     {
@@ -153,14 +150,46 @@
       "wait": 0.3
     },
     {
-      "keys": "2dst",
+      "overlay": "dst"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "keys": "dst",
+      "overlay": ""
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Line four: {key:2}{key:d}{key:s}{key:t} removes the span and the outer div."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "jfh",
+      "overlay": ""
+    },
+    {
+      "wait": 0.3
+    },
+    {
       "overlay": "2dst"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Outer div removed, inner p tag stays. Count lets you reach outward."
+      "keys": "2dst",
+      "overlay": ""
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Counted delete is not outer-only. It deletes one level, then the next level outward."
     },
     {
       "wait": 1.0
@@ -181,5 +210,9 @@
     {
       "line": "rm -f nested.py"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "L-S1mkQsz1M",
+    "url": "https://youtube.com/watch?v=L-S1mkQsz1M"
+  }
 }

@@ -1,6 +1,6 @@
 {
   "title": "VimFu — Surround with Tag",
-  "description": "ysiw<em> wraps the word in an HTML tag pair.",
+  "description": "{key:y}{key:s}{key:i}{key:w}{key:t} opens a tag prompt; type `em>` to wrap the word in an HTML tag pair.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -74,43 +74,39 @@
       "wait": 0.5
     },
     {
-      "say": "Type a tag with angle brackets as the surround character and Y S creates both the opening and closing tag."
+      "say": "{key:y}{key:s} can surround text with an HTML tag. Use {key:t} to open the tag prompt at the bottom."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Cursor on Hello. Y S I W, then type the tag.",
+      "say": "Cursor on Hello. Press {key:y}{key:s}{key:i}{key:w}{key:t}. When the prompt appears, type `em>`.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "ysiwtem>\r",
-      "overlay": "ysiwt em>"
-    },
-    {
-      "wait": 0.3
+      "keys": "ysiwt"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Hello is wrapped in em tags. Opening and closing generated."
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "u",
-      "overlay": "undo"
+      "type": "em>"
     },
     {
       "wait": 0.5
     },
+    "enter",
     {
-      "say": "Wrap the whole line in a P tag. Y S S, then the tag.",
+      "wait": 0.8
+    },
+    {
+      "say": "The tag name was typed at the prompt. Opening and closing em tags were generated."
+    },
+    {
+      "say": "Line two: wrap the whole line. Press {key:y}{key:s}{key:s}{key:t}, then type `p>` at the prompt.",
       "wait": false
     },
     {
@@ -124,17 +120,23 @@
       "wait": 0.3
     },
     {
-      "keys": "ysstp>\r",
-      "overlay": "ysst p>"
-    },
-    {
-      "wait": 0.3
+      "keys": "ysst"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Entire line wrapped in P tags. Y S with a tag. Essential for H T M L."
+      "type": "p>"
+    },
+    {
+      "wait": 0.5
+    },
+    "enter",
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now both examples show the prompt flow: command first, tag name at the bottom, generated tag pair on the line."
     },
     {
       "wait": 1.0
@@ -155,5 +157,9 @@
     {
       "line": "rm -f tag.html"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "7kzZPJtI5bs",
+    "url": "https://youtube.com/watch?v=7kzZPJtI5bs"
+  }
 }

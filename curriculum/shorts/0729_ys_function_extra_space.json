@@ -1,6 +1,6 @@
 {
-  "title": "VimFu — Surround with Function — Extra Space",
-  "description": "ysiwFprint↵ wraps the word in a function call with spaces inside: print( word ).",
+  "title": "VimFu — Change Function Name",
+  "description": "{key:c}{key:s}{key:f} opens a prompt to change the function name around the cursor.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -44,7 +44,7 @@
     },
     {
       "writeFile": "funcsp.py",
-      "content": "result = value\noutput = name"
+      "content": "result = print(value)\noutput = len(name)"
     },
     {
       "line": "clear"
@@ -67,20 +67,20 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "Function — Extra Space",
+      "caption": "Change Function Name",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Capital F wraps in a function call with spaces inside the parentheses. The padded version of lowercase F."
+      "say": "In nvim-surround, lowercase {key:f} is the function-call surround. There is no capital {key:F} padded function form."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Lowercase F first. Y S I W F, print, enter.",
+      "say": "To change an existing function call, put the cursor inside it and press {key:c}{key:s}{key:f}.",
       "wait": false
     },
     {
@@ -94,49 +94,56 @@
       "wait": 0.3
     },
     {
-      "type": "ysiwfprint",
-      "overlay": "ysiwfprint↵"
+      "keys": "csf"
     },
     {
-      "wait": 0.3
+      "wait": 0.8
+    },
+    {
+      "type": "debug"
+    },
+    {
+      "wait": 0.5
     },
     "enter",
     {
       "wait": 0.8
     },
     {
-      "say": "Tight. Print paren value paren."
+      "say": "The prompt changed `print` to `debug`, while keeping the argument."
     },
     {
-      "wait": 0.3
-    },
-    {
-      "keys": "u",
-      "overlay": "undo"
-    },
-    {
-      "wait": 0.5
-    },
-    {
-      "say": "Capital F. Y S I W capital F, print, enter.",
+      "say": "Line two: change `len` to `str` the same way.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "type": "ysiwFprint",
-      "overlay": "ysiwFprint↵"
+      "keys": "jfn",
+      "overlay": ""
     },
     {
       "wait": 0.3
+    },
+    {
+      "keys": "csf"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "type": "str"
+    },
+    {
+      "wait": 0.5
     },
     "enter",
     {
       "wait": 0.8
     },
     {
-      "say": "Padded. Print, space, value, space. Capital F adds spaces inside the call."
+      "say": "{key:c}{key:s}{key:f} changes the function name through the bottom prompt. The arguments stay in place."
     },
     {
       "wait": 1.0
@@ -157,5 +164,9 @@
     {
       "line": "rm -f funcsp.py"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "B2Nf0X0nP6c",
+    "url": "https://youtube.com/watch?v=B2Nf0X0nP6c"
+  }
 }

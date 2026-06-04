@@ -1,6 +1,6 @@
 {
   "title": "VimFu — Delete C-Style Comments",
-  "description": "ds/ removes /* ... */ comment delimiters around the cursor.",
+  "description": "With a custom surround, {key:d}{key:s}{key:/} removes `/* ... */` comment delimiters around the cursor.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -53,7 +53,7 @@
       "comment": "Launch nvim"
     },
     {
-      "line": "nvim code.c"
+      "line": "nvim -c 'lua require(\"nvim-surround\").setup({ surrounds = { [\"/\"] = { find = \"/%*.-%*/\", delete = \"^(/%*%s*)().-(%s*%*/)()$\" } } })' code.c"
     },
     {
       "waitForScreen": "All",
@@ -74,13 +74,13 @@
       "wait": 0.5
     },
     {
-      "say": "D S slash removes C style comment delimiters. It strips the slash star and star slash wrapper."
+      "say": "With a custom surround, {key:d}{key:s}{key:/} removes C style comment delimiters. It strips the slash star and star slash wrapper."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Cursor inside the comment. D S slash.",
+      "say": "Cursor inside the comment. {key:d}{key:s}{key:/}.",
       "wait": false
     },
     {
@@ -94,27 +94,22 @@
       "wait": 0.3
     },
     {
-      "keys": "ds/",
       "overlay": "ds/"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Comment delimiters removed. The text inside stays."
+      "keys": "ds/"
     },
     {
-      "wait": 0.3
+      "wait": 0.8
     },
     {
-      "keys": "u",
-      "overlay": "undo"
+      "say": "Comment delimiters removed. The text inside stays clean. Leave that result on line one."
     },
     {
-      "wait": 0.5
-    },
-    {
-      "say": "Line two. Same operation. D S slash.",
+      "say": "Line two. Same operation: {key:d}{key:s}{key:/}.",
       "wait": false
     },
     {
@@ -128,14 +123,19 @@
       "wait": 0.3
     },
     {
-      "keys": "ds/",
       "overlay": "ds/"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "D S slash. Quick way to uncomment C style blocks."
+      "keys": "ds/"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "{key:d}{key:s}{key:/}. Quick way to uncomment C style blocks after you define the comment surround."
     },
     {
       "wait": 1.0
@@ -156,5 +156,9 @@
     {
       "line": "rm -f code.c"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "pZumit6crq0",
+    "url": "https://youtube.com/watch?v=pZumit6crq0"
+  }
 }

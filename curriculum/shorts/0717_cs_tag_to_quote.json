@@ -1,6 +1,6 @@
 {
-  "title": "VimFu — Change Tag to Quote",
-  "description": "cst\" changes an HTML tag pair to quotes.",
+  "title": "VimFu — Tag to Quote in Two Steps",
+  "description": "In nvim-surround, {key:c}{key:s}{key:t} opens the tag prompt. To turn a tag into quotes, delete the tag with {key:d}{key:s}{key:t}, then add quotes.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -67,20 +67,20 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "Change Tag to Quote",
+      "caption": "Tag to Quote in Two Steps",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "C S T followed by a quote character replaces the tag pair with quotes."
+      "say": "In nvim-surround, {key:c}{key:s}{key:t} opens the tag prompt. It does not change tags to quotes."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Cursor inside the em tag. C S T, double quote.",
+      "say": "Use two steps instead. First delete the em tag with {key:d}{key:s}{key:t}.",
       "wait": false
     },
     {
@@ -94,48 +94,73 @@
       "wait": 0.3
     },
     {
-      "keys": "cst\"",
-      "overlay": "cst\""
+      "overlay": "dst"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Em tags became double quotes."
+      "keys": "dst"
     },
     {
-      "wait": 0.3
+      "wait": 0.8
     },
     {
-      "keys": "u",
-      "overlay": "undo"
+      "say": "Now add double quotes around the word with {key:y}{key:s}{key:i}{key:w}{key:\"}.",
+      "wait": false
     },
     {
-      "wait": 0.5
+      "overlay": "ysiw\""
     },
     {
-      "say": "Line two. C S T, single quote.",
+      "wait": 0.8
+    },
+    {
+      "keys": "ysiw\""
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Line one is quoted. Line two: delete the strong tag, then add single quotes.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "jfw",
+      "keys": "j0fw",
       "overlay": ""
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "cst'",
-      "overlay": "cst'"
+      "overlay": "dst"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Strong tags became single quotes. C S T swaps tags for anything."
+      "keys": "dst"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "overlay": "ysiw'"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "keys": "ysiw'"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "No tag prompt, no stray prompt text. Delete the tag, then surround the remaining text with quotes."
     },
     {
       "wait": 1.0
@@ -156,5 +181,9 @@
     {
       "line": "rm -f detag.html"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "oWD_0mfi6tM",
+    "url": "https://youtube.com/watch?v=oWD_0mfi6tM"
+  }
 }

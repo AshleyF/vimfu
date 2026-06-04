@@ -1,6 +1,6 @@
 {
   "title": "VimFu — Change Tag to Tag",
-  "description": "cst<div> changes the nearest tag to a different tag.",
+  "description": "{key:c}{key:s}{key:t} opens a prompt for changing the nearest tag pair to a new tag.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -74,13 +74,13 @@
       "wait": 0.5
     },
     {
-      "say": "C S T changes the nearest tag to a new tag. T as the target means find the enclosing tag."
+      "say": "{key:c}{key:s}{key:t} changes the nearest tag to a new tag. After {key:t}, type the replacement tag at the bottom prompt."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Cursor inside the P tag. C S T, then type the new tag.",
+      "say": "Cursor inside the paragraph tag. Press {key:c}{key:s}{key:t}; when the prompt appears, type `div>`.",
       "wait": false
     },
     {
@@ -94,31 +94,26 @@
       "wait": 0.3
     },
     {
-      "type": "cst<div>",
-      "overlay": "cst<div>"
+      "keys": "cst"
     },
     {
-      "wait": 0.3
+      "wait": 0.8
+    },
+    {
+      "type": "div>"
+    },
+    {
+      "wait": 0.5
     },
     "enter",
     {
       "wait": 0.8
     },
     {
-      "say": "P tag became div tag. Both opening and closing updated."
+      "say": "The prompt text changed both the opening and closing tags."
     },
     {
-      "wait": 0.3
-    },
-    {
-      "keys": "u",
-      "overlay": "undo"
-    },
-    {
-      "wait": 0.5
-    },
-    {
-      "say": "Line two. Change span to strong.",
+      "say": "Line two: use the same prompt to change span to strong.",
       "wait": false
     },
     {
@@ -132,18 +127,23 @@
       "wait": 0.3
     },
     {
-      "type": "cst<strong>",
-      "overlay": "cst<strong>"
+      "keys": "cst"
     },
     {
-      "wait": 0.3
+      "wait": 0.8
+    },
+    {
+      "type": "strong>"
+    },
+    {
+      "wait": 0.5
     },
     "enter",
     {
       "wait": 0.8
     },
     {
-      "say": "Span became strong. C S T. Tag to tag in one move."
+      "say": "Both lines changed tags. {key:c}{key:s}{key:t} starts the change; the new tag name is typed at the bottom."
     },
     {
       "wait": 1.0
@@ -164,5 +164,9 @@
     {
       "line": "rm -f swap.html"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "djCDS6VW4Ic",
+    "url": "https://youtube.com/watch?v=djCDS6VW4Ic"
+  }
 }

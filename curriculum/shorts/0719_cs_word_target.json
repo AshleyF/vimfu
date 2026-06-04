@@ -1,6 +1,6 @@
 {
-  "title": "VimFu — Change with Word Target",
-  "description": "cswb and csWB use word motions as shortcut targets for surrounding the current word.",
+  "title": "VimFu — Change with Target Aliases",
+  "description": "{key:c}{key:s} can use surround aliases as targets, like {key:q} for quotes and {key:r} for square brackets.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -44,7 +44,7 @@
     },
     {
       "writeFile": "word.py",
-      "content": "name = hello\npath = /home/user"
+      "content": "name = \"hello\"\nitems = [alpha beta]"
     },
     {
       "line": "clear"
@@ -67,20 +67,20 @@
   "steps": [
     {
       "overlay": "VimFu",
-      "caption": "Change with Word Target",
+      "caption": "Change with Target Aliases",
       "duration": 2.0
     },
     {
       "wait": 0.5
     },
     {
-      "say": "The letters W and capital W can be used as shortcut targets with C S. C S W B wraps the word in parens. Think of it as change surround word to bracket."
+      "say": "{key:c}{key:s} can use aliases as the target. {key:q} means the nearest quote pair. {key:r} means square brackets."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Cursor on hello. C S W B.",
+      "say": "Cursor inside quoted hello. {key:c}{key:s}{key:q}{key:)} changes the nearest quotes to parentheses.",
       "wait": false
     },
     {
@@ -94,48 +94,45 @@
       "wait": 0.3
     },
     {
-      "keys": "cswb",
-      "overlay": "cswb"
+      "overlay": "csq)"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Hello is now wrapped in parentheses."
+      "keys": "csq)"
     },
     {
-      "wait": 0.3
+      "wait": 0.8
     },
     {
-      "keys": "u",
-      "overlay": "undo"
-    },
-    {
-      "wait": 0.5
-    },
-    {
-      "say": "Capital W targets a big word. C S capital W capital B on the path.",
+      "say": "The quotes changed to parentheses. Line two uses {key:r}, the bracket alias.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "jf/",
+      "keys": "jf[ll",
       "overlay": ""
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "csWB",
-      "overlay": "csWB"
+      "overlay": "csr}"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "The whole path including slashes is wrapped in braces. Capital W grabs the WORD."
+      "keys": "csr}"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "{key:c}{key:s}{key:r}{key:}} changes square brackets to braces. Aliases save you from remembering every paired delimiter key."
     },
     {
       "wait": 1.0
@@ -156,5 +153,9 @@
     {
       "line": "rm -f word.py"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "w6TMqrOjw5w",
+    "url": "https://youtube.com/watch?v=w6TMqrOjw5w"
+  }
 }

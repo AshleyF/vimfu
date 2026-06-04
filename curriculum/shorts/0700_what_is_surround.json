@@ -1,6 +1,6 @@
 {
   "title": "VimFu — What Is Surround?",
-  "description": "Surround.vim lets you add, change, and delete surroundings — parentheses, brackets, quotes, and tags.",
+  "description": "The surround plugin lets you add, change, and delete surroundings -- parentheses, brackets, quotes, and tags.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -44,7 +44,7 @@
     },
     {
       "writeFile": "surround.py",
-      "content": "msg = \"hello world\"\ndata = [1, 2, 3]\ntag = <div>content</div>"
+      "content": "title = \"hello\"\ncoords = (10, 20)\nflag = enabled\nlabel = important"
     },
     {
       "line": "clear"
@@ -74,26 +74,26 @@
       "wait": 0.5
     },
     {
-      "say": "Surround dot vim is a plugin that lets you add, change, and delete surrounding characters. Parentheses, brackets, quotes, H T M L tags, anything that wraps text."
+      "say": "Surround lets you add, change, and delete wrappers: quotes, parentheses, brackets, and HTML tags."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "It gives you three families of commands. D S deletes surroundings. C S changes them. Y S adds new ones."
+      "say": "We'll use each family once, and keep the edits on screen."
     },
     {
       "wait": 0.3
     },
     {
-      "say": "Think of it this way. D S, delete surround. C S, change surround. Y S, you surround.",
+      "say": "Think of it this way: {key:d}{key:s} deletes a surround. {key:c}{key:s} changes one. {key:y}{key:s} adds one.",
       "wait": false
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Let's see a quick taste. This string has double quotes.",
+      "say": "Start with double quotes around hello. Delete them with {key:d}{key:s}{key:\"}.",
       "wait": false
     },
     {
@@ -107,7 +107,7 @@
       "wait": 0.5
     },
     {
-      "say": "D S quote. Delete the surrounding quotes.",
+      "say": "{key:d}{key:s}{key:\"} deletes the surrounding quotes.",
       "wait": false
     },
     {
@@ -121,64 +121,81 @@
       "wait": 0.8
     },
     {
-      "say": "Quotes gone. Undo.",
+      "say": "Quotes gone. Now put back single quotes with {key:y}{key:s}{key:i}{key:w}{key:'}.",
       "wait": false
     },
     {
-      "keys": "u",
-      "overlay": "undo"
-    },
-    {
-      "wait": 0.5
-    },
-    {
-      "say": "C S quote, single quote. Change double quotes to single.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "cs\"'",
-      "overlay": "cs\"'"
+      "keys": "ysiw'",
+      "overlay": "ysiw'"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Swapped. Undo.",
-      "wait": false
-    },
-    {
-      "keys": "u",
-      "overlay": "undo"
-    },
-    {
-      "wait": 0.5
-    },
-    {
-      "say": "Now line two. Y S I W bracket. Surround the first number in brackets.",
+      "say": "Line two: change parentheses to brackets with {key:c}{key:s}{key:)}{key:]}.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "j0w",
-      "overlay": ""
+      "keys": "jf(",
+      "overlay": "coords"
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "ysiw]",
-      "overlay": "ysiw]"
+      "keys": "cs)]",
+      "overlay": "cs)]"
     },
     {
       "wait": 0.8
     },
     {
-      "say": "Wrapped. Surround handles it all. Over the next lessons, we'll master every operation."
+      "say": "Line three: add parentheses around enabled.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0ww",
+      "overlay": "enabled"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ysiw)",
+      "overlay": "ysiw)"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Line four: add an em tag around important.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "j0ww",
+      "overlay": "important"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "ysiwtem>\r",
+      "overlay": "ysiwt em>"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Delete, change, add, and tags. That's the shape of surround."
     },
     {
       "wait": 1.0
@@ -199,5 +216,9 @@
     {
       "line": "rm -f surround.py"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "vOikNlXurD4",
+    "url": "https://youtube.com/watch?v=vOikNlXurD4"
+  }
 }

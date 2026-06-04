@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 Useless Underscore Remap",
+  "title": "VimFu — Useless Underscore Remap",
   "description": "The _ key is redundant with ^. Remap it to something useful like inserting a space.",
   "speed": 0.55,
   "rows": 20,
@@ -36,7 +36,7 @@
     },
     {
       "writeFile": "demo.py",
-      "content": "  hello world\n  foo bar\n  test line"
+      "content": "name   Alice\nrole Dev\ncity  Paris"
     },
     {
       "line": "clear"
@@ -69,30 +69,34 @@
       "wait": 0.3
     },
     {
-      "say": "Remap it to insert a space. Great for quick alignment.",
+      "say": "Remap it to insert a space before the cursor. Handy when text needs a little manual alignment.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "type": ":map _ i \\<Esc>",
-      "overlay": ":map _ i <Esc>"
-    },
-    "enter",
-    {
-      "wait": 0.3
+      "ex": ":nnoremap _ i <Esc>",
+      "overlay": ":nnoremap _ i <Esc>",
+      "beforeEnter": 1.2
     },
     {
-      "say": "Now underscore inserts a space and stays in normal mode.",
+      "wait": 0.5
+    },
+    {
+      "say": "Now underscore inserts one space before the cursor and stays in normal mode.",
       "wait": false
     },
     {
       "wait": 0.3
     },
     {
-      "keys": "w",
-      "overlay": "next word"
+      "keys": "j0w",
+      "overlay": "role"
+    },
+    {
+      "keys": "_",
+      "overlay": "insert space"
     },
     {
       "keys": "_",
@@ -102,7 +106,18 @@
       "wait": 0.3
     },
     {
-      "say": "One keystroke, one space. No mode switching. Put this in your config. Underscore is free real estate."
+      "keys": "j0w",
+      "overlay": "city"
+    },
+    {
+      "keys": "_",
+      "overlay": "insert space"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "A couple of taps lines the values up. One key, one space, no mode switching. Underscore is free real estate."
     },
     {
       "wait": 1.5
@@ -117,5 +132,9 @@
     {
       "line": "rm -f demo.py"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "Qh7SBKDKm5o",
+    "url": "https://youtube.com/watch?v=Qh7SBKDKm5o"
+  }
 }

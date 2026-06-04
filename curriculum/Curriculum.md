@@ -1045,11 +1045,11 @@ _**Installing in Neovim:** Neovim ships with [lazy.nvim](https://github.com/folk
 | 712 | Change Brackets to Parens | `cs])` | Change square brackets to parentheses. Using a closing mark as replacement gives no extra space. |
 | 713 | Change — Add Inner Space | `cs){` or `cs)[` | Using an opening mark as the *replacement* (`{`, `[`, `(`) adds a space inside: `{ text }`. |
 | 714 | Change — Trim Inner Space | `cs({` | Using an opening mark as the *target* trims existing inner whitespace before applying the new surround. `cs(}` on `( hello )` → `{hello}`. |
-| 715 | Change to HTML Tag | `cs"<em>` | Change quotes to an HTML tag pair. Vim prompts for the tag name — you can include attributes. |
-| 716 | Change Tag to Tag | `cst<div>` | Change the nearest HTML/XML tag to a different tag. Attributes on the old tag are preserved unless you end your input with `>`. |
-| 717 | Change Tag to Quote | `cst"` | Change an HTML tag pair to double quotes. `t` targets the innermost tag. |
+| 715 | Change to HTML Tag | `cs"t` then `em>` | Change quotes to an HTML tag pair. nvim-surround prompts for the tag name at the bottom. |
+| 716 | Change Tag to Tag | `cst` then `div>` | Change the nearest HTML/XML tag to a different tag by typing the replacement at the prompt. |
+| 717 | Tag to Quote in Two Steps | `dst` then `ysiw"` | nvim-surround does not change tags directly to quotes; delete the tag pair, then add quotes. |
 | 718 | Change on Separate Lines | `cS"(` | Like `cs`, but places the surrounded text on its own indented line. |
-| 719 | Change with Word Target | `cswb` `csWB` | The `w`, `W`, and `s` targets act as shortcuts. `cswb` is roughly equivalent to `ysiwb` — it treats the word as the "old surround" and wraps it. |
+| 719 | Change with Target Aliases | `csq)` `csr}` | Change using surround aliases as targets: `q` for quotes, `r` for square brackets. |
 
 ### Adding Surroundings (`ys`)
 
@@ -1060,11 +1060,11 @@ _**Installing in Neovim:** Neovim ships with [lazy.nvim](https://github.com/folk
 | 722 | Surround a WORD | `ysaW}` | Wrap a WORD (whitespace-delimited) in braces. Any text object works: `ysas)` for a sentence, `ysap}` for a paragraph. |
 | 723 | Surround with Motion | `ys$"` `ysf."` `yst,)` | Any Vim motion works as the first argument. `ys$"` wraps to end of line in quotes, `ysf."` wraps up to the next period. |
 | 724 | Surround the Whole Line | `yss)` or `yssb` | Wrap the entire current line in parentheses, ignoring leading whitespace. `yss` is a special double-key shortcut like `dd` or `yy`. |
-| 725 | Surround with Tag | `ysiw<em>` | Wrap a word in an HTML/XML tag. Vim prompts for the tag — you can include attributes like `<div class="x">`. |
+| 725 | Surround with Tag | `ysiwt` then `em>` | Wrap a word in an HTML/XML tag. nvim-surround prompts for the tag at the bottom. |
 | 726 | Surround with Tag on Separate Lines | `ysiw<C-T>` | Like surrounding with a tag, but `<C-T>` places the opening and closing tags on their own lines with the content indented. |
 | 727 | Surround with Self-Closing Tag | `ysiw<br/>` | End the tag with `/` to produce a self-closing tag like `<br />` with no closing pair. |
 | 728 | Surround with Function Call | `ysiwfprint↵` | Wrap a word in a function call: `print(word)`. `f` prompts for the function name and wraps in `name(...)`. |
-| 729 | Surround with Function — Extra Space | `ysiwFprint↵` | Like `f`, but `F` adds spaces inside the parentheses: `print( word )`. |
+| 729 | Change Function Name | `csf` then `debug` | Change an existing function-call surround name through the bottom prompt while keeping the arguments. |
 | 730 | Surround — Function Inside Parens | `ysiw<C-f>print↵` | Inverted function style: `(print word)`. The function name goes inside the parentheses. Useful for Lisp-like syntax. |
 | 731 | Surround with Arbitrary Character | `ysiw/` `ysiw\|` | Any undefined, non-alphabetic character wraps symmetrically. `ysiw/` → `/word/`, `ysiw\|` → `\|word\|`. Great for Markdown emphasis, Ruby symbols, etc. |
 | 732 | Surround with Code Block | `ysiw<C-]>` | Wraps in braces on separate lines — `{` and `}` each on their own line with the content indented. Perfect for C-style code blocks. (`<C-]>` is really `<C-}>`.) |
@@ -1436,8 +1436,8 @@ mini-series of lessons. Consider adding these as a **Part 20** or bonus section.
 | Surround visual selection | `viwS"` | Visual select a word, then `S"` to wrap in quotes. |
 | Change surround | `cs'"` | Change surrounding `'` to `"`. |
 | Delete surround | `ds"` | Delete surrounding `"`. |
-| Surround with tag | `ysiw<em>` | Surround word with `<em>...</em>`. |
-| Change tag | `cst<div>` | Change surrounding tag to `<div>`. |
+| Surround with tag | `ysiwt` then `em>` | Surround word with `<em>...</em>` using the tag prompt. |
+| Change tag | `cst` then `div>` | Change surrounding tag to `<div>` using the tag prompt. |
 | Surround line | `yss"` | Surround the entire line with `"`. |
 | Surround with parens | `ysiw)` or `ysiw(` | `)` = no spaces, `(` = with spaces inside. |
 
