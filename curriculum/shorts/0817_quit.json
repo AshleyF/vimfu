@@ -21,41 +21,107 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f readme.txt .readme.txt.swp .readme.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f readme.txt .readme.txt.swp .readme.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "readme.txt",
       "content": "README\n\nThis is a sample project.\nVersion 1.0\nLicense: MIT"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim readme.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim readme.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":q — Quit", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon Q quits Vim. But only if there are no unsaved changes." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: quit with no changes ---" },
-    { "say": "We haven't changed anything. Colon Q should work.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":q" },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":q — Quit",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon Q quits Vim. But only if there are no unsaved changes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: quit with no changes ---"
+    },
+    {
+      "say": "We haven't changed anything. Colon Q should work.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Clean exit. Back at the shell. If you had unsaved changes, colon Q would refuse. You would need colon W Q to save first, or colon Q exclamation mark to discard." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Clean exit. Back at the shell. If you had unsaved changes, colon Q would refuse. You would need colon W Q to save first, or colon Q exclamation mark to discard."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Vim already exited via :q" },
-    { "line": "rm -f readme.txt" }
-  ]
+    {
+      "comment": "Vim already exited via :q"
+    },
+    {
+      "line": "rm -f readme.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "XIlnplgg7Hk",
+    "url": "https://youtube.com/watch?v=XIlnplgg7Hk"
+  }
 }

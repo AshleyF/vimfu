@@ -21,63 +21,174 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f rows.txt .rows.txt.swp .rows.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f rows.txt .rows.txt.swp .rows.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "rows.txt",
       "content": "line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' rows.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' rows.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Offsets in Ranges", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "You can add plus or minus N to any address. Dot plus two means the current line plus two." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: offset from current line ---" },
-    { "say": "Move to line three.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":3" },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Offsets in Ranges",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "You can add plus or minus N to any address. Dot plus two means the current line plus two."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: offset from current line ---"
+    },
+    {
+      "say": "Move to line three.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":3"
+    },
+    {
+      "wait": 1.0
+    },
     "enter",
-    { "wait": 0.3 },
-    { "say": "Colon dot comma dot plus four d. Delete from here to four lines down.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":.,.+4d" },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Colon dot comma dot plus four d. Delete from here to four lines down.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":.,.+4d"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Five lines deleted. Lines three through seven." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Demo 2: jump with offset ---" },
-    { "say": "You can also use an offset alone. Colon dot plus two. Jump two lines down from the cursor.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":.+2" },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Five lines deleted. Lines three through seven."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: jump with offset ---"
+    },
+    {
+      "say": "You can also use an offset alone. Colon dot plus two. Jump two lines down from the cursor.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":.+2"
+    },
+    {
+      "wait": 1.0
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Jumped from line three to line five. The offset moved us forward." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Plus N or minus N after any address. Offsets let you define ranges relative to a position." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Jumped from line three to line five. The offset moved us forward."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Plus N or minus N after any address. Offsets let you define ranges relative to a position."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f rows.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f rows.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "aPKB8wBeVHQ",
+    "url": "https://youtube.com/watch?v=aPKB8wBeVHQ"
+  }
 }

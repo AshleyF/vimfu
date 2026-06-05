@@ -21,58 +21,161 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f scratch.txt .scratch.txt.swp .scratch.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f scratch.txt .scratch.txt.swp .scratch.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "scratch.txt",
       "content": "Scratch pad\n\nTemporary notes here\nDelete when done\nNothing important"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim scratch.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim scratch.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":q! — Force Quit", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon Q exclamation mark force quits. It throws away all unsaved changes." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: make changes ---" },
-    { "say": "Make some changes first.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "G", "overlay": "go to end" },
-    { "wait": 0.3 },
-    { "keys": "o", "overlay": "open line below" },
-    { "type": "IMPORTANT DATA" },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":q! — Force Quit",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon Q exclamation mark force quits. It throws away all unsaved changes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: make changes ---"
+    },
+    {
+      "say": "Make some changes first.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "go to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o",
+      "overlay": "open line below"
+    },
+    {
+      "type": "IMPORTANT DATA"
+    },
     "escape",
-    { "wait": 0.5 },
-    { "comment": "--- Demo: :q fails ---" },
-    { "say": "Try colon Q without the bang.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":q" },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo: :q fails ---"
+    },
+    {
+      "say": "Try colon Q without the bang.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Refused. Vim says no write since last change. It protects you from losing work." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: :q! works ---" },
-    { "say": "Add the exclamation mark. Colon Q bang.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":q!" },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Refused. Vim says no write since last change. It protects you from losing work."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: :q! works ---"
+    },
+    {
+      "say": "Add the exclamation mark. Colon Q bang.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Gone. All changes discarded. The file on disk is unchanged. Use with caution." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Gone. All changes discarded. The file on disk is unchanged. Use with caution."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Vim already exited via :q!" },
-    { "line": "rm -f scratch.txt" }
-  ]
+    {
+      "comment": "Vim already exited via :q!"
+    },
+    {
+      "line": "rm -f scratch.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "oG9_UREpOdU",
+    "url": "https://youtube.com/watch?v=oG9_UREpOdU"
+  }
 }

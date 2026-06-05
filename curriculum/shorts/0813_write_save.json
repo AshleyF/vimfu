@@ -21,56 +21,149 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f memo.txt .memo.txt.swp .memo.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f memo.txt .memo.txt.swp .memo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "memo.txt",
       "content": "Project Notes\n\nDeadline: Friday\nStatus: In Progress\nPriority: High"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim memo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim memo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":w — Write (Save)", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon W saves the file to disk. W stands for write." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: make a change and save ---" },
-    { "say": "Make a change first. Go to the end and add a line.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "G", "overlay": "go to end" },
-    { "wait": 0.3 },
-    { "keys": "o", "overlay": "open line below" },
-    { "type": "Owner: Team Alpha" },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":w — Write (Save)",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon W saves the file to disk. W stands for write."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: make a change and save ---"
+    },
+    {
+      "say": "Make a change first. Go to the end and add a line.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "go to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o",
+      "overlay": "open line below"
+    },
+    {
+      "type": "Owner: Team Alpha"
+    },
     "escape",
-    { "wait": 0.5 },
-    { "say": "Now save with colon W.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":w" },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Now save with colon W.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":w"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Written. The status bar confirms the file was saved. Your changes are on disk." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon W. Write the file. You stay in the editor and can keep working." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Written. The status bar confirms the file was saved. Your changes are on disk."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon W. Write the file. You stay in the editor and can keep working."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f memo.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f memo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "mDPbJeZQR3E",
+    "url": "https://youtube.com/watch?v=mDPbJeZQR3E"
+  }
 }

@@ -21,58 +21,155 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f story.txt backup.txt .story.txt.swp .story.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f story.txt backup.txt .story.txt.swp .story.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "story.txt",
       "content": "Once upon a time,\nthere was a programmer\nwho loved Vim.\nThe end."
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim story.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim story.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":w {file} — Write to a File", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon W followed by a filename saves the buffer to that file. Like Save As, but you keep editing the original." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: save to backup ---" },
-    { "say": "Save a copy to backup dot T X T.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":w backup.txt" },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":w {file} — Write to a File",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon W followed by a filename saves the buffer to that file. Like Save As, but you keep editing the original."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: save to backup ---"
+    },
+    {
+      "say": "Save a copy to backup dot T X T.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":w backup.txt"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "A copy was written to backup dot T X T. The original file is still open." },
-    { "wait": 0.3 },
-    { "comment": "--- Verify ---" },
-    { "say": "Check with a shell command.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":!cat backup.txt" },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A copy was written to backup dot T X T. The original file is still open."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Verify ---"
+    },
+    {
+      "say": "Check with a shell command.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":!cat backup.txt"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Same content. Two files now. Press Enter to return.", "wait": false },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Same content. Two files now. Press Enter to return.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon W with a filename. Quick way to make a backup or export to a new file." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon W with a filename. Quick way to make a backup or export to a new file."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f story.txt backup.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f story.txt backup.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "KjkHT3ivIeg",
+    "url": "https://youtube.com/watch?v=KjkHT3ivIeg"
+  }
 }
