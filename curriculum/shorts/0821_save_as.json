@@ -21,53 +21,136 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f report.txt report_v2.txt .report.txt.swp .report.txt.swo .report_v2.txt.swp .report_v2.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f report.txt report_v2.txt .report.txt.swp .report.txt.swo .report_v2.txt.swp .report_v2.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "report.txt",
       "content": "Status Report\n\nDate: March 2026\nTeam: Alpha\nProgress: On track"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim report.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim report.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":sav {file} — Save As", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon sav saves to a new filename and switches to it. Like Save As in other editors." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo ---" },
-    { "say": "We are editing report dot T X T. Save as report V two dot T X T.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":sav report_v2.txt" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":sav {file} — Save As",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon sav saves to a new filename and switches to it. Like Save As in other editors."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo ---"
+    },
+    {
+      "say": "We are editing report dot T X T. Save as report V two dot T X T.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":sav report_v2.txt"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Look at the status bar. We are now editing report V two. The original report dot T X T still exists on disk." },
-    { "wait": 0.3 },
-    { "comment": "--- Explain difference from :w ---" },
-    { "say": "Unlike colon W with a filename, colon sav switches you to the new file. Colon W keeps you on the original." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon sav. Save as a new name and continue editing that new file." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Look at the status bar. We are now editing report V two. The original report dot T X T still exists on disk."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Explain difference from :w ---"
+    },
+    {
+      "say": "Unlike colon W with a filename, colon sav switches you to the new file. Colon W keeps you on the original."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon sav. Save as a new name and continue editing that new file."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f report.txt report_v2.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f report.txt report_v2.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "OCWcg7AldgQ",
+    "url": "https://youtube.com/watch?v=OCWcg7AldgQ"
+  }
 }

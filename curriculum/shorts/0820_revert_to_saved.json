@@ -21,61 +21,164 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f todo.txt .todo.txt.swp .todo.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f todo.txt .todo.txt.swp .todo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "todo.txt",
       "content": "TODO List\n\n- Learn Vim basics\n- Practice motions\n- Master Ex commands\n- Build muscle memory"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim todo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim todo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":e! — Revert to Saved", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon E exclamation mark reloads the file from disk. All your changes are thrown away." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: mess up the file ---" },
-    { "say": "Let's mess up the file. Delete a few lines.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "dd", "overlay": "delete line" },
-    { "wait": 0.3 },
-    { "keys": "dd", "overlay": "delete line" },
-    { "wait": 0.3 },
-    { "keys": "dd", "overlay": "delete line" },
-    { "wait": 0.5 },
-    { "say": "Three lines gone. The file looks wrong." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: revert ---" },
-    { "say": "Colon E bang. Revert to the saved version.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":e!" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":e! — Revert to Saved",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon E exclamation mark reloads the file from disk. All your changes are thrown away."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: mess up the file ---"
+    },
+    {
+      "say": "Let's mess up the file. Delete a few lines.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "dd",
+      "overlay": "delete line"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Three lines gone. The file looks wrong."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: revert ---"
+    },
+    {
+      "say": "Colon E bang. Revert to the saved version.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":e!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Everything is back. The file was reloaded from disk. All changes discarded." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon E bang. The nuclear undo. Reverts the entire file to what's on disk." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Everything is back. The file was reloaded from disk. All changes discarded."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon E bang. The nuclear undo. Reverts the entire file to what's on disk."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f todo.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f todo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "pgNgam1ylQI",
+    "url": "https://youtube.com/watch?v=pgNgam1ylQI"
+  }
 }

@@ -21,13 +21,27 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f letter.txt sig.txt .letter.txt.swp .letter.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo files" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f letter.txt sig.txt .letter.txt.swp .letter.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
     {
       "writeFile": "letter.txt",
       "content": "Dear Team,\n\nGreat work this week.\nKeep it up!\n\nBest regards,"
@@ -36,41 +50,109 @@
       "writeFile": "sig.txt",
       "content": "-- \nJane Smith\nSenior Developer\njane@example.com"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim letter.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim letter.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":r {file} — Read a File", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon R reads another file and inserts its contents below the cursor." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: read signature file ---" },
-    { "say": "We have a letter. Go to the last line and insert a signature file.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "G", "overlay": "go to end" },
-    { "wait": 0.3 },
-    { "type": ":r sig.txt" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":r {file} — Read a File",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon R reads another file and inserts its contents below the cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: read signature file ---"
+    },
+    {
+      "say": "We have a letter. Go to the last line and insert a signature file.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "go to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":r sig.txt"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "The signature was inserted below the cursor. The contents of sig dot T X T are now part of the letter." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon R plus a filename. Pull in content from any file. Great for templates and snippets." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "The signature was inserted below the cursor. The contents of sig dot T X T are now part of the letter."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon R plus a filename. Pull in content from any file. Great for templates and snippets."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f letter.txt sig.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f letter.txt sig.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "QEw8_aZQ2eI",
+    "url": "https://youtube.com/watch?v=QEw8_aZQ2eI"
+  }
 }
