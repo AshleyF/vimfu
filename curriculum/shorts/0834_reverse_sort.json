@@ -21,63 +21,167 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f cities.txt .cities.txt.swp .cities.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f cities.txt .cities.txt.swp .cities.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "cities.txt",
       "content": "Paris\nTokyo\nBerlin\nSydney\nCairo\nLondon\nRome\nNew York"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' cities.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' cities.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]sort! — Reverse Sort", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon sort with a bang reverses the order. Z to A instead of A to Z." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: normal sort ---" },
-    { "say": "First, a normal sort. Colon percent sort.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%sort" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]sort! — Reverse Sort",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon sort with a bang reverses the order. Z to A instead of A to Z."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: normal sort ---"
+    },
+    {
+      "say": "First, a normal sort. Colon percent sort.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%sort"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "A to Z. Berlin first, Tokyo last." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Demo 2: reverse sort ---" },
-    { "say": "Now reverse. Colon percent sort bang.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%sort!" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "A to Z. Berlin first, Tokyo last."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: reverse sort ---"
+    },
+    {
+      "say": "Now reverse. Colon percent sort bang.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%sort!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Z to A. Tokyo first, Berlin last. The bang flipped the order." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon sort for ascending. Colon sort bang for descending. Simple." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Z to A. Tokyo first, Berlin last. The bang flipped the order."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon sort for ascending. Colon sort bang for descending. Simple."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f cities.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f cities.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "O2w8lSxO1o4",
+    "url": "https://youtube.com/watch?v=O2w8lSxO1o4"
+  }
 }

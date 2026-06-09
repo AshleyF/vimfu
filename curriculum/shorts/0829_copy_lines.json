@@ -21,63 +21,167 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f plan.txt .plan.txt.swp .plan.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f plan.txt .plan.txt.swp .plan.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "plan.txt",
       "content": "line 1 — Monday\nline 2 — Tuesday\nline 3 — Wednesday\nline 4 — Thursday\nline 5 — Friday\nline 6 — Saturday\nline 7 — Sunday"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' plan.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' plan.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]co — Copy Lines", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon C O copies lines to after a target address. Unlike move, the originals stay in place." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: copy single line ---" },
-    { "say": "Copy line one to after line seven. Colon one co seven.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":1co 7" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]co — Copy Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon C O copies lines to after a target address. Unlike move, the originals stay in place."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: copy single line ---"
+    },
+    {
+      "say": "Copy line one to after line seven. Colon one co seven.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":1co 7"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Monday appears at the bottom. And the original Monday is still on line one." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Demo 2: copy range ---" },
-    { "say": "Copy a range. Colon one comma three co dollar. Duplicate the first three lines to the end.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":1,3co $" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Monday appears at the bottom. And the original Monday is still on line one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: copy range ---"
+    },
+    {
+      "say": "Copy a range. Colon one comma three co dollar. Duplicate the first three lines to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":1,3co $"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Monday, Tuesday, Wednesday are duplicated at the bottom." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon C O. Copy lines to a new position. The original lines are untouched." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Monday, Tuesday, Wednesday are duplicated at the bottom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon C O. Copy lines to a new position. The original lines are untouched."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f plan.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f plan.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "-Xny7YRb4AQ",
+    "url": "https://youtube.com/watch?v=-Xny7YRb4AQ"
+  }
 }

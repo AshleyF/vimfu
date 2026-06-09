@@ -21,66 +21,178 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f words.txt .words.txt.swp .words.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f words.txt .words.txt.swp .words.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "words.txt",
       "content": "line 1 — apple\nline 2 — banana\nline 3 — cherry\nline 4 — date\nline 5 — elderberry\nline 6 — fig\nline 7 — grape\nline 8 — honeydew"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' words.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' words.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]y {reg}", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Add a register letter after Y to yank into a named register. This lets you save multiple yanks at once." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: yank into register a ---" },
-    { "say": "Colon two comma three y a. Yank lines two and three into register A.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":2,3y a" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]y {reg}",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Add a register letter after Y to yank into a named register. This lets you save multiple yanks at once."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: yank into register a ---"
+    },
+    {
+      "say": "Colon two comma three y a. Yank lines two and three into register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":2,3y a"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.5 },
-    { "comment": "--- Yank into register b ---" },
-    { "say": "Colon six comma seven y b. Yank lines six and seven into register B.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":6,7y b" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Yank into register b ---"
+    },
+    {
+      "say": "Colon six comma seven y b. Yank lines six and seven into register B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":6,7y b"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.5 },
-    { "comment": "--- Paste both ---" },
-    { "say": "Go to the end. Paste register A, then register B.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "G", "overlay": "go to end" },
-    { "wait": 0.3 },
-    { "keys": "\"ap", "overlay": "\"ap paste reg a" },
-    { "wait": 0.5 },
-    { "keys": "\"bp", "overlay": "\"bp paste reg b" },
-    { "wait": 0.6 },
-    { "say": "Both registers pasted independently. Named registers hold separate data." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon Y with a register letter. Store yanks in named registers for later use." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Paste both ---"
+    },
+    {
+      "say": "Go to the end. Paste register A, then register B.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "go to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"ap",
+      "overlay": "\"ap paste reg a"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "\"bp",
+      "overlay": "\"bp paste reg b"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Both registers pasted independently. Named registers hold separate data."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon Y with a register letter. Store yanks in named registers for later use."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f words.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f words.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "0CAKiaWSfHA",
+    "url": "https://youtube.com/watch?v=0CAKiaWSfHA"
+  }
 }

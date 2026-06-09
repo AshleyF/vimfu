@@ -21,59 +21,157 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f items.txt .items.txt.swp .items.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f items.txt .items.txt.swp .items.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "items.txt",
       "content": "line 1 — header\nline 2 — intro\nline 3 — IMPORTANT\nline 4 — details\nline 5 — summary\nline 6 — footer"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' items.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' items.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]d {reg}", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "You can delete lines into a named register. Just add a letter after the D." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: delete into register a ---" },
-    { "say": "Colon three d a. Delete line three into register A.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":3d a" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]d {reg}",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "You can delete lines into a named register. Just add a letter after the D."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: delete into register a ---"
+    },
+    {
+      "say": "Colon three d a. Delete line three into register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":3d a"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Line three is gone. But it's saved in register A." },
-    { "wait": 0.3 },
-    { "comment": "--- Paste from register ---" },
-    { "say": "Go to the end and paste from register A.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "G", "overlay": "go to end" },
-    { "wait": 0.3 },
-    { "keys": "\"ap", "overlay": "\"ap paste reg a" },
-    { "wait": 0.6 },
-    { "say": "There it is at the bottom. The important line was moved via a named register." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon D with a register letter. Delete and store. Paste later with quote A P." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line three is gone. But it's saved in register A."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Paste from register ---"
+    },
+    {
+      "say": "Go to the end and paste from register A.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "go to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"ap",
+      "overlay": "\"ap paste reg a"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "There it is at the bottom. The important line was moved via a named register."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon D with a register letter. Delete and store. Paste later with quote A P."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f items.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f items.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "DtclxUaQJDw",
+    "url": "https://youtube.com/watch?v=DtclxUaQJDw"
+  }
 }

@@ -8,56 +8,166 @@
   "seed": 742,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.txt", "content": "error in module A\nwarning from parser\nerror in module B\nall good here\nerror in module C\nwarning from linter" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "error in module A\nwarning from parser\nerror in module B\nall good here\nerror in module C\nwarning from linter"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":s Flag n — Count Only", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "The N flag counts matches without replacing anything. A dry run." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: count errors ---" },
-    { "say": "How many lines have error? Use percent S with the N flag.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%s/error//gn", "overlay": ":%s/error//gn" },
-    { "wait": 0.3 },
-    { "keys": "enter" },
-    { "wait": 0.8 },
-    { "say": "Three matches found. Nothing was changed." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: count warnings ---" },
-    { "say": "Now count the warnings.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%s/warning//gn", "overlay": ":%s/warning//gn" },
-    { "wait": 0.3 },
-    { "keys": "enter" },
-    { "wait": 0.8 },
-    { "say": "Two matches. Still no changes to the file. The N flag is safe." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "The N flag. Count your matches before committing to the replace." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":s Flag n — Count Only",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "The N flag counts matches without replacing anything. A dry run."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: count errors ---"
+    },
+    {
+      "say": "How many lines have error? Use percent S with the N flag.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/error//gn",
+      "overlay": ":%s/error//gn"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Three matches found. Nothing was changed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: count warnings ---"
+    },
+    {
+      "say": "Now count the warnings.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%s/warning//gn",
+      "overlay": ":%s/warning//gn"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Two matches. Still no changes to the file. The N flag is safe."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "The N flag. Count your matches before committing to the replace."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.txt" }
-  ]
+    {
+      "line": "rm -f demo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "yg_nBgQtb8A",
+    "url": "https://youtube.com/watch?v=yg_nBgQtb8A"
+  }
 }

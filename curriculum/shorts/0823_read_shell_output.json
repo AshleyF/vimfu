@@ -21,61 +21,160 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f output.txt .output.txt.swp .output.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f output.txt .output.txt.swp .output.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "output.txt",
       "content": "Build Log\n\nTimestamp:"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim output.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim output.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":r !{cmd} — Read Shell Output", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon R exclamation mark runs a shell command and inserts the output into your file." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: insert date ---" },
-    { "say": "Go to the last line. Insert today's date.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "G", "overlay": "go to end" },
-    { "wait": 0.3 },
-    { "type": ":r !date" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":r !{cmd} — Read Shell Output",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon R exclamation mark runs a shell command and inserts the output into your file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: insert date ---"
+    },
+    {
+      "say": "Go to the last line. Insert today's date.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "go to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":r !date"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "The date command ran and its output was inserted below the cursor." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: insert directory listing ---" },
-    { "say": "Try another. Insert a directory listing.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":r !ls" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The date command ran and its output was inserted below the cursor."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: insert directory listing ---"
+    },
+    {
+      "say": "Try another. Insert a directory listing.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":r !ls"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "The files in the current directory are now in the buffer." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon R bang. Run any shell command and capture its output right into your file." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The files in the current directory are now in the buffer."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon R bang. Run any shell command and capture its output right into your file."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f output.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f output.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "a0u93lnUVew",
+    "url": "https://youtube.com/watch?v=a0u93lnUVew"
+  }
 }

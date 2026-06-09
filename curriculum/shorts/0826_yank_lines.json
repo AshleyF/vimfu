@@ -21,58 +21,155 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f names.txt .names.txt.swp .names.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f names.txt .names.txt.swp .names.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "names.txt",
       "content": "line 1 — Alice\nline 2 — Bob\nline 3 — Charlie\nline 4 — Diana\nline 5 — Eve\nline 6 — Frank\nline 7 — Grace\nline 8 — Hank"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' names.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' names.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]y — Yank Lines", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon Y yanks lines. That means copy without deleting. The original lines stay in place." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: yank a range ---" },
-    { "say": "Colon two comma four y. Yank lines two through four.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":2,4y" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]y — Yank Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon Y yanks lines. That means copy without deleting. The original lines stay in place."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: yank a range ---"
+    },
+    {
+      "say": "Colon two comma four y. Yank lines two through four.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":2,4y"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Three lines yanked. They are still there. Now paste at the bottom.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "G", "overlay": "go to end" },
-    { "wait": 0.3 },
-    { "keys": "p", "overlay": "paste below" },
-    { "wait": 0.6 },
-    { "say": "Bob, Charlie, and Diana appear at the end. Copied, not moved." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon Y to yank lines by number. No need to move the cursor to the source lines first." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three lines yanked. They are still there. Now paste at the bottom.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "G",
+      "overlay": "go to end"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "p",
+      "overlay": "paste below"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Bob, Charlie, and Diana appear at the end. Copied, not moved."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon Y to yank lines by number. No need to move the cursor to the source lines first."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f names.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f names.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "jmd7rOPgARI",
+    "url": "https://youtube.com/watch?v=jmd7rOPgARI"
+  }
 }

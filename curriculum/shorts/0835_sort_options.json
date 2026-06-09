@@ -21,79 +21,211 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f mixed.txt .mixed.txt.swp .mixed.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with mixed content" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f mixed.txt .mixed.txt.swp .mixed.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with mixed content"
+    },
     {
       "writeFile": "mixed.txt",
       "content": "item 10\nitem 2\nApple\napple\nitem 30\nBanana\nbanana\nitem 1\nApple\nitem 20"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' mixed.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' mixed.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]sort Options", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Sort has options. N for numeric. U for unique. I for case insensitive. They combine." },
-    { "wait": 0.3 },
-    { "say": "Notice this list isn't sorted — Apple appears three times, Banana twice." },
-    { "wait": 0.6 },
-    { "comment": "--- Demo 1: regular sort exposes the numeric problem ---" },
-    { "say": "First, a plain sort. Colon percent sort.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%sort" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]sort Options",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Sort has options. N for numeric. U for unique. I for case insensitive. They combine."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Notice this list isn't sorted — Apple appears three times, Banana twice."
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Demo 1: regular sort exposes the numeric problem ---"
+    },
+    {
+      "say": "First, a plain sort. Colon percent sort.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%sort"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Item ten came before item two. Alphabetical, not numeric. And every duplicate is still there." },
-    { "wait": 1.4 },
-    { "comment": "--- Demo 2: add N for numeric ---" },
-    { "say": "Add N for numeric. Colon percent sort N.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%sort n" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Item ten came before item two. Alphabetical, not numeric. And every duplicate is still there."
+    },
+    {
+      "wait": 1.4
+    },
+    {
+      "comment": "--- Demo 2: add N for numeric ---"
+    },
+    {
+      "say": "Add N for numeric. Colon percent sort N.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%sort n"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Now items are in numeric order. One, two, ten, twenty, thirty. But Apple still appears three times." },
-    { "wait": 1.0 },
-    { "comment": "--- Demo 3: add U for unique (case sensitive) ---" },
-    { "say": "Combine N and U for numeric unique. Colon percent sort N U.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%sort nu" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now items are in numeric order. One, two, ten, twenty, thirty. But Apple still appears three times."
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "comment": "--- Demo 3: add U for unique (case sensitive) ---"
+    },
+    {
+      "say": "Combine N and U for numeric unique. Colon percent sort N U.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%sort nu"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "U dropped one duplicate Apple. But lowercase apple is still separate. U is case sensitive." },
-    { "wait": 1.0 },
-    { "comment": "--- Demo 4: add I for case insensitive ---" },
-    { "say": "Combine I and U for case insensitive unique. Colon percent sort I U.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%sort iu" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "U dropped one duplicate Apple. But lowercase apple is still separate. U is case sensitive."
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "comment": "--- Demo 4: add I for case insensitive ---"
+    },
+    {
+      "say": "Combine I and U for case insensitive unique. Colon percent sort I U.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":%sort iu"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Now all three Apples merge into one. Banana too. Case insensitive dedup." },
-    { "wait": 0.8 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Sort N for numbers. U for unique. I for case insensitive. Combine them as needed." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now all three Apples merge into one. Banana too. Case insensitive dedup."
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Sort N for numbers. U for unique. I for case insensitive. Combine them as needed."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f mixed.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f mixed.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "OZoJVhXrC9Q",
+    "url": "https://youtube.com/watch?v=OZoJVhXrC9Q"
+  }
 }

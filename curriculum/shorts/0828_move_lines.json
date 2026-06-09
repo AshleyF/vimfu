@@ -21,63 +21,167 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f steps.txt .steps.txt.swp .steps.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f steps.txt .steps.txt.swp .steps.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "steps.txt",
       "content": "line 1 — gather tools\nline 2 — read manual\nline 3 — install app\nline 4 — configure\nline 5 — run tests\nline 6 — deploy\nline 7 — monitor\nline 8 — celebrate"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' steps.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' steps.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]m {address} — Move", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon M moves lines to after a target address. The lines are removed from their original position." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: move single line ---" },
-    { "say": "Move line two to after line six. Colon two m six.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":2m 6" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]m {address} — Move",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon M moves lines to after a target address. The lines are removed from their original position."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: move single line ---"
+    },
+    {
+      "say": "Move line two to after line six. Colon two m six.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":2m 6"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Read manual moved down. It's now after deploy." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Demo 2: move range ---" },
-    { "say": "Move a range. Colon five comma six m dollar. Move lines five and six to the end.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":5,6m $" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Read manual moved down. It's now after deploy."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: move range ---"
+    },
+    {
+      "say": "Move a range. Colon five comma six m dollar. Move lines five and six to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":5,6m $"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Run tests and deploy are now at the bottom." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon M. Move lines by address. Much faster than delete and paste for rearranging." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Run tests and deploy are now at the bottom."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon M. Move lines by address. Much faster than delete and paste for rearranging."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f steps.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f steps.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "kTWZEWWg5Ok",
+    "url": "https://youtube.com/watch?v=kTWZEWWg5Ok"
+  }
 }

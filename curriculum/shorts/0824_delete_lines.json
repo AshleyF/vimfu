@@ -21,63 +21,167 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f tasks.txt .tasks.txt.swp .tasks.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f tasks.txt .tasks.txt.swp .tasks.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "tasks.txt",
       "content": "line 1 — buy apples\nline 2 — fix the bug\nline 3 — call Mom\nline 4 — send invoice\nline 5 — water plants\nline 6 — clean kitchen\nline 7 — read chapter 5\nline 8 — update resume\nline 9 — walk the dog\nline 10 — write tests"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' tasks.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' tasks.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]d — Delete Lines", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon D deletes lines by number. You can delete a single line or a range." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: delete single line ---" },
-    { "say": "Colon three d. Delete line three.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":3d" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]d — Delete Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon D deletes lines by number. You can delete a single line or a range."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: delete single line ---"
+    },
+    {
+      "say": "Colon three d. Delete line three.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":3d"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Line three is gone. Call Mom, deleted." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Demo 2: delete a range ---" },
-    { "say": "Delete a range. Colon five comma eight d.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":5,8d" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Line three is gone. Call Mom, deleted."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: delete a range ---"
+    },
+    {
+      "say": "Delete a range. Colon five comma eight d.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":5,8d"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Four lines removed. Lines five through eight." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon D for delete. Single line or a range. The deleted text goes to the unnamed register." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Four lines removed. Lines five through eight."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon D for delete. Single line or a range. The deleted text goes to the unnamed register."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f tasks.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f tasks.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "yb_SC0A5ark",
+    "url": "https://youtube.com/watch?v=yb_SC0A5ark"
+  }
 }

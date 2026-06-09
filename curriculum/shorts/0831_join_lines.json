@@ -21,74 +21,200 @@
     "ex commands"
   ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f address.txt .address.txt.swp .address.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f address.txt .address.txt.swp .address.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
     {
       "writeFile": "address.txt",
       "content": "Jane Smith\n123 Main Street\nApartment 4B\nNew York\nNY 10001\nUSA"
     },
-    { "line": "clear" },
-    { "comment": "Launch nvim with line numbers" },
-    { "line": "nvim -c 'set number' address.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with line numbers"
+    },
+    {
+      "line": "nvim -c 'set number' address.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]j — Join Lines", "duration": 2.0 },
-    { "wait": 0.7 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon J joins a range of lines into one." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1a: join street and apartment ---" },
-    { "say": "Format this address. Join the street and apartment with colon two comma three j.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":2,3j" },
-    { "wait": 1.2 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]j — Join Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon J joins a range of lines into one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1a: join street and apartment ---"
+    },
+    {
+      "say": "Format this address. Join the street and apartment with colon two comma three j.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":2,3j"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Street and apartment now share one line, with a space between." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1b: join city, state, and zip ---" },
-    { "say": "Now join the city with the state and zip. Colon three comma four j.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":3,4j" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Street and apartment now share one line, with a space between."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1b: join city, state, and zip ---"
+    },
+    {
+      "say": "Now join the city with the state and zip. Colon three comma four j.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":3,4j"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "USA stays on its own line. The address is properly formatted." },
-    { "wait": 0.5 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Demo 2: join without spaces ---" },
-    { "say": "Add a bang for no spaces. Colon two comma three j bang.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":2,3j!" },
-    { "wait": 1.2 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "USA stays on its own line. The address is properly formatted."
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo 2: join without spaces ---"
+    },
+    {
+      "say": "Add a bang for no spaces. Colon two comma three j bang.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":2,3j!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Same lines joined, but with no space between. The text is smashed together." },
-    { "wait": 0.3 },
-    { "keys": "u", "overlay": "undo" },
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon J joins lines with spaces. Add a bang to join without them." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Same lines joined, but with no space between. The text is smashed together."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "u",
+      "overlay": "undo"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon J joins lines with spaces. Add a bang to join without them."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
-    { "wait": 1.2 },
+    {
+      "type": ":q!"
+    },
+    {
+      "wait": 1.2
+    },
     "enter",
-    { "comment": "Clean up" },
-    { "line": "rm -f address.txt" }
-  ]
+    {
+      "comment": "Clean up"
+    },
+    {
+      "line": "rm -f address.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "TUlNT0AopUE",
+    "url": "https://youtube.com/watch?v=TUlNT0AopUE"
+  }
 }
