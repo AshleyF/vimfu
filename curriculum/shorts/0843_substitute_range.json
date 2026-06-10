@@ -8,58 +8,173 @@
   "seed": 745,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.txt", "content": "x = 1\nx = 2\nx = 3\nx = 4\nx = 5\nx = 6\nx = 7\nx = 8" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "x = 1\nx = 2\nx = 3\nx = 4\nx = 5\nx = 6\nx = 7\nx = 8"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]s — Substitute in Range", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "You can give colon S a line range. Only those lines get the substitution." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 1: range substitute ---" },
-    { "say": "Replace X with Y on lines three through six only.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":3,6s/x/y/g", "overlay": ":3,6s/x/y/g" },
-    { "wait": 0.3 },
-    { "keys": "enter" },
-    { "wait": 0.8 },
-    { "say": "Lines three through six changed to Y. Lines one, two, seven, and eight still have X." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo 2: dot and dollar ---" },
-    { "say": "You can use dot for the current line and dollar for the last line. Let's change from here to the end.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "6G", "overlay": "go to line 6" },
-    { "wait": 0.3 },
-    { "type": ":.,$s/y/z/g", "overlay": ":.,$s/y/z/g" },
-    { "wait": 0.3 },
-    { "keys": "enter" },
-    { "wait": 0.8 },
-    { "say": "Dot means line six, dollar means the last line. Only those lines changed." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Any range works with colon S. Line numbers, dot, dollar, even marks." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]s — Substitute in Range",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "You can give colon S a line range. Only those lines get the substitution."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 1: range substitute ---"
+    },
+    {
+      "say": "Replace X with Y on lines three through six only.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":3,6s/x/y/g",
+      "overlay": ":3,6s/x/y/g"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Lines three through six changed to Y. Lines one, two, seven, and eight still have X."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo 2: dot and dollar ---"
+    },
+    {
+      "say": "You can use dot for the current line and dollar for the last line. Let's change from here to the end.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6G",
+      "overlay": "go to line 6"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":.,$s/y/z/g",
+      "overlay": ":.,$s/y/z/g"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Dot means line six, dollar means the last line. Only those lines changed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Any range works with colon S. Line numbers, dot, dollar, even marks."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.txt" }
-  ]
+    {
+      "line": "rm -f demo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "hUgkRWyGois",
+    "url": "https://youtube.com/watch?v=hUgkRWyGois"
+  }
 }

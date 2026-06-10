@@ -1,6 +1,6 @@
 {
-  "title": "VimFu \u2014 :jumps Show Jump List",
-  "description": "The :jumps command displays the jump list \u2014 a history of cursor positions you've jumped between.",
+  "title": "VimFu — :jumps Show Jump List",
+  "description": "The :jumps command displays the jump list — a history of cursor positions you've jumped between.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -50,10 +50,10 @@
       "line": "clear"
     },
     {
-      "comment": "Launch nvim"
+      "comment": "Launch nvim with -i NONE so shada doesn't restore stale jumps from prior sessions"
     },
     {
-      "line": "nvim demo.py"
+      "line": "nvim -i NONE demo.py"
     },
     {
       "waitForScreen": "All",
@@ -70,7 +70,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": ":jumps \u2014 Show Jump List",
+      "caption": ":jumps — Show Jump List",
       "duration": 2.0
     },
     {
@@ -86,10 +86,30 @@
       "wait": 0.3
     },
     {
-      "comment": "--- Demo: make jumps then show ---"
+      "comment": "--- Demo: clear the list, make three deliberate jumps, then show ---"
     },
     {
-      "say": "Let's jump around. Go to the bottom, then search, then jump back.",
+      "say": "Let me clear the list first so we start fresh.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":clearjumps",
+      "overlay": ":clearjumps"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "We're at the top. Jump to the bottom.",
       "wait": false
     },
     {
@@ -100,6 +120,27 @@
       "overlay": "bottom"
     },
     {
+      "wait": 0.5
+    },
+    {
+      "say": "Now jump to the middle, line six.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "6G",
+      "overlay": "line 6 (middle)"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "And back to the top.",
+      "wait": false
+    },
+    {
       "wait": 0.3
     },
     {
@@ -107,34 +148,10 @@
       "overlay": "top"
     },
     {
-      "wait": 0.3
-    },
-    {
-      "type": "/run",
-      "overlay": "/run"
-    },
-    {
-      "wait": 0.2
-    },
-    {
-      "keys": "enter"
-    },
-    {
-      "wait": 0.3
-    },
-    {
-      "keys": "5G",
-      "overlay": "line 5"
-    },
-    {
       "wait": 0.5
     },
     {
-      "say": "Now check the jump list.",
-      "wait": false
-    },
-    {
-      "wait": 0.3
+      "comment": "--- Show jump list, narrate while popup is on screen ---"
     },
     {
       "type": ":jumps",
@@ -150,7 +167,7 @@
       "wait": 1.0
     },
     {
-      "say": "Every jump is recorded with line number and text. Use control O and control I to navigate between them."
+      "say": "Three jumps — top, bottom, middle — exactly the trail we made. Use Control O to go back through them, Control I forward."
     },
     {
       "wait": 0.5
@@ -184,5 +201,9 @@
     {
       "line": "rm -f demo.py"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "JA6myshr9E4",
+    "url": "https://youtube.com/watch?v=JA6myshr9E4"
+  }
 }

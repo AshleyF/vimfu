@@ -8,47 +8,137 @@
   "seed": 756,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with extra indentation" },
-    { "writeFile": "demo.py", "content": "def run():\n        x = 1\n        y = 2\n        return x + y\n\nresult = run()" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim -c 'set shiftwidth=4' demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with extra indentation"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "def run():\n        x = 1\n        y = 2\n        return x + y\n\nresult = run()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim -c 'set shiftwidth=4' demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":[range]< — Dedent Lines", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon less than shifts lines to the left. It removes one shiftwidth of indentation." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: dedent over-indented lines ---" },
-    { "say": "Lines two through four are double indented. They only need one level. Dedent them.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":2,4<", "overlay": ":2,4<" },
-    { "wait": 0.3 },
-    { "keys": "enter" },
-    { "wait": 0.6 },
-    { "say": "One level of indentation removed. They went from eight spaces to four." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon less than. Shift lines left. The opposite of colon greater than." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":[range]< — Dedent Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon less than shifts lines to the left. It removes one shiftwidth of indentation."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: dedent over-indented lines ---"
+    },
+    {
+      "say": "Lines two through four are double indented. They only need one level. Dedent them.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":2,4<",
+      "overlay": ":2,4<"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "One level of indentation removed. They went from eight spaces to four."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon less than. Shift lines left. The opposite of colon greater than."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "E6UtICdHTSQ",
+    "url": "https://youtube.com/watch?v=E6UtICdHTSQ"
+  }
 }

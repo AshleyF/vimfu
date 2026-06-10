@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 :reg Show All Registers",
+  "title": "VimFu — :reg Show All Registers",
   "description": "The :reg command (or :display) shows the contents of all registers.",
   "speed": 0.55,
   "rows": 20,
@@ -50,10 +50,10 @@
       "line": "clear"
     },
     {
-      "comment": "Launch nvim"
+      "comment": "Launch nvim with -i NONE so no shada-restored registers pollute :reg"
     },
     {
-      "line": "nvim demo.txt"
+      "line": "nvim -i NONE demo.txt"
     },
     {
       "waitForScreen": "All",
@@ -70,7 +70,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": ":reg \u2014 Show All Registers",
+      "caption": ":reg — Show All Registers",
       "duration": 2.0
     },
     {
@@ -86,10 +86,10 @@
       "wait": 0.3
     },
     {
-      "comment": "--- Demo: yank some things then show ---"
+      "comment": "--- Demo: yank three lines into three named registers, then show ---"
     },
     {
-      "say": "Let's put some text into registers. Yank line one into register A.",
+      "say": "Yank line one, alpha, into register A.",
       "wait": false
     },
     {
@@ -100,11 +100,25 @@
       "overlay": "yank to reg a"
     },
     {
-      "wait": 0.3
+      "wait": 0.4
+    },
+    {
+      "say": "Move down a line.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
     },
     {
       "keys": "j",
       "overlay": "down"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Yank beta into register B.",
+      "wait": false
     },
     {
       "wait": 0.2
@@ -114,25 +128,42 @@
       "overlay": "yank to reg b"
     },
     {
+      "wait": 0.4
+    },
+    {
+      "say": "Down again.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "j",
+      "overlay": "down"
+    },
+    {
       "wait": 0.3
     },
     {
-      "keys": "jdd",
-      "overlay": "delete line"
+      "say": "Yank gamma into register C.",
+      "wait": false
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "keys": "\"cyy",
+      "overlay": "yank to reg c"
     },
     {
       "wait": 0.5
     },
     {
-      "say": "Now type colon reg to see all registers.",
-      "wait": false
+      "comment": "--- Show only the named registers we filled, narrate while popup is on screen ---"
     },
     {
-      "wait": 0.3
-    },
-    {
-      "type": ":reg",
-      "overlay": ":reg"
+      "type": ":reg abc",
+      "overlay": ":reg abc"
     },
     {
       "wait": 0.3
@@ -144,7 +175,7 @@
       "wait": 1.0
     },
     {
-      "say": "Register A has alpha. Register B has beta. The unnamed register and the numbered registers have the deleted line."
+      "say": "Register A has alpha, B has beta, C has gamma. Three named registers, ready to paste from."
     },
     {
       "wait": 0.5
@@ -178,5 +209,9 @@
     {
       "line": "rm -f demo.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "1ZDMtsVshiI",
+    "url": "https://youtube.com/watch?v=1ZDMtsVshiI"
+  }
 }

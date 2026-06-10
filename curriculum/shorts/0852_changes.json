@@ -1,6 +1,6 @@
 {
-  "title": "VimFu \u2014 :changes Show Change List",
-  "description": "The :changes command displays the change list \u2014 a history of positions where text was modified.",
+  "title": "VimFu — :changes Show Change List",
+  "description": "The :changes command displays the change list — a history of positions where text was modified.",
   "speed": 0.55,
   "rows": 20,
   "cols": 40,
@@ -50,10 +50,10 @@
       "line": "clear"
     },
     {
-      "comment": "Launch nvim"
+      "comment": "Launch nvim with -i NONE so shada doesn't restore stale changes from prior sessions"
     },
     {
-      "line": "nvim demo.txt"
+      "line": "nvim -i NONE demo.txt"
     },
     {
       "waitForScreen": "All",
@@ -70,7 +70,7 @@
     },
     {
       "overlay": "VimFu",
-      "caption": ":changes \u2014 Show Change List",
+      "caption": ":changes — Show Change List",
       "duration": 2.0
     },
     {
@@ -86,10 +86,10 @@
       "wait": 0.3
     },
     {
-      "comment": "--- Demo: make changes then show ---"
+      "comment": "--- Demo: three deliberate edits, then show ---"
     },
     {
-      "say": "Let's make a few edits around the file.",
+      "say": "Append 'edit' to line one.",
       "wait": false
     },
     {
@@ -110,40 +110,25 @@
     },
     "escape",
     {
+      "wait": 0.5
+    },
+    {
+      "say": "Down to line four, do the same.",
+      "wait": false
+    },
+    {
       "wait": 0.3
     },
     {
       "keys": "3j",
-      "overlay": "line 4"
+      "overlay": "down 3 lines"
     },
-    {
-      "wait": 0.2
-    },
-    {
-      "keys": "A"
-    },
-    {
-      "wait": 0.2
-    },
-    {
-      "type": " edit"
-    },
-    {
-      "wait": 0.2
-    },
-    "escape",
     {
       "wait": 0.3
     },
     {
-      "keys": "2j",
-      "overlay": "line 6"
-    },
-    {
-      "wait": 0.2
-    },
-    {
-      "keys": "A"
+      "keys": "A",
+      "overlay": "append"
     },
     {
       "wait": 0.2
@@ -159,11 +144,38 @@
       "wait": 0.5
     },
     {
-      "say": "Now type colon changes.",
+      "say": "Down to line six, one more.",
       "wait": false
     },
     {
       "wait": 0.3
+    },
+    {
+      "keys": "2j",
+      "overlay": "down 2 lines"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "A",
+      "overlay": "append"
+    },
+    {
+      "wait": 0.2
+    },
+    {
+      "type": " edit"
+    },
+    {
+      "wait": 0.2
+    },
+    "escape",
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Show change list, narrate while popup is on screen ---"
     },
     {
       "type": ":changes",
@@ -179,7 +191,7 @@
       "wait": 1.0
     },
     {
-      "say": "Three changes listed. Lines one, four, and six. Use G semicolon and G comma to navigate between them."
+      "say": "Three changes — lines one, four, and six. Exactly our edits. Use G semicolon to step backward through them, G comma forward."
     },
     {
       "wait": 0.5
@@ -213,5 +225,9 @@
     {
       "line": "rm -f demo.txt"
     }
-  ]
+  ],
+  "youtube": {
+    "videoId": "xd_ntyD0wk0",
+    "url": "https://youtube.com/watch?v=xd_ntyD0wk0"
+  }
 }

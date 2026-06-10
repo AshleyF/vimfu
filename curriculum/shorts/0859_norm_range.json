@@ -8,47 +8,143 @@
   "seed": 761,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.txt", "content": "keep this\nkeep this\ndelete me\ndelete me\ndelete me\nkeep this\nkeep this" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "first\nsecond\nthird\nfourth\nfifth\nsixth\nseventh"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":norm on a Range", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Give norm a range to limit which lines it affects." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: delete specific lines ---" },
-    { "say": "Lines three through five say delete me. Use norm D D on just those lines.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":3,5norm dd", "overlay": ":3,5norm dd" },
-    { "wait": 0.3 },
-    { "keys": "enter" },
-    { "wait": 0.8 },
-    { "say": "Three lines deleted. The keep lines are untouched. The range limited norm to lines three through five." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon range norm. Run normal mode keys on a specific set of lines." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":norm on a Range",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Give norm a range to limit which lines it affects."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: type the command, narrate while it's on the cmdline, then commit ---"
+    },
+    {
+      "say": "Let's append an exclamation point to lines three through five only.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":3,5norm A!",
+      "overlay": ":3,5norm A!"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Three comma five is the range — lines three through five only. Norm replays the next keys in normal mode. Capital A appends at end of line. Then we type an exclamation point."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Lines three, four, and five got the exclamation. The other lines are untouched."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon range norm. Run normal mode keys on a specific set of lines."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.txt" }
-  ]
+    {
+      "line": "rm -f demo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "_MbS6QalhMU",
+    "url": "https://youtube.com/watch?v=_MbS6QalhMU"
+  }
 }
