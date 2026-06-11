@@ -8,60 +8,192 @@
   "seed": 769,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.py", "content": "import os\nimport sys\n\ndef greet(name):\n    print(f\"Hello {name}\")\n\ndef main():\n    greet(\"world\")\n    return 0\n\nif __name__ == \"__main__\":\n    main()" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "import os\nimport sys\n\ndef greet(name):\n    print(f\"Hello {name}\")\n\ndef main():\n    greet(\"world\")\n    return 0\n\nif __name__ == \"__main__\":\n    main()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":set number", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Set number shows line numbers in the left gutter. Essential for navigation and debugging." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: turn on line numbers ---" },
-    { "say": "Turn on line numbers.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set number", "overlay": ":set number" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":set number",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Set number shows line numbers in the left gutter. Essential for navigation and debugging."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: turn on line numbers ---"
+    },
+    {
+      "say": "Turn on line numbers.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set number",
+      "overlay": ":set number"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Colon set is how you change options. Number turns on absolute line numbers."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Every line now has a number. You can also use the short form, set N U." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: turn off ---" },
-    { "say": "Turn them off with set no number.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set nonumber", "overlay": ":set nonumber" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Every line now has a number. You can also use the short form, set N U."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: turn off ---"
+    },
+    {
+      "say": "Turn them off with set no number.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set nonumber",
+      "overlay": ":set nonumber"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Add N-O in front of any option to turn it off."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Numbers gone. Back on with the short form.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set nu", "overlay": ":set nu" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Numbers gone. Back on with the short form.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set nu",
+      "overlay": ":set nu"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "N-U is the abbreviation for number — same effect, fewer keystrokes."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Set number or set N U. Absolute line numbers in the gutter." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Set number or set N U. Absolute line numbers in the gutter."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "mNbTeAw5t38",
+    "url": "https://youtube.com/watch?v=mNbTeAw5t38"
+  }
 }

@@ -8,47 +8,143 @@
   "seed": 768,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f log.txt .log.txt.swp .log.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo log file" },
-    { "writeFile": "log.txt", "content": "INFO: server started\nDEBUG: loading config\nERROR: disk full\nINFO: request received\nDEBUG: parsing input\nERROR: timeout\nINFO: response sent\nDEBUG: cleanup done" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim log.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f log.txt .log.txt.swp .log.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo log file"
+    },
+    {
+      "writeFile": "log.txt",
+      "content": "INFO: server started\nDEBUG: loading config\nERROR: disk full\nINFO: request received\nDEBUG: parsing input\nERROR: timeout\nINFO: response sent\nDEBUG: cleanup done"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim log.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":v with :d — Keep Only Matches", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "V with D is a powerful filter. It deletes everything except the lines you want." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: filter log to errors only ---" },
-    { "say": "This log has INFO, DEBUG, and ERROR lines. Keep only the errors.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":v/ERROR/d", "overlay": ":v/ERROR/d" },
-    { "wait": 0.3 },
-    { "keys": "enter" },
-    { "wait": 0.8 },
-    { "say": "Six lines deleted. Only the two error lines remain. The file is now a filtered error log." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon V slash pattern slash D. Delete everything that doesn't match. Instant filter." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":v with :d — Keep Only Matches",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "V with D is a powerful filter. It deletes everything except the lines you want."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: type the command, narrate while it's on the cmdline, then commit ---"
+    },
+    {
+      "say": "This log has info, debug, and error lines. Let's keep only the errors.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":v/ERROR/d",
+      "overlay": ":v/ERROR/d"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Colon V slash error slash D. V means anything not matching, so this deletes every line without the word error."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "keys": "enter"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Six lines deleted. Only the two error lines remain. The file is now a filtered error log."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon V slash pattern slash D. Instant filter."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f log.txt" }
-  ]
+    {
+      "line": "rm -f log.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "MBseyaySlFI",
+    "url": "https://youtube.com/watch?v=MBseyaySlFI"
+  }
 }

@@ -8,55 +8,163 @@
   "seed": 777,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.py", "content": "def build():\n    step_one()\n    step_two()" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "def build():\n    step_one()\n    step_two()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":set autoindent", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Auto indent copies the indentation from the current line to the next line when you press enter." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: enable and show ---" },
-    { "say": "Enable auto indent and add a new line after step two.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set autoindent", "overlay": ":set autoindent" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":set autoindent",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Auto indent copies the indentation from the current line to the next line when you press enter."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: enable and show ---"
+    },
+    {
+      "say": "Enable auto indent and add a new line after step two.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set autoindent",
+      "overlay": ":set autoindent"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Set auto indent — new lines automatically inherit the indentation of the line above."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.5 },
-    { "keys": "G" },
-    { "wait": 0.3 },
-    { "keys": "o" },
-    { "wait": 0.4 },
-    { "type": "step_three()" },
-    { "wait": 0.5 },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "type": "step_three()"
+    },
+    {
+      "wait": 0.5
+    },
     "escape",
-    { "wait": 0.5 },
-    { "say": "The new line automatically matched the indentation of the line above. No manual spacing needed." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Set auto indent or set A I. New lines inherit indentation. Simple but essential." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "The new line automatically matched the indentation of the line above. No manual spacing needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Set auto indent or set A I. New lines inherit indentation. Simple but essential."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "vV_yioDsRNg",
+    "url": "https://youtube.com/watch?v=vV_yioDsRNg"
+  }
 }

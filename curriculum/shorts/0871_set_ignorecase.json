@@ -8,62 +8,202 @@
   "seed": 773,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.txt", "content": "Hello World\nhello there\nHELLO AGAIN\nSay hello\nGoodbye World" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "Hello World\nhello there\nHELLO AGAIN\nSay hello\nGoodbye World"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":set ignorecase", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "By default, Vim searches are case-sensitive. Set ignore case makes them case insensitive." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: search case-sensitive first ---" },
-    { "say": "Search for hello in lowercase. Only lowercase matches are found.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set hlsearch", "overlay": ":set hlsearch" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":set ignorecase",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "By default, Vim searches are case-sensitive. Set ignore case makes them case insensitive."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: search case-sensitive first ---"
+    },
+    {
+      "say": "Search for hello in lowercase. Only lowercase matches are found.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set hlsearch",
+      "overlay": ":set hlsearch"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "First turn on highlight, so matches are visible."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.3 },
-    { "type": "/hello", "overlay": "/hello" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/hello",
+      "overlay": "/hello"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Search for the lowercase word hello."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Only two lowercase matches. Now turn on ignore case.", "wait": false },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: enable ignorecase ---" },
-    { "type": ":set ignorecase", "overlay": ":set ignorecase" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Only two lowercase matches. Now turn on ignore case.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: enable ignorecase ---"
+    },
+    {
+      "type": ":set ignorecase",
+      "overlay": ":set ignorecase"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Set ignore case — searches now match regardless of letter case."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.3 },
-    { "type": "/hello", "overlay": "/hello" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": "/hello",
+      "overlay": "/hello"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Search for hello again — same pattern, but case insensitive this time."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Now all four hello matches light up regardless of case." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Set ignore case or set I C. Case insensitive searching." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now all four hello matches light up regardless of case."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Set ignore case or set I C. Case insensitive searching."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.txt" }
-  ]
+    {
+      "line": "rm -f demo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "Pabg3yEadEY",
+    "url": "https://youtube.com/watch?v=Pabg3yEadEY"
+  }
 }
