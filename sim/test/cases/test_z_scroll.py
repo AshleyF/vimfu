@@ -1,5 +1,7 @@
 """Tests for z-scroll variants: z. z+ z- z^."""
 
+LONG = "\n".join(f"line{i}" for i in range(0, 40)) + "\n"
+
 CASES = {
     # ── z. — center cursor line, cursor to first non-blank ──
     "z_dot_center": {
@@ -18,4 +20,17 @@ CASES = {
         "keys": "10jz-",
         "initial": "line0\nline1\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10\nline11\nline12\nline13\nline14\nline15\nline16\nline17\nline18\nline19\n",
     },
+
+    # ── z+ — line below the window becomes the new top line ──
+    "z_plus_next_page": {
+        "keys": "z+",
+        "initial": LONG,
+    },
+
+    # ── z^ — line above the window becomes the new bottom ────
+    "z_caret_prev_page": {
+        "keys": "G10kz^",
+        "initial": LONG,
+    },
 }
+

@@ -3377,7 +3377,7 @@ export class VimEngine {
         break;
       case '+': {
         // z+ — line below window to top, first non-blank
-        const textRows = this.rows - 1; // status line
+        const textRows = this._textRows;
         let bottomRow = this.scrollTop;
         for (let i = 0; i < textRows && bottomRow < this.buffer.lineCount - 1; bottomRow++) {
           i++;
@@ -3391,7 +3391,7 @@ export class VimEngine {
       }
       case '^': {
         // z^ — line above window to bottom, first non-blank
-        const textRows = this.rows - 1;
+        const textRows = this._textRows;
         const lineAbove = Math.max(0, this.scrollTop - 1);
         const newTop = Math.max(0, lineAbove - textRows + 1);
         this.scrollTop = newTop;
