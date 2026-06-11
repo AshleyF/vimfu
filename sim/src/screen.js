@@ -700,7 +700,12 @@ export class Screen {
           let m;
           while ((m = searchRegex.exec(raw)) !== null) {
             const isZeroWidth = m[0].length === 0;
-            const matchStart = bufToScreen[m.index] ?? 0;
+            // For zero-width matches past the end of the buffer line (e.g. the
+            // trailing match of /.*/), bufToScreen[m.index] is undefined; place
+            // the 1-cell highlight at expanded.length rather than column 0.
+            const matchStart = (isZeroWidth && m.index >= raw.length)
+              ? expanded.length
+              : (bufToScreen[m.index] ?? 0);
             // Zero-width matches (e.g. /^/, /$/, /\</) highlight 1 cell at
             // the match position to mirror nvim's behaviour.
             const matchEnd = isZeroWidth
@@ -712,7 +717,13 @@ export class Screen {
               && m.index === csp.col;
             const sFg = isCursorMatch ? t.curSearchFg : t.searchFg;
             const sBg = isCursorMatch ? t.curSearchBg : t.searchBg;
-            for (let sc = Math.max(matchStart, sliceStart); sc <= Math.min(matchEnd, sliceEnd - 1); sc++) {
+            // For zero-width matches at end-of-line, sliceEnd would clamp the
+            // 1-cell highlight off-screen. Allow drawing into the padded body
+            // area but stay within the actual screen width.
+            const drawCap = isZeroWidth
+              ? sliceStart + textCols - 1
+              : sliceEnd - 1;
+            for (let sc = Math.max(matchStart, sliceStart); sc <= Math.min(matchEnd, drawCap); sc++) {
               const idx = sc - sliceStart;
               if (isVisualCol[idx]) {
                 if (isCursorMatch) {
