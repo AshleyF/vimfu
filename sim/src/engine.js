@@ -5379,8 +5379,13 @@ export class VimEngine {
       return;
     }
 
-    // :reg[isters] / :di[splay]
-    if (/^(reg(i(s(t(e(rs?)?)?)?)?)?|di(s(p(l(a(y)?)?)?)?)?)\s*$/.test(rest)) {
+    // :reg[isters] [arg] / :di[splay] [arg]
+    {
+      const regMatch = rest.match(/^(?:reg(?:i(?:s(?:t(?:e(?:rs?)?)?)?)?)?|di(?:s(?:p(?:l(?:a(?:y)?)?)?)?)?)(?:\s+(.+))?\s*$/);
+      if (regMatch) {
+      const filterArg = (regMatch[1] || '').replace(/\s+/g, '');
+      const filter = filterArg ? new Set(filterArg.split('')) : null;
+      const matchReg = (name) => !filter || filter.has(name);
       // Structured lines with monokai colors (verified against nvim ground truth):
       //   Header "Type Name Content" → monokai yellow e6db74 + bold
       //   Data rows (type, "name, content) → Normal d4d4d4
@@ -5435,7 +5440,7 @@ export class VimEngine {
         ...(hdr.length < cols ? [{ n: cols - hdr.length, fg: normalFg, bg: normalBg }] : []),
       ]));
       // Unnamed register
-      if (this._unnamedReg) {
+      if (this._unnamedReg && matchReg('"')) {
         const t = this._regType === 'line' ? 'l' : 'c';
         const regText = this._unnamedReg + (this._regType === 'line' ? '\n' : '');
         promptLines.push(mkRegLine('  ' + t + '  ""   ', regText));
@@ -5443,14 +5448,14 @@ export class VimEngine {
       // Numbered registers 0-9
       for (let i = 0; i <= 9; i++) {
         const r = this._numberedRegs[i];
-        if (r && r.text) {
+        if (r && r.text && matchReg(String(i))) {
           const t = r.type === 'line' ? 'l' : 'c';
           const regText = r.text + (r.type === 'line' ? '\n' : '');
           promptLines.push(mkRegLine('  ' + t + '  "' + i + '   ', regText));
         }
       }
       // Small delete register
-      if (this._smallDeleteReg && this._smallDeleteReg.text) {
+      if (this._smallDeleteReg && this._smallDeleteReg.text && matchReg('-')) {
         const t = this._smallDeleteReg.type === 'line' ? 'l' : 'c';
         const regText = this._smallDeleteReg.text + (this._smallDeleteReg.type === 'line' ? '\n' : '');
         promptLines.push(mkRegLine('  ' + t + '  "-   ', regText));
@@ -5459,26 +5464,32 @@ export class VimEngine {
       const namedKeys = Object.keys(this._namedRegs).sort();
       for (const k of namedKeys) {
         const r = this._namedRegs[k];
-        if (r && r.text) {
+        if (r && r.text && matchReg(k)) {
           const t = r.type === 'line' ? 'l' : 'c';
           const regText = r.text + (r.type === 'line' ? '\n' : '');
           promptLines.push(mkRegLine('  ' + t + '  "' + k + '   ', regText));
         }
       }
-      // Clipboard registers "* and "+ (always shown as empty characterwise)
-      promptLines.push(mkRegLine('  c  "*   ', ''));
-      promptLines.push(mkRegLine('  c  "+   ', ''));
+      // Clipboard registers "* and "+ (always shown as empty characterwise) — only when no filter
+      if (!filter) {
+        promptLines.push(mkRegLine('  c  "*   ', ''));
+        promptLines.push(mkRegLine('  c  "+   ', ''));
+      } else {
+        if (matchReg('*')) promptLines.push(mkRegLine('  c  "*   ', ''));
+        if (matchReg('+')) promptLines.push(mkRegLine('  c  "+   ', ''));
+      }
       // Current file name register "%
-      if (this._fileName) {
+      if (this._fileName && matchReg('%')) {
         promptLines.push(mkRegLine('  c  "%   ', this._fileName));
       }
       // Last search register
-      if (this._searchPattern) {
+      if (this._searchPattern && matchReg('/')) {
         promptLines.push(mkRegLine('  c  "/   ', this._searchPattern));
       }
       this._messagePrompt = { lines: promptLines };
       this.commandLine = '';
       return;
+      }
     }
 
     // :norm[al][!] {keys}
