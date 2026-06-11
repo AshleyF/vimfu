@@ -1958,6 +1958,7 @@ export class VimEngine {
           this.cursor.col = this._firstNonBlank(this.cursor.row);
         }
         this._stopRecording(); this._redoStack = [];
+        this._clampCursor();
         if (this._showCurSearch) this._refreshCurSearchIfInMatch();
         break;
       }
@@ -1979,10 +1980,11 @@ export class VimEngine {
           this.cursor.col = this._firstNonBlank(this.cursor.row);
         }
         this._stopRecording(); this._redoStack = [];
+        this._clampCursor();
         if (this._showCurSearch) this._refreshCurSearchIfInMatch();
         break;
       }
-
+    
       // Enter insert mode
       case 'i':
         this._insertCount = this._getCount();
