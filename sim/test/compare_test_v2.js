@@ -113,6 +113,8 @@ function _feedKeysImpl(feedFn, keys) {
     else if (ch === '\x17') key = 'Ctrl-W';
     else if (ch === '\x18') key = 'Ctrl-X';
     else if (ch === '\x19') key = 'Ctrl-Y';
+    else if (ch === '\x1e') key = 'Ctrl-^';
+    else if (ch === '\x1d') key = 'Ctrl-]';
     feedFn(key);
     i++;
   }

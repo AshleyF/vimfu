@@ -314,9 +314,29 @@ export class VimEngine {
       if (fileName) {
         existingEntry = this._bufferList.find(e => e.fileName === fileName);
       }
+      if (!existingEntry && this._bufferList.length === 1) {
+        // Special case: the only entry is the initial unnamed empty
+        // buffer (constructor seed). Reuse it instead of creating a
+        // ghost. nvim never shows that ghost in :ls when launched with
+        // a filename.
+        const only = this._bufferList[0];
+        const onlyLines = only.buffer && Array.isArray(only.buffer.lines) ? only.buffer.lines : null;
+        const isInitialEmptyUnnamed = (
+          only.id === this._currentBufId &&
+          !only.fileName &&
+          only.changeCount === 0 &&
+          onlyLines !== null &&
+          onlyLines.length <= 1 &&
+          (onlyLines[0] || '') === ''
+        );
+        if (isInitialEmptyUnnamed) {
+          existingEntry = only;
+        }
+      }
       if (existingEntry) {
         // Re-use existing entry (reload content)
         existingEntry.buffer = this.buffer;
+        existingEntry.fileName = fileName || null;
         existingEntry.cursor = { ...this.cursor };
         existingEntry.scrollTop = 0;
         existingEntry.scrollLeft = 0;
@@ -4774,8 +4794,8 @@ export class VimEngine {
       return;
     }
 
-    // :ls / :buffers — list all buffers
-    if (/^(ls|buffers?|files?)(\s|$)/.test(cmd)) {
+    // :ls / :buffers / :files — list all buffers
+    if (/^(ls|buffers|files)(\s|$)/.test(cmd)) {
       this._saveCurrentBufState();
       const normalFg = 'd4d4d4', normalBg = '000000', dirFg = '66d9ef';
       const cols = this.cols;
@@ -4789,16 +4809,41 @@ export class VimEngine {
         const isCurrent = entry.id === this._currentBufId;
         const isAlternate = entry.id === this._alternateBufId;
         const flags = (isCurrent ? '%' : (isAlternate ? '#' : ' '))
-                    + (isCurrent ? 'a' : ' ')
+                    + (isCurrent ? 'a' : 'h')
                     + (entry.changeCount > 0 ? '+' : ' ');
         const name = entry.fileName ? '"' + entry.fileName + '"' : '"[No Name]"';
         const lineNum = isCurrent ? (this.cursor.row + 1) : (entry.cursor.row + 1);
-        const prefix = String(entry.id).padStart(3) + ' ' + flags + '   ' + name;
+        const prefix = String(entry.id).padStart(3) + ' ' + flags + '  ' + name;
         const suffix = 'line ' + lineNum;
-        const gap = Math.max(1, cols - prefix.length - suffix.length);
-        const lineText = (prefix + ' '.repeat(gap) + suffix).slice(0, cols);
-        const padded = lineText.length < cols ? lineText + ' '.repeat(cols - lineText.length) : lineText;
-        promptLines.push(mkLine(padded, [{ n: cols, fg: normalFg, bg: normalBg }]));
+        // nvim's :ls calls msg_advance(40) before "line N", so suffix always starts at col 40.
+        // In a 40-col terminal this forces "line N" onto a new physical row.
+        const ALIGN_COL = 40;
+        if (prefix.length >= ALIGN_COL) {
+          // Prefix already at/past alignment col — emit prefix then suffix on next row.
+          const padded = prefix.length < cols ? prefix + ' '.repeat(cols - prefix.length) : prefix.slice(0, cols);
+          promptLines.push(mkLine(padded, [{ n: cols, fg: normalFg, bg: normalBg }]));
+          const suf = suffix.length < cols ? suffix + ' '.repeat(cols - suffix.length) : suffix.slice(0, cols);
+          promptLines.push(mkLine(suf, [{ n: cols, fg: normalFg, bg: normalBg }]));
+        } else {
+          // Pad prefix out to alignment col, then place suffix.
+          const padToAlign = prefix + ' '.repeat(ALIGN_COL - prefix.length);
+          const combined = padToAlign + suffix;
+          if (combined.length <= cols) {
+            const padded = combined + ' '.repeat(cols - combined.length);
+            promptLines.push(mkLine(padded, [{ n: cols, fg: normalFg, bg: normalBg }]));
+          } else {
+            // Wraps: first row is padToAlign (truncated to cols), second is suffix.
+            const firstRow = padToAlign.slice(0, cols);
+            const firstPadded = firstRow.length < cols ? firstRow + ' '.repeat(cols - firstRow.length) : firstRow;
+            promptLines.push(mkLine(firstPadded, [{ n: cols, fg: normalFg, bg: normalBg }]));
+            const remaining = padToAlign.slice(cols) + suffix;
+            for (let i = 0; i < remaining.length; i += cols) {
+              const chunk = remaining.slice(i, i + cols);
+              const padded = chunk.length < cols ? chunk + ' '.repeat(cols - chunk.length) : chunk;
+              promptLines.push(mkLine(padded, [{ n: cols, fg: normalFg, bg: normalBg }]));
+            }
+          }
+        }
       }
 
       this._messagePrompt = { lines: promptLines };
@@ -5384,7 +5429,9 @@ export class VimEngine {
 
     // :s[ubstitute] with delimiter — full substitution
     {
-      const subMatch = rest.match(/^s(?:u(?:b(?:s(?:t(?:i(?:t(?:u(?:te?)?)?)?)?)?)?)?)?([\/:!#])(.*)/);
+      // Nvim accepts any single-byte non-letter, non-digit, non-\\, non-",
+      // non-| character as the delimiter (:help :s).
+      const subMatch = rest.match(/^s(?:u(?:b(?:s(?:t(?:i(?:t(?:u(?:te?)?)?)?)?)?)?)?)?([^A-Za-z0-9\\"|\s])(.*)/);
       if (subMatch) {
         const delim = subMatch[1];
         const body = subMatch[2];
@@ -5465,27 +5512,41 @@ export class VimEngine {
         this._redoStack = [];
         let totalSubs = 0;
         let lastSubRow = sr;
+        let lastSubCol = 0;
         for (let r = sr; r <= er; r++) {
           const before = this.buffer.lines[r];
+          // Capture the pre-substitution match position (for CurSearch tracking).
+          const findRe = new RegExp(jsPattern, caseFlag);
+          const matchIdx = before.search(findRe);
           const after = before.replace(regex, jsReplacement);
           if (after !== before) {
             this.buffer.lines[r] = after;
             totalSubs++;
             lastSubRow = r;
+            if (matchIdx >= 0) lastSubCol = matchIdx;
           }
         }
 
         if (totalSubs === 0) {
           this.commandLine = 'E486: Pattern not found: ' + pattern;
           this._stickyCommandLine = true;
+          this._showCurSearch = false;
+          this._curSearchPos = null;
         } else {
           this.cursor.row = lastSubRow;
           this.cursor.col = this._firstNonBlank(lastSubRow);
           this.commandLine = totalSubs + ' substitution' + (totalSubs > 1 ? 's' : '') + ' on ' + (er - sr + 1) + ' line' + ((er - sr + 1) > 1 ? 's' : '');
           this._stickyCommandLine = true;
+          // nvim keeps hlsearch on after :s. Without /g, the last-substituted
+          // match position becomes the CurSearch position. With /g, multiple
+          // substitutions happened and nvim shows no CurSearch.
+          this._showCurSearch = true;
+          if (!globalFlag) {
+            this._curSearchPos = { row: lastSubRow, col: lastSubCol };
+          } else {
+            this._curSearchPos = null;
+          }
         }
-        this._showCurSearch = false;
-        this._curSearchPos = null;
         return;
       }
     }
