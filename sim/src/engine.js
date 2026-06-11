@@ -1958,6 +1958,7 @@ export class VimEngine {
           this.cursor.col = this._firstNonBlank(this.cursor.row);
         }
         this._stopRecording(); this._redoStack = [];
+        if (this._showCurSearch) this._refreshCurSearchIfInMatch();
         break;
       }
       case 'P': {
@@ -1978,6 +1979,7 @@ export class VimEngine {
           this.cursor.col = this._firstNonBlank(this.cursor.row);
         }
         this._stopRecording(); this._redoStack = [];
+        if (this._showCurSearch) this._refreshCurSearchIfInMatch();
         break;
       }
 
@@ -4199,6 +4201,42 @@ export class VimEngine {
       this._filterRange = null;
       this._cmdHistoryPos = -1;
       this._resetTabCompletion();
+      this._cmdPendingCtrlR = false;
+      return;
+    }
+    // Pending Ctrl-R in cmdline: handle BEFORE other key handlers so that
+    // Ctrl-R Ctrl-W (insert cword) is not consumed by the Ctrl-W "delete
+    // word" handler below.
+    if (this._cmdPendingCtrlR) {
+      this._cmdPendingCtrlR = false;
+      let regText = '';
+      if (/^[a-zA-Z0-9]$/.test(key) || '+-*_/"'.includes(key)) {
+        this._pendingRegKey = (key === '"') ? '' : key;
+        if (key === '"') {
+          regText = this._unnamedReg || '';
+        } else {
+          const r = this._getReg();
+          regText = r.text || '';
+        }
+      } else if (key === '/') {
+        regText = this._searchPattern || '';
+      } else if (key === ':') {
+        regText = this._lastExCommand || '';
+      } else if (key === '%') {
+        regText = this._fileName || '';
+      } else if (key === 'Ctrl-W') {
+        // Ctrl-R Ctrl-W — insert <cword> at cursor position
+        regText = this._wordUnderCursor() || '';
+      } else if (key === 'Ctrl-A') {
+        // Ctrl-R Ctrl-A — insert <cWORD> at cursor position
+        regText = this._WORDUnderCursor ? (this._WORDUnderCursor() || '') : (this._wordUnderCursor() || '');
+      }
+      if (regText) {
+        // Insert register contents into command/search input (strip newlines)
+        const clean = regText.replace(/\n/g, '');
+        this._searchInput += clean;
+        this.commandLine = this.commandLine[0] + this._searchInput;
+      }
       return;
     }
     if (key === 'Enter' || key === 'Ctrl-J' || key === 'Ctrl-M') { this._resetTabCompletion(); this._executeCommand(); return; }
@@ -4286,29 +4324,8 @@ export class VimEngine {
       return;
     }
     if (this._cmdPendingCtrlR) {
+      // Handled at top of _commandKey now (so Ctrl-R Ctrl-W works).
       this._cmdPendingCtrlR = false;
-      let regText = '';
-      if (/^[a-zA-Z0-9]$/.test(key) || '+-*_/"'.includes(key)) {
-        this._pendingRegKey = (key === '"') ? '' : key;
-        if (key === '"') {
-          regText = this._unnamedReg || '';
-        } else {
-          const r = this._getReg();
-          regText = r.text || '';
-        }
-      } else if (key === '/') {
-        regText = this._searchPattern || '';
-      } else if (key === ':') {
-        regText = this._lastExCommand || '';
-      } else if (key === '%') {
-        regText = this._fileName || '';
-      }
-      if (regText) {
-        // Insert register contents into command/search input (strip newlines)
-        const clean = regText.replace(/\n/g, '');
-        this._searchInput += clean;
-        this.commandLine = this.commandLine[0] + this._searchInput;
-      }
       return;
     }
     if (key === 'Ctrl-R') {
@@ -5646,13 +5663,20 @@ export class VimEngine {
           // Capture the pre-substitution match position (for CurSearch tracking).
           const findRe = new RegExp(jsPattern, caseFlag);
           const matchIdx = before.search(findRe);
+          if (matchIdx < 0) continue; // no match on this line
           const after = before.replace(regex, jsReplacement);
-          if (after !== before) {
-            this.buffer.lines[r] = after;
-            totalSubs++;
-            lastSubRow = r;
-            if (matchIdx >= 0) lastSubCol = matchIdx;
+          // Count as substitution even if replacement is identical (matches nvim).
+          this.buffer.lines[r] = after;
+          // Count occurrences: with /g, count all matches; without, count one.
+          if (globalFlag) {
+            const countRe = new RegExp(jsPattern, 'g' + caseFlag);
+            const matches = before.match(countRe);
+            totalSubs += matches ? matches.length : 1;
+          } else {
+            totalSubs += 1;
           }
+          lastSubRow = r;
+          lastSubCol = matchIdx;
         }
 
         if (totalSubs === 0) {
@@ -8285,6 +8309,27 @@ export class VimEngine {
     } catch {
       this._curSearchPos = null;
     }
+  }
+
+  /** Refresh CurSearch position only if the cursor currently sits inside
+   *  a match of the active search pattern. Used after operations like p/P
+   *  that may shift match positions due to inserted text. */
+  _refreshCurSearchIfInMatch() {
+    if (!this._searchPattern) return;
+    try {
+      const re = new RegExp(this._vimPatternToJs(this._searchPattern), 'g');
+      const line = this.buffer.lines[this.cursor.row] || '';
+      let mm;
+      while ((mm = re.exec(line)) !== null) {
+        const start = mm.index;
+        const end = start + mm[0].length;
+        if (this.cursor.col >= start && this.cursor.col < end) {
+          this._curSearchPos = { row: this.cursor.row, col: start };
+          return;
+        }
+        if (mm[0].length === 0) re.lastIndex++;
+      }
+    } catch { /* ignore regex errors */ }
   }
 
   /** Set CurSearch position only if cursor is exactly at the start of a match */
