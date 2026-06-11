@@ -1950,6 +1950,11 @@ export class VimEngine {
           break;
         }
         this._saveSnapshot();
+        // For numbered-register paste, remember the register prefix in
+        // _dotPrefix so `.` can cycle to the next numbered register.
+        if (explicitReg >= '1' && explicitReg <= '9') {
+          this._dotPrefix = ['"', explicitReg];
+        }
         this._startRecording(); this._saveForDot('p');
         for (let i = 0; i < count; i++) this._putAfter(reg);
         // For linewise paste with count, cursor goes to first pasted line
@@ -1972,6 +1977,9 @@ export class VimEngine {
           break;
         }
         this._saveSnapshot();
+        if (explicitReg >= '1' && explicitReg <= '9') {
+          this._dotPrefix = ['"', explicitReg];
+        }
         this._startRecording(); this._saveForDot('P');
         for (let i = 0; i < count; i++) this._putBefore(reg);
         // For linewise paste with count, cursor goes to first pasted line
@@ -2057,6 +2065,16 @@ export class VimEngine {
           const dotCountStr = this._pendingCount;
           this._pendingCount = '';
           const saved = [...this._lastChange];
+          // Vim trick: `"Np` followed by `.` cycles to next numbered
+          // register (1→2→3...). Detect ["<digit>, ..., 'p'|'P'] and
+          // bump the digit before replay.
+          if (saved.length >= 3 && saved[0] === '"' &&
+              /^[1-8]$/.test(saved[1]) &&
+              (saved[saved.length - 1] === 'p' || saved[saved.length - 1] === 'P')) {
+            const next = String.fromCharCode(saved[1].charCodeAt(0) + 1);
+            saved[1] = next;
+            this._lastChange = [...saved];
+          }
           let replay;
           if (dotCountStr) {
             // Count replaces original count: 3. after 2dd → 3dd
@@ -2068,7 +2086,9 @@ export class VimEngine {
             replay = saved;
           }
           for (const k of replay) this.feedKey(k);
-          this._lastChange = saved;
+          if (!(saved[0] === '"' && /^[2-9]$/.test(saved[1]))) {
+            this._lastChange = saved;
+          }
         }
         break;
       }
