@@ -9755,6 +9755,10 @@ export class VimEngine {
           return;
         }
       }
+      // No section found — fall back to last line (vim's "end of file")
+      this.cursor.row = this.buffer.lineCount - 1;
+      this.cursor.col = 0;
+      this._updateDesiredCol();
     } else {
       for (let r = this.cursor.row - 1; r >= 0; r--) {
         if (this.buffer.lines[r].length > 0 && this.buffer.lines[r][0] === ch) {
@@ -9764,6 +9768,10 @@ export class VimEngine {
           return;
         }
       }
+      // No section found — fall back to first line (vim's "beginning of file")
+      this.cursor.row = 0;
+      this.cursor.col = 0;
+      this._updateDesiredCol();
     }
   }
 
