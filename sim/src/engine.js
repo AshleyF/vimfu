@@ -6235,6 +6235,7 @@ export class VimEngine {
       cul: 'cursorline', hls: 'hlsearch',
       ts: 'tabstop', sw: 'shiftwidth', so: 'scrolloff',
       is: 'incsearch', sb: 'splitbelow', spr: 'splitright',
+      ff: 'fileformat',
     };
     for (const arg of args) {
       if (!arg) continue;
@@ -6245,6 +6246,42 @@ export class VimEngine {
         const optName = shortAliases[eqMatch[1]] || eqMatch[1];
         if (optName in this._settings && typeof this._settings[optName] === 'number') {
           this._settings[optName] = parseInt(eqMatch[2], 10);
+        }
+        continue;
+      }
+
+      // String-valued settings: option=word (e.g. :set fileformat=unix, ff=dos)
+      const eqStrMatch = arg.match(/^(\w+)=([A-Za-z_][\w.-]*)$/);
+      if (eqStrMatch) {
+        const optName = shortAliases[eqStrMatch[1]] || eqStrMatch[1];
+        if (optName in this._settings && typeof this._settings[optName] === 'string') {
+          this._settings[optName] = eqStrMatch[2];
+        }
+        continue;
+      }
+
+      // Toggle: :set option! (boolean negate)
+      const bangMatch = arg.match(/^(\w+)!$/);
+      if (bangMatch) {
+        const opt = shortAliases[bangMatch[1]] || bangMatch[1];
+        if (opt in this._settings && typeof this._settings[opt] === 'boolean') {
+          this._settings[opt] = !this._settings[opt];
+        }
+        continue;
+      }
+
+      // Query: :set option? (display current value in cmdline)
+      const qMatch = arg.match(/^(\w+)\?$/);
+      if (qMatch) {
+        const opt = shortAliases[qMatch[1]] || qMatch[1];
+        if (opt in this._settings) {
+          const v = this._settings[opt];
+          if (typeof v === 'boolean') {
+            this.commandLine = (v ? '' : 'no') + opt;
+          } else {
+            this.commandLine = '  ' + opt + '=' + v;
+          }
+          this._stickyCommandLine = true;
         }
         continue;
       }

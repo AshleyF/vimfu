@@ -371,21 +371,31 @@ export class Screen {
 
     // ── Helper: expand a raw buffer line into screen text and mappings ──
     const ts = engine._settings.tabstop || 8;
+    const listMode = engine._settings?.list === true;
     const expandLine = (raw) => {
       if (!raw) raw = '';
       let expanded = '';
       const bufToScreen = [];
+      // Positions in expanded that are "list" special chars (tab markers etc.)
+      const listCols = new Set();
       for (let i = 0; i < raw.length; i++) {
         bufToScreen[i] = expanded.length;
         if (raw[i] === '\t') {
           const spaces = ts - (expanded.length % ts);
-          expanded += ' '.repeat(spaces);
+          if (listMode) {
+            // Mark the entire tab-expansion span as list special chars.
+            for (let k = 0; k < spaces; k++) listCols.add(expanded.length + k);
+            // First char is the tab indicator (>), rest are fill spaces.
+            expanded += '>' + ' '.repeat(spaces - 1);
+          } else {
+            expanded += ' '.repeat(spaces);
+          }
         } else {
           expanded += raw[i];
         }
       }
       bufToScreen[raw.length] = expanded.length; // sentinel
-      return { expanded, bufToScreen };
+      return { expanded, bufToScreen, listCols };
     };
 
     // ── Helper: how many screen rows does a buffer line consume? ──
@@ -542,7 +552,7 @@ export class Screen {
       }
 
       const raw = buf.lines[bufRow];
-      const { expanded, bufToScreen } = expandLine(raw);
+      const { expanded, bufToScreen, listCols } = expandLine(raw);
       const numWraps = noWrap ? 1 : wrapRows(expanded);
 
       for (let wrapIdx = 0; wrapIdx < numWraps && screenRow < textRows; wrapIdx++) {
@@ -556,6 +566,14 @@ export class Screen {
         // Build per-column colour arrays for this screen row
         const colFg = new Array(textCols).fill(t.normalFg);
         const colBg = new Array(textCols).fill(t.normalBg);
+
+        // Apply :set list special chars (tab markers etc.) — dim gray.
+        if (listCols && listCols.size > 0) {
+          const listFg = t.listFg || '4d5154';
+          for (let sc = sliceStart; sc < sliceEnd; sc++) {
+            if (listCols.has(sc)) colFg[sc - sliceStart] = listFg;
+          }
+        }
 
         // Apply syntax highlighting (base layer)
         if (syntaxTokens && syntaxTokens[bufRow]) {
