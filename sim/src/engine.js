@@ -4604,7 +4604,8 @@ export class VimEngine {
       return;
     }
 
-    // Set search pattern for highlighting
+    // Set search pattern for highlighting (matches nvim's side effect of
+    // running :g/:v — hlsearch is left on with this pattern).
     this._searchPattern = pattern;
     this._hlsearchActive = true;
     this._showCurSearch = true;
@@ -8399,7 +8400,8 @@ export class VimEngine {
       const re = new RegExp(this._vimPatternToJs(this._searchPattern));
       const line = this.buffer.lines[this.cursor.row] || '';
       const m = line.slice(this.cursor.col).match(re);
-      if (m && m.index === 0) {
+      // Zero-width matches (e.g. /^/, /$/) never become CurSearch in nvim.
+      if (m && m.index === 0 && m[0].length > 0) {
         this._curSearchPos = { row: this.cursor.row, col: this.cursor.col };
       } else {
         this._curSearchPos = null;

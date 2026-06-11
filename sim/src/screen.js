@@ -699,9 +699,13 @@ export class Screen {
           searchRegex.lastIndex = 0;
           let m;
           while ((m = searchRegex.exec(raw)) !== null) {
-            if (m[0].length === 0) { searchRegex.lastIndex++; continue; }
+            const isZeroWidth = m[0].length === 0;
             const matchStart = bufToScreen[m.index] ?? 0;
-            const matchEnd = (bufToScreen[m.index + m[0].length] ?? expanded.length) - 1;
+            // Zero-width matches (e.g. /^/, /$/, /\</) highlight 1 cell at
+            // the match position to mirror nvim's behaviour.
+            const matchEnd = isZeroWidth
+              ? matchStart
+              : ((bufToScreen[m.index + m[0].length] ?? expanded.length) - 1);
             const csp = engine._curSearchPos;
             const isCursorMatch = engine._showCurSearch && csp
               && bufRow === csp.row
@@ -724,6 +728,7 @@ export class Screen {
                 colBg[idx] = sBg;
               }
             }
+            if (isZeroWidth) searchRegex.lastIndex++;
           }
         }
 
