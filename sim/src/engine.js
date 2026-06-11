@@ -5396,6 +5396,32 @@ export class VimEngine {
       return;
     }
 
+    // :earlier [N] — go back N text states (counts of u). Supports a
+    // bare count (no time unit); time-based ":earlier 5s" is treated
+    // the same as the count-based form for simplicity.
+    {
+      const earlierMatch = rest.match(/^ear(?:l(?:i(?:er?)?)?)?(?:\s+(\d+)[smhdf]?)?\s*$/);
+      if (earlierMatch) {
+        const n = earlierMatch[1] ? parseInt(earlierMatch[1], 10) : 1;
+        for (let i = 0; i < n; i++) this._undo();
+        if (this._showCurSearch) this._updateCurSearchPos();
+        this.commandLine = '';
+        return;
+      }
+    }
+
+    // :later [N] — redo N text states.
+    {
+      const laterMatch = rest.match(/^lat(?:e(?:r)?)?(?:\s+(\d+)[smhdf]?)?\s*$/);
+      if (laterMatch) {
+        const n = laterMatch[1] ? parseInt(laterMatch[1], 10) : 1;
+        for (let i = 0; i < n; i++) this._redo();
+        if (this._showCurSearch) this._updateCurSearchPos();
+        this.commandLine = '';
+        return;
+      }
+    }
+
     // :reg[isters] [arg] / :di[splay] [arg]
     {
       const regMatch = rest.match(/^(?:reg(?:i(?:s(?:t(?:e(?:rs?)?)?)?)?)?|di(?:s(?:p(?:l(?:a(?:y)?)?)?)?)?)(?:\s+(.+))?\s*$/);
