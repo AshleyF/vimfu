@@ -4633,6 +4633,123 @@ export class VimEngine {
       return;
     }
 
+    // :g/.../m{ove} {addr} — move each matching line to after addr.
+    // Vim tracks each match as a mark; when one matching line moves, the
+    // other marks shift accordingly. We mirror that with a tracker array.
+    const moveSubMatch = trimmedSub.match(/^m(?:o(?:ve?)?)?\s*(.*)$/);
+    if (moveSubMatch) {
+      const addrStr = moveSubMatch[1].trim();
+      const addrParsed = this._parseExAddr(addrStr, 0);
+      if (!addrParsed) { this.commandLine = ''; return; }
+      let dest = addrParsed.line;
+      // Trackers carry the original index + the current row in the buffer.
+      const trackers = matches.map(r => ({ row: r }));
+      for (let i = 0; i < trackers.length; i++) {
+        const src = trackers[i].row;
+        if (src < 0 || src >= this.buffer.lineCount) continue;
+        if (dest === src || dest === src - 1) continue;
+        // Perform single-line move
+        const [moved] = this.buffer.lines.splice(src, 1);
+        let adjDest = dest;
+        if (adjDest > src) adjDest -= 1;
+        const insertAt = adjDest + 1;
+        this.buffer.lines.splice(insertAt, 0, moved);
+        // Update other trackers
+        for (let j = i + 1; j < trackers.length; j++) {
+          let r = trackers[j].row;
+          if (r === src) continue; // shouldn't happen (matches are distinct)
+          if (src < dest) {
+            // Move down: rows in (src, dest] shift up by 1
+            if (r > src && r <= dest) r -= 1;
+          } else {
+            // Move up: rows in [dest+1, src) shift down by 1
+            if (r >= dest + 1 && r < src) r += 1;
+          }
+          trackers[j].row = r;
+        }
+      }
+      // Cursor: after :g/.../m the cursor sits on the last moved line
+      const lastTracker = trackers[trackers.length - 1];
+      if (lastTracker) {
+        // Re-derive its current row from where the last move placed it.
+        const lastSrc = matches[matches.length - 1];
+        // For simplicity, point cursor at top of buffer when dest=0
+        if (dest < 0) this.cursor.row = 0;
+        else this.cursor.row = Math.max(0, Math.min(this.buffer.lineCount - 1, dest));
+        this.cursor.col = this._firstNonBlank(this.cursor.row);
+        this._updateDesiredCol();
+      }
+      this._setCurSearchAtCursor();
+      this.commandLine = '';
+      return;
+    }
+
+    // :g/.../s/old/new/flags — substitute on each matching line.
+    // Also supports address offset prefix like :g/.../+1s/...
+    const subSubMatch = trimmedSub.match(/^([+-]\d+)?s([^A-Za-z0-9\\"|\s])(.*)$/);
+    if (subSubMatch) {
+      const offsetStr = subSubMatch[1] || '';
+      const offset = offsetStr ? parseInt(offsetStr, 10) : 0;
+      const delim = subSubMatch[2];
+      const body = subSubMatch[3];
+      let subPat = '', subRep = '', subFlagStr = '';
+      let part = 0;
+      for (let i = 0; i < body.length; i++) {
+        if (body[i] === '\\' && i + 1 < body.length) {
+          if (part === 0) subPat += body[i] + body[i + 1];
+          else if (part === 1) subRep += body[i] + body[i + 1];
+          else subFlagStr += body[i] + body[i + 1];
+          i++; continue;
+        }
+        if (body[i] === delim) { part++; continue; }
+        if (part === 0) subPat += body[i];
+        else if (part === 1) subRep += body[i];
+        else subFlagStr += body[i];
+      }
+      if (!subPat) { this.commandLine = ''; return; }
+      let subGlobal = false, subIc = false;
+      for (const ch of subFlagStr) {
+        if (ch === 'g') subGlobal = true;
+        else if (ch === 'i') subIc = true;
+      }
+      this._lastSubstitution = { pattern: subPat, replacement: subRep, flags: subFlagStr };
+      this._searchPattern = subPat;
+      this._hlsearchActive = true;
+      this._showCurSearch = true;
+      const jsSubPat = this._vimPatternToJs(subPat);
+      const jsSubRep = subRep
+        .replace(/\\&/g, '\x00AMP')
+        .replace(/\$/g, '$$$$')
+        .replace(/&/g, '$$&')
+        .replace(/\x00AMP/g, '&')
+        .replace(/\\([1-9])/g, '$$$1');
+      const subCase = subIc ? 'i' : this._searchCaseFlag();
+      let subRegex;
+      try { subRegex = new RegExp(jsSubPat, (subGlobal ? 'g' : '') + subCase); }
+      catch { this.commandLine = ''; return; }
+      let totalSubs = 0;
+      let lastSubRow = matches[0];
+      for (const m of matches) {
+        const target = m + offset;
+        if (target < 0 || target >= this.buffer.lineCount) continue;
+        const before = this.buffer.lines[target];
+        const after = before.replace(subRegex, jsSubRep);
+        if (after !== before) {
+          this.buffer.lines[target] = after;
+          totalSubs++;
+          lastSubRow = target;
+        }
+      }
+      if (totalSubs > 0) {
+        this.cursor.row = lastSubRow;
+        this.cursor.col = this._firstNonBlank(lastSubRow);
+        this._updateDesiredCol();
+      }
+      this._setCurSearchAtCursor();
+      this.commandLine = '';
+      return;
+    }
+
     this.commandLine = '';
   }
 
