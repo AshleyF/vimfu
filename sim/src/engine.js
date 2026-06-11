@@ -4226,6 +4226,11 @@ export class VimEngine {
         regText = this._lastExCommand || '';
       } else if (key === '%') {
         regText = this._fileName || '';
+      } else if (key === '#') {
+        const alt = this._alternateBufId != null
+          ? (this._bufferList.find(e => e.id === this._alternateBufId) || {}).fileName
+          : null;
+        regText = alt || '';
       } else if (key === 'Ctrl-W') {
         // Ctrl-R Ctrl-W — insert <cword> at cursor position
         regText = this._wordUnderCursor() || '';
@@ -6497,10 +6502,17 @@ export class VimEngine {
       this._saveForDot(key);
       let regText = '';
       // Use _getReg logic for consistency: set _pendingRegKey then call _getReg
-      if (/^[a-zA-Z0-9]$/.test(key) || '+-*_/"'.includes(key)) {
+      if (/^[a-zA-Z0-9]$/.test(key) || '+-*_/".:%#='.includes(key)) {
         this._pendingRegKey = key === '"' ? '' : key;
         if (key === '"') {
           regText = this._unnamedReg || '';
+        } else if (key === '%') {
+          regText = this._fileName || '';
+        } else if (key === '#') {
+          const alt = this._alternateBufId != null
+            ? (this._bufferList.find(e => e.id === this._alternateBufId) || {}).fileName
+            : null;
+          regText = alt || '';
         } else {
           const r = this._getReg();
           regText = r.text || '';
