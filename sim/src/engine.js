@@ -528,6 +528,7 @@ export class VimEngine {
     this.buffer = new Buffer([...snap.lines]);
     this.cursor = { ...snap.cursor };
     this.scrollTop = snap.scrollTop;
+    this._updateDesiredCol();
   }
 
   _redo() {
@@ -551,6 +552,7 @@ export class VimEngine {
     // Clamp cursor to valid position in the new buffer
     this.cursor.row = Math.min(this.cursor.row, this.buffer.lineCount - 1);
     this.cursor.col = Math.min(this.cursor.col, Math.max(0, this.buffer.lineLength(this.cursor.row) - 1));
+    this._updateDesiredCol();
   }
 
   _saveForDot(key) {
@@ -4800,7 +4802,12 @@ export class VimEngine {
 
   _executeCommand() {
     const prefix = this.commandLine[0];
-    const cmd = this._searchInput.replace(/^\s+/, ''); // trim leading whitespace only
+    let cmd = this._searchInput.replace(/^\s+/, ''); // trim leading whitespace only
+    // Tolerate accidental leading ':' on cmdline ex commands
+    // (extractor emits "::cmd" when JSON `ex` value already starts with ':')
+    if (prefix === ':') {
+      while (cmd.startsWith(':')) cmd = cmd.slice(1);
+    }
     this.mode = Mode.NORMAL;
 
     // Push to command history
