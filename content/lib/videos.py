@@ -23,7 +23,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SHORTS_DIR = REPO_ROOT / "curriculum" / "shorts"
 LONGS_DIR = REPO_ROOT / "curriculum" / "longs"
 
-_LESSON_RE = re.compile(r"^(\d{4})([a-z]?)_(.+)\.json$")
+_LESSON_RE = re.compile(r"^(\d{4})([a-z]*)_(.+)\.json$")
 
 
 @lru_cache(maxsize=1)
