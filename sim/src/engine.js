@@ -8163,12 +8163,16 @@ export class VimEngine {
       ecSlice = ec;
     }
 
-    // Save snapshot with cursor at the operator start position (where the
-    // command was initiated, e.g. where 'd' was pressed).  The motion may
-    // have moved this.cursor already, but Vim's undo restores cursor to the
-    // start of the changed region.
+    // Save snapshot with cursor at the start of the changed region.
+    // For text-object motions like `di(`/`dib`/`di"`, the actual change
+    // starts at `(sr, sc)` (after the text-object expansion), not at
+    // `_opStartPos` (where the user pressed `d`, which may be far from
+    // the inner-block). For regular forward motions like `dw`, `(sr, sc)`
+    // equals `_opStartPos` so this is also correct. For backward motions,
+    // the swap above puts the earlier position into `(sr, sc)` which is
+    // also Vim's undo cursor.
     const savedCursor = { ...this.cursor };
-    this.cursor = { ...this._opStartPos };
+    this.cursor = { row: sr, col: sc };
     this._saveSnapshot();
     this.cursor = savedCursor;
 
@@ -8413,7 +8417,17 @@ export class VimEngine {
 
   _executeOperatorRange(range) {
     const op = this._pendingOp;
+    // Save snapshot with cursor at the start of the range (where the
+    // text-object deletion / change / yank begins), so undo restores
+    // cursor to the start of the changed region — matching Vim.
+    const _savedCur = { ...this.cursor };
+    const _snapRow = range.linewise ? range.startRow : range.startRow;
+    const _snapCol = range.linewise
+      ? this._firstNonBlank(range.startRow)
+      : range.startCol;
+    this.cursor = { row: _snapRow, col: _snapCol };
     this._saveSnapshot();
+    this.cursor = _savedCur;
 
     // Linewise text objects (e.g., ip/ap paragraphs)
     if (range.linewise) {
