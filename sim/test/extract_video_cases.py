@@ -188,6 +188,14 @@ def extract_case(video_path: Path) -> dict:
     data = json.loads(video_path.read_text(encoding="utf-8"))
     keys: list[str] = []
     skip: list[str] = []
+    # Tag-based skip: tmux / shell lessons exercise programs we don't
+    # simulate. Mark the whole video as skipped so it doesn't pollute
+    # the sim-vs-nvim fidelity pass rate.
+    tags = data.get("tags", []) or []
+    if "tmux" in tags:
+        skip.append("tmux lesson (not vim)")
+    elif "shell" in tags:
+        skip.append("shell lesson (not vim)")
     for step in data.get("steps", []):
         _emit_key_step(step, keys, skip)
     initial = _initial_from_setup(data.get("setup", []))
