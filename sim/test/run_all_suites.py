@@ -32,7 +32,7 @@ CASES_DIR = _here / "cases"
 
 def discover_suites():
     suites = {}
-    for py_file in sorted(CASES_DIR.glob("test_*.py")):
+    for py_file in sorted(CASES_DIR.rglob("test_*.py")):
         module_name = py_file.stem
         suite_name = module_name.removeprefix("test_")
         spec = importlib.util.spec_from_file_location(module_name, py_file)
@@ -47,8 +47,13 @@ def run_case(name, case, fast=False):
     keys = case["keys"]
     initial = case.get("initial", "")
 
-    tmp = Path(tempfile.mktemp(suffix=".txt", dir="."))
+    # Use a deterministic per-case filename so the nvim status line is
+    # stable across re-captures. Place it in cwd because ShellPilot
+    # inherits the parent's cwd and nvim must see the bare file name.
+    safe_stem = "".join(c if c.isalnum() or c in ("_", "-") else "_" for c in name)
+    tmp = Path(f"{safe_stem}.txt")
     tmp.write_text(initial, encoding="utf-8")
+    file_name = tmp.name
 
     key_delay = 0.03 if fast else 0.04
     settle_time = 0.2 if fast else 0.3
@@ -88,6 +93,7 @@ def run_case(name, case, fast=False):
         return {
             "keys": keys,
             "initialContent": initial,
+            "fileName": file_name,
             "frame": frame,
             "textLines": text_lines,
             "cursor": frame["cursor"],
