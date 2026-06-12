@@ -8,60 +8,168 @@
   "seed": 788,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f hello.py .hello.py.swp .hello.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "hello.py", "content": "print(\"Hello from Python!\")\nprint(2 + 2)" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim hello.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f hello.py .hello.py.swp .hello.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "hello.py",
+      "content": "print(\"Hello from Python!\")\nprint(2 + 2)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim hello.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":!{cmd} — Run Shell Command", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon bang runs a shell command without leaving Vim. See the output, press enter, and you're back." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: run ls ---" },
-    { "say": "List files in the current directory.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":!ls", "overlay": ":!ls" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":!{cmd} — Run Shell Command",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon bang runs a shell command without leaving Vim."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: run ls ---"
+    },
+    {
+      "say": "First, list files in the current directory."
+    },
+    {
+      "type": ":!ls",
+      "overlay": ":!ls"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Colon bang followed by any shell command runs it from inside Vim."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 1.0 },
-    { "say": "There's the file listing. Press enter to return.", "wait": false },
-    { "wait": 0.3 },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "There's the file listing. Press enter to return to the editor."
+    },
     "enter",
-    { "wait": 0.6 },
-    { "comment": "--- Demo: run python % ---" },
-    { "say": "Run the current file with Python. Percent sign means the current filename.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":!python3 %", "overlay": ":!python3 %" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Demo: run python % ---"
+    },
+    {
+      "say": "Now run the current file with Python."
+    },
+    {
+      "type": ":!python3 %",
+      "overlay": ":!python3 %"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "The percent sign expands to the current filename."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 1.0 },
-    { "say": "It printed the output. Enter to return.", "wait": false },
-    { "wait": 0.3 },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "It printed the output. Enter to return."
+    },
     "enter",
-    { "wait": 0.6 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon bang command. Run anything from the shell. Percent expands to the current file name." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon bang command. Run anything from the shell. Percent expands to the current filename."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f hello.py" }
-  ]
+    {
+      "line": "rm -f hello.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "JvlzF6Sj-Ms",
+    "url": "https://youtube.com/watch?v=JvlzF6Sj-Ms"
+  }
 }

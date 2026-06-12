@@ -8,47 +8,137 @@
   "seed": 815,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f names.txt .names.txt.swp .names.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "names.txt", "content": "John Smith\nJane Doe\nBob Jones\nAlice Lee" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim names.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f names.txt .names.txt.swp .names.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "names.txt",
+      "content": "John Smith\nJane Doe\nBob Jones\nAlice Lee"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim names.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":s Captured Groups", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Capture groups let you rearrange matched text. Use escaped parentheses to capture, and backslash one through nine to refer to them." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: swap first and last names ---" },
-    { "say": "Swap first and last names. Capture each word, then reverse them.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%s/\\(\\w\\+\\) \\(\\w\\+\\)/\\2, \\1/", "overlay": ":%s/\\(word\\) \\(word\\)/\\2, \\1/" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":s Captured Groups",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Capture groups let you rearrange matched text. Use escaped parentheses to capture, and backslash one through nine to refer to them."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: swap first and last names ---"
+    },
+    {
+      "say": "Swap first and last names. Capture each word, then reverse them."
+    },
+    {
+      "type": ":%s/\\(\\w\\+\\) \\(\\w\\+\\)/\\2, \\1/",
+      "overlay": ":%s/\\(word\\) \\(word\\)/\\2, \\1/"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "The escaped parens capture each word. In the replacement, backslash two then backslash one puts the last name first."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Last name comma first name. Backslash one is the first capture, backslash two is the second." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Escaped parentheses capture. Backslash one through nine recall them. Rearrange any text." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Last name comma first name on every line."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Escaped parentheses capture. Backslash one through nine recall them. Rearrange any text."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f names.txt" }
-  ]
+    {
+      "line": "rm -f names.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "vL4b81x3nbY",
+    "url": "https://youtube.com/watch?v=vL4b81x3nbY"
+  }
 }

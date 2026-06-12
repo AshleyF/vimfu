@@ -8,61 +8,184 @@
   "seed": 808,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with tabs" },
-    { "writeFile": "demo.py", "content": "def hello():\n\tprint(\"hi\")\n\treturn True\n\ndef world():\n\tprint(\"world\")" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with tabs"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "def hello():\n\tprint(\"hi\")\n\treturn True\n\ndef world():\n\tprint(\"world\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":retab — Fix Tabs", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Re tab converts tabs to spaces or spaces to tabs based on your settings. Fix mixed indentation in one command." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: show tabs with list ---" },
-    { "say": "Turn on list mode to see the tabs.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set list", "overlay": ":set list" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":retab — Fix Tabs",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Re tab converts tabs to spaces or spaces to tabs based on your settings."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: show tabs with list ---"
+    },
+    {
+      "say": "Turn on list mode with custom list chars so tabs and spaces are both visible."
+    },
+    {
+      "type": ":set list listchars=tab:>-,space:·",
+      "overlay": ":set list listchars=..."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Tabs render as arrows, spaces as middle dots."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Those arrows are tab characters. Convert them to spaces.", "wait": false },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: retab ---" },
-    { "type": ":set expandtab tabstop=4", "overlay": ":set et ts=4" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Arrows are tabs. The few dots are spaces. Now configure the conversion."
+    },
+    {
+      "comment": "--- Demo: retab ---"
+    },
+    {
+      "type": ":set expandtab tabstop=4",
+      "overlay": ":set et ts=4"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Expand tab means insert spaces. Tab stop four means four spaces per tab."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.3 },
-    { "type": ":retab", "overlay": ":retab" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": ":retab",
+      "overlay": ":retab"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Re tab rewrites the file using those settings."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Tabs replaced with four spaces each. The file now uses consistent spacing." },
-    { "wait": 0.3 },
-    { "type": ":set nolist" },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The arrows became four dots each. Pure spaces now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set nolist"
+    },
     "enter",
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon re tab. Fix indentation across the whole file. Set expand tab and tab stop first to control the output." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon re tab. Fix indentation fast. Set expand tab and tab stop first."
+    },
+    {
+      "wait": 1.0
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "mb2CnbdoQwQ",
+    "url": "https://youtube.com/watch?v=mb2CnbdoQwQ"
+  }
 }

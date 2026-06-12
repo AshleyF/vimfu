@@ -8,64 +8,197 @@
   "seed": 816,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.txt", "content": "cat cats\ndog dogs\nthe bat batted\nhat hats hatted" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "cat cats\ndog dogs\nthe bat batted\nhat hats hatted"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Vim Regex Syntax", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Vim regex is different from modern regex. Some special characters need a backslash. Let's cover the key differences." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: \\+ for one or more ---" },
-    { "say": "Backslash plus means one or more. In most regex it's just plus. In Vim you need the backslash." },
-    { "wait": 0.3 },
-    { "type": ":set hlsearch" },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Vim Regex Syntax",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Vim regex is different. Some special characters need a backslash. Here are the key ones."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Enable hlsearch so matches are visible ---"
+    },
+    {
+      "type": ":set hlsearch",
+      "overlay": ":set hlsearch"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.3 },
-    { "type": "/\\w\\+", "overlay": "/\\w\\+ (one or more)" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Demo: \\+ for one or more ---"
+    },
+    {
+      "say": "Backslash plus means one or more."
+    },
+    {
+      "type": "/\\w\\+",
+      "overlay": "/\\w\\+ (one or more)"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "In most flavors this is just plus. In Vim a bare plus is literal."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "comment": "--- Demo: \\< \\> word boundary ---" },
-    { "say": "Backslash angle brackets match word boundaries. Find the exact word cat, not cats.", "wait": false },
-    { "wait": 0.3 },
-    { "type": "/\\<cat\\>", "overlay": "/\\<cat\\> (word boundary)" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Demo: \\< \\> word boundary ---"
+    },
+    {
+      "say": "Now exact-match the word cat using word boundaries."
+    },
+    {
+      "type": "/\\<cat\\>",
+      "overlay": "/\\<cat\\> (word boundary)"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Backslash angle brackets anchor the word edges."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Only cat matched, not cats. Word boundaries are powerful." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: \\| for alternation ---" },
-    { "say": "Backslash pipe means or. Match cat or dog.", "wait": false },
-    { "wait": 0.3 },
-    { "type": "/cat\\|dog", "overlay": "/cat\\|dog (or)" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.7
+    },
+    {
+      "say": "Only cat. The s in cats excluded."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: \\| for alternation ---"
+    },
+    {
+      "say": "Match cat or dog."
+    },
+    {
+      "type": "/cat\\|dog",
+      "overlay": "/cat\\|dog (or)"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Backslash pipe is alternation."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Vim regex. Backslash plus for one or more, backslash question for optional, backslash parens for groups, backslash pipe for or, backslash angle brackets for word boundaries. Different from Perl but just as powerful." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.7
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Backslash plus, question, parens, pipe, angle brackets. Different from Perl, just as powerful."
+    },
+    {
+      "wait": 1.0
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.txt" }
-  ]
+    {
+      "line": "rm -f demo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "LTtVAPaJylM",
+    "url": "https://youtube.com/watch?v=LTtVAPaJylM"
+  }
 }

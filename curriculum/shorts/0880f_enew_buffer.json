@@ -8,61 +8,171 @@
   "seed": 794,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.py", "content": "print(\"hello\")" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "print(\"hello\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":enew — New Unnamed Buffer", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "E new creates a fresh unnamed buffer. Like opening a blank file to start writing from scratch." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: create new buffer ---" },
-    { "say": "Create a new buffer.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":enew", "overlay": ":enew" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":enew — New Unnamed Buffer",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "E new creates a fresh unnamed buffer — like opening a blank file to start writing from scratch."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: create new buffer ---"
+    },
+    {
+      "say": "Open a fresh, unnamed buffer."
+    },
+    {
+      "type": ":enew",
+      "overlay": ":enew"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "E new — short for edit new — starts editing an empty buffer with no filename."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Empty buffer. Type something and save it with a name later using colon W filename.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "i" },
-    { "type": "# scratch notes" },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Empty buffer. Type something into it."
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "type": "# scratch notes"
+    },
     "escape",
-    { "wait": 0.5 },
-    { "comment": "--- Demo: check buffers ---" },
-    { "say": "Check the buffer list.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":ls", "overlay": ":ls" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo: check buffers ---"
+    },
+    {
+      "say": "Check the buffer list."
+    },
+    {
+      "type": ":ls",
+      "overlay": ":ls"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
+    {
+      "wait": 0.8
+    },
     "enter",
-    { "say": "The new buffer has no name. It's listed as unnamed." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon E new. Quick scratch buffer whenever you need one." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "The new buffer has no name. It's listed as no name. Save it later with colon W filename."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon E new. Quick scratch buffer whenever you need one."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "TN92kfLMfWI",
+    "url": "https://youtube.com/watch?v=TN92kfLMfWI"
+  }
 }

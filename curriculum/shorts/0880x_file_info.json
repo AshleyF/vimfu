@@ -8,59 +8,167 @@
   "seed": 812,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.py", "content": "import os\nimport sys\n\ndef main():\n    print(\"hello\")\n    return 0\n\nif __name__ == \"__main__\":\n    main()" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "import os\nimport sys\n\ndef main():\n    print(\"hello\")\n    return 0\n\nif __name__ == \"__main__\":\n    main()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":file — File Info", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon file shows useful info. The filename, whether it's modified, your cursor position, and total line count." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: show file info ---" },
-    { "say": "Check the file info.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":file", "overlay": ":file" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":file — File Info",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon file shows useful info — the filename, whether it's modified, your cursor position, and the total line count."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: show file info ---"
+    },
+    {
+      "say": "Check the file info."
+    },
+    {
+      "type": ":file",
+      "overlay": ":file"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Colon file prints the status line text for the current buffer."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "It shows the filename, total lines, and cursor position. Now make a change and check again.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "5j" },
-    { "wait": 0.3 },
-    { "keys": "o" },
-    { "type": "# modified" },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Filename, total lines, and cursor position. Now make a change and run it again."
+    },
+    {
+      "keys": "5j"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "type": "# modified"
+    },
     "escape",
-    { "wait": 0.5 },
-    { "type": ":file", "overlay": ":file" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": ":file",
+      "overlay": ":file"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Now it shows modified. The line count increased. Cursor position updated." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon file. Quick file status. Control G does the same thing in normal mode." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now it shows modified. The line count increased. Cursor position updated."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon file. Quick file status. Control G does the same thing in normal mode."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "g1h0Y02MGN8",
+    "url": "https://youtube.com/watch?v=g1h0Y02MGN8"
+  }
 }

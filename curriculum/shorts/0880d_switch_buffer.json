@@ -8,63 +8,186 @@
   "seed": 792,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f main.py utils.py config.py .*.swp .*.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo files" },
-    { "writeFile": "main.py", "content": "# Main entry point\nimport utils" },
-    { "writeFile": "utils.py", "content": "# Utility functions\ndef helper():\n    pass" },
-    { "writeFile": "config.py", "content": "# Configuration\nDEBUG = True" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim main.py utils.py config.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f main.py utils.py config.py .*.swp .*.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "main.py",
+      "content": "# Main entry point\nimport utils"
+    },
+    {
+      "writeFile": "utils.py",
+      "content": "# Utility functions\ndef helper():\n    pass"
+    },
+    {
+      "writeFile": "config.py",
+      "content": "# Configuration\nDEBUG = True"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim main.py utils.py config.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":b N / :b name", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Jump to any buffer by number or by name. Faster than cycling through them one by one." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: list then jump by number ---" },
-    { "say": "List buffers first to see the numbers.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":ls", "overlay": ":ls" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":b N / :b name",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Jump to any buffer by number or by name. Faster than cycling through them one by one."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: list then jump by number ---"
+    },
+    {
+      "say": "First, list the buffers to see their numbers."
+    },
+    {
+      "type": ":ls",
+      "overlay": ":ls"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
+    {
+      "wait": 0.8
+    },
     "enter",
-    { "say": "Jump to buffer three.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":b 3", "overlay": ":b 3" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Jump straight to buffer three."
+    },
+    {
+      "type": ":b 3",
+      "overlay": ":b 3"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Colon B followed by a number jumps to that buffer."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Now in config. You can also jump by name. Type part of the filename.", "wait": false },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: jump by name ---" },
-    { "type": ":b util", "overlay": ":b util" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now in config. You can also jump by name."
+    },
+    {
+      "comment": "--- Demo: jump by name ---"
+    },
+    {
+      "type": ":b util",
+      "overlay": ":b util"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Just enough letters to uniquely match the filename."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Jumped to utils. Just enough letters to be unique." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon B number or colon B name. Direct jumps to any buffer." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Jumped to utils."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon B number or colon B name. Direct jumps to any buffer."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f main.py utils.py config.py" }
-  ]
+    {
+      "line": "rm -f main.py utils.py config.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "yu0JwuiBdH4",
+    "url": "https://youtube.com/watch?v=yu0JwuiBdH4"
+  }
 }

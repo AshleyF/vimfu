@@ -8,56 +8,167 @@
   "seed": 831,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "recipes"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "recipes"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f data.py .data.py.swp .data.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with trailing whitespace" },
-    { "writeFile": "data.py", "content": "name = \"Alice\"   \nage = 30         \ncity = \"NYC\"     \nscore = 95       \ngrade = \"A\"      " },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim data.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f data.py .data.py.swp .data.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with trailing whitespace"
+    },
+    {
+      "writeFile": "data.py",
+      "content": "name = \"Alice\"   \nage = 30         \ncity = \"NYC\"     \nscore = 95       \ngrade = \"A\"      "
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim data.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Recipe: Clean Trailing Whitespace", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "This file has invisible trailing spaces on most lines. Let's reveal them and clean them up." },
-    { "wait": 0.3 },
-    { "comment": "--- Show trailing whitespace ---" },
-    { "say": "Set list mode to make whitespace visible.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set list", "overlay": ":set list" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Recipe: Clean Trailing Whitespace",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "This file has invisible trailing spaces on most lines. Let's reveal them and clean them up."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Show trailing whitespace ---"
+    },
+    {
+      "say": "First make whitespace visible."
+    },
+    {
+      "type": ":set list listchars=tab:>-,trail:·,space:·",
+      "overlay": ":set list listchars=..."
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "List mode with custom list chars renders spaces as middle dots so the trailing ones become obvious."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "See the extra characters after each value? Those are trailing spaces." },
-    { "wait": 0.3 },
-    { "comment": "--- Clean whitespace ---" },
-    { "say": "Substitute backslash s plus dollar with nothing. That matches one or more whitespace characters at end of line.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%s/\\s\\+$//g", "overlay": ":%s/\\s\\+$//g" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "See the dots after each value? Those are trailing spaces."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Clean whitespace ---"
+    },
+    {
+      "say": "Now strip them with a substitute."
+    },
+    {
+      "type": ":%s/\\s\\+$//g",
+      "overlay": ":%s/\\s\\+$//g"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Percent s, backslash s plus dollar, replace with nothing. Match one or more whitespace characters at end of line."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Four substitutions. The trailing spaces are gone. Each line ends cleanly now." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Percent s backslash s plus dollar, replace with nothing. A must-have recipe for clean code." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Four substitutions. The trailing dots are gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Percent s backslash s plus dollar, replace with nothing. A must-have recipe for clean code."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f data.py" }
-  ]
+    {
+      "line": "rm -f data.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "vIZiPZU836g",
+    "url": "https://youtube.com/watch?v=vIZiPZU836g"
+  }
 }

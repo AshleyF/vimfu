@@ -8,63 +8,177 @@
   "seed": 810,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.txt", "content": "start" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "start"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":undolist — Undo Info", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Undo list shows all the leaves of the undo tree. Each entry is a point you can jump back to." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: make some changes ---" },
-    { "say": "Make a few changes to build up the undo history.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "o" },
-    { "type": "change one" },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":undolist — Undo Info",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Undo list shows all the leaves of the undo tree. Each entry is a point you can jump back to."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: make some changes ---"
+    },
+    {
+      "say": "First, make a few changes to build up the undo history."
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "type": "change one"
+    },
     "escape",
-    { "wait": 0.3 },
-    { "keys": "o" },
-    { "type": "change two" },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "type": "change two"
+    },
     "escape",
-    { "wait": 0.3 },
-    { "keys": "o" },
-    { "type": "change three" },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "o"
+    },
+    {
+      "type": "change three"
+    },
     "escape",
-    { "wait": 0.5 },
-    { "comment": "--- Demo: show undolist ---" },
-    { "say": "Check the undo list.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":undolist", "overlay": ":undolist" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo: show undolist ---"
+    },
+    {
+      "say": "Now check the undo list."
+    },
+    {
+      "type": ":undolist",
+      "overlay": ":undolist"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Undo list prints every undo branch with its number, change count, and timestamp."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 1.0 },
-    { "say": "It shows the undo entry numbers, how many changes, and when they happened." },
-    { "wait": 0.3 },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Three entries — one per change. Useful when you've branched into different undo histories."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon undo list. See your undo history. Useful with undo branches." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon undo list. See your undo history. Useful with undo branches."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.txt" }
-  ]
+    {
+      "line": "rm -f demo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "ZMG2wx4JNbY",
+    "url": "https://youtube.com/watch?v=ZMG2wx4JNbY"
+  }
 }

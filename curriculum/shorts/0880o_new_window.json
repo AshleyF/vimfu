@@ -8,51 +8,144 @@
   "seed": 803,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.py", "content": "def main():\n    print(\"hello\")\n\nmain()" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "def main():\n    print(\"hello\")\n\nmain()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":new — New Window", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Colon new opens a new empty buffer in a horizontal split. Like E new plus split combined." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: create new window ---" },
-    { "say": "Open a new window.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":new", "overlay": ":new" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":new — New Window",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Colon new opens a new empty buffer in a horizontal split — like E new and split combined."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: create new window ---"
+    },
+    {
+      "say": "Open a new scratch window."
+    },
+    {
+      "type": ":new",
+      "overlay": ":new"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Colon new creates an unnamed buffer in a fresh horizontal split."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "An empty buffer in the top window. The original file is below. Start typing in the scratch space.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "i" },
-    { "type": "# notes" },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "An empty buffer in the top window. The original file is below. Start typing in the scratch space."
+    },
+    {
+      "keys": "i"
+    },
+    {
+      "type": "# notes"
+    },
     "escape",
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon new. Quick scratch window alongside your code." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon new. Quick scratch window alongside your code."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "BNa65M3K2XQ",
+    "url": "https://youtube.com/watch?v=BNa65M3K2XQ"
+  }
 }

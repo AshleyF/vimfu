@@ -8,52 +8,158 @@
   "seed": 799,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f a.py b.py c.py d.py .*.swp .*.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo files" },
-    { "writeFile": "a.py", "content": "# File A" },
-    { "writeFile": "b.py", "content": "# File B" },
-    { "writeFile": "c.py", "content": "# File C" },
-    { "writeFile": "d.py", "content": "# File D" },
-    { "line": "clear" },
-    { "comment": "Launch nvim with tabs" },
-    { "line": "nvim -p a.py b.py c.py d.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py d.py .*.swp .*.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# File A"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# File B"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# File C"
+    },
+    {
+      "writeFile": "d.py",
+      "content": "# File D"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with tabs"
+    },
+    {
+      "line": "nvim -p a.py b.py c.py d.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":tabo — Only Tab", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Tab only closes every tab except the current one. Quick cleanup when you have too many tabs." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: show four tabs then close all but current ---" },
-    { "say": "Four tabs open. Move to tab B and close all the others.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "gt" },
-    { "wait": 0.6 },
-    { "type": ":tabo", "overlay": ":tabonly" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":tabo — Only Tab",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Tab only closes every tab except the current one. Quick cleanup when you have too many tabs."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: show four tabs then close all but current ---"
+    },
+    {
+      "say": "Four tabs open. Move to tab B first."
+    },
+    {
+      "keys": "gt"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now close all the others."
+    },
+    {
+      "type": ":tabo",
+      "overlay": ":tabonly"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Tab O — short for tab only — keeps just the current tab."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Only tab B remains. The tab bar disappeared because there's just one tab now." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon tab only. Close all other tabs. The buffers still exist, just the tabs are gone." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Only tab B remains. The tab bar disappeared because there's just one tab now."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon tab only. Close all other tabs. The buffers still exist, just the tabs are gone."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f a.py b.py c.py d.py" }
-  ]
+    {
+      "line": "rm -f a.py b.py c.py d.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "RxMPk-Dy7e0",
+    "url": "https://youtube.com/watch?v=RxMPk-Dy7e0"
+  }
 }

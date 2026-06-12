@@ -8,54 +8,155 @@
   "seed": 819,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "recipes"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "recipes"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f funcs.py .funcs.py.swp .funcs.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with functions in wrong order" },
-    { "writeFile": "funcs.py", "content": "def cleanup():\n    remove_temp()\n    close_logs()\n\ndef process():\n    load_data()\n    transform()\n    save_results()\n\ndef setup():\n    init_config()\n    open_logs()" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim funcs.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f funcs.py .funcs.py.swp .funcs.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with functions in wrong order"
+    },
+    {
+      "writeFile": "funcs.py",
+      "content": "def cleanup():\n    remove_temp()\n    close_logs()\n\ndef process():\n    load_data()\n    transform()\n    save_results()\n\ndef setup():\n    init_config()\n    open_logs()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim funcs.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Recipe: Move Code Around", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "These functions are in the wrong order. Setup should come first. The m command moves lines." },
-    { "wait": 0.3 },
-    { "comment": "--- Show line numbers ---" },
-    { "say": "Turn on line numbers to see the range.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set number", "overlay": ":set number" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Recipe: Move Code Around",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "These functions are in the wrong order. Setup should come first. The m command moves lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Show line numbers ---"
+    },
+    {
+      "say": "Turn on line numbers."
+    },
+    {
+      "type": ":set number",
+      "overlay": ":set number"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.6 },
-    { "comment": "--- Move setup to top ---" },
-    { "say": "Move setup on lines 10 through 12 to after line 0, which means the top of the file.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":10,12m 0", "overlay": ":10,12m 0" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Move setup to top ---"
+    },
+    {
+      "say": "Move the setup function, lines ten through twelve, to the very top."
+    },
+    {
+      "type": ":10,12m 0",
+      "overlay": ":10,12m 0"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Ten comma twelve m zero. After line zero means before line one — the top of the file."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Setup is now at the top. The other functions shifted down. No cutting and pasting needed." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon range m destination. Move any block of lines anywhere in the file." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Setup is now at the top. No cutting and pasting needed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon range m destination. Move any block of lines anywhere in the file."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f funcs.py" }
-  ]
+    {
+      "line": "rm -f funcs.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "AtymcuY1E5U",
+    "url": "https://youtube.com/watch?v=AtymcuY1E5U"
+  }
 }

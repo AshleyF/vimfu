@@ -8,54 +8,155 @@
   "seed": 827,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "recipes"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "recipes"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f utils.py .utils.py.swp .utils.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo Python file" },
-    { "writeFile": "utils.py", "content": "def process():\n    load_data()\n    validate()\n    transform()\n    save()\n    notify()\n    cleanup()\n    report()\n\ndef main():\n    process()" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim utils.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f utils.py .utils.py.swp .utils.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo Python file"
+    },
+    {
+      "writeFile": "utils.py",
+      "content": "def process():\n    load_data()\n    validate()\n    transform()\n    save()\n    notify()\n    cleanup()\n    report()\n\ndef main():\n    process()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim utils.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Recipe: Comment Out a Range", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "We want to temporarily disable some steps in this function. Comment out lines 3 through 7." },
-    { "wait": 0.3 },
-    { "comment": "--- Show line numbers ---" },
-    { "say": "Turn on line numbers.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set number", "overlay": ":set number" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Recipe: Comment Out a Range",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "We want to temporarily disable some steps. Comment out lines three through seven."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Show line numbers ---"
+    },
+    {
+      "say": "Turn on line numbers."
+    },
+    {
+      "type": ":set number",
+      "overlay": ":set number"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.6 },
-    { "comment": "--- Comment out range ---" },
-    { "say": "Norm capital I inserts at the start of the text. Hash space adds a Python comment.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":3,7norm I# ", "overlay": ":3,7norm I# " },
-    { "wait": 0.3 },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Comment out range ---"
+    },
+    {
+      "say": "Use norm to insert a comment marker at the start of each line."
+    },
+    {
+      "type": ":3,7norm I# ",
+      "overlay": ":3,7norm I# "
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Range three comma seven, norm capital I hash space. Capital I inserts at the start of the text on every line in the range."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Lines 3 through 7 are now commented out. Load data and report still run, but the middle steps are disabled." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon range norm I comment character. Comment out any block of code instantly." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Lines three through seven are now commented out. The middle steps are disabled."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon range norm I comment character. Comment out any block of code instantly."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f utils.py" }
-  ]
+    {
+      "line": "rm -f utils.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "wtBlMbKjpdQ",
+    "url": "https://youtube.com/watch?v=wtBlMbKjpdQ"
+  }
 }

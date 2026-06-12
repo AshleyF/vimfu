@@ -8,47 +8,138 @@
   "seed": 825,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "recipes"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "recipes"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f steps.txt .steps.txt.swp .steps.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with numbered list" },
-    { "writeFile": "steps.txt", "content": "1. First\n2. Second\n3. Third\n4. Fourth\n5. Fifth\n6. Sixth\n7. Seventh\n8. Eighth" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim steps.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f steps.txt .steps.txt.swp .steps.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with numbered list"
+    },
+    {
+      "writeFile": "steps.txt",
+      "content": "1. First\n2. Second\n3. Third\n4. Fourth\n5. Fifth\n6. Sixth\n7. Seventh\n8. Eighth"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim steps.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Recipe: Reverse File Order", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "A numbered list, one through eight. Let's reverse the entire file with one command." },
-    { "wait": 0.3 },
-    { "comment": "--- Reverse lines ---" },
-    { "say": "Global matches every line. M zero moves each matched line to the top. The result is a complete reversal.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":g/^/m 0", "overlay": ":g/^/m 0" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Recipe: Reverse File Order",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "A numbered list, one through eight. Let's reverse the entire file with one command."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Reverse lines ---"
+    },
+    {
+      "say": "Use a clever combo of global and move."
+    },
+    {
+      "type": ":g/^/m 0",
+      "overlay": ":g/^/m 0"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Global matches every line. For each match, move it to after line zero — that flips the order."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Eight is now first, one is last. The entire file is reversed." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon g caret m zero. A classic Vim trick to flip a file upside down." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Eight is now first, one is last. The entire file is reversed."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon g caret m zero. A classic Vim trick to flip a file upside down."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f steps.txt" }
-  ]
+    {
+      "line": "rm -f steps.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "2Cb6k8AB2ow",
+    "url": "https://youtube.com/watch?v=2Cb6k8AB2ow"
+  }
 }

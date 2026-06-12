@@ -8,47 +8,138 @@
   "seed": 826,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "recipes"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "recipes"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f notes.txt .notes.txt.swp .notes.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with mixed content" },
-    { "writeFile": "notes.txt", "content": "setup database\nTODO: fix login bug\nwrite tests\nTODO: add validation\ndeploy server\nTODO: update docs\nclean temp files\nrun benchmarks\nTODO: refactor API" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim notes.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f notes.txt .notes.txt.swp .notes.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with mixed content"
+    },
+    {
+      "writeFile": "notes.txt",
+      "content": "setup database\nTODO: fix login bug\nwrite tests\nTODO: add validation\ndeploy server\nTODO: update docs\nclean temp files\nrun benchmarks\nTODO: refactor API"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim notes.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Recipe: Extract Matching Lines", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "This file mixes tasks with TODO items. Let's extract just the TODO lines and discard everything else." },
-    { "wait": 0.3 },
-    { "comment": "--- Extract TODOs ---" },
-    { "say": "Colon v is the inverse of g. It matches lines that don't contain the pattern, then deletes them.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":v/TODO/d", "overlay": ":v/TODO/d" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Recipe: Extract Matching Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "This file mixes tasks with TODO items. Let's extract just the TODO lines and discard everything else."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Extract TODOs ---"
+    },
+    {
+      "say": "Use the v command — the inverse of g."
+    },
+    {
+      "type": ":v/TODO/d",
+      "overlay": ":v/TODO/d"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Colon v slash TODO slash d. V matches lines that do NOT contain the pattern, then deletes them."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Only the four TODO lines remain. Everything else is gone." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon v pattern d. Keep matching lines, delete the rest. The opposite of g pattern d." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Only the four TODO lines remain. Everything else is gone."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon v pattern d. Keep matching lines, delete the rest. The opposite of g pattern d."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f notes.txt" }
-  ]
+    {
+      "line": "rm -f notes.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "U41gGK7_zSw",
+    "url": "https://youtube.com/watch?v=U41gGK7_zSw"
+  }
 }

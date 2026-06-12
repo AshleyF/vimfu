@@ -8,58 +8,172 @@
   "seed": 789,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f names.txt .names.txt.swp .names.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "names.txt", "content": "cherry\napple\nbanana\ndate\nelderberry\nfig\ngrape" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim names.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f names.txt .names.txt.swp .names.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "names.txt",
+      "content": "cherry\napple\nbanana\ndate\nelderberry\nfig\ngrape"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim names.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":{range}!{filter} — Filter Lines", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "You can pipe buffer lines through an external command. The output replaces those lines." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: sort entire file ---" },
-    { "say": "Sort the entire file. Percent means all lines, bang sort runs the sort command.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%!sort", "overlay": ":%!sort" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":{range}!{filter} — Filter Lines",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "You can pipe buffer lines through an external command. The output replaces those lines."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: sort entire file ---"
+    },
+    {
+      "say": "Sort the entire file alphabetically."
+    },
+    {
+      "type": ":%!sort",
+      "overlay": ":%!sort"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Percent selects every line. Bang sort pipes them through the sort command."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "The whole file is now sorted alphabetically. The lines were piped through sort and replaced." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: undo and sort a range ---" },
-    { "say": "Undo that. Now sort just lines two through four.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "u" },
-    { "wait": 0.5 },
-    { "type": ":2,4!sort", "overlay": ":2,4!sort" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The whole file is now sorted. The lines were replaced with sort's output."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: undo and sort a range ---"
+    },
+    {
+      "say": "Undo that, then sort just lines two through four."
+    },
+    {
+      "keys": "u"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": ":2,4!sort",
+      "overlay": ":2,4!sort"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "This time the range two comma four runs sort on just those three lines."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Only those three lines were sorted. The rest of the file is untouched." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Range bang filter. Pipe any lines through any shell command. Sort, uniq, awk, anything." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Only those three lines were sorted. The rest of the file is untouched."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Range bang filter. Pipe any lines through any shell command. Sort, uniq, awk, anything."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f names.txt" }
-  ]
+    {
+      "line": "rm -f names.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "NbfZ1-3YVXY",
+    "url": "https://youtube.com/watch?v=NbfZ1-3YVXY"
+  }
 }

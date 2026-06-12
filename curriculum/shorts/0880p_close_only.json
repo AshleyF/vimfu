@@ -8,58 +8,174 @@
   "seed": 804,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f a.py b.py c.py .*.swp .*.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo files" },
-    { "writeFile": "a.py", "content": "# File A" },
-    { "writeFile": "b.py", "content": "# File B" },
-    { "writeFile": "c.py", "content": "# File C" },
-    { "line": "clear" },
-    { "comment": "Launch nvim with splits" },
-    { "line": "nvim -o a.py b.py c.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .*.swp .*.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# File A"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# File B"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# File C"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with splits"
+    },
+    {
+      "line": "nvim -o a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":close / :only", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Close shuts the current window. Only keeps only the current window and closes all others." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: close current window ---" },
-    { "say": "Three windows open. Close the top one.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":close", "overlay": ":close" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":close / :only",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Close shuts the current window. Only keeps the current window and closes all others."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: close current window ---"
+    },
+    {
+      "say": "Three windows open. Close the top one."
+    },
+    {
+      "type": ":close",
+      "overlay": ":close"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Colon close removes the current window. The buffer stays loaded."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Down to two windows. The buffer is still in memory." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: only ---" },
-    { "say": "Now use only to keep just this window.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":only", "overlay": ":only" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Down to two windows."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: only ---"
+    },
+    {
+      "say": "Now use only to keep just this window."
+    },
+    {
+      "type": ":only",
+      "overlay": ":only"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Colon only closes every other window in the current tab."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "One window. Full screen. All buffers are still accessible with colon B." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon close for one window. Colon only to keep just the current window. Clean up splits fast." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "One window, full screen. All buffers are still accessible with colon B."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon close for one window. Colon only to keep just the current window. Clean up splits fast."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f a.py b.py c.py" }
-  ]
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "_-AwP6h-wrc",
+    "url": "https://youtube.com/watch?v=_-AwP6h-wrc"
+  }
 }

@@ -8,67 +8,202 @@
   "seed": 809,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.py", "content": "line one\nline two\nline three\nline four\nline five\nline six" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "line one\nline two\nline three\nline four\nline five\nline six"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":delmarks — Delete Marks", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Delete marks removes marks you no longer need. Clean up after you're done navigating." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: set some marks ---" },
-    { "say": "Set marks A, B, and C on different lines.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "ma" },
-    { "wait": 0.3 },
-    { "keys": "2j" },
-    { "keys": "mb" },
-    { "wait": 0.3 },
-    { "keys": "2j" },
-    { "keys": "mc" },
-    { "wait": 0.5 },
-    { "type": ":marks abc", "overlay": ":marks abc" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":delmarks — Delete Marks",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Delete marks removes marks you no longer need. Clean up after you're done navigating."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: set some marks ---"
+    },
+    {
+      "say": "First, set marks A, B, and C on different lines."
+    },
+    {
+      "keys": "ma"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j"
+    },
+    {
+      "keys": "mb"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "2j"
+    },
+    {
+      "keys": "mc"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": ":marks abc",
+      "overlay": ":marks abc"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Confirm all three marks exist with colon marks A B C."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
+    {
+      "wait": 0.8
+    },
     "enter",
-    { "comment": "--- Demo: delete one mark ---" },
-    { "say": "Delete mark A.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":delm a", "overlay": ":delm a" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: delete one mark ---"
+    },
+    {
+      "say": "Now delete mark A."
+    },
+    {
+      "type": ":delm a",
+      "overlay": ":delm a"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Del M is short for delete marks. Followed by a letter, it removes that one mark."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.5 },
-    { "say": "Delete all lowercase marks at once with bang.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":delm!", "overlay": ":delm!" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Delete all lowercase marks at once with bang."
+    },
+    {
+      "type": ":delm!",
+      "overlay": ":delm!"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "The bang variant clears every lowercase mark in this buffer."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon del marks letter to remove one. Colon del marks bang to clear all lowercase marks." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon del marks letter to remove one. Colon del marks bang to clear all lowercase marks."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "2WsbXVvhdt4",
+    "url": "https://youtube.com/watch?v=2WsbXVvhdt4"
+  }
 }

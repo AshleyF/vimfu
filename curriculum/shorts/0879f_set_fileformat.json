@@ -8,72 +8,205 @@
   "seed": 787,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.txt", "content": "Line one\nLine two\nLine three" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.txt .demo.txt.swp .demo.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.txt",
+      "content": "Line one\nLine two\nLine three"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":set fileformat", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "File format controls line endings. Unix uses L F. DOS uses C R L F. This matters when sharing files between operating systems." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: check current format ---" },
-    { "say": "Check the current format.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set fileformat?", "overlay": ":set ff?" },
-    { "wait": 0.6 },
-    { "say": "Question mark queries the current line ending format." },
-    { "wait": 0.4 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":set fileformat",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "File format controls line endings. Unix uses L F. DOS uses C R L F. This matters when sharing files between operating systems."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: check current format ---"
+    },
+    {
+      "say": "Check the current format.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set fileformat?",
+      "overlay": ":set ff?"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Question mark queries the current line ending format."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "It's Unix. Change it to DOS.", "wait": false },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "It's Unix. Change it to DOS.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "comment": "--- Demo: change format ---" },
-    { "type": ":set fileformat=dos", "overlay": ":set ff=dos" },
-    { "wait": 0.6 },
-    { "say": "Equals to assign a new value — switch to DOS line endings, C-R L-F." },
-    { "wait": 0.4 },
+    {
+      "comment": "--- Demo: change format ---"
+    },
+    {
+      "type": ":set fileformat=dos",
+      "overlay": ":set ff=dos"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Equals to assign a new value — switch to DOS line endings, C-R L-F."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.5 },
-    { "type": ":set ff?", "overlay": ":set ff?" },
-    { "wait": 0.6 },
-    { "say": "F-F is the short form of file format — confirm the change." },
-    { "wait": 0.3 },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": ":set ff?",
+      "overlay": ":set ff?"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "F-F is the short form of file format — confirm the change."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Now it's DOS format. When you save, the file will have Windows-style line endings. Change back with set F F equals unix.", "wait": false },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now it's DOS format. When you save, the file will have Windows-style line endings. Change back with set F F equals unix.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "type": ":set ff=unix", "overlay": ":set ff=unix" },
-    { "wait": 0.6 },
-    { "say": "Set it back to unix — L-F line endings." },
-    { "wait": 0.4 },
+    {
+      "type": ":set ff=unix",
+      "overlay": ":set ff=unix"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Set it back to unix — L-F line endings."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.5 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Set file format equals unix or dos. Fix line ending issues in one command." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Set file format equals unix or dos. Fix line ending issues in one command."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.txt" }
-  ]
+    {
+      "line": "rm -f demo.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "0OgpwlTNpxk",
+    "url": "https://youtube.com/watch?v=0OgpwlTNpxk"
+  }
 }

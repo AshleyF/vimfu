@@ -8,57 +8,166 @@
   "seed": 778,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.py", "content": "import json\nimport os\nimport sys\n\ndef load_config():\n    with open(\"config.json\") as f:\n        return json.load(f)\n\ndef main():\n    config = load_config()\n    print(config)" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "import json\nimport os\nimport sys\n\ndef load_config():\n    with open(\"config.json\") as f:\n        return json.load(f)\n\ndef main():\n    config = load_config()\n    print(config)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":set cursorline", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Cursor line highlights the entire line your cursor is on. It makes it easy to see where you are in the file." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: turn on cursorline ---" },
-    { "say": "Turn it on.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set cursorline", "overlay": ":set cursorline" },
-    { "wait": 0.6 },
-    { "say": "Set cursor line — highlight the entire line your cursor is on." },
-    { "wait": 0.4 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":set cursorline",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Cursor line highlights the entire line your cursor is on. It makes it easy to see where you are in the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: turn on cursorline ---"
+    },
+    {
+      "say": "Turn it on.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set cursorline",
+      "overlay": ":set cursorline"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Set cursor line — highlight the entire line your cursor is on."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "The current line is highlighted. Move around and it follows.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "5j" },
-    { "wait": 0.5 },
-    { "keys": "3j" },
-    { "wait": 0.5 },
-    { "keys": "2k" },
-    { "wait": 0.5 },
-    { "say": "Always clear where the cursor is. The short form is set C U L." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Set cursor line. A simple visual aid that helps you track the cursor." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The current line is highlighted. Move around and it follows.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "5j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "3j"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": "2k"
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "say": "Always clear where the cursor is. The short form is set C U L."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Set cursor line. A simple visual aid that helps you track the cursor."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "rl0lFdL9w5M",
+    "url": "https://youtube.com/watch?v=rl0lFdL9w5M"
+  }
 }

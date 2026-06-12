@@ -8,52 +8,145 @@
   "seed": 800,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f top.py bottom.py .*.swp .*.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo files" },
-    { "writeFile": "top.py", "content": "# Top window\ndef top():\n    pass" },
-    { "writeFile": "bottom.py", "content": "# Bottom window\ndef bottom():\n    pass" },
-    { "line": "clear" },
-    { "comment": "Launch nvim with split" },
-    { "line": "nvim -o top.py bottom.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f top.py bottom.py .*.swp .*.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "top.py",
+      "content": "# Top window\ndef top():\n    pass"
+    },
+    {
+      "writeFile": "bottom.py",
+      "content": "# Bottom window\ndef bottom():\n    pass"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with split"
+    },
+    {
+      "line": "nvim -o top.py bottom.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Ctrl-W T — Window to Tab", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Control W shift T moves the current window to a new tab. Useful when a split gets too small and you want a full screen." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: move window to tab ---" },
-    { "say": "Two windows in a split. Move the top one to its own tab.", "wait": false },
-    { "wait": 0.5 },
-    { "keys": "ctrl+w" },
-    { "wait": 0.2 },
-    { "keys": "T" },
-    { "wait": 0.8 },
-    { "say": "Top dot py now has its own tab. Bottom dot py is in the original tab. Switch back to check.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "gt" },
-    { "wait": 0.8 },
-    { "say": "There's bottom on its own. Two tabs now, one window each." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Control W shift T. Pop any window out into a full-screen tab." },
-    { "wait": 1.5 }
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-W T — Window to Tab",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control W shift T moves the current window to a new tab. Useful when a split gets too small and you want a full screen."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: move window to tab ---"
+    },
+    {
+      "say": "Two windows in a horizontal split. Pop the top one into its own tab."
+    },
+    {
+      "keys": "ctrl+w"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "T"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Top dot py now has its own tab. Bottom dot py is in the original. Switch back to check."
+    },
+    {
+      "keys": "gt"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "There's bottom on its own. Two tabs now, one window each."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control W shift T. Pop any window out into a full-screen tab."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f top.py bottom.py" }
-  ]
+    {
+      "line": "rm -f top.py bottom.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "mAA8iPRK2cI",
+    "url": "https://youtube.com/watch?v=mAA8iPRK2cI"
+  }
 }

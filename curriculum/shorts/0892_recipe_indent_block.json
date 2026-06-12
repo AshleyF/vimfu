@@ -8,61 +8,172 @@
   "seed": 828,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "recipes"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "recipes"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f greet.py .greet.py.swp .greet.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with unindented body" },
-    { "writeFile": "greet.py", "content": "def greet():\nname = \"World\"\nmsg = \"Hello, \" + name\nprint(msg)\nreturn msg\n\ngreet()" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim greet.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f greet.py .greet.py.swp .greet.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with unindented body"
+    },
+    {
+      "writeFile": "greet.py",
+      "content": "def greet():\nname = \"World\"\nmsg = \"Hello, \" + name\nprint(msg)\nreturn msg\n\ngreet()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim greet.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Recipe: Indent a Block", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "The function body isn't indented. Lines 2 through 5 should be inside the def block." },
-    { "wait": 0.3 },
-    { "comment": "--- Show line numbers ---" },
-    { "say": "Turn on line numbers.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set number", "overlay": ":set number" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Recipe: Indent a Block",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "The function body isn't indented. Lines two through five should be inside the def block."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Show line numbers ---"
+    },
+    {
+      "say": "Turn on line numbers."
+    },
+    {
+      "type": ":set number",
+      "overlay": ":set number"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.6 },
-    { "comment": "--- Set shiftwidth ---" },
-    { "say": "Set shift width to four spaces.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set shiftwidth=4", "overlay": ":set shiftwidth=4" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Set shiftwidth ---"
+    },
+    {
+      "say": "Set shift width to four spaces so each indent is four wide."
+    },
+    {
+      "type": ":set shiftwidth=4",
+      "overlay": ":set shiftwidth=4"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.4 },
-    { "comment": "--- Indent range ---" },
-    { "say": "Now indent lines 2 through 5 with the greater-than command.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":2,5>", "overlay": ":2,5>" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.4
+    },
+    {
+      "comment": "--- Indent range ---"
+    },
+    {
+      "say": "Now indent the function body."
+    },
+    {
+      "type": ":2,5>",
+      "overlay": ":2,5>"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Range two comma five, then greater-than. Indent every line in that range by one shift width."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "The function body is now properly indented. Four lines shifted right in one command." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon range greater-than. Indent any block from the command line. Use less-than to unindent." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The function body is now properly indented. Four lines shifted right."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon range greater-than. Indent any block from the command line. Use less-than to unindent."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f greet.py" }
-  ]
+    {
+      "line": "rm -f greet.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "dq1TzvyoZt0",
+    "url": "https://youtube.com/watch?v=dq1TzvyoZt0"
+  }
 }

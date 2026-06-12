@@ -8,63 +8,181 @@
   "seed": 793,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f one.py two.py three.py .*.swp .*.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo files" },
-    { "writeFile": "one.py", "content": "print(\"one\")" },
-    { "writeFile": "two.py", "content": "print(\"two\")" },
-    { "writeFile": "three.py", "content": "print(\"three\")" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim one.py two.py three.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f one.py two.py three.py .*.swp .*.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "one.py",
+      "content": "print(\"one\")"
+    },
+    {
+      "writeFile": "two.py",
+      "content": "print(\"two\")"
+    },
+    {
+      "writeFile": "three.py",
+      "content": "print(\"three\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim one.py two.py three.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":bd — Delete Buffer", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Buffer delete removes a buffer from the list. The file stays on disk. It just closes it in Vim." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: list, then delete current ---" },
-    { "say": "Check the buffer list.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":ls", "overlay": ":ls" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":bd — Delete Buffer",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Buffer delete removes a buffer from the list. The file stays on disk — only the in-memory copy closes."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: list, then delete current ---"
+    },
+    {
+      "say": "Check the buffer list first."
+    },
+    {
+      "type": ":ls",
+      "overlay": ":ls"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
+    {
+      "wait": 0.8
+    },
     "enter",
-    { "say": "Delete the current buffer.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":bd", "overlay": ":bd" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Now delete the current buffer."
+    },
+    {
+      "type": ":bd",
+      "overlay": ":bd"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "B D — short for buffer delete — drops it from Vim's list."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Buffer one is gone. Vim switched to the next buffer. Check the list.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":ls", "overlay": ":ls" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Buffer one is gone. Vim switched to the next buffer. Check the list again."
+    },
+    {
+      "type": ":ls",
+      "overlay": ":ls"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
+    {
+      "wait": 0.8
+    },
     "enter",
-    { "say": "Only two buffers remain." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon B D deletes a buffer. Use B D bang to force-close unsaved changes." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.3
+    },
+    {
+      "say": "Only two buffers remain."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon B D deletes a buffer. Use B D bang to force-close unsaved changes."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f one.py two.py three.py" }
-  ]
+    {
+      "line": "rm -f one.py two.py three.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "mUNoXW4EgDs",
+    "url": "https://youtube.com/watch?v=mUNoXW4EgDs"
+  }
 }

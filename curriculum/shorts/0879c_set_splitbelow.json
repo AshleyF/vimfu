@@ -8,55 +8,158 @@
   "seed": 784,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f demo.py .demo.py.swp .demo.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "demo.py", "content": "def main():\n    print(\"hello\")\n    return 0\n\nmain()" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim demo.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f demo.py .demo.py.swp .demo.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "demo.py",
+      "content": "def main():\n    print(\"hello\")\n    return 0\n\nmain()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim demo.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":set splitbelow", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "By default, horizontal splits open above. Set split below makes new splits open below instead. More natural." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: enable and split ---" },
-    { "say": "Set it and create a split.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set splitbelow", "overlay": ":set splitbelow" },
-    { "wait": 0.6 },
-    { "say": "Set split below — new horizontal splits will open under the current window instead of above." },
-    { "wait": 0.4 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":set splitbelow",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "By default, horizontal splits open above. Set split below makes new splits open below instead. More natural."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: enable and split ---"
+    },
+    {
+      "say": "Set it and create a split.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set splitbelow",
+      "overlay": ":set splitbelow"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Set split below — new horizontal splits will open under the current window instead of above."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.5 },
-    { "type": ":split", "overlay": ":split" },
-    { "wait": 0.6 },
-    { "say": "Now create a horizontal split. Watch where it opens." },
-    { "wait": 0.3 },
+    {
+      "wait": 0.5
+    },
+    {
+      "type": ":split",
+      "overlay": ":split"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Now create a horizontal split. Watch where it opens."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "The new window opened below. Your cursor is in the bottom window. This feels more natural for most people." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Set split below or set S B. A must-have for your vim config." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "The new window opened below. Your cursor is in the bottom window. This feels more natural for most people."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Set split below or set S B. A must-have for your vim config."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f demo.py" }
-  ]
+    {
+      "line": "rm -f demo.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "eWlNsCNLnDA",
+    "url": "https://youtube.com/watch?v=eWlNsCNLnDA"
+  }
 }

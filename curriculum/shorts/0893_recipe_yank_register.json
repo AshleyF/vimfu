@@ -8,61 +8,176 @@
   "seed": 829,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "recipes"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "recipes"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f calls.txt .calls.txt.swp .calls.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file" },
-    { "writeFile": "calls.txt", "content": "alpha()\nbravo()\ncharlie()\ndelta()\n\n# paste here:" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim calls.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f calls.txt .calls.txt.swp .calls.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file"
+    },
+    {
+      "writeFile": "calls.txt",
+      "content": "alpha()\nbravo()\ncharlie()\ndelta()\n\n# paste here:"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim calls.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Recipe: Yank to Named Register", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Yank a block of lines into a named register so you can paste them later without losing them." },
-    { "wait": 0.3 },
-    { "comment": "--- Show line numbers ---" },
-    { "say": "Turn on line numbers.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set number", "overlay": ":set number" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Recipe: Yank to Named Register",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Yank a block of lines into a named register so you can paste them later without losing them."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Show line numbers ---"
+    },
+    {
+      "say": "Turn on line numbers."
+    },
+    {
+      "type": ":set number",
+      "overlay": ":set number"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.6 },
-    { "comment": "--- Yank to register a ---" },
-    { "say": "Yank lines 1 through 4 into register a.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":1,4y a", "overlay": ":1,4y a" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Yank to register a ---"
+    },
+    {
+      "say": "Yank lines one through four into register a."
+    },
+    {
+      "type": ":1,4y a",
+      "overlay": ":1,4y a"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "One comma four, y, then the register letter a. The trailing letter is the register name."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.6 },
-    { "say": "Four lines yanked into register a. Now go to the bottom and paste.", "wait": false },
-    { "wait": 0.3 },
-    { "comment": "--- Go to end and paste ---" },
-    { "keys": "G" },
-    { "wait": 0.3 },
-    { "keys": "\"ap" },
-    { "wait": 0.8 },
-    { "say": "The four lines are pasted from register a. The register keeps its contents until you overwrite it." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon range y register. Yank any block into a named register for later use." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Four lines yanked into register a. Now go to the bottom and paste from a."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Go to end and paste ---"
+    },
+    {
+      "keys": "G"
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "keys": "\"ap"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Quote a p pastes from register a. The register keeps its contents until you overwrite it."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon range y register. Yank any block into a named register for later use."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f calls.txt" }
-  ]
+    {
+      "line": "rm -f calls.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "QUjXLa3JrP0",
+    "url": "https://youtube.com/watch?v=QUjXLa3JrP0"
+  }
 }

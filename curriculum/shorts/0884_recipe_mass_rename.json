@@ -8,47 +8,138 @@
   "seed": 820,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "recipes"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "recipes"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f calc.py .calc.py.swp .calc.py.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with repeated variable name" },
-    { "writeFile": "calc.py", "content": "price = 10\ntax = price * 0.08\ndiscount = price * 0.1\nfinal = price + tax - discount\nprint(\"Price:\", price)\nprint(\"Final:\", final)" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim calc.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f calc.py .calc.py.swp .calc.py.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with repeated variable name"
+    },
+    {
+      "writeFile": "calc.py",
+      "content": "price = 10\ntax = price * 0.08\ndiscount = price * 0.1\nfinal = price + tax - discount\nprint(\"Price:\", price)\nprint(\"Final:\", final)"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim calc.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Recipe: Mass Rename", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "The variable price appears on almost every line. Let's rename it to cost everywhere at once." },
-    { "wait": 0.3 },
-    { "comment": "--- Substitute all occurrences ---" },
-    { "say": "Percent s, price, cost, g for global.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%s/price/cost/g", "overlay": ":%s/price/cost/g" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Recipe: Mass Rename",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "The variable price appears on almost every line. Let's rename it to cost everywhere at once."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Substitute all occurrences ---"
+    },
+    {
+      "say": "Run a global substitute across the whole file."
+    },
+    {
+      "type": ":%s/price/cost/g",
+      "overlay": ":%s/price/cost/g"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Percent matches every line. Replace price with cost. G means every match on each line, not just the first."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Every occurrence of price is now cost. Five substitutions across the file in one command." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Percent s old name new name g. The fastest way to rename anything across a file." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Every occurrence of price is now cost. Five substitutions across the file."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Percent s old new g. The fastest way to rename anything across a file."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f calc.py" }
-  ]
+    {
+      "line": "rm -f calc.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "E5z2HeWOgWU",
+    "url": "https://youtube.com/watch?v=E5z2HeWOgWU"
+  }
 }

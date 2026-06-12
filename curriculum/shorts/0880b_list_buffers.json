@@ -8,60 +8,176 @@
   "seed": 790,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f one.py two.py three.py .*.swp .*.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo files" },
-    { "writeFile": "one.py", "content": "print(\"one\")" },
-    { "writeFile": "two.py", "content": "print(\"two\")" },
-    { "writeFile": "three.py", "content": "print(\"three\")" },
-    { "line": "clear" },
-    { "comment": "Launch nvim with multiple files" },
-    { "line": "nvim one.py two.py three.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f one.py two.py three.py .*.swp .*.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "one.py",
+      "content": "print(\"one\")"
+    },
+    {
+      "writeFile": "two.py",
+      "content": "print(\"two\")"
+    },
+    {
+      "writeFile": "three.py",
+      "content": "print(\"three\")"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with multiple files"
+    },
+    {
+      "line": "nvim one.py two.py three.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":ls / :buffers", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "When you open multiple files, Vim keeps them in buffers. Use colon L S to see them all." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: list buffers ---" },
-    { "say": "List the buffers.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":ls", "overlay": ":ls" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":ls / :buffers",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "When you open multiple files, Vim keeps them in buffers. Colon L S shows them all."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: list buffers ---"
+    },
+    {
+      "say": "List every open buffer."
+    },
+    {
+      "type": ":ls",
+      "overlay": ":ls"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "L S is short for list. It prints one line per buffer with its number, name, and status."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 1.0 },
-    { "say": "Three buffers. The percent sign marks the current buffer. The hash marks the alternate buffer. Each has a number." },
-    { "wait": 0.3 },
+    {
+      "wait": 1.0
+    },
+    {
+      "say": "Three buffers. Percent marks the current one. Hash marks the alternate buffer."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.5 },
-    { "comment": "--- Demo: buffers command ---" },
-    { "say": "Colon buffers does the same thing.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":buffers", "overlay": ":buffers" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Demo: buffers command ---"
+    },
+    {
+      "say": "Colon buffers is the same command, spelled out."
+    },
+    {
+      "type": ":buffers",
+      "overlay": ":buffers"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Either form works. Use whichever you remember."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
+    {
+      "wait": 0.8
+    },
     "enter",
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Colon L S or colon buffers. See all your open files and their buffer numbers." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Colon L S or colon buffers. See all your open files and their buffer numbers."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f one.py two.py three.py" }
-  ]
+    {
+      "line": "rm -f one.py two.py three.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "I2lbXriJPaY",
+    "url": "https://youtube.com/watch?v=I2lbXriJPaY"
+  }
 }

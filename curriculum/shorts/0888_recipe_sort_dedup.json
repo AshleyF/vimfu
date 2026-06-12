@@ -8,47 +8,138 @@
   "seed": 824,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands", "recipes"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands",
+    "recipes"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f fruits.txt .fruits.txt.swp .fruits.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with unsorted duplicates" },
-    { "writeFile": "fruits.txt", "content": "banana\napple\ncherry\napple\ndate\nbanana\ncherry\nfig\napple\ndate" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim fruits.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f fruits.txt .fruits.txt.swp .fruits.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with unsorted duplicates"
+    },
+    {
+      "writeFile": "fruits.txt",
+      "content": "banana\napple\ncherry\napple\ndate\nbanana\ncherry\nfig\napple\ndate"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim fruits.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Recipe: Sort and Deduplicate", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "This list has duplicates and is out of order. Apple appears three times, banana and cherry twice each." },
-    { "wait": 0.3 },
-    { "comment": "--- Sort unique ---" },
-    { "say": "Sort u. The u flag removes duplicate lines after sorting.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":%sort u", "overlay": ":%sort u" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Recipe: Sort and Deduplicate",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "This list has duplicates and is out of order. Apple appears three times, banana and cherry twice each."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Sort unique ---"
+    },
+    {
+      "say": "Sort the whole file and drop duplicates in one shot."
+    },
+    {
+      "type": ":%sort u",
+      "overlay": ":%sort u"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Percent sort u. Sort every line; the u flag removes consecutive duplicates after sorting."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Sorted and deduplicated. Ten lines became five. Apple, banana, cherry, date, fig." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Sort u. Sort and unique in one shot. Works on the whole file or a range." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Sorted and deduplicated. Ten lines became five. Apple, banana, cherry, date, fig."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Sort u. Sort and unique in one shot. Works on the whole file or a range."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f fruits.txt" }
-  ]
+    {
+      "line": "rm -f fruits.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "tAHivpKBNJ8",
+    "url": "https://youtube.com/watch?v=tAHivpKBNJ8"
+  }
 }

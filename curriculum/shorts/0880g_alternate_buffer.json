@@ -8,57 +8,156 @@
   "seed": 795,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f app.py test.py .*.swp .*.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo files" },
-    { "writeFile": "app.py", "content": "# Application code\ndef run():\n    return True" },
-    { "writeFile": "test.py", "content": "# Test code\ndef test_run():\n    assert run()" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim app.py test.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f app.py test.py .*.swp .*.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "app.py",
+      "content": "# Application code\ndef run():\n    return True"
+    },
+    {
+      "writeFile": "test.py",
+      "content": "# Test code\ndef test_run():\n    assert run()"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim app.py test.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": "Ctrl-^ — Alternate Buffer", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Control caret toggles between the current buffer and the last buffer you were in. It's the fastest way to switch between two files." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: switch to other file first ---" },
-    { "say": "We're in app dot py. Switch to test dot py.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":bn", "overlay": ":bn" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": "Ctrl-^ — Alternate Buffer",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Control caret toggles between the current buffer and the last buffer you were in — the fastest way to switch between two files."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: switch to other file first ---"
+    },
+    {
+      "say": "We're in app dot py. Move to test dot py first."
+    },
+    {
+      "type": ":bn",
+      "overlay": ":bn"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Now in test. Press control caret to go back.", "wait": false },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: toggle ---" },
-    { "keys": "ctrl+^" },
-    { "wait": 0.8 },
-    { "say": "Back in app. Press it again.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "ctrl+^" },
-    { "wait": 0.8 },
-    { "say": "Test again. It flips between the two. On most keyboards, control six does the same thing." },
-    { "wait": 0.3 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Control caret. Instant toggle between two files. Perfect for code and test pairs." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Now in test. Press control caret to flip back to the previous buffer."
+    },
+    {
+      "comment": "--- Demo: toggle ---"
+    },
+    {
+      "keys": "ctrl+^"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Back in app. Press it again."
+    },
+    {
+      "keys": "ctrl+^"
+    },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Test again. It flips between the two. On most keyboards, control six does the same thing."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Control caret. Instant toggle between two files. Perfect for code and test pairs."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f app.py test.py" }
-  ]
+    {
+      "line": "rm -f app.py test.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "AS68qk_vcbw",
+    "url": "https://youtube.com/watch?v=AS68qk_vcbw"
+  }
 }

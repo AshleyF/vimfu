@@ -8,66 +8,191 @@
   "seed": 797,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f a.py b.py c.py .*.swp .*.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo files" },
-    { "writeFile": "a.py", "content": "# File A" },
-    { "writeFile": "b.py", "content": "# File B" },
-    { "writeFile": "c.py", "content": "# File C" },
-    { "line": "clear" },
-    { "comment": "Launch nvim with tabs" },
-    { "line": "nvim -p a.py b.py c.py" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f a.py b.py c.py .*.swp .*.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo files"
+    },
+    {
+      "writeFile": "a.py",
+      "content": "# File A"
+    },
+    {
+      "writeFile": "b.py",
+      "content": "# File B"
+    },
+    {
+      "writeFile": "c.py",
+      "content": "# File C"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim with tabs"
+    },
+    {
+      "line": "nvim -p a.py b.py c.py"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":tabn / :tabp — Cycle Tabs", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Cycle through tabs with tab next and tab previous. Or use the shorter G T and G shift T." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: cycle with commands ---" },
-    { "say": "Go to the next tab.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":tabn", "overlay": ":tabn" },
-    { "wait": 0.3 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":tabn / :tabp — Cycle Tabs",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Cycle through tabs with tab next and tab previous — or the shorter G T and G shift T."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: cycle with commands ---"
+    },
+    {
+      "say": "Move to the next tab."
+    },
+    {
+      "type": ":tabn",
+      "overlay": ":tabn"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Tab N — short for tab next — cycles forward through the tabs."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "File B. Next again.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":tabn", "overlay": ":tabn" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "File B. Next again."
+    },
+    {
+      "type": ":tabn",
+      "overlay": ":tabn"
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "File C. Now go back with tab previous.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":tabp", "overlay": ":tabp" },
-    { "wait": 0.3 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "File C. Now step back with tab previous."
+    },
+    {
+      "type": ":tabp",
+      "overlay": ":tabp"
+    },
+    {
+      "wait": 0.4
+    },
+    {
+      "say": "Tab P — tab previous — cycles backward."
+    },
+    {
+      "wait": 0.3
+    },
     "enter",
-    { "wait": 0.8 },
-    { "comment": "--- Demo: gt and gT ---" },
-    { "say": "Even faster. G T goes forward. G shift T goes back.", "wait": false },
-    { "wait": 0.3 },
-    { "keys": "gt" },
-    { "wait": 0.6 },
-    { "keys": "gT" },
-    { "wait": 0.6 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Tab next, tab previous. Or G T and G shift T. Quick tab navigation." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "comment": "--- Demo: gt and gT ---"
+    },
+    {
+      "say": "Even faster: G T forward, G shift T back."
+    },
+    {
+      "keys": "gt"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "keys": "gT"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Tab next, tab previous. Or G T and G shift T. Quick tab navigation."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":qa!" },
+    {
+      "type": ":qa!"
+    },
     "enter",
-    { "line": "rm -f a.py b.py c.py" }
-  ]
+    {
+      "line": "rm -f a.py b.py c.py"
+    }
+  ],
+  "youtube": {
+    "videoId": "iH3u3xo4eYw",
+    "url": "https://youtube.com/watch?v=iH3u3xo4eYw"
+  }
 }

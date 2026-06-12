@@ -8,58 +8,168 @@
   "seed": 786,
   "ttsVoice": "echo",
   "playlist": "VimFu",
-  "tags": ["vim", "neovim", "nvim", "vimfu", "tutorial", "terminal", "editor", "coding", "programming", "ex commands"],
+  "tags": [
+    "vim",
+    "neovim",
+    "nvim",
+    "vimfu",
+    "tutorial",
+    "terminal",
+    "editor",
+    "coding",
+    "programming",
+    "ex commands"
+  ],
   "setup": [
-    { "comment": "Set TERM for proper color support in Neovim" },
-    { "line": "export TERM=xterm-256color" },
-    { "comment": "Prepare workspace" },
-    { "line": "mkdir -p ~/vimfu && cd ~/vimfu" },
-    { "line": "rm -f notes.txt .notes.txt.swp .notes.txt.swo" },
-    { "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null" },
-    { "comment": "Create demo file with typos" },
-    { "writeFile": "notes.txt", "content": "Meeting notes for today\nThe proejct is on schedul\nWe need to refator the code\nEverything else looks good" },
-    { "line": "clear" },
-    { "comment": "Launch nvim" },
-    { "line": "nvim notes.txt" },
-    { "waitForScreen": "All", "timeout": 30.0 },
-    { "ifScreen": "swap file", "thenKeys": "d" }
+    {
+      "comment": "Set TERM for proper color support in Neovim"
+    },
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "comment": "Prepare workspace"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f notes.txt .notes.txt.swp .notes.txt.swo"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "comment": "Create demo file with typos"
+    },
+    {
+      "writeFile": "notes.txt",
+      "content": "Meeting notes for today\nThe proejct is on schedul\nWe need to refator the code\nEverything else looks good"
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "comment": "Launch nvim"
+    },
+    {
+      "line": "nvim notes.txt"
+    },
+    {
+      "waitForScreen": "All",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
   ],
   "steps": [
-    { "comment": "--- Title card ---" },
-    { "overlay": "VimFu", "caption": ":set spell / nospell", "duration": 2.0 },
-    { "wait": 0.5 },
-    { "comment": "--- Intro ---" },
-    { "say": "Set spell turns on spell checking. Misspelled words get highlighted. Great for writing docs and commit messages." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: turn on spell ---" },
-    { "say": "Turn on spell checking.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set spell", "overlay": ":set spell" },
-    { "wait": 0.6 },
-    { "say": "Set spell — turn on spell checking. Misspelled words get underlined." },
-    { "wait": 0.4 },
+    {
+      "comment": "--- Title card ---"
+    },
+    {
+      "overlay": "VimFu",
+      "caption": ":set spell / nospell",
+      "duration": 2.0
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "comment": "--- Intro ---"
+    },
+    {
+      "say": "Set spell turns on spell checking. Misspelled words get highlighted. Great for writing docs and commit messages."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: turn on spell ---"
+    },
+    {
+      "say": "Turn on spell checking.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set spell",
+      "overlay": ":set spell"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Set spell — turn on spell checking. Misspelled words get underlined."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
-    { "say": "Misspelled words are now highlighted. Use bracket S to jump to the next misspelling and bracket capital S to jump back." },
-    { "wait": 0.3 },
-    { "comment": "--- Demo: turn off ---" },
-    { "say": "Turn it off when you don't need it.", "wait": false },
-    { "wait": 0.3 },
-    { "type": ":set nospell", "overlay": ":set nospell" },
-    { "wait": 0.6 },
-    { "say": "Set no spell — turn it off again." },
-    { "wait": 0.4 },
+    {
+      "wait": 0.8
+    },
+    {
+      "say": "Misspelled words are now highlighted. Use bracket S to jump to the next misspelling and bracket capital S to jump back."
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "comment": "--- Demo: turn off ---"
+    },
+    {
+      "say": "Turn it off when you don't need it.",
+      "wait": false
+    },
+    {
+      "wait": 0.3
+    },
+    {
+      "type": ":set nospell",
+      "overlay": ":set nospell"
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "say": "Set no spell — turn it off again."
+    },
+    {
+      "wait": 0.4
+    },
     "enter",
-    { "wait": 0.8 },
-    { "comment": "--- Wrap up ---" },
-    { "say": "Set spell to check. Set no spell to stop. Toggle anytime." },
-    { "wait": 1.5 }
+    {
+      "wait": 0.8
+    },
+    {
+      "comment": "--- Wrap up ---"
+    },
+    {
+      "say": "Set spell to check. Set no spell to stop. Toggle anytime."
+    },
+    {
+      "wait": 1.5
+    }
   ],
   "teardown": [
-    { "comment": "Quit nvim without saving" },
+    {
+      "comment": "Quit nvim without saving"
+    },
     "escape",
-    { "type": ":q!" },
+    {
+      "type": ":q!"
+    },
     "enter",
-    { "line": "rm -f notes.txt" }
-  ]
+    {
+      "line": "rm -f notes.txt"
+    }
+  ],
+  "youtube": {
+    "videoId": "hgiSj2h9COY",
+    "url": "https://youtube.com/watch?v=hgiSj2h9COY"
+  }
 }
