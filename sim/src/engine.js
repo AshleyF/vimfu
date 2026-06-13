@@ -72,6 +72,7 @@ export class VimEngine {
     this._pendingCapZ = false;
     this._pendingF = '';
     this._pendingR = false;
+    this._pendingGR = false;
     this._pendingM = false;
     this._pendingQ = false;
     this._pendingAt = false;
@@ -272,6 +273,9 @@ export class VimEngine {
     this._bufferList = []; // {id, buffer, fileName, cursor, scrollTop, scrollLeft, undoStack, redoStack, changeCount, marks, folds, desiredCol, jumpList, jumpListPos, changeList, changeListPos}
     this._currentBufId = this._registerBuffer(this.buffer, this._fileName);
     this._alternateBufId = null;
+    // Link the initial window to its buffer id so per-window status lines
+    // (filename, [+]) can be looked up correctly when rendering splits.
+    this._windows[0].bufId = this._currentBufId;
 
     // ── Tab pages ──
     this._tabs = [{ windows: this._windows, activeWin: this._activeWin }];
@@ -357,6 +361,12 @@ export class VimEngine {
         this._currentBufId = existingEntry.id;
       } else {
         this._currentBufId = this._registerBuffer(this.buffer, fileName);
+      }
+      // Keep the active window's bufId pointer in sync with the loaded
+      // buffer so per-window status lines render this filename.
+      if (this._windows && this._windows[this._activeWin]) {
+        this._windows[this._activeWin].bufId = this._currentBufId;
+        this._windows[this._activeWin].buffer = this.buffer;
       }
     }
     this._updateStatus();
@@ -471,7 +481,7 @@ export class VimEngine {
           // Command switched to another mode (insert, visual, etc.) — cancel one-shot
           this._insertOneShot = false;
         } else if (!this._pendingOp && !this._pendingG && !this._pendingZ && !this._pendingCapZ
-            && !this._pendingF && !this._pendingR && !this._pendingM && !this._pendingQ
+            && !this._pendingF && !this._pendingR && !this._pendingGR && !this._pendingM && !this._pendingQ
             && !this._pendingAt && !this._pendingQuote && !this._pendingBacktick
             && !this._pendingDblQuote && !this._pendingSurround && !this._ysRange
             && !this._pendingCount && !this._pendingTextObjType && !this._pendingCtrlW) {
@@ -714,7 +724,7 @@ export class VimEngine {
 
   _normalKey(key) {
     // q stops macro recording (before any other dispatch)
-    if (this._macroRecording && key === 'q' && !this._pendingOp && !this._pendingF && !this._pendingR && !this._pendingG && !this._pendingZ && !this._pendingCapZ && !this._pendingM && !this._pendingQuote && !this._pendingBacktick && !this._pendingTextObjType && !this._pendingBracket && !this._pendingCtrlW) {
+    if (this._macroRecording && key === 'q' && !this._pendingOp && !this._pendingF && !this._pendingR && !this._pendingGR && !this._pendingG && !this._pendingZ && !this._pendingCapZ && !this._pendingM && !this._pendingQuote && !this._pendingBacktick && !this._pendingTextObjType && !this._pendingBracket && !this._pendingCtrlW) {
       // Remove the trailing 'q' we just captured
       this._macroKeys.pop();
       this._macroRegisters[this._macroRecording] = [...this._macroKeys];
@@ -1105,6 +1115,66 @@ export class VimEngine {
           this.buffer.lines[this.cursor.row] = newLine;
           this.cursor.col = this.cursor.col + count - 1;
         }
+        this._stopRecording();
+        this._redoStack = [];
+      }
+      this._pendingCount = '';
+      return;
+    }
+
+    // Pending gr (virtual replace one char). Behaves like r, but on an
+    // empty line inserts the character instead of doing nothing (matches
+    // nvim's virtual-replace handling of "missing" virtual chars).
+    if (this._pendingGR) {
+      this._pendingGR = false;
+      if (key === 'Escape') {
+        this._pendingCount = '';
+        return;
+      }
+      if (key === 'Enter') {
+        // gr<Enter> splits like r<Enter>
+        this._saveSnapshot();
+        this._startRecording();
+        this._saveForDot('g'); this._saveForDot('r'); this._saveForDot(key);
+        const count = this._getCount();
+        const line = this.buffer.lines[this.cursor.row];
+        if (this.cursor.col + count - 1 < line.length) {
+          const before = line.slice(0, this.cursor.col);
+          const after = line.slice(this.cursor.col + count);
+          this.buffer.lines[this.cursor.row] = before;
+          this.buffer.lines.splice(this.cursor.row + 1, 0, after);
+          this.cursor.row++;
+          this.cursor.col = 0;
+        }
+        this._stopRecording();
+        this._redoStack = [];
+      } else if (key.length === 1) {
+        this._saveSnapshot();
+        this._startRecording();
+        this._saveForDot('g'); this._saveForDot('r'); this._saveForDot(key);
+        const count = this._getCount();
+        const line = this.buffer.lines[this.cursor.row];
+        if (line.length === 0) {
+          // Virtual replace on empty line inserts (line was 0 virtual chars)
+          let inserted = '';
+          for (let i = 0; i < count; i++) inserted += key;
+          this.buffer.lines[this.cursor.row] = inserted;
+          this.cursor.col = Math.max(0, inserted.length - 1);
+        } else if (this.cursor.col + count - 1 < line.length) {
+          let newLine = line.slice(0, this.cursor.col);
+          for (let i = 0; i < count; i++) newLine += key;
+          newLine += line.slice(this.cursor.col + count);
+          this.buffer.lines[this.cursor.row] = newLine;
+          this.cursor.col = this.cursor.col + count - 1;
+        } else if (this.cursor.col >= line.length) {
+          // Cursor past end of (non-empty) line: virtual replace extends.
+          let extended = line;
+          while (extended.length < this.cursor.col) extended += ' ';
+          for (let i = 0; i < count; i++) extended += key;
+          this.buffer.lines[this.cursor.row] = extended;
+          this.cursor.col = extended.length - 1;
+        }
+        this._updateDesiredCol();
         this._stopRecording();
         this._redoStack = [];
       }
@@ -2217,7 +2287,13 @@ export class VimEngine {
         break;
       case 'o': {
         this._insertCount = this._getCount();
-        this._saveSnapshot(); this._startRecording(); this._saveForDot('o');
+        // Snapshot with the pre-`o` cursor so undo restores to where the
+        // user was sitting when they opened the new line. nvim's actual
+        // restore lands at col 0 of the original row in all cases we
+        // care about (see test_undo_redo.undo_o_*); plain _saveSnapshot()
+        // matches that for cursors that were already at col 0.
+        this._saveSnapshot();
+        this._startRecording(); this._saveForDot('o');
         const oIndent = this._settings.autoindent ? this.buffer.lines[this.cursor.row].match(/^[ \t]*/)[0] : '';
         this.buffer.insertLineAfter(this.cursor.row);
         this.cursor.row++;
@@ -2228,7 +2304,9 @@ export class VimEngine {
       }
       case 'O': {
         this._insertCount = this._getCount();
-        this._saveSnapshot(); this._startRecording(); this._saveForDot('O');
+        // Snapshot the pre-`O` cursor (same reasoning as for `o`).
+        this._saveSnapshot();
+        this._startRecording(); this._saveForDot('O');
         const OIndent = this._settings.autoindent ? this.buffer.lines[this.cursor.row].match(/^[ \t]*/)[0] : '';
         this.buffer.insertLineBefore(this.cursor.row);
         this.buffer.lines[this.cursor.row] = OIndent;
@@ -2446,6 +2524,7 @@ export class VimEngine {
         this._pendingSurround = '';
         this._surroundTarget = '';
         this._pendingR = false;
+        this._pendingGR = false;
         this._pendingBracket = '';
         this._pendingTagInput = null;
         this._pendingDblQuote = false;
@@ -3410,6 +3489,27 @@ export class VimEngine {
         break;
       }
 
+      // gr{char} — virtual replace a single character (treat as r, but
+      // on empty/short lines insert/extend instead of refusing).
+      case 'r': {
+        this._pendingGR = true;
+        // _pendingCount preserved so count can apply to next-char replace
+        break;
+      }
+
+      // gR — virtual replace mode. Approximated as ordinary REPLACE
+      // mode (acceptable when content has no tabs/wide chars).
+      case 'R': {
+        this._saveSnapshot();
+        this._startRecording(); this._saveForDot('g'); this._saveForDot('R');
+        this.mode = Mode.REPLACE;
+        this.commandLine = '-- VREPLACE --';
+        this._replaceStartCol = this.cursor.col;
+        this._replaceOrigChars = [];
+        this._pendingCount = '';
+        break;
+      }
+
       default:
         this._pendingCount = '';
         break;
@@ -3508,6 +3608,7 @@ export class VimEngine {
     this._changeListPos = entry.changeListPos;
     // Update active window
     this._windows[this._activeWin].buffer = this.buffer;
+    this._windows[this._activeWin].bufId = this._currentBufId;
     this._windows[this._activeWin].cursor = { ...this.cursor };
     this._windows[this._activeWin].scrollTop = this.scrollTop;
     this._windows[this._activeWin].scrollLeft = this.scrollLeft;
@@ -3837,6 +3938,7 @@ export class VimEngine {
     w.folds = this._folds;
     w._desiredCol = this._desiredCol;
     w.buffer = this.buffer;
+    w.bufId = this._currentBufId;
   }
 
   _restoreWindowState() {
@@ -3848,50 +3950,111 @@ export class VimEngine {
     this.scrollLeft = w.scrollLeft || 0;
     this._folds = w.folds;
     this._desiredCol = w._desiredCol || 0;
+    // Re-sync per-buffer engine state (fileName, undo/redo, etc.) from the
+    // buffer list entry when the window points at a known buffer id, so
+    // switching windows behaves like switching buffers.
+    if (w.bufId != null && w.bufId !== this._currentBufId) {
+      const entry = this._getBufEntry(w.bufId);
+      if (entry) {
+        this._alternateBufId = this._currentBufId;
+        this._currentBufId = w.bufId;
+        this._fileName = entry.fileName;
+        this._undoStack = entry.undoStack;
+        this._redoStack = entry.redoStack;
+        this._changeCount = entry.changeCount;
+        this._marks = entry.marks;
+        this._jumpList = entry.jumpList;
+        this._jumpListPos = entry.jumpListPos;
+        this._changeList = entry.changeList;
+        this._changeListPos = entry.changeListPos;
+      }
+    }
   }
 
   _switchToWindow(idx) {
     if (idx < 0 || idx >= this._windows.length || idx === this._activeWin) return;
     this._saveWindowState();
+    // If the target window has a different buffer, persist the current
+    // buffer's per-buffer state to the buffer list before swapping.
+    const target = this._windows[idx];
+    if (target && target.bufId != null && target.bufId !== this._currentBufId) {
+      this._saveCurrentBufState();
+    }
     this._prevWin = this._activeWin;
     this._activeWin = idx;
     this._restoreWindowState();
   }
 
-  _doSplit() {
+  _doSplit(vertical = false) {
     this._saveWindowState();
     const cur = this._windows[this._activeWin];
     const newWin = {
       buffer: cur.buffer,
+      bufId: cur.bufId,
       cursor: { ...cur.cursor },
       scrollTop: cur.scrollTop,
       folds: cur.folds.map(f => ({ ...f })),
       _desiredCol: cur._desiredCol || 0,
     };
-    if (this._settings.splitbelow) {
+    // Mark BOTH the original and new window as participating in a split of
+    // this direction. Once the layout has any vertical window the renderer
+    // arranges windows side-by-side; otherwise they stack.
+    cur._splitType = vertical ? 'v' : 'h';
+    newWin._splitType = vertical ? 'v' : 'h';
+    const splitAfter = vertical
+      ? !!this._settings.splitright
+      : !!this._settings.splitbelow;
+    if (splitAfter) {
       this._windows.splice(this._activeWin + 1, 0, newWin);
       this._activeWin = this._activeWin + 1;
     } else {
       this._windows.splice(this._activeWin, 0, newWin);
     }
-    // After splitting, redistribute heights: the NEW (active) window keeps
-    // the larger share when the available rows don't divide evenly,
-    // matching nvim's behaviour of giving the extra row to the
-    // freshly-created window.
-    const availableRows = this.rows - 1;
-    const numWindows = this._windows.length;
-    if (numWindows >= 2) {
-      const base = Math.floor(availableRows / numWindows);
-      let extras = availableRows - base * numWindows;
-      for (let i = 0; i < numWindows; i++) this._windows[i]._height = base;
+    if (vertical) {
+      // Distribute columns evenly. The new window gets the extra column.
+      const availableCols = this.cols;
+      const numWindows = this._windows.length;
+      // Account for (numWindows - 1) separator columns.
+      const usable = Math.max(numWindows, availableCols - (numWindows - 1));
+      const base = Math.floor(usable / numWindows);
+      let extras = usable - base * numWindows;
+      for (let i = 0; i < numWindows; i++) {
+        this._windows[i]._width = base;
+        // Clear stale heights from any prior horizontal split.
+        delete this._windows[i]._height;
+      }
       if (extras > 0) {
-        this._windows[this._activeWin]._height += 1;
+        this._windows[this._activeWin]._width += 1;
         extras--;
       }
       for (let i = 0; i < numWindows && extras > 0; i++) {
         if (i === this._activeWin) continue;
-        this._windows[i]._height += 1;
+        this._windows[i]._width += 1;
         extras--;
+      }
+    } else {
+      // After splitting, redistribute heights: the NEW (active) window keeps
+      // the larger share when the available rows don't divide evenly,
+      // matching nvim's behaviour of giving the extra row to the
+      // freshly-created window.
+      const availableRows = this.rows - 1;
+      const numWindows = this._windows.length;
+      if (numWindows >= 2) {
+        const base = Math.floor(availableRows / numWindows);
+        let extras = availableRows - base * numWindows;
+        for (let i = 0; i < numWindows; i++) {
+          this._windows[i]._height = base;
+          delete this._windows[i]._width;
+        }
+        if (extras > 0) {
+          this._windows[this._activeWin]._height += 1;
+          extras--;
+        }
+        for (let i = 0; i < numWindows && extras > 0; i++) {
+          if (i === this._activeWin) continue;
+          this._windows[i]._height += 1;
+          extras--;
+        }
       }
     }
     this._restoreWindowState();
@@ -3998,6 +4161,7 @@ export class VimEngine {
     // New tab with a single window showing the new buffer
     const newWin = {
       buffer: this.buffer,
+      bufId: this._currentBufId,
       cursor: { ...this.cursor },
       scrollTop: 0,
       scrollLeft: 0,
@@ -4083,8 +4247,7 @@ export class VimEngine {
         this._doSplit();
         break;
       case 'v': case 'Ctrl-V':
-        // For now, vertical split behaves same as horizontal (flat model)
-        this._doSplit();
+        this._doSplit(true);
         break;
       case 'n': case 'Ctrl-N':
         // Ctrl-W n: open new window with empty buffer (like :new)
@@ -4103,6 +4266,7 @@ export class VimEngine {
         this._desiredCol = 0;
         this._currentBufId = this._registerBuffer(this.buffer, null);
         this._windows[this._activeWin].buffer = this.buffer;
+        this._windows[this._activeWin].bufId = this._currentBufId;
         this._windows[this._activeWin].cursor = { ...this.cursor };
         this._windows[this._activeWin].scrollTop = 0;
         this._windows[this._activeWin].scrollLeft = 0;
@@ -5042,12 +5206,15 @@ export class VimEngine {
 
   _executeCommand() {
     const prefix = this.commandLine[0];
-    let cmd = this._searchInput.replace(/^\s+/, ''); // trim leading whitespace only
+    const rawTyped = this._searchInput.replace(/^\s+/, '');
+    let cmd = rawTyped; // trim leading whitespace only
     // Tolerate accidental leading ':' on cmdline ex commands
     // (extractor emits "::cmd" when JSON `ex` value already starts with ':')
     if (prefix === ':') {
       while (cmd.startsWith(':')) cmd = cmd.slice(1);
     }
+    // Preserve the prompt+raw typed line for post-quit display purposes.
+    this._displayedCmdLine = (prefix || '') + rawTyped;
     this.mode = Mode.NORMAL;
 
     // Push to command history
@@ -5150,14 +5317,33 @@ export class VimEngine {
       const isForce = /!$/.test(cmd.split(/\s+/)[0]);
       const isQuit = /^(q(u(it?)?)?!?|qa!?|wq|wqa!?|x(it?)?|xa!?)(\s|$)/.test(cmd);
       const isWrite = /^(w(r(i(te?)?)?)?|wq|wa!?|wqa!?|x(it?)?|xa!?|sav(e(as?)?)?)(\s|$)/.test(cmd);
+      const isWriteOnly = /^(w(r(i(te?)?)?)?|wa!?|sav(e(as?)?)?)(\s|$)/.test(cmd);
+      // :w newname writes to newname WITHOUT changing buffer's filename.
+      // Only :saveas / :file change the buffer's name. So peel off the
+      // optional filename argument only to compute the byte/line message.
+      let writeTargetName = this._fileName;
+      const writeArgMatch = cmd.match(/^(?:w(?:r(?:i(?:te?)?)?)?|wa!?)\s+(\S.*)$/);
+      if (writeArgMatch) {
+        writeTargetName = writeArgMatch[1].trim();
+      }
+      const saveAsMatch = cmd.match(/^sav(?:e(?:as?)?)?\s+(\S.*)$/);
+      if (saveAsMatch) {
+        const newName = saveAsMatch[1].trim();
+        if (newName) {
+          this._fileName = newName;
+          writeTargetName = newName;
+          const entry = this._getBufEntry && this._getBufEntry(this._currentBufId);
+          if (entry) entry.fileName = newName;
+        }
+      }
       if (isQuit && (isForce || this._changeCount === 0 || isWrite)) {
         this._quitDone = true;
-        // :wqa / :xa quit while the typed cmdline is still on screen and
-        // suppress the per-buffer write message; only single-buffer
-        // :wq / :x show the "X lines, Y bytes written" message.
+        // :wqa / :xa / :qa show the typed cmdline (cursor at col 0); only
+        // single-buffer :wq / :x show the "X lines, Y bytes written"
+        // message (cursor at end).
         const isMultiQuit = /^(wqa|xa|qa)/.test(cmd);
         if (isMultiQuit) {
-          this._quitMessage = ':' + cmd;
+          this._quitMessage = this._displayedCmdLine || (':' + cmd);
           this._quitCursorAtStart = true;
         } else if (isWrite && this._fileName) {
           // Fake an "X written" success message so the cursor parks
@@ -5168,7 +5354,11 @@ export class VimEngine {
           const bytes = this.buffer.lines.reduce((n, l) => n + l.length, 0) + 2 * lines;
           this._quitMessage = '"' + this._fileName + '" ' + lines + 'L, ' + bytes + 'B written';
         } else {
-          this._quitMessage = '';
+          // Plain :q (unmodified) or :q! (force) — nvim's PTY freezes
+          // mid-quit so the screen still shows the typed cmdline as-is.
+          // Cursor parks at col 0.
+          this._quitMessage = this._displayedCmdLine || (':' + cmd);
+          this._quitCursorAtStart = true;
         }
       } else if (isQuit && this._changeCount > 0 && !isForce && !isWrite) {
         // :q on a modified buffer → emit the E37/E162 errors that linger
@@ -5176,6 +5366,20 @@ export class VimEngine {
         this.commandLine = 'E37: No write since last change';
         this._stickyCommandLine = true;
         this._quitErrorPending = true;
+      } else if (isWriteOnly && writeTargetName) {
+        // :w (no quit) — model nvim's write: clear modified flag (only when
+        // writing to the buffer's own filename) and post the
+        // "<file>" Nl, Nb written message to the cmdline.
+        const lines = this.buffer.lineCount;
+        const bytes = this.buffer.lines.reduce((n, l) => n + l.length, 0) + 2 * lines;
+        const fname = writeTargetName;
+        if (fname === this._fileName) {
+          this._changeCount = 0;
+          const entry = this._getBufEntry && this._getBufEntry(this._currentBufId);
+          if (entry) entry.changeCount = 0;
+        }
+        this.commandLine = '"' + fname + '" ' + lines + 'L, ' + bytes + 'B written';
+        this._stickyCommandLine = true;
       }
       return;
     }
@@ -5187,9 +5391,30 @@ export class VimEngine {
       return;
     }
 
-    // :vsp[lit] — vertical split (uses same horizontal model for now)
+    // :vsp[lit] — vertical split
     if (/^vs(p(l(it?)?)?)?(\s|$)/.test(cmd)) {
-      this._doSplit();
+      this._doSplit(true);
+      this.commandLine = '';
+      return;
+    }
+
+    // :vnew — vertical split with new empty buffer
+    if (/^vne(w)?(\s|$)/.test(cmd)) {
+      this._doSplit(true);
+      this._saveCurrentBufState();
+      this._alternateBufId = this._currentBufId;
+      this.buffer = new Buffer(['']);
+      this.cursor = { row: 0, col: 0 };
+      this.scrollTop = 0;
+      this.scrollLeft = 0;
+      this._fileName = null;
+      this._undoStack = [];
+      this._redoStack = [];
+      this._changeCount = 0;
+      this._marks = {};
+      this._folds = [];
+      this._currentBufId = this._registerBuffer(this.buffer, null);
+      this._saveWindowState();
       this.commandLine = '';
       return;
     }

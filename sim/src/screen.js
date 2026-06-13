@@ -892,6 +892,15 @@ export class Screen {
         rawCmd = rawCmd + ' '.repeat(gap) + ruler;
       }
     }
+    // Left-truncate long sticky status messages (e.g. ":w" success messages)
+    // with a "<" prefix, matching nvim's behaviour when the message exceeds
+    // the available cmdline width.
+    if (engine._stickyCommandLine && rawCmd && engine.mode !== 'command') {
+      const maxMsgWidth = Math.max(1, this.cols - 12);
+      if (rawCmd.length > maxMsgWidth && !rawCmd.startsWith('<')) {
+        rawCmd = '<' + rawCmd.slice(rawCmd.length - (maxMsgWidth - 1));
+      }
+    }
     const cmdText = this._padOrTruncate(rawCmd, this.cols);
     // Recording indicator gets special color (green in nvim_default)
     if (t.recordingFg && engine._macroRecording && engine.mode === 'normal'
@@ -1095,6 +1104,12 @@ export class Screen {
     const totalRows = this.rows;
     const cols = this.cols;
 
+    // If ANY window is marked vertical, render side-by-side.
+    const hasVertical = engine._windows.some(w => w._splitType === 'v');
+    if (hasVertical) {
+      return this._renderSplitVertical(engine);
+    }
+
     // Available for windows (minus 1 for shared command line at bottom)
     const availableRows = totalRows - 1;
     // Each window gets: text rows + 1 status line
@@ -1129,6 +1144,8 @@ export class Screen {
     const savedStickyCmd = engine._stickyCommandLine;
     const savedCmdLineNrLen = engine._commandLineLineNrLen;
     const savedEchoMessage = engine._echoMessage;
+    const savedFileName = engine._fileName;
+    const savedChangeCount = engine._changeCount;
 
     for (let wi = 0; wi < numWindows; wi++) {
       const win = engine._windows[wi];
@@ -1146,6 +1163,24 @@ export class Screen {
       engine.scrollTop = isActive ? savedST : win.scrollTop;
       engine._folds = isActive ? savedFolds : win.folds;
       engine._desiredCol = isActive ? savedDesiredCol : (win._desiredCol || 0);
+      // Per-window status line: for inactive windows pointing at a
+      // DIFFERENT buffer, swap in that buffer's filename/changeCount so
+      // they render their own identity. If an inactive window points at
+      // the SAME buffer the engine is currently editing, leave the
+      // active engine's filename/changeCount in place — the bufferList
+      // entry's changeCount is only synced on buffer/window switches
+      // and may be stale relative to in-flight edits.
+      if (!isActive && win.bufId != null && win.bufId !== engine._currentBufId
+          && typeof engine._getBufEntry === 'function') {
+        const entry = engine._getBufEntry(win.bufId);
+        if (entry) {
+          engine._fileName = entry.fileName;
+          engine._changeCount = entry.changeCount;
+        }
+      } else {
+        engine._fileName = savedFileName;
+        engine._changeCount = savedChangeCount;
+      }
       // Set rows/textRows for this window's portion
       const savedRows = engine.rows;
       const savedTextRows = engine._textRows;
@@ -1219,6 +1254,8 @@ export class Screen {
     engine._stickyCommandLine = savedStickyCmd;
     engine._commandLineLineNrLen = savedCmdLineNrLen;
     engine._echoMessage = savedEchoMessage;
+    engine._fileName = savedFileName;
+    engine._changeCount = savedChangeCount;
 
     // Add shared command line at the bottom
     const cmdText = this._padOrTruncate(engine.commandLine || '', cols);
@@ -1269,6 +1306,262 @@ export class Screen {
       defaultFg: t.normalFg,
       defaultBg: t.normalBg,
       lines: allLines,
+    };
+  }
+
+  /**
+   * Render multiple vertical splits side-by-side.
+   * Each window gets a column slice; windows are separated by `│`.
+   * Below each window's text rows is its status line; the very bottom
+   * row is the shared command line.
+   * @private
+   */
+  _renderSplitVertical(engine) {
+    const t = this.theme;
+    const numWindows = engine._windows.length;
+    const totalRows = this.rows;
+    const totalCols = this.cols;
+
+    // Reserve 1 col per separator between windows.
+    const separators = numWindows - 1;
+    const usableCols = Math.max(numWindows, totalCols - separators);
+
+    // Compute per-window width: use stored _width if set, else divide evenly.
+    const winWidths = [];
+    let assigned = 0;
+    for (let i = 0; i < numWindows; i++) {
+      const w = engine._windows[i];
+      if (w._width && w._width > 0) {
+        winWidths.push(w._width);
+        assigned += w._width;
+      } else {
+        winWidths.push(0);
+      }
+    }
+    // Backfill any unset widths to evenly split the remaining columns.
+    const unset = winWidths.filter(w => w === 0).length;
+    if (unset > 0) {
+      const remaining = Math.max(unset, usableCols - assigned);
+      const base = Math.floor(remaining / unset);
+      let extras = remaining - base * unset;
+      for (let i = 0; i < numWindows; i++) {
+        if (winWidths[i] === 0) {
+          winWidths[i] = base + (extras > 0 ? 1 : 0);
+          if (extras > 0) extras--;
+        }
+      }
+    }
+    // Clamp to totalCols accounting for separators
+    let sumW = winWidths.reduce((a, b) => a + b, 0) + separators;
+    while (sumW > totalCols && winWidths.length > 0) {
+      // Trim the widest window
+      let mx = 0;
+      for (let i = 1; i < winWidths.length; i++) if (winWidths[i] > winWidths[mx]) mx = i;
+      if (winWidths[mx] <= 1) break;
+      winWidths[mx]--;
+      sumW--;
+    }
+
+    // Save real engine state
+    const savedBuf = engine.buffer;
+    const savedCur = { ...engine.cursor };
+    const savedST = engine.scrollTop;
+    const savedFolds = engine._folds;
+    const savedMode = engine.mode;
+    const savedVS = engine._visualStart ? { ...engine._visualStart } : null;
+    const savedDesiredCol = engine._desiredCol;
+    const savedCommandLine = engine.commandLine;
+    const savedStickyCmd = engine._stickyCommandLine;
+    const savedCmdLineNrLen = engine._commandLineLineNrLen;
+    const savedEchoMessage = engine._echoMessage;
+    const savedFileName = engine._fileName;
+    const savedChangeCount = engine._changeCount;
+    const savedRows = engine.rows;
+    const savedCols = engine.cols;
+    const savedTextRows = engine._textRows;
+
+    // Each window renders into a slim Screen (its own width, full rows).
+    const textRows = totalRows - 2; // text rows (excludes status + cmdline)
+    const windowFrames = [];
+    let finalCursorRow = -1;
+    let finalCursorCol = -1;
+    let colOffset = 0;
+    for (let wi = 0; wi < numWindows; wi++) {
+      const win = engine._windows[wi];
+      const isActive = (wi === engine._activeWin);
+      const w = winWidths[wi];
+
+      const miniScreen = new Screen(totalRows, w, this.themeName);
+      miniScreen.showStatusLine = true;
+
+      engine.buffer = win.buffer;
+      engine.cursor = isActive ? { ...savedCur } : { ...win.cursor };
+      engine.scrollTop = isActive ? savedST : win.scrollTop;
+      engine._folds = isActive ? savedFolds : win.folds;
+      engine._desiredCol = isActive ? savedDesiredCol : (win._desiredCol || 0);
+      if (!isActive && win.bufId != null && win.bufId !== engine._currentBufId
+          && typeof engine._getBufEntry === 'function') {
+        const entry = engine._getBufEntry(win.bufId);
+        if (entry) {
+          engine._fileName = entry.fileName;
+          engine._changeCount = entry.changeCount;
+        }
+      } else {
+        engine._fileName = savedFileName;
+        engine._changeCount = savedChangeCount;
+      }
+      if (!isActive) {
+        engine.mode = 'normal';
+        engine._visualStart = null;
+      } else {
+        engine.mode = savedMode;
+        engine._visualStart = savedVS;
+      }
+      engine.cols = w;
+      engine.rows = totalRows;
+      engine._textRows = textRows;
+      engine._updateStatus();
+
+      // Hide _windows so child render doesn't recurse into split rendering.
+      const savedWindows = engine._windows;
+      engine._windows = [];
+      const frame = miniScreen.render(engine);
+      engine._windows = savedWindows;
+
+      if (isActive) {
+        win.scrollTop = engine.scrollTop;
+        if (frame.cursor.visible) {
+          finalCursorRow = frame.cursor.row;
+          finalCursorCol = colOffset + frame.cursor.col;
+        }
+      } else {
+        win.scrollTop = engine.scrollTop;
+      }
+
+      // Dim status line for inactive windows.
+      if (!isActive && frame.lines.length >= totalRows - 1) {
+        const statusLine = frame.lines[totalRows - 2];
+        if (statusLine) {
+          const ncFg = t.statusNcFg || t.statusFg || t.normalFg;
+          const ncBg = t.statusNcBg || t.statusBg || t.normalBg;
+          statusLine.runs = [{ n: w, fg: ncFg, bg: ncBg }];
+        }
+      }
+
+      windowFrames.push({ frame, width: w, isActive });
+      colOffset += w + (wi < numWindows - 1 ? 1 : 0);
+    }
+
+    // Restore engine state
+    engine.buffer = savedBuf;
+    engine.cursor = savedCur;
+    engine.scrollTop = savedST;
+    engine._folds = savedFolds;
+    engine.mode = savedMode;
+    engine._visualStart = savedVS;
+    engine._desiredCol = savedDesiredCol;
+    engine.commandLine = savedCommandLine;
+    engine._stickyCommandLine = savedStickyCmd;
+    engine._commandLineLineNrLen = savedCmdLineNrLen;
+    engine._echoMessage = savedEchoMessage;
+    engine._fileName = savedFileName;
+    engine._changeCount = savedChangeCount;
+    engine.rows = savedRows;
+    engine.cols = savedCols;
+    engine._textRows = savedTextRows;
+
+    // Tile frames side-by-side into composite rows.
+    const composedLines = [];
+    // We use the first (textRows + 1) rows from each frame (text + status),
+    // then add the shared command line at the bottom.
+    for (let r = 0; r < totalRows - 1; r++) {
+      const parts = [];
+      const runs = [];
+      let text = '';
+      for (let wi = 0; wi < numWindows; wi++) {
+        const f = windowFrames[wi].frame;
+        const w = windowFrames[wi].width;
+        const line = (f.lines && f.lines[r]) || { text: ' '.repeat(w), runs: [{ n: w, fg: t.normalFg, bg: t.normalBg }] };
+        const lt = (line.text || '').padEnd(w, ' ').slice(0, w);
+        text += lt;
+        if (Array.isArray(line.runs)) {
+          for (const run of line.runs) runs.push({ ...run });
+        } else {
+          runs.push({ n: w, fg: t.normalFg, bg: t.normalBg });
+        }
+        // Add separator after every window except the last.
+        if (wi < numWindows - 1) {
+          // The separator on text rows uses StatusLineNC colors and renders
+          // as `│`; on the per-window status line row it should render as
+          // an extension of the active/inactive status line.
+          const isStatusRow = (r === totalRows - 2);
+          if (isStatusRow) {
+            const ncFg = t.statusNcFg || t.statusFg || t.normalFg;
+            const ncBg = t.statusNcBg || t.statusBg || t.normalBg;
+            text += ' ';
+            runs.push({ n: 1, fg: ncFg, bg: ncBg });
+          } else {
+            text += '│';
+            // nvim renders the VertSplit separator with default text fg
+            // (not StatusLineNC) — only the status-line row uses status colors.
+            runs.push({ n: 1, fg: t.normalFg, bg: t.normalBg });
+          }
+        }
+      }
+      // Pad/truncate to totalCols
+      if (text.length < totalCols) {
+        const pad = totalCols - text.length;
+        text += ' '.repeat(pad);
+        runs.push({ n: pad, fg: t.normalFg, bg: t.normalBg });
+      } else if (text.length > totalCols) {
+        text = text.slice(0, totalCols);
+      }
+      composedLines.push({ text, runs: Screen._mergeRuns(runs) });
+    }
+
+    // Shared command line at bottom.
+    const cmdText = this._padOrTruncate(engine.commandLine || '', totalCols);
+    let cmdRuns;
+    if (t.recordingFg && engine._macroRecording && engine.mode === 'normal'
+        && (engine.commandLine ?? '').startsWith('recording @')) {
+      const recLen = ('recording @' + engine._macroRecording).length;
+      cmdRuns = [
+        { n: recLen, fg: t.recordingFg, bg: t.cmdBg },
+        { n: totalCols - recLen, fg: t.cmdFg, bg: t.cmdBg },
+      ];
+    } else if (/^E\d{1,3}:/.test(engine.commandLine ?? '')) {
+      const errLen = Math.min((engine.commandLine || '').length, totalCols);
+      cmdRuns = [];
+      if (errLen > 0) cmdRuns.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg });
+      if (errLen < totalCols) cmdRuns.push({ n: totalCols - errLen, fg: t.cmdFg, bg: t.cmdBg });
+    } else if (t.modeMsgFg && /^-- (INSERT|VISUAL|VISUAL BLOCK|VISUAL LINE|REPLACE) --$/.test((engine.commandLine ?? '').trim())) {
+      const modeLen = (engine.commandLine ?? '').replace(/\s+$/, '').length;
+      cmdRuns = [
+        { n: modeLen, fg: t.modeMsgFg, bg: t.cmdBg },
+        { n: totalCols - modeLen, fg: t.cmdFg, bg: t.cmdBg },
+      ];
+    } else {
+      cmdRuns = [{ n: totalCols, fg: t.cmdFg || t.normalFg, bg: t.cmdBg || t.normalBg }];
+    }
+    composedLines.push({ text: cmdText, runs: Screen._mergeRuns(cmdRuns) });
+
+    // Cursor: command-line mode overrides.
+    if (engine.mode === 'command' && engine.commandLine) {
+      finalCursorRow = totalRows - 1;
+      finalCursorCol = Math.min(engine.commandLine.length, totalCols);
+    }
+
+    return {
+      rows: totalRows,
+      cols: totalCols,
+      cursor: {
+        row: finalCursorRow >= 0 ? finalCursorRow : 0,
+        col: finalCursorCol >= 0 ? finalCursorCol : 0,
+        visible: finalCursorRow >= 0,
+      },
+      defaultFg: t.normalFg,
+      defaultBg: t.normalBg,
+      lines: composedLines,
     };
   }
 
