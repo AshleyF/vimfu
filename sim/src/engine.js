@@ -5651,6 +5651,8 @@ export class VimEngine {
     }
     // Preserve the prompt+raw typed line for post-quit display purposes.
     this._displayedCmdLine = (prefix || '') + rawTyped;
+    // Stash for handlers that want to leave the typed line visible (sticky).
+    this._lastExTyped = (prefix || '') + rawTyped;
     this.mode = Mode.NORMAL;
 
     // Push to command history
@@ -5850,14 +5852,16 @@ export class VimEngine {
     // :sp[lit] — horizontal split
     if (/^sp(l(it?)?)?(\s|$)/.test(cmd)) {
       this._doSplit();
-      this.commandLine = '';
+      this.commandLine = this._lastExTyped;
+      this._stickyCommandLine = true;
       return;
     }
 
     // :vsp[lit] — vertical split
     if (/^vs(p(l(it?)?)?)?(\s|$)/.test(cmd)) {
       this._doSplit(true);
-      this.commandLine = '';
+      this.commandLine = this._lastExTyped;
+      this._stickyCommandLine = true;
       return;
     }
 
@@ -5878,7 +5882,8 @@ export class VimEngine {
       this._folds = [];
       this._currentBufId = this._registerBuffer(this.buffer, null);
       this._saveWindowState();
-      this.commandLine = '';
+      this.commandLine = this._lastExTyped;
+      this._stickyCommandLine = true;
       return;
     }
 
@@ -5901,7 +5906,8 @@ export class VimEngine {
       this._folds = [];
       this._currentBufId = this._registerBuffer(this.buffer, null);
       this._saveWindowState();
-      this.commandLine = '';
+      this.commandLine = this._lastExTyped;
+      this._stickyCommandLine = true;
       return;
     }
 
@@ -6109,7 +6115,8 @@ export class VimEngine {
     // :tabnew / :tabe[dit] — open a new tab page
     if (/^tabnew(\s|$)/.test(cmd) || /^tabe(d(it?)?)?(\s|$)/.test(cmd)) {
       this._doTabNew();
-      this.commandLine = '';
+      this.commandLine = this._lastExTyped;
+      this._stickyCommandLine = true;
       return;
     }
 
@@ -6195,8 +6202,14 @@ export class VimEngine {
 
     // :set commands
     if (/^set?\s/.test(cmd) || cmd === 'set') {
+      const beforeMsg = this.commandLine;
       this._executeSet(cmd);
-      this.commandLine = '';
+      // _executeSet may have set its own message — only echo back the typed
+      // ex if it didn't.
+      if (this.commandLine === beforeMsg || this.commandLine === '') {
+        this.commandLine = this._lastExTyped;
+        this._stickyCommandLine = true;
+      }
       return;
     }
 

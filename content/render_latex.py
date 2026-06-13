@@ -1525,6 +1525,20 @@ def render_topic_body(t, index, examples, *, thesis: str | None = None) -> str:
                   if _visible(b, AUDIENCE)
                   and not (_has_ref_table and b.get("type") == "keys")]
 
+    # Drop dividers that immediately precede a heading: the heading
+    # itself already provides a clean visual section break, so the
+    # horizontal rule above it is just redundant noise. Mid-section
+    # dividers (separating untitled subsections of one heading's
+    # content) are preserved.
+    _filtered: list = []
+    for _i, _b in enumerate(raw_blocks):
+        if _b.get("type") == "divider":
+            _nxt = raw_blocks[_i + 1] if _i + 1 < len(raw_blocks) else None
+            if _nxt is not None and _nxt.get("type") == "heading":
+                continue
+        _filtered.append(_b)
+    raw_blocks = _filtered
+
     for b in raw_blocks:
         if b.get("type") == "heading" and int(b.get("level", 2)) == 1:
             heading_text = re.sub(r"\{key:([^}]+)\}", r"\1",
