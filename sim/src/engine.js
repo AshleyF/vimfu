@@ -8597,6 +8597,7 @@ export class VimEngine {
         this._visualStart = { ...this.cursor };
         this.cursor = t;
       }
+      this._updateDesiredCol();
       this._pendingCount = ''; return;
     }
 
