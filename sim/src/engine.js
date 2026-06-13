@@ -1974,8 +1974,7 @@ export class VimEngine {
         if (this._hasCount()) {
           const n = this._getCount();
           this.cursor.row = Math.max(0, Math.min(n - 1, this.buffer.lineCount - 1));
-          this.cursor.col = 0;
-          this._updateDesiredCol();
+          this._applyDesiredCol();
         } else {
           this.cursor.row = this.buffer.lineCount - 1;
           this._applyDesiredCol();
@@ -2828,8 +2827,7 @@ export class VimEngine {
         if (this._hasCount()) {
           const n = this._getCount();
           this.cursor.row = Math.max(0, Math.min(n - 1, this.buffer.lineCount - 1));
-          this.cursor.col = 0;
-          this._updateDesiredCol();
+          this._applyDesiredCol();
         } else {
           this.cursor.row = 0;
           this._applyDesiredCol();
@@ -6441,7 +6439,10 @@ export class VimEngine {
       const name = this._fileName || '[No Name]';
       const mod = this._changeCount > 0 ? ' [Modified]' : '';
       const lines = this.buffer.lineCount;
-      this.commandLine = '"' + name + '"' + mod + ' ' + lines + ' line' + (lines !== 1 ? 's' : '');
+      const r = this.cursor.row + 1;
+      const pct = lines === 0 ? 'All' : (r === 1 && lines <= this._textRows ? 'Top' : (r === lines && lines <= this._textRows ? 'Bot' : Math.round((r / lines) * 100) + '%'));
+      const pctStr = '--' + pct + '--';
+      this.commandLine = '"' + name + '"' + mod + ' ' + lines + ' line' + (lines !== 1 ? 's' : '') + ' ' + pctStr;
       this._stickyCommandLine = true;
       return;
     }
@@ -13088,7 +13089,7 @@ export class VimEngine {
     const virtCol = isEmptyBuffer ? 1 : this._virtColEnd(this.cursor.row, this.cursor.col) + 1;
     const colStr = byteCol === virtCol ? `${byteCol}` : `${byteCol}-${virtCol}`;
     const pos = isEmptyBuffer ? `0,${colStr}` : `${r},${colStr}`;
-    const pct = total <= this._textRows ? 'All' : r === 1 ? 'Top' : r === total ? 'Bot' : `${Math.round((r / total) * 100)}%`;
+    const pct = total <= this._textRows ? 'All' : this.scrollTop === 0 ? 'Top' : (this.scrollTop + this._textRows >= total ? 'Bot' : `${Math.round((this.scrollTop * 100) / (total - this._textRows))}%`);
     const right = pos.padEnd(14) + ' ' + pct;
     // Left side: filename + modified flag
     let left = '';
