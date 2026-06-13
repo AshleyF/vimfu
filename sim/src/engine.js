@@ -8715,10 +8715,13 @@ export class VimEngine {
     }
     // Save snapshot with cursor at the start of the visual selection.
     // Vim's undo restores cursor to the beginning of the changed region.
-    const savedCursor = { ...this.cursor };
-    this.cursor = { row: sr, col: sc };
-    this._saveSnapshot();
-    this.cursor = savedCursor;
+    // Skip for yank (y), which doesn't modify the buffer.
+    if (key !== 'y') {
+      const savedCursor = { ...this.cursor };
+      this.cursor = { row: sr, col: sc };
+      this._saveSnapshot();
+      this.cursor = savedCursor;
+    }
 
     switch (key) {
       case 'd': case 'x': case 'Delete': {
