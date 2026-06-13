@@ -6533,12 +6533,14 @@ export class VimEngine {
         let totalSubs = 0;
         let lastSubRow = sr;
         let lastSubCol = 0;
+        let lastMatchLen = 0;
         for (let r = sr; r <= er; r++) {
           const before = this.buffer.lines[r];
           // Capture the pre-substitution match position (for CurSearch tracking).
           const findRe = new RegExp(jsPattern, caseFlag);
-          const matchIdx = before.search(findRe);
-          if (matchIdx < 0) continue; // no match on this line
+          const matchRes = before.match(findRe);
+          if (!matchRes) continue; // no match on this line
+          const matchIdx = matchRes.index;
           let after;
           if (exprMode) {
             const subRe = new RegExp(jsPattern, (globalFlag ? 'g' : '') + caseFlag);
@@ -6562,6 +6564,7 @@ export class VimEngine {
           }
           lastSubRow = r;
           lastSubCol = matchIdx;
+          lastMatchLen = matchRes[0].length;
         }
 
         if (totalSubs === 0) {
@@ -6574,11 +6577,12 @@ export class VimEngine {
           this.cursor.col = this._firstNonBlank(lastSubRow);
           this.commandLine = totalSubs + ' substitution' + (totalSubs > 1 ? 's' : '') + ' on ' + (er - sr + 1) + ' line' + ((er - sr + 1) > 1 ? 's' : '');
           this._stickyCommandLine = true;
-          // nvim keeps hlsearch on after :s. Without /g, the last-substituted
-          // match position becomes the CurSearch position. With /g, multiple
-          // substitutions happened and nvim shows no CurSearch.
+          // nvim keeps hlsearch on after :s. CurSearch is set on the last
+          // substituted match only when the cursor lands inside it — i.e.
+          // when firstNonBlank of the last sub'd line falls within the
+          // pre-substitution match span. Otherwise no CurSearch is shown.
           this._showCurSearch = true;
-          if (!globalFlag) {
+          if (this.cursor.col >= lastSubCol && this.cursor.col < lastSubCol + Math.max(1, lastMatchLen)) {
             this._curSearchPos = { row: lastSubRow, col: lastSubCol };
           } else {
             this._curSearchPos = null;
