@@ -5147,7 +5147,14 @@ export class VimEngine {
       const isWrite = /^(w(r(i(te?)?)?)?|wq|wa!?|wqa!?|x(it?)?|xa!?|sav(e(as?)?)?)(\s|$)/.test(cmd);
       if (isQuit && (isForce || this._changeCount === 0 || isWrite)) {
         this._quitDone = true;
-        if (isWrite && this._fileName) {
+        // :wqa / :xa quit while the typed cmdline is still on screen and
+        // suppress the per-buffer write message; only single-buffer
+        // :wq / :x show the "X lines, Y bytes written" message.
+        const isMultiQuit = /^(wqa|xa|qa)/.test(cmd);
+        if (isMultiQuit) {
+          this._quitMessage = ':' + cmd;
+          this._quitCursorAtStart = true;
+        } else if (isWrite && this._fileName) {
           // Fake an "X written" success message so the cursor parks
           // at the end of it (matches nvim's :wq / :x message).
           // nvim on Windows defaults to fileformat=dos (CRLF), so each
@@ -8120,7 +8127,7 @@ export class VimEngine {
       const bottomRow = Math.max(this._visualStart.row, this.cursor.row);
       const leftCol = Math.min(this._visualStart.col, this.cursor.col);
       const rightCol = Math.max(this._visualStart.col, this.cursor.col);
-      this._saveSnapshot();
+      this._saveSnapshot({ row: topRow, col: leftCol });
       for (let r = topRow; r <= bottomRow; r++) {
         const line = this.buffer.lines[r];
         const rc = Math.min(rightCol, line.length - 1);
@@ -8149,7 +8156,7 @@ export class VimEngine {
         er = this._visualStart.row; ec = this._visualStart.col;
       }
     }
-    this._saveSnapshot();
+    this._saveSnapshot({ row: sr, col: sc });
     for (let r = sr; r <= er; r++) {
       const line = this.buffer.lines[r];
       const s = (this.mode === Mode.VISUAL_LINE) ? 0 : (r === sr ? sc : 0);

@@ -1051,7 +1051,13 @@ export class Screen {
       if (msg.length > maxMsgWidth) {
         msg = '<' + msg.slice(msg.length - (maxMsgWidth - 1));
       }
-      finalCursorCol = msg ? Math.min(msg.length, this.cols - 1) : 0;
+      // For :wqa / :xa / :qa, nvim parks the cursor at col 0 of the
+      // typed cmdline (not at the end of a write message).
+      if (engine._quitCursorAtStart) {
+        finalCursorCol = 0;
+      } else {
+        finalCursorCol = msg ? Math.min(msg.length, this.cols - 1) : 0;
+      }
       // Render the message into the cmdline row (last line in `lines`)
       if (lines.length > 0) {
         const last = lines.length - 1;
