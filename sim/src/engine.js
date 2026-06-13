@@ -5788,6 +5788,15 @@ export class VimEngine {
     if (/^(w(r(i(te?)?)?)?|wq|x(it?)?|q(u(it?)?)?!?|qa!?|wa!?|wqa!?|xa!?|sav(e(as?)?)?)(\s|$)/.test(cmd) || /^e(d(it?)?)?!?(\s|$)/.test(cmd) || /^r(e(ad?)?)?!/.test(cmd) || /^r(e(ad?)?)?(\s|$)/.test(cmd) || cmd.startsWith('!')) {
       this._lastExCommand = cmd;
       this.commandLine = '';
+      const isEdit = /^e(d(it?)?)?!?(\s|$)/.test(cmd);
+      if (isEdit) {
+        // SessionManager will overwrite this with the file-load message,
+        // but in standalone engine mode (no VFS) we mimic nvim's "echo
+        // typed cmdline until next keystroke" so subsequent chords like
+        // Ctrl-W Ctrl-^ can still see the :e text on cmdline.
+        this.commandLine = this._lastExTyped;
+        this._stickyCommandLine = true;
+      }
       // Detect successful quit so the renderer can park the cursor in
       // the cmdline row and stop processing further keys. SessionManager
       // owns real file IO, but for the standalone engine we still want
