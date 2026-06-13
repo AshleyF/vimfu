@@ -3518,11 +3518,15 @@ export class VimEngine {
         break;
       }
       case '<': {
-        // g< — redisplay last message output
-        if (this._lastMessage) {
-          this.commandLine = this._lastMessage;
-          this._stickyCommandLine = true;
-        }
+        // g< — redisplay last message output as a Press-ENTER prompt.
+        // We don't currently retain the full message history; emit a
+        // minimal one-line prompt so the dismissal Enter is consumed
+        // (matches nvim's "prompt then Enter" cycle and stops Enter
+        // from moving the cursor).
+        this._messagePrompt = { lines: [{ text: this._lastMessage || '' }] };
+        this.commandLine = '';
+        this._recentMessageLines = null;
+        this._recentFromEx = false;
         this._pendingCount = '';
         break;
       }
