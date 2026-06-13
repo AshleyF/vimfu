@@ -424,6 +424,12 @@ export class VimEngine {
       }
     }
 
+    // Substitute confirm prompt — intercept y/n/a/q/l/Escape before message prompt
+    if (this._pendingSubstConfirm) {
+      this._handleSubstConfirmKey(key);
+      return;
+    }
+
     // If in message prompt mode, any key dismisses it
     if (this._messagePrompt) {
       this._messagePrompt = null;
@@ -2149,8 +2155,7 @@ export class VimEngine {
         const c = this._scrollHalf || Math.floor(this._textRows / 2);
         this.cursor.row = Math.min(this.cursor.row + c, this.buffer.lineCount - 1);
         this.scrollTop = Math.min(this.scrollTop + c, Math.max(0, this.buffer.lineCount - this._textRows));
-        this.cursor.col = this._firstNonBlank(this.cursor.row);
-        this._updateDesiredCol();
+        this._applyStartOfLine();
         break;
       }
       case 'Ctrl-U': {
@@ -2158,8 +2163,7 @@ export class VimEngine {
         const c = this._scrollHalf || Math.floor(this._textRows / 2);
         this.cursor.row = Math.max(this.cursor.row - c, 0);
         this.scrollTop = Math.max(this.scrollTop - c, 0);
-        this.cursor.col = this._firstNonBlank(this.cursor.row);
-        this._updateDesiredCol();
+        this._applyStartOfLine();
         break;
       }
       case 'Ctrl-F': {
@@ -2174,8 +2178,7 @@ export class VimEngine {
           this.scrollTop = Math.min(this.scrollTop + scroll, maxST);
         }
         this.cursor.row = Math.min(this.scrollTop, this.buffer.lineCount - 1);
-        this.cursor.col = this._firstNonBlank(this.cursor.row);
-        this._updateDesiredCol();
+        this._applyStartOfLine();
         break;
       }
       case 'Ctrl-B': {
@@ -2185,8 +2188,7 @@ export class VimEngine {
         this.scrollTop = Math.max(this.scrollTop - scroll, 0);
         if (this.scrollTop === 0 && oldST === 0) break;
         this.cursor.row = Math.min(this.scrollTop + this._textRows - 1, this.buffer.lineCount - 1);
-        this.cursor.col = this._firstNonBlank(this.cursor.row);
-        this._updateDesiredCol();
+        this._applyStartOfLine();
         break;
       }
       case 'Ctrl-E': {
@@ -3366,17 +3368,32 @@ export class VimEngine {
 
     const maxST = Math.max(0, this.buffer.lineCount - 1);
     switch (key) {
-      case 'z': case '.':
+      case 'z':
+        // zz — center; preserve column
+        this.scrollTop = Math.max(0, Math.min(this.cursor.row - Math.floor((this._textRows - 1) / 2), maxST));
+        break;
+      case '.':
+        // z. — center; cursor to first non-blank
         this.scrollTop = Math.max(0, Math.min(this.cursor.row - Math.floor((this._textRows - 1) / 2), maxST));
         this.cursor.col = this._firstNonBlank(this.cursor.row);
         this._updateDesiredCol();
         break;
-      case 't': case 'Enter':
+      case 't':
+        // zt — line to top of window; preserve column
+        this.scrollTop = Math.max(0, Math.min(this.cursor.row, maxST));
+        break;
+      case 'Enter':
+        // z<CR> — line to top of window; cursor to first non-blank
         this.scrollTop = Math.max(0, Math.min(this.cursor.row, maxST));
         this.cursor.col = this._firstNonBlank(this.cursor.row);
         this._updateDesiredCol();
         break;
-      case 'b': case '-':
+      case 'b':
+        // zb — line to bottom of window; preserve column
+        this.scrollTop = Math.max(0, Math.min(this.cursor.row - this._textRows + 1, maxST));
+        break;
+      case '-':
+        // z- — line to bottom of window; cursor to first non-blank
         this.scrollTop = Math.max(0, Math.min(this.cursor.row - this._textRows + 1, maxST));
         this.cursor.col = this._firstNonBlank(this.cursor.row);
         this._updateDesiredCol();
@@ -5774,6 +5791,20 @@ export class VimEngine {
         // Perform substitutions
         this._saveSnapshot({ row: sr, col: 0 });
         this._redoStack = [];
+
+        // With /c (confirm) flag: enter interactive confirm mode.
+        if (confirmFlag) {
+          this._pendingSubstConfirm = {
+            pattern, replacement, jsPattern, jsReplacement, caseFlag,
+            globalFlag, sr, er,
+            curRow: sr, curCol: 0,
+            subCount: 0,
+            rowsChanged: new Set(),
+          };
+          this._advanceSubstConfirm();
+          return;
+        }
+
         let totalSubs = 0;
         let lastSubRow = sr;
         let lastSubCol = 0;
@@ -6591,6 +6622,24 @@ export class VimEngine {
   // ── Insert mode ──
 
   _insertKey(key) {
+    // Pending Ctrl-G: next key determines action (j/k move; u/U undo break)
+    if (this._pendingInsertCtrlG) {
+      this._pendingInsertCtrlG = false;
+      this._saveForDot(key);
+      if (key === 'j' || key === 'k') {
+        // <C-g>j / <C-g>k — move cursor down/up like gj/gk, staying in insert mode
+        if (key === 'j' && this.cursor.row < this.buffer.lineCount - 1) {
+          this.cursor.row++;
+          this.cursor.col = Math.min(this.cursor.col, this.buffer.lineLength(this.cursor.row));
+        } else if (key === 'k' && this.cursor.row > 0) {
+          this.cursor.row--;
+          this.cursor.col = Math.min(this.cursor.col, this.buffer.lineLength(this.cursor.row));
+        }
+      }
+      // <C-g>u, <C-g>U: undo break / no-cursor-undo-break — no-op for sim
+      return;
+    }
+
     // Pending Ctrl-R: next key is register name, paste register contents
     if (this._pendingCtrlR) {
       this._pendingCtrlR = false;
@@ -6903,6 +6952,9 @@ export class VimEngine {
       case 'Ctrl-R': // Ctrl-R: paste from register
         this._pendingCtrlR = true;
         return; // don't fall through
+      case 'Ctrl-G': // <C-g> prefix — next key determines behavior
+        this._pendingInsertCtrlG = true;
+        return;
       case 'Tab': {
         const ts = this._settings.tabstop || 8;
         if (this._settings.expandtab) {
@@ -10860,6 +10912,21 @@ export class VimEngine {
     }
   }
 
+  /**
+   * Apply the `startofline` setting: if ON, move cursor to first non-blank
+   * of current row; if OFF (nvim default), preserve column via desiredCol.
+   * Used by commands listed in :help 'startofline' (G, gg, H, M, L,
+   * <C-D>, <C-U>, <C-B>, <C-F>, etc.).
+   */
+  _applyStartOfLine() {
+    if (this._settings.startofline) {
+      this.cursor.col = this._firstNonBlank(this.cursor.row);
+      this._updateDesiredCol();
+    } else {
+      this._applyDesiredCol();
+    }
+  }
+
   /** 
    * Compute the 0-indexed virtual (screen) column of the END of the character at `col`.
    * For a tab, this is the last visual column of the tab. For regular chars, same as _virtColAt.
@@ -11454,6 +11521,134 @@ export class VimEngine {
       } else {
         this.commandLine = '';
       }
+    }
+  }
+
+  // ── Substitute confirm (/c flag) ──
+
+  _advanceSubstConfirm() {
+    const s = this._pendingSubstConfirm;
+    if (!s) return;
+    const re = new RegExp(s.jsPattern, s.caseFlag);
+    for (let r = s.curRow; r <= s.er && r < this.buffer.lineCount; r++) {
+      const line = this.buffer.lines[r] || '';
+      const startCol = (r === s.curRow) ? s.curCol : 0;
+      if (startCol > line.length) continue;
+      const slice = line.slice(startCol);
+      const m = slice.match(re);
+      if (m && m[0].length > 0) {
+        s.curMatch = { row: r, col: startCol + m.index, len: m[0].length, text: m[0] };
+        s.curRow = r;
+        // Position cursor at the match
+        this.cursor.row = r;
+        this.cursor.col = s.curMatch.col;
+        this._curSearchPos = { row: r, col: s.curMatch.col };
+        this._showCurSearch = true;
+        // Build prompt: "replace with REPL (y/n/a/q/l/^E/^Y)?"
+        this.commandLine = `replace with ${s.replacement} (y/n/a/q/l/^E/^Y)?`;
+        this._stickyCommandLine = true;
+        return;
+      }
+    }
+    this._finishSubstConfirm();
+  }
+
+  _applySubstConfirmMatch() {
+    const s = this._pendingSubstConfirm;
+    if (!s || !s.curMatch) return;
+    const m = s.curMatch;
+    const line = this.buffer.lines[m.row];
+    const matched = line.slice(m.col, m.col + m.len);
+    // Apply jsReplacement (handles $&, $1-$9 etc.) by running the regex on
+    // just the matched text — anchored to ensure exact replacement.
+    const replaced = matched.replace(new RegExp(s.jsPattern, s.caseFlag), s.jsReplacement);
+    this.buffer.lines[m.row] = line.slice(0, m.col) + replaced + line.slice(m.col + m.len);
+    s.subCount++;
+    s.rowsChanged.add(m.row);
+    if (s.globalFlag) {
+      s.curRow = m.row;
+      s.curCol = m.col + replaced.length;
+    } else {
+      // Without /g, skip remainder of line
+      s.curRow = m.row + 1;
+      s.curCol = 0;
+    }
+    s.curMatch = null;
+  }
+
+  _skipSubstConfirmMatch() {
+    const s = this._pendingSubstConfirm;
+    if (!s || !s.curMatch) return;
+    const m = s.curMatch;
+    if (s.globalFlag) {
+      s.curRow = m.row;
+      s.curCol = m.col + Math.max(1, m.len);
+    } else {
+      s.curRow = m.row + 1;
+      s.curCol = 0;
+    }
+    s.curMatch = null;
+  }
+
+  _finishSubstConfirm() {
+    const s = this._pendingSubstConfirm;
+    if (!s) return;
+    const lineCount = s.rowsChanged.size;
+    const total = s.subCount;
+    if (total === 0) {
+      this.commandLine = '';
+      this._stickyCommandLine = false;
+    } else {
+      this.commandLine = total + ' substitution' + (total > 1 ? 's' : '') + ' on ' + lineCount + ' line' + (lineCount > 1 ? 's' : '');
+      this._stickyCommandLine = true;
+    }
+    // Position cursor: prefer the row of the last prompt (if quit mid-way),
+    // else the last changed row.
+    if (s.curMatch) {
+      this.cursor.row = s.curMatch.row;
+      this.cursor.col = this._firstNonBlank(s.curMatch.row);
+    } else if (s.rowsChanged.size > 0) {
+      const lastRow = Math.max(...s.rowsChanged);
+      this.cursor.row = lastRow;
+      this.cursor.col = this._firstNonBlank(lastRow);
+    }
+    this._showCurSearch = false;
+    this._curSearchPos = null;
+    this._pendingSubstConfirm = null;
+  }
+
+  _handleSubstConfirmKey(key) {
+    const s = this._pendingSubstConfirm;
+    if (!s) return;
+    switch (key) {
+      case 'y':
+        this._applySubstConfirmMatch();
+        this._advanceSubstConfirm();
+        return;
+      case 'n':
+        this._skipSubstConfirmMatch();
+        this._advanceSubstConfirm();
+        return;
+      case 'a': {
+        // Apply current and all remaining without prompt
+        while (this._pendingSubstConfirm && this._pendingSubstConfirm.curMatch) {
+          this._applySubstConfirmMatch();
+          this._advanceSubstConfirm();
+        }
+        return;
+      }
+      case 'l':
+        this._applySubstConfirmMatch();
+        this._finishSubstConfirm();
+        return;
+      case 'q':
+      case 'Escape':
+        this._finishSubstConfirm();
+        return;
+      default:
+        // Any other key: dismiss prompt and finish
+        this._finishSubstConfirm();
+        return;
     }
   }
 }
