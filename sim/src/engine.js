@@ -11226,7 +11226,25 @@ export class VimEngine {
         }
         break;
       }
-      case '[M':
+      case '[M': {
+        // [M — Go to previous end of method.
+        // If cursor is inside a class block (open '{' > close '}' before cursor), find prev '}'.
+        // Otherwise fall back to finding prev '{' (class/outer boundary).
+        const targetChar = this._insideUnclosedBrace() ? '}' : '{';
+        for (let r = this.cursor.row; r >= 0; r--) {
+          const line = this.buffer.lines[r];
+          const startC = (r === this.cursor.row) ? this.cursor.col - 1 : line.length - 1;
+          for (let c = startC; c >= 0; c--) {
+            if (line[c] === targetChar) {
+              this.cursor.row = r;
+              this.cursor.col = c;
+              this._updateDesiredCol();
+              return;
+            }
+          }
+        }
+        break;
+      }
       case '[m': {
         // Go to previous unmatched '{' (method start)
         for (let r = this.cursor.row; r >= 0; r--) {
@@ -11243,7 +11261,25 @@ export class VimEngine {
         }
         break;
       }
-      case ']M':
+      case ']M': {
+        // ]M — Go to next end of method.
+        // If cursor is inside a class block (open '{' > close '}' before cursor), find next '}'.
+        // Otherwise fall back to finding next '{' (class/outer boundary).
+        const targetChar = this._insideUnclosedBrace() ? '}' : '{';
+        for (let r = this.cursor.row; r < this.buffer.lineCount; r++) {
+          const line = this.buffer.lines[r];
+          const startC = (r === this.cursor.row) ? this.cursor.col + 1 : 0;
+          for (let c = startC; c < line.length; c++) {
+            if (line[c] === targetChar) {
+              this.cursor.row = r;
+              this.cursor.col = c;
+              this._updateDesiredCol();
+              return;
+            }
+          }
+        }
+        break;
+      }
       case ']m': {
         // Go to next unmatched '{' (method start)
         for (let r = this.cursor.row; r < this.buffer.lineCount; r++) {
@@ -12582,6 +12618,26 @@ export class VimEngine {
   /** Update _desiredCol from current cursor position (virtual column). */
   _updateDesiredCol() {
     this._desiredCol = this._virtColAt(this.cursor.row, this.cursor.col);
+  }
+
+  /**
+   * Check if cursor is currently inside an unclosed '{' (i.e., between class/method braces).
+   * Counts '{' minus '}' in the buffer from start up to AND INCLUDING the cursor position.
+   * Including cursor char handles edge case where cursor sits on the closing '}' itself.
+   * Used by ]M/[M to decide whether to find next/prev '}' (inside class) vs '{' (outside).
+   */
+  _insideUnclosedBrace() {
+    let depth = 0;
+    for (let r = 0; r <= this.cursor.row; r++) {
+      const line = this.buffer.lines[r] || '';
+      const endC = (r === this.cursor.row) ? Math.min(this.cursor.col + 1, line.length) : line.length;
+      for (let c = 0; c < endC; c++) {
+        const ch = line[c];
+        if (ch === '{') depth++;
+        else if (ch === '}') depth--;
+      }
+    }
+    return depth > 0;
   }
 
   /** Apply _desiredCol to cursor.col on current row (converts virtual → buffer col). */
