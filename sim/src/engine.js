@@ -372,6 +372,12 @@ export class VimEngine {
     // Ctrl-[ is the terminal equivalent of Escape
     if (key === 'Ctrl-[') key = 'Escape';
 
+    // After a successful quit ex command (:q / :q! / :wq / :x / ZZ / ZQ),
+    // nvim has exited — subsequent keys go to the shell and are ignored
+    // by the buffer. Drop them so screen state matches the post-exit
+    // tmux capture.
+    if (this._quitDone) return;
+
     // ── Key mapping resolution ──
     // Skip mapping lookup when feeding rhs of a noremap, or during macro playback of noremap
     if (!this._mapNoRemap) {
@@ -1279,9 +1285,21 @@ export class VimEngine {
     if (this._pendingCapZ) {
       this._pendingCapZ = false;
       if (key === 'Z') {
+        // ZZ behaves like :wq
         this._lastExCommand = 'wq';
+        this._quitDone = true;
+        if (this._fileName) {
+          const lines = this.buffer.lineCount;
+          const bytes = this.buffer.lines.reduce((n, l) => n + l.length, 0) + 2 * lines;
+          this._quitMessage = '"' + this._fileName + '" ' + lines + 'L, ' + bytes + 'B written';
+        } else {
+          this._quitMessage = '';
+        }
       } else if (key === 'Q') {
+        // ZQ behaves like :q!
         this._lastExCommand = 'q!';
+        this._quitDone = true;
+        this._quitMessage = '';
       }
       this._pendingCount = '';
       return;
@@ -5113,6 +5131,33 @@ export class VimEngine {
     if (/^(w(r(i(te?)?)?)?|wq|x(it?)?|q(u(it?)?)?!?|qa!?|wa!?|wqa!?|xa!?|sav(e(as?)?)?)(\s|$)/.test(cmd) || /^e(d(it?)?)?!?(\s|$)/.test(cmd) || /^r(e(ad?)?)?!/.test(cmd) || /^r(e(ad?)?)?(\s|$)/.test(cmd) || cmd.startsWith('!')) {
       this._lastExCommand = cmd;
       this.commandLine = '';
+      // Detect successful quit so the renderer can park the cursor in
+      // the cmdline row and stop processing further keys. SessionManager
+      // owns real file IO, but for the standalone engine we still want
+      // to model nvim's "screen after quit" behaviour.
+      const isForce = /!$/.test(cmd.split(/\s+/)[0]);
+      const isQuit = /^(q(u(it?)?)?!?|qa!?|wq|wqa!?|x(it?)?|xa!?)(\s|$)/.test(cmd);
+      const isWrite = /^(w(r(i(te?)?)?)?|wq|wa!?|wqa!?|x(it?)?|xa!?|sav(e(as?)?)?)(\s|$)/.test(cmd);
+      if (isQuit && (isForce || this._changeCount === 0 || isWrite)) {
+        this._quitDone = true;
+        if (isWrite && this._fileName) {
+          // Fake an "X written" success message so the cursor parks
+          // at the end of it (matches nvim's :wq / :x message).
+          // nvim on Windows defaults to fileformat=dos (CRLF), so each
+          // line contributes 2 bytes of EOL on disk.
+          const lines = this.buffer.lineCount;
+          const bytes = this.buffer.lines.reduce((n, l) => n + l.length, 0) + 2 * lines;
+          this._quitMessage = '"' + this._fileName + '" ' + lines + 'L, ' + bytes + 'B written';
+        } else {
+          this._quitMessage = '';
+        }
+      } else if (isQuit && this._changeCount > 0 && !isForce && !isWrite) {
+        // :q on a modified buffer → emit the E37/E162 errors that linger
+        // in the cmdline area until the next command.
+        this.commandLine = 'E37: No write since last change';
+        this._stickyCommandLine = true;
+        this._quitErrorPending = true;
+      }
       return;
     }
 

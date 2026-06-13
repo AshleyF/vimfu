@@ -1038,6 +1038,31 @@ export class Screen {
       finalCursorCol = Math.min(engine.commandLine.length, this.cols);
     }
 
+    // Post-quit cursor override: after a successful :q/:q!/:wq/:x/ZZ/ZQ,
+    // park the cursor on the cmdline row. For write-quit variants the
+    // cursor sits at the end of the "X written" success message. nvim
+    // truncates the message from the left with a "<" prefix when it
+    // exceeds the available cmdline width (cols - 12, approximating
+    // the ruler/showcmd reservation at the right edge).
+    if (engine._quitDone) {
+      finalCursorRow = this.rows - 1;
+      let msg = engine._quitMessage || '';
+      const maxMsgWidth = Math.max(1, this.cols - 12);
+      if (msg.length > maxMsgWidth) {
+        msg = '<' + msg.slice(msg.length - (maxMsgWidth - 1));
+      }
+      finalCursorCol = msg ? Math.min(msg.length, this.cols - 1) : 0;
+      // Render the message into the cmdline row (last line in `lines`)
+      if (lines.length > 0) {
+        const last = lines.length - 1;
+        const msgText = this._padOrTruncate(msg, this.cols);
+        lines[last] = {
+          text: msgText,
+          runs: [{ n: this.cols, fg: t.cmdFg, bg: t.cmdBg }],
+        };
+      }
+    }
+
     return {
       rows: this.rows,
       cols: this.cols,
