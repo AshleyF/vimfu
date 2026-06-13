@@ -591,9 +591,19 @@ export class Screen {
         const sliceStart = noWrap ? scrollLeftAdj : wrapIdx * textCols;
         const sliceEnd = Math.min(sliceStart + textCols, expanded.length);
         const sliceText = sliceStart < expanded.length ? expanded.slice(sliceStart, sliceEnd) : '';
-        const bodyText = sliceText.length >= textCols
+        let bodyText = sliceText.length >= textCols
           ? sliceText
           : sliceText + ' '.repeat(textCols - sliceText.length);
+        // ── 'display=lastline' (default): replace last 3 chars with '@@@' when a
+        // wrapped line is truncated because the next wrap row would not fit.
+        let lastlineFillerCols = 0;
+        if (!noWrap
+            && screenRow === textRows - 1
+            && wrapIdx < numWraps - 1
+            && textCols >= 3) {
+          bodyText = bodyText.slice(0, textCols - 3) + '@@@';
+          lastlineFillerCols = 3;
+        }
 
         // Build per-column colour arrays for this screen row
         const colFg = new Array(textCols).fill(t.normalFg);
@@ -832,6 +842,14 @@ export class Screen {
         }
 
         // Compress colour arrays into runs
+        // ── Override the last 3 columns with NonText color for '@@@' filler. ──
+        if (lastlineFillerCols > 0) {
+          const fillFg = t.listFg || '4d5154';
+          for (let c = textCols - lastlineFillerCols; c < textCols; c++) {
+            colFg[c] = fillFg;
+            colBg[c] = t.normalBg;
+          }
+        }
         const textRuns = [];
         let runStart = 0;
         for (let c = 1; c <= textCols; c++) {
