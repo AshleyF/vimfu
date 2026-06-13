@@ -6717,7 +6717,7 @@ export class VimEngine {
           // when firstNonBlank of the last sub'd line falls within the
           // pre-substitution match span. Otherwise no CurSearch is shown.
           this._showCurSearch = true;
-          if (this.cursor.col >= lastSubCol && this.cursor.col < lastSubCol + Math.max(1, lastMatchLen)) {
+          if (lastMatchLen > 0 && this.cursor.col >= lastSubCol && this.cursor.col < lastSubCol + lastMatchLen) {
             this._curSearchPos = { row: lastSubRow, col: lastSubCol };
           } else {
             this._curSearchPos = null;
@@ -9563,16 +9563,13 @@ export class VimEngine {
       const re = new RegExp(this._vimPatternToJs(this._searchPattern));
       const line = this.buffer.lines[this.cursor.row] || '';
       const m = line.slice(this.cursor.col).match(re);
-      if (m) {
+      // nvim only promotes a match to CurSearch if it lies at or after the
+      // current cursor on the current line. We don't wrap back to column 0
+      // — otherwise an unrelated earlier match would steal the highlight.
+      if (m && m[0].length > 0) {
         this._curSearchPos = { row: this.cursor.row, col: this.cursor.col + m.index };
       } else {
-        // Search from the beginning of the line
-        const m2 = line.match(re);
-        if (m2) {
-          this._curSearchPos = { row: this.cursor.row, col: m2.index };
-        } else {
-          this._curSearchPos = null;
-        }
+        this._curSearchPos = null;
       }
     } catch {
       this._curSearchPos = null;
