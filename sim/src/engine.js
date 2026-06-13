@@ -13075,8 +13075,11 @@ export class VimEngine {
         indentStr = '\t'.repeat(tabs) + ' '.repeat(spaces);
       }
       this.buffer.lines[r] = indentStr + trimmed;
-      // Count { and } to update level for next line
-      for (const ch of trimmed) {
+      // Count { and } to update level for next line — skip a leading } since
+      // we already accounted for it via the pre-decrement above.
+      const scanStart = trimmed.startsWith('}') ? 1 : 0;
+      for (let i = scanStart; i < trimmed.length; i++) {
+        const ch = trimmed[i];
         if (ch === '{') level++;
         else if (ch === '}') level = Math.max(0, level - 1);
       }
