@@ -1949,7 +1949,14 @@ export class VimEngine {
       case '$': {
         const count = this._getCount();
         if (count > 1) this.cursor.row = Math.min(this.cursor.row + count - 1, this.buffer.lineCount - 1);
-        this.cursor.col = this._maxCol();
+        // In a Ctrl-O one-shot from insert mode, $ lands one past the last
+        // char so the resumed insert appends to the end. In plain normal
+        // mode, $ lands on the last printable character.
+        if (this._insertOneShot) {
+          this.cursor.col = this.buffer.lineLength(this.cursor.row);
+        } else {
+          this.cursor.col = this._maxCol();
+        }
         this._desiredCol = Infinity;
         break;
       }
