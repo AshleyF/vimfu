@@ -99,6 +99,8 @@ export class VimEngine {
     this._smallDeleteReg = null; // "-: {text, type} for deletes < 1 line
     this._pendingRegKey = ''; // pending " register prefix
     this._pendingCtrlR = false; // pending Ctrl-R in insert mode
+    this._pendingInsertCtrlG = false; // pending <C-g> in insert mode
+    this._pendingInsertCtrlGS = false; // pending <C-g>S<delim> in insert mode
     this._cmdPendingCtrlR = false; // pending Ctrl-R in command mode
     this._lastMessage = ''; // last displayed message (for g<)
     /** @type {((text: string) => void) | null} */
@@ -185,10 +187,12 @@ export class VimEngine {
 
     // Surround (nvim-surround plugin)
     this._pendingSurround = '';      // 'ds', 'cs', 'ys', or ''
+    this._pendingSurroundCount = 1;  // count prefix for ds/cs (e.g. 2ds( strips two levels)
     this._surroundTarget = '';       // for cs: the target char (first char after cs)
     this._ysRange = null;            // for ys: {sr, sc, er, ec} waiting for surround char
     this._pendingVisualSurround = null; // for visual S: {sr, sc, er, ec, wasLinewise}
     this._pendingTagInput = null;    // tag input mode: { buffer, context, ...data }
+    this._pendingFuncInput = null;   // function-name input mode: { buffer, context, range, spaced, funcKey, target? }
 
     // Desired column for vertical movement
     this._desiredCol = 0;
@@ -655,6 +659,8 @@ export class VimEngine {
     if (reg) {
       // Black hole register
       if (reg === '_') return { text: '', type: 'char' };
+      // Unnamed register (explicitly via "")
+      if (reg === '"') return { text: this._unnamedReg, type: this._regType };
       // Numbered registers
       if (reg >= '0' && reg <= '9') {
         const r = this._numberedRegs[parseInt(reg)];
@@ -787,7 +793,10 @@ export class VimEngine {
     if (this._pendingTagInput) {
       if (key === 'Escape') { this._pendingTagInput = null; this._pendingCount = ''; return; }
       if (key === 'Enter') {
-        const tagName = this._pendingTagInput.buffer.trim();
+        let tagName = this._pendingTagInput.buffer.trim();
+        // nvim-surround treats '>' as the tag terminator; strip a trailing '>'
+        // so users typing the tag in HTML form (e.g. "em>") get "em".
+        if (tagName.endsWith('>')) tagName = tagName.slice(0, -1);
         if (!tagName) { this._pendingTagInput = null; this._pendingCount = ''; return; }
         const ctx = this._pendingTagInput;
         this._pendingTagInput = null;
@@ -851,24 +860,100 @@ export class VimEngine {
         this._ysRange = null;
         return;
       }
+      if (key === 'f' || key === 'F') {
+        // Function-call surround: prompt for function name (terminated by Enter).
+        // 'f' wraps in name(...); 'F' wraps in name( ... ) with extra spaces.
+        this._pendingFuncInput = {
+          buffer: '', context: 'ys', range: this._ysRange,
+          spaced: key === 'F', funcKey: key,
+        };
+        this._ysRange = null;
+        return;
+      }
       const range = this._ysRange;
       this._ysRange = null;
-      this._saveSnapshot();
-      this._doSurroundAdd(range.sr, range.sc, range.er, range.ec, key, !range.noTrim);
+      // Save snapshot with cursor override so undo restores to the position
+      // of the change start (matches nvim behavior). For `yss` where the
+      // change starts after cursor, keep the cursor at its original column.
+      const undoCol = Math.min(this.cursor.col, range.sc);
+      this._saveSnapshot({ row: range.sr, col: undoCol });
+      if (range.block) {
+        // yS / ySS — block-style surround: delimiters on separate lines.
+        let { open, close } = this._getSurroundPair(key);
+        // Strip padding spaces from open/close (e.g. '( ' → '(').
+        open = open.trim();
+        close = close.trim();
+        // Insert closing delimiter line after the selected lines, then
+        // opening line before. Both at column 0 (no indent).
+        this.buffer.lines.splice(range.er + 1, 0, close);
+        this.buffer.lines.splice(range.sr, 0, open);
+        this.cursor.row = range.sr; this.cursor.col = 0;
+        this._updateDesiredCol();
+      } else {
+        this._doSurroundAdd(range.sr, range.sc, range.er, range.ec, key, !range.noTrim);
+      }
       this._lastChange = range.dotKeys ? [...range.dotKeys, key] : ['y', 's', key];
       this._redoStack = [];
       this._pendingCount = '';
       return;
     }
 
+    // Pending function-name input (for ys...f / cs...f)
+    if (this._pendingFuncInput) {
+      if (key === 'Escape') { this._pendingFuncInput = null; this._pendingCount = ''; return; }
+      if (key === 'Enter') {
+        const fn = this._pendingFuncInput;
+        const name = fn.buffer.trim();
+        this._pendingFuncInput = null;
+        if (!name) { this._pendingCount = ''; return; }
+        const open = fn.spaced ? `${name}( ` : `${name}(`;
+        const close = fn.spaced ? ` )` : `)`;
+        if (fn.context === 'ys') {
+          const range = fn.range;
+          this._saveSnapshot();
+          this._doSurroundAdd(range.sr, range.sc, range.er, range.ec, null, !range.noTrim, open, close);
+          const dotKeys = range.dotKeys
+            ? [...range.dotKeys, fn.funcKey, ...name.split(''), 'Enter']
+            : ['y', 's', fn.funcKey, ...name.split(''), 'Enter'];
+          this._lastChange = dotKeys;
+          this._redoStack = [];
+        } else if (fn.context === 'cs') {
+          this._saveSnapshot();
+          const ok = this._doSurroundChangeFunc(fn.target, name, fn.spaced);
+          if (ok) {
+            this._lastChange = ['c', 's', fn.target, fn.funcKey, ...name.split(''), 'Enter'];
+            this._redoStack = [];
+          }
+        }
+        this._pendingCount = '';
+        return;
+      }
+      if (key === 'Backspace' || key === 'Ctrl-H') {
+        this._pendingFuncInput.buffer = this._pendingFuncInput.buffer.slice(0, -1);
+        return;
+      }
+      if (key.length === 1) {
+        this._pendingFuncInput.buffer += key;
+        return;
+      }
+      return;
+    }
+
     // Pending ds (waiting for target char)
     if (this._pendingSurround === 'ds') {
       this._pendingSurround = '';
+      const dsCount = this._pendingSurroundCount || 1;
+      this._pendingSurroundCount = 1;
       if (key === 'Escape') { this._pendingCount = ''; return; }
       if (key === 't') {
         // Delete surrounding tag
         this._saveSnapshot();
-        const ok = this._doSurroundDeleteTag();
+        let ok = false;
+        for (let i = 0; i < dsCount; i++) {
+          const r = this._doSurroundDeleteTag();
+          if (!r) break;
+          ok = true;
+        }
         if (ok) {
           this._lastChange = ['d', 's', 't'];
           this._redoStack = [];
@@ -876,8 +961,48 @@ export class VimEngine {
         this._pendingCount = '';
         return;
       }
+      if (key === 'f' || key === 'F') {
+        // Delete surrounding function call: remove name + parens, keep inner.
+        this._saveSnapshot();
+        let ok = false;
+        for (let i = 0; i < dsCount; i++) {
+          const r = this._doSurroundDeleteFunc();
+          if (!r) break;
+          ok = true;
+        }
+        if (ok) {
+          this._lastChange = ['d', 's', key];
+          this._redoStack = [];
+        }
+        this._pendingCount = '';
+        return;
+      }
+      if (key === 's') {
+        // dss — delete the nearest enclosing surround (auto-detect).
+        const auto = this._findNearestSurroundChar();
+        if (auto) {
+          this._saveSnapshot();
+          let ok = false;
+          for (let i = 0; i < dsCount; i++) {
+            const r = this._doSurroundDelete(auto);
+            if (!r) break;
+            ok = true;
+          }
+          if (ok) {
+            this._lastChange = ['d', 's', 's'];
+            this._redoStack = [];
+          }
+        }
+        this._pendingCount = '';
+        return;
+      }
       this._saveSnapshot();
-      const ok = this._doSurroundDelete(key);
+      let ok = false;
+      for (let i = 0; i < dsCount; i++) {
+        const r = this._doSurroundDelete(key);
+        if (!r) break;
+        ok = true;
+      }
       if (ok) {
         this._lastChange = ['d', 's', key];
         this._redoStack = [];
@@ -890,6 +1015,14 @@ export class VimEngine {
     if (this._pendingSurround === 'cs' && !this._surroundTarget) {
       if (key === 'Escape') {
         this._pendingSurround = ''; this._pendingCount = ''; return;
+      }
+      if (key === 'f' || key === 'F') {
+        // cs<f|F> — change function call: prompt directly for new name.
+        this._pendingSurround = '';
+        this._pendingFuncInput = {
+          buffer: '', context: 'cs', target: key, spaced: key === 'F', funcKey: key,
+        };
+        return;
       }
       this._surroundTarget = key;
       return;
@@ -911,6 +1044,13 @@ export class VimEngine {
       if (key === 't') {
         // Non-tag target, but replacement is tag: enter tag input mode
         this._pendingTagInput = { buffer: '', context: 'cs', target };
+        return;
+      }
+      if (key === 'f' || key === 'F') {
+        // Non-func target → function call: enter function-name input mode
+        this._pendingFuncInput = {
+          buffer: '', context: 'cs', target, spaced: key === 'F', funcKey: key,
+        };
         return;
       }
       this._saveSnapshot();
@@ -1234,25 +1374,40 @@ export class VimEngine {
         } else if (this._pendingOp === 'd') {
           // ds — enter surround-delete mode (need target char)
           this._pendingSurround = 'ds';
+          this._pendingSurroundCount = this._getCount(1);
           this._pendingOp = ''; this._pendingCount = '';
           return;
         } else if (this._pendingOp === 'c') {
           // cs — enter surround-change mode (need target + replacement)
           this._pendingSurround = 'cs';
+          this._pendingSurroundCount = this._getCount(1);
           this._pendingOp = ''; this._pendingCount = '';
           return;
         }
       }
+      // yS — block-style surround add (delimiters on separate lines)
+      if (key === 'S' && this._pendingOp === 'y') {
+        this._pendingOp = 'yS';
+        this._opStartPos = { ...this.cursor };
+        return;
+      }
       // ys operator: handle yss (surround whole line) and motions
-      if (this._pendingOp === 'ys') {
-        if (key === 's') {
-          // yss — surround whole line
+      // yS (block-style) follows the same path; differs only in how
+      // the surround char is applied (delimiters on separate lines).
+      if (this._pendingOp === 'ys' || this._pendingOp === 'yS') {
+        const isBlock = this._pendingOp === 'yS';
+        const opName = isBlock ? 'S' : 's';
+        if (key === opName) {
+          // yss / ySS — surround whole line
           const row = this.cursor.row;
           const line = this.buffer.lines[row];
           const m = line.match(/\S/);
-          const fnb = m ? m.index : 0; // all-whitespace: wrap from col 0
+          const fnb = m ? m.index : 0;
           const end = line.length;
-          this._ysRange = { sr: row, sc: fnb, er: row, ec: end, dotKeys: ['y', 's', 's'], noTrim: true };
+          this._ysRange = {
+            sr: row, sc: fnb, er: row, ec: end,
+            dotKeys: ['y', opName, opName], noTrim: true, block: isBlock,
+          };
           this._pendingOp = ''; this._pendingCount = '';
           return;
         }
@@ -1294,7 +1449,7 @@ export class VimEngine {
           if (this._motionInclusive) ec++;
           // Restore cursor to start for ys
           this.cursor = { ...ysStartPos };
-          const dotKeys = ['y', 's'];
+          const dotKeys = ['y', opName];
           if (motionCountStr) for (const ch of motionCountStr) dotKeys.push(ch);
           dotKeys.push(key);
           // Trim trailing whitespace from range (nvim-surround trims before wrapping)
@@ -1305,7 +1460,7 @@ export class VimEngine {
             const eline = this.buffer.lines[er];
             while (ec > 0 && (eline[ec - 1] === ' ' || eline[ec - 1] === '\t')) ec--;
           }
-          this._ysRange = { sr, sc, er, ec, dotKeys };
+          this._ysRange = { sr, sc, er, ec, dotKeys, block: isBlock };
         }
         this._pendingOp = ''; this._pendingCount = '';
         return;
@@ -6622,6 +6777,33 @@ export class VimEngine {
   // ── Insert mode ──
 
   _insertKey(key) {
+    // Pending <C-g>S<delim>: block-style surround prompt (open delim, then
+    // newline + indent, then waits for content; close delim added on Esc).
+    if (this._pendingInsertCtrlGS) {
+      const delim = key;
+      this._pendingInsertCtrlGS = false;
+      // Look up pair (e.g. '{' → '{', '}'); strip padding spaces.
+      let { open, close } = this._getSurroundPair(delim);
+      open = open.trim();
+      close = close.trim();
+      // Determine indent based on shiftwidth (default 8 if unset/zero).
+      const sw = this._settings.shiftwidth || this._settings.tabstop || 8;
+      const indent = ' '.repeat(sw);
+      // 1) Insert open delim at cursor position on current line.
+      const row = this.cursor.row;
+      const col = this.cursor.col;
+      const curLine = this.buffer.lines[row];
+      this.buffer.lines[row] = curLine.slice(0, col) + open + curLine.slice(col);
+      // 2) Insert two new lines: middle (indent only) and close-delim line.
+      this.buffer.lines.splice(row + 1, 0, indent, close);
+      this.cursor.row = row + 1;
+      this.cursor.col = indent.length;
+      this._updateDesiredCol();
+      // Track the close delim line so leaving insert mode doesn't disturb it.
+      // (Subsequent insert keys append to the indented middle line.)
+      return;
+    }
+
     // Pending Ctrl-G: next key determines action (j/k move; u/U undo break)
     if (this._pendingInsertCtrlG) {
       this._pendingInsertCtrlG = false;
@@ -6635,6 +6817,9 @@ export class VimEngine {
           this.cursor.row--;
           this.cursor.col = Math.min(this.cursor.col, this.buffer.lineLength(this.cursor.row));
         }
+      } else if (key === 'S') {
+        // <C-g>S<delim> — block-style surround in insert mode (nvim-surround).
+        this._pendingInsertCtrlGS = true;
       }
       // <C-g>u, <C-g>U: undo break / no-cursor-undo-break — no-op for sim
       return;
@@ -7178,6 +7363,36 @@ export class VimEngine {
         // Insert opening delimiter line before selected lines
         this.buffer.lines.splice(vs.sr, 0, open);
         this.cursor.row = vs.sr; this.cursor.col = 0;
+      } else if (vs.forceBlock) {
+        // gS on charwise selection: split the line at the selection so the
+        // inner text becomes its own line, with open delim on the prefix line
+        // and close delim on the suffix line.
+        let { open, close } = this._getSurroundPair(key);
+        open = open.trim();
+        close = close.trim();
+        if (vs.sr === vs.er) {
+          const line = this.buffer.lines[vs.sr];
+          const before = line.slice(0, vs.sc);
+          const inner = line.slice(vs.sc, vs.ec);
+          const after = line.slice(vs.ec);
+          this.buffer.lines.splice(vs.sr, 1, before + open, inner, close + after);
+          this.cursor.row = vs.sr; this.cursor.col = before.length;
+        } else {
+          // Multi-line charwise: split start line at sc, end line at ec.
+          const startLine = this.buffer.lines[vs.sr];
+          const endLine = this.buffer.lines[vs.er];
+          const before = startLine.slice(0, vs.sc);
+          const startInner = startLine.slice(vs.sc);
+          const endInner = endLine.slice(0, vs.ec);
+          const after = endLine.slice(vs.ec);
+          this.buffer.lines[vs.sr] = before + open;
+          this.buffer.lines[vs.er] = endInner;
+          this.buffer.lines.splice(vs.er + 1, 0, close + after);
+          // Replace startInner back into row sr+1 (was original start line tail).
+          this.buffer.lines.splice(vs.sr + 1, 0, startInner);
+          this.cursor.row = vs.sr; this.cursor.col = before.length;
+        }
+        this._updateDesiredCol();
       } else {
         this._doSurroundAdd(vs.sr, vs.sc, vs.er, vs.ec, key);
       }
@@ -7214,6 +7429,29 @@ export class VimEngine {
     // Pending g prefix
     if (this._pendingG) {
       this._pendingG = false;
+      // Visual gS — block-style surround (delimiters on separate lines).
+      if (key === 'S') {
+        this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
+        let sr, sc, er, ec;
+        const wasLinewise = (this.mode === Mode.VISUAL_LINE);
+        if (wasLinewise) {
+          sr = Math.min(this._visualStart.row, this.cursor.row);
+          er = Math.max(this._visualStart.row, this.cursor.row);
+          sc = 0; ec = this.buffer.lineLength(er);
+        } else if (this._visualStart.row < this.cursor.row ||
+                   (this._visualStart.row === this.cursor.row && this._visualStart.col <= this.cursor.col)) {
+          sr = this._visualStart.row; sc = this._visualStart.col;
+          er = this.cursor.row; ec = this.cursor.col + 1;
+        } else {
+          sr = this.cursor.row; sc = this.cursor.col;
+          er = this._visualStart.row; ec = this._visualStart.col + 1;
+        }
+        // gS forces block-style regardless of visual mode. If the selection is
+        // charwise (mid-line), the surround handler splits the line(s).
+        this._pendingVisualSurround = { sr, sc, er, ec, wasLinewise, forceBlock: true };
+        this._pendingCount = '';
+        return;
+      }
       this._handleG(key);
       this._pendingCount = ''; return;
     }
@@ -8760,7 +8998,7 @@ export class VimEngine {
         this.buffer.lines.splice(sr, er - sr + 1);
         if (this.buffer.lines.length === 0) this.buffer.lines = [''];
         this.cursor.row = Math.min(sr, this.buffer.lineCount - 1);
-        this.cursor.col = this._firstNonBlank(this.cursor.row);
+        this._applyStartOfLine();
         this._startRecording(); this._stopRecording();
         this._redoStack = [];
         break;
@@ -10287,6 +10525,14 @@ export class VimEngine {
    * Returns { openRow, openCol, closeRow, closeCol } or null.
    */
   _findSurrounding(ch) {
+    // 'q' alias: any quote — try ", ', ` and return the one that surrounds the cursor.
+    if (ch === 'q') {
+      for (const q of ['"', "'", '`']) {
+        const r = this._findSurrounding(q);
+        if (r) return r;
+      }
+      return null;
+    }
     const target = this._getSurroundTarget(ch);
     if (target.open === target.close) {
       // Symmetric (quotes, arbitrary) — use quote-finding logic (single line)
@@ -10440,6 +10686,125 @@ export class VimEngine {
   }
 
   /**
+   * Find the nearest enclosing function call around the cursor.
+   * A function call is an identifier immediately followed by '(' ... ')'.
+   * Returns { nameRow, nameCol, nameLen, openRow, openCol, closeRow, closeCol } or null.
+   */
+  _findSurroundingFunc() {
+    // Find enclosing parens around cursor (using the existing '(' target finder,
+    // which already does multi-line bracket matching).
+    const paren = this._findSurrounding('(');
+    if (!paren) return null;
+    const { openRow, openCol, closeRow, closeCol } = paren;
+    // Scan backwards from openCol-1 on openRow for an identifier.
+    const line = this.buffer.lines[openRow];
+    let end = openCol;
+    let start = end;
+    while (start > 0 && /[A-Za-z0-9_]/.test(line[start - 1])) start--;
+    if (start === end) return null; // no identifier
+    // First char of identifier must not be a digit.
+    if (/[0-9]/.test(line[start])) return null;
+    return {
+      nameRow: openRow,
+      nameCol: start,
+      nameLen: end - start,
+      openRow, openCol, closeRow, closeCol,
+    };
+  }
+
+  /**
+   * Find the nearest enclosing surround character around the cursor.
+   * Tries the common pairs and quotes, returns the char whose surrounding
+   * range encloses the cursor with the smallest span (innermost).
+   * Returns the char (e.g. '(', '"') or null.
+   */
+  _findNearestSurroundChar() {
+    const candidates = ['(', '[', '{', '<', '"', "'", '`'];
+    let best = null;
+    let bestSpan = Infinity;
+    const cursorOff = this._offsetFromPos(this.cursor.row, this.cursor.col);
+    for (const ch of candidates) {
+      const pos = this._findSurrounding(ch);
+      if (!pos) continue;
+      const openOff = this._offsetFromPos(pos.openRow, pos.openCol);
+      const closeOff = this._offsetFromPos(pos.closeRow, pos.closeCol);
+      if (openOff > cursorOff || closeOff < cursorOff) continue;
+      const span = closeOff - openOff;
+      if (span < bestSpan) { bestSpan = span; best = ch; }
+    }
+    return best;
+  }
+
+  /**
+   * Delete surrounding function call (ds f). Removes name + '(' and ')',
+   * leaves inner contents. Cursor lands on first char of inner.
+   * Returns true if successful.
+   */
+  _doSurroundDeleteFunc() {
+    const fn = this._findSurroundingFunc();
+    if (!fn) return false;
+    const { nameRow, nameCol, nameLen, openRow, openCol, closeRow, closeCol } = fn;
+    if (openRow === closeRow) {
+      const line = this.buffer.lines[openRow];
+      const inner = line.slice(openCol + 1, closeCol);
+      this.buffer.lines[openRow] = line.slice(0, nameCol) + inner + line.slice(closeCol + 1);
+    } else {
+      // Multi-line: remove ')' first, then name + '('.
+      const cLine = this.buffer.lines[closeRow];
+      this.buffer.lines[closeRow] = cLine.slice(0, closeCol) + cLine.slice(closeCol + 1);
+      const oLine = this.buffer.lines[openRow];
+      this.buffer.lines[openRow] = oLine.slice(0, nameCol) + oLine.slice(openCol + 1);
+    }
+    this.cursor.row = nameRow; this.cursor.col = nameCol;
+    this._updateDesiredCol();
+    return true;
+  }
+
+  /**
+   * Change surrounding function call (cs f<newname>\r). If target is 'f' or 'F',
+   * the existing identifier is replaced with newName. If target is a non-func char
+   * (e.g. cs"f...), the surrounding char pair is replaced with newName( ... ).
+   * Returns true if successful.
+   */
+  _doSurroundChangeFunc(target, newName, spaced = false) {
+    if (target === 'f' || target === 'F') {
+      const fn = this._findSurroundingFunc();
+      if (!fn) return false;
+      const { nameRow, nameCol, nameLen, openRow, openCol, closeRow, closeCol } = fn;
+      const line = this.buffer.lines[nameRow];
+      // 'F' (spaced) reformats inner with surrounding spaces; plain 'f' just
+      // renames. We treat both as "replace name only" for now — the spacing
+      // semantics for cs are nuanced and rarely-tested.
+      this.buffer.lines[nameRow] =
+        line.slice(0, nameCol) + newName + line.slice(nameCol + nameLen);
+      this.cursor.row = nameRow; this.cursor.col = nameCol;
+      this._updateDesiredCol();
+      return true;
+    }
+    // Non-func target → function: replace surrounding chars with name( ... ).
+    const pos = this._findSurrounding(target);
+    if (!pos) return false;
+    const { openRow, openCol, closeRow, closeCol, trim } = pos;
+    const open = spaced ? `${newName}( ` : `${newName}(`;
+    const close = spaced ? ` )` : `)`;
+    if (openRow === closeRow) {
+      const line = this.buffer.lines[openRow];
+      let inner = line.slice(openCol + 1, closeCol);
+      if (trim) inner = inner.trim();
+      this.buffer.lines[openRow] =
+        line.slice(0, openCol) + open + inner + close + line.slice(closeCol + 1);
+    } else {
+      const cLine = this.buffer.lines[closeRow];
+      this.buffer.lines[closeRow] = cLine.slice(0, closeCol) + close + cLine.slice(closeCol + 1);
+      const oLine = this.buffer.lines[openRow];
+      this.buffer.lines[openRow] = oLine.slice(0, openCol) + open + oLine.slice(openCol + 1);
+    }
+    this.cursor.row = openRow; this.cursor.col = openCol;
+    this._updateDesiredCol();
+    return true;
+  }
+
+  /**
    * Find the nearest enclosing HTML tag pair around the cursor.
    * Returns { openRow, openCol, openEndRow, openEndCol, closeRow, closeCol, closeEndRow, closeEndCol, tagName }
    * where openCol..openEndCol spans the full opening tag <tag ...> and closeCol..closeEndCol spans </tag>.
@@ -10528,12 +10893,36 @@ export class VimEngine {
    * Returns true if successful.
    */
   _doSurroundChangeTag(target, tagName) {
-    const tag = this._findSurroundingTag();
-    if (!tag) return false;
-
     const newOpenTag = `<${tagName}>`;
     const newTagBase = tagName.split(/\s/)[0];
     const newCloseTag = `</${newTagBase}>`;
+
+    // Non-tag target (e.g. quote or bracket) → tag replacement.
+    // Find the surrounding char pair, then replace open with <tag> and close with </tag>.
+    if (target !== 't') {
+      const pos = this._findSurrounding(target);
+      if (!pos) return false;
+      const { openRow, openCol, closeRow, closeCol, trim } = pos;
+      if (openRow === closeRow) {
+        const line = this.buffer.lines[openRow];
+        let inner = line.slice(openCol + 1, closeCol);
+        if (trim) inner = inner.trim();
+        this.buffer.lines[openRow] = line.slice(0, openCol) + newOpenTag + inner + newCloseTag + line.slice(closeCol + 1);
+      } else {
+        // Multi-line: replace close delim, then open delim
+        const cLine = this.buffer.lines[closeRow];
+        this.buffer.lines[closeRow] = cLine.slice(0, closeCol) + newCloseTag + cLine.slice(closeCol + 1);
+        const oLine = this.buffer.lines[openRow];
+        this.buffer.lines[openRow] = oLine.slice(0, openCol) + newOpenTag + oLine.slice(openCol + 1);
+      }
+      this.cursor.row = openRow;
+      this.cursor.col = openCol;
+      this._updateDesiredCol();
+      return true;
+    }
+
+    const tag = this._findSurroundingTag();
+    if (!tag) return false;
 
     const { openRow, openCol, openEndRow, openEndCol, closeRow, closeCol, closeEndRow, closeEndCol } = tag;
 
