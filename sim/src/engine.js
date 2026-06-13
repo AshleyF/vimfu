@@ -215,7 +215,7 @@ export class VimEngine {
       relativenumber: false, // :set relativenumber / :set norelativenumber
       ignorecase: false,   // :set ignorecase / :set noignorecase (ic/noic)
       smartcase: false,    // :set smartcase / :set nosmartcase (scs/noscs)
-      scrolloff: 0,        // :set scrolloff=N (so)
+      scrolloff: 0,        // :set scrolloff=N (so) — nvim default is 5; auto-suite tests should set this explicitly
       expandtab: false,    // :set expandtab / :set noexpandtab (et/noet)
       tabstop: 8,          // :set tabstop=N (ts)
       shiftwidth: 8,       // :set shiftwidth=N (sw)
@@ -548,6 +548,9 @@ export class VimEngine {
     // Restore pre-change state
     this.buffer = new Buffer([...snap.lines]);
     this.cursor = { ...snap.cursor };
+    // Clamp cursor to valid normal-mode position in restored buffer
+    this.cursor.row = Math.min(this.cursor.row, this.buffer.lineCount - 1);
+    this.cursor.col = Math.min(this.cursor.col, Math.max(0, this.buffer.lineLength(this.cursor.row) - 1));
     this.scrollTop = snap.scrollTop;
     this._updateDesiredCol();
   }
@@ -1898,7 +1901,11 @@ export class VimEngine {
       case 'X': {
         const countStr = this._pendingCount;
         const count = this._getCount();
-        this._saveSnapshot();
+        // Save snapshot with cursor at the position where the deletion will end up
+        // (nvim restores cursor to the position of the change on undo).
+        const xStartCol = this.cursor.col;
+        const xTargetCol = Math.max(0, xStartCol - count);
+        this._saveSnapshot({ row: this.cursor.row, col: xTargetCol });
         if (countStr) this._dotPrefix = [...countStr];
         this._startRecording(); this._saveForDot('X');
         let del = '';
@@ -8175,11 +8182,6 @@ export class VimEngine {
     this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
     const { topRow, bottomRow, leftCol, rightCol, dollar } = this._getBlockRect();
 
-    // Save snapshot with cursor at top-left
-    const savedCursor = { ...this.cursor };
-    this.cursor = { row: topRow, col: leftCol };
-    this._saveSnapshot();
-
     let insertCol;
     if (key === 'I') {
       // Insert at left column of block on top row
@@ -8190,11 +8192,22 @@ export class VimEngine {
         insertCol = this.buffer.lineLength(topRow);
       } else {
         insertCol = rightCol + 1;
-        // Pad line if needed
-        const line = this.buffer.lines[topRow];
-        if (line.length < insertCol) {
-          this.buffer.lines[topRow] = line + ' '.repeat(insertCol - line.length);
-        }
+      }
+    }
+
+    // Save snapshot with cursor at the insertion point on the top row.
+    // nvim's undo restores cursor to where the change started; clamping to
+    // line length happens in _undo.
+    const savedCursor = { ...this.cursor };
+    this.cursor = { row: topRow, col: insertCol };
+    this._saveSnapshot();
+    this.cursor = savedCursor;
+
+    if (key === 'A' && !dollar) {
+      // Pad line if needed (after snapshot so undo restores to pre-pad state)
+      const line = this.buffer.lines[topRow];
+      if (line.length < insertCol) {
+        this.buffer.lines[topRow] = line + ' '.repeat(insertCol - line.length);
       }
     }
 
@@ -9098,6 +9111,10 @@ export class VimEngine {
         } else {
           this._setReg(this.buffer.lines[startRow].slice(startCol, endCol), 'char', 'yank');
         }
+        // Cursor lands at start of yanked region (nvim convention)
+        this.cursor.row = startRow;
+        this.cursor.col = startCol;
+        this._updateDesiredCol();
         break;
       }
       case 'gu': {
