@@ -490,19 +490,10 @@ export class VimEngine {
       }
     }
 
-    // Clear sticky command line from previous feedKey
-    if (this._stickyCommandLine) {
-      this._stickyCommandLine = false;
-      this._commandLineLineNrLen = 0;
-      this._errorCmdLineCursor = false;
-      this.commandLine = '';
-    }
-    // If the previous keypress left a "recent message" sticky and the new key
-    // is NOT `:` (and we're not already typing in cmdline mode), the message
-    // is gone — clear so it can't promote later. We preserve recent in two
-    // cases: when the new key STARTS a pending operator (Ctrl-W, g, z, ...)
-    // OR when a pending operator from the previous key is still active (so
-    // multi-key commands like Ctrl-W c can still chain with prior errors).
+    // Decide whether the previous keypress's sticky cmdline message should
+    // survive into this keypress. Real nvim keeps the last message visible
+    // until something new replaces it — particularly across no-op chord
+    // continuations like z*, [*, ]*, g* and pending-operator follow-ups.
     const pendingStarters = new Set([
       'Ctrl-W', 'g', 'z', '[', ']', 'm', "'", '`',
       'f', 'F', 't', 'T', 'r', 'q', '@', '"',
@@ -512,6 +503,15 @@ export class VimEngine {
                         || this._pendingBacktick || this._pendingF || this._pendingT
                         || this._pendingR || this._pendingCtrlR || this._pendingTagInput
                         || this._pendingInsertCtrlG || this._pendingDoubleQuote);
+    const preserveSticky = (this._stickyCommandLine && (pendingStarters.has(key) || inPendingOp));
+
+    // Clear sticky command line from previous feedKey
+    if (this._stickyCommandLine && !preserveSticky) {
+      this._stickyCommandLine = false;
+      this._commandLineLineNrLen = 0;
+      this._errorCmdLineCursor = false;
+      this.commandLine = '';
+    }
     if (this._recentMessageLines && key !== ':' && this.mode !== Mode.COMMAND
         && !pendingStarters.has(key) && !inPendingOp) {
       this._recentMessageLines = null;
