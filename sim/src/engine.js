@@ -2428,8 +2428,8 @@ export class VimEngine {
       }
 
       // Undo/Redo
-      case 'u': { const c = this._getCount(); for (let i = 0; i < c; i++) this._undo(); if (this._showCurSearch) this._updateCurSearchPos(); break; }
-      case 'Ctrl-R': { const c = this._getCount(); for (let i = 0; i < c; i++) this._redo(); if (this._showCurSearch) this._updateCurSearchPos(); break; }
+      case 'u': { const c = this._getCount(); for (let i = 0; i < c; i++) this._undo(); if (this._showCurSearch) this._setCurSearchAtCursor(); break; }
+      case 'Ctrl-R': { const c = this._getCount(); for (let i = 0; i < c; i++) this._redo(); if (this._showCurSearch) this._setCurSearchAtCursor(); break; }
       case 'U': {
         // Undo all changes on current line
         if (this._lineUndoSave && this._lineUndoSave.row === this.cursor.row) {
@@ -10997,6 +10997,8 @@ export class VimEngine {
             this.cursor.col = pos.col;
             this._updateDesiredCol();
           }
+        } else {
+          this._messagePrompt = { error: 'E756: Spell checking is not possible' };
         }
         break;
       }
@@ -11009,6 +11011,8 @@ export class VimEngine {
             this.cursor.col = pos.col;
             this._updateDesiredCol();
           }
+        } else {
+          this._messagePrompt = { error: 'E756: Spell checking is not possible' };
         }
         break;
       }
