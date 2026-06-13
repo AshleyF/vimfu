@@ -498,8 +498,21 @@ export class VimEngine {
     }
     // If the previous keypress left a "recent message" sticky and the new key
     // is NOT `:` (and we're not already typing in cmdline mode), the message
-    // is gone — clear so it can't promote later.
-    if (this._recentMessageLines && key !== ':' && this.mode !== Mode.COMMAND) {
+    // is gone — clear so it can't promote later. We preserve recent in two
+    // cases: when the new key STARTS a pending operator (Ctrl-W, g, z, ...)
+    // OR when a pending operator from the previous key is still active (so
+    // multi-key commands like Ctrl-W c can still chain with prior errors).
+    const pendingStarters = new Set([
+      'Ctrl-W', 'g', 'z', '[', ']', 'm', "'", '`',
+      'f', 'F', 't', 'T', 'r', 'q', '@', '"',
+    ]);
+    const inPendingOp = !!(this._pendingCtrlW || this._pendingG || this._pendingZ
+                        || this._pendingBracket || this._pendingM || this._pendingQuote
+                        || this._pendingBacktick || this._pendingF || this._pendingT
+                        || this._pendingR || this._pendingCtrlR || this._pendingTagInput
+                        || this._pendingInsertCtrlG || this._pendingDoubleQuote);
+    if (this._recentMessageLines && key !== ':' && this.mode !== Mode.COMMAND
+        && !pendingStarters.has(key) && !inPendingOp) {
       this._recentMessageLines = null;
     }
 
@@ -2653,6 +2666,19 @@ export class VimEngine {
         break;
       }
 
+      // Tag jump (Ctrl-]) — no tag database in sim, always report E433.
+      // Tag pop (Ctrl-T) — sim has no tag stack, always report E555.
+      case 'Ctrl-]': {
+        this._reportCmdMessage({ error: 'E433: No tags file' });
+        this._pendingCount = '';
+        break;
+      }
+      case 'Ctrl-T': {
+        this._reportCmdMessage({ error: 'E555: At bottom of tag stack' });
+        this._pendingCount = '';
+        break;
+      }
+
       // Sentence motions
       case ')': {
         const c = this._getCount();
@@ -4096,10 +4122,10 @@ export class VimEngine {
     this._restoreWindowState();
   }
 
-  _doCloseWindow() {
+  _doCloseWindow(fromEx = false) {
     if (this._windows.length <= 1) {
       // Can't close last window
-      this._reportCmdMessage({ error: 'E444: Cannot close last window' });
+      this._reportCmdMessage({ error: 'E444: Cannot close last window' }, fromEx);
       return;
     }
     this._windows.splice(this._activeWin, 1);
@@ -4109,9 +4135,9 @@ export class VimEngine {
     this._restoreWindowState();
   }
 
-  _doOnlyWindow() {
+  _doOnlyWindow(fromEx = false) {
     if (this._windows.length <= 1) {
-      this._reportCmdMessage({ info: 'Already only one window' });
+      this._reportCmdMessage({ info: 'Already only one window' }, fromEx);
       return;
     }
     this._saveWindowState();
@@ -4124,16 +4150,17 @@ export class VimEngine {
   /**
    * Report a transient message ("E444...", "Already only one window", etc.).
    * Promotion rules (matching nvim hit-enter-prompt heuristics):
-   *  - If a prompt carry exists (user hit `:` at a Press-ENTER prompt) AND
-   *    that carry was a structured multi-line prompt (e.g. :ls output), keep
-   *    it and append this message.
-   *  - If a sticky message from the immediately previous ex command is still
-   *    on the cmdline, elevate to Press-ENTER. New errors replace the prior
-   *    sticky (errors clobber); new info/warn messages accumulate (the prior
-   *    error remains visible while the new informational note appears below).
-   *  - Otherwise, fall back to a sticky single-line cmdline message.
+   *  - `fromEx` indicates the message originates from an ex command
+   *    (`:close`, `:tabclose`, `:b`, etc.). Ex-command errors always
+   *    elevate to Press-ENTER even on first occurrence (matches nvim).
+   *    Normal-mode errors (e.g. `Ctrl-W c`, `Ctrl-]`) stay sticky on the
+   *    cmdline until a follow-up message arrives, then elevate.
+   *  - If a prompt carry exists (user hit `:` at a Press-ENTER prompt),
+   *    a new error clobbers the carry; new info/warn accumulates atop.
+   *  - If a sticky message from a prior command is still on the cmdline,
+   *    the second message always elevates to Press-ENTER.
    */
-  _reportCmdMessage(mp) {
+  _reportCmdMessage(mp, fromEx = false) {
     if (this._pendingPromptCarry) {
       const prev = this._pendingPromptCarry;
       this._pendingPromptCarry = null;
@@ -4164,18 +4191,19 @@ export class VimEngine {
       this.commandLine = '';
       return;
     }
-    // Errors always elevate to Press-ENTER prompt (matches nvim's
-    // hit-enter behavior after a failing ex command). Info/warn messages
-    // stick to the cmdline; a follow-up message will elevate them.
-    if (mp.error) {
+    // Ex-command errors always elevate to Press-ENTER on first occurrence.
+    // Normal-mode errors stay sticky on the cmdline until something else
+    // arrives. Info/warn always stick to cmdline first regardless of source.
+    if (mp.error && fromEx) {
       this._messagePrompt = mp;
       this.commandLine = '';
       this._recentMessageLines = null;
       return;
     }
-    const text = mp.warn || mp.info || '';
+    const text = mp.error || mp.warn || mp.info || '';
     this.commandLine = text;
     this._stickyCommandLine = true;
+    if (mp.error) this._errorCmdLineCursor = false;
     this._recentMessageLines = this._promptToLines(mp);
   }
 
@@ -4332,9 +4360,9 @@ export class VimEngine {
   /**
    * Close the current tab. If it's the last tab, show E784 (last tab can't close).
    */
-  _doTabClose() {
+  _doTabClose(fromEx = false) {
     if (this._tabs.length <= 1) {
-      this._reportCmdMessage({ error: 'E784: Cannot close last tab page' });
+      this._reportCmdMessage({ error: 'E784: Cannot close last tab page' }, fromEx);
       return;
     }
     const closedIdx = this._activeTab;
@@ -4585,6 +4613,10 @@ export class VimEngine {
           this._activeWin = 0;
           this._restoreWindowState();
         }
+        break;
+      case ']': case 'Ctrl-]':
+        // Ctrl-W ] / Ctrl-W Ctrl-] — split + tag jump. No tag DB in sim.
+        this._reportCmdMessage({ error: 'E433: No tags file' });
         break;
       default:
         break;
@@ -5725,7 +5757,7 @@ export class VimEngine {
           if (entry) {
             this._switchToBuffer(entry.id);
           } else {
-            this._reportCmdMessage({ error: 'E86: Buffer ' + num + ' does not exist' });
+            this._reportCmdMessage({ error: 'E86: Buffer ' + num + ' does not exist' }, true);
           }
         } else {
           // Switch by name (partial match)
@@ -5734,9 +5766,9 @@ export class VimEngine {
           if (matches.length === 1) {
             this._switchToBuffer(matches[0].id);
           } else if (matches.length > 1) {
-            this._reportCmdMessage({ error: 'E93: More than one match for ' + arg });
+            this._reportCmdMessage({ error: 'E93: More than one match for ' + arg }, true);
           } else {
-            this._reportCmdMessage({ error: 'E94: No matching buffer for ' + arg });
+            this._reportCmdMessage({ error: 'E94: No matching buffer for ' + arg }, true);
           }
         }
       }
@@ -5800,14 +5832,14 @@ export class VimEngine {
 
     // :clo[se] — close current window
     if (/^clo(se?)?$/.test(cmd)) {
-      this._doCloseWindow();
+      this._doCloseWindow(true);
       this.commandLine = '';
       return;
     }
 
     // :on[ly] — close all other windows
     if (/^on(ly?)?$/.test(cmd)) {
-      this._doOnlyWindow();
+      this._doOnlyWindow(true);
       this.commandLine = '';
       return;
     }
@@ -5844,7 +5876,7 @@ export class VimEngine {
 
     // :tabc[lose] — close current tab page
     if (/^tabc(l(o(se?)?)?)?(\s|$)/.test(cmd)) {
-      this._doTabClose();
+      this._doTabClose(true);
       this.commandLine = '';
       return;
     }
