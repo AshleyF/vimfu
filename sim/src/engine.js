@@ -3843,9 +3843,32 @@ export class VimEngine {
       folds: cur.folds.map(f => ({ ...f })),
       _desiredCol: cur._desiredCol || 0,
     };
-    // Insert new window at current position (new on top, old shifts down)
-    this._windows.splice(this._activeWin, 0, newWin);
-    // activeWin now points to the new window (top)
+    if (this._settings.splitbelow) {
+      this._windows.splice(this._activeWin + 1, 0, newWin);
+      this._activeWin = this._activeWin + 1;
+    } else {
+      this._windows.splice(this._activeWin, 0, newWin);
+    }
+    // After splitting, redistribute heights: the NEW (active) window keeps
+    // the larger share when the available rows don't divide evenly,
+    // matching nvim's behaviour of giving the extra row to the
+    // freshly-created window.
+    const availableRows = this.rows - 1;
+    const numWindows = this._windows.length;
+    if (numWindows >= 2) {
+      const base = Math.floor(availableRows / numWindows);
+      let extras = availableRows - base * numWindows;
+      for (let i = 0; i < numWindows; i++) this._windows[i]._height = base;
+      if (extras > 0) {
+        this._windows[this._activeWin]._height += 1;
+        extras--;
+      }
+      for (let i = 0; i < numWindows && extras > 0; i++) {
+        if (i === this._activeWin) continue;
+        this._windows[i]._height += 1;
+        extras--;
+      }
+    }
     this._restoreWindowState();
   }
 
@@ -12090,7 +12113,15 @@ export class VimEngine {
       left = '[No Name]';
       if (this._changeCount > 0) left += ' [+]';
     }
-    // Build status line: left-padded right, with filename on left
+    // Build status line: left-padded right, with filename on left.
+    // If left + right + gap won't fit, truncate the filename from the LEFT
+    // and prefix with '<', matching nvim's `<filename` shortening.
+    const rightLen = right.length;
+    const maxLeft = Math.max(0, this.cols - rightLen - 1);
+    if (left.length > maxLeft) {
+      const keep = Math.max(0, maxLeft - 1);
+      left = '<' + left.slice(left.length - keep);
+    }
     const gap = Math.max(1, this.cols - left.length - right.length);
     this.statusLine = left + ' '.repeat(gap) + right;
     if (this.mode === Mode.INSERT) this.commandLine = '-- INSERT --';
