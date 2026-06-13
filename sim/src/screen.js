@@ -1602,14 +1602,19 @@ export class Screen {
         // Add separator after every window except the last.
         if (wi < numWindows - 1) {
           // The separator on text rows uses StatusLineNC colors and renders
-          // as `│`; on the per-window status line row it should render as
-          // an extension of the active/inactive status line.
+          // as `│`; on the per-window status line row it extends the LEFT
+          // window's status colors (active or inactive).
           const isStatusRow = (r === totalRows - 2);
           if (isStatusRow) {
-            const ncFg = t.statusNcFg || t.statusFg || t.normalFg;
-            const ncBg = t.statusNcBg || t.statusBg || t.normalBg;
+            const leftActive = windowFrames[wi].isActive;
+            const sepFg = leftActive
+              ? (t.statusFg || t.normalFg)
+              : (t.statusNcFg || t.statusFg || t.normalFg);
+            const sepBg = leftActive
+              ? (t.statusBg || t.normalBg)
+              : (t.statusNcBg || t.statusBg || t.normalBg);
             text += ' ';
-            runs.push({ n: 1, fg: ncFg, bg: ncBg });
+            runs.push({ n: 1, fg: sepFg, bg: sepBg });
           } else {
             text += '│';
             // nvim renders the VertSplit separator with default text fg
