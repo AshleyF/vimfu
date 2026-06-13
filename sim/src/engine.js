@@ -11266,6 +11266,49 @@ export class VimEngine {
         // Edit file under cursor — sim has no VFS, always error
         this._messagePrompt = { error: 'E447: Can\'t find file "#" in path' };
         break;
+      case '[i': case ']i': case '[I': case ']I':
+      case '[Ctrl-I': case ']Ctrl-I': {
+        // Include-search: find lines containing the word under cursor.
+        // sim has no :include resolution, so we just scan the current buffer.
+        // The single (i) / Ctrl-I variants jump or display the first match;
+        // the listing (I) variants emit a Press-ENTER prompt with the list.
+        const word = this._wordUnderCursor();
+        if (!word) {
+          this._messagePrompt = { error: 'E348: No string under cursor' };
+          break;
+        }
+        const re = new RegExp('\\b' + word.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\b');
+        const forward = (bracket === ']');
+        const matches = [];
+        const startRow = forward ? this.cursor.row : 0;
+        const endRow = forward ? this.buffer.lineCount : this.cursor.row + 1;
+        for (let r = startRow; r < endRow; r++) {
+          const line = this.buffer.lines[r] || '';
+          if (re.test(line)) matches.push({ row: r, line });
+        }
+        if (!matches.length) {
+          this._messagePrompt = { error: 'E389: Couldn\'t find pattern' };
+          break;
+        }
+        if (key === 'Ctrl-I') {
+          // Jump variant — move cursor to first match
+          const first = matches[0];
+          const col = first.line.search(re);
+          this.cursor.row = first.row;
+          this.cursor.col = col >= 0 ? col : 0;
+          this._updateDesiredCol();
+        } else if (key === 'I') {
+          // List all matches as a Press-ENTER prompt
+          const lines = matches.map((m, i) =>
+            `  ${i + 1}: ${m.row + 1} ${m.line}`);
+          this._messagePrompt = { info: lines.join('\n') };
+        } else {
+          // Display first match line as a Press-ENTER prompt
+          const first = matches[0];
+          this._messagePrompt = { info: `  1: ${first.row + 1} ${first.line}` };
+        }
+        break;
+      }
       default:
         break;
     }
