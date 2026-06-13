@@ -7879,8 +7879,28 @@ export class VimEngine {
     // x hex, u/U unicode), accumulate digits and insert the resulting
     // codepoint when the run ends.
     if (this._pendingInsertCtrlV) {
-      // Continuing a digit run started by an earlier Ctrl-V<digit>.
-      if (this._ctrlVDigitBase) {
+      // Pending Esc after Ctrl-V: a second Esc forms <M-Esc> (the keycode
+      // produced by terminal input combining two raw \x1b bytes within a
+      // short interval). Otherwise commit the first Esc as a literal ^[
+      // and process the current key as a normal insert keystroke.
+      if (this._pendingCtrlVEsc) {
+        this._pendingCtrlVEsc = false;
+        if (key === 'Escape') {
+          this._saveForDot(key);
+          this._pendingInsertCtrlV = false;
+          const text = '<M-Esc>';
+          for (const ch of text) {
+            this.buffer.insertChar(this.cursor.row, this.cursor.col, ch);
+            this.cursor.col++;
+          }
+          return;
+        }
+        // Commit the first Esc as literal, then fall through
+        this._pendingInsertCtrlV = false;
+        this.buffer.insertChar(this.cursor.row, this.cursor.col, '\x1b');
+        this.cursor.col++;
+        // Don't return — process the current key normally below.
+      } else if (this._ctrlVDigitBase) {
         const st = this._ctrlVDigitBase;
         const digitMatch = key.length === 1 && (
           (st.base === 8  && /[0-7]/.test(key)) ||
@@ -7924,6 +7944,11 @@ export class VimEngine {
         // 'U' starts an 8-digit hex escape.
         if (key === 'U') {
           this._ctrlVDigitBase = { base: 16, max: 8, digits: '' };
+          return;
+        }
+        // Escape: defer — a following Esc combines into <M-Esc>.
+        if (key === 'Escape') {
+          this._pendingCtrlVEsc = true;
           return;
         }
         // Plain literal: insert the byte/char for this key as-is.
