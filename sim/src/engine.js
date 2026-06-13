@@ -3606,6 +3606,28 @@ export class VimEngine {
         break;
       }
 
+      // gf / gF — go to file under cursor. We have no real file system
+      // so always report E447. The filename is the run of non-blank,
+      // non-quote characters surrounding the cursor.
+      case 'f':
+      case 'F': {
+        const line = this.buffer.lines[this.cursor.row] || '';
+        const isFnameChar = (ch) => ch && !/[\s"'<>`|;{}()\[\]]/.test(ch);
+        let s = this.cursor.col, e = this.cursor.col;
+        while (s > 0 && isFnameChar(line[s - 1])) s--;
+        while (e < line.length && isFnameChar(line[e])) e++;
+        let fname = line.slice(s, e);
+        // gF strips trailing :N[:M] line/column refs from the filename
+        if (key === 'F') fname = fname.replace(/:\d+(:\d+)?$/, '');
+        if (fname) {
+          this._messagePrompt = { error: 'E447: Can\'t find file "' + fname + '" in path' };
+        } else {
+          this._messagePrompt = { error: 'E446: No file name under cursor' };
+        }
+        this._pendingCount = '';
+        break;
+      }
+
       // g<Tab> — go to last accessed tab
       case 'Tab': {
         if (this._lastTab >= 0 && this._lastTab < this._tabs.length && this._lastTab !== this._activeTab) {
