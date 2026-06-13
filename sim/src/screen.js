@@ -914,10 +914,10 @@ export class Screen {
         ],
       });
     } else if (/^E\d{1,3}:/.test(engine.commandLine ?? '')) {
-      // Error message in command line (red colored)
+      // Error message in command line (red, bold — matches nvim ErrorMsg)
       const errLen = Math.min((engine.commandLine || '').length, this.cols);
       const errRuns = [];
-      if (errLen > 0) errRuns.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg });
+      if (errLen > 0) errRuns.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg, b: true });
       if (errLen < this.cols) errRuns.push({ n: this.cols - errLen, fg: t.cmdFg, bg: t.cmdBg });
       lines.push({ text: cmdText, runs: errRuns });
     } else if (t.modeMsgFg && /^-- (INSERT|VISUAL|VISUAL BLOCK|VISUAL LINE|REPLACE) --$/.test((engine.commandLine ?? '').trim())) {
@@ -1271,7 +1271,7 @@ export class Screen {
     } else if (/^E\d{1,3}:/.test(engine.commandLine ?? '')) {
       const errLen = Math.min((engine.commandLine || '').length, cols);
       cmdRuns = [];
-      if (errLen > 0) cmdRuns.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg });
+      if (errLen > 0) cmdRuns.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg, b: true });
       if (errLen < cols) cmdRuns.push({ n: cols - errLen, fg: t.cmdFg, bg: t.cmdBg });
     } else if (t.modeMsgFg && /^-- (INSERT|VISUAL|VISUAL BLOCK|VISUAL LINE|REPLACE) --$/.test((engine.commandLine ?? '').trim())) {
       const modeLen = (engine.commandLine ?? '').replace(/\s+$/, '').length;
@@ -1532,7 +1532,7 @@ export class Screen {
     } else if (/^E\d{1,3}:/.test(engine.commandLine ?? '')) {
       const errLen = Math.min((engine.commandLine || '').length, totalCols);
       cmdRuns = [];
-      if (errLen > 0) cmdRuns.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg });
+      if (errLen > 0) cmdRuns.push({ n: errLen, fg: t.errorFg || t.cmdFg, bg: t.cmdBg, b: true });
       if (errLen < totalCols) cmdRuns.push({ n: totalCols - errLen, fg: t.cmdFg, bg: t.cmdBg });
     } else if (t.modeMsgFg && /^-- (INSERT|VISUAL|VISUAL BLOCK|VISUAL LINE|REPLACE) --$/.test((engine.commandLine ?? '').trim())) {
       const modeLen = (engine.commandLine ?? '').replace(/\s+$/, '').length;

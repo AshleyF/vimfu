@@ -362,6 +362,13 @@ export class VimEngine {
       } else {
         this._currentBufId = this._registerBuffer(this.buffer, fileName);
       }
+      // If the "old" current buffer we just promoted to alternate is the
+      // SAME entry we ended up loading into (because we reused the seed
+      // empty buffer), there is no real alternate — clear it. This
+      // prevents Ctrl-^ from reporting a phantom alternate file.
+      if (this._alternateBufId === this._currentBufId) {
+        this._alternateBufId = null;
+      }
       // Keep the active window's bufId pointer in sync with the loaded
       // buffer so per-window status lines render this filename.
       if (this._windows && this._windows[this._activeWin]) {
