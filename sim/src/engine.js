@@ -226,6 +226,7 @@ export class VimEngine {
       wrap: true,          // :set wrap / :set nowrap
       incsearch: false,    // :set incsearch / :set noincsearch (is/nois)
       list: false,         // :set list / :set nolist
+      listchars: 'tab:> ,trail:-,nbsp:+',  // :set listchars=...
       splitbelow: false,   // :set splitbelow / :set nosplitbelow (sb/nosb)
       splitright: false,   // :set splitright / :set nosplitright (spr/nospr)
       startofline: false,  // :set startofline / :set nostartofline (sol/nosol) — nvim default OFF
@@ -678,7 +679,6 @@ export class VimEngine {
       if (reg === '.') {
         return { text: this._lastInsertedText || '', type: 'char' };
       }
-      // Last ex command register
       if (reg === ':') {
         return { text: this._lastExCommand || '', type: 'char' };
       }
@@ -5887,7 +5887,13 @@ export class VimEngine {
           else if (part === 1) replacement += body[i];
           else flagStr += body[i];
         }
-        if (!pattern) { this.commandLine = ''; return; }
+        if (!pattern) {
+          // Empty pattern reuses the last search pattern (matches nvim's
+          // :h :s behaviour). Fall back to the last substitute pattern, then
+          // the last search pattern. Bail only if both are empty.
+          pattern = (this._lastSubstitution && this._lastSubstitution.pattern) || this._searchPattern || '';
+          if (!pattern) { this.commandLine = ''; return; }
+        }
 
         // Parse flags
         let globalFlag = false, icFlag = false, confirmFlag = false, countOnly = false;
@@ -5908,6 +5914,10 @@ export class VimEngine {
 
         // Translate vim "magic" regex to JavaScript regex
         let jsPattern = this._vimPatternToJs(pattern);
+
+        // Detect \=expression form (vim-script expression evaluated per match).
+        const exprMode = replacement.startsWith('\\=');
+        const exprSrc = exprMode ? replacement.slice(2) : '';
 
         // Handle & in replacement: vim's & means "whole match" → JS $&
         // But \& is a literal & in vim → keep as &
@@ -5969,7 +5979,17 @@ export class VimEngine {
           const findRe = new RegExp(jsPattern, caseFlag);
           const matchIdx = before.search(findRe);
           if (matchIdx < 0) continue; // no match on this line
-          const after = before.replace(regex, jsReplacement);
+          let after;
+          if (exprMode) {
+            const subRe = new RegExp(jsPattern, (globalFlag ? 'g' : '') + caseFlag);
+            after = before.replace(subRe, (...args) => {
+              // args = [match, p1, p2, ..., offset, fullStr]
+              const submatches = args.slice(0, -2);
+              return String(this._evalSubExpr(exprSrc, r, submatches));
+            });
+          } else {
+            after = before.replace(regex, jsReplacement);
+          }
           // Count as substitution even if replacement is identical (matches nvim).
           this.buffer.lines[r] = after;
           // Count occurrences: with /g, count all matches; without, count one.
@@ -6709,6 +6729,13 @@ export class VimEngine {
         continue;
       }
 
+      // listchars=tab:>-,trail:·,space:·,eol:$,nbsp:+ (allow non-alnum values)
+      const lcMatch = arg.match(/^(?:lcs|listchars)=(.*)$/);
+      if (lcMatch) {
+        this._settings.listchars = lcMatch[1];
+        continue;
+      }
+
       // String-valued settings: option=word (e.g. :set fileformat=unix, ff=dos)
       const eqStrMatch = arg.match(/^(\w+)=([A-Za-z_][\w.-]*)$/);
       if (eqStrMatch) {
@@ -6777,6 +6804,43 @@ export class VimEngine {
   // ── Insert mode ──
 
   _insertKey(key) {
+    // Pending Ctrl-R = (expression register): accumulate the expression text
+    // until Enter, then evaluate via _evalSubExpr and insert the result.
+    if (this._pendingCtrlRExpr !== undefined && this._pendingCtrlRExpr !== null) {
+      if (key === 'Enter' || key === 'Ctrl-J') {
+        const result = String(this._evalSubExpr(this._pendingCtrlRExpr, this.cursor.row, []));
+        this._pendingCtrlRExpr = null;
+        this.commandLine = '-- INSERT --';
+        for (const ch of result) {
+          if (ch === '\n') {
+            this.buffer.splitLine(this.cursor.row, this.cursor.col);
+            this.cursor.row++; this.cursor.col = 0;
+          } else {
+            this.buffer.insertChar(this.cursor.row, this.cursor.col, ch);
+            this.cursor.col++;
+          }
+        }
+        return;
+      }
+      if (key === 'Escape' || key === 'Ctrl-C') {
+        this._pendingCtrlRExpr = null;
+        this.commandLine = '-- INSERT --';
+        return;
+      }
+      if (key === 'Backspace' || key === 'Ctrl-H') {
+        if (this._pendingCtrlRExpr.length > 0) {
+          this._pendingCtrlRExpr = this._pendingCtrlRExpr.slice(0, -1);
+          this.commandLine = '=' + this._pendingCtrlRExpr;
+        }
+        return;
+      }
+      if (key.length === 1) {
+        this._pendingCtrlRExpr += key;
+        this.commandLine = '=' + this._pendingCtrlRExpr;
+        return;
+      }
+    }
+
     // Pending <C-g>S<delim>: block-style surround prompt (open delim, then
     // newline + indent, then waits for content; close delim added on Esc).
     if (this._pendingInsertCtrlGS) {
@@ -6829,6 +6893,14 @@ export class VimEngine {
     if (this._pendingCtrlR) {
       this._pendingCtrlR = false;
       this._saveForDot(key);
+      // Special case: `=` enters the expression-register prompt mode.
+      // Subsequent keys feed an expression buffer until Enter, when the
+      // result is evaluated and inserted at the cursor.
+      if (key === '=') {
+        this._pendingCtrlRExpr = '';
+        this.commandLine = '=';
+        return;
+      }
       let regText = '';
       // Use _getReg logic for consistency: set _pendingRegKey then call _getReg
       if (/^[a-zA-Z0-9]$/.test(key) || '+-*_/".:%#='.includes(key)) {
@@ -6845,6 +6917,7 @@ export class VimEngine {
         } else {
           const r = this._getReg();
           regText = r.text || '';
+          if (key === ':' && regText) regText = ':' + regText;
         }
       }
       if (regText) {
@@ -6987,15 +7060,22 @@ export class VimEngine {
         }
 
         this._updateDesiredCol();
-        // Update CurSearch position after text changes from insert mode
         if (this._showCurSearch) this._updateCurSearchPos();
         break;
       }
       case 'Ctrl-J':
-      case 'Enter':
+      case 'Enter': {
+        // Autoindent: carry the indent of the current line over to the new line.
+        const curLine = this.buffer.lines[this.cursor.row];
+        const indent = this._settings.autoindent ? (curLine.match(/^[ \t]*/) || [''])[0] : '';
         this.buffer.splitLine(this.cursor.row, this.cursor.col);
         this.cursor.row++; this.cursor.col = 0;
+        if (indent) {
+          this.buffer.lines[this.cursor.row] = indent + this.buffer.lines[this.cursor.row];
+          this.cursor.col = indent.length;
+        }
         break;
+      }
       case 'Ctrl-H':
       case 'Backspace': {
         const pos = this.buffer.deleteCharBefore(this.cursor.row, this.cursor.col);
@@ -8860,6 +8940,24 @@ export class VimEngine {
           this.cursor.col = this._firstNonBlank(startRow);
           break;
         }
+        case '>':
+        case '<': {
+          const savedCol = this._desiredCol;
+          for (let r = startRow; r <= endRow; r++) {
+            if (op === '>') this._shiftLineRight(r);
+            else this._shiftLineLeft(r);
+          }
+          this.cursor.row = startRow;
+          // Preserve desired column relative to the first line's new content.
+          this.cursor.col = this._byteColForVirtCol(startRow, savedCol);
+          this._desiredCol = this._virtColEnd(startRow, this.cursor.col);
+          this._redoStack = [];
+          break;
+        }
+        case '=': {
+          // Re-indent (no-op for sim: language-aware indent is complex).
+          break;
+        }
       }
       this._updateDesiredCol();
       return;
@@ -9474,6 +9572,105 @@ export class VimEngine {
       .replace(/\\\|/g, '|')
       .replace(/\\\{/g, '{')
       .replace(/\\\}/g, '}');
+  }
+
+  /**
+   * Minimal evaluator for `\=expr` substitute replacements. Supports a small
+   * subset of vim-script: string literals ('...'/"..."), integer literals,
+   * `line('.')`, `col('.')`, `submatch(N)`, `len(str)`, string concatenation
+   * via `.`, integer addition via `+`. This covers the common recipe
+   * patterns used in the curriculum (e.g. number-lines via
+   * `\=line('.').' '`).
+   */
+  _evalSubExpr(src, curRow, submatches) {
+    // Tokenize: strings, numbers, identifiers, operators.
+    const tokens = [];
+    let i = 0;
+    while (i < src.length) {
+      const c = src[i];
+      if (c === ' ' || c === '\t') { i++; continue; }
+      if (c === "'" || c === '"') {
+        const quote = c; i++;
+        let s = '';
+        while (i < src.length && src[i] !== quote) {
+          if (src[i] === '\\' && i + 1 < src.length) { s += src[i + 1]; i += 2; }
+          else { s += src[i]; i++; }
+        }
+        i++; // consume closing quote
+        tokens.push({ t: 'str', v: s });
+        continue;
+      }
+      if (c >= '0' && c <= '9') {
+        let n = '';
+        while (i < src.length && src[i] >= '0' && src[i] <= '9') { n += src[i]; i++; }
+        tokens.push({ t: 'num', v: parseInt(n, 10) });
+        continue;
+      }
+      if (/[A-Za-z_]/.test(c)) {
+        let id = '';
+        while (i < src.length && /[A-Za-z_0-9]/.test(src[i])) { id += src[i]; i++; }
+        tokens.push({ t: 'id', v: id });
+        continue;
+      }
+      tokens.push({ t: 'op', v: c });
+      i++;
+    }
+
+    // Recursive-descent parser/evaluator for primary (.|+) primary chains.
+    let p = 0;
+    const peek = () => tokens[p];
+    const next = () => tokens[p++];
+    const evalPrimary = () => {
+      const tok = next();
+      if (!tok) return '';
+      if (tok.t === 'str') return tok.v;
+      if (tok.t === 'num') return tok.v;
+      if (tok.t === 'id') {
+        // Function call?
+        if (peek() && peek().t === 'op' && peek().v === '(') {
+          next(); // (
+          const args = [];
+          while (peek() && !(peek().t === 'op' && peek().v === ')')) {
+            args.push(evalExpr());
+            if (peek() && peek().t === 'op' && peek().v === ',') next();
+          }
+          if (peek() && peek().t === 'op' && peek().v === ')') next();
+          switch (tok.v) {
+            case 'line': return curRow + 1;
+            case 'col': return 1;
+            case 'submatch': {
+              const n = Number(args[0]) || 0;
+              return submatches[n] !== undefined ? submatches[n] : '';
+            }
+            case 'len': return String(args[0] || '').length;
+            case 'getline': return this.buffer.lines[curRow] || '';
+            case 'printf': return String(args[0] || '');
+            default: return '';
+          }
+        }
+        return tok.v;
+      }
+      if (tok.t === 'op' && tok.v === '(') {
+        const v = evalExpr();
+        if (peek() && peek().t === 'op' && peek().v === ')') next();
+        return v;
+      }
+      return '';
+    };
+    const evalExpr = () => {
+      let lhs = evalPrimary();
+      while (peek() && peek().t === 'op' && (peek().v === '.' || peek().v === '+' || peek().v === '-' || peek().v === '*' || peek().v === '/')) {
+        const op = next().v;
+        const rhs = evalPrimary();
+        if (op === '.') lhs = String(lhs) + String(rhs);
+        else if (op === '+') lhs = (Number(lhs) || 0) + (Number(rhs) || 0);
+        else if (op === '-') lhs = (Number(lhs) || 0) - (Number(rhs) || 0);
+        else if (op === '*') lhs = (Number(lhs) || 0) * (Number(rhs) || 0);
+        else if (op === '/') lhs = (Number(lhs) || 0) / (Number(rhs) || 1);
+      }
+      return lhs;
+    };
+    return evalExpr();
   }
 
   _searchNext(forward) {
@@ -11889,8 +12086,9 @@ export class VimEngine {
       left = this._fileName;
       if (this._changeCount > 0) left += ' [+]';
     } else if (this._windows.length > 1) {
-      // Show [No Name] for unnamed buffers when in split view
+      // Show [No Name] for unnamed buffers when in split view; append [+] if dirty.
       left = '[No Name]';
+      if (this._changeCount > 0) left += ' [+]';
     }
     // Build status line: left-padded right, with filename on left
     const gap = Math.max(1, this.cols - left.length - right.length);

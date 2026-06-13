@@ -372,12 +372,29 @@ export class Screen {
     // ── Helper: expand a raw buffer line into screen text and mappings ──
     const ts = engine._settings.tabstop || 8;
     const listMode = engine._settings?.list === true;
+    // Parse listchars setting: "tab:>-,trail:·,space:·,eol:$,nbsp:+"
+    const lcStr = engine._settings?.listchars || '';
+    const lc = { tab: '> ', trail: null, space: null, eol: null, nbsp: '+' };
+    for (const part of lcStr.split(',')) {
+      const m = part.match(/^(\w+):(.+)$/);
+      if (!m) continue;
+      lc[m[1]] = m[2];
+    }
+    const tabLead = (lc.tab && lc.tab.length >= 1) ? lc.tab[0] : '>';
+    const tabFill = (lc.tab && lc.tab.length >= 2) ? lc.tab[1] : ' ';
     const expandLine = (raw) => {
       if (!raw) raw = '';
       let expanded = '';
       const bufToScreen = [];
       // Positions in expanded that are "list" special chars (tab markers etc.)
       const listCols = new Set();
+      // Identify trailing whitespace span (for trail:char rendering in list mode).
+      let trailStart = raw.length;
+      if (listMode && lc.trail) {
+        while (trailStart > 0 && (raw[trailStart - 1] === ' ' || raw[trailStart - 1] === '\t')) {
+          trailStart--;
+        }
+      }
       for (let i = 0; i < raw.length; i++) {
         bufToScreen[i] = expanded.length;
         if (raw[i] === '\t') {
@@ -385,11 +402,15 @@ export class Screen {
           if (listMode) {
             // Mark the entire tab-expansion span as list special chars.
             for (let k = 0; k < spaces; k++) listCols.add(expanded.length + k);
-            // First char is the tab indicator (>), rest are fill spaces.
-            expanded += '>' + ' '.repeat(spaces - 1);
+            expanded += tabLead + tabFill.repeat(spaces - 1);
           } else {
             expanded += ' '.repeat(spaces);
           }
+        } else if (raw[i] === ' ' && listMode && (lc.space || (lc.trail && i >= trailStart))) {
+          // Render space using listchars (trail takes precedence for trailing spaces).
+          const ch = (i >= trailStart && lc.trail) ? lc.trail : lc.space;
+          listCols.add(expanded.length);
+          expanded += ch;
         } else {
           expanded += raw[i];
         }
