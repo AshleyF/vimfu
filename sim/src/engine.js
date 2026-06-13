@@ -6207,6 +6207,32 @@ export class VimEngine {
         result = arg.slice(1, -1);
       } else if (arg.startsWith('"') && arg.endsWith('"') && arg.length >= 2) {
         result = arg.slice(1, -1);
+      } else if (/^@.$/.test(arg)) {
+        // Register reference: @#, @%, @:, @/, @a-z, @"
+        const rk = arg[1];
+        if (rk === '#') {
+          const alt = this._alternateBufId != null
+            ? (this._bufferList.find(e => e.id === this._alternateBufId) || {}).fileName
+            : null;
+          result = alt || '';
+        } else if (rk === '%') {
+          result = this._fileName || '';
+        } else if (rk === ':') {
+          result = this._lastExCommand || '';
+        } else if (rk === '/') {
+          result = this._searchPattern || '';
+        } else if (rk === '"') {
+          result = (this._unnamedReg && this._unnamedReg.text) || this._unnamedReg || '';
+          if (typeof result !== 'string') result = '';
+        } else if (/[a-zA-Z0-9]/.test(rk)) {
+          const savedPending = this._pendingRegKey;
+          this._pendingRegKey = rk.toLowerCase();
+          const r = this._getReg ? this._getReg() : null;
+          this._pendingRegKey = savedPending;
+          result = (r && r.text) || '';
+        } else {
+          result = '';
+        }
       } else {
         result = arg;
       }
@@ -13123,8 +13149,8 @@ export class VimEngine {
         this.cursor.col = s.curMatch.col;
         this._curSearchPos = { row: r, col: s.curMatch.col };
         this._showCurSearch = true;
-        // Build prompt: "replace with REPL (y/n/a/q/l/^E/^Y)?"
-        this.commandLine = `replace with ${s.replacement} (y/n/a/q/l/^E/^Y)?`;
+        // Build prompt: "replace with REPL? (y)es/(n)o/(a)ll/(q)uit/(l)ast/^E/^Y"
+        this.commandLine = `replace with ${s.replacement}? (y)es/(n)o/(a)ll/(q)uit/(l)ast/^E/^Y`;
         this._stickyCommandLine = true;
         return;
       }
