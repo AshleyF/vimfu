@@ -3774,21 +3774,25 @@ export class VimEngine {
       case 'o': {
         const fold = this._findFoldAt(this.cursor.row);
         if (fold) fold.closed = false;
+        else this._reportCmdMessage({ error: 'E490: No fold found' });
         break;
       }
       case 'O': {
         const folds = this._findAllFoldsAt(this.cursor.row);
-        for (const f of folds) f.closed = false;
+        if (folds.length) for (const f of folds) f.closed = false;
+        else this._reportCmdMessage({ error: 'E490: No fold found' });
         break;
       }
       case 'c': {
         const fold = this._findFoldAt(this.cursor.row);
         if (fold) fold.closed = true;
+        else this._reportCmdMessage({ error: 'E490: No fold found' });
         break;
       }
       case 'C': {
         const folds = this._findAllFoldsAt(this.cursor.row);
-        for (const f of folds) f.closed = true;
+        if (folds.length) for (const f of folds) f.closed = true;
+        else this._reportCmdMessage({ error: 'E490: No fold found' });
         break;
       }
       case 'd': {
@@ -3796,14 +3800,20 @@ export class VimEngine {
         if (fold) {
           const idx = this._folds.indexOf(fold);
           if (idx >= 0) this._folds.splice(idx, 1);
+        } else {
+          this._reportCmdMessage({ error: 'E490: No fold found' });
         }
         break;
       }
       case 'D': {
         const folds = this._findAllFoldsAt(this.cursor.row);
-        for (const f of folds) {
-          const idx = this._folds.indexOf(f);
-          if (idx >= 0) this._folds.splice(idx, 1);
+        if (folds.length) {
+          for (const f of folds) {
+            const idx = this._folds.indexOf(f);
+            if (idx >= 0) this._folds.splice(idx, 1);
+          }
+        } else {
+          this._reportCmdMessage({ error: 'E490: No fold found' });
         }
         break;
       }
@@ -3819,12 +3829,17 @@ export class VimEngine {
       case 'a': {
         const fold = this._findFoldAt(this.cursor.row);
         if (fold) fold.closed = !fold.closed;
+        else this._reportCmdMessage({ error: 'E490: No fold found' });
         break;
       }
       case 'A': {
         const folds = this._findAllFoldsAt(this.cursor.row);
-        const anyOpen = folds.some(f => !f.closed);
-        for (const f of folds) f.closed = anyOpen;
+        if (folds.length) {
+          const anyOpen = folds.some(f => !f.closed);
+          for (const f of folds) f.closed = anyOpen;
+        } else {
+          this._reportCmdMessage({ error: 'E490: No fold found' });
+        }
         break;
       }
       case 'j': {
