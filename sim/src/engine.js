@@ -13195,12 +13195,13 @@ export class VimEngine {
     s.curMatch = null;
   }
 
-  _finishSubstConfirm() {
+  _finishSubstConfirm(aborted = false) {
     const s = this._pendingSubstConfirm;
     if (!s) return;
     const lineCount = s.rowsChanged.size;
     const total = s.subCount;
-    if (total === 0) {
+    if (aborted || total === 0) {
+      // Quit/Escape aborts without showing the "N substitutions" message.
       this.commandLine = '';
       this._stickyCommandLine = false;
     } else {
@@ -13212,13 +13213,25 @@ export class VimEngine {
     if (s.curMatch) {
       this.cursor.row = s.curMatch.row;
       this.cursor.col = this._firstNonBlank(s.curMatch.row);
+      if (aborted) {
+        // After q, the last attempted match stays highlighted as CurSearch
+        // (matches nvim's behaviour of leaving the cursor on the next match).
+        this._curSearchPos = { row: s.curMatch.row, col: s.curMatch.col };
+        this._showCurSearch = true;
+      } else {
+        this._showCurSearch = false;
+        this._curSearchPos = null;
+      }
     } else if (s.rowsChanged.size > 0) {
       const lastRow = Math.max(...s.rowsChanged);
       this.cursor.row = lastRow;
       this.cursor.col = this._firstNonBlank(lastRow);
+      this._showCurSearch = false;
+      this._curSearchPos = null;
+    } else {
+      this._showCurSearch = false;
+      this._curSearchPos = null;
     }
-    this._showCurSearch = false;
-    this._curSearchPos = null;
     this._pendingSubstConfirm = null;
   }
 
@@ -13229,31 +13242,32 @@ export class VimEngine {
       case 'y':
         this._applySubstConfirmMatch();
         this._advanceSubstConfirm();
-        return;
+        break;
       case 'n':
         this._skipSubstConfirmMatch();
         this._advanceSubstConfirm();
-        return;
+        break;
       case 'a': {
         // Apply current and all remaining without prompt
         while (this._pendingSubstConfirm && this._pendingSubstConfirm.curMatch) {
           this._applySubstConfirmMatch();
           this._advanceSubstConfirm();
         }
-        return;
+        break;
       }
       case 'l':
         this._applySubstConfirmMatch();
         this._finishSubstConfirm();
-        return;
+        break;
       case 'q':
       case 'Escape':
-        this._finishSubstConfirm();
-        return;
+        this._finishSubstConfirm(true);
+        break;
       default:
         // Any other key: dismiss prompt and finish
-        this._finishSubstConfirm();
-        return;
+        this._finishSubstConfirm(true);
+        break;
     }
+    this._updateStatus();
   }
 }
