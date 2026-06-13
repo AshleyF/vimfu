@@ -3530,6 +3530,17 @@ export class VimEngine {
         this._pendingCount = '';
         break;
       }
+      case 'Q': {
+        // gQ — enter Ex mode (line-based editor). Each line typed after
+        // the ":" prompt is executed as an Ex command; the prompt is
+        // re-displayed after each command. Leaving requires :vi[sual].
+        this._exMode = true;
+        this.mode = Mode.COMMAND;
+        this._searchInput = '';
+        this.commandLine = ':';
+        this._pendingCount = '';
+        break;
+      }
       case '&': {
         // g& — repeat last :s on all lines
         if (this._lastSubstitution) {
@@ -4956,7 +4967,26 @@ export class VimEngine {
     if (key === 'Enter' || key === 'Ctrl-J' || key === 'Ctrl-M') {
       this._resetTabCompletion();
       const carryBefore = this._pendingPromptCarry;
+      const wasExMode = this._exMode;
+      const typedCmd = this._searchInput.replace(/^\s+/, '').replace(/^:+/, '');
+      // gQ Ex mode: short-circuit :vi[sual] before normal command processing
+      // (which would emit E492 since :visual isn't a recognized command).
+      if (wasExMode && /^vi(s(u(a(l)?)?)?)?\s*$/.test(typedCmd)) {
+        this._exMode = false;
+        this.mode = Mode.NORMAL;
+        this.commandLine = '';
+        this._searchInput = '';
+        return;
+      }
       this._executeCommand();
+      // After executing the ex command, if we're still in Ex mode and the
+      // command didn't open a prompt of its own, re-display the ":" prompt
+      // for the next ex command.
+      if (wasExMode && this._exMode && !this._messagePrompt && this.mode === Mode.NORMAL) {
+        this.mode = Mode.COMMAND;
+        this._searchInput = '';
+        this.commandLine = ':';
+      }
       // If a carry was pending and the command produced no new prompt,
       // discard it: nvim's redraw on a quiet ex command clears the
       // prior hit-enter message. EXCEPT after a successful quit
@@ -7556,6 +7586,27 @@ export class VimEngine {
       }
       return;
     }
+    // Pending Ctrl-V: next key is inserted literally (named keys map to
+    // their byte values; e.g. Ctrl-A -> 0x01, Escape -> 0x1b). The
+    // inserted byte is displayed as ^X via the screen's SpecialKey path.
+    if (this._pendingInsertCtrlV) {
+      this._pendingInsertCtrlV = false;
+      this._saveForDot(key);
+      const text = this._macroKeysToText([key]);
+      for (const ch of text) {
+        this.buffer.insertChar(this.cursor.row, this.cursor.col, ch);
+        this.cursor.col++;
+      }
+      return;
+    }
+
+    // Ctrl-V (or Ctrl-Q) starts pending literal-insert
+    if (key === 'Ctrl-V' || key === 'Ctrl-Q') {
+      this._pendingInsertCtrlV = true;
+      this._saveForDot(key);
+      return;
+    }
+
     this._saveForDot(key);
     switch (key) {
       case 'Ctrl-A': {
