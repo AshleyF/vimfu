@@ -7580,6 +7580,27 @@ export class VimEngine {
 
   // ── Insert mode ──
 
+  /**
+   * Consume any pending Ctrl-V<digit-run> state. If the accumulated digits
+   * parse to a valid codepoint, insert the corresponding char at the cursor
+   * and clear the pending state. Otherwise just clears the state.
+   */
+  _flushCtrlVDigits() {
+    const st = this._ctrlVDigitBase;
+    this._ctrlVDigitBase = null;
+    this._pendingInsertCtrlV = false;
+    if (!st || !st.digits) return;
+    const code = parseInt(st.digits, st.base);
+    if (!isFinite(code) || code < 0) return;
+    try {
+      const ch = String.fromCodePoint(code);
+      for (const c of ch) {
+        this.buffer.insertChar(this.cursor.row, this.cursor.col, c);
+        this.cursor.col++;
+      }
+    } catch (e) { /* invalid codepoint — drop */ }
+  }
+
   _insertKey(key) {
     // Pending Ctrl-R = (expression register): accumulate the expression text
     // until Enter, then evaluate via _evalSubExpr and insert the result.
@@ -7713,22 +7734,73 @@ export class VimEngine {
       return;
     }
     // Pending Ctrl-V: next key is inserted literally (named keys map to
-    // their byte values; e.g. Ctrl-A -> 0x01, Escape -> 0x1b). The
-    // inserted byte is displayed as ^X via the screen's SpecialKey path.
+    // their byte values; e.g. Ctrl-A -> 0x01, Escape -> 0x1b). If the
+    // first key after Ctrl-V is a digit prefix (0-9 decimal, o octal,
+    // x hex, u/U unicode), accumulate digits and insert the resulting
+    // codepoint when the run ends.
     if (this._pendingInsertCtrlV) {
-      this._pendingInsertCtrlV = false;
-      this._saveForDot(key);
-      const text = this._macroKeysToText([key]);
-      for (const ch of text) {
-        this.buffer.insertChar(this.cursor.row, this.cursor.col, ch);
-        this.cursor.col++;
+      // Continuing a digit run started by an earlier Ctrl-V<digit>.
+      if (this._ctrlVDigitBase) {
+        const st = this._ctrlVDigitBase;
+        const digitMatch = key.length === 1 && (
+          (st.base === 8  && /[0-7]/.test(key)) ||
+          (st.base === 10 && /[0-9]/.test(key)) ||
+          (st.base === 16 && /[0-9a-fA-F]/.test(key))
+        );
+        if (digitMatch) {
+          st.digits += key;
+          this._saveForDot(key);
+          if (st.digits.length >= st.max) {
+            this._flushCtrlVDigits();
+          }
+          return;
+        }
+        // Non-digit terminates the run: flush, then fall through to
+        // process the current key as a normal insert keystroke.
+        this._flushCtrlVDigits();
+        // fall through (do NOT consume `key` as literal)
+      } else {
+        this._saveForDot(key);
+        // Decimal digit 0-9 starts a 3-digit decimal escape.
+        if (key.length === 1 && /[0-9]/.test(key)) {
+          this._ctrlVDigitBase = { base: 10, max: 3, digits: key };
+          return;
+        }
+        // 'o' or 'O' starts a 3-digit octal escape.
+        if (key === 'o' || key === 'O') {
+          this._ctrlVDigitBase = { base: 8, max: 3, digits: '' };
+          return;
+        }
+        // 'x' / 'X' starts a 2-digit hex escape.
+        if (key === 'x' || key === 'X') {
+          this._ctrlVDigitBase = { base: 16, max: 2, digits: '' };
+          return;
+        }
+        // 'u' starts a 4-digit hex escape.
+        if (key === 'u') {
+          this._ctrlVDigitBase = { base: 16, max: 4, digits: '' };
+          return;
+        }
+        // 'U' starts an 8-digit hex escape.
+        if (key === 'U') {
+          this._ctrlVDigitBase = { base: 16, max: 8, digits: '' };
+          return;
+        }
+        // Plain literal: insert the byte/char for this key as-is.
+        this._pendingInsertCtrlV = false;
+        const text = this._macroKeysToText([key]);
+        for (const ch of text) {
+          this.buffer.insertChar(this.cursor.row, this.cursor.col, ch);
+          this.cursor.col++;
+        }
+        return;
       }
-      return;
     }
 
     // Ctrl-V (or Ctrl-Q) starts pending literal-insert
     if (key === 'Ctrl-V' || key === 'Ctrl-Q') {
       this._pendingInsertCtrlV = true;
+      this._ctrlVDigitBase = null;
       this._saveForDot(key);
       return;
     }
