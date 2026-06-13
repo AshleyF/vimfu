@@ -953,22 +953,26 @@ export class Screen {
 
       const prompt = 'Press ENTER or type command to continue';
 
-      // Two modes: structured lines (mp.lines) or raw text (mp.error / mp.info)
-      let physical;   // array of { text, fg } or strings
+      // Two modes: structured lines (mp.lines) or raw text (mp.error / mp.info / mp.warn)
+      let physical;   // array of { text, fg, b } or strings
       if (mp.lines) {
         // Structured: each element is { text, runs } (pre-built) or a string
         physical = mp.lines;
       } else {
-        const raw = mp.error || mp.info || '';
-        const isInfo = !!mp.info;
-        const contentFg = isInfo ? t.cmdFg : (t.errorFg || t.cmdFg);
+        const raw = mp.error || mp.warn || mp.info || '';
+        const isError = !!mp.error;
+        const isWarn = !!mp.warn;
+        const contentFg = isError ? (t.errorFg || t.cmdFg)
+                        : isWarn  ? (t.promptFg || t.cmdFg)
+                        :           t.cmdFg;
+        const contentBold = isError; // ErrorMsg is cterm=bold; WarningMsg/normal are not
         physical = [];
         for (const logicalLine of raw.split('\n')) {
           if (logicalLine.length <= this.cols) {
-            physical.push({ text: logicalLine, fg: contentFg });
+            physical.push({ text: logicalLine, fg: contentFg, b: contentBold });
           } else {
             for (let i = 0; i < logicalLine.length; i += this.cols) {
-              physical.push({ text: logicalLine.slice(i, i + this.cols), fg: contentFg });
+              physical.push({ text: logicalLine.slice(i, i + this.cols), fg: contentFg, b: contentBold });
             }
           }
         }
@@ -1001,7 +1005,11 @@ export class Screen {
             const lineLen = Math.min(rawText.length, this.cols);
             const fg = item.fg || t.cmdFg;
             const runs = [];
-            if (lineLen > 0) runs.push({ n: lineLen, fg, bg: t.cmdBg });
+            if (lineLen > 0) {
+              const r = { n: lineLen, fg, bg: t.cmdBg };
+              if (item.b) r.b = true;
+              runs.push(r);
+            }
             if (lineLen < this.cols) runs.push({ n: this.cols - lineLen, fg: t.cmdFg, bg: t.cmdBg });
             lines[row] = { text: lineText, runs };
           }
