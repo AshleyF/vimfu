@@ -2914,6 +2914,22 @@ export class VimEngine {
         this._opStartPos = { ...this.cursor };
         break;
       }
+      case '-': {
+        // g- — go to older text state (like :earlier 1)
+        const n = Math.max(1, this._getCount());
+        for (let i = 0; i < n; i++) this._undo();
+        if (this._showCurSearch) this._updateCurSearchPos();
+        this._pendingCount = '';
+        break;
+      }
+      case '+': {
+        // g+ — go to newer text state (like :later 1)
+        const n = Math.max(1, this._getCount());
+        for (let i = 0; i < n; i++) this._redo();
+        if (this._showCurSearch) this._updateCurSearchPos();
+        this._pendingCount = '';
+        break;
+      }
       case 'o': {
         // go — go to byte offset N
         const targetByte = this._getCount() - 1; // 1-based to 0-based
