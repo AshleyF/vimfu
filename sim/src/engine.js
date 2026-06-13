@@ -4844,6 +4844,9 @@ export class VimEngine {
       this._cmdHistoryPos = -1;
       this._resetTabCompletion();
       this._cmdPendingCtrlR = false;
+      // Cancelling the cmdline also drops any carried hit-enter messages —
+      // matches nvim's behaviour where Esc clears the prompt entirely.
+      this._pendingPromptCarry = null;
       return;
     }
     // Pending Ctrl-R in cmdline: handle BEFORE other key handlers so that
@@ -4892,8 +4895,10 @@ export class VimEngine {
       this._executeCommand();
       // If a carry was pending and the command produced no new prompt,
       // discard it: nvim's redraw on a quiet ex command clears the
-      // prior hit-enter message.
-      if (carryBefore && this._pendingPromptCarry === carryBefore && !this._messagePrompt) {
+      // prior hit-enter message. EXCEPT after a successful quit
+      // (:q!/:wq/etc.) — nvim's screen freezes mid-quit and the
+      // carried hit-enter messages remain visible above the cmdline.
+      if (carryBefore && this._pendingPromptCarry === carryBefore && !this._messagePrompt && !this._quitDone) {
         this._pendingPromptCarry = null;
       }
       return;
@@ -5597,10 +5602,12 @@ export class VimEngine {
           this._quitCursorAtStart = true;
         }
       } else if (isQuit && this._changeCount > 0 && !isForce && !isWrite) {
-        // :q on a modified buffer → emit the E37/E162 errors that linger
-        // in the cmdline area until the next command.
-        this.commandLine = 'E37: No write since last change';
-        this._stickyCommandLine = true;
+        // :q on a modified buffer → emit E37 + E162 as a Press-ENTER prompt.
+        // Nvim wraps the long E162 line to fit the cmdline area; the
+        // {error: '...\n...'} form gets per-line wrapping in screen.js.
+        const fname = this._fileName || '';
+        const msg = 'E37: No write since last change\nE162: No write since last change for buffer "' + fname + '"';
+        this._reportCmdMessage({ error: msg }, true);
         this._quitErrorPending = true;
       } else if (isWriteOnly && writeTargetName) {
         // :w (no quit) — model nvim's write: clear modified flag (only when
@@ -7064,9 +7071,10 @@ export class VimEngine {
 
     // Unknown command — show error
     if (rest) {
-      this._messagePrompt = { error: 'E492: Not an editor command: ' + cmd };
+      this._reportCmdMessage({ error: 'E492: Not an editor command: ' + cmd }, true);
+    } else {
+      this.commandLine = '';
     }
-    this.commandLine = '';
   }
 
   // ── Key Mapping Helpers ──

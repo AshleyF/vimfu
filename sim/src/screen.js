@@ -1055,6 +1055,71 @@ export class Screen {
       finalCursorCol = Math.min(engine.commandLine.length, this.cols);
     }
 
+    // ── Carried hit-enter messages overlay ──
+    // When a Press-ENTER prompt is dismissed by typing `:`, the prior
+    // message lines remain visible above the cmdline. We render them
+    // here as an overlay (no "Press ENTER" line), so the cmdline row
+    // is free for the in-progress `:` command or post-quit message.
+    if (engine._pendingPromptCarry && !engine._messagePrompt) {
+      const mp = engine._pendingPromptCarry;
+
+      let physical;
+      if (mp.lines) {
+        physical = mp.lines;
+      } else {
+        const raw = mp.error || mp.warn || mp.info || '';
+        const isError = !!mp.error;
+        const isWarn = !!mp.warn;
+        const contentFg = isError ? (t.errorFg || t.cmdFg)
+                        : isWarn  ? (t.promptFg || t.cmdFg)
+                        :           t.cmdFg;
+        const contentBold = isError;
+        physical = [];
+        for (const logicalLine of raw.split('\n')) {
+          if (logicalLine.length <= this.cols) {
+            physical.push({ text: logicalLine, fg: contentFg, b: contentBold });
+          } else {
+            for (let i = 0; i < logicalLine.length; i += this.cols) {
+              physical.push({ text: logicalLine.slice(i, i + this.cols), fg: contentFg, b: contentBold });
+            }
+          }
+        }
+      }
+
+      // 1 blank status-bar separator + N content lines; cmdline row preserved
+      const overlayRows = physical.length + 1;
+      const startRow = this.rows - 1 - overlayRows;
+
+      if (startRow >= 0) {
+        lines[startRow] = {
+          text: ' '.repeat(this.cols),
+          runs: [{ n: this.cols, fg: t.statusFg, bg: t.statusBg }],
+        };
+      }
+      for (let i = 0; i < physical.length; i++) {
+        const row = startRow + 1 + i;
+        if (row >= 0 && row < this.rows - 1) {
+          const item = physical[i];
+          if (item.runs) {
+            lines[row] = { text: this._padOrTruncate(item.text, this.cols), runs: item.runs };
+          } else {
+            const rawText = item.text || item;
+            const lineText = this._padOrTruncate(rawText, this.cols);
+            const lineLen = Math.min(rawText.length, this.cols);
+            const fg = item.fg || t.cmdFg;
+            const runs = [];
+            if (lineLen > 0) {
+              const r = { n: lineLen, fg, bg: t.cmdBg };
+              if (item.b) r.b = true;
+              runs.push(r);
+            }
+            if (lineLen < this.cols) runs.push({ n: this.cols - lineLen, fg: t.cmdFg, bg: t.cmdBg });
+            lines[row] = { text: lineText, runs };
+          }
+        }
+      }
+    }
+
     // Post-quit cursor override: after a successful :q/:q!/:wq/:x/ZZ/ZQ,
     // park the cursor on the cmdline row. For write-quit variants the
     // cursor sits at the end of the "X written" success message. nvim
