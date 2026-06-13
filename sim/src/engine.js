@@ -197,6 +197,9 @@ export class VimEngine {
     this._cmdHistory = [];
     this._cmdHistoryPos = -1;
 
+    // Current working directory (for :pwd / :cd)
+    this._cwd = '/home/user';
+
     // Command-line Tab completion state
     this._cmdCompletions = [];     // current list of matching completions
     this._cmdCompletionIdx = -1;   // index into _cmdCompletions (-1 = not cycling)
@@ -221,6 +224,7 @@ export class VimEngine {
       list: false,         // :set list / :set nolist
       splitbelow: false,   // :set splitbelow / :set nosplitbelow (sb/nosb)
       splitright: false,   // :set splitright / :set nosplitright (spr/nospr)
+      startofline: false,  // :set startofline / :set nostartofline (sol/nosol) — nvim default OFF
       spell: false,        // :set spell / :set nospell
     };
 
@@ -4108,7 +4112,7 @@ export class VimEngine {
   // Used for Tab completion and Ctrl-D.
   static _EX_COMMANDS = [
     'bdelete', 'bnext', 'bprevious', 'buffer', 'buffers',
-    'changes', 'close', 'copy', 'delete', 'delmarks', 'display',
+    'cd', 'chdir', 'changes', 'close', 'copy', 'delete', 'delmarks', 'display',
     'echo', 'edit', 'enew', 'file', 'files', 'global',
     'join', 'jumps', 'ls', 'marks', 'move', 'new',
     'nohlsearch', 'normal', 'number', 'only',
@@ -4127,7 +4131,7 @@ export class VimEngine {
     'autoindent', 'cursorline', 'expandtab', 'fileformat',
     'hlsearch', 'ignorecase', 'incsearch', 'list',
     'number', 'relativenumber', 'scrolloff', 'shiftwidth',
-    'smartcase', 'spell', 'splitbelow', 'splitright', 'tabstop', 'wrap',
+    'smartcase', 'spell', 'splitbelow', 'splitright', 'startofline', 'tabstop', 'wrap',
   ];
 
   // Short-form aliases for :set options → canonical names
@@ -4135,7 +4139,7 @@ export class VimEngine {
     ai: 'autoindent', cul: 'cursorline', et: 'expandtab', ff: 'fileformat',
     hls: 'hlsearch', ic: 'ignorecase', is: 'incsearch',
     nu: 'number', rnu: 'relativenumber', so: 'scrolloff', sw: 'shiftwidth',
-    scs: 'smartcase', sb: 'splitbelow', spr: 'splitright', ts: 'tabstop',
+    scs: 'smartcase', sb: 'splitbelow', spr: 'splitright', sol: 'startofline', ts: 'tabstop',
   };
 
   /**
@@ -4518,7 +4522,12 @@ export class VimEngine {
     const insertAt = dest + 1;
     this.buffer.lines.splice(insertAt, 0, ...moved);
     this.cursor.row = insertAt + count - 1;
-    this.cursor.col = this._firstNonBlank(this.cursor.row);
+    if (this._settings.startofline) {
+      this.cursor.col = this._firstNonBlank(this.cursor.row);
+    } else {
+      // Keep cursor in same column (clamped to new line length)
+      this.cursor.col = Math.min(this.cursor.col, this._maxCol());
+    }
     this._updateDesiredCol();
     this.commandLine = '';
   }
@@ -4532,7 +4541,11 @@ export class VimEngine {
     const insertAt = dest + 1;
     this.buffer.lines.splice(insertAt, 0, ...copied);
     this.cursor.row = insertAt + count - 1;
-    this.cursor.col = this._firstNonBlank(this.cursor.row);
+    if (this._settings.startofline) {
+      this.cursor.col = this._firstNonBlank(this.cursor.row);
+    } else {
+      this.cursor.col = Math.min(this.cursor.col, this._maxCol());
+    }
     this._updateDesiredCol();
     this.commandLine = '';
   }
@@ -4651,8 +4664,10 @@ export class VimEngine {
       return;
     }
 
-    // :g/.../norm {keys}
-    const normMatch = trimmedSub.match(/^norm(?:a(?:l)?)?!?\s+(.+)$/);
+    // :g/.../norm {keys} — match against subcmd with leading whitespace
+    // stripped so trailing spaces in {keys} are preserved
+    // (`:g/TODO/norm IDONE ` should insert "DONE " with trailing space).
+    const normMatch = subcmd.replace(/^\s+/, '').match(/^norm(?:a(?:l)?)?!?\s+(.+)$/);
     if (normMatch) {
       const keys = normMatch[1];
       const wasPlaying = this._macroPlaying;
@@ -5193,9 +5208,20 @@ export class VimEngine {
 
     // :pwd — display current directory
     if (cmd === 'pwd') {
-      this.commandLine = '/home/user';
+      this.commandLine = this._cwd || '/home/user';
       this._stickyCommandLine = true;
       return;
+    }
+
+    // :cd [path] / :chdir [path] — change directory (track for :pwd)
+    {
+      const cdMatch = cmd.match(/^(?:cd|chdir)(?:\s+(.+))?$/);
+      if (cdMatch) {
+        const arg = (cdMatch[1] || '').trim();
+        if (arg) this._cwd = arg;
+        this.commandLine = '';
+        return;
+      }
     }
 
     // :echo — display expression result
@@ -5333,8 +5359,11 @@ export class VimEngine {
     // Clear visual range now that the parser consumed it
     this._visualCmdRange = null;
 
-    // :marks — display marks list
-    if (/^marks?\s*$/.test(rest)) {
+    // :marks [args] — display marks list (optionally filtered to specific marks)
+    {
+      const marksMatch = rest.match(/^marks?(\s+(.*))?$/);
+      if (marksMatch) {
+      const filterArg = (marksMatch[2] || '').trim();
       // Build structured lines for the message prompt with proper color runs.
       // Colors from monokai theme (verified against nvim ground truth):
       const normalFg = 'd4d4d4', normalBg = '000000', dirFg = '66d9ef';
@@ -5372,24 +5401,32 @@ export class VimEngine {
 
       // ' — last jump position (defaults to line 1, col 0)
       const jp = this._lastJumpPos || { row: 0, col: 0 };
-      promptLines.push(mkDataLine(fmtPrefix("'", jp.row, jp.col), getLineText(jp.row)));
-      // User marks a-z
+      const showAll = !filterArg;
+      const wantMark = (ch) => showAll || filterArg.includes(ch);
+      if (wantMark("'")) {
+        promptLines.push(mkDataLine(fmtPrefix("'", jp.row, jp.col), getLineText(jp.row)));
+      }
+      // User marks a-z (filtered if filterArg given)
       const markKeys = Object.keys(this._marks).sort();
       for (const mk of markKeys) {
+        if (!wantMark(mk)) continue;
         const m = this._marks[mk];
         promptLines.push(mkDataLine(fmtPrefix(mk, m.row, m.col), getLineText(m.row)));
       }
-      // " — last position when exiting file
-      promptLines.push(mkDataLine(fmtPrefix('"', jp.row, jp.col), getLineText(jp.row)));
-      // [ — start of buffer
-      promptLines.push(mkDataLine(fmtPrefix('[', 0, 0), getLineText(0)));
-      // ] — end of buffer
-      const lastRow = this.buffer.lineCount - 1;
-      promptLines.push(mkDataLine(fmtPrefix(']', lastRow, 0), getLineText(lastRow)));
+      if (showAll) {
+        // " — last position when exiting file
+        promptLines.push(mkDataLine(fmtPrefix('"', jp.row, jp.col), getLineText(jp.row)));
+        // [ — start of buffer
+        promptLines.push(mkDataLine(fmtPrefix('[', 0, 0), getLineText(0)));
+        // ] — end of buffer
+        const lastRow = this.buffer.lineCount - 1;
+        promptLines.push(mkDataLine(fmtPrefix(']', lastRow, 0), getLineText(lastRow)));
+      }
 
       this._messagePrompt = { lines: promptLines };
       this.commandLine = '';
       return;
+      }
     }
 
     // :f[ile] — show file info
@@ -5423,11 +5460,32 @@ export class VimEngine {
       }
     }
 
-    // :undol[ist] — show undo info
+    // :undol[ist] — show undo info as multi-line prompt
     if (/^undol(i(st?)?)?\s*$/.test(rest)) {
       const numEntries = this._undoStack.length;
-      this.commandLine = 'number of changes: ' + numEntries;
-      this._stickyCommandLine = true;
+      const cols = this.cols;
+      const normalFg = 'd4d4d4', normalBg = '000000', hdrFg = 'e6db74';
+      const pad = (s) => s.length < cols ? s + ' '.repeat(cols - s.length) : s.slice(0, cols);
+      const mkLine = (text, runs) => ({ text, runs });
+      const mkFullLine = (text) => mkLine(pad(text), [{ n: cols, fg: normalFg, bg: normalBg }]);
+      const promptLines = [];
+      promptLines.push(mkFullLine(':undolist'));
+      if (numEntries === 0) {
+        promptLines.push(mkFullLine('Nothing to undo'));
+      } else {
+        const hdr = 'number changes  when               saved';
+        promptLines.push(mkLine(pad(hdr), [
+          { n: Math.min(hdr.length, cols), fg: hdrFg, bg: normalBg, b: true },
+          { n: Math.max(0, cols - hdr.length), fg: normalFg, bg: normalBg },
+        ]));
+        for (let i = 0; i < numEntries; i++) {
+          const num = String(i + 1).padStart(7);
+          const ch = String(i + 1).padStart(7);
+          promptLines.push(mkFullLine(num + ch + '  just now'));
+        }
+      }
+      this._messagePrompt = { lines: promptLines };
+      this.commandLine = '';
       return;
     }
 
@@ -6448,8 +6506,10 @@ export class VimEngine {
       cul: 'cursorline', hls: 'hlsearch',
       ts: 'tabstop', sw: 'shiftwidth', so: 'scrolloff',
       is: 'incsearch', sb: 'splitbelow', spr: 'splitright',
+      sol: 'startofline',
       ff: 'fileformat',
     };
+    const queryMessages = [];
     for (const arg of args) {
       if (!arg) continue;
 
@@ -6483,18 +6543,17 @@ export class VimEngine {
         continue;
       }
 
-      // Query: :set option? (display current value in cmdline)
+      // Query: :set option? (display current value)
       const qMatch = arg.match(/^(\w+)\?$/);
       if (qMatch) {
         const opt = shortAliases[qMatch[1]] || qMatch[1];
         if (opt in this._settings) {
           const v = this._settings[opt];
           if (typeof v === 'boolean') {
-            this.commandLine = (v ? '' : 'no') + opt;
+            queryMessages.push((v ? '' : 'no') + opt);
           } else {
-            this.commandLine = '  ' + opt + '=' + v;
+            queryMessages.push('  ' + opt + '=' + v);
           }
-          this._stickyCommandLine = true;
         }
         continue;
       }
@@ -6516,6 +6575,14 @@ export class VimEngine {
         this._settings[opt] = true;
         continue;
       }
+    }
+    // Display query messages
+    if (queryMessages.length === 1) {
+      this.commandLine = queryMessages[0];
+      this._stickyCommandLine = true;
+    } else if (queryMessages.length > 1) {
+      this._messagePrompt = { lines: queryMessages };
+      this.commandLine = '';
     }
     // Sync hlsearch active state with setting
     this._hlsearchActive = this._settings.hlsearch;
@@ -6836,6 +6903,20 @@ export class VimEngine {
       case 'Ctrl-R': // Ctrl-R: paste from register
         this._pendingCtrlR = true;
         return; // don't fall through
+      case 'Tab': {
+        const ts = this._settings.tabstop || 8;
+        if (this._settings.expandtab) {
+          const n = ts - (this.cursor.col % ts);
+          for (let i = 0; i < n; i++) {
+            this.buffer.insertChar(this.cursor.row, this.cursor.col, ' ');
+            this.cursor.col++;
+          }
+        } else {
+          this.buffer.insertChar(this.cursor.row, this.cursor.col, '\t');
+          this.cursor.col++;
+        }
+        break;
+      }
       default:
         if (key.length === 1 && key >= ' ') {
           this.buffer.insertChar(this.cursor.row, this.cursor.col, key);
@@ -6926,6 +7007,20 @@ export class VimEngine {
           this.cursor.col = Math.min(this.cursor.col, this.buffer.lineLength(this.cursor.row));
         }
         break;
+      case 'Tab': {
+        const ts = this._settings.tabstop || 8;
+        if (this._settings.expandtab) {
+          const n = ts - (this.cursor.col % ts);
+          for (let i = 0; i < n; i++) {
+            this.buffer.insertChar(this.cursor.row, this.cursor.col, ' ');
+            this.cursor.col++;
+          }
+        } else {
+          this.buffer.insertChar(this.cursor.row, this.cursor.col, '\t');
+          this.cursor.col++;
+        }
+        break;
+      }
       default:
         if (key.length === 1 && key >= ' ') {
           this.buffer.insertChar(this.cursor.row, this.cursor.col, key);
@@ -7382,6 +7477,7 @@ export class VimEngine {
         }
         this.mode = Mode.NORMAL; this.commandLine = '';
         this.cursor.row = sr; this.cursor.col = sc;
+        this._updateDesiredCol();
         break;
       }
       case '>': {
@@ -7418,6 +7514,7 @@ export class VimEngine {
         }
         this.mode = Mode.NORMAL; this.commandLine = '';
         this.cursor.row = sr; this.cursor.col = sc;
+        this._updateDesiredCol();
         this._redoStack = [];
         break;
       }
@@ -7434,6 +7531,7 @@ export class VimEngine {
         }
         this.mode = Mode.NORMAL; this.commandLine = '';
         this.cursor.row = sr; this.cursor.col = sc;
+        this._updateDesiredCol();
         this._redoStack = [];
         break;
       }
@@ -7450,6 +7548,7 @@ export class VimEngine {
         }
         this.mode = Mode.NORMAL; this.commandLine = '';
         this.cursor.row = sr; this.cursor.col = sc;
+        this._updateDesiredCol();
         this._redoStack = [];
         break;
       }
