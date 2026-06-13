@@ -5608,6 +5608,8 @@ export class VimEngine {
     this._cmdHistoryPos = -1;
 
     if (prefix === '/' || prefix === '?') {
+      const visResume = this._visualSearchResume;
+      this._visualSearchResume = null;
       if (cmd) {
         this._addJumpEntry();
         const beforeRow = this.cursor.row, beforeCol = this.cursor.col;
@@ -5629,6 +5631,13 @@ export class VimEngine {
           // Cancel any pending operator
           this._pendingOpForSearch = '';
           this._opStartPosForSearch = null;
+          // Restore visual mode if search was initiated from visual
+          if (visResume) {
+            this.mode = visResume.visMode;
+            this._visualStart = visResume.visStart;
+            this.commandLine = (visResume.visMode === Mode.VISUAL_LINE) ? '-- VISUAL LINE --'
+              : (visResume.visMode === Mode.VISUAL_BLOCK) ? '-- VISUAL BLOCK --' : '-- VISUAL --';
+          }
           return;
         }
 
@@ -5657,10 +5666,26 @@ export class VimEngine {
           this._hlsearchActive = true;
           this._updateDesiredCol();
         }
+        // Restore visual mode after a successful search from visual: keep
+        // the original anchor, let the new cursor extend the selection.
+        if (visResume) {
+          this.mode = visResume.visMode;
+          this._visualStart = visResume.visStart;
+          this.commandLine = (visResume.visMode === Mode.VISUAL_LINE) ? '-- VISUAL LINE --'
+            : (visResume.visMode === Mode.VISUAL_BLOCK) ? '-- VISUAL BLOCK --' : '-- VISUAL --';
+          return;
+        }
       } else {
         // Empty search — cancel any pending operator
         this._pendingOpForSearch = '';
         this._opStartPosForSearch = null;
+        if (visResume) {
+          this.mode = visResume.visMode;
+          this._visualStart = visResume.visStart;
+          this.commandLine = (visResume.visMode === Mode.VISUAL_LINE) ? '-- VISUAL LINE --'
+            : (visResume.visMode === Mode.VISUAL_BLOCK) ? '-- VISUAL BLOCK --' : '-- VISUAL --';
+          return;
+        }
       }
       this.commandLine = '';
       return;
@@ -8313,6 +8338,21 @@ export class VimEngine {
       this.mode = Mode.COMMAND;
       this._searchInput = "'<,'>!";
       this.commandLine = ":'<,'>!";
+      this._pendingCount = ''; return;
+    }
+
+    if (key === '/' || key === '?') {
+      // Visual mode search: stash the visual context so the Enter handler
+      // can restore visual mode with the cursor moved to the match,
+      // extending the selection.
+      this._visualSearchResume = {
+        visMode: this.mode,
+        visStart: { ...this._visualStart },
+      };
+      this.mode = Mode.COMMAND;
+      this._searchForward = (key === '/');
+      this._searchInput = '';
+      this.commandLine = key;
       this._pendingCount = ''; return;
     }
 
