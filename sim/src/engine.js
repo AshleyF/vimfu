@@ -2663,6 +2663,14 @@ export class VimEngine {
           this.cursor.row = Math.min(entry.row, this.buffer.lineCount - 1);
           this.cursor.col = Math.min(entry.col, this._maxCol());
           this._updateDesiredCol();
+          // Forward jump (Ctrl-I) landing exactly on the CurSearch match
+          // demotes it to plain Search — nvim treats arrival via jump
+          // (not search-navigation) as no longer the "current" match.
+          if (this._curSearchPos
+              && this._curSearchPos.row === this.cursor.row
+              && this._curSearchPos.col === this.cursor.col) {
+            this._curSearchPos = null;
+          }
         }
         this._pendingCount = '';
         break;
