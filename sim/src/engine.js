@@ -4760,6 +4760,14 @@ export class VimEngine {
         // Ctrl-W ] / Ctrl-W Ctrl-] — split + tag jump. No tag DB in sim.
         this._reportCmdMessage({ error: 'E433: No tags file' });
         break;
+      case 'i': case 'Ctrl-I': {
+        // Ctrl-W i — open identifier under cursor in a horizontal split.
+        // Without a real :include search, fall back to a plain split of the
+        // current buffer at the current cursor position so subsequent
+        // Ctrl-W c can close it cleanly without hitting E444.
+        this._doSplit();
+        break;
+      }
       case 'f': case 'Ctrl-F':
       case 'F': {
         // Ctrl-W f / Ctrl-W F — split + open file under cursor (with line
