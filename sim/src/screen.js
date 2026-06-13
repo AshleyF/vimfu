@@ -388,6 +388,8 @@ export class Screen {
       const bufToScreen = [];
       // Positions in expanded that are "list" special chars (tab markers etc.)
       const listCols = new Set();
+      // Positions in expanded that are control-char display (^X, ^[, ...).
+      const specialCols = new Set();
       // Identify trailing whitespace span (for trail:char rendering in list mode).
       let trailStart = raw.length;
       if (listMode && lc.trail) {
@@ -412,11 +414,20 @@ export class Screen {
           listCols.add(expanded.length);
           expanded += ch;
         } else {
-          expanded += raw[i];
+          const code = raw.charCodeAt(i);
+          if (code < 0x20 || code === 0x7f) {
+            // Control char: render as ^X (two chars, special-key color).
+            const disp = code === 0x7f ? '?' : String.fromCharCode(code ^ 0x40);
+            specialCols.add(expanded.length);
+            specialCols.add(expanded.length + 1);
+            expanded += '^' + disp;
+          } else {
+            expanded += raw[i];
+          }
         }
       }
       bufToScreen[raw.length] = expanded.length; // sentinel
-      return { expanded, bufToScreen, listCols };
+      return { expanded, bufToScreen, listCols, specialCols };
     };
 
     // ── Helper: how many screen rows does a buffer line consume? ──
@@ -573,7 +584,7 @@ export class Screen {
       }
 
       const raw = buf.lines[bufRow];
-      const { expanded, bufToScreen, listCols } = expandLine(raw);
+      const { expanded, bufToScreen, listCols, specialCols } = expandLine(raw);
       const numWraps = noWrap ? 1 : wrapRows(expanded);
 
       for (let wrapIdx = 0; wrapIdx < numWraps && screenRow < textRows; wrapIdx++) {
@@ -593,6 +604,14 @@ export class Screen {
           const listFg = t.listFg || '4d5154';
           for (let sc = sliceStart; sc < sliceEnd; sc++) {
             if (listCols.has(sc)) colFg[sc - sliceStart] = listFg;
+          }
+        }
+
+        // Apply SpecialKey colouring for control-char display (^X, ^[).
+        if (specialCols && specialCols.size > 0) {
+          const specialFg = t.specialFg || t.matchParenFg || 'f92672';
+          for (let sc = sliceStart; sc < sliceEnd; sc++) {
+            if (specialCols.has(sc)) colFg[sc - sliceStart] = specialFg;
           }
         }
 

@@ -761,6 +761,38 @@ export class VimEngine {
   }
 
   /**
+   * Convert an array of captured macro keys into the literal byte string
+   * stored in nvim's named register. Single chars are passed through.
+   * Named keys (Escape, Enter, Tab, Ctrl-X) translate to their byte values.
+   */
+  _macroKeysToText(keys) {
+    const namedMap = {
+      'Enter': '\r', 'Escape': '\x1b', 'Tab': '\t',
+      'Backspace': '\x08', 'Space': ' ', 'Delete': '\x7f',
+    };
+    let out = '';
+    for (const k of keys) {
+      if (k == null) continue;
+      if (k.length === 1) { out += k; continue; }
+      if (namedMap[k] != null) { out += namedMap[k]; continue; }
+      const m = /^Ctrl-([A-Za-z\]\^_@\\])$/.exec(k);
+      if (m) {
+        const ch = m[1].toUpperCase();
+        if (ch >= 'A' && ch <= 'Z') out += String.fromCharCode(ch.charCodeAt(0) - 64);
+        else if (ch === '@') out += '\x00';
+        else if (ch === '[') out += '\x1b';
+        else if (ch === '\\') out += '\x1c';
+        else if (ch === ']') out += '\x1d';
+        else if (ch === '^') out += '\x1e';
+        else if (ch === '_') out += '\x1f';
+        continue;
+      }
+      // Fall through: unsupported special key — drop silently.
+    }
+    return out;
+  }
+
+  /**
    * Set the clipboard ("+) register from external data (e.g. browser clipboard).
    * Also mirrors into the "* register.
    * @param {string} text
@@ -779,6 +811,13 @@ export class VimEngine {
       // Remove the trailing 'q' we just captured
       this._macroKeys.pop();
       this._macroRegisters[this._macroRecording] = [...this._macroKeys];
+      // Mirror into the named register so the macro can be pasted ("xp) and
+      // displayed (:reg x). Special keys map to their literal byte values
+      // (e.g. Escape -> \x1b). The screen renders control bytes as ^X.
+      this._namedRegs[this._macroRecording] = {
+        text: this._macroKeysToText(this._macroKeys),
+        type: 'char',
+      };
       this._lastMacroRegister = this._macroRecording; // for @@
       this._lastRecordedRegister = this._macroRecording; // for Q
       this._macroRecording = '';
@@ -3781,6 +3820,19 @@ export class VimEngine {
         this._pendingOp = 'zf';
         this._opStartPos = { ...this.cursor };
         return;
+      case 'F': {
+        // zF [count] — create a fold of [count] lines (default 1) starting
+        // at the cursor row. Cursor moves to start of fold.
+        const cnt = Math.max(1, parseInt(this._pendingCount || '1', 10) || 1);
+        const startRow = this.cursor.row;
+        const endRow = Math.min(this.buffer.lineCount - 1, startRow + cnt - 1);
+        this._folds = this._folds || [];
+        this._folds.push({ startRow, endRow, closed: true });
+        this.cursor.row = startRow;
+        this.cursor.col = this._firstNonBlank(startRow);
+        this._updateDesiredCol();
+        break;
+      }
       case 'o': {
         const fold = this._findFoldAt(this.cursor.row);
         if (fold) fold.closed = false;
