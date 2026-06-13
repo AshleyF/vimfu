@@ -3804,20 +3804,9 @@ export class VimEngine {
     // Handle pending zu (for zug/zuw)
     if (this._pendingZu) {
       this._pendingZu = false;
-      if (key === 'g') {
-        // zug — undo zg (remove word from good list)
-        const w = this._getWordAtCursor();
-        if (w) {
-          this._spellGoodWords.delete(w.word.toLowerCase());
-          this.commandLine = '';
-        }
-      } else if (key === 'w') {
-        // zuw — undo zw (remove word from bad list)
-        const w = this._getWordAtCursor();
-        if (w) {
-          this._spellBadWords.delete(w.word.toLowerCase());
-          this.commandLine = '';
-        }
+      if (key === 'g' || key === 'w') {
+        // zug/zuw also need a spellfile; nvim errors out the same way as zg/zw
+        this._messagePrompt = { error: "E764: Option 'spellfile' is not set" };
       }
       return;
     }
@@ -4109,27 +4098,13 @@ export class VimEngine {
         break;
       }
       case 'g': {
-        // zg — add word under cursor to good words list
-        if (this._settings.spell) {
-          const w = this._getWordAtCursor();
-          if (w) {
-            this._spellGoodWords.add(w.word.toLowerCase());
-            this._spellBadWords.delete(w.word.toLowerCase());
-            this.commandLine = '';
-          }
-        }
+        // zg — add word under cursor to good words list (writes to spellfile)
+        this._messagePrompt = { error: "E764: Option 'spellfile' is not set" };
         break;
       }
       case 'w': {
-        // zw — mark word under cursor as bad (wrong)
-        if (this._settings.spell) {
-          const w = this._getWordAtCursor();
-          if (w) {
-            this._spellBadWords.add(w.word.toLowerCase());
-            this._spellGoodWords.delete(w.word.toLowerCase());
-            this.commandLine = '';
-          }
-        }
+        // zw — mark word under cursor as bad (writes to spellfile)
+        this._messagePrompt = { error: "E764: Option 'spellfile' is not set" };
         break;
       }
       case 'u': {
