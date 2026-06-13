@@ -1444,6 +1444,14 @@ export class VimEngine {
       return;
     }
 
+    // Pending Ctrl-W g (window g-prefix)
+    if (this._pendingCtrlWG) {
+      this._pendingCtrlWG = false;
+      this._handleCtrlWG(key);
+      this._pendingCount = '';
+      return;
+    }
+
     // Pending z
     if (this._pendingZ) {
       this._pendingZ = false;
@@ -4752,9 +4760,78 @@ export class VimEngine {
         // Ctrl-W ] / Ctrl-W Ctrl-] — split + tag jump. No tag DB in sim.
         this._reportCmdMessage({ error: 'E433: No tags file' });
         break;
+      case 'f': case 'Ctrl-F':
+      case 'F': {
+        // Ctrl-W f / Ctrl-W F — split + open file under cursor (with line
+        // for F). We have no VFS, so emit the same E447 nvim shows.
+        const fname = this._fileUnderCursor();
+        if (!fname) {
+          this._messagePrompt = { error: 'E446: No file name under cursor' };
+        } else {
+          this._messagePrompt = { error: `E447: Can't find file "${fname}" in path` };
+        }
+        break;
+      }
+      case 'g': case 'Ctrl-G':
+        // Ctrl-W g — pending Ctrl-W g-prefix (e.g. Ctrl-W gf, Ctrl-W gF, Ctrl-W gt)
+        this._pendingCtrlWG = true;
+        break;
       default:
         break;
     }
+  }
+
+  _handleCtrlWG(key) {
+    switch (key) {
+      case 'f': case 'F': {
+        // Ctrl-W gf / Ctrl-W gF — open file under cursor in new tab.
+        // No VFS in sim, so report the same E447 as gf/gF.
+        const fname = this._fileUnderCursor();
+        if (!fname) {
+          this._messagePrompt = { error: 'E446: No file name under cursor' };
+        } else {
+          this._messagePrompt = { error: `E447: Can't find file "${fname}" in path` };
+        }
+        break;
+      }
+      case 't': {
+        // Ctrl-W gt — next tab
+        if (this._tabs.length > 1) {
+          const nextIdx = (this._activeTab + 1) % this._tabs.length;
+          this._switchToTab(nextIdx);
+        }
+        break;
+      }
+      case 'T': {
+        // Ctrl-W gT — previous tab
+        if (this._tabs.length > 1) {
+          const prevIdx = (this._activeTab - 1 + this._tabs.length) % this._tabs.length;
+          this._switchToTab(prevIdx);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Extract the file name token under the cursor for gf/gF/Ctrl-W f.
+   * Returns the run of non-blank, non-quote, non-bracket characters
+   * around the cursor, or null if the cursor is on whitespace.
+   */
+  _fileUnderCursor() {
+    const line = this.buffer.lines[this.cursor.row] || '';
+    const isFc = (ch) => ch && !/[\s"'<>`|;{}()\[\]]/.test(ch);
+    let s = this.cursor.col;
+    if (!isFc(line[s])) return null;
+    while (s > 0 && isFc(line[s - 1])) s--;
+    let e = this.cursor.col;
+    while (e < line.length && isFc(line[e])) e++;
+    let name = line.slice(s, e);
+    // strip trailing :N[:M] line/col suffix (gF style)
+    name = name.replace(/:\d+(?::\d+)?$/, '');
+    return name || null;
   }
 
   // ── Fold helpers ──
