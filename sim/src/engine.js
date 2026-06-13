@@ -114,6 +114,7 @@ export class VimEngine {
     this._searchPattern = '';
     this._searchForward = true;
     this._searchInput = '';
+    this._cmdCursor = 0; // cursor position within _searchInput (cmdline / search)
     this._showCurSearch = false; // true only after user-initiated search navigation
     this._curSearchPos = null; // {row, col} of the match for CurSearch highlight
     this._hlsearchActive = true; // false after :noh, true again on next search
@@ -1691,6 +1692,7 @@ export class VimEngine {
         this.mode = Mode.COMMAND;
         this._searchInput = rangeStr + '!';
         this.commandLine = ':' + rangeStr + '!';
+        this._cmdCursor = this._searchInput.length;
         this._pendingOp = '';
         this._pendingCount = '';
         return;
@@ -1759,6 +1761,7 @@ export class VimEngine {
         this.mode = Mode.COMMAND;
         this._searchForward = (key === '/');
         this._searchInput = '';
+        this._cmdCursor = 0;
         this.commandLine = key;
         return;
       }
@@ -2517,12 +2520,14 @@ export class VimEngine {
         this.mode = Mode.COMMAND;
         this._searchForward = true;
         this._searchInput = '';
+        this._cmdCursor = 0;
         this.commandLine = '/';
         return;
       case '?':
         this.mode = Mode.COMMAND;
         this._searchForward = false;
         this._searchInput = '';
+        this._cmdCursor = 0;
         this.commandLine = '?';
         return;
       case 'n': { this._addJumpEntry(); const c = this._getCount(); let found = false; for (let i = 0; i < c; i++) found = this._searchNext(this._searchForward); if (!found && this._searchPattern) { this.commandLine = 'E486: Pattern not found: ' + this._searchPattern; this._stickyCommandLine = true; } this._showCurSearch = true; this._hlsearchActive = true; break; }
@@ -2794,6 +2799,7 @@ export class VimEngine {
       case ':':
         this.mode = Mode.COMMAND;
         this._searchInput = '';
+        this._cmdCursor = 0;
         this.commandLine = ':';
         return;
 
@@ -3593,6 +3599,7 @@ export class VimEngine {
         this._exMode = true;
         this.mode = Mode.COMMAND;
         this._searchInput = '';
+        this._cmdCursor = 0;
         this.commandLine = ':';
         this._pendingCount = '';
         break;
@@ -5027,6 +5034,7 @@ export class VimEngine {
     } else {
       this._searchInput = match;
     }
+    this._cmdCursor = this._searchInput.length;
     this.commandLine = prefix + this._searchInput;
   }
 
@@ -5040,6 +5048,12 @@ export class VimEngine {
   }
 
   _commandKey(key) {
+    // Ensure cursor is within bounds (re-entry, history change, etc.)
+    if (this._cmdCursor == null || this._cmdCursor > this._searchInput.length) {
+      this._cmdCursor = this._searchInput.length;
+    }
+    if (this._cmdCursor < 0) this._cmdCursor = 0;
+
     if (key === 'Escape') {
       this.mode = Mode.NORMAL; this.commandLine = '';
       this._pendingOpForSearch = '';
@@ -5089,7 +5103,8 @@ export class VimEngine {
       if (regText) {
         // Insert register contents into command/search input (strip newlines)
         const clean = regText.replace(/\n/g, '');
-        this._searchInput += clean;
+        this._searchInput = this._searchInput.slice(0, this._cmdCursor) + clean + this._searchInput.slice(this._cmdCursor);
+        this._cmdCursor += clean.length;
         this.commandLine = this.commandLine[0] + this._searchInput;
       }
       return;
@@ -5115,6 +5130,7 @@ export class VimEngine {
       if (wasExMode && this._exMode && !this._messagePrompt && this.mode === Mode.NORMAL) {
         this.mode = Mode.COMMAND;
         this._searchInput = '';
+        this._cmdCursor = 0;
         this.commandLine = ':';
       }
       // If a carry was pending and the command produced no new prompt,
@@ -5144,28 +5160,41 @@ export class VimEngine {
     }
     if (key === 'Backspace') {
       this._resetTabCompletion();
-      if (this._searchInput.length > 0) {
-        this._searchInput = this._searchInput.slice(0, -1);
+      if (this._searchInput.length > 0 && this._cmdCursor > 0) {
+        this._searchInput = this._searchInput.slice(0, this._cmdCursor - 1) + this._searchInput.slice(this._cmdCursor);
+        this._cmdCursor--;
         this.commandLine = this.commandLine[0] + this._searchInput;
-      } else {
+      } else if (this._searchInput.length === 0) {
         this.mode = Mode.NORMAL; this.commandLine = '';
         this._visualCmdRange = null;
         this._filterRange = null;
         this._cmdHistoryPos = -1;
+        this._cmdCursor = 0;
+      }
+      return;
+    }
+    if (key === 'Delete') {
+      this._resetTabCompletion();
+      if (this._cmdCursor < this._searchInput.length) {
+        this._searchInput = this._searchInput.slice(0, this._cmdCursor) + this._searchInput.slice(this._cmdCursor + 1);
+        this.commandLine = this.commandLine[0] + this._searchInput;
       }
       return;
     }
     if (key === 'Ctrl-U') {
       this._resetTabCompletion();
-      this._searchInput = '';
-      this.commandLine = this.commandLine[0];
+      // Delete everything before cursor
+      this._searchInput = this._searchInput.slice(this._cmdCursor);
+      this._cmdCursor = 0;
+      this.commandLine = this.commandLine[0] + this._searchInput;
       return;
     }
     if (key === 'Ctrl-W') {
       this._resetTabCompletion();
-      // Delete word backward: strip trailing whitespace, then strip one word
+      // Delete word before cursor: strip trailing whitespace, then strip one word
       // Vim word: keyword chars (a-z, A-Z, 0-9, _) or non-keyword non-whitespace chars
-      let s = this._searchInput;
+      const after = this._searchInput.slice(this._cmdCursor);
+      let s = this._searchInput.slice(0, this._cmdCursor);
       // Strip trailing whitespace first
       s = s.replace(/\s+$/, '');
       if (s.length > 0) {
@@ -5178,8 +5207,36 @@ export class VimEngine {
           s = s.replace(/[^\w\s]+$/, '');
         }
       }
-      this._searchInput = s;
+      this._cmdCursor = s.length;
+      this._searchInput = s + after;
       this.commandLine = this.commandLine[0] + this._searchInput;
+      return;
+    }
+    if (key === 'Ctrl-B' || key === 'Home') {
+      // Move cursor to beginning of command line
+      this._cmdCursor = 0;
+      return;
+    }
+    if (key === 'Ctrl-E' || key === 'End') {
+      // Move cursor to end of command line
+      this._cmdCursor = this._searchInput.length;
+      return;
+    }
+    if (key === 'ArrowLeft' || key === 'Ctrl-H') {
+      if (key === 'Ctrl-H') {
+        // Ctrl-H acts like Backspace in cmdline
+        if (this._searchInput.length > 0 && this._cmdCursor > 0) {
+          this._searchInput = this._searchInput.slice(0, this._cmdCursor - 1) + this._searchInput.slice(this._cmdCursor);
+          this._cmdCursor--;
+          this.commandLine = this.commandLine[0] + this._searchInput;
+        }
+        return;
+      }
+      if (this._cmdCursor > 0) this._cmdCursor--;
+      return;
+    }
+    if (key === 'ArrowRight') {
+      if (this._cmdCursor < this._searchInput.length) this._cmdCursor++;
       return;
     }
     if (key === 'ArrowUp') {
@@ -5194,6 +5251,7 @@ export class VimEngine {
         return;
       }
       this._searchInput = this._cmdHistory[this._cmdHistoryPos];
+      this._cmdCursor = this._searchInput.length;
       this.commandLine = prefix + this._searchInput;
       return;
     }
@@ -5207,6 +5265,7 @@ export class VimEngine {
         this._cmdHistoryPos = -1;
         this._searchInput = this._cmdHistorySaved || '';
       }
+      this._cmdCursor = this._searchInput.length;
       this.commandLine = prefix + this._searchInput;
       return;
     }
@@ -5221,7 +5280,8 @@ export class VimEngine {
     }
     if (key.length === 1) {
       this._resetTabCompletion();
-      this._searchInput += key;
+      this._searchInput = this._searchInput.slice(0, this._cmdCursor) + key + this._searchInput.slice(this._cmdCursor);
+      this._cmdCursor++;
       this.commandLine = this.commandLine[0] + this._searchInput;
     }
   }
@@ -8541,6 +8601,7 @@ export class VimEngine {
       this._filterRange = { sr, er };
       this.mode = Mode.COMMAND;
       this._searchInput = "'<,'>!";
+      this._cmdCursor = this._searchInput.length;
       this.commandLine = ":'<,'>!";
       this._pendingCount = ''; return;
     }
@@ -8556,6 +8617,7 @@ export class VimEngine {
       this.mode = Mode.COMMAND;
       this._searchForward = (key === '/');
       this._searchInput = '';
+      this._cmdCursor = 0;
       this.commandLine = key;
       this._pendingCount = ''; return;
     }
@@ -8573,6 +8635,7 @@ export class VimEngine {
       };
       this.mode = Mode.COMMAND;
       this._searchInput = "'<,'>";
+      this._cmdCursor = this._searchInput.length;
       this.commandLine = ":'<,'>";
       this._pendingCount = ''; return;
     }
@@ -9545,6 +9608,7 @@ export class VimEngine {
       this._filterRange = { sr: lineSr, er: lineEr };
       this.mode = Mode.COMMAND;
       this._searchInput = rangeStr + '!';
+      this._cmdCursor = this._searchInput.length;
       this.commandLine = ':' + rangeStr + '!';
       this._motionLinewise = false;
       this._motionInclusive = false;
