@@ -850,6 +850,8 @@ export class VimEngine {
             for (const ch of this._lastExCommand) this.feedKey(ch);
             this.feedKey('Enter');
           }
+          // Track that the last @-invocation was @: so @@ replays it.
+          this._lastMacroRegister = ':';
         } else {
           this._messagePrompt = { error: 'E30: No previous command line' };
           this.commandLine = '';
@@ -863,6 +865,19 @@ export class VimEngine {
         reg = this._lastMacroRegister;
       } else if (key.length === 1 && key >= 'a' && key <= 'z') {
         reg = key;
+      }
+      // @@ after @: — replay last ex command again.
+      if (key === '@' && reg === ':') {
+        if (this._lastExCommand) {
+          const count = this._getCount();
+          for (let i = 0; i < count; i++) {
+            this.feedKey(':');
+            for (const ch of this._lastExCommand) this.feedKey(ch);
+            this.feedKey('Enter');
+          }
+        }
+        this._pendingCount = '';
+        return;
       }
       if (reg && this._macroRegisters[reg]) {
         this._lastMacroRegister = reg;
