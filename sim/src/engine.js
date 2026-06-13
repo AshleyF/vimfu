@@ -1560,6 +1560,13 @@ export class VimEngine {
 
     // Operator pending: second key
     if (this._pendingOp) {
+      // do / dp — diff obtain/put. No diff mode is supported, so
+      // report E99 (Press-ENTER prompt) and abandon the operator.
+      if (this._pendingOp === 'd' && (key === 'o' || key === 'p')) {
+        this._messagePrompt = { error: 'E99: Current buffer is not in diff mode' };
+        this._pendingOp = ''; this._pendingCount = '';
+        return;
+      }
       // Surround: ys, ds, cs intercepts
       if (key === 's' && (this._pendingOp === 'y' || this._pendingOp === 'd' || this._pendingOp === 'c')) {
         if (this._pendingOp === 'y') {
@@ -2464,6 +2471,11 @@ export class VimEngine {
           if (!(saved[0] === '"' && /^[2-9]$/.test(saved[1]))) {
             this._lastChange = saved;
           }
+          // After dot-repeat, the cursor sits at the end of the replayed
+          // change — no longer on the CurSearch match set by a prior `n`.
+          // Demote CurSearch to plain Search unless the cursor happens to
+          // land exactly on a fresh match start.
+          if (this._showCurSearch) this._setCurSearchAtCursor();
         }
         break;
       }
