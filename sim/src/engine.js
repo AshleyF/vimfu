@@ -3898,7 +3898,12 @@ export class VimEngine {
   }
 
   _doCloseWindow() {
-    if (this._windows.length <= 1) return; // Can't close last window
+    if (this._windows.length <= 1) {
+      // Can't close last window
+      this.commandLine = 'E444: Cannot close last window';
+      this._stickyCommandLine = true;
+      return;
+    }
     this._windows.splice(this._activeWin, 1);
     if (this._activeWin >= this._windows.length) {
       this._activeWin = this._windows.length - 1;
