@@ -7787,6 +7787,32 @@ export class VimEngine {
   }
 
   _insertKey(key) {
+    // Pending Ctrl-X completion submode prefix: only ^X^] (tag completion)
+    // is modelled; sim has no tags file so we surface E433 the way nvim
+    // would (sticky cmdline error visible after Esc). Any other ^X subkey
+    // simply clears the prefix and the key is dropped (sim doesn't model
+    // those completion submodes either).
+    if (this._pendingInsertCtrlX) {
+      this._pendingInsertCtrlX = false;
+      if (key === 'Ctrl-]') {
+        this._insertError = 'E433: No tags file';
+        this._insertCompletionAttempted = true;
+      }
+      return;
+    }
+
+    // After a completion attempt with no matches, ^N/^P/^Y/^E are
+    // consumed as no-ops (no popup menu to navigate/accept/reject).
+    // Any other key cancels the submode and is processed normally.
+    if (this._insertCompletionAttempted) {
+      if (key === 'Ctrl-N' || key === 'Ctrl-P'
+          || key === 'Ctrl-Y' || key === 'Ctrl-E') {
+        return;
+      }
+      this._insertCompletionAttempted = false;
+      // fall through
+    }
+
     // Pending Ctrl-R = (expression register): accumulate the expression text
     // until Enter, then evaluate via _evalSubExpr and insert the result.
     if (this._pendingCtrlRExpr !== undefined && this._pendingCtrlRExpr !== null) {
@@ -8097,6 +8123,9 @@ export class VimEngine {
         } else {
           this.commandLine = '';
         }
+        // Clear any insert-mode completion submode flags
+        this._pendingInsertCtrlX = false;
+        this._insertCompletionAttempted = false;
         if (this.cursor.col > 0) this.cursor.col--;
         this._stopRecording(); this._redoStack = [];
 
@@ -8301,6 +8330,9 @@ export class VimEngine {
       case 'Ctrl-R': // Ctrl-R: paste from register
         this._pendingCtrlR = true;
         return; // don't fall through
+      case 'Ctrl-X': // Ctrl-X: insert-mode completion prefix
+        this._pendingInsertCtrlX = true;
+        return;
       case 'Ctrl-G': // <C-g> prefix — next key determines behavior
         this._pendingInsertCtrlG = true;
         return;
