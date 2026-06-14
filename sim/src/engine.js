@@ -12377,15 +12377,22 @@ export class VimEngine {
     const type = reg ? reg.type : this._regType;
     if (text == null) return;
     if (type === 'block') {
-      // Blockwise paste: insert each line after cursor column on successive rows
+      // Blockwise paste: insert each line after cursor column on successive rows.
+      // nvim pads each block segment with spaces so the column AFTER the block
+      // aligns even when the source rows had different widths.
       const pl = text.split('\n');
+      const maxW = pl.reduce((m, s) => Math.max(m, s.length), 0);
       const insertCol = this.cursor.col + 1;
       for (let i = 0; i < pl.length; i++) {
         const r = this.cursor.row + i;
         if (r >= this.buffer.lineCount) this.buffer.lines.push('');
         const line = this.buffer.lines[r];
         const padded = line.length < insertCol ? line + ' '.repeat(insertCol - line.length) : line;
-        this.buffer.lines[r] = padded.slice(0, insertCol) + pl[i] + padded.slice(insertCol);
+        const seg = pl[i] + ' '.repeat(Math.max(0, maxW - pl[i].length));
+        const trailing = padded.slice(insertCol);
+        // Only retain alignment padding when there's text following on this row.
+        const segOut = trailing.length > 0 ? seg : pl[i];
+        this.buffer.lines[r] = padded.slice(0, insertCol) + segOut + trailing;
       }
       this.cursor.col = insertCol;
       this._updateDesiredCol();
@@ -12419,15 +12426,20 @@ export class VimEngine {
     const type = reg ? reg.type : this._regType;
     if (text == null) return;
     if (type === 'block') {
-      // Blockwise paste: insert each line at cursor column on successive rows
+      // Blockwise paste: insert each line at cursor column on successive rows.
+      // Pad each segment to the block's max width so following text aligns.
       const pl = text.split('\n');
+      const maxW = pl.reduce((m, s) => Math.max(m, s.length), 0);
       const insertCol = this.cursor.col;
       for (let i = 0; i < pl.length; i++) {
         const r = this.cursor.row + i;
         if (r >= this.buffer.lineCount) this.buffer.lines.push('');
         const line = this.buffer.lines[r];
         const padded = line.length < insertCol ? line + ' '.repeat(insertCol - line.length) : line;
-        this.buffer.lines[r] = padded.slice(0, insertCol) + pl[i] + padded.slice(insertCol);
+        const seg = pl[i] + ' '.repeat(Math.max(0, maxW - pl[i].length));
+        const trailing = padded.slice(insertCol);
+        const segOut = trailing.length > 0 ? seg : pl[i];
+        this.buffer.lines[r] = padded.slice(0, insertCol) + segOut + trailing;
       }
       this._updateDesiredCol();
       return;
