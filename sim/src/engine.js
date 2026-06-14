@@ -145,6 +145,7 @@ export class VimEngine {
     this._visualStart = { row: 0, col: 0 };
     this._visualExclusive = false; // true when last visual motion was exclusive (e.g. ), ()
     this._visualBlockDollar = false; // true when $ was pressed in visual_block mode
+    this._visualSelectMode = false; // toggled by Ctrl-G; printable keys then act as 'c<key>'
     this._blockInsertState = null; // {mode, topRow, bottomRow, leftCol, rightCol, dollar, editRow, insertCol, origLine}
     this._lastVisual = null; // {mode, start: {row, col}, end: {row, col}} for gv
 
@@ -8987,6 +8988,7 @@ export class VimEngine {
     if (key === 'Escape') {
       this._lastVisual = { mode: this.mode, start: { ...this._visualStart }, end: { ...this.cursor } };
       this.mode = Mode.NORMAL; this.commandLine = '';
+      this._visualSelectMode = false;
       this._pendingCount = ''; return;
     }
     if (key === 'v') {
@@ -9083,6 +9085,30 @@ export class VimEngine {
 
     // Actions
     const actionKeys = new Set(['d','c','y','>','<','~','U','u','J','p','x','s','r','Delete','=']);
+
+    // Ctrl-G in visual toggles SELECT mode. In select mode, printable keys
+    // act like 'c<key>' (delete selection, enter insert, insert the char).
+    // Motion keys still work normally to extend the selection.
+    if (key === 'Ctrl-G') {
+      this._visualSelectMode = !this._visualSelectMode;
+      const baseMode = this.mode === Mode.VISUAL_LINE ? 'VISUAL LINE'
+                     : this.mode === Mode.VISUAL_BLOCK ? 'VISUAL BLOCK'
+                     : 'VISUAL';
+      this.commandLine = this._visualSelectMode
+        ? '-- ' + baseMode.replace('VISUAL', 'SELECT') + ' --'
+        : '-- ' + baseMode + ' --';
+      this._pendingCount = '';
+      return;
+    }
+
+    // In select mode, a printable single char triggers replace-and-insert.
+    if (this._visualSelectMode && key.length === 1 && key >= ' ' && key <= '~') {
+      this._visualSelectMode = false;
+      this._doVisualAction('c');
+      // mode is now INSERT; feed the typed char through the insert handler.
+      this._insertKey(key);
+      return;
+    }
 
     // Visual Block: I/A for block insert/append
     if (this.mode === Mode.VISUAL_BLOCK && (key === 'I' || key === 'A')) {
