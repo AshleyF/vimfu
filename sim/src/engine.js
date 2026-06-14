@@ -2060,7 +2060,7 @@ export class VimEngine {
       }
       case 'L': {
         const c = this._getCount() - 1;
-        const lastVis = this.scrollTop + Math.min(this._textRows, this.buffer.lineCount - this.scrollTop) - 1;
+        const lastVis = this._lastFullyVisibleBufRow();
         this.cursor.row = Math.max(this.scrollTop, lastVis - c);
         this.cursor.col = this._byteColForVirtCol(this.cursor.row, this._desiredCol);
         break;
@@ -12922,6 +12922,27 @@ export class VimEngine {
       }
     }
     return expanded;
+  }
+
+  /** Last buffer row that fits *fully* on screen accounting for line wrapping.
+   *  Used by H/M/L to count visible buffer lines correctly when 'wrap' is on
+   *  and long lines occupy more than one screen row. */
+  _lastFullyVisibleBufRow() {
+    const textRows = this._textRows;
+    if (!this._settings.wrap) {
+      return Math.min(this.scrollTop + textRows - 1, this.buffer.lineCount - 1);
+    }
+    const textCols = this._getTextCols();
+    let cum = 0;
+    let lastFit = this.scrollTop;
+    for (let r = this.scrollTop; r < this.buffer.lineCount; r++) {
+      const raw = this._expandLineText(this.buffer.lines[r] || '');
+      const wrapRows = textCols > 0 ? Math.max(1, Math.ceil(raw.length / textCols)) : 1;
+      if (cum + wrapRows > textRows) break;
+      cum += wrapRows;
+      lastFit = r;
+    }
+    return lastFit;
   }
 
   /**
