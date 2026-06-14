@@ -7879,6 +7879,14 @@ export class VimEngine {
         this._handleInsertSpellSuggest();
         return;
       }
+      if (key === 'Ctrl-L') {
+        // ^X^L: whole-line completion. Replace the line prefix before the
+        // cursor with the first matching buffer line. Subsequent bare ^L
+        // in insert mode is a no-op (sim doesn't model "longest common
+        // string" cycling).
+        this._handleInsertLineCompletion();
+        return;
+      }
       return;
     }
 
@@ -13205,6 +13213,31 @@ export class VimEngine {
     this.buffer.lines[this.cursor.row] = line.slice(0, p) + cased + line.slice(q);
     this.cursor.col = p + cased.length;
   }
+
+  // ── Insert-mode ^X^L: whole-line completion ──
+  // Replaces the prefix on the current line with the full text of the
+  // first matching buffer line. "Match" = line whose text starts with the
+  // prefix typed before the cursor. The current line is excluded so the
+  // user's own in-progress text doesn't shadow real matches.
+  _handleInsertLineCompletion() {
+    const lineText = this.buffer.lines[this.cursor.row] || '';
+    const prefix = lineText.slice(0, this.cursor.col);
+    if (!prefix.trim()) return;
+    const numLines = this.buffer.lineCount;
+    const startRow = this.cursor.row;
+    for (let i = 1; i <= numLines; i++) {
+      const r = (startRow + i) % numLines;
+      if (r === startRow) continue;
+      const candidate = this.buffer.lines[r] || '';
+      if (candidate.startsWith(prefix) && candidate !== prefix) {
+        const after = lineText.slice(this.cursor.col);
+        this.buffer.lines[this.cursor.row] = candidate + after;
+        this.cursor.col = candidate.length;
+        return;
+      }
+    }
+  }
+
 
 
 
