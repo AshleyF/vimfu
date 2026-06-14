@@ -13,7 +13,7 @@ import re
 
 # Bumping this forces every browser to re-fetch /sim/ instead of using a
 # cached copy. Bump whenever sim/index.html's preload semantics change.
-SIM_LINK_VERSION = "3"
+SIM_LINK_VERSION = "4"
 
 # Language → ``practice.<ext>`` mapping. Extensions must match the
 # ``fileTypes`` arrays in ``sim/src/langs/*.js``.

@@ -27,6 +27,13 @@ import json
 import sys
 from pathlib import Path
 
+# Ensure UTF-8 stdout on Windows (cp1252) so prints with "→" / em-dashes
+# (which can bubble up from capture_frames.py too) don't crash.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 # Make ./lib importable without a package install
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))

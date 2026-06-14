@@ -428,7 +428,7 @@ onUpdate(session.renderFrame());
 canvas.classList.add('ready');
 document.getElementById('loading').classList.add('hidden');
 
-// ── ?file=…&content=… / ?keys=… / ?cmd=… preload params ──
+// ── ?file=…&content=… / ?keys=… / ?cmd=… / ?cursor=… preload params ──
 //
 // Lets external pages deep-link into the simulator with a particular file
 // pre-seeded, a particular shell command queued, or a particular sequence
@@ -437,21 +437,27 @@ document.getElementById('loading').classList.add('hidden');
 //   ?file=demo.py&content=<urlencoded>     seed/replace a file, then open it in nvim
 //   ?cmd=tmux+new-session                  run a shell command (URL-decoded)
 //   ?keys=ddp                              feed literal keys (use %1B for Esc, %0D for Enter)
+//   ?cursor=row,col                        after the file opens, jump the cursor to
+//                                          row,col (0-indexed). Used by example deep
+//                                          links so the simulator starts at the same
+//                                          spot the printed demo did.
 //
-// All three are optional and may be combined: file is seeded first, then cmd
-// or keys is dispatched. If anything is consumed we leave the URL alone so a
-// refresh re-runs the preload (and so the user can see what was passed).
+// All are optional and may be combined: file is seeded first, then cursor is
+// positioned, then cmd or keys is dispatched. If anything is consumed we leave
+// the URL alone so a refresh re-runs the preload (and so the user can see what
+// was passed).
 const preloadFile    = urlParams.get('file');
 const preloadContent = urlParams.get('content');
 const preloadCmd     = urlParams.get('cmd');
 const preloadKeys    = urlParams.get('keys');
+const preloadCursor  = urlParams.get('cursor');
 const havePreload = !!(preloadFile || preloadCmd || preloadKeys);
 
 try {
   if (havePreload) {
     console.log('[vimfu] preload params:', {
       file: preloadFile, contentLen: preloadContent ? preloadContent.length : 0,
-      cmd: preloadCmd, keys: preloadKeys,
+      cmd: preloadCmd, keys: preloadKeys, cursor: preloadCursor,
     });
   }
 
@@ -472,12 +478,36 @@ try {
       console.log('[vimfu] feeding cmd:', cmd);
       ctrl.feedKeys(cmd + '\r');
     }
+    // Position the cursor *before* any preloadKeys so the keys land
+    // from the requested starting point. We translate (row, col) into
+    // an unambiguous motion sequence: gg moves to top, optional `<n>j`
+    // moves down, `0` jumps to start of line, optional `<n>l` moves
+    // right. The leading `0` after a motion-with-count cannot be mis-
+    // parsed as part of a count (Vim only treats `0` as count-start
+    // when there is no pending count).
+    if (preloadCursor && preloadFile) {
+      setTimeout(() => {
+        const parts = preloadCursor.split(',').map(s => parseInt(s, 10));
+        const r = (parts[0] | 0);
+        const c = (parts[1] | 0);
+        if (Number.isFinite(r) && Number.isFinite(c)) {
+          let mv = 'gg';
+          if (r > 0) mv += `${r}j`;
+          mv += '0';
+          if (c > 0) mv += `${c}l`;
+          console.log('[vimfu] positioning cursor at', r + ',' + c, '→', mv);
+          ctrl.feedKeys(mv);
+        }
+      }, 200);
+    }
     if (preloadKeys) {
       // Small delay so vim has time to open before keys land in the buffer.
+      // (Plus a bit more if we also moved the cursor first.)
+      const keysDelay = preloadCursor ? 250 : 200;
       setTimeout(() => {
         console.log('[vimfu] feeding keys:', preloadKeys);
         ctrl.feedKeys(preloadKeys);
-      }, 200);
+      }, keysDelay);
     }
   }
 } catch (e) { console.error('[vimfu] preload failed:', e); }

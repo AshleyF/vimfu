@@ -2,89 +2,37 @@
   "format": "vimfu-content-example",
   "version": 1,
   "id": "foundations.modes",
-  "title": "*normal mode* → *insert mode* → *normal mode*",
+  "title": "*normal mode* \u2192 *insert mode* \u2192 *normal mode*",
   "summary": "The mode transition every editing change goes through.",
   "topic": "foundations.modes-overview",
+  "source": {
+    "lesson": "content/example_lessons/foundations_modes.json",
+    "select": [
+      1,
+      3,
+      4
+    ]
+  },
+  "initial": {
+    "file": "hi.txt",
+    "content": "Hello world\n",
+    "cursor": [
+      0,
+      5
+    ]
+  },
+  "filename": "hi.txt",
   "frames": [
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "Hello world",
-          "",
-          "~",
-          "~",
-          "~",
-          "~",
-          "~",
-          "~",
-          "hi.txt                   1,7            "
-        ],
-        "cursor": [
-          0,
-          6
-        ],
-        "statusRow": 8
-      },
-      "caption": "*Normal mode.* Cursor as a block on the space.",
+      "caption": "*Normal mode.* Cursor on the space.",
       "narration": "When you open a file, you start in *normal mode.* Keystrokes are commands."
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "Hello, vim world",
-          "",
-          "~",
-          "~",
-          "~",
-          "~",
-          "~",
-          "~",
-          "hi.txt [+]               1,12           ",
-          "-- INSERT --                            "
-        ],
-        "cursor": [
-          0,
-          11
-        ],
-        "highlights": [
-          {
-            "row": 11,
-            "col": 0,
-            "len": 12,
-            "b": true
-          }
-        ],
-        "statusRow": 8
-      },
       "caption": "{key:i}, then type `, vim` \u2014 *insert mode,* text added.",
       "narration": "{key:i} enters *insert mode* at the cursor; subsequent keys produce text. The status line below advertises the mode.",
-      "keys": "i"
+      "keys": "i, vim"
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "Hello, vim world",
-          "",
-          "~",
-          "~",
-          "~",
-          "~",
-          "~",
-          "~",
-          "hi.txt [+]               1,11           "
-        ],
-        "cursor": [
-          0,
-          10
-        ],
-        "statusRow": 8
-      },
       "caption": "{key:Esc} \u2014 back to *normal mode.*",
       "narration": "{key:Esc} commits the insert and returns to *normal mode.* The whole insertion is one undoable change.",
       "keys": "Esc"

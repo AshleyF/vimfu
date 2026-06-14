@@ -1,0 +1,34 @@
+{
+  "title": "VimFu — modes (example screenshots)",
+  "description": "Minimal lesson used by content/examples/foundations.modes.json to capture authentic Vim screen frames. Not intended for video.",
+  "speed": 1.0,
+  "humanize": 0,
+  "rows": 10,
+  "cols": 40,
+  "ttsEnabled": false,
+  "recordVideo": false,
+  "clickKeys": false,
+  "setup": [
+    {"line": "export TERM=xterm-256color"},
+    {"line": "mkdir -p ~/vimfu && cd ~/vimfu"},
+    {"line": "rm -f hi.txt .hi.txt.swp"},
+    {"line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"},
+    {"writeFile": "hi.txt", "content": "Hello world\n"},
+    {"line": "clear"},
+    {"line": "nvim hi.txt"},
+    {"waitForScreen": "All", "timeout": 30.0},
+    {"ifScreen": "swap file", "thenKeys": "d"}
+  ],
+  "steps": [
+    {"keys": "5l"},
+    {"keys": "i"},
+    {"type": ", vim"},
+    {"keys": "escape"}
+  ],
+  "teardown": [
+    "escape",
+    {"type": ":q!"},
+    "enter",
+    {"line": "rm -f hi.txt"}
+  ]
+}

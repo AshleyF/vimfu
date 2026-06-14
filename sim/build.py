@@ -17,6 +17,12 @@ import sys
 import tempfile
 from pathlib import Path
 
+# Ensure UTF-8 stdout on Windows (cp1252) so progress prints with "→" don't crash.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 SIM_DIR = Path(__file__).resolve().parent          # sim/
 ROOT    = SIM_DIR.parent                            # vimfu/
 OUT_DIR = ROOT / "book" / "output" / "sim"

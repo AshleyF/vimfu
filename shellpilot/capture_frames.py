@@ -21,6 +21,12 @@ import sys
 import time
 from pathlib import Path
 
+# Ensure UTF-8 stdout on Windows (cp1252) so summary prints with "→" don't crash.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 # ---------------------------------------------------------------------------
 # Color resolution (mirrors viewer.py TerminalViewer._resolve_color)
 # ---------------------------------------------------------------------------

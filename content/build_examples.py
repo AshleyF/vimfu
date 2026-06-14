@@ -45,6 +45,7 @@ def F(lines, cursor=None, *, keys="", caption="", narration="",
     mode_line: optional content for the line BELOW the status row
                (e.g. "-- INSERT --").
     """
+
     work_lines = list(lines)
 
     status_row_idx = None
@@ -88,17 +89,53 @@ def F(lines, cursor=None, *, keys="", caption="", narration="",
     return out
 
 
-def E(eid, title, summary, topic, frames):
-    """Build a complete example payload."""
-    return {
+def SF(*, keys="", caption="", narration=""):
+    """Build a frame entry that references a captured-lesson frame.
+
+    The frame data itself comes from ``source.select[i]`` on the example
+    (see ``content/render_screenshots.py:resolve_frame``). Use this when
+    you want a screenshot to be an authentic Vim capture rather than a
+    hand-authored ``F(...)`` compact frame.
+    """
+    out: dict = {}
+    if caption: out["caption"] = caption
+    if narration: out["narration"] = narration
+    if keys: out["keys"] = keys
+    return out
+
+
+def E(eid, title, summary, topic, frames, *,
+      source=None, initial=None, lang=None, filename=None):
+    """Build a complete example payload.
+
+    Optional kwargs:
+      source   : ``{"lesson": "<path>", "select": [i, j, k]}`` — use a
+                 shellpilot-captured lesson as the frame source.
+      initial  : ``{"file": "<name>", "content": "<text>", "cursor": [r, c]}``
+                 — explicit initial-state spec for the sim deep link.
+                 Required when ``source`` is used (otherwise the redirect
+                 generator has no compact frame[0] to mine).
+      lang     : language hint (drives sim's syntax highlighting).
+      filename : explicit practice filename (e.g. "Makefile").
+    """
+    out = {
         "format": "vimfu-content-example",
         "version": 1,
         "id": eid,
         "title": title,
         "summary": summary,
         "topic": topic,
-        "frames": frames,
     }
+    if source is not None:
+        out["source"] = source
+    if initial is not None:
+        out["initial"] = initial
+    if lang is not None:
+        out["lang"] = lang
+    if filename is not None:
+        out["filename"] = filename
+    out["frames"] = frames
+    return out
 
 
 def hl(row, col, length=1, **flags):
@@ -133,25 +170,35 @@ def add(ex):
 # ============ Part 1 — Foundations ==========================================
 
 add(E("foundations.modes",
-    "Normal -> Insert -> Normal",
+    "*normal mode* \u2192 *insert mode* \u2192 *normal mode*",
     "The mode transition every editing change goes through.",
     "foundations.modes-overview",
     [
-        F(["Hello world", ""], cursor=(0,6),
-          status="hi.txt                   1,7            All",
-          caption="Normal mode. Cursor as a block on the space.",
-          narration="When you open a file, you start in Normal mode. Keystrokes are commands."),
-        F(["Hello, vim world", ""], cursor=(0,11), keys="i, vim",
-          status="hi.txt [+]               1,12           All",
-          mode_line=INSERT_LINE,
-          highlights=[hl(11, 0, 12, b=True)],  # bolded mode line below status
-          caption="i then ', vim' — Insert mode, text added.",
-          narration="i enters Insert at the cursor; subsequent keys produce text. The status line below advertises the mode."),
-        F(["Hello, vim world", ""], cursor=(0,10), keys="Esc",
-          status="hi.txt [+]               1,11           All",
-          caption="Esc — back to Normal mode.",
-          narration="Esc commits the insert and returns to Normal. The whole insertion is one undoable change."),
-    ]))
+        # Frame indices into the captured lesson:
+        #   0 = initial (cursor at 0,0)         — skipped
+        #   1 = after 5l (cursor at 0,5, on the space)
+        #   2 = after i (cursor at 0,5, INSERT mode)   — skipped
+        #   3 = after typing ', vim' (cursor at 0,10, INSERT)
+        #   4 = after Esc (cursor at 0,9, on the 'm')
+        SF(caption="*Normal mode.* Cursor on the space.",
+           narration="When you open a file, you start in *normal mode.* Keystrokes are commands."),
+        SF(keys="i, vim",
+           caption="{key:i}, then type `, vim` — *insert mode,* text added.",
+           narration="{key:i} enters *insert mode* at the cursor; subsequent keys produce text. The status line below advertises the mode."),
+        SF(keys="Esc",
+           caption="{key:Esc} — back to *normal mode.*",
+           narration="{key:Esc} commits the insert and returns to *normal mode.* The whole insertion is one undoable change."),
+    ],
+    source={
+        "lesson": "content/example_lessons/foundations_modes.json",
+        "select": [1, 3, 4],
+    },
+    initial={
+        "file": "hi.txt",
+        "content": "Hello world\n",
+        "cursor": [0, 5],
+    },
+    filename="hi.txt"))
 
 add(E("foundations.grammar",
     "operator + motion = sentence",

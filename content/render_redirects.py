@@ -167,23 +167,57 @@ def build_map(base_url: str) -> dict[str, str]:
 
 
 def _example_sim_url(ex: dict, base_url: str) -> str | None:
-    frames = ex.get("frames") or []
-    if not frames:
-        return None
-    compact = (frames[0].get("compact") or {})
-    raw = compact.get("lines") or []
-    lines = [ln for ln in raw if ln.strip() not in ("~",)]
-    if lines and "  " in lines[-1] and ("," in lines[-1] or "%" in lines[-1]):
-        lines = lines[:-1]
-    if not lines:
-        return None
-    content = "\n".join(lines) + "\n"
-    qs = urlencode({
+    """Build the ``/sim/?…`` deep link for an example's "try this" QR code.
+
+    Resolution order for the seeded file:
+      1. ``ex["initial"]`` — explicit ``{file, content, cursor}`` block.
+         Required for examples whose screenshots come from
+         ``source.lesson + source.select`` (those have no compact frame
+         to mine).
+      2. Otherwise, mine ``frames[0].compact.lines`` for the file
+         content (strip the ``~`` filler and the status line).
+
+    When ``cursor`` is available (either from ``initial`` or the first
+    compact frame) we append ``&cursor=row,col`` so the simulator
+    positions the cursor at the same spot the printed demo starts from.
+    """
+    initial = ex.get("initial") or {}
+    cursor = None
+    if initial:
+        content = initial.get("content")
+        if content is None:
+            return None
+        if isinstance(content, list):
+            content = "\n".join(content) + "\n"
+        file_param = initial.get("file") or practice_filename(ex, content)
+        cur = initial.get("cursor")
+        if isinstance(cur, (list, tuple)) and len(cur) == 2:
+            cursor = (int(cur[0]), int(cur[1]))
+    else:
+        frames = ex.get("frames") or []
+        if not frames:
+            return None
+        compact = (frames[0].get("compact") or {})
+        raw = compact.get("lines") or []
+        lines = [ln for ln in raw if ln.strip() not in ("~",)]
+        if lines and "  " in lines[-1] and ("," in lines[-1] or "%" in lines[-1]):
+            lines = lines[:-1]
+        if not lines:
+            return None
+        content = "\n".join(lines) + "\n"
+        file_param = practice_filename(ex, content)
+        cur = compact.get("cursor")
+        if isinstance(cur, (list, tuple)) and len(cur) == 2:
+            cursor = (int(cur[0]), int(cur[1]))
+
+    params = {
         "v": SIM_LINK_VERSION,
-        "file": practice_filename(ex, content),
+        "file": file_param,
         "content": content,
-    })
-    return f"{base_url}/sim/?{qs}"
+    }
+    if cursor is not None:
+        params["cursor"] = f"{cursor[0]},{cursor[1]}"
+    return f"{base_url}/sim/?{urlencode(params)}"
 
 
 def write_pages(m: dict[str, str], out_dir: Path) -> int:

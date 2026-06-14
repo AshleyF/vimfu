@@ -1086,6 +1086,13 @@ def render_block(b, *, index, examples) -> list[str]:
         # loses its protection — producing a duplicate `\key {X}`
         # variant for every key (see _extract_key_index_entries).
         title_tex = render_inline(raw_title, index=index, with_key_index=False)
+        # Keep the heading glued to a few lines of following content so
+        # it never lands orphaned at the bottom of a page with the body
+        # (a paragraph, table, or figure) starting on the next page.
+        # \needspace forces a page break before the heading if fewer
+        # than this many baselines remain in the current page.
+        need = 5 if level <= 1 else 4 if level == 2 else 3
+        out.append(f"\\needspace{{{need}\\baselineskip}}")
         out.append(f"\\{cmd}*{{{title_tex}}}")
         out.extend(_extract_key_index_entries(raw_title))
 
@@ -1208,12 +1215,17 @@ def render_block(b, *, index, examples) -> list[str]:
 
             # Measure the longest visible content per column. Strip our
             # content markup (`{key:..}`, `**bold**`, `*em*`, backtick
-            # code) so widths reflect rendered text length.
+            # code) so widths reflect rendered text length. For cells
+            # that contain explicit line breaks (`\n` in JSON), use the
+            # longest individual line, since each line lays out on its
+            # own row inside the cell.
             def _visible_len(s: str) -> int:
                 t = re.sub(r"\{key:([^}]+)\}", r"\1", str(s))
                 t = re.sub(r"\*\*([^*]+)\*\*", r"\1", t)
                 t = re.sub(r"\*([^*]+)\*", r"\1", t)
                 t = re.sub(r"`([^`]+)`", r"\1", t)
+                if "\n" in t:
+                    return max(len(line) for line in t.split("\n"))
                 return len(t)
 
             def _has_key_markup(s: str) -> bool:
@@ -1270,33 +1282,18 @@ def render_block(b, *, index, examples) -> list[str]:
                 # ttfamily char (border + fboxsep). Clamp to 3..16em so
                 # a freak long cell doesn't push the prose column off
                 # the page.
+                #
+                # Non-key narrow columns size to the longest cell so an
+                # outlier like "operator-pending" doesn't wrap. The
+                # trailing slack on shorter rows is the cost of keeping
+                # every cell on a single line — wraps in a short, fixed
+                # vocabulary column (mode names, key labels) read worse
+                # than a bit of column whitespace.
                 longest = col_max[i]
                 if col_has_keys[i]:
                     em = longest * 0.95 + 1.5
                     return max(3.0, min(16.0, em))
-                # Non-key narrow column: iteratively shrink past any
-                # cell that is ≥1.25× the next-smaller cell. One or
-                # two tall outliers (e.g. "operator-pending" and
-                # "command-line" beside seven 6-char mode names) wrap
-                # to two lines instead of bloating every row's
-                # whitespace. Floor at ⅓ of the original longest so
-                # a freak 40-char cell doesn't get squeezed to a
-                # micro-width that wraps to many short lines.
-                lens = sorted(
-                    [_visible_len(headers[i])] + [
-                        _visible_len(row[i]) if i < len(row) else 0
-                        for row in rows
-                    ],
-                    reverse=True,
-                )
-                target = lens[0]
-                k = 0
-                while k + 1 < len(lens) and lens[k] >= lens[k + 1] * 1.25:
-                    target = lens[k + 1]
-                    k += 1
-                floor = max(longest // 3, 4)
-                target = max(target, floor)
-                em = target * 0.7 + 1.0
+                em = longest * 0.7 + 1.0
                 return max(3.0, min(16.0, em))
 
             # Compute every narrow column's width, then make sure their
@@ -1381,7 +1378,16 @@ def render_block(b, *, index, examples) -> list[str]:
                             and "{key:" not in s
                             and "`" not in s):
                         s = "{key:" + s + "}"
-                    rendered.append(inl(s))
+                    # Literal "\n" in a cell string means "lay this out
+                    # on multiple lines within the cell" (stacked, all
+                    # in the same row). Render each line separately and
+                    # join with \newline — supported by tabularx/X
+                    # columns under \raggedright.
+                    if "\n" in s:
+                        parts = [inl(p) for p in s.split("\n")]
+                        rendered.append("\\newline ".join(parts))
+                    else:
+                        rendered.append(inl(s))
                 table_lines.append(" & ".join(rendered) + " \\\\")
             table_lines.append("\\end{tabularx}" if has_x else "\\end{longtable}")
             # Emit the whole table as ONE block so the outer block-join
