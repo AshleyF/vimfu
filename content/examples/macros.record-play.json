@@ -2,96 +2,46 @@
   "format": "vimfu-content-example",
   "version": 1,
   "id": "macros.record-play",
-  "title": "{key:q}{key:a} … {key:q} then {key:@}{key:a}",
+  "title": "qa ... q  then  @a",
   "summary": "Record once, play forever.",
   "topic": "macros.record-play",
+  "source": {
+    "lesson": "content/example_lessons/macros_record-play.json",
+    "select": [
+      1,
+      4,
+      6,
+      7,
+      9
+    ]
+  },
+  "initial": {
+    "file": "practice.txt",
+    "content": "one\ntwo\nthree\n",
+    "cursor": [
+      0,
+      0
+    ]
+  },
   "frames": [
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "one",
-          "two",
-          "three",
-          "recording @a"
-        ],
-        "cursor": [
-          0,
-          0
-        ]
-      },
-      "caption": "{key:q}{key:a} \u2014 start recording into register `a`.",
+      "caption": "qa \u2014 start recording into a.",
       "keys": "qa"
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "1. one",
-          "two",
-          "three",
-          "recording @a"
-        ],
-        "cursor": [
-          0,
-          5
-        ]
-      },
-      "caption": "{key:I}, type `1. `, {key:Esc} \u2014 prefix the line.",
-      "keys": "I Esc"
+      "caption": "Prefix with '1. '.",
+      "keys": "I1. Esc"
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "1. one",
-          "two",
-          "three",
-          "recording @a"
-        ],
-        "cursor": [
-          1,
-          0
-        ]
-      },
       "caption": "Move to next line (recorded).",
       "keys": "j0"
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "1. one",
-          "two",
-          "three"
-        ],
-        "cursor": [
-          1,
-          0
-        ]
-      },
       "caption": "q \u2014 stop recording.",
       "keys": "q"
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "1. one",
-          "2. two",
-          "3. three"
-        ],
-        "cursor": [
-          2,
-          0
-        ]
-      },
-      "caption": "{key:@}{key:a} twice \u2014 replays on the next two lines.",
+      "caption": "@a twice \u2014 replays on the next two lines.",
       "narration": "Macros are just register contents. Open the register, edit it, paste it \u2014 they're text.",
       "keys": "@a @a"
     }

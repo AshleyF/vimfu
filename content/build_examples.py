@@ -230,6 +230,7 @@ def EL(eid, title, summary, topic, *,
        cols=40, rows=10,
        nvim_args=None,
        prep=None,
+       pre_setup=None,
        extra_setup=None,
        frames):
     """Lesson-backed example.
@@ -254,6 +255,10 @@ def EL(eid, title, summary, topic, *,
                   (after cursor positioning). Use for setup actions
                   whose result is the "starting state" of the demo.
                   Either a single step or a list.
+      pre_setup : extra shellpilot steps to splice into the setup
+                  block BEFORE the nvim launch. Use for shell-level
+                  prep like writing additional files that need to
+                  exist on disk before nvim starts.
       extra_setup : extra shellpilot steps to splice into the lesson's
                     setup block (run fast, not captured). Use for shell
                     commands like `:syntax off` that aren't part of the
@@ -286,11 +291,15 @@ def EL(eid, title, summary, topic, *,
         {"line": f"rm -f {file} .{file}.swp"},
         {"line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"},
         {"writeFile": file, "content": content_str, "noDedent": True},
+    ]
+    if pre_setup:
+        setup.extend(pre_setup)
+    setup.extend([
         {"line": "clear"},
         {"line": nvim_cmd},
-        {"waitForScreen": "All", "timeout": 30.0},
+        {"waitForScreen": file, "timeout": 30.0},
         {"ifScreen": "swap file", "thenKeys": "d"},
-    ]
+    ])
     if extra_setup:
         setup.extend(extra_setup)
 
@@ -346,6 +355,7 @@ def EL(eid, title, summary, topic, *,
         "ttsEnabled": False,
         "recordVideo": False,
         "clickKeys": False,
+        "captureDedup": False,
         "setup": setup,
         "steps": lesson_steps,
         "teardown": teardown,
@@ -637,631 +647,693 @@ add(EL("editing.replace-char",
 
 # ============ Part 4 — Search ==============================================
 
-add(E("search.pattern",
+add(EL("search.pattern",
     "/word and n / N",
     "Forward search, then jump through hits.",
     "search.pattern",
-    [
-        F(["the cat", "ran past", "the cat", "and away"], cursor=(0,0)),
-        F(["the cat", "ran past", "the cat", "and away"], cursor=(0,0), keys="/cat",
-          mode_line="/cat",
-          caption="/ shows search prompt at the bottom."),
-        F(["the cat", "ran past", "the cat", "and away"], cursor=(0,4), keys="Enter",
-          highlights=[hl(0,4,3,bg="666666"), hl(2,4,3,bg="666666")],
-          caption="Enter — first match highlighted."),
-        F(["the cat", "ran past", "the cat", "and away"], cursor=(2,4), keys="n",
-          highlights=[hl(0,4,3,bg="666666"), hl(2,4,3,bg="666666")],
-          caption="n — next match.",
-          narration="N goes back. // repeats with the same pattern; ? searches backward."),
+    content=["the cat", "ran past", "the cat", "and away"],
+    cursor=(0, 0),
+    nvim_args=["-c", "set hlsearch"],
+    frames=[
+        LF(),
+        LF(actions=[T("/cat")], keys="/cat",
+           caption="/ shows search prompt at the bottom."),
+        LF(actions=[ENTER], keys="Enter",
+           caption="Enter — first match highlighted."),
+        LF(actions=[K("n")], keys="n", caption="n — next match.",
+           narration="N goes back. // repeats with the same pattern; ? searches backward."),
     ]))
 
-add(E("search.word",
+add(EL("search.word",
     "* on a word",
     "Search for the current word, no typing required.",
     "search.word",
-    [
-        F(["foo bar foo baz", "foo qux"], cursor=(0,8),
-          caption="Cursor on second 'foo'."),
-        F(["foo bar foo baz", "foo qux"], cursor=(1,0), keys="*",
-          mode_line="/\\<foo\\>",
-          highlights=[hl(0,0,3,bg="666666"), hl(0,8,3,bg="666666"), hl(1,0,3,bg="666666")],
-          caption="* — searched for \\<foo\\>; jumped to the next.",
-          narration="* turns the cursor word into a search pattern with word boundaries (\\<...\\>) so 'foobar' won't match. # is the same backward."),
+    content=["foo bar foo baz", "foo qux"],
+    cursor=(0, 8),
+    nvim_args=["-c", "set hlsearch"],
+    frames=[
+        LF(caption="Cursor on second 'foo'."),
+        LF(actions=[K("*")], keys="*",
+           caption="* — searched for \\<foo\\>; jumped to the next.",
+           narration="* turns the cursor word into a search pattern with word boundaries (\\<...\\>) so 'foobar' won't match. # is the same backward."),
     ]))
 
-add(E("search.find-on-line",
+add(EL("search.find-on-line",
     "f and t",
     "Inline character search.",
     "search.find-on-line",
-    [
-        F(["the quick brown fox jumps"], cursor=(0,0)),
-        F(["the quick brown fox jumps"], cursor=(0,16), keys="ff",
-          caption="ff — find 'f' on this line."),
-        F(["the quick brown fox jumps"], cursor=(0,18), keys="0tx",
-          caption="tx — *till* x: stops one before.",
-          narration="f lands ON the char; t lands JUST before. ; repeats; , reverses. Operator-friendly: dtx deletes up to but not including 'x'."),
+    content="the quick brown fox jumps",
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("ff")], keys="ff",
+           caption="ff — find 'f' on this line."),
+        LF(actions=[K("0"), K("tx")], keys="0tx",
+           caption="tx — *till* x: stops one before.",
+           narration="f lands ON the char; t lands JUST before. ; repeats; , reverses. Operator-friendly: dtx deletes up to but not including 'x'."),
     ]))
 
 
 # ============ Part 5 — Counts and Visual ===================================
 
-add(E("counts.basics",
+add(EL("counts.basics",
     "5j and 3dw",
     "Counts multiply motions and operators.",
     "counts.counts",
-    [
-        F(["one","two","three","four","five","six"], cursor=(0,0)),
-        F(["one","two","three","four","five","six"], cursor=(5,0), keys="5j",
-          caption="5j — down five lines."),
-        F(["one","two","three","four","five","six"], cursor=(0,0), keys="gg 3dw",
-          # actually showing post-state of 3dw on a single longer line below
-          caption="3dw — three words gone (next demo)."),
-        F(["the fox jumps"], cursor=(0,0), keys="3dw",
-          caption="On 'the quick brown fox jumps', 3dw deletes the first three words.",
-          narration="Counts apply equally to motions and to operator+motion combos. 3dw == d3w == ddwdwdw."),
+    content=["one two three four five six", "second", "third", "fourth", "fifth", "sixth"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("5j")], keys="5j", caption="5j — down five lines."),
+        LF(actions=[K("gg"), K("3dw")], keys="gg 3dw",
+           caption="3dw — three words gone.",
+           narration="Counts apply equally to motions and to operator+motion combos. 3dw == d3w == dwdwdw."),
     ]))
 
-add(E("counts.percent",
+add(EL("counts.percent",
     "% jumps to matching bracket",
     "% bounces between paired (), [], {}.",
     "counts.percent-bar",
-    [
-        F(["if (x > 0) {", "    do_thing();", "}"], cursor=(0,3),
-          caption="Cursor on '('."),
-        F(["if (x > 0) {", "    do_thing();", "}"], cursor=(0,9), keys="%",
-          caption="% — landed on ')'."),
-        F(["if (x > 0) {", "    do_thing();", "}"], cursor=(0,11), keys="l%",
-          caption="l then % — bounced from { to }."),
+    content=["if (x > 0) {", "    do_thing();", "}"],
+    cursor=(0, 3),
+    frames=[
+        LF(caption="Cursor on '('."),
+        LF(actions=[K("%")], keys="%", caption="% — landed on ')'."),
+        LF(actions=[K("l"), K("%")], keys="l%", caption="l then % — bounced from { to }."),
     ]))
 
-add(E("visual.char",
+add(EL("visual.char",
     "v and motion",
     "Character-wise visual selection.",
     "visual-modes.char-visual",
-    [
-        F(["the quick brown fox"], cursor=(0,4)),
-        F(["the quick brown fox"], cursor=(0,9), keys="vw", mode_line=VISUAL_LINE,
-          highlights=[hl(0,4,6,bg="666666")],
-          caption="vw — selected through next word."),
-        F(["the  brown fox"], cursor=(0,4), keys="d",
-          caption="d — delete the selection.",
-          narration="Visual mode picks a range *first*, then you apply an operator. Useful when the right motion is hard to compose."),
+    content="the quick brown fox",
+    cursor=(0, 4),
+    frames=[
+        LF(),
+        LF(actions=[K("vw")], keys="vw", caption="vw — selected through next word."),
+        LF(actions=[K("d")], keys="d", caption="d — delete the selection.",
+           narration="Visual mode picks a range *first*, then you apply an operator. Useful when the right motion is hard to compose."),
     ]))
 
-add(E("visual.line-block",
+add(EL("visual.line-block",
     "V and Ctrl-V",
     "Linewise vs block visual.",
     "visual-modes.line-block",
-    [
-        F(["foo 1","bar 2","baz 3"], cursor=(0,0)),
-        F(["foo 1","bar 2","baz 3"], cursor=(2,0), keys="Vjj", mode_line=VLINE_LINE,
-          highlights=[hl(0,0,5,bg="666666"), hl(1,0,5,bg="666666"), hl(2,0,5,bg="666666")],
-          caption="V then jj — three full lines."),
-        F(["foo 1","bar 2","baz 3"], cursor=(2,4), keys="Esc Ctrl-V jj l", mode_line=VBLOCK_LINE,
-          highlights=[hl(0,4,1,bg="666666"), hl(1,4,1,bg="666666"), hl(2,4,1,bg="666666")],
-          caption="Ctrl-V — block of just the digits.",
-          narration="Block mode operates on a rectangle — perfect for tabular data and column edits."),
+    content=["foo 1", "bar 2", "baz 3"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("Vjj")], keys="Vjj", caption="V then jj — three full lines."),
+        LF(actions=[ESC, K("gg"), K("4l"), K("Ctrl-V"), K("jj")],
+           keys="Esc gg 4l Ctrl-V jj",
+           caption="Ctrl-V — block of just the digits.",
+           narration="Block mode operates on a rectangle — perfect for tabular data and column edits."),
     ]))
 
 
 # ============ Part 6 — Dot ==================================================
 
-add(E("dot.repeat",
+add(EL("dot.repeat",
     ".",
     "The single most powerful key in Vim.",
     "dot.repeat",
-    [
-        F(["foo bar", "foo baz", "foo qux"], cursor=(0,0)),
-        F(["xxx bar", "foo baz", "foo qux"], cursor=(0,0), keys="cwxxx Esc",
-          caption="cw to xxx, Esc."),
-        F(["xxx bar", "xxx baz", "foo qux"], cursor=(1,0), keys="j0 .",
-          caption=". — same change at new cursor.",
-          narration="Dot replays the last *change* (anything that modified the buffer). Cheap revolution: structure your motions so dot becomes useful."),
-        F(["xxx bar", "xxx baz", "xxx qux"], cursor=(2,0), keys="j0 .",
-          caption=". again — third line.",
-          narration="Move-and-dot is a Vim idiom. Beats keyboard macros for trivial repetitions."),
+    content=["foo bar", "foo baz", "foo qux"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("cw"), T("xxx"), ESC], keys="cwxxx Esc",
+           caption="cw to xxx, Esc."),
+        LF(actions=[K("j"), K("0"), K(".")], keys="j0 .",
+           caption=". — same change at new cursor.",
+           narration="Dot replays the last *change* (anything that modified the buffer). Cheap revolution: structure your motions so dot becomes useful."),
+        LF(actions=[K("j"), K("0"), K(".")], keys="j0 .",
+           caption=". again — third line.",
+           narration="Move-and-dot is a Vim idiom. Beats keyboard macros for trivial repetitions."),
     ]))
 
-add(E("dot.with-counts",
+add(EL("dot.with-counts",
     "5.",
     "Dot honors counts.",
     "dot.with-counts",
-    [
-        F(["x", "x", "x", "x", "x", "x"], cursor=(0,0)),
-        F(["", "x", "x", "x", "x", "x"], cursor=(0,0), keys="dd",
-          caption="dd — delete one line."),
-        F(["", "", "", "", "", "x"], cursor=(0,0), keys="4.",
-          caption="4. — repeat dd four times.",
-          narration="A count on dot replays the change that many times — even if the original change had a different count."),
+    content=["x", "x", "x", "x", "x", "x"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("dd")], keys="dd", caption="dd — delete one line."),
+        LF(actions=[K("4.")], keys="4.", caption="4. — repeat dd four times.",
+           narration="A count on dot replays the change that many times — even if the original change had a different count."),
     ]))
 
 
 # ============ Part 7 — Text objects ==========================
 
-add(E("textobj.iw-aw",
-    "ciw vs caw",
+add(EL("textobj.iw-aw",
+    "diw vs daw",
     "Inner word vs around word.",
     "text-objects.iw-aw",
-    [
-        F(["the (quick) brown fox"], cursor=(0,5)),
-        F(["the () brown fox"], cursor=(0,5), keys="diw",
-          caption="diw — 'quick' gone, parens kept."),
-        F(["the  brown fox"], cursor=(0,4), keys="u daw",
-          caption="daw — 'quick ' AND its surrounding space gone.",
-          narration="i = inner (just the thing). a = around (thing + its delimiters or trailing space)."),
+    content="the quick brown fox",
+    cursor=(0, 4),
+    frames=[
+        LF(caption="Cursor on 'q' of 'quick'."),
+        LF(actions=[K("diw")], keys="diw",
+           caption="diw — 'quick' gone, spaces kept."),
+        LF(actions=[K("u"), K("daw")], keys="u daw",
+           caption="daw — 'quick' AND its trailing space gone.",
+           narration="i = inner (just the thing). a = around (thing + its delimiters or trailing space)."),
     ]))
 
-add(E("textobj.quotes",
+add(EL("textobj.quotes",
     'ci" and ca"',
     "Operate on whatever is in the quotes.",
     "text-objects.quotes",
-    [
-        F(['greeting = "hello, world"'], cursor=(0,15),
-          caption="Cursor inside the string."),
-        F(['greeting = ""'], cursor=(0,12), keys='ci"', mode_line=INSERT_LINE,
-          caption='ci" — string contents gone.',
-          narration='You don\'t need to be on a quote — Vim finds the surrounding pair on the line. Same for \', `, (), [], {}, <>, t (tag).'),
+    content='greeting = "hello, world"',
+    cursor=(0, 15),
+    frames=[
+        LF(caption="Cursor inside the string."),
+        LF(actions=[K('ci"')], keys='ci"',
+           caption='ci" — string contents gone.',
+           narration='You don\'t need to be on a quote — Vim finds the surrounding pair on the line. Same for \', `, (), [], {}, <>, t (tag).'),
     ]))
 
-add(E("textobj.brackets",
+add(EL("textobj.brackets",
     "di( vs da(",
     "Brackets work like quotes.",
     "text-objects.brackets",
-    [
-        F(["call(arg1, arg2)"], cursor=(0,8),
-          caption="Cursor on 'a' of arg1."),
-        F(["call()"], cursor=(0,5), keys="di(",
-          caption="di( — args removed."),
-        F(["call"], cursor=(0,4), keys="u da(",
-          caption="da( — parens removed too."),
+    content="call(arg1, arg2)",
+    cursor=(0, 8),
+    frames=[
+        LF(caption="Cursor on 'a' of arg1."),
+        LF(actions=[K("di(")], keys="di(", caption="di( — args removed."),
+        LF(actions=[K("u"), K("da(")], keys="u da(", caption="da( — parens removed too."),
     ]))
 
-add(E("textobj.tags",
+add(EL("textobj.tags",
     "cit and cat",
     "HTML/XML tag objects.",
     "text-objects.tags",
-    [
-        F(["<p>hello world</p>"], cursor=(0,5)),
-        F(["<p></p>"], cursor=(0,3), keys="cit", mode_line=INSERT_LINE,
-          caption="cit — inner-tag content cleared."),
+    content="<p>hello world</p>",
+    cursor=(0, 5),
+    lang="html",
+    frames=[
+        LF(),
+        LF(actions=[K("cit")], keys="cit",
+           caption="cit — inner-tag content cleared."),
     ]))
 
 # ============ Part 8 — Wider motions =======================================
 
-add(E("motion.match",
+add(EL("motion.match",
     "% on different brackets",
     "% picks the right pair automatically.",
     "wider-motions.match-bracket",
-    [
-        F(["arr[i] = (a + b);"], cursor=(0,3), caption="Cursor on '['."),
-        F(["arr[i] = (a + b);"], cursor=(0,5), keys="%", caption="% — to ']'."),
-        F(["arr[i] = (a + b);"], cursor=(0,9), keys="ww %",
-          caption="From '(', % goes to ')'."),
+    content="arr[i] = (a + b);",
+    cursor=(0, 3),
+    frames=[
+        LF(caption="Cursor on '['."),
+        LF(actions=[K("%")], keys="%", caption="% — to ']'."),
+        LF(actions=[K("ww"), K("%")], keys="ww %",
+           caption="From '(', % goes to ')'."),
     ]))
 
-add(E("motion.bigword",
+add(EL("motion.bigword",
     "W vs w",
     "WORD motions ignore punctuation as separators.",
     "wider-motions.WORD",
-    [
-        F(["foo.bar baz"], cursor=(0,0), caption="Cursor on 'f'."),
-        F(["foo.bar baz"], cursor=(0,3), keys="w",
-          caption="w — stopped at '.'.",
-          narration="Lower-case w treats '.' as a word boundary."),
-        F(["foo.bar baz"], cursor=(0,8), keys="0W",
-          caption="W — skipped to 'baz'.",
-          narration="Upper-case W treats whitespace-separated chunks as one WORD."),
+    content="foo.bar baz",
+    cursor=(0, 0),
+    frames=[
+        LF(caption="Cursor on 'f'."),
+        LF(actions=[K("w")], keys="w",
+           caption="w — stopped at '.'.",
+           narration="Lower-case w treats '.' as a word boundary."),
+        LF(actions=[K("0"), K("W")], keys="0W",
+           caption="W — skipped to 'baz'.",
+           narration="Upper-case W treats whitespace-separated chunks as one WORD."),
     ]))
 
 # ============ Part 9 — Scroll =============================================
 
-add(E("scroll.center",
+add(EL("scroll.center",
     "zz",
     "Bring the current line to the center.",
     "scroll.center-top-bottom",
-    [
-        F(["1","2","3","4","5","6","7","8","9","10"], cursor=(8,0),
-          caption="Cursor near the bottom of the visible viewport."),
-        F(["4","5","6","7","8","9","10","","",""], cursor=(4,0), keys="zz",
-          caption="zz — line moved to center, screen scrolled.",
-          narration="zt puts the line at the top; zb at the bottom. The cursor doesn't move in the buffer — only the viewport."),
+    content=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+    cursor=(8, 0),
+    frames=[
+        LF(caption="Cursor near the bottom of the visible viewport."),
+        LF(actions=[K("zz")], keys="zz",
+           caption="zz — line moved to center, screen scrolled.",
+           narration="zt puts the line at the top; zb at the bottom. The cursor doesn't move in the buffer — only the viewport."),
     ]))
 
 
 # ============ Part 10 — Marks and jumps ====================================
 
-add(E("marks.set-jump",
+add(EL("marks.set-jump",
     "ma and 'a",
     "Set a mark, jump back later.",
     "marks.local-global",
-    [
-        F(["chapter one","...content...","chapter two","..."], cursor=(0,0)),
-        F(["chapter one","...content...","chapter two","..."], cursor=(0,0), keys="ma",
-          caption="ma — mark 'a' set at this line."),
-        F(["chapter one","...content...","chapter two","..."], cursor=(2,0), keys="2j",
-          caption="Wandered to chapter two."),
-        F(["chapter one","...content...","chapter two","..."], cursor=(0,0), keys="'a",
-          caption="'a — jumped back to mark 'a'.",
-          narration="Lowercase marks are file-local; uppercase marks are global (jump across files)."),
+    content=["chapter one", "...content...", "chapter two", "..."],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("ma")], keys="ma",
+           caption="ma — mark 'a' set at this line."),
+        LF(actions=[K("2j")], keys="2j",
+           caption="Wandered to chapter two."),
+        LF(actions=[K("'a")], keys="'a",
+           caption="'a — jumped back to mark 'a'.",
+           narration="Lowercase marks are file-local; uppercase marks are global (jump across files)."),
     ]))
 
-add(E("marks.jumplist",
+add(EL("marks.jumplist",
     "Ctrl-O and Ctrl-I",
     "Walk back through your jump history.",
     "marks.jumplist",
-    [
-        F(["line A","line B","line C"], cursor=(0,0)),
-        F(["line A","line B","line C"], cursor=(2,0), keys="G",
-          caption="G — jumped to bottom (recorded)."),
-        F(["line A","line B","line C"], cursor=(0,0), keys="Ctrl-O",
-          caption="Ctrl-O — back where we came from.",
-          narration="Vim records 'big' jumps in a per-window list. Ctrl-O goes back, Ctrl-I goes forward."),
+    content=["line A", "line B", "line C"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("G")], keys="G",
+           caption="G — jumped to bottom (recorded)."),
+        LF(actions=[K("Ctrl-O")], keys="Ctrl-O",
+           caption="Ctrl-O — back where we came from.",
+           narration="Vim records 'big' jumps in a per-window list. Ctrl-O goes back, Ctrl-I goes forward."),
     ]))
 
 
 # ============ Part 11 — Transformations ====================================
 
-add(E("transform.case",
+add(EL("transform.case",
     "gUw and ~",
     "Change case without retyping.",
     "transform.case",
-    [
-        F(["hello world"], cursor=(0,0)),
-        F(["HELLO world"], cursor=(0,0), keys="gUw",
-          caption="gUw — uppercase one word."),
-        F(["hELLO world"], cursor=(0,1), keys="0~",
-          caption="~ — toggle one char's case.",
-          narration="gu/gU/g~ are operators; ~ is a one-shot toggle. With visual mode you can transform any selection."),
+    content="hello world",
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("gUw")], keys="gUw",
+           caption="gUw — uppercase one word."),
+        LF(actions=[K("0"), K("~")], keys="0~",
+           caption="~ — toggle one char's case.",
+           narration="gu/gU/g~ are operators; ~ is a one-shot toggle. With visual mode you can transform any selection."),
     ]))
 
-add(E("transform.indent",
+add(EL("transform.indent",
     ">> and <<",
     "Indent and dedent the current line.",
     "transform.indent",
-    [
-        F(["if x:","print('hi')"], cursor=(1,0)),
-        F(["if x:","    print('hi')"], cursor=(1,4), keys=">>",
-          caption=">> — indented one shiftwidth.",
-          narration="Doubled operator pattern. >ip indents an inner paragraph; >G indents to end of file."),
+    content=["if x:", "print('hi')"],
+    cursor=(1, 0),
+    nvim_args=["-c", "set shiftwidth=4 expandtab"],
+    frames=[
+        LF(),
+        LF(actions=[K(">>")], keys=">>",
+           caption=">> — indented one shiftwidth.",
+           narration="Doubled operator pattern. >ip indents an inner paragraph; >G indents to end of file."),
     ]))
 
-add(E("transform.join",
+add(EL("transform.join",
     "J",
     "Join two lines into one.",
     "transform.join",
-    [
-        F(["the quick","brown fox"], cursor=(0,3)),
-        F(["the quick brown fox"], cursor=(0,9), keys="J",
-          caption="J — joined with a single space.",
-          narration="gJ joins without adding a space — useful for code."),
+    content=["the quick", "brown fox"],
+    cursor=(0, 3),
+    frames=[
+        LF(),
+        LF(actions=[K("J")], keys="J",
+           caption="J — joined with a single space.",
+           narration="gJ joins without adding a space — useful for code."),
     ]))
 
 
 # ============ Part 12 — Registers ==========================================
 
-add(E("registers.unnamed",
+add(EL("registers.unnamed",
     "yy then p",
     "Copy a line, paste below.",
     "registers.unnamed",
-    [
-        F(["alpha","bravo","charlie"], cursor=(1,0)),
-        F(["alpha","bravo","charlie"], cursor=(1,0), keys="yy",
-          caption='yy — yanked to "" (unnamed).'),
-        F(["alpha","bravo","bravo","charlie"], cursor=(2,0), keys="p",
-          caption="p — pasted below."),
-        F(["alpha","bravo","bravo","bravo","charlie"], cursor=(3,0), keys="p",
-          caption="p again — same register, same content.",
-          narration='The unnamed register " is the default destination for yanks/deletes and source for p/P.'),
+    content=["alpha", "bravo", "charlie"],
+    cursor=(1, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("yy")], keys="yy",
+           caption='yy — yanked to "" (unnamed).'),
+        LF(actions=[K("p")], keys="p", caption="p — pasted below."),
+        LF(actions=[K("p")], keys="p", caption="p again — same register, same content.",
+           narration='The unnamed register " is the default destination for yanks/deletes and source for p/P.'),
     ]))
 
-add(E("registers.named",
+add(EL("registers.named",
     '"ay and "ap',
     "Use named register a.",
     "registers.named",
-    [
-        F(["foo","bar"], cursor=(0,0)),
-        F(["foo","bar"], cursor=(0,0), keys='"ayy',
-          caption='"ayy — yanked into register a.'),
-        F(["foo","bar","foo"], cursor=(2,0), keys='G "ap',
-          caption='"ap — pasted from register a.',
-          narration='Named registers a-z survive subsequent yanks. Use them for stable clipboard slots.'),
+    content=["foo", "bar"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K('"ayy')], keys='"ayy',
+           caption='"ayy — yanked into register a.'),
+        LF(actions=[K("G"), K('"ap')], keys='G "ap',
+           caption='"ap — pasted from register a.',
+           narration='Named registers a-z survive subsequent yanks. Use them for stable clipboard slots.'),
     ]))
 
-add(E("registers.numbered",
+add(EL("registers.numbered",
     '"1p and "2p',
     "Walk back through deletion history.",
     "registers.numbered",
-    [
-        F(["A","B","C"], cursor=(0,0)),
-        F(["B","C"], cursor=(0,0), keys="dd",
-          caption='dd — A goes to "1.'),
-        F(["C"], cursor=(0,0), keys="dd",
-          caption='dd — B goes to "1, A pushed to "2.'),
-        F(["C","B"], cursor=(1,0), keys='"1p',
-          caption='"1p — most recent (B) back.'),
-        F(["C","B","A"], cursor=(2,0), keys='"3p',  # actually "2p but we're past
-          caption='"2p — older one (A) back.',
-          narration='"1-"9 hold the last 9 line-deletes. They shift each time you delete.'),
+    content=["A", "B", "C"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("dd")], keys="dd",
+           caption='dd — A goes to "1.'),
+        LF(actions=[K("dd")], keys="dd",
+           caption='dd — B goes to "1, A pushed to "2.'),
+        LF(actions=[K('"1p')], keys='"1p',
+           caption='"1p — most recent (B) back.'),
+        LF(actions=[K('"2p')], keys='"2p',
+           caption='"2p — older one (A) back.',
+           narration='"1-"9 hold the last 9 line-deletes. They shift each time you delete.'),
     ]))
 
-add(E("registers.clipboard",
+add(EL("registers.clipboard",
     '"+y and "+p',
     "Cross-application copy/paste.",
     "registers.clipboard",
-    [
-        F(["secret = 'abc123'"], cursor=(0,0)),
-        F(["secret = 'abc123'"], cursor=(0,0), keys='"+yy',
-          caption='"+yy — line into the system clipboard.',
-          narration='"+ writes to the system clipboard. Now Ctrl-V in your browser pastes the line.'),
+    content="secret = 'abc123'",
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K('"+yy')], keys='"+yy',
+           caption='"+yy — line into the system clipboard.',
+           narration='"+ writes to the system clipboard. Now Ctrl-V in your browser pastes the line.'),
     ]))
 
 
 # ============ Part 13 — Macros =============================================
 
-add(E("macros.record-play",
+add(EL("macros.record-play",
     "qa ... q  then  @a",
     "Record once, play forever.",
     "macros.record-play",
-    [
-        F(["one","two","three"], cursor=(0,0), mode_line="recording @a",
-          keys="qa", caption="qa — start recording into a."),
-        F(["1. one","two","three"], cursor=(0,5), mode_line="recording @a",
-          keys="I1. Esc", caption="Prefix with '1. '."),
-        F(["1. one","two","three"], cursor=(1,0), mode_line="recording @a",
-          keys="j0", caption="Move to next line (recorded)."),
-        F(["1. one","two","three"], cursor=(1,0), keys="q",
-          caption="q — stop recording."),
-        F(["1. one","2. two","3. three"], cursor=(2,0), keys="@a @a",
-          caption="@a twice — replays on the next two lines.",
-          narration="Macros are just register contents. Open the register, edit it, paste it — they're text."),
+    content=["one", "two", "three"],
+    cursor=(0, 0),
+    frames=[
+        LF(actions=[K("qa")], keys="qa",
+           caption="qa — start recording into a."),
+        LF(actions=[K("I"), T("1. "), ESC], keys="I1. Esc",
+           caption="Prefix with '1. '."),
+        LF(actions=[K("j"), K("0")], keys="j0",
+           caption="Move to next line (recorded)."),
+        LF(actions=[K("q")], keys="q", caption="q — stop recording."),
+        LF(actions=[K("@a"), K("@a")], keys="@a @a",
+           caption="@a twice — replays on the next two lines.",
+           narration="Macros are just register contents. Open the register, edit it, paste it — they're text."),
     ]))
 
 
 # ============ Part 14 — Windows =============================================
 
-add(E("windows.splits",
+add(EL("windows.splits",
     ":split and :vsplit",
     "Two views of one buffer (or two).",
     "windows.splits",
-    [
-        F(["main.py","def f():"], cursor=(1,0)),
-        F(["main.py","def f():","    pass","main.py","def f():"], cursor=(0,0), keys=":sp",
-          mode_line="Press ENTER to continue",
-          caption=":sp — horizontal split."),
-        F(["main.py        |main.py","def f():       |def f():","    pass       |    pass"], cursor=(0,0),
-          cols=40, keys=":vsp",
-          caption=":vsp — vertical split.",
-          narration="Each split is an independent view. Use Ctrl-W h/j/k/l to navigate."),
+    content=["main.py", "def f():", "    pass"],
+    cursor=(0, 0),
+    filename="main.py",
+    nvim_args=["-c", "set noshowmode"],
+    frames=[
+        LF(),
+        LF(actions=[X("sp")], keys=":sp",
+           caption=":sp — horizontal split."),
+        LF(actions=[X("vsp")], keys=":vsp",
+           caption=":vsp — vertical split.",
+           narration="Each split is an independent view. Use Ctrl-W h/j/k/l to navigate."),
     ]))
 
-add(E("windows.buffers",
+add(EL("windows.buffers",
     ":ls and :b",
     "Edit many files in one Vim session.",
     "windows.buffers",
-    [
-        F(["main.py","..."], cursor=(0,0)),
-        F(["main.py","..."], cursor=(0,0), keys=":ls",
-          mode_line="1 %a 'main.py'  2 # 'lib.py'",
-          caption=":ls — list of loaded buffers."),
-        F(["lib.py","def helper():"], cursor=(0,0), keys=":b lib",
-          caption=":b lib — switch to lib.py."),
+    content=["main.py contents"],
+    cursor=(0, 0),
+    filename="main.py",
+    nvim_args=["-c", "badd lib.py"],
+    pre_setup=[
+        {"writeFile": "lib.py", "content": "def helper():\n    pass\n", "noDedent": True},
+    ],
+    frames=[
+        LF(),
+        LF(actions=[X("ls")], keys=":ls",
+           caption=":ls — list of loaded buffers."),
+        LF(actions=[ENTER, X("b lib")], keys=":b lib",
+           caption=":b lib — switch to lib.py."),
     ]))
 
 
-# ============ Part 15 — Prefix families (use one example each) ============
+# ============ Part 15 — Prefix families ====================================
 
-add(E("prefix.g",
+add(EL("prefix.g",
     "gU gu g~ ga",
     "The 'g' prefix is a grab-bag of useful commands.",
     "prefixes.g-overview",
-    [
-        F(["hello"], cursor=(0,0)),
-        F(["HELLO"], cursor=(0,0), keys="gUiw",
-          caption="gUiw — uppercase inner word."),
-        F(["hello"], cursor=(0,0), keys="u guiw",
-          caption="guiw — lowercase inner word."),
-        F(["hello"], cursor=(0,0), keys="ga",
-          mode_line="<h>  104,  Hex 68,  Octal 150",
-          caption="ga — character info under cursor."),
+    content="hello",
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("gUiw")], keys="gUiw",
+           caption="gUiw — uppercase inner word."),
+        LF(actions=[K("guiw")], keys="guiw",
+           caption="guiw — lowercase inner word."),
+        LF(actions=[K("g~iw")], keys="g~iw",
+           caption="g~iw — toggle case of inner word."),
+        LF(actions=[K("ga")], keys="ga",
+           caption="ga — character info under cursor."),
     ]))
 
-add(E("prefix.z",
+add(EL("prefix.z",
     "zz zt zb",
     "Viewport positioning with z.",
     "prefixes.z-overview",
-    [
-        F(["1","2","3","4","5","6","7","8","9","10"], cursor=(4,0)),
-        F(["3","4","5","6","7","8","9","10","",""], cursor=(2,0), keys="zt",
-          caption="zt — current line to top."),
+    content=[str(i) for i in range(1, 21)],
+    cursor=(9, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("zt")], keys="zt",
+           caption="zt — current line to top."),
+        LF(actions=[K("zz")], keys="zz",
+           caption="zz — current line to center."),
+        LF(actions=[K("zb")], keys="zb",
+           caption="zb — current line to bottom."),
     ]))
 
 
 # ============ Part 16 — Insert mode power ==================================
 
-add(E("insert.one-shot",
+add(EL("insert.one-shot",
     "Ctrl-O in Insert",
     "One Normal command without leaving Insert.",
     "insert.one-shot-normal",
-    [
-        F(["hello world"], cursor=(0,5), mode_line=INSERT_LINE),
-        F(["hello world"], cursor=(0,11), mode_line=INSERT_LINE,
-          keys="Ctrl-O $",
-          caption="Ctrl-O $ — jumped to EOL, still in Insert."),
-        F(["hello world!"], cursor=(0,11), mode_line=INSERT_LINE,
-          keys="!", caption="Type '!' — Insert mode resumes seamlessly."),
+    content=["hello world"],
+    cursor=(0, 5),
+    prep=K("i"),
+    frames=[
+        LF(),
+        LF(actions=[K("\x0f"), K("$")], keys="Ctrl-O $",
+           caption="Ctrl-O $ — jumped to EOL, still in Insert."),
+        LF(actions=[T("!")], keys="!",
+           caption="Type '!' — Insert mode resumes seamlessly."),
     ]))
 
-add(E("insert.completion",
+add(EL("insert.completion",
     "Ctrl-N",
     "Word completion from buffer.",
     "insert.completion",
-    [
-        F(["congratulations","con"], cursor=(1,3), mode_line=INSERT_LINE),
-        F(["congratulations","congratulations"], cursor=(1,15), mode_line=INSERT_LINE,
-          keys="Ctrl-N",
-          caption="Ctrl-N — matched 'con' to the only word starting with it.",
-          narration="Ctrl-N searches forward through known words; Ctrl-P backward. Ctrl-X opens the sub-completion menu (filenames, lines, etc.)."),
+    content=["congratulations", "con"],
+    cursor=(1, 3),
+    prep=K("a"),
+    frames=[
+        LF(),
+        LF(actions=[K("\x0e")], keys="Ctrl-N",
+           caption="Ctrl-N — matched 'con' to the only word starting with it.",
+           narration="Ctrl-N searches forward through known words; Ctrl-P backward. Ctrl-X opens the sub-completion menu (filenames, lines, etc.)."),
     ]))
 
 
 # ============ Part 17 — Ex =================================================
 
-add(E("ex.substitute",
+add(EL("ex.substitute",
     ":s/foo/bar/g",
     "Find and replace on the current line.",
     "ex.substitute",
-    [
-        F(["foo and foo and foo"], cursor=(0,0)),
-        F(["foo and foo and foo"], cursor=(0,0), mode_line=":s/foo/bar/g",
-          caption="Type the substitute command."),
-        F(["bar and bar and bar"], cursor=(0,0), keys="Enter",
-          mode_line="3 substitutions on 1 line",
-          caption="3 substitutions on this line.",
-          narration="Range :%s/.../.../g applies to whole file. With c flag you confirm each."),
+    content=["foo and foo and foo"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K(":s/foo/bar/g")], keys=":s/foo/bar/g",
+           caption="Type the substitute command."),
+        LF(actions=[ENTER], keys="Enter",
+           caption="3 substitutions on this line.",
+           narration="Range :%s/.../.../g applies to whole file. With c flag you confirm each."),
     ]))
 
-add(E("ex.global",
+add(EL("ex.global",
     ":g/TODO/d",
     "Run an Ex command on every matching line.",
     "ex.global",
-    [
-        F(["x = 1","# TODO: fix","y = 2","# TODO: again"], cursor=(0,0)),
-        F(["x = 1","y = 2"], cursor=(0,0), keys=":g/TODO/d Enter",
-          mode_line=":g/TODO/d",
-          caption="All TODO lines deleted.",
-          narration=":g/pat/cmd runs cmd on each matching line. :v/pat/cmd runs on every NON-matching line."),
+    content=["x = 1", "# TODO: fix", "y = 2", "# TODO: again"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[X("g/TODO/d")], keys=":g/TODO/d Enter",
+           caption="All TODO lines deleted.",
+           narration=":g/pat/cmd runs cmd on each matching line. :v/pat/cmd runs on every NON-matching line."),
     ]))
 
-add(E("ex.norm",
+add(EL("ex.norm",
     ':%norm I// ',
     "Run a Normal-mode sequence on every line.",
     "ex.norm",
-    [
-        F(["x = 1","y = 2","z = 3"], cursor=(0,0)),
-        F(["// x = 1","// y = 2","// z = 3"], cursor=(0,0),
-          keys=':%norm I// Enter',
-          mode_line=':%norm I// ',
-          caption=":%norm prefixes every line with '// '.",
-          narration="Like a macro that doesn't need recording. Combine with :g for selective application."),
+    content=["x = 1", "y = 2", "z = 3"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[X("%norm I// ")], keys=':%norm I// Enter',
+           caption=":%norm prefixes every line with '// '.",
+           narration="Like a macro that doesn't need recording. Combine with :g for selective application."),
     ]))
 
 
 # ============ Part 18 — Visual Modes ========================================
 
-add(E("visual.gv",
+add(EL("visual.gv",
     "gv",
     "Re-select the previous visual region.",
     "visual.gv",
-    [
-        F(["lorem ipsum dolor sit amet"], cursor=(0,12)),
-        F(["lorem ipsum dolor sit amet"], cursor=(0,17), keys="vw",
-          mode_line=VISUAL_LINE,
-          highlights=[hl(0,12,6,bg="666666")],
-          caption="Selected 'dolor '."),
-        F(["lorem ipsum DOLOR sit amet"], cursor=(0,12), keys="U",
-          caption="U — uppercased the selection."),
-        F(["lorem ipsum DOLOR sit amet"], cursor=(0,17), keys="gv",
-          mode_line=VISUAL_LINE,
-          highlights=[hl(0,12,6,bg="666666")],
-          caption="gv — same region selected again.",
-          narration="gv is great for chained visual operations."),
+    content=["lorem ipsum dolor sit amet"],
+    cursor=(0, 12),
+    frames=[
+        LF(),
+        LF(actions=[K("vw")], keys="vw",
+           caption="Selected 'dolor '."),
+        LF(actions=[K("U")], keys="U",
+           caption="U — uppercased the selection."),
+        LF(actions=[K("gv")], keys="gv",
+           caption="gv — same region selected again.",
+           narration="gv is great for chained visual operations."),
     ]))
 
 
 # ============ Part 19 — Command line power =================================
 
-add(E("cmdline.history",
+add(EL("cmdline.history",
     "q:",
     "Command-line history as an editable buffer.",
     "cmdline.history-window",
-    [
-        F([":w","%s/foo/bar/g","make","Press ? for help"], cursor=(2,0),
-          status="[Command Line]            3,1            All",
-          caption="q: — opens the history window."),
-        F([":w","%s/foo/bar/g","make","Press ? for help"], cursor=(1,0), keys="kk",
-          caption="Pick any line, edit it, Enter to run."),
+    content=["practice file"],
+    cursor=(0, 0),
+    nvim_args=[
+        "-i", "NONE",
+        "-c", "call histadd('cmd', 'w')",
+        "-c", "call histadd('cmd', '%s/foo/bar/g')",
+        "-c", "call histadd('cmd', 'make')",
+    ],
+    prep=K("q:"),
+    frames=[
+        LF(caption="q: — opens the history window."),
+        LF(actions=[K("kk")], keys="kk",
+           caption="Pick any line, edit it, Enter to run."),
     ]))
 
 
 # ============ Part 20 — Patterns ==========================================
 
-add(E("pattern.star-cw-dot",
+add(EL("pattern.star-cw-dot",
     "* cw . . .",
     "Search-cursor-change-repeat — mass rename.",
     "patterns.star-cw-dot",
-    [
-        F(["foo()","foo()","foo()"], cursor=(0,0)),
-        F(["foo()","foo()","foo()"], cursor=(0,0), keys="*",
-          highlights=[hl(0,0,3,bg="666666"),hl(1,0,3,bg="666666"),hl(2,0,3,bg="666666")],
-          caption="* — search for 'foo'."),
-        F(["bar()","foo()","foo()"], cursor=(0,2), keys="cwbar Esc",
-          caption="cwbar — change to bar."),
-        F(["bar()","bar()","foo()"], cursor=(1,2), keys="n .",
-          caption="n then . — next match, dot."),
-        F(["bar()","bar()","bar()"], cursor=(2,2), keys="n .",
-          caption="And again. The Replace Loop.",
-          narration="The classic Vim mass-edit. cgn is similar and even slicker — see cgn-dot."),
+    content=["foo()", "foo()", "foo()"],
+    cursor=(0, 0),
+    nvim_args=["-c", "set hlsearch"],
+    frames=[
+        LF(),
+        LF(actions=[K("*")], keys="*",
+           caption="* — search for 'foo'."),
+        LF(actions=[K("cw"), T("bar"), ESC], keys="cwbar Esc",
+           caption="cwbar — change to bar."),
+        LF(actions=[K("n"), K(".")], keys="n .",
+           caption="n then . — next match, dot."),
+        LF(actions=[K("n"), K(".")], keys="n .",
+           caption="And again. The Replace Loop.",
+           narration="The classic Vim mass-edit. cgn is similar and even slicker — see cgn-dot."),
     ]))
 
-add(E("pattern.cgn-dot",
+add(EL("pattern.cgn-dot",
     "*  then  cgn  then  . . .",
     "Change-next-match — fewer keystrokes than star-cw-dot.",
     "patterns.cgn-dot",
-    [
-        F(["foo()","foo()","foo()"], cursor=(0,0)),
-        F(["foo()","foo()","foo()"], cursor=(0,0), keys="*",
-          highlights=[hl(0,0,3,bg="666666"),hl(1,0,3,bg="666666"),hl(2,0,3,bg="666666")],
-          caption="* — pattern set."),
-        F(["bar()","foo()","foo()"], cursor=(0,2), keys="cgnbar Esc",
-          caption="cgn — change next match."),
-        F(["bar()","bar()","foo()"], cursor=(1,2), keys=".",
-          caption=". — finds next AND changes it."),
-        F(["bar()","bar()","bar()"], cursor=(2,2), keys=".",
-          caption="One key per replacement.",
-          narration="cgn = c + gn (motion: 'next match'). Dot replays the whole thing — search-and-change in one keystroke."),
+    content=["foo()", "foo()", "foo()"],
+    cursor=(0, 0),
+    nvim_args=["-c", "set hlsearch"],
+    frames=[
+        LF(),
+        LF(actions=[K("*")], keys="*",
+           caption="* — pattern set."),
+        LF(actions=[K("cgn"), T("bar"), ESC], keys="cgnbar Esc",
+           caption="cgn — change next match."),
+        LF(actions=[K(".")], keys=".",
+           caption=". — finds next AND changes it."),
+        LF(actions=[K(".")], keys=".",
+           caption="One key per replacement.",
+           narration="cgn = c + gn (motion: 'next match'). Dot replays the whole thing — search-and-change in one keystroke."),
     ]))
 
-add(E("pattern.block-comment",
+add(EL("pattern.block-comment",
     "Ctrl-V  jjj  I//<Esc>",
     "Block-prefix many lines at once.",
     "patterns.block-comment",
-    [
-        F(["x = 1","y = 2","z = 3"], cursor=(0,0)),
-        F(["x = 1","y = 2","z = 3"], cursor=(2,0), keys="Ctrl-V jj",
-          mode_line=VBLOCK_LINE,
-          highlights=[hl(0,0,1,bg="666666"),hl(1,0,1,bg="666666"),hl(2,0,1,bg="666666")],
-          caption="Ctrl-V jj — three rows selected."),
-        F(["// x = 1","y = 2","z = 3"], cursor=(0,0), keys="I//", mode_line=INSERT_LINE,
-          caption="I// — typing on the first row only."),
-        F(["// x = 1","// y = 2","// z = 3"], cursor=(0,0), keys="Esc",
-          caption="Esc — Vim replays the insertion on every selected row.",
-          narration="The trick: in block-Insert mode, the typing only shows on row one until you press Esc."),
+    content=["x = 1", "y = 2", "z = 3"],
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("\x16"), K("jj")], keys="Ctrl-V jj",
+           caption="Ctrl-V jj — three rows selected."),
+        LF(actions=[K("I"), T("//")], keys="I//",
+           caption="I// — typing on the first row only."),
+        LF(actions=[ESC], keys="Esc",
+           caption="Esc — Vim replays the insertion on every selected row.",
+           narration="The trick: in block-Insert mode, the typing only shows on row one until you press Esc."),
     ]))
 
-add(E("pattern.increment",
+add(EL("pattern.increment",
     "Ctrl-A and Ctrl-X",
     "Bump numbers up or down.",
     "patterns.increment-decrement",
-    [
-        F(["item 41"], cursor=(0,5)),
-        F(["item 42"], cursor=(0,6), keys="Ctrl-A",
-          caption="Ctrl-A — number under (or to the right of) the cursor incremented."),
-        F(["item 47"], cursor=(0,6), keys="5Ctrl-A",
-          caption="5Ctrl-A — increment by 5."),
+    content=["item 41"],
+    cursor=(0, 5),
+    frames=[
+        LF(),
+        LF(actions=[K("\x01")], keys="Ctrl-A",
+           caption="Ctrl-A — number under (or to the right of) the cursor incremented."),
+        LF(actions=[K("5\x01")], keys="5Ctrl-A",
+           caption="5Ctrl-A — increment by 5."),
     ]))
 
 
 # ============ Part 21 — Advanced ===========================================
 
-add(E("advanced.character-info",
+add(EL("advanced.character-info",
     "ga",
     "Inspect the byte under the cursor.",
     "advanced.character-info",
-    [
-        F(["café"], cursor=(0,3)),
-        F(["café"], cursor=(0,3), keys="ga",
-          mode_line="<é>  233,  Hex 00e9,  Octal 351, Digr e'",
-          caption="ga — decimal/hex/octal codepoint, plus digraph if any."),
+    content=["café"],
+    cursor=(0, 3),
+    frames=[
+        LF(),
+        LF(actions=[K("ga")], keys="ga",
+           caption="ga — decimal/hex/octal codepoint, plus digraph if any."),
     ]))
 
 

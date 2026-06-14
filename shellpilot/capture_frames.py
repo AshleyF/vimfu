@@ -442,14 +442,24 @@ def capture_lesson(json_path: Path, *, output: Path = None) -> Path:
         Demo._run_fast(demo, lesson.teardown)
 
     # ---- Deduplicate consecutive identical frames ----
-    deduped: list[dict] = [frames[0]] if frames else []
-    for f in frames[1:]:
-        if _frame_text(f) != _frame_text(deduped[-1]):
-            deduped.append(f)
-        else:
-            # Keep the richer action metadata
-            if f.get("action"):
-                deduped[-1]["action"] = f["action"]
+    # Lessons can opt out of dedup with `"captureDedup": false`. This is
+    # useful when an upstream consumer (e.g. content/build_examples.py
+    # EL() helper) needs a 1-to-1 mapping from main-step index to
+    # captured-frame index — dedup would otherwise drop frames for steps
+    # that don't change the screen (e.g. `jj` when already at bottom).
+    raw_doc = json.loads(json_path.read_text("utf-8"))
+    do_dedup = raw_doc.get("captureDedup", True)
+    if do_dedup:
+        deduped: list[dict] = [frames[0]] if frames else []
+        for f in frames[1:]:
+            if _frame_text(f) != _frame_text(deduped[-1]):
+                deduped.append(f)
+            else:
+                # Keep the richer action metadata
+                if f.get("action"):
+                    deduped[-1]["action"] = f["action"]
+    else:
+        deduped = frames
 
     # ---- Write output ----
     doc = {

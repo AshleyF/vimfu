@@ -1,0 +1,69 @@
+{
+  "title": "VimFu — windows.buffers (example screenshots)",
+  "description": "Lesson used by content/examples/windows.buffers.json to capture authentic Vim frames. Not intended for video.",
+  "speed": 1.0,
+  "humanize": 0,
+  "rows": 10,
+  "cols": 40,
+  "ttsEnabled": false,
+  "recordVideo": false,
+  "clickKeys": false,
+  "captureDedup": false,
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f main.py .main.py.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "main.py",
+      "content": "main.py contents\n",
+      "noDedent": true
+    },
+    {
+      "writeFile": "lib.py",
+      "content": "def helper():\n    pass\n",
+      "noDedent": true
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'badd lib.py' main.py"
+    },
+    {
+      "waitForScreen": "main.py",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "ex": "ls"
+    },
+    "enter",
+    {
+      "ex": "b lib"
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f main.py"
+    }
+  ]
+}

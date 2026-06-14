@@ -1,0 +1,63 @@
+{
+  "title": "VimFu — marks.jumplist (example screenshots)",
+  "description": "Lesson used by content/examples/marks.jumplist.json to capture authentic Vim frames. Not intended for video.",
+  "speed": 1.0,
+  "humanize": 0,
+  "rows": 10,
+  "cols": 40,
+  "ttsEnabled": false,
+  "recordVideo": false,
+  "clickKeys": false,
+  "captureDedup": false,
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f practice.txt .practice.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "practice.txt",
+      "content": "line A\nline B\nline C\n",
+      "noDedent": true
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim practice.txt"
+    },
+    {
+      "waitForScreen": "practice.txt",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "keys": "G"
+    },
+    {
+      "keys": "Ctrl-O"
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f practice.txt"
+    }
+  ]
+}

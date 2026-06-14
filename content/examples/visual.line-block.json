@@ -2,101 +2,35 @@
   "format": "vimfu-content-example",
   "version": 1,
   "id": "visual.line-block",
-  "title": "{key:V} and {key:Ctrl-V}",
+  "title": "V and Ctrl-V",
   "summary": "Linewise vs block visual.",
   "topic": "visual-modes.line-block",
+  "source": {
+    "lesson": "content/example_lessons/visual_line-block.json",
+    "select": [
+      0,
+      1,
+      6
+    ]
+  },
+  "initial": {
+    "file": "practice.txt",
+    "content": "foo 1\nbar 2\nbaz 3\n",
+    "cursor": [
+      0,
+      0
+    ]
+  },
   "frames": [
+    {},
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "foo 1",
-          "bar 2",
-          "baz 3"
-        ],
-        "cursor": [
-          0,
-          0
-        ]
-      }
-    },
-    {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "foo 1",
-          "bar 2",
-          "baz 3",
-          "-- VISUAL LINE --                       "
-        ],
-        "cursor": [
-          2,
-          0
-        ],
-        "highlights": [
-          {
-            "row": 0,
-            "col": 0,
-            "len": 5,
-            "bg": "666666"
-          },
-          {
-            "row": 1,
-            "col": 0,
-            "len": 5,
-            "bg": "666666"
-          },
-          {
-            "row": 2,
-            "col": 0,
-            "len": 5,
-            "bg": "666666"
-          }
-        ]
-      },
-      "caption": "{key:V} then {key:j}{key:j} — three full lines.",
+      "caption": "V then jj \u2014 three full lines.",
       "keys": "Vjj"
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "foo 1",
-          "bar 2",
-          "baz 3",
-          "-- VISUAL BLOCK --                      "
-        ],
-        "cursor": [
-          2,
-          4
-        ],
-        "highlights": [
-          {
-            "row": 0,
-            "col": 4,
-            "len": 1,
-            "bg": "666666"
-          },
-          {
-            "row": 1,
-            "col": 4,
-            "len": 1,
-            "bg": "666666"
-          },
-          {
-            "row": 2,
-            "col": 4,
-            "len": 1,
-            "bg": "666666"
-          }
-        ]
-      },
-      "caption": "{key:Ctrl-V} — block of just the digits.",
-      "narration": "*Visual-block mode* operates on a rectangle — perfect for tabular data and column edits.",
-      "keys": "Esc Ctrl-V jj l"
+      "caption": "Ctrl-V \u2014 block of just the digits.",
+      "narration": "Block mode operates on a rectangle \u2014 perfect for tabular data and column edits.",
+      "keys": "Esc gg 4l Ctrl-V jj"
     }
   ]
 }
