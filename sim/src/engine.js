@@ -321,6 +321,11 @@ export class VimEngine {
     this._folds = [];
     this._saveSnapshot();
     this._changeCount = 0; // reset after initial snapshot
+    // Snapshot the file-load state so :e! can revert without needing a VFS.
+    this._loadedFileSnapshot = {
+      lines: this.buffer.lines.slice(),
+      cursor: { row: this.cursor.row, col: this.cursor.col },
+    };
     // Clear change list — loading a file is not a "change"
     this._changeList = [];
     this._changeListPos = -1;
@@ -5974,6 +5979,23 @@ export class VimEngine {
       }
       const isEdit = /^e(d(it?)?)?!?(\s|$)/.test(cmd);
       if (isEdit) {
+        // :e! with no filename — revert the buffer to the file-load state.
+        // Real nvim re-reads from disk; sim has no VFS in standalone mode
+        // so it restores the snapshot captured during loadFile().
+        const editForceNoArg = /^e(?:d(?:it?)?)?!\s*$/.test(cmd);
+        if (editForceNoArg && this._loadedFileSnapshot) {
+          this.buffer.lines = this._loadedFileSnapshot.lines.slice();
+          this.cursor = {
+            row: this._loadedFileSnapshot.cursor.row,
+            col: this._loadedFileSnapshot.cursor.col,
+          };
+          this._changeCount = 0;
+          const entry = this._getBufEntry && this._getBufEntry(this._currentBufId);
+          if (entry) entry.changeCount = 0;
+          this.scrollTop = 0;
+          this.scrollLeft = 0;
+          this._updateDesiredCol();
+        }
         // SessionManager will overwrite this with the file-load message,
         // but in standalone engine mode (no VFS) we mimic nvim's "echo
         // typed cmdline until next keystroke" so subsequent chords like
