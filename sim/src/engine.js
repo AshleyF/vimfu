@@ -5976,8 +5976,18 @@ export class VimEngine {
     this._lastExCommand = cmd;
 
     // If _filterRange is set and the user typed something after the pre-filled range+!,
-    // pass through as _lastExCommand so the session can handle the filter
+    // pass through as _lastExCommand so the session can handle the filter.
+    // In standalone mode we still want to execute common built-in filters
+    // (sort, uniq) so curriculum tests like 0480 don't depend on a real shell.
     if (this._filterRange && cmd.includes('!')) {
+      const fr = this._filterRange;
+      const bangIdx = cmd.indexOf('!');
+      const shellCmd = cmd.slice(bangIdx + 1).trim();
+      if (this._tryBuiltinFilter(fr.sr, fr.er, shellCmd)) {
+        this._lastExCommand = cmd;
+        this._filterRange = null;
+        return;
+      }
       this._lastExCommand = cmd;
       this.commandLine = '';
       return;
@@ -5988,6 +5998,11 @@ export class VimEngine {
     {
       const parsed = this._parseExRange(cmd);
       if (parsed.hasRange && parsed.rest.startsWith('!')) {
+        const shellCmd = parsed.rest.slice(1).trim();
+        if (this._tryBuiltinFilter(parsed.sr, parsed.er, shellCmd)) {
+          this._lastExCommand = cmd;
+          return;
+        }
         this._lastExCommand = cmd;
         this.commandLine = '';
         return;
@@ -10381,6 +10396,24 @@ export class VimEngine {
           // Re-indent (no-op for sim: language-aware indent is complex).
           break;
         }
+        case '!': {
+          // Filter through external command. Mirrors the `_executeOperator`
+          // ! handler: pre-fill cmdline with `:{range}!` and stash the
+          // range so the cmdline executor knows which lines to replace.
+          let rangeStr;
+          if (startRow === endRow) {
+            rangeStr = '.';
+          } else {
+            rangeStr = '.,.+' + (endRow - startRow);
+          }
+          this._filterRange = { sr: startRow, er: endRow };
+          this.mode = Mode.COMMAND;
+          this._searchInput = rangeStr + '!';
+          this._cmdCursor = this._searchInput.length;
+          this.commandLine = ':' + rangeStr + '!';
+          this.cursor.row = startRow;
+          break;
+        }
       }
       this._updateDesiredCol();
       return;
@@ -13512,6 +13545,73 @@ export class VimEngine {
     const line = this.buffer.lines[br] || '';
     const cols = Math.max(1, this.cols);
     return line.length === 0 ? 1 : Math.ceil(line.length / cols);
+  }
+
+  // Apply a built-in filter (sort, uniq, etc.) to a line range as if the
+  // user typed `:{range}!{shellCmd}`. Returns true if the shell command was
+  // recognized and applied — the cursor, buffer, and message are updated to
+  // mirror nvim's "N lines filtered" behaviour. Returns false for unknown
+  // commands so callers can fall back to their existing pass-through.
+  _tryBuiltinFilter(sr, er, shellCmd) {
+    if (sr == null || er == null || sr < 0 || er >= this.buffer.lineCount) return false;
+    if (!shellCmd) return false;
+    const tokens = shellCmd.split(/\s+/);
+    const prog = tokens[0];
+    const args = tokens.slice(1);
+    const slice = this.buffer.lines.slice(sr, er + 1);
+    let result = null;
+    if (prog === 'sort') {
+      let numeric = false;
+      let reverse = false;
+      let unique = false;
+      let ignoreCase = false;
+      for (const a of args) {
+        if (a === '-n' || a === '-g') numeric = true;
+        else if (a === '-r') reverse = true;
+        else if (a === '-u') unique = true;
+        else if (a === '-f' || a === '-i') ignoreCase = true;
+      }
+      const out = slice.slice();
+      if (numeric) {
+        out.sort((a, b) => (parseFloat(a) || 0) - (parseFloat(b) || 0));
+      } else if (ignoreCase) {
+        out.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+      } else {
+        out.sort();
+      }
+      if (reverse) out.reverse();
+      if (unique) {
+        const seen = new Set();
+        const deduped = [];
+        for (const line of out) {
+          const key = ignoreCase ? line.toLowerCase() : line;
+          if (!seen.has(key)) { seen.add(key); deduped.push(line); }
+        }
+        result = deduped;
+      } else {
+        result = out;
+      }
+    } else if (prog === 'uniq') {
+      const out = [];
+      let prev = null;
+      for (const line of slice) {
+        if (line !== prev) out.push(line);
+        prev = line;
+      }
+      result = out;
+    } else {
+      return false;
+    }
+    this._saveSnapshot({ row: sr, col: 0 });
+    this._redoStack = [];
+    this.buffer.lines.splice(sr, er - sr + 1, ...result);
+    this.cursor.row = sr;
+    this.cursor.col = this._firstNonBlank(sr);
+    this._updateDesiredCol();
+    const count = er - sr + 1;
+    this.commandLine = `${count} line${count !== 1 ? 's' : ''} filtered`;
+    this._stickyCommandLine = true;
+    return true;
   }
 
   // Advance forward by N screen rows starting from buffer line `start`
