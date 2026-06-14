@@ -2,68 +2,41 @@
   "format": "vimfu-content-example",
   "version": 1,
   "id": "editing.delete",
-  "title": "{key:x} {key:d}{key:w} {key:d}{key:d}",
+  "title": "x dw dd",
   "summary": "Three deletes, three scopes.",
   "topic": "editing.delete",
+  "source": {
+    "lesson": "content/example_lessons/editing_delete.json",
+    "select": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  "initial": {
+    "file": "practice.txt",
+    "content": "the quick brown fox\n",
+    "cursor": [
+      0,
+      4
+    ]
+  },
   "frames": [
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "the quick brown fox"
-        ],
-        "cursor": [
-          0,
-          4
-        ]
-      },
       "caption": "Cursor on 'q'."
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "the uick brown fox"
-        ],
-        "cursor": [
-          0,
-          4
-        ]
-      },
-      "caption": "{key:x} \u2014 one char gone.",
+      "caption": "x \u2014 one char gone.",
       "keys": "x"
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "the brown fox"
-        ],
-        "cursor": [
-          0,
-          4
-        ]
-      },
-      "caption": "{key:d}{key:w} \u2014 through next word boundary.",
+      "caption": "dw \u2014 through next word boundary.",
       "keys": "dw"
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          ""
-        ],
-        "cursor": [
-          0,
-          0
-        ]
-      },
-      "caption": "{key:d}{key:d} \u2014 entire line.",
-      "narration": "{key:d} is the operator; {key:x} is sugar for {key:d}{key:l}. The deleted text goes to the unnamed register and the numbered register 1.",
+      "caption": "dd \u2014 entire line.",
+      "narration": "d is the operator; x is sugar for dl. The deleted text goes to the unnamed register and the numbered register 1.",
       "keys": "dd"
     }
   ]

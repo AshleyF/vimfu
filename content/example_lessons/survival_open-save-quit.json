@@ -1,6 +1,6 @@
 {
-  "title": "VimFu — foundations.modes (example screenshots)",
-  "description": "Lesson used by content/examples/foundations.modes.json to capture authentic Vim frames. Not intended for video.",
+  "title": "VimFu — survival.open-save-quit (example screenshots)",
+  "description": "Lesson used by content/examples/survival.open-save-quit.json to capture authentic Vim frames. Not intended for video.",
   "speed": 1.0,
   "humanize": 0,
   "rows": 10,
@@ -16,21 +16,21 @@
       "line": "mkdir -p ~/vimfu && cd ~/vimfu"
     },
     {
-      "line": "rm -f hi.txt .hi.txt.swp"
+      "line": "rm -f hello.txt .hello.txt.swp"
     },
     {
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
     },
     {
-      "writeFile": "hi.txt",
-      "content": "Hello world\n",
+      "writeFile": "hello.txt",
+      "content": "greetings\nfrom vi\n",
       "noDedent": true
     },
     {
       "line": "clear"
     },
     {
-      "line": "nvim hi.txt"
+      "line": "nvim hello.txt"
     },
     {
       "waitForScreen": "All",
@@ -41,17 +41,20 @@
       "thenKeys": "d"
     },
     {
-      "keys": "gg05l"
-    }
+      "keys": "gg1j0"
+    },
+    {
+      "keys": "A"
+    },
+    {
+      "type": "m"
+    },
+    "escape"
   ],
   "steps": [
     {
-      "keys": "i"
-    },
-    {
-      "type": ", vim"
-    },
-    "escape"
+      "ex": "w"
+    }
   ],
   "teardown": [
     "escape",
@@ -60,7 +63,7 @@
     },
     "enter",
     {
-      "line": "rm -f hi.txt"
+      "line": "rm -f hello.txt"
     }
   ]
 }

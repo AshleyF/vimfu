@@ -5,6 +5,20 @@ of truth: each example is a few lines of Python that build a valid
 vimfu-content-example payload, which we then write out as JSON for the
 renderer to consume.
 
+Two authoring flavors:
+
+  E(...) + F(...)
+      Hand-authored compact frames. Use when you want a synthetic frame
+      that real Vim can't produce (e.g. a fake window-split layout).
+
+  EL(...) + LF(...)
+      Lesson-backed example. Authors a lesson JSON next to it
+      (content/example_lessons/<id>.json) and configures the example
+      to pull its screenshots from authentic shellpilot captures. This
+      is the preferred path — the screenshots can't drift out of sync
+      with what Vim actually does, and the redirect generator gets
+      explicit initial-state info for the "try this" deep link.
+
 Usage:
     python content/build_examples.py            # write all examples
     python content/build_examples.py grammar    # filter by id substring
@@ -15,7 +29,8 @@ Conventions:
 - Status rows render as reverse video automatically.
 - '~' lines auto-color blue (Vim's empty-buffer marker).
 
-Run after editing -> regenerates content/examples/*.json.
+Run after editing -> regenerates content/examples/*.json (and any
+lessons declared via EL).
 """
 
 from __future__ import annotations
@@ -27,6 +42,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 OUT_DIR = ROOT / "examples"
+LESSONS_DIR = ROOT / "example_lessons"
+REPO_ROOT = ROOT.parent
 
 # ---------- builder helpers -------------------------------------------------
 
@@ -145,6 +162,237 @@ def hl(row, col, length=1, **flags):
     return h
 
 
+# ---------- lesson-backed (EL) authoring --------------------------------------
+#
+# An EL() example carries authentic shellpilot-captured screenshots. The
+# author describes a small lesson (initial file content + a list of frame
+# specs), and EL() takes care of:
+#
+#   * Writing the lesson JSON to content/example_lessons/<id>.json,
+#     wrapped with the standard setup (write file → nvim → swap guard)
+#     and teardown (rm -f) blocks.
+#   * Computing the `source.select` indices so each example frame maps
+#     to the right captured frame.
+#   * Filling in `initial: {file, content, cursor}` so the "try this"
+#     QR code starts the simulator at the same position the demo does.
+#
+# Each frame in `frames=` is built with LF(...). The first LF may have
+# `actions=[]` (the post-setup state); subsequent LFs list the lesson
+# steps that produce the next screenshot. Helpers K/T/X/ESC/ENTER make
+# the action lists short and readable.
+
+# Map from `lang=` to a sensible filename extension. Mirrors the
+# practice_filename() sniff path in content/lib/sim_link.py so the sim's
+# syntax highlighting dispatch lines up with what the example shows.
+_LANG_EXT = {
+    "text": "txt", "txt": "txt", "plain": "txt", None: "txt", "": "txt",
+    "python": "py", "py": "py",
+    "javascript": "js", "js": "js",
+    "c": "c", "cpp": "cpp",
+    "html": "html", "css": "css",
+    "json": "json", "yaml": "yaml", "yml": "yaml",
+    "shell": "sh", "sh": "sh", "bash": "sh",
+    "go": "go", "rust": "rs", "markdown": "md", "md": "md",
+}
+
+
+def K(keys):           return {"keys": keys}
+def T(text):           return {"type": text}
+def X(cmd):            return {"ex": cmd}
+def WAIT_FOR(text):    return {"waitForScreen": text, "timeout": 5.0}
+ESC = "escape"
+ENTER = "enter"
+
+
+def LF(*, actions=None, caption="", narration="", keys=""):
+    """One frame in an EL() example.
+
+    actions   : list of shellpilot step dicts/strings that run before this
+                frame is captured. None or [] means "use the current state"
+                (i.e. the post-setup state, for the first frame).
+    caption   : caption shown above the screenshot.
+    narration : prose printed below the caption.
+    keys      : display-only key chord (for the printed caption).
+    """
+    return {
+        "actions": list(actions) if actions else [],
+        "caption": caption,
+        "narration": narration,
+        "keys": keys,
+    }
+
+
+def EL(eid, title, summary, topic, *,
+       content,
+       cursor=(0, 0),
+       filename=None,
+       lang=None,
+       cols=40, rows=10,
+       nvim_args=None,
+       prep=None,
+       extra_setup=None,
+       frames):
+    """Lesson-backed example.
+
+    Args:
+      eid       : example id (e.g. "foundations.modes").
+      title, summary, topic : same as E().
+      content   : initial buffer. List of lines OR a single string. A
+                  trailing newline is added if missing.
+      cursor    : (row, col) tuple — where the cursor sits before the
+                  first frame. Translated into preparation key presses
+                  (gg / <r>j / 0 / <c>l) appended to the setup block.
+      filename  : explicit nvim filename. Defaults to "practice.<ext>"
+                  based on `lang`.
+      lang      : language hint — drives the file extension and the
+                  sim's syntax-highlighting dispatch.
+      cols/rows : terminal dimensions for the captured frames.
+      nvim_args : list of extra args to pass on the nvim command line.
+                  Use this for options like ``-c "set report=0"`` whose
+                  echo from ``:set`` would otherwise leak into frame 0.
+      prep      : extra lesson steps to run BEFORE the first frame
+                  (after cursor positioning). Use for setup actions
+                  whose result is the "starting state" of the demo.
+                  Either a single step or a list.
+      extra_setup : extra shellpilot steps to splice into the lesson's
+                    setup block (run fast, not captured). Use for shell
+                    commands like `:syntax off` that aren't part of the
+                    demo proper.
+      frames    : list of LF(...) entries — one per example frame.
+    """
+    if isinstance(content, str):
+        content_str = content if content.endswith("\n") else content + "\n"
+    else:
+        content_str = "\n".join(content) + "\n"
+
+    # Pick a filename.
+    if filename:
+        file = filename
+    else:
+        ext = _LANG_EXT.get(lang, "txt")
+        file = f"practice.{ext}"
+
+    # Standard setup: clean nvim state, write file, open it, dismiss the
+    # swap-file prompt if one appears.
+    nvim_cmd = "nvim"
+    if nvim_args:
+        # Quote each arg so it can contain spaces/quotes.
+        import shlex
+        nvim_cmd += " " + " ".join(shlex.quote(a) for a in nvim_args)
+    nvim_cmd += f" {file}"
+    setup: list = [
+        {"line": "export TERM=xterm-256color"},
+        {"line": "mkdir -p ~/vimfu && cd ~/vimfu"},
+        {"line": f"rm -f {file} .{file}.swp"},
+        {"line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"},
+        {"writeFile": file, "content": content_str, "noDedent": True},
+        {"line": "clear"},
+        {"line": nvim_cmd},
+        {"waitForScreen": "All", "timeout": 30.0},
+        {"ifScreen": "swap file", "thenKeys": "d"},
+    ]
+    if extra_setup:
+        setup.extend(extra_setup)
+
+    # Translate non-trivial starting cursors into a positioning sequence
+    # appended to setup so the FIRST captured frame already sits where
+    # the demo begins.
+    r, c = cursor
+    if r > 0 or c > 0:
+        mv = "gg"
+        if r > 0: mv += f"{r}j"
+        mv += "0"
+        if c > 0: mv += f"{c}l"
+        setup.append({"keys": mv})
+
+    # Optional prep steps run between cursor positioning and the first
+    # captured frame. Useful for "open a register" or "start recording"
+    # style setup that needs to be in effect before the demo proper.
+    if prep is not None:
+        if isinstance(prep, (list, tuple)):
+            setup.extend(prep)
+        else:
+            setup.append(prep)
+
+    # Flatten all frame actions into the lesson's steps array. Track
+    # cumulative captured-frame index so each example frame picks the
+    # right one.
+    #
+    # Frame 0 of the capture is the post-setup state. The FIRST LF with
+    # actions=[] sits on that frame (or, if it has actions, after them).
+    lesson_steps: list = []
+    select: list[int] = []
+    cumulative = 0   # last captured frame index (0 = post-setup)
+    for fr in frames:
+        for act in fr["actions"]:
+            lesson_steps.append(act)
+            cumulative += 1
+        select.append(cumulative)
+
+    teardown = [
+        ESC,
+        T(":q!"),
+        ENTER,
+        {"line": f"rm -f {file}"},
+    ]
+
+    lesson = {
+        "title": f"VimFu — {eid} (example screenshots)",
+        "description": f"Lesson used by content/examples/{eid}.json to capture authentic Vim frames. Not intended for video.",
+        "speed": 1.0,
+        "humanize": 0,
+        "rows": rows,
+        "cols": cols,
+        "ttsEnabled": False,
+        "recordVideo": False,
+        "clickKeys": False,
+        "setup": setup,
+        "steps": lesson_steps,
+        "teardown": teardown,
+    }
+
+    LESSONS_DIR.mkdir(exist_ok=True)
+    lesson_path = LESSONS_DIR / f"{eid.replace('.', '_')}.json"
+    lesson_path.write_text(
+        json.dumps(lesson, indent=2, ensure_ascii=False),
+        encoding="utf-8"
+    )
+
+    # Build the example payload. Each frame entry holds only display
+    # metadata — the captured frame supplies all the pixels.
+    example_frames: list = []
+    for fr in frames:
+        entry: dict = {}
+        if fr.get("caption"):   entry["caption"] = fr["caption"]
+        if fr.get("narration"): entry["narration"] = fr["narration"]
+        if fr.get("keys"):      entry["keys"] = fr["keys"]
+        example_frames.append(entry)
+
+    out = {
+        "format": "vimfu-content-example",
+        "version": 1,
+        "id": eid,
+        "title": title,
+        "summary": summary,
+        "topic": topic,
+        "source": {
+            "lesson": f"content/example_lessons/{lesson_path.name}",
+            "select": select,
+        },
+        "initial": {
+            "file": file,
+            "content": content_str,
+            "cursor": [r, c],
+        },
+    }
+    if lang is not None:
+        out["lang"] = lang
+    if filename is not None:
+        out["filename"] = filename
+    out["frames"] = example_frames
+    return out
+
+
 # Common "INSERT mode" status row mode_line value
 INSERT_LINE = "-- INSERT --".ljust(40)
 VISUAL_LINE = "-- VISUAL --".ljust(40)
@@ -169,233 +417,221 @@ def add(ex):
 
 # ============ Part 1 — Foundations ==========================================
 
-add(E("foundations.modes",
+add(EL("foundations.modes",
     "*normal mode* \u2192 *insert mode* \u2192 *normal mode*",
     "The mode transition every editing change goes through.",
     "foundations.modes-overview",
-    [
-        # Frame indices into the captured lesson:
-        #   0 = initial (cursor at 0,0)         — skipped
-        #   1 = after 5l (cursor at 0,5, on the space)
-        #   2 = after i (cursor at 0,5, INSERT mode)   — skipped
-        #   3 = after typing ', vim' (cursor at 0,10, INSERT)
-        #   4 = after Esc (cursor at 0,9, on the 'm')
-        SF(caption="*Normal mode.* Cursor on the space.",
+    content="Hello world",
+    cursor=(0, 5),
+    filename="hi.txt",
+    frames=[
+        LF(caption="*Normal mode.* Cursor on the space.",
            narration="When you open a file, you start in *normal mode.* Keystrokes are commands."),
-        SF(keys="i, vim",
-           caption="{key:i}, then type `, vim` — *insert mode,* text added.",
+        LF(actions=[K("i"), T(", vim")],
+           keys="i, vim",
+           caption="{key:i}, then type `, vim` \u2014 *insert mode,* text added.",
            narration="{key:i} enters *insert mode* at the cursor; subsequent keys produce text. The status line below advertises the mode."),
-        SF(keys="Esc",
-           caption="{key:Esc} — back to *normal mode.*",
+        LF(actions=[ESC],
+           keys="Esc",
+           caption="{key:Esc} \u2014 back to *normal mode.*",
            narration="{key:Esc} commits the insert and returns to *normal mode.* The whole insertion is one undoable change."),
-    ],
-    source={
-        "lesson": "content/example_lessons/foundations_modes.json",
-        "select": [1, 3, 4],
-    },
-    initial={
-        "file": "hi.txt",
-        "content": "Hello world\n",
-        "cursor": [0, 5],
-    },
-    filename="hi.txt"))
+    ]))
 
-add(E("foundations.grammar",
+add(EL("foundations.grammar",
     "operator + motion = sentence",
     "The grammar in three keystrokes.",
     "foundations.universal-grammar",
-    [
-        F(["the quick brown fox"], cursor=(0,4),
-          caption="Cursor on 'q'.", narration="Normal mode. We will run d-w: the delete operator with the word motion."),
-        F(["the brown fox"], cursor=(0,4), keys="dw",
-          caption="dw — 'quick ' deleted.",
-          narration="Operator d (verb) plus motion w (noun). Same grammar applies for any operator+motion pair."),
-        F(["the BROWN fox"], cursor=(0,8), keys="lgUw",
-          caption="gUw — 'BROWN' uppercased.",
-          narration="Swap the operator for gU (uppercase), keep motion w. Free upgrade — every motion works with every operator."),
+    content="the quick brown fox",
+    cursor=(0, 4),
+    frames=[
+        LF(caption="Cursor on `q`.",
+           narration="*normal mode.* We'll run `dw`: the delete operator with the word motion."),
+        LF(actions=[K("dw")],
+           keys="dw",
+           caption="`dw` \u2014 `quick ` deleted.",
+           narration="Operator `d` (verb) plus motion `w` (noun). The same grammar applies for any operator+motion pair."),
+        LF(actions=[K("gUw")],
+           keys="gUw",
+           caption="`gUw` \u2014 `BROWN` uppercased.",
+           narration="Swap the operator for `gU` (uppercase), keep motion `w`. Free upgrade \u2014 every motion works with every operator."),
     ]))
 
 
 # ============ Part 2 — Survival ============================================
 
-add(E("survival.open-save-quit",
+add(EL("survival.open-save-quit",
     ":w and :q",
     "Save and quit from the Ex prompt.",
     "survival.open-save-quit",
-    [
-        F(["greetings", "from vim"], cursor=(1,8),
-          status="hello.txt [+]            2,9            All",
-          caption="Modified buffer ([+])."),
-        F(["greetings", "from vim"], cursor=(1,8), keys=":w",
-          status="hello.txt              2,9            All",
-          mode_line='"hello.txt" 2L, 19B written',
-          caption=":w writes the file.", narration="Status loses [+]; the file is on disk. :q would now leave Vim."),
+    content="greetings\nfrom vi",
+    cursor=(1, 0),
+    filename="hello.txt",
+    prep=[K("A"), T("m"), ESC],
+    frames=[
+        LF(caption="Modified buffer ([+])."),
+        LF(actions=[X("w")], keys=":w",
+           caption=":w writes the file.",
+           narration="Status loses [+]; the file is on disk. :q would now leave Vim."),
     ]))
 
-add(E("survival.insert-and-back",
+add(EL("survival.insert-and-back",
     "i and Esc",
     "Enter Insert with i; leave with Esc.",
     "survival.insert-and-back",
-    [
-        F(["foo"], cursor=(0,0)),
-        F(["foo"], cursor=(0,0), keys="i", mode_line=INSERT_LINE,
-          caption="Insert mode begins."),
-        F(["barfoo"], cursor=(0,2), keys="bar", mode_line=INSERT_LINE,
-          caption="Three letters typed."),
-        F(["barfoo"], cursor=(0,2), keys="Esc",
-          caption="Esc — back to Normal.",
-          narration="Insert mode is for typing characters; Normal mode is for everything else."),
+    content="foo",
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("i")], keys="i", caption="Insert mode begins."),
+        LF(actions=[T("bar")], keys="bar", caption="Three letters typed."),
+        LF(actions=[ESC], keys="Esc", caption="Esc — back to Normal.",
+           narration="Insert mode is for typing characters; Normal mode is for everything else."),
     ]))
 
-add(E("survival.undo-redo",
+add(EL("survival.undo-redo",
     "u and Ctrl-R",
     "Undo, then redo.",
     "survival.undo-redo",
-    [
-        F(["alpha", "bravo", "charlie"], cursor=(1,0)),
-        F(["alpha", "charlie"], cursor=(1,0), keys="dd",
-          caption="dd deletes 'bravo'."),
-        F(["alpha", "bravo", "charlie"], cursor=(1,0), keys="u",
-          caption="u — bravo back."),
-        F(["alpha", "charlie"], cursor=(1,0), keys="Ctrl-R",
-          caption="Ctrl-R — redo (gone again).",
-          narration="Undo and redo navigate the change history. Vim keeps a tree, not just a stack — see undo-tree."),
+    content=["alpha", "bravo", "charlie"],
+    cursor=(1, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("dd")], keys="dd", caption="dd deletes 'bravo'."),
+        LF(actions=[K("u")], keys="u", caption="u — bravo back."),
+        LF(actions=[K("Ctrl-R")], keys="Ctrl-R", caption="Ctrl-R — redo (gone again).",
+           narration="Undo and redo navigate the change history. Vim keeps a tree, not just a stack — see undo-tree."),
     ]))
 
-add(E("survival.hjkl",
+add(EL("survival.hjkl",
     "h j k l",
     "Move without leaving home row.",
     "survival.hjkl",
-    [
-        F(["alpha", "bravo", "charlie"], cursor=(0,0),
-          caption="Start at top-left."),
-        F(["alpha", "bravo", "charlie"], cursor=(1,0), keys="j",
-          caption="j — down a line."),
-        F(["alpha", "bravo", "charlie"], cursor=(1,3), keys="lll",
-          caption="lll — three right."),
-        F(["alpha", "bravo", "charlie"], cursor=(2,3), keys="j",
-          caption="j — down again."),
+    content=["alpha", "bravo", "charlie"],
+    cursor=(0, 0),
+    frames=[
+        LF(caption="Start at top-left."),
+        LF(actions=[K("j")], keys="j", caption="j — down a line."),
+        LF(actions=[K("lll")], keys="lll", caption="lll — three right."),
+        LF(actions=[K("j")], keys="j", caption="j — down again."),
     ]))
 
 
 # ============ Part 3 — Editing =============================================
 
-add(E("editing.insert-variants",
+add(EL("editing.insert-variants",
     "i I a A o O",
     "Six entries to Insert mode.",
     "editing.insert-variants",
-    [
-        F(["    indented line"], cursor=(0,8),
-          caption="Cursor middle of line."),
-        F(["    indented line"], cursor=(0,8), keys="I", mode_line=INSERT_LINE,
-          caption="I — first non-blank.",
-          narration="Cursor jumps before 'i' (column 4) and Insert begins. I = ^i."),
-        F(["    indented line"], cursor=(0,17), keys="Esc A", mode_line=INSERT_LINE,
-          caption="A — end of line.",
-          narration="A jumps past the last char. Pair with I for boundary insertions; pair with o/O for new lines."),
+    content="    indented line",
+    cursor=(0, 8),
+    frames=[
+        LF(caption="Cursor middle of line."),
+        LF(actions=[K("I")], keys="I",
+           caption="I — first non-blank.",
+           narration="Cursor jumps before 'i' (column 4) and Insert begins. I = ^i."),
+        LF(actions=[ESC, K("A")], keys="Esc A",
+           caption="A — end of line.",
+           narration="A jumps past the last char. Pair with I for boundary insertions; pair with o/O for new lines."),
     ]))
 
-add(E("editing.word-motions",
+add(EL("editing.word-motions",
     "w b e",
     "Move by word boundary.",
     "editing.word-motions",
-    [
-        F(["the quick brown fox"], cursor=(0,0),
-          caption="Cursor on 't' of 'the'."),
-        F(["the quick brown fox"], cursor=(0,4), keys="w",
-          caption="w — start of next word."),
-        F(["the quick brown fox"], cursor=(0,8), keys="e",
-          caption="e — end of current word."),
-        F(["the quick brown fox"], cursor=(0,4), keys="b",
-          caption="b — back to 'q'.",
-          narration="w/b move *to* word boundaries; e moves to the *end* of a word. With operators: dw, db, de all differ slightly — see grammar."),
+    content="the quick brown fox",
+    cursor=(0, 0),
+    frames=[
+        LF(caption="Cursor on 't' of 'the'."),
+        LF(actions=[K("w")], keys="w", caption="w — start of next word."),
+        LF(actions=[K("e")], keys="e", caption="e — end of current word."),
+        LF(actions=[K("b")], keys="b", caption="b — back to 'q'.",
+           narration="w/b move *to* word boundaries; e moves to the *end* of a word. With operators: dw, db, de all differ slightly — see grammar."),
     ]))
 
-add(E("editing.line-motions",
+add(EL("editing.line-motions",
     "0 ^ $",
     "Three flavors of line start/end.",
     "editing.line-motions",
-    [
-        F(["    hello world"], cursor=(0,8)),
-        F(["    hello world"], cursor=(0,0), keys="0",
-          caption="0 — column 0 (literal start)."),
-        F(["    hello world"], cursor=(0,4), keys="^",
-          caption="^ — first non-blank."),
-        F(["    hello world"], cursor=(0,14), keys="$",
-          caption="$ — end of line.",
-          narration="Use ^ when you want code, 0 when you want column zero, $ to land on the last char."),
+    content="    hello world",
+    cursor=(0, 8),
+    frames=[
+        LF(),
+        LF(actions=[K("0")], keys="0", caption="0 — column 0 (literal start)."),
+        LF(actions=[K("^")], keys="^", caption="^ — first non-blank."),
+        LF(actions=[K("$")], keys="$", caption="$ — end of line.",
+           narration="Use ^ when you want code, 0 when you want column zero, $ to land on the last char."),
     ]))
 
-add(E("editing.file-motions",
+add(EL("editing.file-motions",
     "gg G",
     "Top and bottom of file.",
     "editing.file-motions",
-    [
-        F(["line 1", "line 2", "line 3", "line 4", "line 5"], cursor=(2,0),
-          caption="Middle of file."),
-        F(["line 1", "line 2", "line 3", "line 4", "line 5"], cursor=(0,0), keys="gg",
-          caption="gg — top."),
-        F(["line 1", "line 2", "line 3", "line 4", "line 5"], cursor=(4,0), keys="G",
-          caption="G — bottom.",
-          narration="With a count: 3G or :3<CR> jumps to line 3."),
+    content=["line 1", "line 2", "line 3", "line 4", "line 5"],
+    cursor=(2, 0),
+    frames=[
+        LF(caption="Middle of file."),
+        LF(actions=[K("gg")], keys="gg", caption="gg — top."),
+        LF(actions=[K("G")], keys="G", caption="G — bottom.",
+           narration="With a count: 3G or :3<CR> jumps to line 3."),
     ]))
 
-add(E("editing.delete",
+add(EL("editing.delete",
     "x dw dd",
     "Three deletes, three scopes.",
     "editing.delete",
-    [
-        F(["the quick brown fox"], cursor=(0,4),
-          caption="Cursor on 'q'."),
-        F(["the uick brown fox"], cursor=(0,4), keys="x",
-          caption="x — one char gone."),
-        F(["the brown fox"], cursor=(0,4), keys="dw",
-          caption="dw — through next word boundary."),
-        F([""], cursor=(0,0), keys="dd",
-          caption="dd — entire line.",
-          narration="d is the operator; x is sugar for dl. The deleted text goes to the unnamed register and the numbered register 1."),
+    content="the quick brown fox",
+    cursor=(0, 4),
+    frames=[
+        LF(caption="Cursor on 'q'."),
+        LF(actions=[K("x")], keys="x", caption="x — one char gone."),
+        LF(actions=[K("dw")], keys="dw", caption="dw — through next word boundary."),
+        LF(actions=[K("dd")], keys="dd", caption="dd — entire line.",
+           narration="d is the operator; x is sugar for dl. The deleted text goes to the unnamed register and the numbered register 1."),
     ]))
 
-add(E("editing.change",
+add(EL("editing.change",
     "cw is c then w",
     "Change = delete + Insert in one step.",
     "editing.change",
-    [
-        F(["the quick brown fox"], cursor=(0,4)),
-        F(["the  brown fox"], cursor=(0,4), keys="cw", mode_line=INSERT_LINE,
-          caption="cw — 'quick' gone, Insert mode on.",
-          narration="Note the trailing space stays — cw stops *just before* the next word. (One of cw's well-known quirks.)"),
-        F(["the slow brown fox"], cursor=(0,7), keys="slow", mode_line=INSERT_LINE,
-          caption="Type 'slow'."),
-        F(["the slow brown fox"], cursor=(0,7), keys="Esc",
-          caption="Esc — change is committed and dot-repeatable."),
+    content="the quick brown fox",
+    cursor=(0, 4),
+    frames=[
+        LF(),
+        LF(actions=[K("cw")], keys="cw",
+           caption="cw — 'quick' gone, Insert mode on.",
+           narration="Note the trailing space stays — cw stops *just before* the next word. (One of cw's well-known quirks.)"),
+        LF(actions=[T("slow")], keys="slow", caption="Type 'slow'."),
+        LF(actions=[ESC], keys="Esc",
+           caption="Esc — change is committed and dot-repeatable."),
     ]))
 
-add(E("editing.yank-put",
+add(EL("editing.yank-put",
     "yy then p",
     "Copy a line, paste below.",
     "editing.yank-put",
-    [
-        F(["alpha", "bravo", "charlie"], cursor=(1,0)),
-        F(["alpha", "bravo", "charlie"], cursor=(1,0), keys="yy",
-          status="list.txt                 2,1            All",
-          mode_line="1 line yanked",
-          caption="yy — line into unnamed register.",
-          narration="Buffer unchanged. The unnamed register now holds 'bravo\\n'."),
-        F(["alpha", "bravo", "bravo", "charlie"], cursor=(2,0), keys="p",
-          caption="p — pasted below.",
-          narration="Linewise paste opens a new line beneath. Capital P pastes above."),
+    content=["alpha", "bravo", "charlie"],
+    cursor=(1, 0),
+    filename="list.txt",
+    nvim_args=["-c", "set report=0"],
+    frames=[
+        LF(),
+        LF(actions=[K("yy")], keys="yy",
+           caption="yy — line into unnamed register.",
+           narration="Buffer unchanged. The unnamed register now holds 'bravo\\n'."),
+        LF(actions=[K("p")], keys="p", caption="p — pasted below.",
+           narration="Linewise paste opens a new line beneath. Capital P pastes above."),
     ]))
 
-add(E("editing.replace-char",
+add(EL("editing.replace-char",
     "r x",
     "Replace one character without entering Insert.",
     "editing.replace-char",
-    [
-        F(["foo"], cursor=(0,0)),
-        F(["xoo"], cursor=(0,0), keys="rx",
-          caption="rx — 'f' becomes 'x'.",
-          narration="r waits for the next keystroke and writes that char in place. No mode change. R enters Replace mode for many chars."),
+    content="foo",
+    cursor=(0, 0),
+    frames=[
+        LF(),
+        LF(actions=[K("rx")], keys="rx", caption="rx — 'f' becomes 'x'.",
+           narration="r waits for the next keystroke and writes that char in place. No mode change. R enters Replace mode for many chars."),
     ]))
 
 

@@ -182,13 +182,20 @@ class Overlay:
 class WriteFile:
     """Write content to a file via heredoc.
 
-    Content is automatically dedented (leading common whitespace removed).
+    Content is automatically dedented (leading common whitespace removed)
+    unless ``dedent=False`` is set.
     """
     path: str
     content: str
+    dedent: bool = True
 
     def execute(self, demo):
-        clean = textwrap.dedent(self.content).strip()
+        if self.dedent:
+            clean = textwrap.dedent(self.content).strip()
+        else:
+            # Preserve exact bytes — strip ONLY a trailing newline if any
+            # (the closing heredoc line always adds one back).
+            clean = self.content[:-1] if self.content.endswith("\n") else self.content
         # Use absolute sleeps (not speed-adjusted) to prevent ConPTY
         # buffer deadlock when running in fast mode.
         demo.send_keys(f"cat << 'VIMFU_EOF' > {self.path}\n")
@@ -480,7 +487,8 @@ def _parse_step(item):
         return Overlay(item["overlay"], caption=item.get("caption", ""),
                        duration=item.get("duration", 2.0))
     if "writeFile" in item:
-        return WriteFile(item["writeFile"], item["content"])
+        return WriteFile(item["writeFile"], item["content"],
+                         dedent=not item.get("noDedent", False))
 
     raise ValueError(f"Unknown step type: {item!r}")
 

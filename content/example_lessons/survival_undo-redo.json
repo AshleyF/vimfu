@@ -1,6 +1,6 @@
 {
-  "title": "VimFu — foundations.modes (example screenshots)",
-  "description": "Lesson used by content/examples/foundations.modes.json to capture authentic Vim frames. Not intended for video.",
+  "title": "VimFu — survival.undo-redo (example screenshots)",
+  "description": "Lesson used by content/examples/survival.undo-redo.json to capture authentic Vim frames. Not intended for video.",
   "speed": 1.0,
   "humanize": 0,
   "rows": 10,
@@ -16,21 +16,21 @@
       "line": "mkdir -p ~/vimfu && cd ~/vimfu"
     },
     {
-      "line": "rm -f hi.txt .hi.txt.swp"
+      "line": "rm -f practice.txt .practice.txt.swp"
     },
     {
       "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
     },
     {
-      "writeFile": "hi.txt",
-      "content": "Hello world\n",
+      "writeFile": "practice.txt",
+      "content": "alpha\nbravo\ncharlie\n",
       "noDedent": true
     },
     {
       "line": "clear"
     },
     {
-      "line": "nvim hi.txt"
+      "line": "nvim practice.txt"
     },
     {
       "waitForScreen": "All",
@@ -41,17 +41,19 @@
       "thenKeys": "d"
     },
     {
-      "keys": "gg05l"
+      "keys": "gg1j0"
     }
   ],
   "steps": [
     {
-      "keys": "i"
+      "keys": "dd"
     },
     {
-      "type": ", vim"
+      "keys": "u"
     },
-    "escape"
+    {
+      "keys": "Ctrl-R"
+    }
   ],
   "teardown": [
     "escape",
@@ -60,7 +62,7 @@
     },
     "enter",
     {
-      "line": "rm -f hi.txt"
+      "line": "rm -f practice.txt"
     }
   ]
 }

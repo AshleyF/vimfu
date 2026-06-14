@@ -2,68 +2,36 @@
   "format": "vimfu-content-example",
   "version": 1,
   "id": "editing.yank-put",
-  "title": "{key:y}{key:y} then {key:p}",
+  "title": "yy then p",
   "summary": "Copy a line, paste below.",
   "topic": "editing.yank-put",
+  "source": {
+    "lesson": "content/example_lessons/editing_yank-put.json",
+    "select": [
+      0,
+      1,
+      2
+    ]
+  },
+  "initial": {
+    "file": "list.txt",
+    "content": "alpha\nbravo\ncharlie\n",
+    "cursor": [
+      1,
+      0
+    ]
+  },
+  "filename": "list.txt",
   "frames": [
+    {},
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "alpha",
-          "bravo",
-          "charlie"
-        ],
-        "cursor": [
-          1,
-          0
-        ]
-      }
-    },
-    {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "alpha",
-          "bravo",
-          "charlie",
-          "~",
-          "~",
-          "~",
-          "~",
-          "~",
-          "list.txt                 2,1            ",
-          "1 line yanked"
-        ],
-        "cursor": [
-          1,
-          0
-        ],
-        "statusRow": 8
-      },
-      "caption": "{key:y}{key:y} \u2014 line into unnamed register.",
+      "caption": "yy \u2014 line into unnamed register.",
       "narration": "Buffer unchanged. The unnamed register now holds 'bravo\\n'.",
       "keys": "yy"
     },
     {
-      "compact": {
-        "rows": 10,
-        "cols": 40,
-        "lines": [
-          "alpha",
-          "bravo",
-          "bravo",
-          "charlie"
-        ],
-        "cursor": [
-          2,
-          0
-        ]
-      },
-      "caption": "{key:p} \u2014 pasted below.",
-      "narration": "Linewise paste opens a new line beneath. {key:P} pastes above.",
+      "caption": "p \u2014 pasted below.",
+      "narration": "Linewise paste opens a new line beneath. Capital P pastes above.",
       "keys": "p"
     }
   ]
