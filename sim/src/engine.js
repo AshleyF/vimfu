@@ -1456,9 +1456,14 @@ export class VimEngine {
     // Pending z
     if (this._pendingZ) {
       this._pendingZ = false;
-      this._handleZ(key);
-      this._pendingCount = '';
-      return;
+      // zp/zP: paste like p/P but without the autoindent fix-up. We don't
+      // model autoindent on paste, so fall through to normal p/P handling.
+      if (key !== 'p' && key !== 'P') {
+        this._handleZ(key);
+        this._pendingCount = '';
+        return;
+      }
+      // fall through for p/P
     }
 
     // Pending zu (zug/zuw)
@@ -4787,6 +4792,25 @@ export class VimEngine {
       case ']': case 'Ctrl-]':
         // Ctrl-W ] / Ctrl-W Ctrl-] — split + tag jump. No tag DB in sim.
         this._reportCmdMessage({ error: 'E433: No tags file' });
+        break;
+      case '}':
+        // Ctrl-W } — open preview window for tag matching word under cursor.
+        // Without a tags database in sim, the call fails with E433. nvim
+        // shows the error as a Press-ENTER prompt because the command is
+        // ex-driven internally. We mimic by raising it as fromEx so the
+        // next <CR> dismisses the prompt instead of being interpreted as a
+        // line-down movement.
+        this._messagePrompt = { error: 'E433: No tags file' };
+        break;
+      case 'P':
+        // Ctrl-W P — switch to preview window. Sim has no preview, so the
+        // command fails with E441. Use messagePrompt so the next <CR>
+        // dismisses it (matches nvim's Press-ENTER behaviour).
+        this._messagePrompt = { error: 'E441: There is no preview window' };
+        break;
+      case 'z': case 'Ctrl-Z':
+        // Ctrl-W z — close the preview window. Without a preview window in
+        // sim this is a quiet no-op (matches nvim which silently ignores).
         break;
       case 'i': case 'Ctrl-I': {
         // Ctrl-W i — open identifier under cursor in a horizontal split.
@@ -8588,9 +8612,17 @@ export class VimEngine {
         this._updateDesiredCol();
         this.mode = Mode.NORMAL;
         this.commandLine = '';
+        this._pendingCount = '';
+        return;
       }
-      this._pendingCount = '';
-      return;
+      // zy / zp / zP in visual mode: same as y/p/P but skip autoindent
+      // fix-up (which we don't model). Fall through to normal visual
+      // dispatch so the action runs.
+      if (key !== 'y' && key !== 'p' && key !== 'P') {
+        this._pendingCount = '';
+        return;
+      }
+      // fall through for y/p/P
     }
 
     // Pending register selection ("x)
