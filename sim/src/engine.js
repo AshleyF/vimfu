@@ -4993,6 +4993,40 @@ export class VimEngine {
     'xa', 'xit', 'yank',
   ];
 
+  // Expanded list used for insert-mode ^X^V completion. Includes the
+  // executable Ex commands plus cmdline-only commands that scripts
+  // commonly reference even when sim doesn't execute them.
+  static _VIM_CMD_COMPLETION = [
+    'abbreviate', 'argdo', 'augroup', 'autocmd',
+    'bdelete', 'bnext', 'bprevious', 'break', 'buffer', 'buffers',
+    'cabbrev', 'call', 'catch', 'cd', 'changes', 'chdir', 'close',
+    'cmap', 'colorscheme', 'command', 'continue', 'copy',
+    'delete', 'delmarks', 'display',
+    'echo', 'echomsg', 'edit', 'else', 'elseif', 'endfor', 'endfunction',
+    'endif', 'endtry', 'endwhile', 'enew', 'execute',
+    'file', 'files', 'finally', 'finish', 'for', 'function',
+    'global',
+    'help', 'highlight',
+    'iabbrev', 'if', 'imap',
+    'join', 'jumps',
+    'let', 'loadview', 'ls', 'lua',
+    'map', 'mapclear', 'marks', 'messages', 'mksession', 'mkview', 'move',
+    'new', 'nmap', 'nohlsearch', 'noremap', 'normal', 'number',
+    'omap', 'only',
+    'print', 'put', 'pwd', 'python',
+    'qa', 'quit',
+    'read', 'redir', 'registers', 'retab', 'return', 'runtime',
+    'saveas', 'set', 'setglobal', 'setlocal', 'silent', 'sort', 'source',
+    'split', 'substitute', 'syntax',
+    'tabclose', 'tabedit', 'tabnew', 'tabnext', 'tabonly', 'tabprevious',
+    'throw', 'try',
+    'undolist', 'unlet', 'unmap',
+    'version', 'vglobal', 'vmap', 'vsplit',
+    'wa', 'while', 'wq', 'wqa', 'write',
+    'xa', 'xit',
+    'yank',
+  ];
+
   // All :set option names (sorted).
   static _SET_OPTIONS = [
     'autoindent', 'cursorline', 'expandtab', 'fileformat',
@@ -7805,6 +7839,11 @@ export class VimEngine {
         // it degrades to plain forward keyword completion over the buffer.
         const dir = (key === 'Ctrl-P') ? -1 : 1;
         this._handleInsertKeywordCompletion(dir);
+        return;
+      }
+      if (key === 'Ctrl-V') {
+        // ^X^V: vim ex-command completion.
+        this._handleInsertVimCmdCompletion();
         return;
       }
       return;
@@ -13076,6 +13115,40 @@ export class VimEngine {
     }
     return matches;
   }
+
+  // ── Insert-mode ^X^V: vim ex-command completion ──
+  // Replaces the keyword prefix at the cursor with the first matching
+  // vim ex command from a curated list. Sim's _EX_COMMANDS only covers
+  // commands the engine actually executes; this list extends it with
+  // commonly typed cmdline-only commands (setlocal, function, autocmd,
+  // …) so users can complete keywords that appear in scripts.
+  _handleInsertVimCmdCompletion() {
+    if (this._insertCompletion && this._insertCompletion.matches.length > 0) {
+      const ic = this._insertCompletion;
+      ic.idx = (ic.idx + 1) % ic.matches.length;
+      this._applyInsertCompletion();
+      return;
+    }
+    const line = this.buffer.lines[this.cursor.row] || '';
+    const isKW = (c) => /[A-Za-z0-9_]/.test(c);
+    let p = this.cursor.col;
+    while (p > 0 && isKW(line[p - 1])) p--;
+    const prefix = line.slice(p, this.cursor.col);
+    if (!prefix) return;
+    const matches = VimEngine._VIM_CMD_COMPLETION
+      .filter(c => c.startsWith(prefix) && c !== prefix);
+    if (matches.length === 0) return;
+    this._insertCompletion = {
+      matches,
+      idx: 0,
+      anchorRow: this.cursor.row,
+      anchorCol: p,
+      prefix,
+      originalDirection: 1,
+    };
+    this._applyInsertCompletion();
+  }
+
 
 
   /**
