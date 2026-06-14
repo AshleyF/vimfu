@@ -277,6 +277,10 @@ export class VimEngine {
     this._bufferList = []; // {id, buffer, fileName, cursor, scrollTop, scrollLeft, undoStack, redoStack, changeCount, marks, folds, desiredCol, jumpList, jumpListPos, changeList, changeListPos}
     this._currentBufId = this._registerBuffer(this.buffer, this._fileName);
     this._alternateBufId = null;
+    // Filename remembered for the standalone-engine alternate-file
+    // lookup (`@#`, Ctrl-^) when there is no real alternate buffer —
+    // populated by `:e[dit] FILE` so subsequent commands can find it.
+    this._altFileName = null;
     // Link the initial window to its buffer id so per-window status lines
     // (filename, [+]) can be looked up correctly when rendering splits.
     this._windows[0].bufId = this._currentBufId;
@@ -2712,6 +2716,11 @@ export class VimEngine {
       case 'Ctrl-6': {
         if (this._alternateBufId != null) {
           this._switchToBuffer(this._alternateBufId);
+        } else if (this._altFileName) {
+          // Standalone-engine alternate (set by `:e[dit] FILE` without a
+          // VFS): if the alternate name matches the current file we
+          // have nothing to switch to, but nvim treats this as a silent
+          // no-op rather than reporting E23.
         } else {
           this.commandLine = 'E23: No alternate file';
           this._stickyCommandLine = true;
@@ -5198,7 +5207,7 @@ export class VimEngine {
         const alt = this._alternateBufId != null
           ? (this._bufferList.find(e => e.id === this._alternateBufId) || {}).fileName
           : null;
-        regText = alt || '';
+        regText = alt || this._altFileName || '';
       } else if (key === 'Ctrl-W') {
         // Ctrl-R Ctrl-W — insert <cword> at cursor position
         regText = this._wordUnderCursor() || '';
@@ -6023,6 +6032,17 @@ export class VimEngine {
           this.scrollLeft = 0;
           this._updateDesiredCol();
         }
+        // :e[dit] FILE (with an argument) — record the alternate filename
+        // so `@#` / `:echo @#` / Ctrl-^ can find it. Without a VFS we
+        // can't actually switch buffers, but real nvim's alternate-file
+        // bookkeeping (`#`) starts pointing at the file you just left.
+        // Set `_altFileName` to the current filename so subsequent
+        // lookups have something to return. Skip the bare `:e` form
+        // (no arg) — that's a re-read, not an alternate-file action.
+        const editArgMatch = cmd.match(/^e(?:d(?:it?)?)?!?\s+(\S.*?)\s*$/);
+        if (editArgMatch && this._fileName) {
+          this._altFileName = this._fileName;
+        }
         // SessionManager will overwrite this with the file-load message,
         // but in standalone engine mode (no VFS) we mimic nvim's "echo
         // typed cmdline until next keystroke" so subsequent chords like
@@ -6447,7 +6467,7 @@ export class VimEngine {
           const alt = this._alternateBufId != null
             ? (this._bufferList.find(e => e.id === this._alternateBufId) || {}).fileName
             : null;
-          result = alt || '';
+          result = alt || this._altFileName || '';
         } else if (rk === '%') {
           result = this._fileName || '';
         } else if (rk === ':') {
