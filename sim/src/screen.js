@@ -187,7 +187,7 @@ export class Screen {
     for (let i = 1; i < runs.length; i++) {
       const prev = merged[merged.length - 1];
       const cur = runs[i];
-      if (prev.fg === cur.fg && prev.bg === cur.bg) {
+      if (prev.fg === cur.fg && prev.bg === cur.bg && !!prev.u === !!cur.u && !!prev.b === !!cur.b && !!prev.i === !!cur.i) {
         merged[merged.length - 1] = { ...prev, n: prev.n + cur.n };
       } else {
         merged.push(cur);
@@ -608,6 +608,7 @@ export class Screen {
         // Build per-column colour arrays for this screen row
         const colFg = new Array(textCols).fill(t.normalFg);
         const colBg = new Array(textCols).fill(t.normalBg);
+        const colU = new Array(textCols).fill(false);
 
         // Apply :set list special chars (tab markers etc.) — dim gray.
         if (listCols && listCols.size > 0) {
@@ -651,6 +652,7 @@ export class Screen {
               const wEnd = (bufToScreen[sm.index + sm[0].length] ?? (sm.index + sm[0].length)) - 1;
               for (let sc = Math.max(wStart, sliceStart); sc <= Math.min(wEnd, sliceEnd - 1); sc++) {
                 colFg[sc - sliceStart] = spellFg;
+                colU[sc - sliceStart] = true;
               }
             }
           }
@@ -853,8 +855,10 @@ export class Screen {
         const textRuns = [];
         let runStart = 0;
         for (let c = 1; c <= textCols; c++) {
-          if (c === textCols || colFg[c] !== colFg[runStart] || colBg[c] !== colBg[runStart]) {
-            textRuns.push({ n: c - runStart, fg: colFg[runStart], bg: colBg[runStart] });
+          if (c === textCols || colFg[c] !== colFg[runStart] || colBg[c] !== colBg[runStart] || colU[c] !== colU[runStart]) {
+            const r = { n: c - runStart, fg: colFg[runStart], bg: colBg[runStart] };
+            if (colU[runStart]) r.u = true;
+            textRuns.push(r);
             runStart = c;
           }
         }

@@ -723,7 +723,7 @@ vacancy veil vendor verify versatile vessel veto vicinity vigor vintage violate 
 volatile voltage
 warrant watershed welfare whirl wholesale wilderness wield wilt withstand
 zeal zenith
-words mat hat bat rat pat tap gap map nap cap lap rap wrap strap trap snap notes
+words mat hat bat rat pat tap gap map nap cap lap rap wrap strap trap snap notes fox jumps
 `.trim();
 
 export const DICTIONARY = new Set(
