@@ -5968,6 +5968,33 @@ export class VimEngine {
     if (/^(w(r(i(te?)?)?)?|wq|x(it?)?|q(u(it?)?)?!?|qa!?|wa!?|wqa!?|xa!?|sav(e(as?)?)?)(\s|$)/.test(cmd) || /^e(d(it?)?)?!?(\s|$)/.test(cmd) || /^r(e(ad?)?)?!/.test(cmd) || /^r(e(ad?)?)?(\s|$)/.test(cmd) || cmd.startsWith('!')) {
       this._lastExCommand = cmd;
       this.commandLine = '';
+      // :r[ead] !cmd — without a real shell, we can't execute the command.
+      // Mimic nvim's behaviour: echo the typed cmdline, append a
+      // "shell returned 1" line, leave a blank trailer, then show the
+      // Press-ENTER prompt. If a prior multi-line message is being carried
+      // forward (e.g. back-to-back :r !cmd invocations), prepend it so the
+      // user sees the full accumulated output.
+      const readShellMatch = cmd.match(/^r(?:e(?:ad?)?)?\s*!\s*(.*?)\s*$/);
+      if (readShellMatch) {
+        const shellCmd = readShellMatch[1];
+        const normalFg = 'd4d4d4', normalBg = '000000';
+        const cols = this.cols;
+        const pad = (s) => s.length < cols ? s + ' '.repeat(cols - s.length) : s.slice(0, cols);
+        const mkLine = (text) => ({
+          text: pad(text),
+          runs: [{ n: cols, fg: normalFg, bg: normalBg }],
+        });
+        const lines = [];
+        if (this._pendingPromptCarry && this._pendingPromptCarry.lines) {
+          for (const l of this._pendingPromptCarry.lines) lines.push(l);
+        }
+        lines.push(mkLine(this._lastExTyped || (':r !' + shellCmd)));
+        lines.push(mkLine('shell returned 1'));
+        lines.push(mkLine(''));
+        this._messagePrompt = { lines };
+        this._pendingPromptCarry = null;
+        return;
+      }
       // :r[ead] FILE — without a SessionManager/VFS, the file cannot be
       // located. Mimic nvim's E484 error which surfaces as a Press-ENTER
       // prompt. SessionManager-backed runs overwrite this state with the
