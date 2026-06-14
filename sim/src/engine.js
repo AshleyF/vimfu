@@ -7797,6 +7797,12 @@ export class VimEngine {
       if (key === 'Ctrl-]') {
         this._insertError = 'E433: No tags file';
         this._insertCompletionAttempted = true;
+        return;
+      }
+      if (key === 'Ctrl-N' || key === 'Ctrl-P') {
+        // ^X^N / ^X^P: keyword completion (same as bare ^N/^P in insert)
+        this._handleInsertKeywordCompletion(key === 'Ctrl-N' ? 1 : -1);
+        return;
       }
       return;
     }
@@ -7812,6 +7818,15 @@ export class VimEngine {
       this._insertCompletionAttempted = false;
       // fall through
     }
+
+    // Bare ^N / ^P in insert mode: keyword completion (forward / backward).
+    if (key === 'Ctrl-N' || key === 'Ctrl-P') {
+      this._handleInsertKeywordCompletion(key === 'Ctrl-N' ? 1 : -1);
+      return;
+    }
+    // Any other key terminates an active completion cycle.
+    if (this._insertCompletion) this._insertCompletion = null;
+
 
     // Pending Ctrl-R = (expression register): accumulate the expression text
     // until Enter, then evaluate via _evalSubExpr and insert the result.
@@ -8161,6 +8176,7 @@ export class VimEngine {
         // Clear any insert-mode completion submode flags
         this._pendingInsertCtrlX = false;
         this._insertCompletionAttempted = false;
+        this._insertCompletion = null;
         if (this.cursor.col > 0) this.cursor.col--;
         this._stopRecording(); this._redoStack = [];
 
@@ -12983,6 +12999,81 @@ export class VimEngine {
     }
     return lastFit;
   }
+
+  // ── Insert-mode keyword completion (^N / ^P) ──
+  // Scans buffer for words sharing the keyword prefix ending at the cursor,
+  // then replaces the prefix with the next/prev match. Subsequent ^N/^P
+  // calls cycle through matches; any other key terminates the cycle.
+  _handleInsertKeywordCompletion(direction) {
+    if (this._insertCompletion && this._insertCompletion.matches.length > 0) {
+      const ic = this._insertCompletion;
+      // Cycle forward through the match list when the same key as the
+      // initial search direction is pressed; backward otherwise.
+      const step = (direction === ic.originalDirection) ? 1 : -1;
+      ic.idx = (ic.idx + step + ic.matches.length) % ic.matches.length;
+      this._applyInsertCompletion();
+      return;
+    }
+    const line = this.buffer.lines[this.cursor.row] || '';
+    const isKW = (c) => /[A-Za-z0-9_]/.test(c);
+    let p = this.cursor.col;
+    while (p > 0 && isKW(line[p - 1])) p--;
+    const prefix = line.slice(p, this.cursor.col);
+    if (!prefix) return;
+    const matches = this._collectKeywordMatches(prefix, direction);
+    if (matches.length === 0) return;
+    this._insertCompletion = {
+      matches,
+      idx: 0,
+      anchorRow: this.cursor.row,
+      anchorCol: p,
+      prefix,
+      originalDirection: direction,
+    };
+    this._applyInsertCompletion();
+  }
+
+  _applyInsertCompletion() {
+    const ic = this._insertCompletion;
+    const match = ic.matches[ic.idx];
+    const line = this.buffer.lines[ic.anchorRow] || '';
+    const before = line.slice(0, ic.anchorCol);
+    const after = line.slice(this.cursor.col);
+    this.buffer.lines[ic.anchorRow] = before + match + after;
+    this.cursor.col = ic.anchorCol + match.length;
+  }
+
+  _collectKeywordMatches(prefix, direction) {
+    const wordRe = /[A-Za-z_][A-Za-z0-9_]*/g;
+    const seen = new Set([prefix]);
+    const matches = [];
+    const numLines = this.buffer.lineCount;
+    if (numLines === 0) return matches;
+    const startRow = this.cursor.row;
+    const order = [];
+    if (direction === 1) {
+      for (let i = 0; i < numLines; i++) order.push((startRow + i) % numLines);
+    } else {
+      for (let i = 0; i < numLines; i++) {
+        order.push(((startRow - i) % numLines + numLines) % numLines);
+      }
+    }
+    const cursorWordStart = this.cursor.col - prefix.length;
+    for (const r of order) {
+      const ln = this.buffer.lines[r] || '';
+      wordRe.lastIndex = 0;
+      let m;
+      while ((m = wordRe.exec(ln)) !== null) {
+        if (r === startRow && m.index === cursorWordStart) continue;
+        if (m[0].startsWith(prefix) && !seen.has(m[0])) {
+          seen.add(m[0]);
+          matches.push(m[0]);
+        }
+      }
+    }
+    return matches;
+  }
+
 
   /**
    * Get display-line information for a cursor position within a wrapped buffer line.
