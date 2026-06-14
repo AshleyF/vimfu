@@ -5963,6 +5963,15 @@ export class VimEngine {
     if (/^(w(r(i(te?)?)?)?|wq|x(it?)?|q(u(it?)?)?!?|qa!?|wa!?|wqa!?|xa!?|sav(e(as?)?)?)(\s|$)/.test(cmd) || /^e(d(it?)?)?!?(\s|$)/.test(cmd) || /^r(e(ad?)?)?!/.test(cmd) || /^r(e(ad?)?)?(\s|$)/.test(cmd) || cmd.startsWith('!')) {
       this._lastExCommand = cmd;
       this.commandLine = '';
+      // :r[ead] FILE — without a SessionManager/VFS, the file cannot be
+      // located. Mimic nvim's E484 error which surfaces as a Press-ENTER
+      // prompt. SessionManager-backed runs overwrite this state with the
+      // actual "N lines added" message before render, so the prompt only
+      // appears in standalone-engine paths.
+      const readFileMatch = cmd.match(/^r(?:e(?:ad?)?)?\s+(?!!)(\S.*?)\s*$/);
+      if (readFileMatch) {
+        this._messagePrompt = { error: `E484: Can't open file ${readFileMatch[1]}` };
+      }
       const isEdit = /^e(d(it?)?)?!?(\s|$)/.test(cmd);
       if (isEdit) {
         // SessionManager will overwrite this with the file-load message,
