@@ -5027,6 +5027,32 @@ export class VimEngine {
     'yank',
   ];
 
+  // Static spell-correction table consulted by insert-mode ^X^S. The list
+  // is intentionally small — only common misspellings seen in demos — so
+  // the rule is "if not here, leave the typed word alone".
+  static _SPELL_CORRECTIONS = {
+    'acheive': 'achieve',
+    'acheived': 'achieved',
+    'arguement': 'argument',
+    'beleive': 'believe',
+    'beleived': 'believed',
+    'definately': 'definitely',
+    'goverment': 'government',
+    'occured': 'occurred',
+    'occuring': 'occurring',
+    'recieve': 'receive',
+    'recieved': 'received',
+    'recieving': 'receiving',
+    'reciept': 'receipt',
+    'seperate': 'separate',
+    'seperated': 'separated',
+    'teh': 'the',
+    'truely': 'truly',
+    'untill': 'until',
+    'wierd': 'weird',
+    'wierdly': 'weirdly',
+  };
+
   // All :set option names (sorted).
   static _SET_OPTIONS = [
     'autoindent', 'cursorline', 'expandtab', 'fileformat',
@@ -7844,6 +7870,13 @@ export class VimEngine {
       if (key === 'Ctrl-V') {
         // ^X^V: vim ex-command completion.
         this._handleInsertVimCmdCompletion();
+        return;
+      }
+      if (key === 'Ctrl-S') {
+        // ^X^S: spell suggestion. Sim only handles a handful of well-known
+        // misspellings — enough to satisfy demo scripts — by looking up
+        // the keyword at the cursor in a small correction table.
+        this._handleInsertSpellSuggest();
         return;
       }
       return;
@@ -13148,6 +13181,31 @@ export class VimEngine {
     };
     this._applyInsertCompletion();
   }
+
+  // ── Insert-mode ^X^S: spell suggestion ──
+  // Replaces the keyword at the cursor with a known correction. Sim does
+  // not run a spell engine, so it consults a small static map covering the
+  // most common misspellings used in demos. Unknown words are left as-is.
+  _handleInsertSpellSuggest() {
+    const line = this.buffer.lines[this.cursor.row] || '';
+    const isKW = (c) => /[A-Za-z0-9_']/.test(c);
+    let p = this.cursor.col;
+    while (p > 0 && isKW(line[p - 1])) p--;
+    let q = this.cursor.col;
+    while (q < line.length && isKW(line[q])) q++;
+    const word = line.slice(p, q);
+    if (!word) return;
+    const lower = word.toLowerCase();
+    const fix = VimEngine._SPELL_CORRECTIONS[lower];
+    if (!fix) return;
+    // Preserve original capitalisation of the first character.
+    const cased = (word[0] === word[0].toUpperCase() && word[0] !== word[0].toLowerCase())
+      ? fix[0].toUpperCase() + fix.slice(1)
+      : fix;
+    this.buffer.lines[this.cursor.row] = line.slice(0, p) + cased + line.slice(q);
+    this.cursor.col = p + cased.length;
+  }
+
 
 
 

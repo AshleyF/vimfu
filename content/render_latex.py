@@ -1216,26 +1216,6 @@ def render_block(b, *, index, examples) -> list[str]:
                 t = re.sub(r"`([^`]+)`", r"\1", t)
                 return len(t)
 
-            # Same as _visible_len but weights monospace (backtick) chars
-            # ~1.2× — \texttt glyphs render measurably wider than
-            # proportional prose. Used only for X-column weight ratios,
-            # so a column packed with mono code (e.g. status-line text)
-            # gets proportionally more horizontal share than a peer
-            # column of pure prose with the same character count.
-            def _visible_weight(s: str) -> float:
-                s = str(s)
-                t = re.sub(r"\{key:([^}]+)\}", r"\1", s)
-                t = re.sub(r"\*\*([^*]+)\*\*", r"\1", t)
-                t = re.sub(r"\*([^*]+)\*", r"\1", t)
-                total = 0.0
-                pos = 0
-                for m in re.finditer(r"`([^`]+)`", t):
-                    total += m.start() - pos
-                    total += len(m.group(1)) * 1.2
-                    pos = m.end()
-                total += len(t) - pos
-                return total
-
             def _has_key_markup(s: str) -> bool:
                 return "{key:" in str(s)
 
@@ -1243,14 +1223,6 @@ def render_block(b, *, index, examples) -> list[str]:
                 max(
                     [_visible_len(headers[i])]
                     + [_visible_len(row[i]) if i < len(row) else 0
-                       for row in rows]
-                )
-                for i in range(n)
-            ]
-            col_weight_max = [
-                max(
-                    [_visible_weight(headers[i])]
-                    + [_visible_weight(row[i]) if i < len(row) else 0.0
                        for row in rows]
                 )
                 for i in range(n)
@@ -1302,22 +1274,28 @@ def render_block(b, *, index, examples) -> list[str]:
                 if col_has_keys[i]:
                     em = longest * 0.95 + 1.5
                     return max(3.0, min(16.0, em))
-                # Non-key narrow column: if one cell is a clear outlier
-                # (≥12 chars and >25% longer than the next), size to the
-                # second-longest so the outlier wraps to two lines
-                # instead of bloating every row's whitespace. Bound the
-                # shrink to at most ½ the outlier so we never demand a
-                # truly long cell wrap to many short lines.
-                lens = [_visible_len(headers[i])] + [
-                    _visible_len(row[i]) if i < len(row) else 0
-                    for row in rows
-                ]
-                lens_sorted = sorted(lens, reverse=True)
-                target = lens_sorted[0]
-                if (len(lens_sorted) > 1
-                        and lens_sorted[0] >= 12
-                        and lens_sorted[0] > lens_sorted[1] * 1.25):
-                    target = max(lens_sorted[1], lens_sorted[0] // 2)
+                # Non-key narrow column: iteratively shrink past any
+                # cell that is ≥1.25× the next-smaller cell. One or
+                # two tall outliers (e.g. "operator-pending" and
+                # "command-line" beside seven 6-char mode names) wrap
+                # to two lines instead of bloating every row's
+                # whitespace. Floor at ⅓ of the original longest so
+                # a freak 40-char cell doesn't get squeezed to a
+                # micro-width that wraps to many short lines.
+                lens = sorted(
+                    [_visible_len(headers[i])] + [
+                        _visible_len(row[i]) if i < len(row) else 0
+                        for row in rows
+                    ],
+                    reverse=True,
+                )
+                target = lens[0]
+                k = 0
+                while k + 1 < len(lens) and lens[k] >= lens[k + 1] * 1.25:
+                    target = lens[k + 1]
+                    k += 1
+                floor = max(longest // 3, 4)
+                target = max(target, floor)
                 em = target * 0.7 + 1.0
                 return max(3.0, min(16.0, em))
 
@@ -1349,7 +1327,7 @@ def render_block(b, *, index, examples) -> list[str]:
             x_cols = [i for i in range(n) if i not in narrow_cols]
             x_weight: dict[int, float] = {}
             if len(x_cols) >= 2:
-                raw = [max(col_weight_max[i], 1.0) for i in x_cols]
+                raw = [max(col_max[i], 1) for i in x_cols]
                 total = sum(raw)
                 n_x = len(x_cols)
                 weights = [r / total * n_x for r in raw]
@@ -1366,11 +1344,11 @@ def render_block(b, *, index, examples) -> list[str]:
                     )
                 elif i in x_weight:
                     cols.append(
-                        f"@{{\\hspace{{1em}}}}Y{{{x_weight[i]:.3f}}}"
+                        f"@{{\\hspace{{0.5em}}}}Y{{{x_weight[i]:.3f}}}"
                     )
                 else:
                     cols.append(
-                        "@{\\hspace{1em}}>{\\strut\\raggedright\\sloppy"
+                        "@{\\hspace{0.5em}}>{\\strut\\raggedright\\sloppy"
                         "\\arraybackslash}X"
                     )
 

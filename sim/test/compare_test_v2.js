@@ -109,6 +109,7 @@ function _feedKeysImpl(feedFn, keys) {
     else if (ch === '\x10') key = 'Ctrl-P';
     else if (ch === '\x14') key = 'Ctrl-T';
     else if (ch === '\x12') key = 'Ctrl-R';
+    else if (ch === '\x13') key = 'Ctrl-S';
     else if (ch === '\x15') key = 'Ctrl-U';
     else if (ch === '\x16') key = 'Ctrl-V';
     else if (ch === '\x17') key = 'Ctrl-W';
