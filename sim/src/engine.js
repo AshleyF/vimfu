@@ -7799,9 +7799,12 @@ export class VimEngine {
         this._insertCompletionAttempted = true;
         return;
       }
-      if (key === 'Ctrl-N' || key === 'Ctrl-P') {
-        // ^X^N / ^X^P: keyword completion (same as bare ^N/^P in insert)
-        this._handleInsertKeywordCompletion(key === 'Ctrl-N' ? 1 : -1);
+      if (key === 'Ctrl-N' || key === 'Ctrl-P' || key === 'Tab') {
+        // ^X^N / ^X^P: keyword completion (same as bare ^N/^P in insert).
+        // ^X^I: included-file keyword completion — sim has no includes, so
+        // it degrades to plain forward keyword completion over the buffer.
+        const dir = (key === 'Ctrl-P') ? -1 : 1;
+        this._handleInsertKeywordCompletion(dir);
         return;
       }
       return;
