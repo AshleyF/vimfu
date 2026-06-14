@@ -2582,41 +2582,52 @@ export class VimEngine {
       case 'Ctrl-D': {
         if (this._hasCount()) this._scrollHalf = this._getCount();
         const c = this._scrollHalf || Math.floor(this._textRows / 2);
-        this.cursor.row = Math.min(this.cursor.row + c, this.buffer.lineCount - 1);
-        this.scrollTop = Math.min(this.scrollTop + c, Math.max(0, this.buffer.lineCount - this._textRows));
+        const lastLine = Math.max(0, this.buffer.lineCount - 1);
+        const maxST = this._maxScrollTop();
+        this.cursor.row = Math.min(this._advanceByScreenRows(this.cursor.row, c), lastLine);
+        this.scrollTop = Math.min(this._advanceByScreenRows(this.scrollTop, c), maxST);
         this._applyStartOfLine();
         break;
       }
       case 'Ctrl-U': {
         if (this._hasCount()) this._scrollHalf = this._getCount();
         const c = this._scrollHalf || Math.floor(this._textRows / 2);
-        this.cursor.row = Math.max(this.cursor.row - c, 0);
-        this.scrollTop = Math.max(this.scrollTop - c, 0);
+        this.cursor.row = this._retreatByScreenRows(this.cursor.row, c);
+        this.scrollTop = this._retreatByScreenRows(this.scrollTop, c);
         this._applyStartOfLine();
         break;
       }
       case 'Ctrl-F': {
         const c = this._getCount();
-        const scroll = (this._textRows - 2) * c;
-        const oldBottom = this.scrollTop + this._textRows - 1;
-        const maxST = Math.max(0, this.buffer.lineCount - 1);
-        if (oldBottom >= this.buffer.lineCount - 1) {
-          // Last line already visible — jump to show last line at top
-          this.scrollTop = maxST;
+        const scrollScreenRows = (this._textRows - 2) * c;
+        const lastLine = Math.max(0, this.buffer.lineCount - 1);
+        // If the last buffer line is already visible at or above the
+        // bottom row, snap scrollTop to put the last line at the top
+        // (matches Vim's behavior when paging past EOB).
+        const visibleBottom = this._advanceByScreenRows(this.scrollTop, this._textRows - 1);
+        if (visibleBottom >= lastLine) {
+          this.scrollTop = lastLine;
         } else {
-          this.scrollTop = Math.min(this.scrollTop + scroll, maxST);
+          this.scrollTop = Math.min(this._advanceByScreenRows(this.scrollTop, scrollScreenRows), lastLine);
         }
-        this.cursor.row = Math.min(this.scrollTop, this.buffer.lineCount - 1);
+        this.cursor.row = Math.min(this.scrollTop, lastLine);
         this._applyStartOfLine();
         break;
       }
       case 'Ctrl-B': {
         const c = this._getCount();
-        const scroll = this._textRows * c;
+        // Vim uses a full window-worth (not the 2-row overlap that
+        // Ctrl-F uses): retreats scrollTop by textRows screen rows.
+        const scrollScreenRows = this._textRows * c;
         const oldST = this.scrollTop;
-        this.scrollTop = Math.max(this.scrollTop - scroll, 0);
+        this.scrollTop = this._retreatByScreenRows(this.scrollTop, scrollScreenRows);
         if (this.scrollTop === 0 && oldST === 0) break;
-        this.cursor.row = Math.min(this.scrollTop + this._textRows - 1, this.buffer.lineCount - 1);
+        // Cursor moves to the last visible buffer line in the new window.
+        const lastLine = Math.max(0, this.buffer.lineCount - 1);
+        this.cursor.row = Math.min(
+          this._advanceByScreenRows(this.scrollTop, this._textRows - 1),
+          lastLine
+        );
         this._applyStartOfLine();
         break;
       }
@@ -3891,14 +3902,19 @@ export class VimEngine {
     }
 
     const maxST = Math.max(0, this.buffer.lineCount - 1);
+    // Wrap-aware screen-row distances for zz / zb (zt is just cursor.row).
+    // zz centers cursor at screen row floor((textRows - 1) / 2) (vim's
+    // `(wp->w_height_inner - 1) / 2`); zb pins it at the last row.
+    const halfRows = Math.floor((this._textRows - 1) / 2);
+    const bottomRows = Math.max(0, this._textRows - 1);
     switch (key) {
       case 'z':
         // zz — center; preserve column
-        this.scrollTop = Math.max(0, Math.min(this.cursor.row - Math.floor((this._textRows - 1) / 2), maxST));
+        this.scrollTop = Math.min(this._retreatByScreenRows(this.cursor.row, halfRows), maxST);
         break;
       case '.':
         // z. — center; cursor to first non-blank
-        this.scrollTop = Math.max(0, Math.min(this.cursor.row - Math.floor((this._textRows - 1) / 2), maxST));
+        this.scrollTop = Math.min(this._retreatByScreenRows(this.cursor.row, halfRows), maxST);
         this.cursor.col = this._firstNonBlank(this.cursor.row);
         this._updateDesiredCol();
         break;
@@ -3914,11 +3930,11 @@ export class VimEngine {
         break;
       case 'b':
         // zb — line to bottom of window; preserve column
-        this.scrollTop = Math.max(0, Math.min(this.cursor.row - this._textRows + 1, maxST));
+        this.scrollTop = Math.min(this._retreatByScreenRows(this.cursor.row, bottomRows), maxST);
         break;
       case '-':
         // z- — line to bottom of window; cursor to first non-blank
-        this.scrollTop = Math.max(0, Math.min(this.cursor.row - this._textRows + 1, maxST));
+        this.scrollTop = Math.min(this._retreatByScreenRows(this.cursor.row, bottomRows), maxST);
         this.cursor.col = this._firstNonBlank(this.cursor.row);
         this._updateDesiredCol();
         break;
@@ -12853,11 +12869,23 @@ export class VimEngine {
     if (this.cursor.row < this.scrollTop + eff) {
       this.scrollTop = Math.max(0, this.cursor.row - eff);
     }
-    if (this.cursor.row >= this.scrollTop + this._textRows - eff) {
-      this.scrollTop = this.cursor.row - this._textRows + 1 + eff;
+    // Wrap-aware "cursor below visible region" check: scrollTop's last
+    // visible buffer line (accounting for wrapped lines) is the line that
+    // sits at screen row (textRows - 1 - eff) below scrollTop.
+    const lastVisible = this._advanceByScreenRows(
+      this.scrollTop,
+      Math.max(0, this._textRows - 1 - eff)
+    );
+    if (this.cursor.row > lastVisible) {
+      // Retreat from cursor by (textRows - 1 - eff) screen rows so cursor
+      // sits at that screen row of the new window.
+      this.scrollTop = this._retreatByScreenRows(
+        this.cursor.row,
+        Math.max(0, this._textRows - 1 - eff)
+      );
       // Don't over-scroll past end of buffer for scrolloff purposes
       // (nvim won't auto-scroll beyond the last line to satisfy scrolloff)
-      const maxSoScroll = Math.max(0, this.buffer.lines.length - this._textRows);
+      const maxSoScroll = this._maxScrollTop();
       if (this.scrollTop > maxSoScroll) this.scrollTop = maxSoScroll;
     }
   }
@@ -13472,6 +13500,66 @@ export class VimEngine {
       if (line[i] !== ' ' && line[i] !== '\t') return i;
     }
     return 0;
+  }
+
+  // Returns the number of screen rows a buffer line consumes given current
+  // wrap settings. Mirrors screen.js's wrapRows() but uses raw line length
+  // (no tab/control expansion). Good enough for typical text where the
+  // tests this matters for don't mix tabs and wraps.
+  _lineScreenRows(br) {
+    if (br < 0 || br >= this.buffer.lineCount) return 1;
+    if (this._settings && this._settings.wrap === false) return 1;
+    const line = this.buffer.lines[br] || '';
+    const cols = Math.max(1, this.cols);
+    return line.length === 0 ? 1 : Math.ceil(line.length / cols);
+  }
+
+  // Advance forward by N screen rows starting from buffer line `start`
+  // (treating `start` as positioned at relative screen row 0). Returns the
+  // last buffer line whose start row remains within N rows of `start`'s
+  // start row. Used for wrap-aware Ctrl-D / Ctrl-F / Ctrl-E scrolling so
+  // that count is measured in displayed screen rows, not raw buffer lines.
+  _advanceByScreenRows(start, N) {
+    if (N <= 0) return start;
+    let cur = start;
+    let total = 0;
+    let next = cur + 1;
+    while (next < this.buffer.lineCount) {
+      const rows = this._lineScreenRows(next);
+      if (total + rows > N) break;
+      cur = next;
+      total += rows;
+      next++;
+    }
+    return cur;
+  }
+
+  // Retreat backward by N screen rows from buffer line `start`. "Round
+  // down" semantics: returns the buffer line that contains the target
+  // screen row (i.e., the line whose start is at or just before N rows
+  // above `start`'s start row).
+  _retreatByScreenRows(start, N) {
+    if (N <= 0) return start;
+    let cur = start;
+    let total = 0;
+    let prev = cur - 1;
+    while (prev >= 0) {
+      const rows = this._lineScreenRows(prev);
+      total += rows;
+      cur = prev;
+      if (total >= N) break;
+      prev--;
+    }
+    return cur;
+  }
+
+  // Largest scrollTop that still keeps the last buffer line visible (at
+  // or above the last text row of the window). Wrap-aware analogue of
+  // `lineCount - textRows`.
+  _maxScrollTop() {
+    const lastLine = this.buffer.lineCount - 1;
+    if (lastLine <= 0) return 0;
+    return this._retreatByScreenRows(lastLine, Math.max(0, this._textRows - 1));
   }
 
   // ── Mark resolution ──
