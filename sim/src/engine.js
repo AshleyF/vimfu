@@ -1455,7 +1455,21 @@ export class VimEngine {
 
     // Pending z
     if (this._pendingZ) {
+      // z{count}<CR>: resize current window to {count} lines (no-op in
+      // sim's single-window model; the important bit is that the
+      // cursor is NOT advanced by the digits or the <CR>).
+      if (/^[0-9]$/.test(key)) {
+        this._pendingZNum = (this._pendingZNum || '') + key;
+        return;
+      }
+      if (key === 'Enter' && this._pendingZNum) {
+        this._pendingZNum = '';
+        this._pendingZ = false;
+        this._pendingCount = '';
+        return;
+      }
       this._pendingZ = false;
+      this._pendingZNum = '';
       // zp/zP: paste like p/P but without the autoindent fix-up. We don't
       // model autoindent on paste, so fall through to normal p/P handling.
       if (key !== 'p' && key !== 'P') {
