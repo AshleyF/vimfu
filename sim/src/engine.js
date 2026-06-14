@@ -7003,8 +7003,9 @@ export class VimEngine {
             const subRe = new RegExp(jsPattern, (globalFlag ? 'g' : '') + caseFlag);
             after = before.replace(subRe, (...args) => {
               // args = [match, p1, p2, ..., offset, fullStr]
+              const offset = args[args.length - 2];
               const submatches = args.slice(0, -2);
-              return String(this._evalSubExpr(exprSrc, r, submatches));
+              return String(this._evalSubExpr(exprSrc, r, submatches, offset + 1));
             });
           } else {
             after = before.replace(regex, jsReplacement);
@@ -10874,7 +10875,7 @@ export class VimEngine {
    * patterns used in the curriculum (e.g. number-lines via
    * `\=line('.').' '`).
    */
-  _evalSubExpr(src, curRow, submatches) {
+  _evalSubExpr(src, curRow, submatches, curCol) {
     // Tokenize: strings, numbers, identifiers, operators.
     const tokens = [];
     let i = 0;
@@ -10929,7 +10930,7 @@ export class VimEngine {
           if (peek() && peek().t === 'op' && peek().v === ')') next();
           switch (tok.v) {
             case 'line': return curRow + 1;
-            case 'col': return 1;
+            case 'col': return curCol || 1;
             case 'submatch': {
               const n = Number(args[0]) || 0;
               return submatches[n] !== undefined ? submatches[n] : '';
@@ -10937,6 +10938,11 @@ export class VimEngine {
             case 'len': return String(args[0] || '').length;
             case 'getline': return this.buffer.lines[curRow] || '';
             case 'printf': return String(args[0] || '');
+            case 'repeat': {
+              const s = String(args[0] || '');
+              const n = Math.max(0, Number(args[1]) || 0);
+              return s.repeat(n);
+            }
             default: return '';
           }
         }
