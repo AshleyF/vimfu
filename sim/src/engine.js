@@ -2675,11 +2675,14 @@ export class VimEngine {
 
       // File info
       case 'Ctrl-G': {
-        const name = this.filename || '[No Name]';
+        const name = this._fileName || this.filename;
         const total = this.buffer.lineCount;
-        let bytes = 0;
-        for (let i = 0; i < total; i++) bytes += this.buffer.lines[i].length + (i < total - 1 ? 1 : 0);
-        this._messagePrompt = { info: `"${name}" ${total}L, ${bytes}B` };
+        const isModified = this._changeCount > 0 || (this._undoStack && this._undoStack.length > 1);
+        const pct = total > 0 ? Math.round((this.cursor.row + 1) * 100 / total) : 0;
+        const nameDisplay = name ? `"${name}"` : '"[No Name]"';
+        const mod = isModified ? ' [Modified]' : '';
+        const txt = `${nameDisplay}${mod} ${total} line${total === 1 ? '' : 's'} --${pct}%--`;
+        this._messagePrompt = { info: txt };
         this.commandLine = '';
         this._pendingCount = '';
         break;
@@ -6542,8 +6545,12 @@ export class VimEngine {
       const r = this.cursor.row + 1;
       const pct = lines === 0 ? 'All' : (r === 1 && lines <= this._textRows ? 'Top' : (r === lines && lines <= this._textRows ? 'Bot' : Math.round((r / lines) * 100) + '%'));
       const pctStr = '--' + pct + '--';
-      this.commandLine = '"' + name + '"' + mod + ' ' + lines + ' line' + (lines !== 1 ? 's' : '') + ' ' + pctStr;
-      this._stickyCommandLine = true;
+      const txt = '"' + name + '"' + mod + ' ' + lines + ' line' + (lines !== 1 ? 's' : '') + ' ' + pctStr;
+      // Use _reportCmdMessage so a carry from a prior CTRL-G (whose
+      // _messagePrompt was moved to _pendingPromptCarry when `:` was
+      // typed) is restacked into a Press-ENTER prompt rather than
+      // silently overwritten on the cmdline.
+      this._reportCmdMessage({ info: txt }, true);
       return;
     }
 
