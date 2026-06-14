@@ -281,6 +281,11 @@ export class VimEngine {
     // lookup (`@#`, Ctrl-^) when there is no real alternate buffer —
     // populated by `:e[dit] FILE` so subsequent commands can find it.
     this._altFileName = null;
+    // When set, the renderer parks the cursor at (rows-1, 0) on the
+    // cmdline row. Set by `:e FILE` in standalone mode to mimic nvim's
+    // post-edit cursor parking; cleared on the next keypress alongside
+    // the other sticky cmdline flags.
+    this._editCursorAtCmdline = false;
     // Link the initial window to its buffer id so per-window status lines
     // (filename, [+]) can be looked up correctly when rendering splits.
     this._windows[0].bufId = this._currentBufId;
@@ -520,6 +525,7 @@ export class VimEngine {
       this._stickyCommandLine = false;
       this._commandLineLineNrLen = 0;
       this._errorCmdLineCursor = false;
+      this._editCursorAtCmdline = false;
       this.commandLine = '';
     }
     if (this._recentMessageLines && key !== ':' && this.mode !== Mode.COMMAND
@@ -6042,6 +6048,14 @@ export class VimEngine {
         const editArgMatch = cmd.match(/^e(?:d(?:it?)?)?!?\s+(\S.*?)\s*$/);
         if (editArgMatch && this._fileName) {
           this._altFileName = this._fileName;
+        }
+        // When `:e[dit] FILE` runs in standalone mode (no VFS), nvim
+        // still parks the cursor on the cmdline row after the typed
+        // command is echoed — matching how the user is shown the file
+        // they "switched" to. The flag is consulted by the renderer
+        // and cleared on the next keypress alongside sticky cmdline.
+        if (editArgMatch) {
+          this._editCursorAtCmdline = true;
         }
         // SessionManager will overwrite this with the file-load message,
         // but in standalone engine mode (no VFS) we mimic nvim's "echo

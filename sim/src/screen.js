@@ -1095,6 +1095,10 @@ export class Screen {
       finalCursorRow = this.rows - 1;
       finalCursorCol = Math.min(engine.commandLine.length, this.cols);
     }
+    if (engine._editCursorAtCmdline) {
+      finalCursorRow = this.rows - 1;
+      finalCursorCol = 0;
+    }
 
     // ── Carried hit-enter messages overlay ──
     // When a Press-ENTER prompt is dismissed by typing `:`, the prior
