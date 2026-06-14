@@ -102,6 +102,7 @@ function _feedKeysImpl(feedFn, keys) {
     else if (ch === '\x06') key = 'Ctrl-F';
     else if (ch === '\x07') key = 'Ctrl-G';
     else if (ch === '\x09') key = 'Tab';
+    else if (ch === '\x0b') key = 'Ctrl-K';
     else if (ch === '\x0c') key = 'Ctrl-L';
     else if (ch === '\x0e') key = 'Ctrl-N';
     else if (ch === '\x0f') key = 'Ctrl-O';

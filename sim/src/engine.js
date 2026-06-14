@@ -7898,6 +7898,41 @@ export class VimEngine {
       return;
     }
 
+    // Pending <C-k> digraph: collect two chars, look up in digraph table,
+    // insert the corresponding Unicode character. Unknown digraphs insert
+    // the second char only (matches nvim's "use the last char" fallback).
+    if (this._pendingInsertCtrlK) {
+      if (this._pendingInsertCtrlKFirst == null) {
+        // Esc cancels mid-digraph
+        if (key === 'Escape' || key === 'Ctrl-C') {
+          this._pendingInsertCtrlK = false;
+          this._pendingInsertCtrlKFirst = null;
+          return;
+        }
+        if (key.length === 1) {
+          this._pendingInsertCtrlKFirst = key;
+          return;
+        }
+        // Non-char key — cancel
+        this._pendingInsertCtrlK = false;
+        return;
+      }
+      const first = this._pendingInsertCtrlKFirst;
+      this._pendingInsertCtrlK = false;
+      this._pendingInsertCtrlKFirst = null;
+      if (key === 'Escape' || key === 'Ctrl-C') return;
+      let ch;
+      if (key.length === 1) {
+        const dig = VimEngine._digraphs[first + key] || VimEngine._digraphs[key + first];
+        ch = dig != null ? dig : key;
+      } else {
+        return;
+      }
+      this.buffer.insertChar(this.cursor.row, this.cursor.col, ch);
+      this.cursor.col++;
+      return;
+    }
+
     // Pending Ctrl-R: next key is register name, paste register contents
     if (this._pendingCtrlR) {
       this._pendingCtrlR = false;
@@ -8335,6 +8370,10 @@ export class VimEngine {
         return;
       case 'Ctrl-G': // <C-g> prefix — next key determines behavior
         this._pendingInsertCtrlG = true;
+        return;
+      case 'Ctrl-K': // <C-k> digraph: next two chars combine into a Unicode char
+        this._pendingInsertCtrlK = true;
+        this._pendingInsertCtrlKFirst = null;
         return;
       case 'Tab': {
         const ts = this._settings.tabstop || 8;
@@ -13575,3 +13614,26 @@ export class VimEngine {
     this._updateStatus();
   }
 }
+
+// Digraph table for <C-k> in insert mode. Subset of nvim's RFC1345 digraphs;
+// keys are the two-character sequence (order-insensitive lookup via second
+// table lookup in caller). Values are the resulting Unicode characters.
+VimEngine._digraphs = {
+  // Currency / punctuation
+  'NS': '\u00a0', '!I': '\u00a1', 'Ct': '\u00a2', 'Pd': '\u00a3',
+  'Cu': '\u00a4', 'Ye': '\u00a5', 'BB': '\u00a6', 'SE': '\u00a7',
+  ':': '\u00a8', 'Co': '\u00a9', '-a': '\u00aa', '<<': '\u00ab',
+  'NO': '\u00ac', '--': '\u00ad', 'Rg': '\u00ae', "'m": '\u00af',
+  // Math / common symbols
+  'DG': '\u00b0', '+-': '\u00b1', '2S': '\u00b2', '3S': '\u00b3',
+  "'": '\u00b4', 'My': '\u00b5', 'PI': '\u00b6', '.M': '\u00b7',
+  "',": '\u00b8', '1S': '\u00b9', '-o': '\u00ba', '>>': '\u00bb',
+  '14': '\u00bc', '12': '\u00bd', '34': '\u00be', '?I': '\u00bf',
+  // Multiply / divide
+  '*X': '\u00d7', '-:': '\u00f7',
+  // Smart quotes / dashes
+  "'6": '\u2018', "'9": '\u2019', '"6': '\u201c', '"9': '\u201d',
+  '-N': '\u2013', '-M': '\u2014', '..': '\u2026',
+  // Arrows
+  '<-': '\u2190', '-!': '\u2191', '->': '\u2192', '-v': '\u2193',
+};
