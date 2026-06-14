@@ -8227,8 +8227,12 @@ export class VimEngine {
         this._insertCount = 1;
         break;
       case 'Ctrl-O': {
-        // Execute one normal-mode command, then return to insert
+        // Execute one normal-mode command, then return to insert.
+        // The cursor's current screen column becomes the "wanted" column
+        // for the following motion (matches nvim: an insert-mode cursor
+        // at past-EOL preserves that column on j/k via Ctrl-O).
         this._insertOneShot = true;
+        this._updateDesiredCol();
         this.mode = Mode.NORMAL;
         this.commandLine = '-- (insert) --';
         return;
@@ -12709,7 +12713,20 @@ export class VimEngine {
     if (this._desiredCol === Infinity) {
       this.cursor.col = this._maxCol();
     } else {
-      this.cursor.col = this._byteColForVirtCol(this.cursor.row, this._desiredCol);
+      const c = this._byteColForVirtCol(this.cursor.row, this._desiredCol);
+      // In insert mode (including one-shot Ctrl-O), the cursor may sit past
+      // the last character. _byteColForVirtCol clamps to lineLength-1; bump
+      // by 1 when the wanted column lands at/after EOL so j/k preserve the
+      // past-end position the user had in insert mode.
+      const inInsertContext = (this.mode === Mode.INSERT) || this._insertOneShot;
+      if (inInsertContext) {
+        const lineLen = this.buffer.lineLength(this.cursor.row);
+        if (lineLen > 0 && this._desiredCol >= this._virtColAt(this.cursor.row, lineLen)) {
+          this.cursor.col = lineLen;
+          return;
+        }
+      }
+      this.cursor.col = c;
     }
   }
 
