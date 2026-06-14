@@ -10213,49 +10213,26 @@ export class VimEngine {
         break;
       }
       case 'gq': {
-        if (sr === er) {
-          // Single line: no-op, just move cursor to first non-blank
-          this.cursor.row = sr;
-          this.cursor.col = this._firstNonBlank(sr);
-        } else {
-          // Join lines in range: concatenate with spaces
-          let joined = this.buffer.lines[sr];
-          for (let r = sr + 1; r <= er; r++) {
-            const trimmed = this.buffer.lines[r].replace(/^\s+/, '');
-            if (joined.length > 0 && trimmed.length > 0) {
-              joined += ' ' + trimmed;
-            } else {
-              joined += trimmed;
-            }
-          }
-          this.buffer.lines.splice(sr, er - sr + 1, joined);
-          this.cursor.row = sr;
-          this.cursor.col = this._firstNonBlank(sr);
-        }
+        const oldLineCount = this.buffer.lineCount;
+        const reflowed = this._reflowLines(sr, er);
+        this.buffer.lines.splice(sr, er - sr + 1, ...reflowed);
+        const delta = this.buffer.lineCount - oldLineCount;
+        this.cursor.row = sr + reflowed.length - 1;
+        this.cursor.col = this._firstNonBlank(this.cursor.row);
+        this._postFormatMessage(delta);
         this._redoStack = [];
         break;
       }
       case 'gw': {
         const savedRow = this._opStartPos.row;
         const savedCol = this._opStartPos.col;
-        if (sr === er) {
-          // Single line: no-op
-        } else {
-          // Join lines in range
-          let joined = this.buffer.lines[sr];
-          for (let r = sr + 1; r <= er; r++) {
-            const trimmed = this.buffer.lines[r].replace(/^\s+/, '');
-            if (joined.length > 0 && trimmed.length > 0) {
-              joined += ' ' + trimmed;
-            } else {
-              joined += trimmed;
-            }
-          }
-          this.buffer.lines.splice(sr, er - sr + 1, joined);
-        }
-        // Restore cursor position
+        const oldLineCount = this.buffer.lineCount;
+        const reflowed = this._reflowLines(sr, er);
+        this.buffer.lines.splice(sr, er - sr + 1, ...reflowed);
+        const delta = this.buffer.lineCount - oldLineCount;
         this.cursor.row = Math.min(savedRow, this.buffer.lineCount - 1);
         this.cursor.col = Math.min(savedCol, Math.max(0, this.buffer.lineLength(this.cursor.row) - 1));
+        this._postFormatMessage(delta);
         this._redoStack = [];
         break;
       }
@@ -10412,6 +10389,30 @@ export class VimEngine {
           this._cmdCursor = this._searchInput.length;
           this.commandLine = ':' + rangeStr + '!';
           this.cursor.row = startRow;
+          break;
+        }
+        case 'gq': {
+          const oldLineCount = this.buffer.lineCount;
+          const reflowed = this._reflowLines(startRow, endRow);
+          this.buffer.lines.splice(startRow, endRow - startRow + 1, ...reflowed);
+          const delta = this.buffer.lineCount - oldLineCount;
+          this.cursor.row = startRow + reflowed.length - 1;
+          this.cursor.col = this._firstNonBlank(this.cursor.row);
+          this._postFormatMessage(delta);
+          this._redoStack = [];
+          break;
+        }
+        case 'gw': {
+          const savedRow = this._opStartPos ? this._opStartPos.row : this.cursor.row;
+          const savedCol = this._opStartPos ? this._opStartPos.col : this.cursor.col;
+          const oldLineCount = this.buffer.lineCount;
+          const reflowed = this._reflowLines(startRow, endRow);
+          this.buffer.lines.splice(startRow, endRow - startRow + 1, ...reflowed);
+          const delta = this.buffer.lineCount - oldLineCount;
+          this.cursor.row = Math.min(savedRow, this.buffer.lineCount - 1);
+          this.cursor.col = Math.min(savedCol, Math.max(0, this.buffer.lineLength(this.cursor.row) - 1));
+          this._postFormatMessage(delta);
+          this._redoStack = [];
           break;
         }
       }
@@ -10633,13 +10634,25 @@ export class VimEngine {
         break;
       }
       case 'gq': {
-        // Single line: no-op, just move cursor
-        this.cursor.col = this._firstNonBlank(sr);
+        const oldLineCount = this.buffer.lineCount;
+        const reflowed = this._reflowLines(sr, er);
+        this.buffer.lines.splice(sr, er - sr + 1, ...reflowed);
+        const delta = this.buffer.lineCount - oldLineCount;
+        this.cursor.row = sr + reflowed.length - 1;
+        this.cursor.col = this._firstNonBlank(this.cursor.row);
+        this._postFormatMessage(delta);
         this._redoStack = [];
         break;
       }
       case 'gw': {
-        // Single line: no-op
+        const savedCol = this.cursor.col;
+        const oldLineCount = this.buffer.lineCount;
+        const reflowed = this._reflowLines(sr, er);
+        this.buffer.lines.splice(sr, er - sr + 1, ...reflowed);
+        this.cursor.row = sr;
+        this.cursor.col = Math.min(savedCol, Math.max(0, this.buffer.lineLength(sr) - 1));
+        const delta = this.buffer.lineCount - oldLineCount;
+        this._postFormatMessage(delta);
         this._redoStack = [];
         break;
       }
@@ -13545,6 +13558,75 @@ export class VimEngine {
     const line = this.buffer.lines[br] || '';
     const cols = Math.max(1, this.cols);
     return line.length === 0 ? 1 : Math.ceil(line.length / cols);
+  }
+
+  // Reflow a range of lines into wrapped paragraph form, as used by
+  // `gq` / `gw` formatting operators. Returns the new array of lines.
+  // Algorithm: preserve the leading whitespace from the FIRST line, then
+  // tokenize the joined content on whitespace and greedily pack words
+  // into output lines up to `_formatWidth()` columns (cols - 2 by default).
+  // Empty input lines act as paragraph breaks.
+  _reflowLines(sr, er) {
+    const width = this._formatWidth();
+    const input = this.buffer.lines.slice(sr, er + 1);
+    if (input.length === 0) return [''];
+    // Split into paragraphs separated by blank lines.
+    const paragraphs = [];
+    let cur = [];
+    for (const ln of input) {
+      if (ln.trim() === '') {
+        if (cur.length) { paragraphs.push(cur); cur = []; }
+        paragraphs.push(null);
+      } else {
+        cur.push(ln);
+      }
+    }
+    if (cur.length) paragraphs.push(cur);
+    const out = [];
+    for (const para of paragraphs) {
+      if (para === null) { out.push(''); continue; }
+      const indentMatch = para[0].match(/^[\s]*/);
+      const indent = indentMatch ? indentMatch[0] : '';
+      const text = para.map((l, i) => i === 0 ? l.slice(indent.length) : l.replace(/^\s+/, '')).join(' ');
+      const words = text.split(/\s+/).filter(w => w.length > 0);
+      if (words.length === 0) { out.push(indent); continue; }
+      let line = indent + words[0];
+      for (let i = 1; i < words.length; i++) {
+        const w = words[i];
+        if (line.length + 1 + w.length <= width) {
+          line += ' ' + w;
+        } else {
+          out.push(line);
+          line = indent + w;
+        }
+      }
+      out.push(line);
+    }
+    return out.length ? out : [''];
+  }
+
+  // Effective text width used by gq/gw reflow. Vim uses `textwidth` if set,
+  // otherwise falls back to (window_width - 'wrapmargin'). Sim approximates
+  // nvim's default of cols-2 when no textwidth is set.
+  _formatWidth() {
+    if (this.options && typeof this.options.textwidth === 'number' && this.options.textwidth > 0) {
+      return this.options.textwidth;
+    }
+    const cols = (this.cols || 80);
+    return Math.max(1, cols - 2);
+  }
+
+  // Show a "N more lines"/"N fewer lines" message after gq/gw reflow,
+  // matching nvim's reportflag-style message for formatting deltas.
+  _postFormatMessage(delta) {
+    if (delta > 0) {
+      this.commandLine = `${delta} more line${delta === 1 ? '' : 's'}`;
+      this._stickyCommandLine = true;
+    } else if (delta < 0) {
+      const n = -delta;
+      this.commandLine = `${n} fewer line${n === 1 ? '' : 's'}`;
+      this._stickyCommandLine = true;
+    }
   }
 
   // Apply a built-in filter (sort, uniq, etc.) to a line range as if the
