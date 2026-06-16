@@ -3,7 +3,7 @@
   "version": 1,
   "id": "foundations.universal-grammar",
   "title": "The Universal Grammar",
-  "subtitle": "[count] [register] operator [count] motion",
+  "subtitle": "An optional count and register, an operator, an optional count, then a motion or text object",
   "part": "foundations",
   "summary": "Vim is a tiny language: verbs (operators) compose with nouns (motions and text objects). Once you see the grammar, every key falls into place.",
   "keys": [
@@ -44,11 +44,11 @@
     },
     {
       "type": "prose",
-      "text": "```\n[count] [\"reg] operator [count] motion\n```"
+      "text": "```\n[count] [\"reg] operator [count] motion-or-text-object\n```"
     },
     {
       "type": "prose",
-      "text": "Read it as a sentence: *do this thing*, optionally *to register r*, *this many times*, *to this stretch of text*. (Registers are named clipboards — the `\"a` prefix means \"into register `a`\"; the full treatment is in *Registers*.) Concrete examples:"
+      "text": "Read it as a sentence: *do this thing*, optionally *with a register*, *this many times* (omitted counts default to 1), *to this stretch of text*. (Registers are named clipboards — the `\"a` prefix means *register `a`*; the full treatment is in *Registers*.) Concrete examples:"
     },
     {
       "type": "table",
@@ -63,11 +63,11 @@
         ],
         [
           "{key:3}{key:d}{key:w}",
-          "Delete three words forward"
+          "Three times, delete one word (same result as below)"
         ],
         [
           "{key:d}{key:3}{key:w}",
-          "Delete three words forward (counts multiply, but here one of them is 1)"
+          "Once, delete three words (same result as above; the counts multiply)"
         ],
         [
           "{key:c}{key:i}{key:w}",
@@ -159,54 +159,265 @@
       "text": "Anything that moves the cursor in *normal mode* is a motion. After an operator, the same motion describes the *range* the operator acts on. So {key:w} alone moves the cursor a word forward; {key:d}{key:w} deletes the same span."
     },
     {
+      "type": "prose",
+      "text": "A *word* is a run of letters, digits, and underscores — any punctuation (`,`, `.`, `!`, `-`, etc.) breaks it. A *WORD* (capitalised) is anything separated by whitespace, so it may contain punctuation and symbols. For example, `foo-bar.baz` is one WORD but three words."
+    },
+    {
       "type": "table",
       "headers": [
-        "Noun kind",
-        "Examples"
+        "Key",
+        "Meaning"
       ],
       "rows": [
         [
-          "Word / WORD",
-          "{key:w}, {key:b}, {key:e}, {key:W}, {key:B}, {key:E}"
+          "{key:w}",
+          "Forward to the start of the next word"
         ],
         [
-          "Line",
-          "{key:0}, {key:^}, {key:$}, {key:_}, {key:g_}"
+          "{key:b}",
+          "Backward to the start of the previous word"
         ],
         [
-          "File",
-          "{key:gg}, {key:G}, {n}{key:G}"
+          "{key:e}",
+          "Forward to the end of this word (or the next, if already at the end)"
         ],
         [
-          "Find on line",
-          "{key:f}{c}, {key:F}{c}, {key:t}{c}, {key:T}{c}, {key:;}, {key:,}"
+          "{key:W}",
+          "Like {key:w}, but using WORDs"
         ],
         [
-          "Search",
-          "{key:/}{pattern}, {key:?}{pattern}, {key:n}, {key:N}, {key:*}, {key:#}"
+          "{key:B}",
+          "Like {key:b}, but using WORDs"
         ],
         [
-          "Sentence / paragraph",
-          "{key:(}, {key:)}, {key:{}, {key:}}"
-        ],
-        [
-          "Bracket match",
-          "{key:%}"
-        ],
-        [
-          "Inner / around text object",
-          "{key:i}{key:w}, {key:a}{key:w}, {key:i}{key:\"}, {key:a}{key:(}, {key:i}{key:p}, {key:a}{key:t}"
+          "{key:E}",
+          "Like {key:e}, but using WORDs"
         ]
       ]
     },
     {
       "type": "prose",
-      "text": "Text objects (the {key:i} / {key:a} rows) are nouns that describe *structure* rather than a path: {key:i} means the inner contents (e.g. {key:i}{key:w} = the word the cursor is in), {key:a} means the object plus its delimiters (e.g. {key:a}{key:\"} = a quoted string including the quotes). The full treatment is in *Text Objects* — for now, treat them as nouns like any other."
+      "text": "Move horizontally within the current line:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Key",
+        "Meaning"
+      ],
+      "rows": [
+        [
+          "{key:0}",
+          "Beginning of the line (column zero)"
+        ],
+        [
+          "{key:^}",
+          "First non-blank character of the line"
+        ],
+        [
+          "{key:$}",
+          "End of the line"
+        ],
+        [
+          "{key:_}",
+          "Like {key:^}, but accepts a count: {key:3}{key:_} is the first non-blank three lines down"
+        ],
+        [
+          "{key:g_}",
+          "Last non-blank character of the line"
+        ]
+      ]
+    },
+    {
+      "type": "prose",
+      "text": "Move within the whole file:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Key",
+        "Meaning"
+      ],
+      "rows": [
+        [
+          "{key:gg}",
+          "Top of the file"
+        ],
+        [
+          "{key:G}",
+          "Bottom of the file"
+        ],
+        [
+          "{n}{key:G}",
+          "Jump to line number {n} (e.g. {key:4}{key:2}{key:G} for line 42)"
+        ]
+      ]
+    },
+    {
+      "type": "prose",
+      "text": "Hop to a specific character without leaving the line:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Key",
+        "Meaning"
+      ],
+      "rows": [
+        [
+          "{key:f}{c}",
+          "Forward to character {c}"
+        ],
+        [
+          "{key:F}{c}",
+          "Backward to character {c}"
+        ],
+        [
+          "{key:t}{c}",
+          "Forward to just before {c} (the *t* is for *till*)"
+        ],
+        [
+          "{key:T}{c}",
+          "Backward to just after {c}"
+        ],
+        [
+          "{key:;}",
+          "Repeat the last {key:f} / {key:F} / {key:t} / {key:T} in the same direction"
+        ],
+        [
+          "{key:,}",
+          "Repeat it in the opposite direction"
+        ]
+      ]
+    },
+    {
+      "type": "prose",
+      "text": "Pattern-based motion — jump to whatever matches:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Key",
+        "Meaning"
+      ],
+      "rows": [
+        [
+          "{key:/}{pattern}",
+          "Search forward for {pattern}"
+        ],
+        [
+          "{key:?}{pattern}",
+          "Search backward for {pattern}"
+        ],
+        [
+          "{key:n}",
+          "Repeat the last search in its original direction"
+        ],
+        [
+          "{key:N}",
+          "Repeat the last search in the opposite direction"
+        ],
+        [
+          "{key:*}",
+          "Search forward for the word under the cursor"
+        ],
+        [
+          "{key:#}",
+          "Search backward for the word under the cursor"
+        ]
+      ]
+    },
+    {
+      "type": "prose",
+      "text": "Move by larger units of text:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Key",
+        "Meaning"
+      ],
+      "rows": [
+        [
+          "{key:(}",
+          "Beginning of the previous sentence"
+        ],
+        [
+          "{key:)}",
+          "Beginning of the next sentence"
+        ],
+        [
+          "{key:{}",
+          "Beginning of the previous paragraph"
+        ],
+        [
+          "{key:}}",
+          "Beginning of the next paragraph"
+        ]
+      ]
+    },
+    {
+      "type": "prose",
+      "text": "Jump between matched pairs:"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Key",
+        "Meaning"
+      ],
+      "rows": [
+        [
+          "{key:%}",
+          "Jump to the matching `(`, `[`, `{`, `/* */`, `#if` / `#endif`, etc."
+        ]
+      ]
+    },
+    {
+      "type": "prose",
+      "text": "*Text objects* describe a region by its structure rather than its endpoints — the word the cursor is *in*, the parens the cursor is *between*. The prefix decides what's included: {key:i} for the *inner* contents (no delimiters), {key:a} for *a* whole object (including its delimiters and trailing whitespace). They only work after an operator or in *visual mode* — they're nouns, not motions."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Key",
+        "Meaning"
+      ],
+      "rows": [
+        [
+          "{key:i}{key:w}",
+          "The word the cursor is on"
+        ],
+        [
+          "{key:a}{key:w}",
+          "A word plus its trailing whitespace"
+        ],
+        [
+          "{key:i}{key:\"}",
+          "Inside a double-quoted string (excluding the quotes)"
+        ],
+        [
+          "{key:a}{key:(}",
+          "A parenthesised group, including the parens"
+        ],
+        [
+          "{key:i}{key:p}",
+          "Inside a paragraph"
+        ],
+        [
+          "{key:a}{key:t}",
+          "An HTML/XML tag, including both opening and closing tags"
+        ]
+      ]
+    },
+    {
+      "type": "prose",
+      "text": "The full treatment of text objects is in *Text Objects* — for now, treat them as nouns like any other."
     },
     {
       "type": "internals",
       "title": "Why It Composes",
-      "text": "Operators and motions live behind a clean interface. A motion is a function `cursor → (start, end, type)`, where *type* is `char`, `line`, or `block`. A text object is a function `cursor → (start, end, type)` that doesn't have to use the cursor as one of the endpoints. An operator is a function `(start, end, type) → effect-on-buffer`.\n\nThis is why every operator works with every motion and every text object. Vim's source code does not have a giant switch statement of \"if d, then handle w specially.\" It has *one* operator dispatch and *one* motion dispatch, and they meet through the `(start, end, type)` triple. When you learn a new operator, you've learned its combination with every motion you already know. When you learn a new text object, you've learned its combination with every operator. The grammar scales multiplicatively."
+      "text": "Motions, text objects, and operators all sit behind a clean interface, and that's why every combination works.\n\nEvery motion and every text object reduces to the same shape: a *range*, written `(start, end, type)`, where *type* is `char`, `line`, or `block`. A *motion* uses the current cursor position as one endpoint and computes the other — {key:w} returns `(cursor, start-of-next-word, char)`. A *text object* uses the cursor only to locate *which* structural unit applies; both endpoints come from the structure itself — {key:i}{key:w} returns the two edges of the word containing the cursor, regardless of where within the word the cursor sits.\n\nAn *operator* takes a range and produces an effect on the buffer: delete it, yank it, change it, uppercase it.\n\nThe pieces *compose* because the output of one is exactly the input of the next — a motion or text object produces a range, an operator consumes one. Vim's source code does not branch into a special \"if {key:d}, then handle {key:w}\" path; it has *one* dispatch for motions and text objects, *one* dispatch for operators, and they meet through the `(start, end, type)` triple. Learn a new operator and you've simultaneously learned its combination with every motion and text object you know; learn a new text object and you've simultaneously learned its combination with every operator. The grammar scales multiplicatively."
     },
     {
       "type": "internals",
@@ -215,8 +426,8 @@
     },
     {
       "type": "internals",
-      "title": "The Wart: {key:Y}, {key:D}, {key:C}, {key:S}",
-      "text": "Vi shipped before the doubled-form rule was systematic. {key:Y} is *not* {key:y}{key:$} — historically it was {key:y}{key:y} (yank line). Modern Neovim has finally fixed this default, but vanilla Vim still aliases {key:Y} to {key:y}{key:y}. {key:D}, on the other hand, *is* {key:d}{key:$} — it has always been the consistent form. {key:C} is {key:c}{key:$}. {key:S} is {key:c}{key:c}. {key:s} is {key:c}{key:l}. These shortcuts predate the unified grammar and are kept for muscle memory. Treat them as exceptions to learn, not principles to derive."
+      "title": "Three warts: {key:Y}, {key:S}, {key:s}",
+      "text": "Vim has single-key shortcuts for some of the most common operator+motion combinations. If they followed one tidy rule, an *uppercase letter* would always mean *its lowercase + {key:$}* — i.e. \"apply the operator from the cursor to the end of the line\". Most do; three don't, and those exceptions catch every newcomer.\n\n• {key:D} = {key:d}{key:$}: delete from the cursor to the end of the line. *Consistent.*\n• {key:C} = {key:c}{key:$}: change from the cursor to the end of the line, leaving you in *insert mode*. *Consistent.*\n• {key:Y} — by the rule, *should* be {key:y}{key:$} (yank from the cursor to the end of the line). In vanilla Vim it isn't: it's aliased to {key:y}{key:y} (yank the whole current line). Neovim has finally fixed this default so {key:Y} matches the rule. *The classic wart.*\n• {key:S} = {key:c}{key:c}: change the whole current line. By analogy with {key:C} you'd expect {key:c}{key:$}; it isn't. *A second wart.*\n• {key:s} = {key:c}{key:l}: delete the single character under the cursor and enter *insert mode*. The grammar wouldn't predict this either. *A minor wart.*\n\nThese exceptions exist because Vi shipped before the doubled-form rule was systematic, and by the time the grammar was tidied up, fingers were already in muscle memory. The aliases stayed for backward compatibility. Treat {key:Y}, {key:S}, and {key:s} as things to memorise, not principles to derive."
     },
     {
       "type": "tip",

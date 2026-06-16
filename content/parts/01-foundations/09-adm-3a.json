@@ -21,7 +21,7 @@
     },
     {
       "type": "prose",
-      "text": "When Bill Joy wrote `vi` at UC Berkeley in 1976, the canonical \"smart terminal\" on campus was the Lear Siegler ADM-3A — a serial terminal, half desk-sized, that displayed 24 lines of 80 characters of green phosphor. It cost about $1,000 (roughly $5,000 in 2025 dollars). For three years it was Joy's keyboard, and almost every weird thing about Vim is a fingerprint of its layout — most famously the {key:hjkl} arrows and the placement of {key:Esc} right where modern keyboards put {key:Tab}."
+      "text": "When Bill Joy wrote `vi` at UC Berkeley in 1976, the canonical \"smart terminal\" on campus was the Lear Siegler ADM-3A — a serial terminal, half desk-sized, that displayed 24 lines of 80 characters of green phosphor. It cost about $1,000 (roughly $5,000 in 2026 dollars). For three years it was Joy's keyboard, and almost every weird thing about Vim is a fingerprint of its layout — most famously the {key:hjkl} arrows and the placement of {key:Esc} right where modern keyboards put {key:Tab}."
     },
     {
       "type": "figure",
@@ -48,34 +48,34 @@
       ],
       "rows": [
         [
-          "Arrow keys",
+          "{key:Left}{key:Down}{key:Up}{key:Right} keys",
           "Printed on the {key:h}, {key:j}, {key:k}, {key:l} keys (no dedicated arrows)",
           "{key:hjkl} for cursor movement"
         ],
         [
-          "Esc key",
+          "{key:Esc} key",
           "Where {key:Tab} is on a modern keyboard — easy to reach",
           "{key:Esc} is the universal way out of any mode"
         ],
         [
-          "Caps Lock",
-          "Did not exist; the key in that position was Ctrl",
-          "{key:Ctrl-} chords are heavily used because Ctrl was always under your pinky"
+          "{key:CapsLock} key",
+          "Did not exist; the key in that position was {key:Ctrl}",
+          "{key:Ctrl} chords are heavily used because {key:Ctrl} was always under your pinky"
         ],
         [
-          "The {key::} key",
-          "Required Shift (it lives on the {key:;} key)",
-          "Ex commands feel like a deliberate gear-shift because typing {key::} was a tiny extra effort"
+          "{key::} key",
+          "Unshifted, on its own key to the right of {key:0} (below the {key:*})",
+          "Typing {key::} was cheap — one key, no chord — natural as the prefix into ex commands"
         ],
         [
-          "No backtick",
+          "No {key:`} key",
           "{key:`} key was missing on early ADM-3A revisions; mark notation used {key:'} only",
           "{key:'a} (line of mark) is older than {key:`a} (exact column)"
         ],
         [
           "{key:~} key",
-          "Sat between {key:Esc} and {key:1} — used as the literal home directory glyph",
-          "Vim ended up reusing {key:~} for case-toggling because the keycap was easy to find"
+          "Top-right corner, on the {key:Home} key — labeled {key:~} because Unix uses {key:~} as the home-directory shorthand",
+          "Vim uses {key:~} to toggle the case of the character under the cursor; on modern keyboards the same key sits in the very different position between {key:Esc} and {key:1}"
         ]
       ]
     },
@@ -86,15 +86,15 @@
     },
     {
       "type": "prose",
-      "text": "The {key:hjkl}-as-arrows decision was the original ADM-3A *hardware* designer's, not Joy's. Lear Siegler had stamped tiny arrows onto the keycaps of {key:h} (left), {key:j} (down), {key:k} (up), and {key:l} (right) so that users of `vi`-style or other modal editors could navigate without dedicated arrow keys. Joy looked at the keyboard he had and used what was already labeled. There was no abstract design judgement: he just used the arrows that were physically present."
+      "text": "The {key:hjkl}-as-arrows decision was the original ADM-3A *hardware* designer's, not Joy's. Lear Siegler had stamped tiny arrows onto the keycaps of {key:h} (left), {key:j} (down), {key:k} (up), and {key:l} (right) so the terminal could offer cursor movement without dedicated arrow keys. Joy looked at the keyboard he had and used what was already labeled. There was no abstract design judgement: he just used the arrows that were physically present."
     },
     {
       "type": "prose",
-      "text": "Fifty years later, on a keyboard with proper arrow keys, {key:hjkl} still wins because it does not require leaving the home row. That is a real ergonomic benefit, but it is downstream of an accident: Joy could have picked any four keys, but those four were the ones with arrows printed on them. Once you know that, {key:hjkl} stops feeling like a design choice and starts feeling like an artifact."
+      "text": "Fifty years later, on a keyboard with proper arrow keys, {key:hjkl} still wins because it does not require leaving the home row. That is a real ergonomic benefit, but it is downstream of an accident: Joy could have picked any four keys, but those four were the ones with arrows printed on them."
     },
     {
       "type": "tip",
-      "text": "If you ever wondered why you should leave the arrow keys alone in Vim and use {key:hjkl} instead, the answer is: not because the design is sacred, but because every Vim user expects {key:hjkl}, and tutorials and plugins assume it. The advantage is real (home-row movement), and the network effect makes it permanent."
+      "text": "If you ever wondered why you should leave the arrow keys alone in Vim and use {key:hjkl} instead, the answer is: not because the design is sacred, but because every Vim user expects {key:hjkl}, and tutorials and plugins assume it. The advantage is real (home-row movement), and the network effect makes it permanent. Some Vim users go further and remap the arrow keys to do nothing, forcing themselves to break the old habit and burn {key:hjkl} into muscle memory."
     },
     {
       "type": "heading",
@@ -107,12 +107,16 @@
     },
     {
       "type": "prose",
-      "text": "Modern keyboards put {key:Esc} on the top row, far from the home row, which is why so many Vim users remap {key:Caps Lock} to {key:Esc} (or {key:Ctrl}) — they are restoring the ADM-3A's ergonomics on hardware that has drifted away from them."
+      "text": "Modern keyboards put {key:Esc} on the top row, far from the home row. The most common workaround is to remap {key:CapsLock} to {key:Esc}. That isn't literally restoring the ADM-3A — on the ADM-3A, {key:Esc} was where {key:Tab} sits today, and {key:CapsLock}'s position was occupied by {key:Ctrl} — but it does put {key:Esc} within easy reach of the home row. Many Vim users do this and never look back."
+    },
+    {
+      "type": "prose",
+      "text": "Your author prefers a different remap: {key:CapsLock} \u2192 {key:Ctrl} (which actually does restore the ADM-3A's {key:Ctrl} position), and then {key:Ctrl-[} as the way out of *insert mode*. {key:Ctrl-[} sends the same byte as {key:Esc}, so Vim treats it identically. With {key:CapsLock} acting as {key:Ctrl}, your left pinky barely moves, and the right index finger just taps {key:[} \u2014 no reaching all the way up to the far top-left corner of the keyboard for {key:Esc}."
     },
     {
       "type": "internals",
       "title": "The Lineage of the Colon",
-      "text": "`vi` was originally a *visual* mode of `ex`, an extended version of `ed`. When you typed {key::}, `vi` shifted into ex's command-line interface — the line-editor underneath the screen interface — to accept ex commands like `:w`, `:q`, `:s/foo/bar/g`. The colon prefix is literally \"now I am talking to ex.\" Vim and Neovim still embed an ex-mode interpreter; type {key:Q} (in Vim, not Neovim) to drop into pure *ex mode* and you'll see `vi`'s parent system underneath.\n\nThis is why ex commands have such a wildly different design from normal-mode commands. They are a different language, descended from `ed` (1969). `vi`/Vim/Neovim speak both languages and put a colon between them so you always know which one you're talking to."
+      "text": "`vi` was originally a *visual* mode of `ex`, an extended version of `ed`. When you typed {key::}, `vi` shifted into ex's command-line interface — the line-editor underneath the screen interface — to accept ex commands like `:w`, `:q`, `:s/foo/bar/g`. The colon prefix is literally \"now I am talking to ex.\" Vim and Neovim still embed an ex-mode interpreter: in either editor you can type `:ex` to drop into pure *ex mode* and see `vi`'s parent system underneath. Classic Vim also keeps {key:Q} as a shortcut into *ex mode*; Neovim remapped {key:Q} to replay the last recorded macro (it was the most useful key on the keyboard going to a mode almost nobody wanted), so on Neovim you must use `:ex`.\n\nThis is why ex commands have such a wildly different design from normal-mode commands. They are a different language, descended from `ed` (1969). `vi`/Vim/Neovim speak both languages and put a colon between them so you always know which one you're talking to."
     },
     {
       "type": "heading",
