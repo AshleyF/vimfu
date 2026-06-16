@@ -1,0 +1,268 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │                                        │
+ 4 │def attack(target):                     │
+ 5 │    dmg = roll(2, 8)                    │
+ 6 │    target.hp -= dmg                    │
+ 7 │    return dmg                          │
+ 8 │                                        │
+ 9 │def heal(ally):                         │
+10 │    amt = roll(1, 6) + 5                │
+11 │    ally.hp += amt                      │
+12 │    return amt                          │
+13 │                                        │
+14 │def flee():                             │
+15 │    speed = roll(1, 20)                 │
+16 │    return speed > 10                   │
+17 │~                                       │
+18 │quest.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Jump Forward
+[SAY] Control O goes back through your jumps. Control I goes forward. Like back and forward in a browser.
+[SAY] Let me jump around first.
+[TYPE] '/heal'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │                                        │
+ 4 │def attack(target):                     │
+ 5 │    dmg = roll(2, 8)                    │
+ 6 │    target.hp -= dmg                    │
+ 7 │    return dmg                          │
+ 8 │                                        │
+ 9 │def heal(ally):                         │
+10 │    amt = roll(1, 6) + 5                │
+11 │    ally.hp += amt                      │
+12 │    return amt                          │
+13 │                                        │
+14 │def flee():                             │
+15 │    speed = roll(1, 20)                 │
+16 │    return speed > 10                   │
+17 │~                                       │
+18 │quest.py              10,5           All│
+19 │/heal                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 4-7: "heal"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │                                        │
+ 4 │def attack(target):                     │
+ 5 │    dmg = roll(2, 8)                    │
+ 6 │    target.hp -= dmg                    │
+ 7 │    return dmg                          │
+ 8 │                                        │
+ 9 │def heal(ally):                         │ ◂ cursor (9,4)
+10 │    amt = roll(1, 6) + 5                │
+11 │    ally.hp += amt                      │
+12 │    return amt                          │
+13 │                                        │
+14 │def flee():                             │
+15 │    speed = roll(1, 20)                 │
+16 │    return speed > 10                   │
+17 │~                                       │
+18 │quest.py              10,5           All│
+19 │/heal                 [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 5-7: "eal"
+
+[SAY] Found heal.
+[KEYS] 'G'
+[OVERLAY] ⇧G
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │                                        │
+ 4 │def attack(target):                     │
+ 5 │    dmg = roll(2, 8)                    │
+ 6 │    target.hp -= dmg                    │
+ 7 │    return dmg                          │
+ 8 │                                        │
+ 9 │def heal(ally):                         │
+10 │    amt = roll(1, 6) + 5                │
+11 │    ally.hp += amt                      │
+12 │    return amt                          │
+13 │                                        │
+14 │def flee():                             │
+15 │    speed = roll(1, 20)                 │
+16 │    return speed > 10                   │ ◂ cursor (16,4)
+17 │~                                       │
+18 │quest.py              17,5           All│
+19 │/heal                 [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 4-7: "heal"
+
+[SAY] Bottom of the file.
+[KEYS] 'gg'
+[OVERLAY] gg
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,4)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │                                        │
+ 4 │def attack(target):                     │
+ 5 │    dmg = roll(2, 8)                    │
+ 6 │    target.hp -= dmg                    │
+ 7 │    return dmg                          │
+ 8 │                                        │
+ 9 │def heal(ally):                         │
+10 │    amt = roll(1, 6) + 5                │
+11 │    ally.hp += amt                      │
+12 │    return amt                          │
+13 │                                        │
+14 │def flee():                             │
+15 │    speed = roll(1, 20)                 │
+16 │    return speed > 10                   │
+17 │~                                       │
+18 │quest.py              1,5            All│
+19 │/heal                 [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 4-7: "heal"
+
+[SAY] Back to the top.
+[SAY] Now Control O twice to walk back.
+[CTRL] o
+[OVERLAY] ⌃o  jump back
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │                                        │
+ 4 │def attack(target):                     │
+ 5 │    dmg = roll(2, 8)                    │
+ 6 │    target.hp -= dmg                    │
+ 7 │    return dmg                          │
+ 8 │                                        │
+ 9 │def heal(ally):                         │
+10 │    amt = roll(1, 6) + 5                │
+11 │    ally.hp += amt                      │
+12 │    return amt                          │
+13 │                                        │
+14 │def flee():                             │
+15 │    speed = roll(1, 20)                 │
+16 │    return speed > 10                   │ ◂ cursor (16,4)
+17 │~                                       │
+18 │quest.py              17,5           All│
+19 │/heal                 [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 4-7: "heal"
+
+[CTRL] o
+[OVERLAY] ⌃o  jump back
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │                                        │
+ 4 │def attack(target):                     │
+ 5 │    dmg = roll(2, 8)                    │
+ 6 │    target.hp -= dmg                    │
+ 7 │    return dmg                          │
+ 8 │                                        │
+ 9 │def heal(ally):                         │ ◂ cursor (9,4)
+10 │    amt = roll(1, 6) + 5                │
+11 │    ally.hp += amt                      │
+12 │    return amt                          │
+13 │                                        │
+14 │def flee():                             │
+15 │    speed = roll(1, 20)                 │
+16 │    return speed > 10                   │
+17 │~                                       │
+18 │quest.py              10,5           All│
+19 │/heal                 [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 5-7: "eal"
+
+[SAY] I'm back at the heal function.
+[SAY] Control I goes forward.
+[CTRL] i
+[OVERLAY] ⌃i  jump forward
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │                                        │
+ 4 │def attack(target):                     │
+ 5 │    dmg = roll(2, 8)                    │
+ 6 │    target.hp -= dmg                    │
+ 7 │    return dmg                          │
+ 8 │                                        │
+ 9 │def heal(ally):                         │
+10 │    amt = roll(1, 6) + 5                │
+11 │    ally.hp += amt                      │
+12 │    return amt                          │
+13 │                                        │
+14 │def flee():                             │
+15 │    speed = roll(1, 20)                 │
+16 │    return speed > 10                   │ ◂ cursor (16,4)
+17 │~                                       │
+18 │quest.py              17,5           All│
+19 │/heal                 [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 4-7: "heal"
+
+[SAY] Bottom of the file.
+[CTRL] i
+[OVERLAY] ⌃i  jump forward
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,4)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │                                        │
+ 4 │def attack(target):                     │
+ 5 │    dmg = roll(2, 8)                    │
+ 6 │    target.hp -= dmg                    │
+ 7 │    return dmg                          │
+ 8 │                                        │
+ 9 │def heal(ally):                         │
+10 │    amt = roll(1, 6) + 5                │
+11 │    ally.hp += amt                      │
+12 │    return amt                          │
+13 │                                        │
+14 │def flee():                             │
+15 │    speed = roll(1, 20)                 │
+16 │    return speed > 10                   │
+17 │~                                       │
+18 │quest.py              1,5            All│
+19 │/heal                 [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 4-7: "heal"
+
+[SAY] Back to the top. Forward through the same jumps.
+[SAY] Control O back. Control I forward. Navigate your jump history like a browser.

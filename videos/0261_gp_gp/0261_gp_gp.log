@@ -1,0 +1,404 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │ ◂ cursor (0,0)
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │
+12 │api = "call get(x)"                     │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gp gP — Put and Move
+[SAY] G p pastes like p, but leaves the cursor just past the new text. Capital G capital P does the same trick pasting above.
+[SAY] Yank line three.
+[KEYS] '3G'
+[OVERLAY] 3G  line 3
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │ ◂ cursor (2,0)
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │
+12 │api = "call get(x)"                     │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               3,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'yy'
+[OVERLAY] yy  yank line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │ ◂ cursor (2,0)
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │
+12 │api = "call get(x)"                     │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               3,1            All│
+    ────────────────────────────────────────
+
+[SAY] Plain p pastes below. The cursor stays on the new line.
+[KEYS] 'p'
+[OVERLAY] p  paste below
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │
+ 3 │    "fix login bug",                    │ ◂ cursor (3,4)
+ 4 │    "add dark mode",                    │
+ 5 │    "write tests",                      │
+ 6 │]                                       │
+ 7 │                                        │
+ 8 │priority = [                            │
+ 9 │    "deploy hotfix",                    │
+10 │]                                       │
+11 │                                        │
+12 │ext = "Score"                           │
+13 │api = "call get(x)"                     │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py [+]           4,5            All│
+    ────────────────────────────────────────
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │ ◂ cursor (2,0)
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │
+12 │api = "call get(x)"                     │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               3,1            All│
+19 │1 line less;... 1 second ago            │
+    ────────────────────────────────────────
+
+[SAY] Now G p. Same paste, but the cursor steps past it onto the next line.
+[KEYS] 'gp'
+[OVERLAY] gp  gp
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │
+ 3 │    "fix login bug",                    │
+ 4 │    "add dark mode",                    │ ◂ cursor (4,0)
+ 5 │    "write tests",                      │
+ 6 │]                                       │
+ 7 │                                        │
+ 8 │priority = [                            │
+ 9 │    "deploy hotfix",                    │
+10 │]                                       │
+11 │                                        │
+12 │ext = "Score"                           │
+13 │api = "call get(x)"                     │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py [+]           5,1            All│
+19 │1 line less;... 1 second ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │ ◂ cursor (2,0)
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │
+12 │api = "call get(x)"                     │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               3,1            All│
+19 │1 line less;...2 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Same idea for characters. Yank one word.
+[KEYS] '/Score\r'
+[OVERLAY] /Score⏎  find Score
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │ ◂ cursor (11,7)
+12 │api = "call get(x)"                     │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               12,8           All│
+19 │/Score                [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 11, cols 8-11: "core"
+
+[KEYS] 'yiw'
+[OVERLAY] yiw  yank word
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │ ◂ cursor (11,7)
+12 │api = "call get(x)"                     │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               12,8           All│
+19 │/Score                [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 11, cols 8-11: "core"
+
+[SAY] Paste it onto the end of get to build a method name.
+[KEYS] '/get\r'
+[OVERLAY] /get⏎  find get
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │
+12 │api = "call get(x)"                     │ ◂ cursor (12,12)
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               13,13          All│
+19 │/get                  [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 12, cols 13-14: "et"
+
+[KEYS] 'e'
+[OVERLAY] e  end of get
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │
+12 │api = "call get(x)"                     │ ◂ cursor (12,14)
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               13,15          All│
+19 │/get                  [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 12, cols 12-14: "ge"
+
+[KEYS] 'p'
+[OVERLAY] p  paste after
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │
+12 │api = "call getScore(x)"                │ ◂ cursor (12,19)
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py [+]           13,20          All│
+19 │/get                  [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 12, cols 12-14: "get"
+
+[SAY] Plain p stops on the last letter of the pasted word.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │
+12 │api = "call get(x)"                     │ ◂ cursor (12,14)
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               13,15          All│
+19 │1 change; be...3 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 12, cols 12-14: "ge"
+
+[KEYS] 'gp'
+[OVERLAY] gp  gp
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Task List                             │
+ 1 │tasks = [                               │
+ 2 │    "fix login bug",                    │
+ 3 │    "add dark mode",                    │
+ 4 │    "write tests",                      │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │priority = [                            │
+ 8 │    "deploy hotfix",                    │
+ 9 │]                                       │
+10 │                                        │
+11 │ext = "Score"                           │
+12 │api = "call getScore(x)"                │ ◂ cursor (12,20)
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py [+]           13,21          All│
+19 │1 change; be...3 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 12, cols 12-14: "get"
+
+[SAY] G p drops the same word, but jumps past it onto the next character. Ready to keep typing.
+[SAY] Reach for G p or G capital P when you want a paste that leaves you ready to move on.

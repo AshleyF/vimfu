@@ -1,0 +1,198 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │alpha()                                 │ ◂ cursor (0,0)
+ 1 │bravo()                                 │
+ 2 │charlie()                               │
+ 3 │delta()                                 │
+ 4 │                                        │
+ 5 │# paste here:                           │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │calls.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Yank to Named Register
+[SAY] Yank a block of lines into a named register so you can paste them later without losing them.
+[SAY] Turn on line numbers.
+[TYPE] ':set number'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │alpha()                                 │
+ 1 │bravo()                                 │
+ 2 │charlie()                               │
+ 3 │delta()                                 │
+ 4 │                                        │
+ 5 │# paste here:                           │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │calls.txt             1,1            All│
+19 │:set number                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 alpha()                             │ ◂ cursor (0,4)
+ 1 │  2 bravo()                             │
+ 2 │  3 charlie()                           │
+ 3 │  4 delta()                             │
+ 4 │  5                                     │
+ 5 │  6 # paste here:                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │calls.txt             1,1            All│
+19 │:set number                             │
+    ────────────────────────────────────────
+
+[SAY] Yank lines one through four into register a.
+[TYPE] ':1,4y a'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 alpha()                             │
+ 1 │  2 bravo()                             │
+ 2 │  3 charlie()                           │
+ 3 │  4 delta()                             │
+ 4 │  5                                     │
+ 5 │  6 # paste here:                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │calls.txt             1,1            All│
+19 │:1,4y a                                 │ ◂ cursor (19,7)
+    ────────────────────────────────────────
+
+[SAY] One comma four, y, then the register letter a. The trailing letter is the register name.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 alpha()                             │ ◂ cursor (0,4)
+ 1 │  2 bravo()                             │
+ 2 │  3 charlie()                           │
+ 3 │  4 delta()                             │
+ 4 │  5                                     │
+ 5 │  6 # paste here:                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │calls.txt             1,1            All│
+19 │4 lines yanked into "a                  │
+    ────────────────────────────────────────
+
+[SAY] Four lines yanked into register a. Now go to the bottom and paste from a.
+[KEYS] 'G'
+[OVERLAY] ⇧G  file end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 alpha()                             │
+ 1 │  2 bravo()                             │
+ 2 │  3 charlie()                           │
+ 3 │  4 delta()                             │
+ 4 │  5                                     │
+ 5 │  6 # paste here:                       │ ◂ cursor (5,4)
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │calls.txt             6,1            All│
+19 │4 lines yanked into "a                  │
+    ────────────────────────────────────────
+
+[KEYS] '"ap'
+[OVERLAY] "ap
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 alpha()                             │
+ 1 │  2 bravo()                             │
+ 2 │  3 charlie()                           │
+ 3 │  4 delta()                             │
+ 4 │  5                                     │
+ 5 │  6 # paste here:                       │
+ 6 │  7 alpha()                             │ ◂ cursor (6,4)
+ 7 │  8 bravo()                             │
+ 8 │  9 charlie()                           │
+ 9 │ 10 delta()                             │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │calls.txt [+]         7,1            All│
+19 │4 more lines                            │
+    ────────────────────────────────────────
+
+[SAY] Quote a p pastes from register a. The register keeps its contents until you overwrite it.
+[SAY] Colon range y register. Yank any block into a named register for later use.

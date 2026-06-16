@@ -112,7 +112,7 @@ for f in sorted(glob.glob('curriculum/shorts/*.json')):
                         break
 
     # ---- Also check the log for cursor position vs screen content ----
-    log_path = f'shellpilot/videos/{base}/{base}.log'
+    log_path = f'videos/{base}/{base}.log'
     if not os.path.exists(log_path):
         continue
     

@@ -1,0 +1,973 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │ ◂ cursor (0,0)
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Dot Patterns
+[SAY] The dot command really shines when you combine it with search.
+[SAY] This is the classic N dot pattern.
+[SAY] This file mentions goblin five times. Let's rename them all to dragon.
+[SAY] First, search for goblin.
+[KEYS] '/'
+[OVERLAY] /  search
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+19 │/                                       │ ◂ cursor (19,1)
+    ────────────────────────────────────────
+
+[TYPE] 'goblin'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              2,15           All│
+19 │/goblin                                 │ ◂ cursor (19,7)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 1, cols 14-19: "goblin"
+[HIGHLIGHT] row 2, cols 15-20: "goblin"
+[HIGHLIGHT] row 3, cols 12-17: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │ ◂ cursor (1,14)
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              2,15           All│
+19 │/goblin               [2/5]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 1, cols 15-19: "oblin"
+[HIGHLIGHT] row 2, cols 15-20: "goblin"
+[HIGHLIGHT] row 3, cols 12-17: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[SAY] Now change this word.
+[KEYS] 'cw'
+[OVERLAY] cw  change word
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("", 5)                     │ ◂ cursor (1,14)
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          2,15           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 2, cols 15-20: "goblin"
+[HIGHLIGHT] row 3, cols 12-17: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[TYPE] 'dragon'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │ ◂ cursor (1,20)
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          2,21           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 2, cols 15-20: "goblin"
+[HIGHLIGHT] row 3, cols 12-17: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │ ◂ cursor (1,19)
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          2,20           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 2, cols 15-20: "goblin"
+[HIGHLIGHT] row 3, cols 12-17: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[SAY] Press N to jump to the next match.
+[KEYS] 'n'
+[OVERLAY] n  next match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("goblin")                 │ ◂ cursor (2,15)
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          3,16           All│
+19 │/goblin               [2/4]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 2, cols 16-20: "oblin"
+[HIGHLIGHT] row 3, cols 12-17: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[SAY] And dot to repeat the change.
+[KEYS] '.'
+[OVERLAY] .  repeat
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("dragon")                 │ ◂ cursor (2,20)
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          3,21           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 3, cols 12-17: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[SAY] N dot. N dot. N dot.
+[KEYS] 'n'
+[OVERLAY] n  next match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("dragon")                 │
+ 3 │print(f"the goblin drops gold")         │ ◂ cursor (3,12)
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          4,13           All│
+19 │/goblin               [2/3]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 3, cols 13-17: "oblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[KEYS] '.'
+[OVERLAY] .  repeat
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("dragon")                 │
+ 3 │print(f"the dragon drops gold")         │ ◂ cursor (3,17)
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          4,18           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[KEYS] 'n'
+[OVERLAY] n  next match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("dragon")                 │
+ 3 │print(f"the dragon drops gold")         │
+ 4 │print(f"no more goblin")                │ ◂ cursor (4,16)
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          5,17           All│
+19 │/goblin               [2/2]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 4, cols 17-21: "oblin"
+
+[KEYS] '.'
+[OVERLAY] .  repeat
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("dragon")                 │
+ 3 │print(f"the dragon drops gold")         │
+ 4 │print(f"no more dragon")                │ ◂ cursor (4,21)
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          5,22           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+
+[KEYS] 'n'
+[OVERLAY] n  next match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │ ◂ cursor (0,0)
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("dragon")                 │
+ 3 │print(f"the dragon drops gold")         │
+ 4 │print(f"no more dragon")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          1,1            All│
+19 │/goblin             W [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 1-5: "oblin"
+
+[KEYS] '.'
+[OVERLAY] .  repeat
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │dragon = 10                             │ ◂ cursor (0,5)
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("dragon")                 │
+ 3 │print(f"the dragon drops gold")         │
+ 4 │print(f"no more dragon")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          1,6            All│
+    ────────────────────────────────────────
+
+[SAY] All five goblins are now dragons. No regex needed.
+[SAY] Let's undo all of that and try it with star.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │ ◂ cursor (0,0)
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("dragon")                 │
+ 3 │print(f"the dragon drops gold")         │
+ 4 │print(f"no more dragon")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          1,1            All│
+19 │1 change; be...5 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 1-5: "oblin"
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("dragon")                 │
+ 3 │print(f"the dragon drops gold")         │
+ 4 │print(f"no more goblin")                │ ◂ cursor (4,16)
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          5,17           All│
+19 │1 change; be...8 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 4, cols 17-21: "oblin"
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("dragon")                 │
+ 3 │print(f"the goblin drops gold")         │ ◂ cursor (3,12)
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          4,13           All│
+19 │1 change; be...0 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 3, cols 13-17: "oblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("dragon", 5)               │
+ 2 │loot = defeat("goblin")                 │ ◂ cursor (2,15)
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          3,16           All│
+19 │1 change; be...3 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 2, cols 16-20: "oblin"
+[HIGHLIGHT] row 3, cols 12-17: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │ ◂ cursor (1,14)
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              2,15           All│
+19 │1 change; be...9 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 1, cols 15-19: "oblin"
+[HIGHLIGHT] row 2, cols 15-20: "goblin"
+[HIGHLIGHT] row 3, cols 12-17: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[SAY] Down in the spawn function, the word kind appears four times. Let's rename some of them.
+[SAY] Search for kind.
+[KEYS] '/'
+[OVERLAY] /  search
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              2,15           All│
+19 │/                                       │ ◂ cursor (19,1)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "goblin"
+[HIGHLIGHT] row 1, cols 14-19: "goblin"
+[HIGHLIGHT] row 2, cols 15-20: "goblin"
+[HIGHLIGHT] row 3, cols 12-17: "goblin"
+[HIGHLIGHT] row 4, cols 16-21: "goblin"
+
+[TYPE] 'kind'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              7,11           All│
+19 │/kind                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 10-13: "kind"
+[HIGHLIGHT] row 7, cols 12-15: "kind"
+[HIGHLIGHT] row 7, cols 19-22: "kind"
+[HIGHLIGHT] row 8, cols 9-12: "kind"
+[HIGHLIGHT] row 8, cols 18-21: "kind"
+[HIGHLIGHT] row 9, cols 13-16: "kind"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(kind, level):                 │ ◂ cursor (6,10)
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              7,11           All│
+19 │/kind                 [1/6]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 11-13: "ind"
+[HIGHLIGHT] row 7, cols 12-15: "kind"
+[HIGHLIGHT] row 7, cols 19-22: "kind"
+[HIGHLIGHT] row 8, cols 9-12: "kind"
+[HIGHLIGHT] row 8, cols 18-21: "kind"
+[HIGHLIGHT] row 9, cols 13-16: "kind"
+
+[SAY] Change this one to name.
+[KEYS] 'cw'
+[OVERLAY] cw  change word
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(, level):                     │ ◂ cursor (6,10)
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          7,11           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 7, cols 12-15: "kind"
+[HIGHLIGHT] row 7, cols 19-22: "kind"
+[HIGHLIGHT] row 8, cols 9-12: "kind"
+[HIGHLIGHT] row 8, cols 18-21: "kind"
+[HIGHLIGHT] row 9, cols 13-16: "kind"
+
+[TYPE] 'name'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(name, level):                 │ ◂ cursor (6,14)
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          7,15           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 7, cols 12-15: "kind"
+[HIGHLIGHT] row 7, cols 19-22: "kind"
+[HIGHLIGHT] row 8, cols 9-12: "kind"
+[HIGHLIGHT] row 8, cols 18-21: "kind"
+[HIGHLIGHT] row 9, cols 13-16: "kind"
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(name, level):                 │ ◂ cursor (6,13)
+ 7 │    mob = {"kind": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          7,14           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 7, cols 12-15: "kind"
+[HIGHLIGHT] row 7, cols 19-22: "kind"
+[HIGHLIGHT] row 8, cols 9-12: "kind"
+[HIGHLIGHT] row 8, cols 18-21: "kind"
+[HIGHLIGHT] row 9, cols 13-16: "kind"
+
+[SAY] N to jump. Dot to change.
+[KEYS] 'n'
+[OVERLAY] n  next match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(name, level):                 │
+ 7 │    mob = {"kind": kind, "hp": 10}      │ ◂ cursor (7,12)
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          8,13           All│
+19 │/kind                 [1/5]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 7, cols 13-15: "ind"
+[HIGHLIGHT] row 7, cols 19-22: "kind"
+[HIGHLIGHT] row 8, cols 9-12: "kind"
+[HIGHLIGHT] row 8, cols 18-21: "kind"
+[HIGHLIGHT] row 9, cols 13-16: "kind"
+
+[KEYS] '.'
+[OVERLAY] .  repeat
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(name, level):                 │
+ 7 │    mob = {"name": kind, "hp": 10}      │ ◂ cursor (7,15)
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          8,16           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 7, cols 19-22: "kind"
+[HIGHLIGHT] row 8, cols 9-12: "kind"
+[HIGHLIGHT] row 8, cols 18-21: "kind"
+[HIGHLIGHT] row 9, cols 13-16: "kind"
+
+[SAY] But what if we don't want to change every one? Just press N to skip.
+[KEYS] 'n'
+[OVERLAY] n  next match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(name, level):                 │
+ 7 │    mob = {"name": kind, "hp": 10}      │ ◂ cursor (7,19)
+ 8 │    mob["kind"] = kind.upper()          │
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          8,20           All│
+19 │/kind                 [1/4]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 7, cols 20-22: "ind"
+[HIGHLIGHT] row 8, cols 9-12: "kind"
+[HIGHLIGHT] row 8, cols 18-21: "kind"
+[HIGHLIGHT] row 9, cols 13-16: "kind"
+
+[SAY] Skipped. Now dot to change this last one.
+[KEYS] 'n'
+[OVERLAY] n  next match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(name, level):                 │
+ 7 │    mob = {"name": kind, "hp": 10}      │
+ 8 │    mob["kind"] = kind.upper()          │ ◂ cursor (8,9)
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          9,10           All│
+19 │/kind                 [2/4]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 7, cols 19-22: "kind"
+[HIGHLIGHT] row 8, cols 10-12: "ind"
+[HIGHLIGHT] row 8, cols 18-21: "kind"
+[HIGHLIGHT] row 9, cols 13-16: "kind"
+
+[KEYS] '.'
+[OVERLAY] .  repeat
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │goblin = 10                             │
+ 1 │hero = quest("goblin", 5)               │
+ 2 │loot = defeat("goblin")                 │
+ 3 │print(f"the goblin drops gold")         │
+ 4 │print(f"no more goblin")                │
+ 5 │                                        │
+ 6 │def spawn(name, level):                 │
+ 7 │    mob = {"name": kind, "hp": 10}      │
+ 8 │    mob["name"] = kind.upper()          │ ◂ cursor (8,12)
+ 9 │    print(f"{kind} spawned")            │
+10 │    return mob                          │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          9,13           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 7, cols 19-22: "kind"
+[HIGHLIGHT] row 8, cols 18-21: "kind"
+[HIGHLIGHT] row 9, cols 13-16: "kind"
+
+[SAY] Search, change, then N dot to repeat. Skip with N, apply with dot. Interactive search and replace.

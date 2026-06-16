@@ -1,0 +1,231 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# sample                                │ ◂ cursor (0,0)
+ 1 │foo = 1                                 │
+ 2 │bar = 2                                 │
+ 3 │baz = 3                                 │
+ 4 │qux = 4                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │sample.py             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-F — Edit Command
+[SAY] Control F opens the command line in a full editing window. You can use all your normal mode skills to edit the command.
+[SAY] Start typing a long substitute command.
+[TYPE] ':%s/foo/bar/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# sample                                │
+ 1 │bar = 1                                 │
+ 2 │bar = 2                                 │
+ 3 │baz = 3                                 │
+ 4 │qux = 4                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │sample.py [+]         2,1            All│
+19 │:%s/foo/bar/g                           │ ◂ cursor (19,13)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "bar"
+
+[SAY] Now press Control F.
+[CTRL] f
+[OVERLAY] ⌃f  edit window
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# sample                                │
+ 1 │foo = 1                                 │
+ 2 │bar = 2                                 │
+ 3 │baz = 3                                 │
+ 4 │qux = 4                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │sample.py             1,1            All│
+11 │:%s/width/max_width/g                   │
+12 │:%s/foo/bar/g                           │
+13 │:set number                             │
+14 │:set cursorline                         │
+15 │:echo hello                             │
+16 │:q!                                     │
+17 │:%s/foo/bar/g                           │ ◂ cursor (17,13)
+18 │[Command Line]        366,13         Bot│
+19 │:%s/foo/bar/g                           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 10, cols 0-39: "sample.py             1,1            All"
+
+[SAY] The command opens in a buffer. You can see the full command history above. Use any Vim motions to edit the current line.
+[SAY] Change bar to baz using C I W.
+[KEYS] 'Fb'
+[OVERLAY] Fb
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# sample                                │
+ 1 │foo = 1                                 │
+ 2 │bar = 2                                 │
+ 3 │baz = 3                                 │
+ 4 │qux = 4                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │sample.py             1,1            All│
+11 │:%s/width/max_width/g                   │
+12 │:%s/foo/bar/g                           │
+13 │:set number                             │
+14 │:set cursorline                         │
+15 │:echo hello                             │
+16 │:q!                                     │
+17 │:%s/foo/bar/g                           │ ◂ cursor (17,8)
+18 │[Command Line]        366,8          Bot│
+19 │:%s/foo/bar/g                           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 10, cols 0-39: "sample.py             1,1            All"
+
+[KEYS] 'ciw'
+[OVERLAY] ciw  change word
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# sample                                │
+ 1 │foo = 1                                 │
+ 2 │bar = 2                                 │
+ 3 │baz = 3                                 │
+ 4 │qux = 4                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │sample.py             1,1            All│
+11 │:%s/width/max_width/g                   │
+12 │:%s/foo/bar/g                           │
+13 │:set number                             │
+14 │:set cursorline                         │
+15 │:echo hello                             │
+16 │:q!                                     │
+17 │:%s/foo//g                              │ ◂ cursor (17,8)
+18 │[Command Line]        366,8          Bot│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 10, cols 0-39: "sample.py             1,1            All"
+
+[TYPE] 'baz'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# sample                                │
+ 1 │foo = 1                                 │
+ 2 │bar = 2                                 │
+ 3 │baz = 3                                 │
+ 4 │qux = 4                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │sample.py             1,1            All│
+11 │:%s/width/max_width/g                   │
+12 │:%s/foo/bar/g                           │
+13 │:set number                             │
+14 │:set cursorline                         │
+15 │:echo hello                             │
+16 │:q!                                     │
+17 │:%s/foo/baz/g                           │ ◂ cursor (17,11)
+18 │[Command Line]        366,11         Bot│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 10, cols 0-39: "sample.py             1,1            All"
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# sample                                │
+ 1 │foo = 1                                 │
+ 2 │bar = 2                                 │
+ 3 │baz = 3                                 │
+ 4 │qux = 4                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │sample.py             1,1            All│
+11 │:%s/width/max_width/g                   │
+12 │:%s/foo/bar/g                           │
+13 │:set number                             │
+14 │:set cursorline                         │
+15 │:echo hello                             │
+16 │:q!                                     │
+17 │:%s/foo/baz/g                           │ ◂ cursor (17,10)
+18 │[Command Line]        366,10         Bot│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 10, cols 0-39: "sample.py             1,1            All"
+
+[SAY] Press Enter to execute the edited command.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# sample                                │
+ 1 │baz = 1                                 │ ◂ cursor (1,0)
+ 2 │bar = 2                                 │
+ 3 │baz = 3                                 │
+ 4 │qux = 4                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │sample.py [+]         2,1            All│
+    ────────────────────────────────────────
+
+[SAY] Foo became baz. We edited the command with full Vim power before running it.
+[SAY] Control F on the command line. Edit commands with Vim's full editing power.

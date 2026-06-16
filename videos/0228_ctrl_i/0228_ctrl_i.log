@@ -1,0 +1,234 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Starship Control                  │ ◂ cursor (0,4)
+ 1 │  2                                     │
+ 2 │  3 class Engine:                       │
+ 3 │  4     def __init__(self):             │
+ 4 │  5         self.fuel = 100             │
+ 5 │  6         self.speed = 0              │
+ 6 │  7                                     │
+ 7 │  8     def throttle(self, pct):        │
+ 8 │  9         self.speed = pct            │
+ 9 │ 10         self.fuel -= pct * 0.1      │
+10 │ 11                                     │
+11 │ 12     def brake(self):                │
+12 │ 13         self.speed = 0              │
+13 │ 14                                     │
+14 │ 15 class Shields:                      │
+15 │ 16     def __init__(self):             │
+16 │ 17         self.power = 100            │
+17 │ 18                                     │
+18 │ship.py               1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-I / Tab
+[SAY] Control I jumps forward in the jump list. It's the opposite of control O. Tab does the same thing.
+[SAY] First, let's create some jumps. Go to the bottom, then search for shields.
+[KEYS] 'G'
+[OVERLAY] ⇧G  G  go to bottom
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 10         self.fuel -= pct * 0.1      │
+ 1 │ 11                                     │
+ 2 │ 12     def brake(self):                │
+ 3 │ 13         self.speed = 0              │
+ 4 │ 14                                     │
+ 5 │ 15 class Shields:                      │
+ 6 │ 16     def __init__(self):             │
+ 7 │ 17         self.power = 100            │
+ 8 │ 18                                     │
+ 9 │ 19     def absorb(self, damage):       │
+10 │ 20         self.power -= damage        │
+11 │ 21                                     │
+12 │ 22     def recharge(self):             │
+13 │ 23         self.power = 100            │
+14 │ 24                                     │
+15 │ 25 def launch(ship):                   │
+16 │ 26     ship.throttle(50)               │
+17 │ 27     print("Launched!")              │ ◂ cursor (17,4)
+18 │ship.py               27,1           Bot│
+    ────────────────────────────────────────
+
+[TYPE] '/Shields'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 10         self.fuel -= pct * 0.1      │
+ 1 │ 11                                     │
+ 2 │ 12     def brake(self):                │
+ 3 │ 13         self.speed = 0              │
+ 4 │ 14                                     │
+ 5 │ 15 class Shields:                      │
+ 6 │ 16     def __init__(self):             │
+ 7 │ 17         self.power = 100            │
+ 8 │ 18                                     │
+ 9 │ 19     def absorb(self, damage):       │
+10 │ 20         self.power -= damage        │
+11 │ 21                                     │
+12 │ 22     def recharge(self):             │
+13 │ 23         self.power = 100            │
+14 │ 24                                     │
+15 │ 25 def launch(ship):                   │
+16 │ 26     ship.throttle(50)               │
+17 │ 27     print("Launched!")              │
+18 │ship.py               15,7           Bot│
+19 │/Shields                                │ ◂ cursor (19,8)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 5, cols 10-16: "Shields"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 10         self.fuel -= pct * 0.1      │
+ 1 │ 11                                     │
+ 2 │ 12     def brake(self):                │
+ 3 │ 13         self.speed = 0              │
+ 4 │ 14                                     │
+ 5 │ 15 class Shields:                      │ ◂ cursor (5,10)
+ 6 │ 16     def __init__(self):             │
+ 7 │ 17         self.power = 100            │
+ 8 │ 18                                     │
+ 9 │ 19     def absorb(self, damage):       │
+10 │ 20         self.power -= damage        │
+11 │ 21                                     │
+12 │ 22     def recharge(self):             │
+13 │ 23         self.power = 100            │
+14 │ 24                                     │
+15 │ 25 def launch(ship):                   │
+16 │ 26     ship.throttle(50)               │
+17 │ 27     print("Launched!")              │
+18 │ship.py               15,7           Bot│
+19 │/Shields            W [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 5, cols 11-16: "hields"
+
+[SAY] Now we have two jumps in history. Control O to go back.
+[CTRL] o
+[OVERLAY] ⌃o  jump back
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 10         self.fuel -= pct * 0.1      │
+ 1 │ 11                                     │
+ 2 │ 12     def brake(self):                │
+ 3 │ 13         self.speed = 0              │
+ 4 │ 14                                     │
+ 5 │ 15 class Shields:                      │
+ 6 │ 16     def __init__(self):             │
+ 7 │ 17         self.power = 100            │
+ 8 │ 18                                     │
+ 9 │ 19     def absorb(self, damage):       │
+10 │ 20         self.power -= damage        │
+11 │ 21                                     │
+12 │ 22     def recharge(self):             │
+13 │ 23         self.power = 100            │
+14 │ 24                                     │
+15 │ 25 def launch(ship):                   │
+16 │ 26     ship.throttle(50)               │
+17 │ 27     print("Launched!")              │ ◂ cursor (17,4)
+18 │ship.py               27,1           Bot│
+19 │/Shields            W [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 5, cols 10-16: "Shields"
+
+[CTRL] o
+[OVERLAY] ⌃o  jump back
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Starship Control                  │ ◂ cursor (0,4)
+ 1 │  2                                     │
+ 2 │  3 class Engine:                       │
+ 3 │  4     def __init__(self):             │
+ 4 │  5         self.fuel = 100             │
+ 5 │  6         self.speed = 0              │
+ 6 │  7                                     │
+ 7 │  8     def throttle(self, pct):        │
+ 8 │  9         self.speed = pct            │
+ 9 │ 10         self.fuel -= pct * 0.1      │
+10 │ 11                                     │
+11 │ 12     def brake(self):                │
+12 │ 13         self.speed = 0              │
+13 │ 14                                     │
+14 │ 15 class Shields:                      │
+15 │ 16     def __init__(self):             │
+16 │ 17         self.power = 100            │
+17 │ 18                                     │
+18 │ship.py               1,1            Top│
+19 │/Shields            W [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 14, cols 10-16: "Shields"
+
+[SAY] Back at line one. Now control I to go forward again.
+[CTRL] i
+[OVERLAY] ⌃i  jump forward
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 10         self.fuel -= pct * 0.1      │
+ 1 │ 11                                     │
+ 2 │ 12     def brake(self):                │
+ 3 │ 13         self.speed = 0              │
+ 4 │ 14                                     │
+ 5 │ 15 class Shields:                      │
+ 6 │ 16     def __init__(self):             │
+ 7 │ 17         self.power = 100            │
+ 8 │ 18                                     │
+ 9 │ 19     def absorb(self, damage):       │
+10 │ 20         self.power -= damage        │
+11 │ 21                                     │
+12 │ 22     def recharge(self):             │
+13 │ 23         self.power = 100            │
+14 │ 24                                     │
+15 │ 25 def launch(ship):                   │
+16 │ 26     ship.throttle(50)               │
+17 │ 27     print("Launched!")              │ ◂ cursor (17,4)
+18 │ship.py               27,1           Bot│
+19 │/Shields            W [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 5, cols 10-16: "Shields"
+
+[SAY] Forward one jump. We're at the bottom where we pressed G.
+[SAY] One more control I.
+[CTRL] i
+[OVERLAY] ⌃i  jump forward
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 10         self.fuel -= pct * 0.1      │
+ 1 │ 11                                     │
+ 2 │ 12     def brake(self):                │
+ 3 │ 13         self.speed = 0              │
+ 4 │ 14                                     │
+ 5 │ 15 class Shields:                      │ ◂ cursor (5,10)
+ 6 │ 16     def __init__(self):             │
+ 7 │ 17         self.power = 100            │
+ 8 │ 18                                     │
+ 9 │ 19     def absorb(self, damage):       │
+10 │ 20         self.power -= damage        │
+11 │ 21                                     │
+12 │ 22     def recharge(self):             │
+13 │ 23         self.power = 100            │
+14 │ 24                                     │
+15 │ 25 def launch(ship):                   │
+16 │ 26     ship.throttle(50)               │
+17 │ 27     print("Launched!")              │
+18 │ship.py               15,7           Bot│
+19 │/Shields            W [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 5, cols 11-16: "hields"
+
+[SAY] Forward to the Shields search. Control O and control I bounce between all your jump points.
+[SAY] Control I or tab. Jump forward. O goes back, I goes forward.

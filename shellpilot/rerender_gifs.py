@@ -19,7 +19,7 @@ from pathlib import Path
 import os
 os.chdir(Path(__file__).resolve().parent)
 
-VIDEOS_DIR = Path("videos")
+VIDEOS_DIR = Path(__file__).resolve().parent.parent / "videos"
 
 
 def find_frames_jsons(spec: str | None) -> list[Path]:

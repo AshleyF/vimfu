@@ -1,0 +1,149 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │ ◂ cursor (0,0)
+ 1 │old = 1                                 │
+ 2 │old = 2                                 │
+ 3 │old = 3                                 │
+ 4 │old = 4                                 │
+ 5 │old = 5                                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :s with Ranges
+[SAY] You can limit substitution to a range of lines. Specify start and end line numbers.
+[SAY] Replace old with new, but only on lines two through four.
+[KEYS] ':'
+[OVERLAY] ⇧:  :2,4s/old/new/g
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │old = 1                                 │
+ 2 │old = 2                                 │
+ 3 │old = 3                                 │
+ 4 │old = 4                                 │
+ 5 │old = 5                                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+19 │:                                       │ ◂ cursor (19,1)
+    ────────────────────────────────────────
+
+[TYPE] '2,4s/old/new/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │new = 1                                 │
+ 2 │new = 2                                 │
+ 3 │new = 3                                 │
+ 4 │old = 4                                 │
+ 5 │old = 5                                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,1            All│
+19 │:2,4s/old/new/g                         │ ◂ cursor (19,15)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "new"
+[HIGHLIGHT] row 2, cols 0-2: "new"
+[HIGHLIGHT] row 3, cols 0-2: "new"
+
+[EX_READY] ':2,4s/old/new/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │new = 1                                 │
+ 2 │new = 2                                 │
+ 3 │new = 3                                 │
+ 4 │old = 4                                 │
+ 5 │old = 5                                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,1            All│
+19 │:2,4s/old/new/g                         │ ◂ cursor (19,15)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "new"
+[HIGHLIGHT] row 2, cols 0-2: "new"
+[HIGHLIGHT] row 3, cols 0-2: "new"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │new = 1                                 │
+ 2 │new = 2                                 │
+ 3 │new = 3                                 │ ◂ cursor (3,0)
+ 4 │old = 4                                 │
+ 5 │old = 5                                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           4,1            All│
+19 │3 substitutions on 3 lines              │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 4, cols 0-2: "old"
+[HIGHLIGHT] row 5, cols 0-2: "old"
+
+[SAY] Three replacements on three lines. Lines five and six are untouched.
+[SAY] You can also use a visual selection. Select lines, then colon S, and Vim auto-fills the range.
+[SAY] Ranges. Target exactly the lines you want to change.

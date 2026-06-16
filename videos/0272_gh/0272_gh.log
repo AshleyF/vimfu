@@ -1,0 +1,398 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │ ◂ cursor (0,0)
+ 1 │- apples                                │
+ 2 │- bananas                               │
+ 3 │- cherries                              │
+ 4 │- dates                                 │
+ 5 │- eggs                                  │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gH — Select Line Mode
+[SAY] G shift H drops you into select-line mode — like visual-line, but typing replaces the selection.
+[SAY] Cursor on apples.
+[KEYS] '2G'
+[OVERLAY] 2G  line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- apples                                │ ◂ cursor (1,0)
+ 2 │- bananas                               │
+ 3 │- cherries                              │
+ 4 │- dates                                 │
+ 5 │- eggs                                  │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md               2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'gH'
+[OVERLAY] gH  select line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- apples                                │ ◂ cursor (1,0)
+ 2 │- bananas                               │
+ 3 │- cherries                              │
+ 4 │- dates                                 │
+ 5 │- eggs                                  │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md               2,1            All│
+19 │-- SELECT LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 1-7: " apples"
+
+[SAY] Status bar shows SELECT LINE. Now type a replacement and press Enter — the selected line is swapped out and we land in insert mode.
+[TYPE] '- pears'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- pears- bananas                        │ ◂ cursor (1,7)
+ 2 │- cherries                              │
+ 3 │- dates                                 │
+ 4 │- eggs                                  │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md [+]           2,8            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[KEYS] '\r'
+[OVERLAY] ⏎  ⏎
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- pears                                 │
+ 2 │- bananas                               │ ◂ cursor (2,0)
+ 3 │- cherries                              │
+ 4 │- dates                                 │
+ 5 │- eggs                                  │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md [+]           3,1            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- pears                                 │
+ 2 │- bananas                               │ ◂ cursor (2,0)
+ 3 │- cherries                              │
+ 4 │- dates                                 │
+ 5 │- eggs                                  │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md [+]           3,1            All│
+    ────────────────────────────────────────
+
+[SAY] Undo. This time we extend the selection before replacing.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- apples                                │ ◂ cursor (1,0)
+ 2 │- bananas                               │
+ 3 │- cherries                              │
+ 4 │- dates                                 │
+ 5 │- eggs                                  │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md               2,1            All│
+19 │3 changes; b...8 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] '2G'
+[OVERLAY] 2G  line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- apples                                │ ◂ cursor (1,0)
+ 2 │- bananas                               │
+ 3 │- cherries                              │
+ 4 │- dates                                 │
+ 5 │- eggs                                  │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md               2,1            All│
+19 │3 changes; b...8 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'gH'
+[OVERLAY] gH  select line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- apples                                │ ◂ cursor (1,0)
+ 2 │- bananas                               │
+ 3 │- cherries                              │
+ 4 │- dates                                 │
+ 5 │- eggs                                  │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md               2,1            All│
+19 │-- SELECT LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 1-7: " apples"
+
+[SAY] Shift down extends one line at a time.
+[KEYS] '\x1b[1;2B'
+[OVERLAY] ⇧↓  shift+down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- apples                                │
+ 2 │- bananas                               │ ◂ cursor (2,0)
+ 3 │- cherries                              │
+ 4 │- dates                                 │
+ 5 │- eggs                                  │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md               3,1            All│
+19 │-- SELECT LINE --            2          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-7: "- apples"
+[HIGHLIGHT] row 2, cols 1-8: " bananas"
+
+[KEYS] '\x1b[1;2B'
+[OVERLAY] ⇧↓  shift+down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- apples                                │
+ 2 │- bananas                               │
+ 3 │- cherries                              │ ◂ cursor (3,0)
+ 4 │- dates                                 │
+ 5 │- eggs                                  │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md               4,1            All│
+19 │-- SELECT LINE --            3          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-7: "- apples"
+[HIGHLIGHT] row 2, cols 0-8: "- bananas"
+[HIGHLIGHT] row 3, cols 1-9: " cherries"
+
+[SAY] Three lines selected. Type a replacement and Enter to collapse all three into one.
+[TYPE] '- mixed fruit'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- mixed fruit- dates                    │ ◂ cursor (1,13)
+ 2 │- eggs                                  │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md [+]           2,14           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[KEYS] '\r'
+[OVERLAY] ⏎  ⏎
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- mixed fruit                           │
+ 2 │- dates                                 │ ◂ cursor (2,0)
+ 3 │- eggs                                  │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md [+]           3,1            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# shopping                              │
+ 1 │- mixed fruit                           │
+ 2 │- dates                                 │ ◂ cursor (2,0)
+ 3 │- eggs                                  │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.md [+]           3,1            All│
+    ────────────────────────────────────────
+
+[SAY] G shift H. Type to replace, shift arrows to extend. Vim's closest match to a GUI editor's selection.

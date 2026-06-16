@@ -1,0 +1,209 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │item: apple                             │ ◂ cursor (0,0)
+ 1 │item: banana                            │
+ 2 │item: cherry                            │
+ 3 │item: date                              │
+ 4 │item: elderberry                        │
+ 5 │item: fig                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :'<,'>s — Substitute in Selection
+[SAY] You can substitute only within a visual selection. Select the lines first, then run colon S.
+[SAY] Select lines two through four with visual line mode.
+[KEYS] 'j'
+[OVERLAY] j  move to line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │item: apple                             │
+ 1 │item: banana                            │ ◂ cursor (1,0)
+ 2 │item: cherry                            │
+ 3 │item: date                              │
+ 4 │item: elderberry                        │
+ 5 │item: fig                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │item: apple                             │
+ 1 │item: banana                            │ ◂ cursor (1,0)
+ 2 │item: cherry                            │
+ 3 │item: date                              │
+ 4 │item: elderberry                        │
+ 5 │item: fig                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              2,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 1-11: "tem: banana"
+
+[KEYS] '2j'
+[OVERLAY] 2j  select 3 lines
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │item: apple                             │
+ 1 │item: banana                            │
+ 2 │item: cherry                            │
+ 3 │item: date                              │ ◂ cursor (3,0)
+ 4 │item: elderberry                        │
+ 5 │item: fig                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              4,1            All│
+19 │-- VISUAL LINE --            3          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-11: "item: banana"
+[HIGHLIGHT] row 2, cols 0-11: "item: cherry"
+[HIGHLIGHT] row 3, cols 1-9: "tem: date"
+
+[SAY] Now type colon. Vim fills in the selection marks automatically.
+[TYPE] ':'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │item: apple                             │
+ 1 │item: banana                            │
+ 2 │item: cherry                            │
+ 3 │item: date                              │
+ 4 │item: elderberry                        │
+ 5 │item: fig                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              4,1            All│
+19 │:'<,'>                                  │ ◂ cursor (19,6)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-11: "item: banana"
+[HIGHLIGHT] row 2, cols 0-11: "item: cherry"
+[HIGHLIGHT] row 3, cols 1-9: "tem: date"
+
+[TYPE] 's/item/fruit/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │item: apple                             │
+ 1 │fruit: banana                           │
+ 2 │fruit: cherry                           │
+ 3 │fruit: date                             │
+ 4 │item: elderberry                        │
+ 5 │item: fig                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          2,1            All│
+19 │:'<,'>s/item/fruit/g                    │ ◂ cursor (19,20)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-4: "fruit"
+[HIGHLIGHT] row 2, cols 0-4: "fruit"
+[HIGHLIGHT] row 3, cols 0-4: "fruit"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │item: apple                             │
+ 1 │fruit: banana                           │
+ 2 │fruit: cherry                           │
+ 3 │fruit: date                             │ ◂ cursor (3,0)
+ 4 │item: elderberry                        │
+ 5 │item: fig                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          4,1            All│
+19 │3 substitutions on 3 lines              │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-3: "item"
+[HIGHLIGHT] row 4, cols 0-3: "item"
+[HIGHLIGHT] row 5, cols 0-3: "item"
+
+[SAY] Only lines two, three, and four changed. Lines one, five, and six still say item.
+[SAY] Visual select, then colon S. Substitute only where you need it.

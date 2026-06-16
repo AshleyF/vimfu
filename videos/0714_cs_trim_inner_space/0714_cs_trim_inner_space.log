@@ -1,0 +1,143 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │val = ( x + y )                         │ ◂ cursor (0,0)
+ 1 │arr = [ 1, 2, 3 ]                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │trim.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Change — Trim Inner Space
+[SAY] The opening mark as target trims inner whitespace. So C S open paren targets the padded parens and strips the space.
+[SAY] Padded parens. C S open paren, close brace.
+[KEYS] 'fx'
+[OVERLAY] fx
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │val = ( x + y )                         │ ◂ cursor (0,8)
+ 1 │arr = [ 1, 2, 3 ]                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │trim.py               1,9            All│
+    ────────────────────────────────────────
+
+[KEYS] 'cs(}'
+[OVERLAY] cs(}  cs(}
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │val = {x + y}                           │ ◂ cursor (0,6)
+ 1 │arr = [ 1, 2, 3 ]                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │trim.py [+]           1,7            All│
+    ────────────────────────────────────────
+
+[SAY] Parens became braces and the inner spaces were trimmed.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │val = ( x + y )                         │ ◂ cursor (0,8)
+ 1 │arr = [ 1, 2, 3 ]                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │trim.py               1,9            All│
+19 │1 change; be...5 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Compare. C S close paren, close brace.
+[KEYS] 'cs)}'
+[OVERLAY] cs)}  cs)}
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │val = { x + y }                         │ ◂ cursor (0,6)
+ 1 │arr = [ 1, 2, 3 ]                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │trim.py [+]           1,7            All│
+19 │1 change; be...5 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Braces replaced parens, but the inner spaces remain. Close paren target keeps the content as is.
+[SAY] Opening mark as target trims space. Closing mark as target keeps space.

@@ -49,7 +49,7 @@ Every video goes through a generate → inspect → fix cycle:
      - **If a human would look at the resulting screen and say "that's wrong", the video is wrong.** Fix it.
 4. **Check the duration.** Shorts must be **under 60 seconds**. After generating, run:
    ```
-   python -c "import subprocess; r = subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0','shellpilot/videos/<NAME>/<NAME>.mp4'], capture_output=True, text=True); print(f'{float(r.stdout.strip()):.1f}s')"
+   python -c "import subprocess; r = subprocess.run(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0','videos/<NAME>/<NAME>.mp4'], capture_output=True, text=True); print(f'{float(r.stdout.strip()):.1f}s')"
    ```
    If it's over 60 seconds, tighten narration (shorter sentences, cut filler words) and trim waits before re-generating. Don't cut demos — cut words. Longs have no hard limit but should stay focused.
 5. **Fix and regenerate** if anything is off. This isn't just about fixing errors — it's about **improving the demo**. A log that works but feels inefficient or cluttered is not done yet. Repeat until the log reads like a crisp, polished tutorial.

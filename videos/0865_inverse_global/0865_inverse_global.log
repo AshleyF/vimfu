@@ -1,0 +1,94 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │keep: apple                             │ ◂ cursor (0,0)
+ 1 │remove this                             │
+ 2 │keep: banana                            │
+ 3 │junk line                               │
+ 4 │keep: cherry                            │
+ 5 │more junk                               │
+ 6 │keep: date                              │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :v/{pattern}/{cmd} — Inverse Global
+[SAY] Colon V is the inverse of colon G. It acts on lines that don't match the pattern.
+[SAY] Let's delete every line that doesn't contain the word keep.
+[TYPE] ':v/keep/d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │keep: apple                             │
+ 1 │remove this                             │
+ 2 │keep: banana                            │
+ 3 │junk line                               │
+ 4 │keep: cherry                            │
+ 5 │more junk                               │
+ 6 │keep: date                              │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              3,1            All│
+19 │:v/keep/d                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-3: "keep"
+[HIGHLIGHT] row 2, cols 0-3: "keep"
+[HIGHLIGHT] row 4, cols 0-3: "keep"
+[HIGHLIGHT] row 6, cols 0-3: "keep"
+
+[SAY] Colon V is the inverse of colon G. Slash keep slash is the pattern. D for delete. So this deletes the lines that don't match.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │keep: apple                             │
+ 1 │keep: banana                            │
+ 2 │keep: cherry                            │
+ 3 │keep: date                              │ ◂ cursor (3,0)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          4,1            All│
+19 │3 fewer lines                           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-3: "keep"
+[HIGHLIGHT] row 1, cols 0-3: "keep"
+[HIGHLIGHT] row 2, cols 0-3: "keep"
+[HIGHLIGHT] row 3, cols 1-3: "eep"
+
+[SAY] Three junk lines deleted. Only the lines with keep remain.
+[SAY] Colon V. The inverse global. Think of it as keep the matches, act on the rest.

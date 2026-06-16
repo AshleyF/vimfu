@@ -1,0 +1,170 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │path = /home/user                       │ ◂ cursor (0,0)
+ 1 │url = http://example.com                │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │bigw.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Surround a WORD
+[SAY] Y S A capital W targets a big WORD, including punctuation. Small W would only grab one segment between slashes.
+[SAY] Cursor on the path. Y S A capital W, close brace.
+[KEYS] 'f/'
+[OVERLAY] f/
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │path = /home/user                       │ ◂ cursor (0,7)
+ 1 │url = http://example.com                │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │bigw.py               1,8            All│
+    ────────────────────────────────────────
+
+[KEYS] 'ysaW}'
+[OVERLAY] ysaW}  ysaW}
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │path = {/home/user}                     │ ◂ cursor (0,7)
+ 1 │url = http://example.com                │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │bigw.py [+]           1,8            All│
+    ────────────────────────────────────────
+
+[SAY] The entire path including slashes is wrapped in braces.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │path = /home/user                       │ ◂ cursor (0,6)
+ 1 │url = http://example.com                │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │bigw.py               1,7            All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Compare with small W. Y S I W close brace.
+[KEYS] 'fh'
+[OVERLAY] fh
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │path = /home/user                       │ ◂ cursor (0,8)
+ 1 │url = http://example.com                │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │bigw.py               1,9            All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'ysiw}'
+[OVERLAY] ysiw}  ysiw}
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │path = /{home}/user                     │ ◂ cursor (0,8)
+ 1 │url = http://example.com                │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │bigw.py [+]           1,9            All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Only home is wrapped. Small W stops at punctuation. Capital W grabs everything.

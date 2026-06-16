@@ -1,0 +1,173 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Path Builder                          │ ◂ cursor (0,0)
+ 1 │/home                                   │
+ 2 │/user                                   │
+ 3 │/documents                              │
+ 4 │/projects                               │
+ 5 │/vim                                    │
+ 6 │                                        │
+ 7 │http://                                 │
+ 8 │example                                 │
+ 9 │.com                                    │
+10 │/page                                   │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │path.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gJ — Join Without Space
+[SAY] G shift J joins lines without adding a space. Regular J inserts a space between the joined lines. G shift J does not.
+[SAY] Go to line two. The path segments. Join with J first.
+[KEYS] '2G'
+[OVERLAY] 2G  line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Path Builder                          │
+ 1 │/home                                   │ ◂ cursor (1,0)
+ 2 │/user                                   │
+ 3 │/documents                              │
+ 4 │/projects                               │
+ 5 │/vim                                    │
+ 6 │                                        │
+ 7 │http://                                 │
+ 8 │example                                 │
+ 9 │.com                                    │
+10 │/page                                   │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │path.txt              2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'J'
+[OVERLAY] ⇧J  J — join with space
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Path Builder                          │
+ 1 │/home /user                             │ ◂ cursor (1,5)
+ 2 │/documents                              │
+ 3 │/projects                               │
+ 4 │/vim                                    │
+ 5 │                                        │
+ 6 │http://                                 │
+ 7 │example                                 │
+ 8 │.com                                    │
+ 9 │/page                                   │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │path.txt [+]          2,6            All│
+    ────────────────────────────────────────
+
+[SAY] Home space user. There's a space between them. Not what we want for a path. Undo.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Path Builder                          │
+ 1 │/home                                   │ ◂ cursor (1,0)
+ 2 │/user                                   │
+ 3 │/documents                              │
+ 4 │/projects                               │
+ 5 │/vim                                    │
+ 6 │                                        │
+ 7 │http://                                 │
+ 8 │example                                 │
+ 9 │.com                                    │
+10 │/page                                   │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │path.txt              2,1            All│
+19 │1 more line;...2 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Now G shift J.
+[KEYS] 'gJ'
+[OVERLAY] gJ  gJ — no space
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Path Builder                          │
+ 1 │/home/user                              │ ◂ cursor (1,5)
+ 2 │/documents                              │
+ 3 │/projects                               │
+ 4 │/vim                                    │
+ 5 │                                        │
+ 6 │http://                                 │
+ 7 │example                                 │
+ 8 │.com                                    │
+ 9 │/page                                   │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │path.txt [+]          2,6            All│
+19 │1 more line;...2 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Home user. No space. The path pieces connect cleanly.
+[SAY] Keep going. Four G shift J to join the rest.
+[KEYS] '4gJ'
+[OVERLAY] 4gJ  join 4 lines
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Path Builder                          │
+ 1 │/home/user/documents/projects/vim       │ ◂ cursor (1,29)
+ 2 │                                        │
+ 3 │http://                                 │
+ 4 │example                                 │
+ 5 │.com                                    │
+ 6 │/page                                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │path.txt [+]          2,30           All│
+19 │1 more line;...2 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] A complete file path. No extra spaces.
+[SAY] G shift J. Join without spaces. Perfect for paths, URLs, or any time you need lines glued together exactly.

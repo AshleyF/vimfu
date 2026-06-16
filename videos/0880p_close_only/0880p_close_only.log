@@ -1,0 +1,149 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File A                                │ ◂ cursor (0,0)
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │a.py                  1,1            All│
+ 7 │# File B                                │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │b.py                  1,1            All│
+13 │# File C                                │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │c.py                  1,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 0-39: "a.py                  1,1            All"
+[HIGHLIGHT] row 12, cols 0-39: "b.py                  1,1            All"
+
+[OVERLAY] VimFu — :close / :only
+[SAY] Close shuts the current window. Only keeps the current window and closes all others.
+[SAY] Three windows open. Close the top one.
+[TYPE] ':close'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File A                                │
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │a.py                  1,1            All│
+ 7 │# File B                                │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │b.py                  1,1            All│
+13 │# File C                                │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │c.py                  1,1            All│
+19 │:close                                  │ ◂ cursor (19,6)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 0-39: "a.py                  1,1            All"
+[HIGHLIGHT] row 12, cols 0-39: "b.py                  1,1            All"
+
+[SAY] Colon close removes the current window. The buffer stays loaded.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File B                                │ ◂ cursor (0,0)
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │b.py                  1,1            All│
+10 │# File C                                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │c.py                  1,1            All│
+19 │:close                                  │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "b.py                  1,1            All"
+
+[SAY] Down to two windows.
+[SAY] Now use only to keep just this window.
+[TYPE] ':only'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File B                                │
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │b.py                  1,1            All│
+10 │# File C                                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │c.py                  1,1            All│
+19 │:only                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "b.py                  1,1            All"
+
+[SAY] Colon only closes every other window in the current tab.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File B                                │ ◂ cursor (0,0)
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │b.py                  1,1            All│
+19 │:only                                   │
+    ────────────────────────────────────────
+
+[SAY] One window, full screen. All buffers are still accessible with colon B.
+[SAY] Colon close for one window. Colon only to keep just the current window. Clean up splits fast.

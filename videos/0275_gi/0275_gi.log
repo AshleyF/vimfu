@@ -1,0 +1,277 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Recipe Builder                        │ ◂ cursor (0,0)
+ 1 │ingredients = [                         │
+ 2 │    "flour",                            │
+ 3 │    "sugar",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │def bake():                             │
+ 7 │    print("mixing...")                  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.py             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gi — Insert at Last Position
+[SAY] G I jumps to where you last inserted text and enters insert mode. It remembers your last edit point.
+[SAY] Add an item to the list. Go to line four, open a new line below.
+[KEYS] '4G'
+[OVERLAY] 4G  line 4
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Recipe Builder                        │
+ 1 │ingredients = [                         │
+ 2 │    "flour",                            │
+ 3 │    "sugar",                            │ ◂ cursor (3,0)
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │def bake():                             │
+ 7 │    print("mixing...")                  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.py             4,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'o'
+[OVERLAY] o  open line below
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Recipe Builder                        │
+ 1 │ingredients = [                         │
+ 2 │    "flour",                            │
+ 3 │    "sugar",                            │
+ 4 │                                        │ ◂ cursor (4,4)
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │def bake():                             │
+ 8 │    print("mixing...")                  │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.py [+]         5,5            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[TYPE] '"eggs",'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Recipe Builder                        │
+ 1 │ingredients = [                         │
+ 2 │    "flour",                            │
+ 3 │    "sugar",                            │
+ 4 │    "eggs",                             │ ◂ cursor (4,11)
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │def bake():                             │
+ 8 │    print("mixing...")                  │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.py [+]         5,12           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Recipe Builder                        │
+ 1 │ingredients = [                         │
+ 2 │    "flour",                            │
+ 3 │    "sugar",                            │
+ 4 │    "eggs",                             │ ◂ cursor (4,10)
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │def bake():                             │
+ 8 │    print("mixing...")                  │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.py [+]         5,11           All│
+    ────────────────────────────────────────
+
+[SAY] Good. Now go look at the bake function.
+[KEYS] 'G'
+[OVERLAY] ⇧G  bottom of file
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Recipe Builder                        │
+ 1 │ingredients = [                         │
+ 2 │    "flour",                            │
+ 3 │    "sugar",                            │
+ 4 │    "eggs",                             │
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │def bake():                             │
+ 8 │    print("mixing...")                  │ ◂ cursor (8,10)
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.py [+]         9,11           All│
+    ────────────────────────────────────────
+
+[SAY] Now I want to go back and add more ingredients. G I.
+[KEYS] 'gi'
+[OVERLAY] gi  back to last insert!
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Recipe Builder                        │
+ 1 │ingredients = [                         │
+ 2 │    "flour",                            │
+ 3 │    "sugar",                            │
+ 4 │    "eggs",                             │ ◂ cursor (4,11)
+ 5 │]                                       │
+ 6 │                                        │
+ 7 │def bake():                             │
+ 8 │    print("mixing...")                  │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.py [+]         5,12           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[SAY] Cursor jumped right back to where I was typing. In insert mode. Type more.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Recipe Builder                        │
+ 1 │ingredients = [                         │
+ 2 │    "flour",                            │
+ 3 │    "sugar",                            │
+ 4 │    "eggs",                             │
+ 5 │                                        │ ◂ cursor (5,4)
+ 6 │]                                       │
+ 7 │                                        │
+ 8 │def bake():                             │
+ 9 │    print("mixing...")                  │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.py [+]         6,5            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[TYPE] '"butter",'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Recipe Builder                        │
+ 1 │ingredients = [                         │
+ 2 │    "flour",                            │
+ 3 │    "sugar",                            │
+ 4 │    "eggs",                             │
+ 5 │    "butter",                           │ ◂ cursor (5,13)
+ 6 │]                                       │
+ 7 │                                        │
+ 8 │def bake():                             │
+ 9 │    print("mixing...")                  │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.py [+]         6,14           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Recipe Builder                        │
+ 1 │ingredients = [                         │
+ 2 │    "flour",                            │
+ 3 │    "sugar",                            │
+ 4 │    "eggs",                             │
+ 5 │    "butter",                           │ ◂ cursor (5,12)
+ 6 │]                                       │
+ 7 │                                        │
+ 8 │def bake():                             │
+ 9 │    print("mixing...")                  │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.py [+]         6,13           All│
+    ────────────────────────────────────────
+
+[SAY] Seamless. No searching for where you were.
+[SAY] G I. Return to your last insert position in insert mode. Great for when you leave to check something and come right back.

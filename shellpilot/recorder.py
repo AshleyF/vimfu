@@ -27,8 +27,8 @@ except Exception:
     except Exception:
         pass
 
-# Video output directory
-VIDEOS_DIR = Path(__file__).parent / "videos"
+# Video output directory (lives at repo root)
+VIDEOS_DIR = Path(__file__).resolve().parent.parent / "videos"
 
 
 def sanitize_filename(title: str) -> str:

@@ -1,0 +1,377 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │ ◂ cursor (0,0)
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │
+ 3 │                                        │
+ 4 │Legend says a silver sword              │
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Inner/Around Paragraph
+[SAY] Paragraph text objects act on blocks of text separated by blank lines.
+[SAY] V I P to select the first paragraph.
+[KEYS] 'vip'
+[OVERLAY] vip
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │ ◂ cursor (2,0)
+ 3 │                                        │
+ 4 │Legend says a silver sword              │
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt              3,1            All│
+19 │-- VISUAL LINE --            3          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-29: "The dragon sleeps in the cave."
+[HIGHLIGHT] row 1, cols 0-24: "It guards a pile of gold."
+[HIGHLIGHT] row 2, cols 1-20: "o hero has survived."
+
+[SAY] Three lines selected — everything up to the blank line. Escape.
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │ ◂ cursor (2,0)
+ 3 │                                        │
+ 4 │Legend says a silver sword              │
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt              3,1            All│
+    ────────────────────────────────────────
+
+[SAY] D A P to delete the whole paragraph plus the blank line after it.
+[KEYS] 'dap'
+[OVERLAY] dap  delete a paragraph
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Legend says a silver sword              │ ◂ cursor (0,0)
+ 1 │can slay it.  The sword                 │
+ 2 │was lost long ago.                      │
+ 3 │                                        │
+ 4 │A new hero has arrived.                 │
+ 5 │The quest begins at dawn.               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt [+]          1,1            All│
+19 │4 fewer lines                           │
+    ────────────────────────────────────────
+
+[SAY] First paragraph gone. The remaining text moves up cleanly.
+[SAY] Undo.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │ ◂ cursor (0,0)
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │
+ 3 │                                        │
+ 4 │Legend says a silver sword              │
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt              1,1            All│
+19 │4 more lines...8 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Jump to the second paragraph and delete it.
+[KEYS] '}j'
+[OVERLAY] }j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │
+ 3 │                                        │
+ 4 │Legend says a silver sword              │ ◂ cursor (4,0)
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt              5,1            All│
+19 │4 more lines...8 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'dap'
+[OVERLAY] dap  delete a paragraph
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │
+ 3 │                                        │
+ 4 │A new hero has arrived.                 │ ◂ cursor (4,0)
+ 5 │The quest begins at dawn.               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt [+]          5,1            All│
+19 │4 fewer lines                           │
+    ────────────────────────────────────────
+
+[SAY] Middle paragraph removed. First and third are now neighbors.
+[SAY] Undo.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │
+ 3 │                                        │
+ 4 │Legend says a silver sword              │ ◂ cursor (4,0)
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt              5,1            All│
+19 │4 more lines...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Y I P yanks the paragraph. Move down and paste.
+[KEYS] 'gg'
+[OVERLAY] gg  file start
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │ ◂ cursor (0,0)
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │
+ 3 │                                        │
+ 4 │Legend says a silver sword              │
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt              1,1            All│
+19 │4 more lines...6 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'yip'
+[OVERLAY] yip  yank inner paragraph
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │ ◂ cursor (0,0)
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │
+ 3 │                                        │
+ 4 │Legend says a silver sword              │
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt              1,1            All│
+19 │3 lines yanked                          │
+    ────────────────────────────────────────
+
+[KEYS] 'G'
+[OVERLAY] ⇧G  file end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │
+ 3 │                                        │
+ 4 │Legend says a silver sword              │
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │ ◂ cursor (9,0)
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt              10,1           All│
+19 │3 lines yanked                          │
+    ────────────────────────────────────────
+
+[KEYS] 'p'
+[OVERLAY] p  paste after
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │
+ 3 │                                        │
+ 4 │Legend says a silver sword              │
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │
+10 │The dragon sleeps in the cave.          │ ◂ cursor (10,0)
+11 │It guards a pile of gold.               │
+12 │No hero has survived.                   │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt [+]          11,1           All│
+19 │3 more lines                            │
+    ────────────────────────────────────────
+
+[SAY] Paragraph duplicated at the bottom.
+[SAY] Undo.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The dragon sleeps in the cave.          │
+ 1 │It guards a pile of gold.               │
+ 2 │No hero has survived.                   │
+ 3 │                                        │
+ 4 │Legend says a silver sword              │
+ 5 │can slay it.  The sword                 │
+ 6 │was lost long ago.                      │
+ 7 │                                        │
+ 8 │A new hero has arrived.                 │
+ 9 │The quest begins at dawn.               │ ◂ cursor (9,0)
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lore.txt              10,1           All│
+19 │3 fewer line...4 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] I P for the lines. A P for the lines plus the blank line. Perfect for rearranging prose or code blocks.

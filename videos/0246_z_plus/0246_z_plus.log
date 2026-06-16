@@ -1,0 +1,171 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Dungeon Generator                 │ ◂ cursor (0,4)
+ 1 │  2 import random                       │
+ 2 │  3                                     │
+ 3 │  4 class Room:                         │
+ 4 │  5     def __init__(self, w, h):       │
+ 5 │  6         self.w = w                  │
+ 6 │  7         self.h = h                  │
+ 7 │  8         self.monsters = []          │
+ 8 │  9         self.loot = []              │
+ 9 │ 10                                     │
+10 │ 11     def spawn_monster(self, name):  │
+11 │ 12         self.monsters.append(name)  │
+12 │ 13                                     │
+13 │ 14     def add_loot(self, item):       │
+14 │ 15         self.loot.append(item)      │
+15 │ 16                                     │
+16 │ 17 class Corridor:                     │
+17 │ 18     def __init__(self, start, end): │
+18 │dungeon.py            1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — z Enter — Top + First Non-Blank
+[SAY] Z Enter scrolls the screen so the cursor line is at the top, and moves the cursor to the first non-blank character. It combines Z T with caret.
+[SAY] Jump to line twenty six, the Dungeon class. Move to the end.
+[KEYS] '26G$'
+[OVERLAY] 26G$  line 26, end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  9         self.loot = []              │
+ 1 │ 10                                     │
+ 2 │ 11     def spawn_monster(self, name):  │
+ 3 │ 12         self.monsters.append(name)  │
+ 4 │ 13                                     │
+ 5 │ 14     def add_loot(self, item):       │
+ 6 │ 15         self.loot.append(item)      │
+ 7 │ 16                                     │
+ 8 │ 17 class Corridor:                     │
+ 9 │ 18     def __init__(self, start, end): │
+10 │ 19         self.start = start          │
+11 │ 20         self.end = end              │
+12 │ 21         self.trapped = False        │
+13 │ 22                                     │
+14 │ 23     def set_trap(self):             │
+15 │ 24         self.trapped = True         │
+16 │ 25                                     │
+17 │ 26 class Dungeon:                      │ ◂ cursor (17,17)
+18 │dungeon.py            26,14          33%│
+    ────────────────────────────────────────
+
+[SAY] Z Enter. The line goes to the top, and the cursor jumps to the first non-blank.
+[KEYS] 'z\r'
+[OVERLAY] z⏎  top + align
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 26 class Dungeon:                      │ ◂ cursor (0,4)
+ 1 │ 27     def __init__(self, depth):      │
+ 2 │ 28         self.depth = depth          │
+ 3 │ 29         self.rooms = []             │
+ 4 │ 30         self.corridors = []         │
+ 5 │ 31                                     │
+ 6 │ 32     def gen_room(self):             │
+ 7 │ 33         w = random.randint(3, 10)   │
+ 8 │ 34         h = random.randint(3, 8)    │
+ 9 │ 35         room = Room(w, h)           │
+10 │ 36         self.rooms.append(room)     │
+11 │ 37         return room                 │
+12 │ 38                                     │
+13 │ 39     def connect(self, a, b):        │
+14 │ 40         c = Corridor(a, b)          │
+15 │ 41         self.corridors.append(c)    │
+16 │ 42         return c                    │
+17 │~                                       │
+18 │dungeon.py            26,1           Bot│
+    ────────────────────────────────────────
+
+[SAY] The cursor is now on the C of class, at the top of the screen.
+[SAY] Jump to line thirty seven, end of the line.
+[KEYS] '37G$'
+[OVERLAY] 37G$  line 37, end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 26 class Dungeon:                      │
+ 1 │ 27     def __init__(self, depth):      │
+ 2 │ 28         self.depth = depth          │
+ 3 │ 29         self.rooms = []             │
+ 4 │ 30         self.corridors = []         │
+ 5 │ 31                                     │
+ 6 │ 32     def gen_room(self):             │
+ 7 │ 33         w = random.randint(3, 10)   │
+ 8 │ 34         h = random.randint(3, 8)    │
+ 9 │ 35         room = Room(w, h)           │
+10 │ 36         self.rooms.append(room)     │
+11 │ 37         return room                 │ ◂ cursor (11,22)
+12 │ 38                                     │
+13 │ 39     def connect(self, a, b):        │
+14 │ 40         c = Corridor(a, b)          │
+15 │ 41         self.corridors.append(c)    │
+16 │ 42         return c                    │
+17 │~                                       │
+18 │dungeon.py            37,19          Bot│
+    ────────────────────────────────────────
+
+[SAY] Z T first. The line goes to the top, but the cursor stays at the end.
+[KEYS] 'zt'
+[OVERLAY] zt  stays at end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 37         return room                 │ ◂ cursor (0,22)
+ 1 │ 38                                     │
+ 2 │ 39     def connect(self, a, b):        │
+ 3 │ 40         c = Corridor(a, b)          │
+ 4 │ 41         self.corridors.append(c)    │
+ 5 │ 42         return c                    │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │dungeon.py            37,19          Bot│
+    ────────────────────────────────────────
+
+[SAY] Now Z Enter. The cursor moves to the first non-blank character.
+[KEYS] 'z\r'
+[OVERLAY] z⏎  first non-blank
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 37         return room                 │ ◂ cursor (0,12)
+ 1 │ 38                                     │
+ 2 │ 39     def connect(self, a, b):        │
+ 3 │ 40         c = Corridor(a, b)          │
+ 4 │ 41         self.corridors.append(c)    │
+ 5 │ 42         return c                    │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │dungeon.py            37,9           Bot│
+    ────────────────────────────────────────
+
+[SAY] Z T keeps the cursor, Z Enter aligns it.
+[SAY] Z Enter. Cursor line to the top, cursor to the first non-blank.

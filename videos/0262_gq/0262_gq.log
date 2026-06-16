@@ -1,0 +1,146 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Project Notes                         │ ◂ cursor (0,0)
+ 1 │                                        │
+ 2 │This is a very long line that goes on an│
+ 3 │d on and really should be wrapped to a r│
+ 4 │easonable width so that it is easy to re│
+ 5 │ad on any screen size.                  │
+ 6 │                                        │
+ 7 │This line is fine.                      │
+ 8 │                                        │
+ 9 │Another extremely long line of text that│
+10 │ keeps going and going and nobody wants │
+11 │to scroll horizontally to read this kind│
+12 │ of thing in a terminal.                │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │notes.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gq — Format Text
+[SAY] G Q formats text to fit within the text width. Give it a motion and it reflows the text to wrap at the right column.
+[SAY] Line three is way too long. Go there.
+[KEYS] '3G'
+[OVERLAY] 3G  line 3
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Project Notes                         │
+ 1 │                                        │
+ 2 │This is a very long line that goes on an│ ◂ cursor (2,0)
+ 3 │d on and really should be wrapped to a r│
+ 4 │easonable width so that it is easy to re│
+ 5 │ad on any screen size.                  │
+ 6 │                                        │
+ 7 │This line is fine.                      │
+ 8 │                                        │
+ 9 │Another extremely long line of text that│
+10 │ keeps going and going and nobody wants │
+11 │to scroll horizontally to read this kind│
+12 │ of thing in a terminal.                │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │notes.txt             3,1            All│
+    ────────────────────────────────────────
+
+[SAY] G Q Q formats the current line.
+[KEYS] 'gqq'
+[OVERLAY] gqq  format line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Project Notes                         │
+ 1 │                                        │
+ 2 │This is a very long line that goes      │
+ 3 │on and on and really should be          │
+ 4 │wrapped to a reasonable width so        │
+ 5 │that it is easy to read on any          │
+ 6 │screen size.                            │ ◂ cursor (6,0)
+ 7 │                                        │
+ 8 │This line is fine.                      │
+ 9 │                                        │
+10 │Another extremely long line of text that│
+11 │ keeps going and going and nobody wants │
+12 │to scroll horizontally to read this kind│
+13 │ of thing in a terminal.                │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │notes.txt [+]         7,1            All│
+19 │4 more lines                            │
+    ────────────────────────────────────────
+
+[SAY] The long line is now wrapped to thirty five columns. Multiple shorter lines.
+[SAY] The other long line is further down. Use G Q with a motion. Go to it.
+[KEYS] 'G'
+[OVERLAY] ⇧G  last line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Project Notes                         │
+ 1 │                                        │
+ 2 │This is a very long line that goes      │
+ 3 │on and on and really should be          │
+ 4 │wrapped to a reasonable width so        │
+ 5 │that it is easy to read on any          │
+ 6 │screen size.                            │
+ 7 │                                        │
+ 8 │This line is fine.                      │
+ 9 │                                        │
+10 │Another extremely long line of text that│ ◂ cursor (10,0)
+11 │ keeps going and going and nobody wants │
+12 │to scroll horizontally to read this kind│
+13 │ of thing in a terminal.                │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │notes.txt [+]         11,1           All│
+19 │4 more lines                            │
+    ────────────────────────────────────────
+
+[SAY] G Q dollar. Format to the end of the line.
+[KEYS] 'gq$'
+[OVERLAY] gq$  format to end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Project Notes                         │
+ 1 │                                        │
+ 2 │This is a very long line that goes      │
+ 3 │on and on and really should be          │
+ 4 │wrapped to a reasonable width so        │
+ 5 │that it is easy to read on any          │
+ 6 │screen size.                            │
+ 7 │                                        │
+ 8 │This line is fine.                      │
+ 9 │                                        │
+10 │Another extremely long line of text     │
+11 │that keeps going and going and          │
+12 │nobody wants to scroll horizontally     │
+13 │to read this kind of thing in a         │
+14 │terminal.                               │ ◂ cursor (14,0)
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │notes.txt [+]         15,1           All│
+19 │4 more lines                            │
+    ────────────────────────────────────────
+
+[SAY] Wrapped. Clean and readable.
+[SAY] G Q with a motion. G Q Q for the current line. G Q A P for a whole paragraph. Set text width first, then format.

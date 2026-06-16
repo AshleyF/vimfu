@@ -1,0 +1,115 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Main Application                      │ ◂ cursor (0,0)
+ 1 │import utils                            │
+ 2 │from utils import clamp                 │
+ 3 │                                        │
+ 4 │# See utils.py for helpers              │
+ 5 │                                        │
+ 6 │def run():                              │
+ 7 │    x = clamp(150, 0, 100)              │
+ 8 │    print(f"Clamped: {x}")              │
+ 9 │                                        │
+10 │if __name__ == "__main__":              │
+11 │    run()                               │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │main.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gf — Go to File
+[SAY] G F opens the file whose name is under the cursor. Put your cursor on a filename and press G F to open it.
+[SAY] Line five mentions utils dot py. Move the cursor onto it.
+[KEYS] '5Gww'
+[OVERLAY] 5Gww  cursor on utils.py
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Main Application                      │
+ 1 │import utils                            │
+ 2 │from utils import clamp                 │
+ 3 │                                        │
+ 4 │# See utils.py for helpers              │ ◂ cursor (4,6)
+ 5 │                                        │
+ 6 │def run():                              │
+ 7 │    x = clamp(150, 0, 100)              │
+ 8 │    print(f"Clamped: {x}")              │
+ 9 │                                        │
+10 │if __name__ == "__main__":              │
+11 │    run()                               │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │main.py               5,7            All│
+    ────────────────────────────────────────
+
+[SAY] G F.
+[KEYS] 'gf'
+[OVERLAY] gf  open file
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Utility Functions                     │ ◂ cursor (0,0)
+ 1 │                                        │
+ 2 │def clamp(value, lo, hi):               │
+ 3 │    return max(lo, min(hi, value))      │
+ 4 │                                        │
+ 5 │def lerp(a, b, t):                      │
+ 6 │    return a + (b - a) * t              │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │utils.py              1,1            All│
+    ────────────────────────────────────────
+
+[SAY] We're now in utils dot py. The clamp and lerp functions.
+[SAY] Ctrl O to go back to main dot py.
+[CTRL] O
+[OVERLAY] ⌃O  back
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Main Application                      │
+ 1 │import utils                            │
+ 2 │from utils import clamp                 │
+ 3 │                                        │
+ 4 │# See utils.py for helpers              │ ◂ cursor (4,6)
+ 5 │                                        │
+ 6 │def run():                              │
+ 7 │    x = clamp(150, 0, 100)              │
+ 8 │    print(f"Clamped: {x}")              │
+ 9 │                                        │
+10 │if __name__ == "__main__":              │
+11 │    run()                               │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │main.py               5,7            All│
+    ────────────────────────────────────────
+
+[SAY] Back to main. Ctrl O is the jump list, it works great with G F.
+[SAY] G F. Open the file under the cursor. Pair it with Ctrl O to jump back. Navigate your project without typing file names.

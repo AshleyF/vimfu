@@ -1,0 +1,161 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu                                │ ◂ cursor (0,9)
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Cancel & Clear
+[SAY] Control C cancels. Control L clears. Two reset buttons for the shell.
+[SAY] Start typing something you don't want.
+[TYPE] 'rm -rf /oops no wait'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │ ◂ cursor (0,29)
+    ────────────────────────────────────────
+
+[SAY] Changed your mind? Control C.
+[KEYS] '\x03'
+[OVERLAY] ⌃c  ⌃c cancel
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │
+ 1 │➜  vimfu                                │ ◂ cursor (1,9)
+    ────────────────────────────────────────
+
+[SAY] Cancelled. Fresh prompt. Nothing happened.
+[SAY] It also stops a running command. Watch.
+[TYPE] 'sleep 100'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │
+ 1 │➜  vimfu sleep 100                      │ ◂ cursor (1,18)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │
+ 1 │➜  vimfu sleep 100                      │
+    ────────────────────────────────────────
+
+[SAY] Stuck waiting. Control C to interrupt.
+[KEYS] '\x03'
+[OVERLAY] ⌃c  ⌃c cancel
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │
+ 1 │➜  vimfu sleep 100                      │
+ 2 │^C                                      │
+ 3 │➜  vimfu                                │ ◂ cursor (3,9)
+    ────────────────────────────────────────
+
+[SAY] Stopped. Back to the prompt.
+[SAY] Now clutter the screen.
+[TYPE] "echo 'line one'"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │
+ 1 │➜  vimfu sleep 100                      │
+ 2 │^C                                      │
+ 3 │➜  vimfu echo 'line one'                │ ◂ cursor (3,24)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │
+ 1 │➜  vimfu sleep 100                      │
+ 2 │^C                                      │
+ 3 │➜  vimfu echo 'line one'                │
+ 4 │line one                                │
+ 5 │➜  vimfu                                │ ◂ cursor (5,9)
+    ────────────────────────────────────────
+
+[TYPE] "echo 'line two'"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │
+ 1 │➜  vimfu sleep 100                      │
+ 2 │^C                                      │
+ 3 │➜  vimfu echo 'line one'                │
+ 4 │line one                                │
+ 5 │➜  vimfu echo 'line two'                │ ◂ cursor (5,24)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │
+ 1 │➜  vimfu sleep 100                      │
+ 2 │^C                                      │
+ 3 │➜  vimfu echo 'line one'                │
+ 4 │line one                                │
+ 5 │➜  vimfu echo 'line two'                │
+ 6 │line two                                │
+ 7 │➜  vimfu                                │ ◂ cursor (7,9)
+    ────────────────────────────────────────
+
+[TYPE] "echo 'line three'"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │
+ 1 │➜  vimfu sleep 100                      │
+ 2 │^C                                      │
+ 3 │➜  vimfu echo 'line one'                │
+ 4 │line one                                │
+ 5 │➜  vimfu echo 'line two'                │
+ 6 │line two                                │
+ 7 │➜  vimfu echo 'line three'              │ ◂ cursor (7,26)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu rm -rf /oops no wait           │
+ 1 │➜  vimfu sleep 100                      │
+ 2 │^C                                      │
+ 3 │➜  vimfu echo 'line one'                │
+ 4 │line one                                │
+ 5 │➜  vimfu echo 'line two'                │
+ 6 │line two                                │
+ 7 │➜  vimfu echo 'line three'              │
+ 8 │line three                              │
+ 9 │➜  vimfu                                │ ◂ cursor (9,9)
+    ────────────────────────────────────────
+
+[SAY] Control L clears it all.
+[KEYS] '\x0c'
+[OVERLAY] ⌃l  ⌃l clear
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu                                │ ◂ cursor (0,9)
+    ────────────────────────────────────────
+
+[SAY] Clean screen. Same as typing clear, but faster.
+[SAY] Control C to cancel. Control L to clear. Use them all the time.

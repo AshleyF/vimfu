@@ -1,0 +1,357 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │ ◂ cursor (0,0)
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.py             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — g@ — Apply Operator
+[SAY] G at is how Vim calls custom operators. You set operator func to a function, then G at plus a motion invokes it over that range.
+[SAY] Define a function that wraps text in brackets. Set it as operator func.
+[TYPE] ':set inccommand='
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.py             1,1            All│
+19 │:set inccommand=                        │ ◂ cursor (19,16)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │ ◂ cursor (0,0)
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.py             1,1            All│
+19 │:set inccommand=                        │
+    ────────────────────────────────────────
+
+[TYPE] ':function! Bracketize(type)'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.py             1,1            All│
+19 │:function! Bracketize(type)             │ ◂ cursor (19,27)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │:function! Bracketize(type)             │
+19 │:                                       │ ◂ cursor (19,3)
+    ────────────────────────────────────────
+
+[TYPE] ":  '[,']s/.*$/[&]/"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │:function! Bracketize(type)             │
+19 │:  :  '[,']s/.*$/[&]/                   │ ◂ cursor (19,21)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │                                        │
+17 │:function! Bracketize(type)             │
+18 │:  :  '[,']s/.*$/[&]/                   │
+19 │:                                       │ ◂ cursor (19,3)
+    ────────────────────────────────────────
+
+[TYPE] ':endfunction'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │                                        │
+17 │:function! Bracketize(type)             │
+18 │:  :  '[,']s/.*$/[&]/                   │
+19 │:  :endfunction                         │ ◂ cursor (19,15)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │ ◂ cursor (0,0)
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.py             1,1            All│
+    ────────────────────────────────────────
+
+[TYPE] ':set operatorfunc=Bracketize'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.py             1,1            All│
+19 │:set operatorfunc=Bracketize            │ ◂ cursor (19,28)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │ ◂ cursor (0,0)
+ 1 │hello world                             │
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.py             1,1            All│
+19 │:set operatorfunc=Bracketize            │
+    ────────────────────────────────────────
+
+[SAY] Now G at with a motion. Go to line two. G at J. Apply to two lines.
+[KEYS] '2G'
+[OVERLAY] 2G  line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │
+ 1 │hello world                             │ ◂ cursor (1,0)
+ 2 │foo bar baz                             │
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.py             2,1            All│
+19 │:set operatorfunc=Bracketize            │
+    ────────────────────────────────────────
+
+[KEYS] 'g@j'
+[OVERLAY] g@j  apply operator
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Custom Ops                            │
+ 1 │[hello world]                           │
+ 2 │[foo bar baz]                           │ ◂ cursor (2,0)
+ 3 │test data here                          │
+ 4 │final line                              │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.py [+]         3,1            All│
+19 │:set operatorfunc=Bracketize            │
+    ────────────────────────────────────────
+
+[SAY] Lines two and three are wrapped in brackets. Our custom operator worked.
+[SAY] G at. The engine behind custom operators. Set operator func, then G at plus a motion. This is advanced Vim scripting territory.

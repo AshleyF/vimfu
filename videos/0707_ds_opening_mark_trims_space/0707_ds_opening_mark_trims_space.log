@@ -1,0 +1,144 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │val.=.(.x.+.y.)                         │ ◂ cursor (0,0)
+ 1 │copy.=.(.x.+.y.)                        │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │spaces.py             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Opening Mark Trims Space
+[SAY] When you delete surroundings, the closing mark just removes the pair. But the opening mark also trims inner whitespace.
+[SAY] Spaces are shown as dots, so the difference is visible.
+[SAY] Line one has spaces inside the parentheses. {key:d}{key:s}{key:)}.
+[KEYS] 'fx'
+[OVERLAY] fx
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │val.=.(.x.+.y.)                         │ ◂ cursor (0,8)
+ 1 │copy.=.(.x.+.y.)                        │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │spaces.py             1,9            All│
+    ────────────────────────────────────────
+
+[OVERLAY] ds)
+[KEYS] 'ds)'
+[OVERLAY] ds)
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │val.=..x.+.y.                           │ ◂ cursor (0,6)
+ 1 │copy.=.(.x.+.y.)                        │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │spaces.py [+]         1,7            All│
+    ────────────────────────────────────────
+
+[SAY] Parens removed, but the inner spaces remain. Leave that result on line one.
+[SAY] Now use {key:d}{key:s}{key:(} on line two.
+[KEYS] 'jfx'
+[OVERLAY] jfx
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │val.=..x.+.y.                           │
+ 1 │copy.=.(.x.+.y.)                        │ ◂ cursor (1,9)
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │spaces.py [+]         2,10           All│
+    ────────────────────────────────────────
+
+[OVERLAY] ds(
+[KEYS] 'ds('
+[OVERLAY] ds(
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │val.=..x.+.y.                           │
+ 1 │copy.=.x.+.y                            │ ◂ cursor (1,7)
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │spaces.py [+]         2,8            All│
+    ────────────────────────────────────────
+
+[SAY] Now compare them. Line one kept the inner spaces. Line two trimmed them.
+[SAY] Closing mark, keep spaces. Opening mark, trim spaces. Same rule applies to brackets and braces.

@@ -1,0 +1,199 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │total = sum(prices)                     │ ◂ cursor (0,0)
+ 1 │data = [1, [2, 3], 4]                   │
+ 2 │if (x > 0) {                            │
+ 3 │    print(x)                            │
+ 4 │}                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — The % Key
+[SAY] Percent jumps to the matching bracket. Parentheses, braces, square brackets.
+[SAY] The cursor is at the start of line one. I'm not on a bracket. Percent.
+[KEYS] '%'
+[OVERLAY] ⇧%  match bracket
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │total = sum(prices)                     │ ◂ cursor (0,18)
+ 1 │data = [1, [2, 3], 4]                   │
+ 2 │if (x > 0) {                            │
+ 3 │    print(x)                            │
+ 4 │}                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.py               1,19           All│
+    ────────────────────────────────────────
+
+[SAY] It found the opening paren on its own and jumped to the closing one. You don't have to be on the bracket first.
+[SAY] Percent again.
+[KEYS] '%'
+[OVERLAY] ⇧%  match bracket
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │total = sum(prices)                     │ ◂ cursor (0,11)
+ 1 │data = [1, [2, 3], 4]                   │
+ 2 │if (x > 0) {                            │
+ 3 │    print(x)                            │
+ 4 │}                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.py               1,12           All│
+    ────────────────────────────────────────
+
+[SAY] Back to the opening paren. Now it bounces.
+[SAY] Line two has nested brackets. Jump down to the start of the line. Percent.
+[KEYS] 'j0'
+[OVERLAY] j0
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │total = sum(prices)                     │
+ 1 │data = [1, [2, 3], 4]                   │ ◂ cursor (1,0)
+ 2 │if (x > 0) {                            │
+ 3 │    print(x)                            │
+ 4 │}                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.py               2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '%'
+[OVERLAY] ⇧%  match bracket
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │total = sum(prices)                     │
+ 1 │data = [1, [2, 3], 4]                   │ ◂ cursor (1,20)
+ 2 │if (x > 0) {                            │
+ 3 │    print(x)                            │
+ 4 │}                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.py               2,21           All│
+    ────────────────────────────────────────
+
+[SAY] Found the outer opening bracket and jumped to the outer closing bracket. Skipped right over the nested pair inside.
+[SAY] Curly braces work too, even across lines. Jump down.
+[KEYS] 'j'
+[OVERLAY] j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │total = sum(prices)                     │
+ 1 │data = [1, [2, 3], 4]                   │
+ 2 │if (x > 0) {                            │ ◂ cursor (2,11)
+ 3 │    print(x)                            │
+ 4 │}                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.py               3,12           All│
+    ────────────────────────────────────────
+
+[KEYS] '%'
+[OVERLAY] ⇧%  match bracket
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │total = sum(prices)                     │
+ 1 │data = [1, [2, 3], 4]                   │
+ 2 │if (x > 0) {                            │
+ 3 │    print(x)                            │
+ 4 │}                                       │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.py               5,1            All│
+    ────────────────────────────────────────
+
+[SAY] Jumped from the opening brace on line three down to the closing brace on line five.
+[SAY] Percent. Jump to the matching bracket. It finds the first bracket on the line, skips over nested pairs, and works across lines.

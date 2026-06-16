@@ -1,0 +1,260 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Tags                                  │ ◂ cursor (0,0)
+ 1 │A                                       │
+ 2 │BCD                                     │
+ 3 │E                                       │
+ 4 │foo                                     │
+ 5 │bar                                     │
+ 6 │baz                                     │
+ 7 │# End                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │grid.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — zp zP zy — Block Paste
+[SAY] {key:zp} pastes block text without trailing spaces. Regular {key:p} pads with spaces to make a rectangle. {key:zp} keeps it clean.
+[SAY] Select a ragged block. {key:zy} yanks it without padding the short rows.
+[KEYS] '2G'
+[OVERLAY] 2G  line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Tags                                  │
+ 1 │A                                       │ ◂ cursor (1,0)
+ 2 │BCD                                     │
+ 3 │E                                       │
+ 4 │foo                                     │
+ 5 │bar                                     │
+ 6 │baz                                     │
+ 7 │# End                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │grid.py               2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '\x16'
+[OVERLAY] ⌃v  visual block
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Tags                                  │
+ 1 │A                                       │ ◂ cursor (1,0)
+ 2 │BCD                                     │
+ 3 │E                                       │
+ 4 │foo                                     │
+ 5 │bar                                     │
+ 6 │baz                                     │
+ 7 │# End                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │grid.py               2,1            All│
+19 │-- VISUAL BLOCK --           1x1        │
+    ────────────────────────────────────────
+
+[KEYS] '2j$'
+[OVERLAY] 2j$  to ragged end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Tags                                  │
+ 1 │A                                       │
+ 2 │BCD                                     │
+ 3 │E                                       │ ◂ cursor (3,1)
+ 4 │foo                                     │
+ 5 │bar                                     │
+ 6 │baz                                     │
+ 7 │# End                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │grid.py               4,2            All│
+19 │-- VISUAL BLOCK --           3x2        │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 0: "A"
+[HIGHLIGHT] row 2, cols 0-2: "BCD"
+[HIGHLIGHT] row 3, cols 0-1: "E"
+
+[KEYS] 'zy'
+[OVERLAY] zy  yank no padding
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Tags                                  │
+ 1 │A                                       │ ◂ cursor (1,0)
+ 2 │BCD                                     │
+ 3 │E                                       │
+ 4 │foo                                     │
+ 5 │bar                                     │
+ 6 │baz                                     │
+ 7 │# End                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │grid.py               2,1            All│
+19 │block of 3 lines yanked                 │
+    ────────────────────────────────────────
+
+[SAY] Jump to foo and paste with {key:zP}. Lines stay their natural width.
+[KEYS] '5G0'
+[OVERLAY] 5G0  to foo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Tags                                  │
+ 1 │A                                       │
+ 2 │BCD                                     │
+ 3 │E                                       │
+ 4 │foo                                     │ ◂ cursor (4,0)
+ 5 │bar                                     │
+ 6 │baz                                     │
+ 7 │# End                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │grid.py               5,1            All│
+19 │block of 3 lines yanked                 │
+    ────────────────────────────────────────
+
+[KEYS] 'zP'
+[OVERLAY] zP  block paste clean
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Tags                                  │
+ 1 │A                                       │
+ 2 │BCD                                     │
+ 3 │E                                       │
+ 4 │Afoo                                    │ ◂ cursor (4,0)
+ 5 │BCDbar                                  │
+ 6 │Ebaz                                    │
+ 7 │# End                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │grid.py [+]           5,1            All│
+19 │block of 3 lines yanked                 │
+    ────────────────────────────────────────
+
+[SAY] No trailing spaces inserted. The short rows stay short.
+[SAY] Now undo and try regular {key:P}.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Tags                                  │
+ 1 │A                                       │
+ 2 │BCD                                     │
+ 3 │E                                       │
+ 4 │foo                                     │ ◂ cursor (4,0)
+ 5 │bar                                     │
+ 6 │baz                                     │
+ 7 │# End                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │grid.py               5,1            All│
+19 │4 changes; b...7 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'P'
+[OVERLAY] ⇧P  regular paste
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Tags                                  │
+ 1 │A                                       │
+ 2 │BCD                                     │
+ 3 │E                                       │
+ 4 │A  foo                                  │ ◂ cursor (4,0)
+ 5 │BCDbar                                  │
+ 6 │E  baz                                  │
+ 7 │# End                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │grid.py [+]           5,1            All│
+19 │4 changes; b...7 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Regular paste padded the short rows with spaces. The columns shift. {key:zP} avoids that.
+[SAY] {key:zy} yanks. {key:zp} and {key:zP} paste. All without trailing whitespace.

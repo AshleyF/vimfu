@@ -1,0 +1,286 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cat cats                                │ ◂ cursor (0,0)
+ 1 │dog dogs                                │
+ 2 │the bat batted                          │
+ 3 │hat hats hatted                         │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Vim Regex Syntax
+[SAY] Vim regex is different. Some special characters need a backslash. Here are the key ones.
+[TYPE] ':set hlsearch'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cat cats                                │
+ 1 │dog dogs                                │
+ 2 │the bat batted                          │
+ 3 │hat hats hatted                         │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+19 │:set hlsearch                           │ ◂ cursor (19,13)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cat cats                                │ ◂ cursor (0,0)
+ 1 │dog dogs                                │
+ 2 │the bat batted                          │
+ 3 │hat hats hatted                         │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+19 │:set hlsearch                           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 1-2: "at"
+[HIGHLIGHT] row 0, cols 4-6: "cat"
+[HIGHLIGHT] row 1, cols 0-2: "dog"
+[HIGHLIGHT] row 1, cols 4-6: "dog"
+
+[SAY] Backslash plus means one or more.
+[TYPE] '/\\w\\+'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cat cats                                │
+ 1 │dog dogs                                │
+ 2 │the bat batted                          │
+ 3 │hat hats hatted                         │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,5            All│
+19 │/\w\+                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "cat"
+[HIGHLIGHT] row 0, cols 4-7: "cats"
+[HIGHLIGHT] row 1, cols 0-2: "dog"
+[HIGHLIGHT] row 1, cols 4-7: "dogs"
+[HIGHLIGHT] row 2, cols 0-2: "the"
+[HIGHLIGHT] row 2, cols 4-6: "bat"
+[HIGHLIGHT] row 2, cols 8-13: "batted"
+[HIGHLIGHT] row 3, cols 0-2: "hat"
+[HIGHLIGHT] row 3, cols 4-7: "hats"
+[HIGHLIGHT] row 3, cols 9-14: "hatted"
+
+[SAY] In most flavors this is just plus. In Vim a bare plus is literal.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cat cats                                │ ◂ cursor (0,4)
+ 1 │dog dogs                                │
+ 2 │the bat batted                          │
+ 3 │hat hats hatted                         │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,5            All│
+19 │/\w\+                [2/10]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "cat"
+[HIGHLIGHT] row 0, cols 5-7: "ats"
+[HIGHLIGHT] row 1, cols 0-2: "dog"
+[HIGHLIGHT] row 1, cols 4-7: "dogs"
+[HIGHLIGHT] row 2, cols 0-2: "the"
+[HIGHLIGHT] row 2, cols 4-6: "bat"
+[HIGHLIGHT] row 2, cols 8-13: "batted"
+[HIGHLIGHT] row 3, cols 0-2: "hat"
+[HIGHLIGHT] row 3, cols 4-7: "hats"
+[HIGHLIGHT] row 3, cols 9-14: "hatted"
+
+[SAY] Now exact-match the word cat using word boundaries.
+[TYPE] '/\\<cat\\>'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cat cats                                │
+ 1 │dog dogs                                │
+ 2 │the bat batted                          │
+ 3 │hat hats hatted                         │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+19 │/\<cat\>                                │ ◂ cursor (19,8)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "cat"
+
+[SAY] Backslash angle brackets anchor the word edges.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cat cats                                │ ◂ cursor (0,0)
+ 1 │dog dogs                                │
+ 2 │the bat batted                          │
+ 3 │hat hats hatted                         │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+19 │/\<cat\>            W [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 1-2: "at"
+
+[SAY] Only cat. The s in cats excluded.
+[SAY] Match cat or dog.
+[TYPE] '/cat\\|dog'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cat cats                                │
+ 1 │dog dogs                                │
+ 2 │the bat batted                          │
+ 3 │hat hats hatted                         │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,5            All│
+19 │/cat\|dog                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "cat"
+[HIGHLIGHT] row 0, cols 4-6: "cat"
+[HIGHLIGHT] row 1, cols 0-2: "dog"
+[HIGHLIGHT] row 1, cols 4-6: "dog"
+
+[SAY] Backslash pipe is alternation.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cat cats                                │ ◂ cursor (0,4)
+ 1 │dog dogs                                │
+ 2 │the bat batted                          │
+ 3 │hat hats hatted                         │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,5            All│
+19 │/cat\|dog             [2/4]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "cat"
+[HIGHLIGHT] row 0, cols 5-6: "at"
+[HIGHLIGHT] row 1, cols 0-2: "dog"
+[HIGHLIGHT] row 1, cols 4-6: "dog"
+
+[SAY] Backslash plus, question, parens, pipe, angle brackets. Different from Perl, just as powerful.

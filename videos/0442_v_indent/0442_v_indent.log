@@ -1,0 +1,443 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │ ◂ cursor (0,0)
+ 1 │"name": "alice",                        │
+ 2 │"age": 30,                              │
+ 3 │"items": [                              │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — v_> / v_< / v_=
+[SAY] In visual mode, greater than indents, less than unindents, and equals auto-indents.
+[SAY] These lines need indentation. Select them with capital V.
+[KEYS] 'j'
+[OVERLAY] j  down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │"name": "alice",                        │ ◂ cursor (1,0)
+ 2 │"age": 30,                              │
+ 3 │"items": [                              │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json             2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │"name": "alice",                        │ ◂ cursor (1,0)
+ 2 │"age": 30,                              │
+ 3 │"items": [                              │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json             2,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 1-15: "name": "alice","
+
+[KEYS] 'jj'
+[OVERLAY] jj
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │"name": "alice",                        │
+ 2 │"age": 30,                              │
+ 3 │"items": [                              │ ◂ cursor (3,0)
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json             4,1            All│
+19 │-- VISUAL LINE --            3          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-15: ""name": "alice","
+[HIGHLIGHT] row 2, cols 0-9: ""age": 30,"
+[HIGHLIGHT] row 3, cols 1-9: "items": ["
+
+[SAY] Greater than to indent.
+[KEYS] '>'
+[OVERLAY] ⇧>  indent
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │        "name": "alice",                │ ◂ cursor (1,7)
+ 2 │        "age": 30,                      │
+ 3 │        "items": [                      │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json [+]         2,1-8          All│
+19 │3 lines >ed 1 time                      │
+    ────────────────────────────────────────
+
+[SAY] Indented one level. Now they're inside the object.
+[SAY] These last items are over-indented. Select those lines.
+[KEYS] '5j'
+[OVERLAY] 5j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │        "name": "alice",                │
+ 2 │        "age": 30,                      │
+ 3 │        "items": [                      │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │ ◂ cursor (6,7)
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json [+]         7,8            All│
+19 │3 lines >ed 1 time                      │
+    ────────────────────────────────────────
+
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │        "name": "alice",                │
+ 2 │        "age": 30,                      │
+ 3 │        "items": [                      │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │ ◂ cursor (6,7)
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json [+]         7,8            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 0-20: "           "cherry","
+
+[KEYS] 'j'
+[OVERLAY] j  down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │        "name": "alice",                │
+ 2 │        "age": 30,                      │
+ 3 │        "items": [                      │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │
+ 7 │            "date"                      │ ◂ cursor (7,7)
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json [+]         8,8            All│
+19 │-- VISUAL LINE --            2          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 0-20: "            "cherry","
+[HIGHLIGHT] row 7, cols 0-17: "           "date""
+
+[SAY] Less than to unindent.
+[KEYS] '<'
+[OVERLAY] ⇧<  unindent
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │        "name": "alice",                │
+ 2 │        "age": 30,                      │
+ 3 │        "items": [                      │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │    "cherry",                           │ ◂ cursor (6,7)
+ 7 │    "date"                              │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json [+]         7,8            All│
+    ────────────────────────────────────────
+
+[SAY] One level removed. Proper indentation now.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │        "name": "alice",                │
+ 2 │        "age": 30,                      │
+ 3 │        "items": [                      │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │ ◂ cursor (6,0)
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json [+]         7,1            All│
+19 │2 changes; b...6 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │"name": "alice",                        │ ◂ cursor (1,0)
+ 2 │"age": 30,                              │
+ 3 │"items": [                              │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json             2,1            All│
+19 │3 changes; b...5 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Or use equals to auto-indent. Select everything.
+[KEYS] 'gg'
+[OVERLAY] gg  file start
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │ ◂ cursor (0,0)
+ 1 │"name": "alice",                        │
+ 2 │"age": 30,                              │
+ 3 │"items": [                              │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json             1,1            All│
+19 │3 changes; b...5 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │ ◂ cursor (0,0)
+ 1 │"name": "alice",                        │
+ 2 │"age": 30,                              │
+ 3 │"items": [                              │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json             1,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+
+[KEYS] 'G'
+[OVERLAY] ⇧G  file end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │
+ 1 │"name": "alice",                        │
+ 2 │"age": 30,                              │
+ 3 │"items": [                              │
+ 4 │"apple",                                │
+ 5 │"banana",                               │
+ 6 │            "cherry",                   │
+ 7 │            "date"                      │
+ 8 │]                                       │
+ 9 │}                                       │ ◂ cursor (9,0)
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json             10,1           All│
+19 │-- VISUAL LINE --            10         │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, col 0: "{"
+[HIGHLIGHT] row 1, cols 0-15: ""name": "alice","
+[HIGHLIGHT] row 2, cols 0-9: ""age": 30,"
+[HIGHLIGHT] row 3, cols 0-9: ""items": ["
+[HIGHLIGHT] row 4, cols 0-7: ""apple","
+[HIGHLIGHT] row 5, cols 0-8: ""banana","
+[HIGHLIGHT] row 6, cols 0-20: "            "cherry","
+[HIGHLIGHT] row 7, cols 0-17: "            "date""
+[HIGHLIGHT] row 8, col 0: "]"
+
+[KEYS] '='
+[OVERLAY] =  auto-indent
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │{                                       │ ◂ cursor (0,0)
+ 1 │        "name": "alice",                │
+ 2 │        "age": 30,                      │
+ 3 │        "items": [                      │
+ 4 │                "apple",                │
+ 5 │                "banana",               │
+ 6 │                "cherry",               │
+ 7 │                "date"                  │
+ 8 │        ]                               │
+ 9 │}                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.json [+]         1,1            All│
+19 │10 lines indented                       │
+    ────────────────────────────────────────
+
+[SAY] Vim figured out the correct indentation. Equals does it automatically.
+[SAY] Greater than to indent. Less than to unindent. Equals to auto-indent.

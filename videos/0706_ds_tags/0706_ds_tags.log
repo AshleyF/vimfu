@@ -1,0 +1,170 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │<div>hello</div>                        │ ◂ cursor (0,0)
+ 1 │<em>world</em>                          │
+ 2 │<p>content here</p>                     │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tags.html             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Delete Surrounding Tags
+[SAY] D S T deletes the surrounding tag pair. T for tag. It finds the nearest H T M L or X M L tag around the cursor.
+[SAY] Cursor inside the div tags. D S T.
+[KEYS] 'fh'
+[OVERLAY] fh
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │<div>hello</div>                        │ ◂ cursor (0,5)
+ 1 │<em>world</em>                          │
+ 2 │<p>content here</p>                     │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tags.html             1,6            All│
+    ────────────────────────────────────────
+
+[KEYS] 'dst'
+[OVERLAY] dst  dst
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello                                   │ ◂ cursor (0,0)
+ 1 │<em>world</em>                          │
+ 2 │<p>content here</p>                     │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tags.html [+]         1,1            All│
+    ────────────────────────────────────────
+
+[SAY] Both the opening div and closing div are gone. Just hello remains.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │<div>hello</div>                        │ ◂ cursor (0,5)
+ 1 │<em>world</em>                          │
+ 2 │<p>content here</p>                     │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tags.html             1,6            All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Line two. Inside the em tags. D S T.
+[KEYS] 'jfw'
+[OVERLAY] jfw
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │<div>hello</div>                        │
+ 1 │<em>world</em>                          │ ◂ cursor (1,5)
+ 2 │<p>content here</p>                     │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tags.html             2,6            All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'dst'
+[OVERLAY] dst  dst
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │<div>hello</div>                        │
+ 1 │world                                   │ ◂ cursor (1,0)
+ 2 │<p>content here</p>                     │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tags.html [+]         2,1            All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Em tags removed. D S T works on any tag.

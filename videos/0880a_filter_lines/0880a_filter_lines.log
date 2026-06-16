@@ -1,0 +1,171 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cherry                                  │ ◂ cursor (0,0)
+ 1 │apple                                   │
+ 2 │banana                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │fig                                     │
+ 6 │grape                                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │names.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :{range}!{filter} — Filter Lines
+[SAY] You can pipe buffer lines through an external command. The output replaces those lines.
+[SAY] Sort the entire file alphabetically.
+[TYPE] ':%!sort'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cherry                                  │
+ 1 │apple                                   │
+ 2 │banana                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │fig                                     │
+ 6 │grape                                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │names.txt             1,1            All│
+19 │:%!sort                                 │ ◂ cursor (19,7)
+    ────────────────────────────────────────
+
+[SAY] Percent selects every line. Bang sort pipes them through the sort command.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │apple                                   │ ◂ cursor (0,0)
+ 1 │banana                                  │
+ 2 │cherry                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │fig                                     │
+ 6 │grape                                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │names.txt [+]         1,1            All│
+19 │7 lines filtered                        │
+    ────────────────────────────────────────
+
+[SAY] The whole file is now sorted. The lines were replaced with sort's output.
+[SAY] Undo that, then sort just lines two through four.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cherry                                  │ ◂ cursor (0,0)
+ 1 │apple                                   │
+ 2 │banana                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │fig                                     │
+ 6 │grape                                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │names.txt             1,1            All│
+19 │7 changes; b...1 seconds ago            │
+    ────────────────────────────────────────
+
+[TYPE] ':2,4!sort'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cherry                                  │
+ 1 │apple                                   │
+ 2 │banana                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │fig                                     │
+ 6 │grape                                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │names.txt             1,1            All│
+19 │:2,4!sort                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+
+[SAY] This time the range two comma four runs sort on just those three lines.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cherry                                  │
+ 1 │apple                                   │ ◂ cursor (1,0)
+ 2 │banana                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │fig                                     │
+ 6 │grape                                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │names.txt [+]         2,1            All│
+19 │3 lines filtered                        │
+    ────────────────────────────────────────
+
+[SAY] Only those three lines were sorted. The rest of the file is untouched.
+[SAY] Range bang filter. Pipe any lines through any shell command. Sort, uniq, awk, anything.

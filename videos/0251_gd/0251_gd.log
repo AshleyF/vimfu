@@ -1,0 +1,205 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # App Config                        │ ◂ cursor (0,4)
+ 1 │  2 MAX_RETRIES = 3                     │
+ 2 │  3 TIMEOUT = 30                        │
+ 3 │  4 BASE_URL = "https://api.example.com"│
+ 4 │  5                                     │
+ 5 │  6 def fetch(endpoint):                │
+ 6 │  7     url = BASE_URL + endpoint       │
+ 7 │  8     for attempt in range(MAX_RETRIES│
+ 8 │    ):                                  │
+ 9 │  9         try:                        │
+10 │ 10             resp = request(url, TIME│
+11 │    OUT)                                │
+12 │ 11             return resp             │
+13 │ 12         except Exception:           │
+14 │ 13             pass                    │
+15 │ 14     return None                     │
+16 │ 15                                     │
+17 │ 16 def request(url, timeout):          │
+18 │config.py             1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gD — Go to Global Definition
+[SAY] G shift D jumps to the global definition. It searches from line one of the file, so it finds top-level declarations.
+[SAY] Go to line eight where MAX RETRIES is used inside the function.
+[KEYS] '8G'
+[OVERLAY] 8G  line 8
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # App Config                        │
+ 1 │  2 MAX_RETRIES = 3                     │
+ 2 │  3 TIMEOUT = 30                        │
+ 3 │  4 BASE_URL = "https://api.example.com"│
+ 4 │  5                                     │
+ 5 │  6 def fetch(endpoint):                │
+ 6 │  7     url = BASE_URL + endpoint       │
+ 7 │  8     for attempt in range(MAX_RETRIES│ ◂ cursor (7,4)
+ 8 │    ):                                  │
+ 9 │  9         try:                        │
+10 │ 10             resp = request(url, TIME│
+11 │    OUT)                                │
+12 │ 11             return resp             │
+13 │ 12         except Exception:           │
+14 │ 13             pass                    │
+15 │ 14     return None                     │
+16 │ 15                                     │
+17 │ 16 def request(url, timeout):          │
+18 │config.py             8,1            Top│
+    ────────────────────────────────────────
+
+[KEYS] '$F_'
+[OVERLAY] $F_  on MAX_RETRIES
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # App Config                        │
+ 1 │  2 MAX_RETRIES = 3                     │
+ 2 │  3 TIMEOUT = 30                        │
+ 3 │  4 BASE_URL = "https://api.example.com"│
+ 4 │  5                                     │
+ 5 │  6 def fetch(endpoint):                │
+ 6 │  7     url = BASE_URL + endpoint       │
+ 7 │  8     for attempt in range(MAX_RETRIES│ ◂ cursor (7,32)
+ 8 │    ):                                  │
+ 9 │  9         try:                        │
+10 │ 10             resp = request(url, TIME│
+11 │    OUT)                                │
+12 │ 11             return resp             │
+13 │ 12         except Exception:           │
+14 │ 13             pass                    │
+15 │ 14     return None                     │
+16 │ 15                                     │
+17 │ 16 def request(url, timeout):          │
+18 │config.py             8,29           Top│
+    ────────────────────────────────────────
+
+[SAY] G shift D.
+[KEYS] 'gD'
+[OVERLAY] gD  global definition
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # App Config                        │
+ 1 │  2 MAX_RETRIES = 3                     │ ◂ cursor (1,4)
+ 2 │  3 TIMEOUT = 30                        │
+ 3 │  4 BASE_URL = "https://api.example.com"│
+ 4 │  5                                     │
+ 5 │  6 def fetch(endpoint):                │
+ 6 │  7     url = BASE_URL + endpoint       │
+ 7 │  8     for attempt in range(MAX_RETRIES│
+ 8 │    ):                                  │
+ 9 │  9         try:                        │
+10 │ 10             resp = request(url, TIME│
+11 │    OUT)                                │
+12 │ 11             return resp             │
+13 │ 12         except Exception:           │
+14 │ 13             pass                    │
+15 │ 14     return None                     │
+16 │ 15                                     │
+17 │ 16 def request(url, timeout):          │
+18 │config.py             2,1            Top│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 5-14: "AX_RETRIES"
+[HIGHLIGHT] row 7, cols 29-39: "MAX_RETRIES"
+
+[SAY] Line two. The top-level constant.
+[SAY] Go to line seven where BASE URL is used.
+[KEYS] '7G'
+[OVERLAY] 7G  line 7
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # App Config                        │
+ 1 │  2 MAX_RETRIES = 3                     │
+ 2 │  3 TIMEOUT = 30                        │
+ 3 │  4 BASE_URL = "https://api.example.com"│
+ 4 │  5                                     │
+ 5 │  6 def fetch(endpoint):                │
+ 6 │  7     url = BASE_URL + endpoint       │ ◂ cursor (6,4)
+ 7 │  8     for attempt in range(MAX_RETRIES│
+ 8 │    ):                                  │
+ 9 │  9         try:                        │
+10 │ 10             resp = request(url, TIME│
+11 │    OUT)                                │
+12 │ 11             return resp             │
+13 │ 12         except Exception:           │
+14 │ 13             pass                    │
+15 │ 14     return None                     │
+16 │ 15                                     │
+17 │ 16 def request(url, timeout):          │
+18 │config.py             7,1            Top│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 4-14: "MAX_RETRIES"
+[HIGHLIGHT] row 7, cols 29-39: "MAX_RETRIES"
+
+[KEYS] 'ww'
+[OVERLAY] ww  on BASE_URL
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # App Config                        │
+ 1 │  2 MAX_RETRIES = 3                     │
+ 2 │  3 TIMEOUT = 30                        │
+ 3 │  4 BASE_URL = "https://api.example.com"│
+ 4 │  5                                     │
+ 5 │  6 def fetch(endpoint):                │
+ 6 │  7     url = BASE_URL + endpoint       │ ◂ cursor (6,12)
+ 7 │  8     for attempt in range(MAX_RETRIES│
+ 8 │    ):                                  │
+ 9 │  9         try:                        │
+10 │ 10             resp = request(url, TIME│
+11 │    OUT)                                │
+12 │ 11             return resp             │
+13 │ 12         except Exception:           │
+14 │ 13             pass                    │
+15 │ 14     return None                     │
+16 │ 15                                     │
+17 │ 16 def request(url, timeout):          │
+18 │config.py             7,9            Top│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 4-14: "MAX_RETRIES"
+[HIGHLIGHT] row 7, cols 29-39: "MAX_RETRIES"
+
+[SAY] G shift D.
+[KEYS] 'gD'
+[OVERLAY] gD  gD
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # App Config                        │
+ 1 │  2 MAX_RETRIES = 3                     │
+ 2 │  3 TIMEOUT = 30                        │
+ 3 │  4 BASE_URL = "https://api.example.com"│ ◂ cursor (3,4)
+ 4 │  5                                     │
+ 5 │  6 def fetch(endpoint):                │
+ 6 │  7     url = BASE_URL + endpoint       │
+ 7 │  8     for attempt in range(MAX_RETRIES│
+ 8 │    ):                                  │
+ 9 │  9         try:                        │
+10 │ 10             resp = request(url, TIME│
+11 │    OUT)                                │
+12 │ 11             return resp             │
+13 │ 12         except Exception:           │
+14 │ 13             pass                    │
+15 │ 14     return None                     │
+16 │ 15                                     │
+17 │ 16 def request(url, timeout):          │
+18 │config.py             4,1            Top│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 3, cols 5-11: "ASE_URL"
+[HIGHLIGHT] row 6, cols 14-21: "BASE_URL"
+
+[SAY] Line four. The global BASE URL constant.
+[SAY] G D for local definition, G shift D for global. Both use text search so they work everywhere without a language server.

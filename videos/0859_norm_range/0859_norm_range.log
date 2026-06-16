@@ -1,0 +1,85 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │first                                   │ ◂ cursor (0,0)
+ 1 │second                                  │
+ 2 │third                                   │
+ 3 │fourth                                  │
+ 4 │fifth                                   │
+ 5 │sixth                                   │
+ 6 │seventh                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :norm on a Range
+[SAY] Give norm a range to limit which lines it affects.
+[SAY] Let's append an exclamation point to lines three through five only.
+[TYPE] ':3,5norm A!'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │first                                   │
+ 1 │second                                  │
+ 2 │third                                   │
+ 3 │fourth                                  │
+ 4 │fifth                                   │
+ 5 │sixth                                   │
+ 6 │seventh                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+19 │:3,5norm A!                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+
+[SAY] Three comma five is the range — lines three through five only. Norm replays the next keys in normal mode. Capital A appends at end of line. Then we type an exclamation point.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │first                                   │
+ 1 │second                                  │
+ 2 │third!                                  │
+ 3 │fourth!                                 │
+ 4 │fifth!                                  │ ◂ cursor (4,5)
+ 5 │sixth                                   │
+ 6 │seventh                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          5,6            All│
+    ────────────────────────────────────────
+
+[SAY] Lines three, four, and five got the exclamation. The other lines are untouched.
+[SAY] Colon range norm. Run normal mode keys on a specific set of lines.

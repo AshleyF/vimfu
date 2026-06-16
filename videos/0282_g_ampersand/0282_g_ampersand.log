@@ -1,0 +1,145 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Color Theme                           │ ◂ cursor (0,0)
+ 1 │bg = "red"                              │
+ 2 │fg = "blue"                             │
+ 3 │border = "red"                          │
+ 4 │hover = "red"                           │
+ 5 │active = "green"                        │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │colors.py             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — g& — Repeat Substitution
+[SAY] G ampersand repeats the last substitution across all lines. Run a substitute on one line, then G ampersand to apply it everywhere.
+[SAY] Go to line two. Replace red with orange, just on this line.
+[KEYS] '2G'
+[OVERLAY] 2G  line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Color Theme                           │
+ 1 │bg = "red"                              │ ◂ cursor (1,0)
+ 2 │fg = "blue"                             │
+ 3 │border = "red"                          │
+ 4 │hover = "red"                           │
+ 5 │active = "green"                        │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │colors.py             2,1            All│
+    ────────────────────────────────────────
+
+[TYPE] ':s/red/orange/'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Color Theme                           │
+ 1 │bg = "orange"                           │
+ 2 │fg = "blue"                             │
+ 3 │border = "red"                          │
+ 4 │hover = "red"                           │
+ 5 │active = "green"                        │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │colors.py [+]         2,7            All│
+19 │:s/red/orange/                          │ ◂ cursor (19,14)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 6-11: "orange"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Color Theme                           │
+ 1 │bg = "orange"                           │ ◂ cursor (1,0)
+ 2 │fg = "blue"                             │
+ 3 │border = "red"                          │
+ 4 │hover = "red"                           │
+ 5 │active = "green"                        │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │colors.py [+]         2,1            All│
+19 │:s/red/orange/                          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 3, cols 10-12: "red"
+[HIGHLIGHT] row 4, cols 9-11: "red"
+
+[SAY] Red became orange on line two. But lines four and five still say red.
+[SAY] G ampersand. Apply the same substitution to all lines.
+[KEYS] 'g&'
+[OVERLAY] g&  all lines!
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Color Theme                           │
+ 1 │bg = "orange"                           │
+ 2 │fg = "blue"                             │
+ 3 │border = "orange"                       │
+ 4 │hover = "orange"                        │ ◂ cursor (4,0)
+ 5 │active = "green"                        │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │colors.py [+]         5,1            All│
+19 │:s/red/orange/                          │
+    ────────────────────────────────────────
+
+[SAY] All reds are now orange. Every line got the substitution. One keystroke.
+[SAY] G ampersand. Repeat the last substitute on all lines. Test it on one line, then apply everywhere.

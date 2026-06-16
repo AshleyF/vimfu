@@ -12,7 +12,7 @@ Usage:
 
 The lesson JSON contains both the lesson definition and a "youtube"
 section with upload settings.  Video and thumbnail files are located
-automatically at  shellpilot/videos/{stem}/{stem}.mp4 / .png.
+automatically at  videos/{stem}/{stem}.mp4 / .png.
 
 After upload the youtube.videoId and youtube.url fields are written
 back into the lesson JSON. --delete clears them.
@@ -118,7 +118,7 @@ def upload_video(lesson_path: Path, schedule_dt: datetime = None,
     stem = lesson_path.stem
 
     # Derive video/thumbnail paths from the standard output directory
-    videos_dir = REPO_ROOT / "shellpilot" / "videos" / stem
+    videos_dir = REPO_ROOT / "videos" / stem
     video_path = videos_dir / f"{stem}.mp4"
     thumb_path = videos_dir / f"{stem}.png"
 

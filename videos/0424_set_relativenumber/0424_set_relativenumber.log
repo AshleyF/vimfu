@@ -1,0 +1,195 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Player module                         │ ◂ cursor (0,0)
+ 1 │import math                             │
+ 2 │                                        │
+ 3 │MAX_HP = 100                            │
+ 4 │MAX_MP = 50                             │
+ 5 │                                        │
+ 6 │def greet(name):                        │
+ 7 │    return f"Hello {name}"              │
+ 8 │                                        │
+ 9 │def heal(hp, amount):                   │
+10 │    return min(hp + amount, MAX_HP)     │
+11 │                                        │
+12 │def damage(hp, hit):                    │
+13 │    return max(hp - hit, 0)             │
+14 │                                        │
+15 │result = greet("World")                 │
+16 │print(result)                           │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :set relativenumber
+[SAY] Relative line numbers show how far each line is from your cursor. Now motions like 9 j or 3 k just need a quick glance.
+[TYPE] ':set relativenumber'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Player module                         │
+ 1 │import math                             │
+ 2 │                                        │
+ 3 │MAX_HP = 100                            │
+ 4 │MAX_MP = 50                             │
+ 5 │                                        │
+ 6 │def greet(name):                        │
+ 7 │    return f"Hello {name}"              │
+ 8 │                                        │
+ 9 │def heal(hp, amount):                   │
+10 │    return min(hp + amount, MAX_HP)     │
+11 │                                        │
+12 │def damage(hp, hit):                    │
+13 │    return max(hp - hit, 0)             │
+14 │                                        │
+15 │result = greet("World")                 │
+16 │print(result)                           │
+17 │~                                       │
+18 │demo.py               1,1            All│
+19 │:set relativenumber                     │ ◂ cursor (19,19)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  0 # Player module                     │ ◂ cursor (0,4)
+ 1 │  1 import math                         │
+ 2 │  2                                     │
+ 3 │  3 MAX_HP = 100                        │
+ 4 │  4 MAX_MP = 50                         │
+ 5 │  5                                     │
+ 6 │  6 def greet(name):                    │
+ 7 │  7     return f"Hello {name}"          │
+ 8 │  8                                     │
+ 9 │  9 def heal(hp, amount):               │
+10 │ 10     return min(hp + amount, MAX_HP) │
+11 │ 11                                     │
+12 │ 12 def damage(hp, hit):                │
+13 │ 13     return max(hp - hit, 0)         │
+14 │ 14                                     │
+15 │ 15 result = greet("World")             │
+16 │ 16 print(result)                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+19 │:set relativenumber                     │
+    ────────────────────────────────────────
+
+[SAY] Current line shows zero. I want to reach the heal function. Its line shows 9, so I type 9 j.
+[KEYS] '9j'
+[OVERLAY] 9j  9j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  9 # Player module                     │
+ 1 │  8 import math                         │
+ 2 │  7                                     │
+ 3 │  6 MAX_HP = 100                        │
+ 4 │  5 MAX_MP = 50                         │
+ 5 │  4                                     │
+ 6 │  3 def greet(name):                    │
+ 7 │  2     return f"Hello {name}"          │
+ 8 │  1                                     │
+ 9 │  0 def heal(hp, amount):               │ ◂ cursor (9,4)
+10 │  1     return min(hp + amount, MAX_HP) │
+11 │  2                                     │
+12 │  3 def damage(hp, hit):                │
+13 │  4     return max(hp - hit, 0)         │
+14 │  5                                     │
+15 │  6 result = greet("World")             │
+16 │  7 print(result)                       │
+17 │~                                       │
+18 │demo.py               10,1           All│
+19 │:set relativenumber                     │
+    ────────────────────────────────────────
+
+[SAY] Now back up to greet. Its line shows 3, so 3 k.
+[KEYS] '3k'
+[OVERLAY] 3k  3k
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  6 # Player module                     │
+ 1 │  5 import math                         │
+ 2 │  4                                     │
+ 3 │  3 MAX_HP = 100                        │
+ 4 │  2 MAX_MP = 50                         │
+ 5 │  1                                     │
+ 6 │  0 def greet(name):                    │ ◂ cursor (6,4)
+ 7 │  1     return f"Hello {name}"          │
+ 8 │  2                                     │
+ 9 │  3 def heal(hp, amount):               │
+10 │  4     return min(hp + amount, MAX_HP) │
+11 │  5                                     │
+12 │  6 def damage(hp, hit):                │
+13 │  7     return max(hp - hit, 0)         │
+14 │  8                                     │
+15 │  9 result = greet("World")             │
+16 │ 10 print(result)                       │
+17 │~                                       │
+18 │demo.py               7,1            All│
+19 │:set relativenumber                     │
+    ────────────────────────────────────────
+
+[SAY] No counting, no mental math. Just read the number and go.
+[SAY] To turn it off, set norelativenumber. Shorthand is rnu and nornu.
+[TYPE] ':set norelativenumber'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  6 # Player module                     │
+ 1 │  5 import math                         │
+ 2 │  4                                     │
+ 3 │  3 MAX_HP = 100                        │
+ 4 │  2 MAX_MP = 50                         │
+ 5 │  1                                     │
+ 6 │  0 def greet(name):                    │
+ 7 │  1     return f"Hello {name}"          │
+ 8 │  2                                     │
+ 9 │  3 def heal(hp, amount):               │
+10 │  4     return min(hp + amount, MAX_HP) │
+11 │  5                                     │
+12 │  6 def damage(hp, hit):                │
+13 │  7     return max(hp - hit, 0)         │
+14 │  8                                     │
+15 │  9 result = greet("World")             │
+16 │ 10 print(result)                       │
+17 │~                                       │
+18 │demo.py               7,1            All│
+19 │:set norelativenumber                   │ ◂ cursor (19,21)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Player module                         │
+ 1 │import math                             │
+ 2 │                                        │
+ 3 │MAX_HP = 100                            │
+ 4 │MAX_MP = 50                             │
+ 5 │                                        │
+ 6 │def greet(name):                        │ ◂ cursor (6,0)
+ 7 │    return f"Hello {name}"              │
+ 8 │                                        │
+ 9 │def heal(hp, amount):                   │
+10 │    return min(hp + amount, MAX_HP)     │
+11 │                                        │
+12 │def damage(hp, hit):                    │
+13 │    return max(hp - hit, 0)             │
+14 │                                        │
+15 │result = greet("World")                 │
+16 │print(result)                           │
+17 │~                                       │
+18 │demo.py               7,1            All│
+19 │:set norelativenumber                   │
+    ────────────────────────────────────────

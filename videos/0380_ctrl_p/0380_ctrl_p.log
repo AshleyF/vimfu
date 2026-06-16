@@ -1,0 +1,203 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │ ◂ cursor (0,0)
+ 1 │process_data = 1                        │
+ 2 │process_file = 2                        │
+ 3 │process_text = 3                        │
+ 4 │x =                                     │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-P — Autocomplete Prev
+[SAY] Control P in insert mode also triggers keyword completion, but starts from the previous match. It searches backward.
+[SAY] Go to the last line and start typing.
+[KEYS] '4j'
+[OVERLAY] 4j  to last line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │process_data = 1                        │
+ 2 │process_file = 2                        │
+ 3 │process_text = 3                        │
+ 4 │x =                                     │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               5,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'A'
+[OVERLAY] ⇧A  append
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │process_data = 1                        │
+ 2 │process_file = 2                        │
+ 3 │process_text = 3                        │
+ 4 │x =                                     │ ◂ cursor (4,3)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               5,4            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[TYPE] 'pro'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │process_data = 1                        │
+ 2 │process_file = 2                        │
+ 3 │process_text = 3                        │
+ 4 │x =pro                                  │ ◂ cursor (4,6)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           5,7            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[SAY] Control P to complete from the closest match above.
+[KEYS] '\x10'
+[OVERLAY] ⌃p  previous match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │process_data = 1                        │
+ 2 │process_file = 2                        │
+ 3 │process_text = 3                        │
+ 4 │x =process_text                         │ ◂ cursor (4,15)
+ 5 │~  process_data                         │
+ 6 │~  process_file                         │
+ 7 │~  process_text                         │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           5,16           All│
+19 │-- match 1 of 3                         │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 5, cols 2-17: " process_data"
+[HIGHLIGHT] row 6, cols 2-17: " process_file"
+[HIGHLIGHT] row 7, cols 2-17: " process_text"
+
+[SAY] Process text. The nearest match above the cursor. Control P again for the next one up.
+[KEYS] '\x10'
+[OVERLAY] ⌃p  previous
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │process_data = 1                        │
+ 2 │process_file = 2                        │
+ 3 │process_text = 3                        │
+ 4 │x =process_file                         │ ◂ cursor (4,15)
+ 5 │~  process_data                         │
+ 6 │~  process_file                         │
+ 7 │~  process_text                         │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           5,16           All│
+19 │-- match 2 of 3                         │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 5, cols 2-17: " process_data"
+[HIGHLIGHT] row 6, cols 2-17: " process_file"
+[HIGHLIGHT] row 7, cols 2-17: " process_text"
+
+[SAY] Process file. It walks backward through matches. Control N would go forward.
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │process_data = 1                        │
+ 2 │process_file = 2                        │
+ 3 │process_text = 3                        │
+ 4 │x =process_file                         │ ◂ cursor (4,14)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           5,15           All│
+    ────────────────────────────────────────
+
+[SAY] Control P. Autocomplete searching backward. Control N goes forward. Both scan the same word list, just different starting direction.

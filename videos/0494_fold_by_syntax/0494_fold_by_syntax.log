@@ -1,0 +1,238 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │#include <stdio.h>                      │ ◂ cursor (0,0)
+ 1 │                                        │
+ 2 │int add(int a, int b) {                 │
+ 3 │    return a + b;                       │
+ 4 │}                                       │
+ 5 │                                        │
+ 6 │int main() {                            │
+ 7 │    int x = add(3, 4);                  │
+ 8 │    printf("%d\n", x);                  │
+ 9 │    return 0;                           │
+10 │}                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │syntax.c              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Fold by Syntax
+[SAY] Syntax-based folding uses the language's syntax rules to create folds. Functions, blocks, and other structures fold automatically.
+[SAY] Set the fold method to syntax.
+[TYPE] ':set foldmethod=syntax'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │#include <stdio.h>                      │
+ 1 │                                        │
+ 2 │int add(int a, int b) {                 │
+ 3 │    return a + b;                       │
+ 4 │}                                       │
+ 5 │                                        │
+ 6 │int main() {                            │
+ 7 │    int x = add(3, 4);                  │
+ 8 │    printf("%d\n", x);                  │
+ 9 │    return 0;                           │
+10 │}                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │syntax.c              1,1            All│
+19 │:set foldmethod=syntax                  │ ◂ cursor (19,22)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │#include <stdio.h>                      │ ◂ cursor (0,0)
+ 1 │                                        │
+ 2 │+--  3 lines: int add(int a, int b) {···│
+ 3 │                                        │
+ 4 │+--  5 lines: int main() {··············│
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │syntax.c              1,1            All│
+19 │:set foldmethod=syntax                  │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  3 lines: int add(int a, int b) {···"
+[HIGHLIGHT] row 4, cols 0-39: "+--  5 lines: int main() {··············"
+
+[SAY] The C functions may have folded based on their brace blocks. Close all folds with Z M.
+[KEYS] 'zM'
+[OVERLAY] zM  close all
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │#include <stdio.h>                      │ ◂ cursor (0,0)
+ 1 │                                        │
+ 2 │+--  3 lines: int add(int a, int b) {···│
+ 3 │                                        │
+ 4 │+--  5 lines: int main() {··············│
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │syntax.c              1,1            All│
+19 │:set foldmethod=syntax                  │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  3 lines: int add(int a, int b) {···"
+[HIGHLIGHT] row 4, cols 0-39: "+--  5 lines: int main() {··············"
+
+[SAY] The function bodies are hidden. Only the signatures and braces remain visible.
+[SAY] Open just the add function. Move to it and press Z O.
+[KEYS] 'gg'
+[OVERLAY] gg  file start
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │#include <stdio.h>                      │ ◂ cursor (0,0)
+ 1 │                                        │
+ 2 │+--  3 lines: int add(int a, int b) {···│
+ 3 │                                        │
+ 4 │+--  5 lines: int main() {··············│
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │syntax.c              1,1            All│
+19 │:set foldmethod=syntax                  │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  3 lines: int add(int a, int b) {···"
+[HIGHLIGHT] row 4, cols 0-39: "+--  5 lines: int main() {··············"
+
+[KEYS] '2j'
+[OVERLAY] 2j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │#include <stdio.h>                      │
+ 1 │                                        │
+ 2 │+--  3 lines: int add(int a, int b) {···│ ◂ cursor (2,0)
+ 3 │                                        │
+ 4 │+--  5 lines: int main() {··············│
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │syntax.c              3,1            All│
+19 │:set foldmethod=syntax                  │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 1-39: "--  3 lines: int add(int a, int b) {···"
+[HIGHLIGHT] row 4, cols 0-39: "+--  5 lines: int main() {··············"
+
+[KEYS] 'zo'
+[OVERLAY] zo  open fold
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │#include <stdio.h>                      │
+ 1 │                                        │
+ 2 │int add(int a, int b) {                 │ ◂ cursor (2,0)
+ 3 │    return a + b;                       │
+ 4 │}                                       │
+ 5 │                                        │
+ 6 │+--  5 lines: int main() {··············│
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │syntax.c              3,1            All│
+19 │:set foldmethod=syntax                  │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 0-39: "+--  5 lines: int main() {··············"
+
+[SAY] The add function is open while main stays folded. Syntax folding knows where each block starts and ends.
+[SAY] Open everything with Z R.
+[KEYS] 'zR'
+[OVERLAY] zR  open all
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │#include <stdio.h>                      │
+ 1 │                                        │
+ 2 │int add(int a, int b) {                 │ ◂ cursor (2,0)
+ 3 │    return a + b;                       │
+ 4 │}                                       │
+ 5 │                                        │
+ 6 │int main() {                            │
+ 7 │    int x = add(3, 4);                  │
+ 8 │    printf("%d\n", x);                  │
+ 9 │    return 0;                           │
+10 │}                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │syntax.c              3,1            All│
+19 │:set foldmethod=syntax                  │
+    ────────────────────────────────────────
+
+[SAY] Set fold method syntax. It uses the language definition to create meaningful folds. Great for C, JavaScript, and other brace-based languages.

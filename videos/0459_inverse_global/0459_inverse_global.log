@@ -1,0 +1,333 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO server started                     │ ◂ cursor (0,0)
+ 1 │ERROR disk full                         │
+ 2 │INFO user login                         │
+ 3 │WARN slow query                         │
+ 4 │INFO page loaded                        │
+ 5 │ERROR timeout                           │
+ 6 │INFO task done                          │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :v/{pattern}/{cmd} — Inverse Global
+[SAY] Colon V is the opposite of colon G. It runs a command on every line that does NOT match the pattern.
+[SAY] Keep only ERROR lines. Delete everything that isn't an error. Colon V slash ERROR slash D.
+[KEYS] ':'
+[OVERLAY] ⇧:  command line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO server started                     │
+ 1 │ERROR disk full                         │
+ 2 │INFO user login                         │
+ 3 │WARN slow query                         │
+ 4 │INFO page loaded                        │
+ 5 │ERROR timeout                           │
+ 6 │INFO task done                          │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               1,1            All│
+19 │:                                       │ ◂ cursor (19,1)
+    ────────────────────────────────────────
+
+[TYPE] 'v/ERROR/d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO server started                     │
+ 1 │ERROR disk full                         │
+ 2 │INFO user login                         │
+ 3 │WARN slow query                         │
+ 4 │INFO page loaded                        │
+ 5 │ERROR timeout                           │
+ 6 │INFO task done                          │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               2,1            All│
+19 │:v/ERROR/d                              │ ◂ cursor (19,10)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-4: "ERROR"
+[HIGHLIGHT] row 5, cols 0-4: "ERROR"
+
+[EX_READY] ':v/ERROR/d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO server started                     │
+ 1 │ERROR disk full                         │
+ 2 │INFO user login                         │
+ 3 │WARN slow query                         │
+ 4 │INFO page loaded                        │
+ 5 │ERROR timeout                           │
+ 6 │INFO task done                          │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               2,1            All│
+19 │:v/ERROR/d                              │ ◂ cursor (19,10)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-4: "ERROR"
+[HIGHLIGHT] row 5, cols 0-4: "ERROR"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ERROR disk full                         │
+ 1 │ERROR timeout                           │ ◂ cursor (1,0)
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt [+]           2,1            All│
+19 │5 fewer lines                           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-4: "ERROR"
+[HIGHLIGHT] row 1, cols 1-4: "RROR"
+
+[SAY] Only the ERROR lines remain. Every line that didn't match ERROR was deleted.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO server started                     │ ◂ cursor (0,0)
+ 1 │ERROR disk full                         │
+ 2 │INFO user login                         │
+ 3 │WARN slow query                         │
+ 4 │INFO page loaded                        │
+ 5 │ERROR timeout                           │
+ 6 │INFO task done                          │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               1,1            All│
+19 │5 more lines...7 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-4: "ERROR"
+[HIGHLIGHT] row 5, cols 0-4: "ERROR"
+
+[SAY] Undo. Now keep only INFO lines.
+[KEYS] ':'
+[OVERLAY] ⇧:  command line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO server started                     │
+ 1 │ERROR disk full                         │
+ 2 │INFO user login                         │
+ 3 │WARN slow query                         │
+ 4 │INFO page loaded                        │
+ 5 │ERROR timeout                           │
+ 6 │INFO task done                          │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               1,1            All│
+19 │:                                       │ ◂ cursor (19,1)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-4: "ERROR"
+[HIGHLIGHT] row 5, cols 0-4: "ERROR"
+
+[TYPE] 'v/INFO/d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO server started                     │
+ 1 │ERROR disk full                         │
+ 2 │INFO user login                         │
+ 3 │WARN slow query                         │
+ 4 │INFO page loaded                        │
+ 5 │ERROR timeout                           │
+ 6 │INFO task done                          │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               3,1            All│
+19 │:v/INFO/d                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-3: "INFO"
+[HIGHLIGHT] row 2, cols 0-3: "INFO"
+[HIGHLIGHT] row 4, cols 0-3: "INFO"
+[HIGHLIGHT] row 6, cols 0-3: "INFO"
+
+[EX_READY] ':v/INFO/d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO server started                     │
+ 1 │ERROR disk full                         │
+ 2 │INFO user login                         │
+ 3 │WARN slow query                         │
+ 4 │INFO page loaded                        │
+ 5 │ERROR timeout                           │
+ 6 │INFO task done                          │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               3,1            All│
+19 │:v/INFO/d                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-3: "INFO"
+[HIGHLIGHT] row 2, cols 0-3: "INFO"
+[HIGHLIGHT] row 4, cols 0-3: "INFO"
+[HIGHLIGHT] row 6, cols 0-3: "INFO"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO server started                     │
+ 1 │INFO user login                         │
+ 2 │INFO page loaded                        │
+ 3 │INFO task done                          │ ◂ cursor (3,0)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt [+]           4,1            All│
+19 │3 fewer lines                           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-3: "INFO"
+[HIGHLIGHT] row 1, cols 0-3: "INFO"
+[HIGHLIGHT] row 2, cols 0-3: "INFO"
+[HIGHLIGHT] row 3, cols 1-3: "NFO"
+
+[SAY] Everything except INFO lines was removed. This is a quick way to filter a file.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO server started                     │
+ 1 │ERROR disk full                         │ ◂ cursor (1,0)
+ 2 │INFO user login                         │
+ 3 │WARN slow query                         │
+ 4 │INFO page loaded                        │
+ 5 │ERROR timeout                           │
+ 6 │INFO task done                          │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               2,1            All│
+19 │3 more lines...7 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-3: "INFO"
+[HIGHLIGHT] row 2, cols 0-3: "INFO"
+[HIGHLIGHT] row 4, cols 0-3: "INFO"
+[HIGHLIGHT] row 6, cols 0-3: "INFO"
+
+[SAY] Colon G acts on matching lines. Colon V acts on non-matching lines. They're perfect complements.

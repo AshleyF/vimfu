@@ -1,0 +1,141 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def greet():                            │ ◂ cursor (0,0)
+ 1 │print("hello")                          │
+ 2 │print("world")                          │
+ 3 │return True                             │
+ 4 │                                        │
+ 5 │x = greet()                             │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :[range]> — Indent Lines
+[SAY] Colon greater than shifts lines to the right. It adds one shiftwidth of indentation.
+[SAY] Indent line two. It should be inside the function.
+[TYPE] ':2>'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def greet():                            │
+ 1 │print("hello")                          │
+ 2 │print("world")                          │
+ 3 │return True                             │
+ 4 │                                        │
+ 5 │x = greet()                             │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+19 │:2>                                     │ ◂ cursor (19,3)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def greet():                            │
+ 1 │    print("hello")                      │ ◂ cursor (1,4)
+ 2 │print("world")                          │
+ 3 │return True                             │
+ 4 │                                        │
+ 5 │x = greet()                             │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,5            All│
+19 │:2>                                     │
+    ────────────────────────────────────────
+
+[SAY] Line two shifted right by four spaces.
+[SAY] Indent lines three and four together.
+[TYPE] ':3,4>'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def greet():                            │
+ 1 │    print("hello")                      │
+ 2 │print("world")                          │
+ 3 │return True                             │
+ 4 │                                        │
+ 5 │x = greet()                             │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,5            All│
+19 │:3,4>                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def greet():                            │
+ 1 │    print("hello")                      │
+ 2 │    print("world")                      │
+ 3 │    return True                         │ ◂ cursor (3,4)
+ 4 │                                        │
+ 5 │x = greet()                             │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           4,5            All│
+19 │:3,4>                                   │
+    ────────────────────────────────────────
+
+[SAY] Both lines indented. Now the function body is properly indented.
+[SAY] Colon range greater than. Indent lines from the command line.

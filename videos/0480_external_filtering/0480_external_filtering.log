@@ -1,0 +1,310 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cherry                                  │ ◂ cursor (0,0)
+ 1 │apple                                   │
+ 2 │banana                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │
+ 6 │grape                                   │
+ 7 │fig                                     │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — External Filtering
+[SAY] The bang operator filters text through an external command. Type bang, then a motion to select text, then the shell command.
+[SAY] Sort the first paragraph. Type bang I P sort.
+[KEYS] '!'
+[OVERLAY] ⇧!  ! — filter
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cherry                                  │ ◂ cursor (0,0)
+ 1 │apple                                   │
+ 2 │banana                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │
+ 6 │grape                                   │
+ 7 │fig                                     │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt             1,1            All│
+19 │                             !          │
+    ────────────────────────────────────────
+
+[KEYS] 'ip'
+[OVERLAY] ip  ip — inner paragraph
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cherry                                  │
+ 1 │apple                                   │
+ 2 │banana                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │
+ 6 │grape                                   │
+ 7 │fig                                     │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt             1,1            All│
+19 │:.,.+4!                                 │ ◂ cursor (19,7)
+    ────────────────────────────────────────
+
+[SAY] Vim opened the command line with the range filled in. Type sort.
+[TYPE] 'sort'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │cherry                                  │
+ 1 │apple                                   │
+ 2 │banana                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │
+ 6 │grape                                   │
+ 7 │fig                                     │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt             1,1            All│
+19 │:.,.+4!sort                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │apple                                   │ ◂ cursor (0,0)
+ 1 │banana                                  │
+ 2 │cherry                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │
+ 6 │grape                                   │
+ 7 │fig                                     │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt [+]         1,1            All│
+19 │5 lines filtered                        │
+    ────────────────────────────────────────
+
+[SAY] The first paragraph is now sorted alphabetically. Apple, banana, cherry, date, elderberry. The second paragraph stayed untouched.
+[SAY] You can use any shell command. Sort, uniq, A W K, sed, even your own scripts. Vim sends the text to the command and replaces it with the output.
+[SAY] Sort the second paragraph too. Move down and filter it.
+[KEYS] '}'
+[OVERLAY] ⇧}  next paragraph
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │apple                                   │
+ 1 │banana                                  │
+ 2 │cherry                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │ ◂ cursor (5,0)
+ 6 │grape                                   │
+ 7 │fig                                     │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt [+]         6,0-1          All│
+19 │5 lines filtered                        │
+    ────────────────────────────────────────
+
+[KEYS] 'j'
+[OVERLAY] j  down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │apple                                   │
+ 1 │banana                                  │
+ 2 │cherry                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │
+ 6 │grape                                   │ ◂ cursor (6,0)
+ 7 │fig                                     │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt [+]         7,1            All│
+19 │5 lines filtered                        │
+    ────────────────────────────────────────
+
+[KEYS] '!'
+[OVERLAY] ⇧!  ! — filter
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │apple                                   │
+ 1 │banana                                  │
+ 2 │cherry                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │
+ 6 │grape                                   │ ◂ cursor (6,0)
+ 7 │fig                                     │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt [+]         7,1            All│
+19 │5 lines filtered             !          │
+    ────────────────────────────────────────
+
+[KEYS] 'ip'
+[OVERLAY] ip  inner paragraph
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │apple                                   │
+ 1 │banana                                  │
+ 2 │cherry                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │
+ 6 │grape                                   │
+ 7 │fig                                     │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt [+]         7,1            All│
+19 │:.,$!                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+
+[TYPE] 'sort'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │apple                                   │
+ 1 │banana                                  │
+ 2 │cherry                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │
+ 6 │grape                                   │
+ 7 │fig                                     │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt [+]         7,1            All│
+19 │:.,$!sort                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │apple                                   │
+ 1 │banana                                  │
+ 2 │cherry                                  │
+ 3 │date                                    │
+ 4 │elderberry                              │
+ 5 │                                        │
+ 6 │fig                                     │ ◂ cursor (6,0)
+ 7 │grape                                   │
+ 8 │kiwi                                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt [+]         7,1            All│
+19 │3 lines filtered                        │
+    ────────────────────────────────────────
+
+[SAY] Both paragraphs sorted. Bang motion command. Vim meets the Unix shell.

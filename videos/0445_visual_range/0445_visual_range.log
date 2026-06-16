@@ -1,0 +1,451 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │ ◂ cursor (0,0)
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │pear = 5                                │
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :'<,'> — Visual Range
+[SAY] After a visual selection, pressing colon gives you a command range. Vim fills in the marks for the selected lines.
+[SAY] Select banana through date. Capital V.
+[KEYS] '2j'
+[OVERLAY] 2j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │ ◂ cursor (2,0)
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │pear = 5                                │
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              3,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │ ◂ cursor (2,0)
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │pear = 5                                │
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              3,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 1-9: "anana = 2"
+
+[KEYS] 'jj'
+[OVERLAY] jj
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │ ◂ cursor (4,0)
+ 5 │pear = 5                                │
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              5,1            All│
+19 │-- VISUAL LINE --            3          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-9: "banana = 2"
+[HIGHLIGHT] row 3, cols 0-9: "cherry = 3"
+[HIGHLIGHT] row 4, cols 1-7: "ate = 4"
+
+[SAY] Now press colon.
+[KEYS] ':'
+[OVERLAY] ⇧:  command mode
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │pear = 5                                │
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              5,1            All│
+19 │:'<,'>                                  │ ◂ cursor (19,6)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-9: "banana = 2"
+[HIGHLIGHT] row 3, cols 0-9: "cherry = 3"
+[HIGHLIGHT] row 4, cols 1-7: "ate = 4"
+
+[SAY] See the command line? It already says colon, less than, comma, greater than. That's the visual range. Any command you type applies only to those lines.
+[SAY] Type S slash equals slash colon colon slash to change equals to colons.
+[TYPE] 's/=/::/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana :: 2                             │
+ 3 │cherry :: 3                             │
+ 4 │date :: 4                               │
+ 5 │pear = 5                                │
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py [+]          3,8            All│
+19 │:'<,'>s/=/::/g                          │ ◂ cursor (19,14)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 7-8: "::"
+[HIGHLIGHT] row 3, cols 7-8: "::"
+[HIGHLIGHT] row 4, cols 5-6: "::"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana :: 2                             │
+ 3 │cherry :: 3                             │
+ 4 │date :: 4                               │ ◂ cursor (4,0)
+ 5 │pear = 5                                │
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py [+]          5,1            All│
+19 │3 substitutions on 3 lines              │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 6: "="
+[HIGHLIGHT] row 5, col 5: "="
+[HIGHLIGHT] row 6, col 4: "="
+
+[SAY] Only the selected lines changed. Apple and pear still have equals signs.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │ ◂ cursor (2,0)
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │pear = 5                                │
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              3,1            All│
+19 │3 changes; b...7 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 6: "="
+[HIGHLIGHT] row 2, col 7: "="
+[HIGHLIGHT] row 3, col 7: "="
+[HIGHLIGHT] row 4, col 5: "="
+[HIGHLIGHT] row 5, col 5: "="
+[HIGHLIGHT] row 6, col 4: "="
+
+[SAY] Another example. Select pear and fig.
+[KEYS] '3j0'
+[OVERLAY] 3j0
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │pear = 5                                │ ◂ cursor (5,0)
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              6,1            All│
+19 │3 changes; b...7 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 6: "="
+[HIGHLIGHT] row 2, col 7: "="
+[HIGHLIGHT] row 3, col 7: "="
+[HIGHLIGHT] row 4, col 5: "="
+[HIGHLIGHT] row 5, col 5: "="
+[HIGHLIGHT] row 6, col 4: "="
+
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │pear = 5                                │ ◂ cursor (5,0)
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              6,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 6: "="
+[HIGHLIGHT] row 2, col 7: "="
+[HIGHLIGHT] row 3, col 7: "="
+[HIGHLIGHT] row 4, col 5: "="
+[HIGHLIGHT] row 5, cols 1-7: "ear = 5"
+[HIGHLIGHT] row 6, col 4: "="
+
+[KEYS] 'j'
+[OVERLAY] j  down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │pear = 5                                │
+ 6 │fig = 6                                 │ ◂ cursor (6,0)
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              7,1            All│
+19 │-- VISUAL LINE --            2          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 6: "="
+[HIGHLIGHT] row 2, col 7: "="
+[HIGHLIGHT] row 3, col 7: "="
+[HIGHLIGHT] row 4, col 5: "="
+[HIGHLIGHT] row 5, cols 0-7: "pear = 5"
+[HIGHLIGHT] row 6, cols 1-6: "ig = 6"
+
+[SAY] Colon, then sort to sort just these lines.
+[TYPE] ':sort'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │pear = 5                                │
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              7,1            All│
+19 │:'<,'>sort                              │ ◂ cursor (19,10)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 6: "="
+[HIGHLIGHT] row 2, col 7: "="
+[HIGHLIGHT] row 3, col 7: "="
+[HIGHLIGHT] row 4, col 5: "="
+[HIGHLIGHT] row 5, cols 0-7: "pear = 5"
+[HIGHLIGHT] row 6, cols 1-6: "ig = 6"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │fig = 6                                 │ ◂ cursor (5,0)
+ 6 │pear = 5                                │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py [+]          6,1            All│
+19 │:'<,'>sort                              │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 6: "="
+[HIGHLIGHT] row 2, col 7: "="
+[HIGHLIGHT] row 3, col 7: "="
+[HIGHLIGHT] row 4, col 5: "="
+[HIGHLIGHT] row 5, col 4: "="
+[HIGHLIGHT] row 6, col 5: "="
+
+[SAY] Only the selected lines were sorted. Everything else stayed in place.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# fruit prices                          │
+ 1 │apple = 1                               │
+ 2 │banana = 2                              │
+ 3 │cherry = 3                              │
+ 4 │date = 4                                │
+ 5 │pear = 5                                │ ◂ cursor (5,0)
+ 6 │fig = 6                                 │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruit.py              6,1            All│
+19 │2 changes; b...6 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 6: "="
+[HIGHLIGHT] row 2, col 7: "="
+[HIGHLIGHT] row 3, col 7: "="
+[HIGHLIGHT] row 4, col 5: "="
+[HIGHLIGHT] row 5, col 5: "="
+[HIGHLIGHT] row 6, col 4: "="
+
+[SAY] Visual select, colon, type a command. It runs on just those lines. The visual range.

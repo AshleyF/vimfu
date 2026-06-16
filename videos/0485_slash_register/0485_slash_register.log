@@ -1,0 +1,206 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The fox jumped over                     │ ◂ cursor (0,0)
+ 1 │the lazy dog and                        │
+ 2 │the fox ran away                        │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │search.txt            1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — The / Register
+[SAY] The slash register, quote slash, stores your last search pattern.
+[SAY] Search for fox.
+[TYPE] '/fox'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The fox jumped over                     │
+ 1 │the lazy dog and                        │
+ 2 │the fox ran away                        │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │search.txt            1,5            All│
+19 │/fox                                    │ ◂ cursor (19,4)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 4-6: "fox"
+[HIGHLIGHT] row 2, cols 4-6: "fox"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The fox jumped over                     │ ◂ cursor (0,4)
+ 1 │the lazy dog and                        │
+ 2 │the fox ran away                        │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │search.txt            1,5            All│
+19 │/fox                  [1/2]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 5-6: "ox"
+[HIGHLIGHT] row 2, cols 4-6: "fox"
+
+[SAY] Now check the slash register.
+[TYPE] ':echo @/'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The fox jumped over                     │
+ 1 │the lazy dog and                        │
+ 2 │the fox ran away                        │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │search.txt            1,5            All│
+19 │:echo @/                                │ ◂ cursor (19,8)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 4-6: "fox"
+[HIGHLIGHT] row 2, cols 4-6: "fox"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The fox jumped over                     │ ◂ cursor (0,4)
+ 1 │the lazy dog and                        │
+ 2 │the fox ran away                        │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │search.txt            1,5            All│
+19 │fox                                     │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 5-6: "ox"
+[HIGHLIGHT] row 2, cols 4-6: "fox"
+
+[SAY] It shows fox. That's the last pattern we searched for.
+[SAY] This is useful in substitutions. You can use the slash register as the search part.
+[TYPE] ':%s//wolf/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The wolf jumped over                    │
+ 1 │the lazy dog and                        │
+ 2 │the wolf ran away                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │search.txt [+]        1,5            All│
+19 │:%s//wolf/g                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 4-7: "wolf"
+[HIGHLIGHT] row 2, cols 4-7: "wolf"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │The wolf jumped over                    │
+ 1 │the lazy dog and                        │
+ 2 │the wolf ran away                       │ ◂ cursor (2,0)
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │search.txt [+]        3,1            All│
+19 │:%s//wolf/g                             │
+    ────────────────────────────────────────
+
+[SAY] By leaving the search part empty, Vim uses the slash register automatically. Fox became wolf.
+[SAY] You can also paste the pattern into your text with quote slash P. The slash register. Your last search, always at hand.

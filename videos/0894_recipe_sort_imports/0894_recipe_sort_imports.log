@@ -1,0 +1,141 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │import sys                              │ ◂ cursor (0,0)
+ 1 │import json                             │
+ 2 │import os                               │
+ 3 │import re                               │
+ 4 │import math                             │
+ 5 │import csv                              │
+ 6 │                                        │
+ 7 │def main():                             │
+ 8 │    pass                                │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │imports.py            1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Sort Imports
+[SAY] These imports are in random order. Let's sort just the import block without touching the rest of the file.
+[SAY] Turn on line numbers to see the range.
+[TYPE] ':set number'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │import sys                              │
+ 1 │import json                             │
+ 2 │import os                               │
+ 3 │import re                               │
+ 4 │import math                             │
+ 5 │import csv                              │
+ 6 │                                        │
+ 7 │def main():                             │
+ 8 │    pass                                │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │imports.py            1,1            All│
+19 │:set number                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 import sys                          │ ◂ cursor (0,4)
+ 1 │  2 import json                         │
+ 2 │  3 import os                           │
+ 3 │  4 import re                           │
+ 4 │  5 import math                         │
+ 5 │  6 import csv                          │
+ 6 │  7                                     │
+ 7 │  8 def main():                         │
+ 8 │  9     pass                            │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │imports.py            1,1            All│
+19 │:set number                             │
+    ────────────────────────────────────────
+
+[SAY] Sort just the import lines.
+[TYPE] ':1,6sort'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 import sys                          │
+ 1 │  2 import json                         │
+ 2 │  3 import os                           │
+ 3 │  4 import re                           │
+ 4 │  5 import math                         │
+ 5 │  6 import csv                          │
+ 6 │  7                                     │
+ 7 │  8 def main():                         │
+ 8 │  9     pass                            │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │imports.py            1,1            All│
+19 │:1,6sort                                │ ◂ cursor (19,8)
+    ────────────────────────────────────────
+
+[SAY] One comma six sort. Apply sort to lines one through six only — everything below stays put.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 import csv                          │ ◂ cursor (0,4)
+ 1 │  2 import json                         │
+ 2 │  3 import math                         │
+ 3 │  4 import os                           │
+ 4 │  5 import re                           │
+ 5 │  6 import sys                          │
+ 6 │  7                                     │
+ 7 │  8 def main():                         │
+ 8 │  9     pass                            │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │imports.py [+]        1,1            All│
+19 │:1,6sort                                │
+    ────────────────────────────────────────
+
+[SAY] Imports are now alphabetical. The main function below is untouched.
+[SAY] Colon range sort. Sort any section of a file by specifying the line range.

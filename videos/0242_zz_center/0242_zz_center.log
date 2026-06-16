@@ -1,0 +1,143 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Tower Defense                     │ ◂ cursor (0,4)
+ 1 │  2 import math                         │
+ 2 │  3                                     │
+ 3 │  4 class Tower:                        │
+ 4 │  5     def __init__(self, x, y):       │
+ 5 │  6         self.x = x                  │
+ 6 │  7         self.y = y                  │
+ 7 │  8         self.level = 1              │
+ 8 │  9         self.range = 5              │
+ 9 │ 10         self.damage = 10            │
+10 │ 11                                     │
+11 │ 12     def upgrade(self):              │
+12 │ 13         self.level += 1             │
+13 │ 14         self.range += 2             │
+14 │ 15         self.damage *= 1.5          │
+15 │ 16                                     │
+16 │ 17     def can_hit(self, enemy):       │
+17 │ 18         dist = math.sqrt(           │
+18 │tower.py              1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — zz Center Cursor
+[SAY] Z Z scrolls the screen so your cursor line is in the center. It doesn't move the cursor, it moves the viewport.
+[SAY] The cursor is on line one. Jump to line fifteen.
+[KEYS] '15G'
+[OVERLAY] 15G  go to line 15
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Tower Defense                     │
+ 1 │  2 import math                         │
+ 2 │  3                                     │
+ 3 │  4 class Tower:                        │
+ 4 │  5     def __init__(self, x, y):       │
+ 5 │  6         self.x = x                  │
+ 6 │  7         self.y = y                  │
+ 7 │  8         self.level = 1              │
+ 8 │  9         self.range = 5              │
+ 9 │ 10         self.damage = 10            │
+10 │ 11                                     │
+11 │ 12     def upgrade(self):              │
+12 │ 13         self.level += 1             │
+13 │ 14         self.range += 2             │
+14 │ 15         self.damage *= 1.5          │ ◂ cursor (14,4)
+15 │ 16                                     │
+16 │ 17     def can_hit(self, enemy):       │
+17 │ 18         dist = math.sqrt(           │
+18 │tower.py              15,1           Top│
+    ────────────────────────────────────────
+
+[SAY] Line fifteen is near the bottom. Z Z to center it.
+[KEYS] 'zz'
+[OVERLAY] zz  center cursor
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  7         self.y = y                  │
+ 1 │  8         self.level = 1              │
+ 2 │  9         self.range = 5              │
+ 3 │ 10         self.damage = 10            │
+ 4 │ 11                                     │
+ 5 │ 12     def upgrade(self):              │
+ 6 │ 13         self.level += 1             │
+ 7 │ 14         self.range += 2             │
+ 8 │ 15         self.damage *= 1.5          │ ◂ cursor (8,4)
+ 9 │ 16                                     │
+10 │ 17     def can_hit(self, enemy):       │
+11 │ 18         dist = math.sqrt(           │
+12 │ 19             (self.x - enemy.x) ** 2 │
+13 │    +                                   │
+14 │ 20             (self.y - enemy.y) ** 2 │
+15 │ 21         )                           │
+16 │ 22         return dist <= self.range   │
+17 │ 23                                     │
+18 │tower.py              15,1           25%│
+    ────────────────────────────────────────
+
+[SAY] Now line fifteen is in the middle of the screen. Code above and below is visible.
+[SAY] Jump to line thirty.
+[KEYS] '30G'
+[OVERLAY] 30G  go to line 30
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 14         self.range += 2             │
+ 1 │ 15         self.damage *= 1.5          │
+ 2 │ 16                                     │
+ 3 │ 17     def can_hit(self, enemy):       │
+ 4 │ 18         dist = math.sqrt(           │
+ 5 │ 19             (self.x - enemy.x) ** 2 │
+ 6 │    +                                   │
+ 7 │ 20             (self.y - enemy.y) ** 2 │
+ 8 │ 21         )                           │
+ 9 │ 22         return dist <= self.range   │
+10 │ 23                                     │
+11 │ 24     def fire(self, enemy):          │
+12 │ 25         if self.can_hit(enemy):     │
+13 │ 26             enemy.hp -= self.damage │
+14 │ 27             return True             │
+15 │ 28         return False                │
+16 │ 29                                     │
+17 │ 30 class Enemy:                        │ ◂ cursor (17,4)
+18 │tower.py              30,1           54%│
+    ────────────────────────────────────────
+
+[SAY] The cursor is at the very bottom. Z Z.
+[KEYS] 'zz'
+[OVERLAY] zz  center cursor
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 22         return dist <= self.range   │
+ 1 │ 23                                     │
+ 2 │ 24     def fire(self, enemy):          │
+ 3 │ 25         if self.can_hit(enemy):     │
+ 4 │ 26             enemy.hp -= self.damage │
+ 5 │ 27             return True             │
+ 6 │ 28         return False                │
+ 7 │ 29                                     │
+ 8 │ 30 class Enemy:                        │ ◂ cursor (8,4)
+ 9 │ 31     def __init__(self, hp, speed):  │
+10 │ 32         self.hp = hp                │
+11 │ 33         self.speed = speed          │
+12 │ 34         self.x = 0                  │
+13 │ 35         self.y = 0                  │
+14 │ 36                                     │
+15 │ 37     def move(self, path):           │
+16 │ 38         self.x += self.speed        │
+17 │ 39                                     │
+18 │tower.py              30,1           91%│
+    ────────────────────────────────────────
+
+[SAY] Centered again. You can see both the function above and below.
+[SAY] Z Z. Center the cursor line. Use it whenever you want more context around your code.

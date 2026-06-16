@@ -1,0 +1,172 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │the cat sat on the mat                  │ ◂ cursor (0,0)
+ 1 │the dog ran to the park                 │
+ 2 │the fox fox jumped over                 │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :s/old/new/ — Substitute on Line
+[SAY] Colon S is the substitute command. It replaces text on the current line.
+[SAY] The cursor is on line one. Replace the word cat with dog.
+[TYPE] ':s/cat/dog/'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │the dog sat on the mat                  │
+ 1 │the dog ran to the park                 │
+ 2 │the fox fox jumped over                 │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          1,5            All│
+19 │:s/cat/dog/                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 4-6: "dog"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │the dog sat on the mat                  │ ◂ cursor (0,0)
+ 1 │the dog ran to the park                 │
+ 2 │the fox fox jumped over                 │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          1,1            All│
+19 │:s/cat/dog/                             │
+    ────────────────────────────────────────
+
+[SAY] Cat became dog. Only the first match on the line was replaced.
+[SAY] Line three has fox twice. Let's substitute on that line.
+[KEYS] '2j'
+[OVERLAY] 2j  move to line 3
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │the dog sat on the mat                  │
+ 1 │the dog ran to the park                 │
+ 2 │the fox fox jumped over                 │ ◂ cursor (2,0)
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          3,1            All│
+19 │:s/cat/dog/                             │
+    ────────────────────────────────────────
+
+[TYPE] ':s/fox/cat/'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │the dog sat on the mat                  │
+ 1 │the dog ran to the park                 │
+ 2 │the cat fox jumped over                 │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          3,5            All│
+19 │:s/fox/cat/                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 4-6: "cat"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │the dog sat on the mat                  │
+ 1 │the dog ran to the park                 │
+ 2 │the cat fox jumped over                 │ ◂ cursor (2,0)
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          3,1            All│
+19 │:s/fox/cat/                             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 8-10: "fox"
+
+[SAY] Only the first fox became cat. The second fox is still there. Without the G flag, S replaces just the first match.
+[SAY] Colon S slash old slash new slash. Substitute the first match on the current line.

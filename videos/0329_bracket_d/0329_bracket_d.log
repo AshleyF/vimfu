@@ -1,0 +1,200 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define MAX_HP 100                  │ ◂ cursor (0,4)
+ 1 │  2 #define MAX_MP 50                   │
+ 2 │  3 #define CRIT_RATE 15                │
+ 3 │  4 #define BASE_DMG 25                 │
+ 4 │  5                                     │
+ 5 │  6 int hp = MAX_HP;                    │
+ 6 │  7 int mp = MAX_MP;                    │
+ 7 │  8 int damage = BASE_DMG * CRIT_RATE;  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │stats.h               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — [d ]d — Show Define
+[SAY] {key:[d} prints the first matching define to the command line at the bottom of the screen. The cursor stays put.
+[SAY] Cursor on MAX HP on line six. {key:[d} to find where it's defined.
+[KEYS] '6G'
+[OVERLAY] 6G  go to line 6
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define MAX_HP 100                  │
+ 1 │  2 #define MAX_MP 50                   │
+ 2 │  3 #define CRIT_RATE 15                │
+ 3 │  4 #define BASE_DMG 25                 │
+ 4 │  5                                     │
+ 5 │  6 int hp = MAX_HP;                    │ ◂ cursor (5,4)
+ 6 │  7 int mp = MAX_MP;                    │
+ 7 │  8 int damage = BASE_DMG * CRIT_RATE;  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │stats.h               6,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '3w'
+[OVERLAY] 3w  to MAX_HP
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define MAX_HP 100                  │
+ 1 │  2 #define MAX_MP 50                   │
+ 2 │  3 #define CRIT_RATE 15                │
+ 3 │  4 #define BASE_DMG 25                 │
+ 4 │  5                                     │
+ 5 │  6 int hp = MAX_HP;                    │ ◂ cursor (5,13)
+ 6 │  7 int mp = MAX_MP;                    │
+ 7 │  8 int damage = BASE_DMG * CRIT_RATE;  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │stats.h               6,10           All│
+    ────────────────────────────────────────
+
+[KEYS] '[d'
+[OVERLAY] [d  show define
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define MAX_HP 100                  │
+ 1 │  2 #define MAX_MP 50                   │
+ 2 │  3 #define CRIT_RATE 15                │
+ 3 │  4 #define BASE_DMG 25                 │
+ 4 │  5                                     │
+ 5 │  6 int hp = MAX_HP;                    │ ◂ cursor (5,13)
+ 6 │  7 int mp = MAX_MP;                    │
+ 7 │  8 int damage = BASE_DMG * CRIT_RATE;  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │stats.h               6,10           All│
+19 │#define MAX_HP 100                      │
+    ────────────────────────────────────────
+
+[SAY] Watch the bottom line. {key:[d} echoes the matching define there. The cursor doesn't move.
+[SAY] Line one. MAX HP is 100.
+[SAY] Try another. BASE DMG on line eight.
+[KEYS] '8G0'
+[OVERLAY] 8G0  go to line 8
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define MAX_HP 100                  │
+ 1 │  2 #define MAX_MP 50                   │
+ 2 │  3 #define CRIT_RATE 15                │
+ 3 │  4 #define BASE_DMG 25                 │
+ 4 │  5                                     │
+ 5 │  6 int hp = MAX_HP;                    │
+ 6 │  7 int mp = MAX_MP;                    │
+ 7 │  8 int damage = BASE_DMG * CRIT_RATE;  │ ◂ cursor (7,4)
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │stats.h               8,1            All│
+19 │#define MAX_HP 100                      │
+    ────────────────────────────────────────
+
+[KEYS] '3w'
+[OVERLAY] 3w  to BASE_DMG
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define MAX_HP 100                  │
+ 1 │  2 #define MAX_MP 50                   │
+ 2 │  3 #define CRIT_RATE 15                │
+ 3 │  4 #define BASE_DMG 25                 │
+ 4 │  5                                     │
+ 5 │  6 int hp = MAX_HP;                    │
+ 6 │  7 int mp = MAX_MP;                    │
+ 7 │  8 int damage = BASE_DMG * CRIT_RATE;  │ ◂ cursor (7,17)
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │stats.h               8,14           All│
+19 │#define MAX_HP 100                      │
+    ────────────────────────────────────────
+
+[KEYS] '[d'
+[OVERLAY] [d  show define
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define MAX_HP 100                  │
+ 1 │  2 #define MAX_MP 50                   │
+ 2 │  3 #define CRIT_RATE 15                │
+ 3 │  4 #define BASE_DMG 25                 │
+ 4 │  5                                     │
+ 5 │  6 int hp = MAX_HP;                    │
+ 6 │  7 int mp = MAX_MP;                    │
+ 7 │  8 int damage = BASE_DMG * CRIT_RATE;  │ ◂ cursor (7,17)
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │stats.h               8,14           All│
+19 │#define BASE_DMG 25                     │
+    ────────────────────────────────────────
+
+[SAY] There it is at the bottom. Line four. BASE DMG is 25.
+[SAY] {key:[d}. Echo the define for any macro to the command line. Note: cursor stays put. Use {key:gd} if you want to jump.

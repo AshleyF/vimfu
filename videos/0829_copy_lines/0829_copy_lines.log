@@ -1,0 +1,197 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — Monday                     │ ◂ cursor (0,4)
+ 1 │  2 line 2 — Tuesday                    │
+ 2 │  3 line 3 — Wednesday                  │
+ 3 │  4 line 4 — Thursday                   │
+ 4 │  5 line 5 — Friday                     │
+ 5 │  6 line 6 — Saturday                   │
+ 6 │  7 line 7 — Sunday                     │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │plan.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :[range]co — Copy Lines
+[SAY] Colon C O copies lines to after a target address. Unlike move, the originals stay in place.
+[SAY] Copy line one to after line seven. Colon one co seven.
+[TYPE] ':1co 7'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — Monday                     │
+ 1 │  2 line 2 — Tuesday                    │
+ 2 │  3 line 3 — Wednesday                  │
+ 3 │  4 line 4 — Thursday                   │
+ 4 │  5 line 5 — Friday                     │
+ 5 │  6 line 6 — Saturday                   │
+ 6 │  7 line 7 — Sunday                     │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │plan.txt              1,1            All│
+19 │:1co 7                                  │ ◂ cursor (19,6)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — Monday                     │
+ 1 │  2 line 2 — Tuesday                    │
+ 2 │  3 line 3 — Wednesday                  │
+ 3 │  4 line 4 — Thursday                   │
+ 4 │  5 line 5 — Friday                     │
+ 5 │  6 line 6 — Saturday                   │
+ 6 │  7 line 7 — Sunday                     │
+ 7 │  8 line 1 — Monday                     │ ◂ cursor (7,4)
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │plan.txt [+]          8,1            All│
+19 │:1co 7                                  │
+    ────────────────────────────────────────
+
+[SAY] Monday appears at the bottom. And the original Monday is still on line one.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — Monday                     │
+ 1 │  2 line 2 — Tuesday                    │
+ 2 │  3 line 3 — Wednesday                  │
+ 3 │  4 line 4 — Thursday                   │
+ 4 │  5 line 5 — Friday                     │
+ 5 │  6 line 6 — Saturday                   │
+ 6 │  7 line 7 — Sunday                     │ ◂ cursor (6,4)
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │plan.txt              7,1            All│
+19 │1 line less;...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Copy a range. Colon one comma three co dollar. Duplicate the first three lines to the end.
+[TYPE] ':1,3co $'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — Monday                     │
+ 1 │  2 line 2 — Tuesday                    │
+ 2 │  3 line 3 — Wednesday                  │
+ 3 │  4 line 4 — Thursday                   │
+ 4 │  5 line 5 — Friday                     │
+ 5 │  6 line 6 — Saturday                   │
+ 6 │  7 line 7 — Sunday                     │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │plan.txt              7,1            All│
+19 │:1,3co $                                │ ◂ cursor (19,8)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — Monday                     │
+ 1 │  2 line 2 — Tuesday                    │
+ 2 │  3 line 3 — Wednesday                  │
+ 3 │  4 line 4 — Thursday                   │
+ 4 │  5 line 5 — Friday                     │
+ 5 │  6 line 6 — Saturday                   │
+ 6 │  7 line 7 — Sunday                     │
+ 7 │  8 line 1 — Monday                     │
+ 8 │  9 line 2 — Tuesday                    │
+ 9 │ 10 line 3 — Wednesday                  │ ◂ cursor (9,4)
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │plan.txt [+]          10,1           All│
+19 │3 more lines                            │
+    ────────────────────────────────────────
+
+[SAY] Monday, Tuesday, Wednesday are duplicated at the bottom.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — Monday                     │
+ 1 │  2 line 2 — Tuesday                    │
+ 2 │  3 line 3 — Wednesday                  │
+ 3 │  4 line 4 — Thursday                   │
+ 4 │  5 line 5 — Friday                     │
+ 5 │  6 line 6 — Saturday                   │
+ 6 │  7 line 7 — Sunday                     │ ◂ cursor (6,4)
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │plan.txt              7,1            All│
+19 │3 fewer line...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Colon C O. Copy lines to a new position. The original lines are untouched.

@@ -1,0 +1,86 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │banana                                  │ ◂ cursor (0,0)
+ 1 │apple                                   │
+ 2 │cherry                                  │
+ 3 │apple                                   │
+ 4 │date                                    │
+ 5 │banana                                  │
+ 6 │cherry                                  │
+ 7 │fig                                     │
+ 8 │apple                                   │
+ 9 │date                                    │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruits.txt            1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Sort and Deduplicate
+[SAY] This list has duplicates and is out of order. Apple appears three times, banana and cherry twice each.
+[SAY] Sort the whole file and drop duplicates in one shot.
+[TYPE] ':%sort u'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │banana                                  │
+ 1 │apple                                   │
+ 2 │cherry                                  │
+ 3 │apple                                   │
+ 4 │date                                    │
+ 5 │banana                                  │
+ 6 │cherry                                  │
+ 7 │fig                                     │
+ 8 │apple                                   │
+ 9 │date                                    │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruits.txt            1,1            All│
+19 │:%sort u                                │ ◂ cursor (19,8)
+    ────────────────────────────────────────
+
+[SAY] Percent sort u. Sort every line; the u flag removes consecutive duplicates after sorting.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │apple                                   │ ◂ cursor (0,0)
+ 1 │banana                                  │
+ 2 │cherry                                  │
+ 3 │date                                    │
+ 4 │fig                                     │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fruits.txt [+]        1,1            All│
+19 │5 fewer lines                           │
+    ────────────────────────────────────────
+
+[SAY] Sorted and deduplicated. Ten lines became five. Apple, banana, cherry, date, fig.
+[SAY] Sort u. Sort and unique in one shot. Works on the whole file or a range.

@@ -349,7 +349,7 @@ def capture_lesson(json_path: Path, *, output: Path = None) -> Path:
 
     # Determine output path
     if output is None:
-        video_dir = Path("videos") / title
+        video_dir = Path(__file__).resolve().parent.parent / "videos" / title
         video_dir.mkdir(parents=True, exist_ok=True)
         output = video_dir / f"{title}.frames.json"
 
@@ -497,7 +497,7 @@ def main():
                         help="Path to the lesson JSON file")
     parser.add_argument("--output", "-o", type=Path, default=None,
                         help="Output frames JSON path "
-                             "(default: videos/<name>/<name>.frames.json)")
+                             "(default: <repo>/videos/<name>/<name>.frames.json)")
     args = parser.parse_args()
 
     if not args.lesson.exists():

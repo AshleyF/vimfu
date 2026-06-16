@@ -1,0 +1,398 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello world                             │ ◂ cursor (0,0)
+ 1 │foo bar baz                             │
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt            1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — g@ — Custom Operator
+[SAY] G at lets you create your own operator. You set operator func to a function, then G at calls that function with any motion.
+[SAY] Let's define a function that uppercases text. We'll create it with a Vim command.
+[TYPE] ':function! Upcase(type)'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello world                             │
+ 1 │foo bar baz                             │
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt            1,1            All│
+19 │:function! Upcase(type)                 │ ◂ cursor (19,23)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello world                             │
+ 1 │foo bar baz                             │
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │:function! Upcase(type)                 │
+19 │:                                       │ ◂ cursor (19,3)
+    ────────────────────────────────────────
+
+[TYPE] "  '[,']s/.\\+/\\U&/g"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │HELLO WORLD                             │
+ 1 │FOO BAR BAZ                             │
+ 2 │QUICK BROWN FOX                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt [+]        1,1            All│
+19 │:    '[,']s/.\+/\U&/g                   │ ◂ cursor (19,21)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-10: "HELLO WORLD"
+[HIGHLIGHT] row 1, cols 0-10: "FOO BAR BAZ"
+[HIGHLIGHT] row 2, cols 0-14: "QUICK BROWN FOX"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │HELLO WORLD                             │
+ 1 │FOO BAR BAZ                             │
+ 2 │QUICK BROWN FOX                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │:    '[,']s/.\+/\U&/g                   │
+19 │:                                       │ ◂ cursor (19,3)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-10: "HELLO WORLD"
+[HIGHLIGHT] row 1, cols 0-10: "FOO BAR BAZ"
+[HIGHLIGHT] row 2, cols 0-14: "QUICK BROWN FOX"
+
+[TYPE] 'endfunction'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │HELLO WORLD                             │
+ 1 │FOO BAR BAZ                             │
+ 2 │QUICK BROWN FOX                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │:    '[,']s/.\+/\U&/g                   │
+19 │:  endfunction                          │ ◂ cursor (19,14)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-10: "HELLO WORLD"
+[HIGHLIGHT] row 1, cols 0-10: "FOO BAR BAZ"
+[HIGHLIGHT] row 2, cols 0-14: "QUICK BROWN FOX"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello world                             │ ◂ cursor (0,0)
+ 1 │foo bar baz                             │
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt            1,1            All│
+    ────────────────────────────────────────
+
+[SAY] Now set operator func to our function.
+[TYPE] ':set operatorfunc=Upcase'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello world                             │
+ 1 │foo bar baz                             │
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt            1,1            All│
+19 │:set operatorfunc=Upcase                │ ◂ cursor (19,24)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello world                             │ ◂ cursor (0,0)
+ 1 │foo bar baz                             │
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt            1,1            All│
+19 │:set operatorfunc=Upcase                │
+    ────────────────────────────────────────
+
+[SAY] Now G at with a motion uppercases that region. Try G at I W for inner word.
+[KEYS] 'g@'
+[OVERLAY] g@  g@ — custom operator
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello world                             │ ◂ cursor (0,0)
+ 1 │foo bar baz                             │
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt            1,1            All│
+19 │:set operatorfunc=Upcase     g@         │
+    ────────────────────────────────────────
+
+[KEYS] 'iw'
+[OVERLAY] iw  iw — inner word
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │HELLO WORLD                             │ ◂ cursor (0,0)
+ 1 │foo bar baz                             │
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt [+]        1,1            All│
+19 │:set operatorfunc=Upcase                │
+    ────────────────────────────────────────
+
+[SAY] Hello became HELLO. The operator func received the motion range and uppercased it.
+[SAY] Try it on a whole line. G at at applies to the current line.
+[KEYS] 'j'
+[OVERLAY] j  down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │HELLO WORLD                             │
+ 1 │foo bar baz                             │ ◂ cursor (1,0)
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt [+]        2,1            All│
+19 │:set operatorfunc=Upcase                │
+    ────────────────────────────────────────
+
+[KEYS] 'g@'
+[OVERLAY] g@  g@ — custom operator
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │HELLO WORLD                             │
+ 1 │foo bar baz                             │ ◂ cursor (1,0)
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt [+]        2,1            All│
+19 │:set operatorfunc=Upcase     g@         │
+    ────────────────────────────────────────
+
+[KEYS] '_'
+[OVERLAY] ⇧_  _ — current line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │HELLO WORLD                             │
+ 1 │FOO BAR BAZ                             │ ◂ cursor (1,0)
+ 2 │quick brown fox                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │custom.txt [+]        2,1            All│
+19 │:set operatorfunc=Upcase                │
+    ────────────────────────────────────────
+
+[SAY] The whole line is uppercase. G at works with any motion or text object. This is how plugins create custom operators.

@@ -1,0 +1,177 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │level = 1                               │ ◂ cursor (0,0)
+ 1 │boss = "Dragon"                         │
+ 2 │gems = 12                               │
+ 3 │                                        │
+ 4 │def explore(room):                      │
+ 5 │    if room.dark:                       │
+ 6 │        light_torch()                   │
+ 7 │    return room.loot                    │
+ 8 │                                        │
+ 9 │def fight(enemy):                       │
+10 │    while enemy.hp > 0:                 │
+11 │        swing(sword)                    │
+12 │    return "victory"                    │
+13 │                                        │
+14 │def rest():                             │
+15 │    heal(50)                            │
+16 │    save()                              │
+17 │~                                       │
+18 │dungeon.py            1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Jump Back
+[SAY] Every time you make a big jump — a search, a G, a mark — Vim remembers where you were. Control O walks you back.
+[SAY] Let me jump around. Search for fight.
+[TYPE] '/fight'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │level = 1                               │
+ 1 │boss = "Dragon"                         │
+ 2 │gems = 12                               │
+ 3 │                                        │
+ 4 │def explore(room):                      │
+ 5 │    if room.dark:                       │
+ 6 │        light_torch()                   │
+ 7 │    return room.loot                    │
+ 8 │                                        │
+ 9 │def fight(enemy):                       │
+10 │    while enemy.hp > 0:                 │
+11 │        swing(sword)                    │
+12 │    return "victory"                    │
+13 │                                        │
+14 │def rest():                             │
+15 │    heal(50)                            │
+16 │    save()                              │
+17 │~                                       │
+18 │dungeon.py            10,5           All│
+19 │/fight                                  │ ◂ cursor (19,6)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 4-8: "fight"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │level = 1                               │
+ 1 │boss = "Dragon"                         │
+ 2 │gems = 12                               │
+ 3 │                                        │
+ 4 │def explore(room):                      │
+ 5 │    if room.dark:                       │
+ 6 │        light_torch()                   │
+ 7 │    return room.loot                    │
+ 8 │                                        │
+ 9 │def fight(enemy):                       │ ◂ cursor (9,4)
+10 │    while enemy.hp > 0:                 │
+11 │        swing(sword)                    │
+12 │    return "victory"                    │
+13 │                                        │
+14 │def rest():                             │
+15 │    heal(50)                            │
+16 │    save()                              │
+17 │~                                       │
+18 │dungeon.py            10,5           All│
+19 │/fight                [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 5-8: "ight"
+
+[SAY] Found it on line ten. Now G to the bottom.
+[KEYS] 'G'
+[OVERLAY] ⇧G
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │level = 1                               │
+ 1 │boss = "Dragon"                         │
+ 2 │gems = 12                               │
+ 3 │                                        │
+ 4 │def explore(room):                      │
+ 5 │    if room.dark:                       │
+ 6 │        light_torch()                   │
+ 7 │    return room.loot                    │
+ 8 │                                        │
+ 9 │def fight(enemy):                       │
+10 │    while enemy.hp > 0:                 │
+11 │        swing(sword)                    │
+12 │    return "victory"                    │
+13 │                                        │
+14 │def rest():                             │
+15 │    heal(50)                            │
+16 │    save()                              │ ◂ cursor (16,4)
+17 │~                                       │
+18 │dungeon.py            17,5           All│
+19 │/fight                [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 4-8: "fight"
+
+[SAY] Two jumps. Now Control O walks back through them.
+[CTRL] o
+[OVERLAY] ⌃o  jump back
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │level = 1                               │
+ 1 │boss = "Dragon"                         │
+ 2 │gems = 12                               │
+ 3 │                                        │
+ 4 │def explore(room):                      │
+ 5 │    if room.dark:                       │
+ 6 │        light_torch()                   │
+ 7 │    return room.loot                    │
+ 8 │                                        │
+ 9 │def fight(enemy):                       │ ◂ cursor (9,4)
+10 │    while enemy.hp > 0:                 │
+11 │        swing(sword)                    │
+12 │    return "victory"                    │
+13 │                                        │
+14 │def rest():                             │
+15 │    heal(50)                            │
+16 │    save()                              │
+17 │~                                       │
+18 │dungeon.py            10,5           All│
+19 │/fight                [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 5-8: "ight"
+
+[SAY] Back to the fight function.
+[CTRL] o
+[OVERLAY] ⌃o  jump back
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │level = 1                               │ ◂ cursor (0,0)
+ 1 │boss = "Dragon"                         │
+ 2 │gems = 12                               │
+ 3 │                                        │
+ 4 │def explore(room):                      │
+ 5 │    if room.dark:                       │
+ 6 │        light_torch()                   │
+ 7 │    return room.loot                    │
+ 8 │                                        │
+ 9 │def fight(enemy):                       │
+10 │    while enemy.hp > 0:                 │
+11 │        swing(sword)                    │
+12 │    return "victory"                    │
+13 │                                        │
+14 │def rest():                             │
+15 │    heal(50)                            │
+16 │    save()                              │
+17 │~                                       │
+18 │dungeon.py            1,1            All│
+19 │/fight                [1/1]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 4-8: "fight"
+
+[SAY] Back to where I started. Two jumps, two Control O's.
+[SAY] Control O. Your undo button for navigation.

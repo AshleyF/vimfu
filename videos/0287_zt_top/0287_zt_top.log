@@ -1,0 +1,141 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Quest System                      │ ◂ cursor (0,4)
+ 1 │  2 class Quest:                        │
+ 2 │  3     def __init__(self, name):       │
+ 3 │  4         self.name = name            │
+ 4 │  5         self.steps = []             │
+ 5 │  6         self.done = False           │
+ 6 │  7                                     │
+ 7 │  8     def add_step(self, step):       │
+ 8 │  9         self.steps.append(step)     │
+ 9 │ 10                                     │
+10 │ 11     def complete(self):             │
+11 │ 12         self.done = True            │
+12 │ 13         return f"{self.name} done!" │
+13 │ 14                                     │
+14 │ 15     def progress(self):             │
+15 │ 16         total = len(self.steps)     │
+16 │ 17         finished = sum(1 for s in se│
+17 │    lf.steps                            │
+18 │quest.py              1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — zt — Scroll to Top
+[SAY] Z T scrolls so your cursor line is at the top of the screen. Use it when you want to read a function from its definition downward.
+[SAY] Go to the progress method. Line fifteen.
+[KEYS] '15G'
+[OVERLAY] 15G  line 15
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Quest System                      │
+ 1 │  2 class Quest:                        │
+ 2 │  3     def __init__(self, name):       │
+ 3 │  4         self.name = name            │
+ 4 │  5         self.steps = []             │
+ 5 │  6         self.done = False           │
+ 6 │  7                                     │
+ 7 │  8     def add_step(self, step):       │
+ 8 │  9         self.steps.append(step)     │
+ 9 │ 10                                     │
+10 │ 11     def complete(self):             │
+11 │ 12         self.done = True            │
+12 │ 13         return f"{self.name} done!" │
+13 │ 14                                     │
+14 │ 15     def progress(self):             │ ◂ cursor (14,4)
+15 │ 16         total = len(self.steps)     │
+16 │ 17         finished = sum(1 for s in se│
+17 │    lf.steps                            │
+18 │quest.py              15,1           Top│
+    ────────────────────────────────────────
+
+[KEYS] 'zt'
+[OVERLAY] zt  scroll to top
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 15     def progress(self):             │ ◂ cursor (0,4)
+ 1 │ 16         total = len(self.steps)     │
+ 2 │ 17         finished = sum(1 for s in se│
+ 3 │    lf.steps                            │
+ 4 │ 18                        if s.get("don│
+ 5 │    e"))                                │
+ 6 │ 19         return f"{finished}/{total}"│
+ 7 │ 20                                     │
+ 8 │ 21     def reset(self):                │
+ 9 │ 22         self.done = False           │
+10 │ 23         for s in self.steps:        │
+11 │ 24             s["done"] = False       │
+12 │ 25                                     │
+13 │ 26 def load_quests(path):              │
+14 │ 27     quests = []                     │
+15 │ 28     print(f"Loading from {path}")   │
+16 │ 29     return quests                   │
+17 │~                                       │
+18 │quest.py              15,1           Bot│
+    ────────────────────────────────────────
+
+[SAY] The method definition is at the top. The entire body is visible below it. Maximum forward context.
+[SAY] Compare with Z Z.
+[KEYS] 'zz'
+[OVERLAY] zz  center
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  8     def add_step(self, step):       │
+ 1 │  9         self.steps.append(step)     │
+ 2 │ 10                                     │
+ 3 │ 11     def complete(self):             │
+ 4 │ 12         self.done = True            │
+ 5 │ 13         return f"{self.name} done!" │
+ 6 │ 14                                     │
+ 7 │ 15     def progress(self):             │ ◂ cursor (7,4)
+ 8 │ 16         total = len(self.steps)     │
+ 9 │ 17         finished = sum(1 for s in se│
+10 │    lf.steps                            │
+11 │ 18                        if s.get("don│
+12 │    e"))                                │
+13 │ 19         return f"{finished}/{total}"│
+14 │ 20                                     │
+15 │ 21     def reset(self):                │
+16 │ 22         self.done = False           │
+17 │ 23         for s in self.steps:        │
+18 │quest.py              15,1           53%│
+    ────────────────────────────────────────
+
+[SAY] Centered. But half the function body is hidden above. Z T is better for reading ahead.
+[KEYS] 'zt'
+[OVERLAY] zt  back to top
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 15     def progress(self):             │ ◂ cursor (0,4)
+ 1 │ 16         total = len(self.steps)     │
+ 2 │ 17         finished = sum(1 for s in se│
+ 3 │    lf.steps                            │
+ 4 │ 18                        if s.get("don│
+ 5 │    e"))                                │
+ 6 │ 19         return f"{finished}/{total}"│
+ 7 │ 20                                     │
+ 8 │ 21     def reset(self):                │
+ 9 │ 22         self.done = False           │
+10 │ 23         for s in self.steps:        │
+11 │ 24             s["done"] = False       │
+12 │ 25                                     │
+13 │ 26 def load_quests(path):              │
+14 │ 27     quests = []                     │
+15 │ 28     print(f"Loading from {path}")   │
+16 │ 29     return quests                   │
+17 │~                                       │
+18 │quest.py              15,1           Bot│
+    ────────────────────────────────────────
+
+[SAY] Z T. Cursor line to the top. Best after jumping to a function or class you want to read through.

@@ -1,0 +1,339 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Jumping to a Mark (Line)
+[SAY] Single quote plus a mark letter jumps to the line of that mark.
+[SAY] Let me set two marks. Mark A on this line.
+[KEYS] 'f"'
+[OVERLAY] f"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,7)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,8            All│
+    ────────────────────────────────────────
+
+[KEYS] 'ma'
+[OVERLAY] ma  set mark a
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,7)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,8            All│
+    ────────────────────────────────────────
+
+[SAY] And mark B on the return in heal.
+[KEYS] 'G'
+[OVERLAY] ⇧G
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │ ◂ cursor (13,7)
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              14,8           All│
+    ────────────────────────────────────────
+
+[KEYS] 'mb'
+[OVERLAY] mb  set mark b
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │ ◂ cursor (13,7)
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              14,8           All│
+    ────────────────────────────────────────
+
+[SAY] I'm at the bottom. Single quote A.
+[KEYS] "'"
+[OVERLAY] '  jump to mark line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │ ◂ cursor (13,7)
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              14,8           All│
+19 │                             '          │
+    ────────────────────────────────────────
+
+[KEYS] 'a'
+[OVERLAY] a  mark a
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+    ────────────────────────────────────────
+
+[SAY] Jumped to line one. But notice — I set the mark on the quote character. The cursor landed on 'h' instead. Single quote always goes to the first non-blank character on the line.
+[SAY] Single quote B.
+[KEYS] "'"
+[OVERLAY] '  jump to mark line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+19 │                             '          │
+    ────────────────────────────────────────
+
+[KEYS] 'b'
+[OVERLAY] b  mark b
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │ ◂ cursor (13,4)
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              14,5           All│
+    ────────────────────────────────────────
+
+[SAY] Jumped to the last line, cursor on 'r' of return. First non-blank.
+[SAY] It works with operators too. D single quote A deletes from here to mark A's line.
+[KEYS] "d'"
+[OVERLAY] d'  delete to mark line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │ ◂ cursor (13,4)
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              14,5           All│
+19 │                             d'         │
+    ────────────────────────────────────────
+
+[KEYS] 'a'
+[OVERLAY] a  mark a
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │                                        │ ◂ cursor (0,0)
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py [+]          0,0-1          All│
+19 │--No lines in buffer--                  │
+    ────────────────────────────────────────
+
+[SAY] Everything between the two marks, deleted. Linewise. Undo.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+19 │14 more line...5 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Single quote goes to the mark's line, first non-blank. Next time, backtick for the exact column.

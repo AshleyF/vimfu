@@ -1,0 +1,307 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │0. apple                                │ ◂ cursor (0,0)
+ 1 │0. banana                               │
+ 2 │0. cherry                               │
+ 3 │0. date                                 │
+ 4 │0. elderberry                           │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — g Ctrl-A / g Ctrl-X — Sequences
+[SAY] In visual mode, press {key:g}, then {key:Ctrl-A}, to create incrementing sequences. Instead of adding the same number to each line, each line gets one more.
+[SAY] All lines start with zero. Select them all with V and G.
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │0. apple                                │ ◂ cursor (0,0)
+ 1 │0. banana                               │
+ 2 │0. cherry                               │
+ 3 │0. date                                 │
+ 4 │0. elderberry                           │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.txt              1,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 1-7: ". apple"
+
+[KEYS] 'G'
+[OVERLAY] ⇧G  to last line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │0. apple                                │
+ 1 │0. banana                               │
+ 2 │0. cherry                               │
+ 3 │0. date                                 │
+ 4 │0. elderberry                           │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.txt              5,1            All│
+19 │-- VISUAL LINE --            5          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-7: "0. apple"
+[HIGHLIGHT] row 1, cols 0-8: "0. banana"
+[HIGHLIGHT] row 2, cols 0-8: "0. cherry"
+[HIGHLIGHT] row 3, cols 0-6: "0. date"
+[HIGHLIGHT] row 4, cols 1-12: ". elderberry"
+
+[SAY] Now press {key:g}, then {key:Ctrl-A}.
+[KEYS] 'g'
+[OVERLAY] g  g prefix
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │0. apple                                │
+ 1 │0. banana                               │
+ 2 │0. cherry                               │
+ 3 │0. date                                 │
+ 4 │0. elderberry                           │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.txt              5,1            All│
+19 │-- VISUAL LINE --            g          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-7: "0. apple"
+[HIGHLIGHT] row 1, cols 0-8: "0. banana"
+[HIGHLIGHT] row 2, cols 0-8: "0. cherry"
+[HIGHLIGHT] row 3, cols 0-6: "0. date"
+[HIGHLIGHT] row 4, cols 1-12: ". elderberry"
+
+[CTRL] a
+[OVERLAY] ⌃a  sequence
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │1. apple                                │ ◂ cursor (0,0)
+ 1 │2. banana                               │
+ 2 │3. cherry                               │
+ 3 │4. date                                 │
+ 4 │5. elderberry                           │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.txt [+]          1,1            All│
+19 │5 lines changed                         │
+    ────────────────────────────────────────
+
+[SAY] The zeros became 1, 2, 3, 4, 5. Each line incremented one more than the last.
+[SAY] Undo and try {key:g}, then {key:Ctrl-X}, for a decrementing sequence.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │0. apple                                │ ◂ cursor (0,0)
+ 1 │0. banana                               │
+ 2 │0. cherry                               │
+ 3 │0. date                                 │
+ 4 │0. elderberry                           │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.txt              1,1            All│
+19 │5 changes; b...0 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │0. apple                                │ ◂ cursor (0,0)
+ 1 │0. banana                               │
+ 2 │0. cherry                               │
+ 3 │0. date                                 │
+ 4 │0. elderberry                           │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.txt              1,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 1-7: ". apple"
+
+[KEYS] 'G'
+[OVERLAY] ⇧G  file end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │0. apple                                │
+ 1 │0. banana                               │
+ 2 │0. cherry                               │
+ 3 │0. date                                 │
+ 4 │0. elderberry                           │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.txt              5,1            All│
+19 │-- VISUAL LINE --            5          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-7: "0. apple"
+[HIGHLIGHT] row 1, cols 0-8: "0. banana"
+[HIGHLIGHT] row 2, cols 0-8: "0. cherry"
+[HIGHLIGHT] row 3, cols 0-6: "0. date"
+[HIGHLIGHT] row 4, cols 1-12: ". elderberry"
+
+[KEYS] 'g'
+[OVERLAY] g  g prefix
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │0. apple                                │
+ 1 │0. banana                               │
+ 2 │0. cherry                               │
+ 3 │0. date                                 │
+ 4 │0. elderberry                           │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.txt              5,1            All│
+19 │-- VISUAL LINE --            g          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-7: "0. apple"
+[HIGHLIGHT] row 1, cols 0-8: "0. banana"
+[HIGHLIGHT] row 2, cols 0-8: "0. cherry"
+[HIGHLIGHT] row 3, cols 0-6: "0. date"
+[HIGHLIGHT] row 4, cols 1-12: ". elderberry"
+
+[CTRL] x
+[OVERLAY] ⌃x  decrement
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │-1. apple                               │ ◂ cursor (0,0)
+ 1 │-2. banana                              │
+ 2 │-3. cherry                              │
+ 3 │-4. date                                │
+ 4 │-5. elderberry                          │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │list.txt [+]          1,1            All│
+19 │5 lines changed                         │
+    ────────────────────────────────────────
+
+[SAY] Now they go negative: minus 1, minus 2, minus 3, and so on. Use {key:g}, then {key:Ctrl-A}, or {key:g}, then {key:Ctrl-X}. Perfect for numbered lists.

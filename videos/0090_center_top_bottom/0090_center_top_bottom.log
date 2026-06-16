@@ -1,0 +1,199 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Dungeon Generator                     │ ◂ cursor (0,0)
+ 1 │import random                           │
+ 2 │                                        │
+ 3 │ROOMS = 25                              │
+ 4 │MIN_SIZE = 4                            │
+ 5 │MAX_SIZE = 12                           │
+ 6 │                                        │
+ 7 │def roll_dice(n, sides):                │
+ 8 │    return sum(random.randint(1, sides) │
+ 9 │for _ in range(n))                      │
+10 │                                        │
+11 │def gen_room(room_id):                  │
+12 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+13 │E)                                      │
+14 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+15 │E)                                      │
+16 │    x = random.randint(0, 80 - w)       │
+17 │    y = random.randint(0, 50 - h)       │
+18 │dungeon.py            1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Center / Top / Bottom
+[SAY] Sometimes the cursor drifts to the edge of the screen. Z commands fix that.
+[SAY] Let me scroll down to the middle of the file.
+[KEYS] '\x04'
+[OVERLAY] ⌃d  Ctrl-D  half page down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    return sum(random.randint(1, sides) │ ◂ cursor (0,0)
+ 1 │for _ in range(n))                      │
+ 2 │                                        │
+ 3 │def gen_room(room_id):                  │
+ 4 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+ 5 │E)                                      │
+ 6 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+ 7 │E)                                      │
+ 8 │    x = random.randint(0, 80 - w)       │
+ 9 │    y = random.randint(0, 50 - h)       │
+10 │    return {"id": room_id, "x": x, "y": │
+11 │y, "w": w, "h": h}                      │
+12 │                                        │
+13 │def place_treasure(room):               │
+14 │    gold = roll_dice(3, 6) * 10         │
+15 │    gems = roll_dice(1, 4)              │
+16 │    return {"gold": gold, "gems": gems} │
+17 │                                        │
+18 │dungeon.py            9,1            33%│
+    ────────────────────────────────────────
+
+[KEYS] '\x04'
+[OVERLAY] ⌃d  Ctrl-D  half page down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    y = random.randint(0, 50 - h)       │ ◂ cursor (0,0)
+ 1 │    return {"id": room_id, "x": x, "y": │
+ 2 │y, "w": w, "h": h}                      │
+ 3 │                                        │
+ 4 │def place_treasure(room):               │
+ 5 │    gold = roll_dice(3, 6) * 10         │
+ 6 │    gems = roll_dice(1, 4)              │
+ 7 │    return {"gold": gold, "gems": gems} │
+ 8 │                                        │
+ 9 │def spawn_monster(room, difficulty):    │
+10 │    hp = roll_dice(difficulty, 8)       │
+11 │    atk = roll_dice(difficulty, 6)      │
+12 │    return {"hp": hp, "atk": atk, "room"│
+13 │: room["id"]}                           │
+14 │                                        │
+15 │def connect_rooms(a, b):                │
+16 │    mid_x = (a["x"] + b["x"]) // 2      │
+17 │    mid_y = (a["y"] + b["y"]) // 2      │
+18 │dungeon.py            15,1           63%│
+    ────────────────────────────────────────
+
+[SAY] Z Z centers the current line on screen.
+[KEYS] 'zz'
+[OVERLAY] zz  center cursor line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    return sum(random.randint(1, sides) │
+ 1 │for _ in range(n))                      │
+ 2 │                                        │
+ 3 │def gen_room(room_id):                  │
+ 4 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+ 5 │E)                                      │
+ 6 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+ 7 │E)                                      │
+ 8 │    x = random.randint(0, 80 - w)       │
+ 9 │    y = random.randint(0, 50 - h)       │ ◂ cursor (9,0)
+10 │    return {"id": room_id, "x": x, "y": │
+11 │y, "w": w, "h": h}                      │
+12 │                                        │
+13 │def place_treasure(room):               │
+14 │    gold = roll_dice(3, 6) * 10         │
+15 │    gems = roll_dice(1, 4)              │
+16 │    return {"gold": gold, "gems": gems} │
+17 │                                        │
+18 │dungeon.py            15,1           33%│
+    ────────────────────────────────────────
+
+[SAY] Same line, but now it's in the middle. Much easier to read context above and below.
+[SAY] Z T moves the cursor line to the top.
+[KEYS] 'zt'
+[OVERLAY] zt  cursor line to top
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    y = random.randint(0, 50 - h)       │ ◂ cursor (0,0)
+ 1 │    return {"id": room_id, "x": x, "y": │
+ 2 │y, "w": w, "h": h}                      │
+ 3 │                                        │
+ 4 │def place_treasure(room):               │
+ 5 │    gold = roll_dice(3, 6) * 10         │
+ 6 │    gems = roll_dice(1, 4)              │
+ 7 │    return {"gold": gold, "gems": gems} │
+ 8 │                                        │
+ 9 │def spawn_monster(room, difficulty):    │
+10 │    hp = roll_dice(difficulty, 8)       │
+11 │    atk = roll_dice(difficulty, 6)      │
+12 │    return {"hp": hp, "atk": atk, "room"│
+13 │: room["id"]}                           │
+14 │                                        │
+15 │def connect_rooms(a, b):                │
+16 │    mid_x = (a["x"] + b["x"]) // 2      │
+17 │    mid_y = (a["y"] + b["y"]) // 2      │
+18 │dungeon.py            15,1           63%│
+    ────────────────────────────────────────
+
+[SAY] Now we can see everything below the cursor. Great for reading a function top-down.
+[SAY] Z B moves it to the bottom.
+[KEYS] 'zb'
+[OVERLAY] zb  cursor line to bottom
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Dungeon Generator                     │
+ 1 │import random                           │
+ 2 │                                        │
+ 3 │ROOMS = 25                              │
+ 4 │MIN_SIZE = 4                            │
+ 5 │MAX_SIZE = 12                           │
+ 6 │                                        │
+ 7 │def roll_dice(n, sides):                │
+ 8 │    return sum(random.randint(1, sides) │
+ 9 │for _ in range(n))                      │
+10 │                                        │
+11 │def gen_room(room_id):                  │
+12 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+13 │E)                                      │
+14 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+15 │E)                                      │
+16 │    x = random.randint(0, 80 - w)       │
+17 │    y = random.randint(0, 50 - h)       │ ◂ cursor (17,0)
+18 │dungeon.py            15,1           Top│
+    ────────────────────────────────────────
+
+[SAY] Now we see everything above. Good for checking what came before.
+[SAY] And back to center. Z Z is the one you'll use most.
+[KEYS] 'zz'
+[OVERLAY] zz  center cursor line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    return sum(random.randint(1, sides) │
+ 1 │for _ in range(n))                      │
+ 2 │                                        │
+ 3 │def gen_room(room_id):                  │
+ 4 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+ 5 │E)                                      │
+ 6 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+ 7 │E)                                      │
+ 8 │    x = random.randint(0, 80 - w)       │
+ 9 │    y = random.randint(0, 50 - h)       │ ◂ cursor (9,0)
+10 │    return {"id": room_id, "x": x, "y": │
+11 │y, "w": w, "h": h}                      │
+12 │                                        │
+13 │def place_treasure(room):               │
+14 │    gold = roll_dice(3, 6) * 10         │
+15 │    gems = roll_dice(1, 4)              │
+16 │    return {"gold": gold, "gems": gems} │
+17 │                                        │
+18 │dungeon.py            15,1           33%│
+    ────────────────────────────────────────
+
+[SAY] Z Z to center. Z T for top. Z B for bottom. Keep your cursor where you can see it.

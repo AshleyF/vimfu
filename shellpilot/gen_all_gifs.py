@@ -56,7 +56,7 @@ def process(lesson_json: Path, *, force: bool = False) -> dict:
 
     title = lesson_json.stem
     num = title[:4]
-    video_dir = Path("videos") / title
+    video_dir = Path(__file__).resolve().parent.parent / "videos" / title
     frames_path = video_dir / f"{title}.frames.json"
     gif_path = video_dir / f"{title}.frames.gif"
 

@@ -1,0 +1,280 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │delete this word here                   │ ◂ cursor (0,0)
+ 1 │change [inside] these                   │
+ 2 │yank (some parenthesized) text          │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pending.txt           1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Operator-Pending Mode
+[SAY] When you press D, C, or Y, Vim enters a special state called operator-pending mode. It's waiting for a motion or text object.
+[SAY] Watch. Press D and pause.
+[KEYS] 'd'
+[OVERLAY] d  delete (waiting...)
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │delete this word here                   │ ◂ cursor (0,0)
+ 1 │change [inside] these                   │
+ 2 │yank (some parenthesized) text          │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pending.txt           1,1            All│
+19 │                             d          │
+    ────────────────────────────────────────
+
+[SAY] Vim is now in operator-pending mode. The cursor changed. It's waiting for a motion. Type W to delete a word.
+[KEYS] 'w'
+[OVERLAY] w  word motion
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │this word here                          │ ◂ cursor (0,0)
+ 1 │change [inside] these                   │
+ 2 │yank (some parenthesized) text          │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pending.txt [+]       1,1            All│
+    ────────────────────────────────────────
+
+[SAY] D W. The operator was D, the motion was W. Together they deleted a word.
+[SAY] You can cancel operator-pending mode with escape. Press C, then escape.
+[KEYS] 'c'
+[OVERLAY] c  change (waiting...)
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │this word here                          │ ◂ cursor (0,0)
+ 1 │change [inside] these                   │
+ 2 │yank (some parenthesized) text          │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pending.txt [+]       1,1            All│
+19 │                             c          │
+    ────────────────────────────────────────
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │this word here                          │ ◂ cursor (0,0)
+ 1 │change [inside] these                   │
+ 2 │yank (some parenthesized) text          │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pending.txt [+]       1,1            All│
+    ────────────────────────────────────────
+
+[SAY] Nothing happened. Escape cancelled the pending operator.
+[SAY] Line two. Change inside the brackets.
+[KEYS] 'jf['
+[OVERLAY] jf[
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │this word here                          │
+ 1 │change [inside] these                   │ ◂ cursor (1,7)
+ 2 │yank (some parenthesized) text          │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pending.txt [+]       2,8            All│
+    ────────────────────────────────────────
+
+[KEYS] 'c'
+[OVERLAY] c  change (waiting...)
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │this word here                          │
+ 1 │change [inside] these                   │ ◂ cursor (1,7)
+ 2 │yank (some parenthesized) text          │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pending.txt [+]       2,8            All│
+19 │                             c          │
+    ────────────────────────────────────────
+
+[KEYS] 'i['
+[OVERLAY] i[  inner brackets
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │this word here                          │
+ 1 │change [] these                         │ ◂ cursor (1,8)
+ 2 │yank (some parenthesized) text          │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pending.txt [+]       2,9            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[TYPE] 'replaced'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │this word here                          │
+ 1 │change [replaced] these                 │ ◂ cursor (1,16)
+ 2 │yank (some parenthesized) text          │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pending.txt [+]       2,17           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │this word here                          │
+ 1 │change [replaced] these                 │ ◂ cursor (1,15)
+ 2 │yank (some parenthesized) text          │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pending.txt [+]       2,16           All│
+    ────────────────────────────────────────
+
+[SAY] C I bracket. The operator was C, and the text object I bracket gave it the scope. That moment between the operator and the motion is operator-pending mode.

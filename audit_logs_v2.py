@@ -33,7 +33,7 @@ for f in sorted(glob.glob('curriculum/shorts/*.json')):
     if num < 246:
         continue
     
-    log_path = f'shellpilot/videos/{base}/{base}.log'
+    log_path = f'videos/{base}/{base}.log'
     if not os.path.exists(log_path):
         continue
     

@@ -1,0 +1,205 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu                                │ ◂ cursor (0,9)
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Creating Files
+[SAY] Echo with greater-than writes text to a file.
+[SAY] Create a grocery list.
+[TYPE] "echo 'eggs' > list.txt"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │ ◂ cursor (0,31)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu                                │ ◂ cursor (1,9)
+    ────────────────────────────────────────
+
+[TYPE] 'cat list.txt'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │ ◂ cursor (1,21)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu                                │ ◂ cursor (3,9)
+    ────────────────────────────────────────
+
+[SAY] One item. The greater-than sign creates the file and writes to it.
+[SAY] Double greater-than appends without overwriting.
+[TYPE] "echo 'bread' >> list.txt"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu echo 'bread' >> list.txt       │ ◂ cursor (3,33)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu echo 'bread' >> list.txt       │
+ 4 │➜  vimfu                                │ ◂ cursor (4,9)
+    ────────────────────────────────────────
+
+[TYPE] "echo 'coffee' >> list.txt"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu echo 'bread' >> list.txt       │
+ 4 │➜  vimfu echo 'coffee' >> list.txt      │ ◂ cursor (4,34)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu echo 'bread' >> list.txt       │
+ 4 │➜  vimfu echo 'coffee' >> list.txt      │
+ 5 │➜  vimfu                                │ ◂ cursor (5,9)
+    ────────────────────────────────────────
+
+[TYPE] 'cat list.txt'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu echo 'bread' >> list.txt       │
+ 4 │➜  vimfu echo 'coffee' >> list.txt      │
+ 5 │➜  vimfu cat list.txt                   │ ◂ cursor (5,21)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu echo 'bread' >> list.txt       │
+ 4 │➜  vimfu echo 'coffee' >> list.txt      │
+ 5 │➜  vimfu cat list.txt                   │
+ 6 │eggs                                    │
+ 7 │bread                                   │
+ 8 │coffee                                  │
+ 9 │➜  vimfu                                │ ◂ cursor (9,9)
+    ────────────────────────────────────────
+
+[SAY] Three items. Each append added a line.
+[SAY] Careful. Single greater-than overwrites everything.
+[TYPE] "echo 'oops' > list.txt"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu echo 'bread' >> list.txt       │
+ 4 │➜  vimfu echo 'coffee' >> list.txt      │
+ 5 │➜  vimfu cat list.txt                   │
+ 6 │eggs                                    │
+ 7 │bread                                   │
+ 8 │coffee                                  │
+ 9 │➜  vimfu echo 'oops' > list.txt         │ ◂ cursor (9,31)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu echo 'bread' >> list.txt       │
+ 4 │➜  vimfu echo 'coffee' >> list.txt      │
+ 5 │➜  vimfu cat list.txt                   │
+ 6 │eggs                                    │
+ 7 │bread                                   │
+ 8 │coffee                                  │
+ 9 │➜  vimfu echo 'oops' > list.txt         │
+10 │➜  vimfu                                │ ◂ cursor (10,9)
+    ────────────────────────────────────────
+
+[TYPE] 'cat list.txt'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu echo 'bread' >> list.txt       │
+ 4 │➜  vimfu echo 'coffee' >> list.txt      │
+ 5 │➜  vimfu cat list.txt                   │
+ 6 │eggs                                    │
+ 7 │bread                                   │
+ 8 │coffee                                  │
+ 9 │➜  vimfu echo 'oops' > list.txt         │
+10 │➜  vimfu cat list.txt                   │ ◂ cursor (10,21)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │➜  vimfu echo 'eggs' > list.txt         │
+ 1 │➜  vimfu cat list.txt                   │
+ 2 │eggs                                    │
+ 3 │➜  vimfu echo 'bread' >> list.txt       │
+ 4 │➜  vimfu echo 'coffee' >> list.txt      │
+ 5 │➜  vimfu cat list.txt                   │
+ 6 │eggs                                    │
+ 7 │bread                                   │
+ 8 │coffee                                  │
+ 9 │➜  vimfu echo 'oops' > list.txt         │
+10 │➜  vimfu cat list.txt                   │
+11 │oops                                    │
+12 │➜  vimfu                                │ ◂ cursor (12,9)
+    ────────────────────────────────────────
+
+[SAY] Gone. Only oops remains. Use double greater-than to append.
+[SAY] Greater-than to create. Double greater-than to append. Simple file writing from the shell.

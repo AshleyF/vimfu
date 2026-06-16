@@ -160,14 +160,14 @@ GIFs** of full lessons. Use a `demo` block:
 The renderer resolves the lesson number to a GIF using a two-stage
 pipeline:
 
-1. **Cache check** — look for `shellpilot/videos/<slug>/<slug>.frames.gif`.
+1. **Cache check** — look for `videos/<slug>/<slug>.frames.gif`.
 2. **Generate on the fly** — if the GIF doesn't exist, run
    `capture_frames.py` (replays the lesson via ConPTY + pyte) and then
    `gif_maker.py` to produce the GIF.
 3. **Copy to output** — the GIF is copied into the renderer's `images/`
    directory alongside the HTML so the output is portable.
 
-The `shellpilot/videos/` directory is a **cache**. To force regeneration:
+The `videos/` directory is a **cache**. To force regeneration:
 
 ```bash
 cd shellpilot

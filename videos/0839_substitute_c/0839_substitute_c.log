@@ -1,0 +1,218 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │fix the bug here                        │ ◂ cursor (0,0)
+ 1 │fix this later                          │
+ 2 │do not fix this one                     │
+ 3 │fix everything else                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :s Flag c — Confirm Each
+[SAY] The C flag asks you to confirm each substitution. You choose which ones to replace.
+[SAY] Let's replace fix with done across the whole file, but confirm each one.
+[TYPE] ':%s/fix/done/gc'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │done the bug here                       │
+ 1 │done this later                         │
+ 2 │do not done this one                    │
+ 3 │done everything else                    │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          1,1            All│
+19 │:%s/fix/done/gc                         │ ◂ cursor (19,15)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-3: "done"
+[HIGHLIGHT] row 1, cols 0-3: "done"
+[HIGHLIGHT] row 2, cols 7-10: "done"
+[HIGHLIGHT] row 3, cols 0-3: "done"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │fix the bug here                        │
+ 1 │fix this later                          │
+ 2 │do not fix this one                     │
+ 3 │fix everything else                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │replace with done? (y)es/(n)o/(a)ll/(q)u│
+19 │it/(l)ast/scroll up(^E)/down(^Y)        │ ◂ cursor (19,32)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "fix"
+[HIGHLIGHT] row 1, cols 0-2: "fix"
+[HIGHLIGHT] row 2, cols 7-9: "fix"
+[HIGHLIGHT] row 3, cols 0-2: "fix"
+
+[SAY] Vim highlights the first match and asks. Press Y for yes.
+[KEYS] 'y'
+[OVERLAY] y  yes
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │done the bug here                       │
+ 1 │fix this later                          │
+ 2 │do not fix this one                     │
+ 3 │fix everything else                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │replace with done? (y)es/(n)o/(a)ll/(q)u│
+19 │it/(l)ast/scroll up(^E)/down(^Y)        │ ◂ cursor (19,32)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "fix"
+[HIGHLIGHT] row 2, cols 7-9: "fix"
+[HIGHLIGHT] row 3, cols 0-2: "fix"
+
+[SAY] Replaced. Next match. Press N to skip this one.
+[KEYS] 'n'
+[OVERLAY] n  no, skip
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │done the bug here                       │
+ 1 │fix this later                          │
+ 2 │do not fix this one                     │
+ 3 │fix everything else                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │replace with done? (y)es/(n)o/(a)ll/(q)u│
+19 │it/(l)ast/scroll up(^E)/down(^Y)        │ ◂ cursor (19,32)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "fix"
+[HIGHLIGHT] row 2, cols 7-9: "fix"
+[HIGHLIGHT] row 3, cols 0-2: "fix"
+
+[SAY] Skipped. Next match. Press Y again.
+[KEYS] 'y'
+[OVERLAY] y  yes
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │done the bug here                       │
+ 1 │fix this later                          │
+ 2 │do not done this one                    │
+ 3 │fix everything else                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │replace with done? (y)es/(n)o/(a)ll/(q)u│
+19 │it/(l)ast/scroll up(^E)/down(^Y)        │ ◂ cursor (19,32)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "fix"
+[HIGHLIGHT] row 3, cols 0-2: "fix"
+
+[SAY] Press Q to quit and stop substituting.
+[KEYS] 'q'
+[OVERLAY] q  quit
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │done the bug here                       │
+ 1 │fix this later                          │
+ 2 │do not done this one                    │
+ 3 │fix everything else                     │ ◂ cursor (3,0)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          4,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "fix"
+[HIGHLIGHT] row 3, cols 1-2: "ix"
+
+[SAY] Two replaced, one skipped, one untouched. Full control over every match.
+[SAY] The C flag. Confirm each substitution. Y for yes, N for no, A for all, Q to quit.

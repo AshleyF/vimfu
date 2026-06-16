@@ -1,0 +1,101 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │1. First                                │ ◂ cursor (0,0)
+ 1 │2. Second                               │
+ 2 │3. Third                                │
+ 3 │4. Fourth                               │
+ 4 │5. Fifth                                │
+ 5 │6. Sixth                                │
+ 6 │7. Seventh                              │
+ 7 │8. Eighth                               │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │steps.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Reverse File Order
+[SAY] A numbered list, one through eight. Let's reverse the entire file with one command.
+[SAY] Use a clever combo of global and move.
+[TYPE] ':g/^/m 0'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │1. First                                │
+ 1 │2. Second                               │
+ 2 │3. Third                                │
+ 3 │4. Fourth                               │
+ 4 │5. Fifth                                │
+ 5 │6. Sixth                                │
+ 6 │7. Seventh                              │
+ 7 │8. Eighth                               │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │steps.txt             2,1            All│
+19 │:g/^/m 0                                │ ◂ cursor (19,8)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, col 0: "1"
+[HIGHLIGHT] row 1, col 0: "2"
+[HIGHLIGHT] row 2, col 0: "3"
+[HIGHLIGHT] row 3, col 0: "4"
+[HIGHLIGHT] row 4, col 0: "5"
+[HIGHLIGHT] row 5, col 0: "6"
+[HIGHLIGHT] row 6, col 0: "7"
+[HIGHLIGHT] row 7, col 0: "8"
+
+[SAY] Global matches every line. For each match, move it to after line zero — that flips the order.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │8. Eighth                               │ ◂ cursor (0,0)
+ 1 │7. Seventh                              │
+ 2 │6. Sixth                                │
+ 3 │5. Fifth                                │
+ 4 │4. Fourth                               │
+ 5 │3. Third                                │
+ 6 │2. Second                               │
+ 7 │1. First                                │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │steps.txt [+]         1,1            All│
+19 │:g/^/m 0                                │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 0: "7"
+[HIGHLIGHT] row 2, col 0: "6"
+[HIGHLIGHT] row 3, col 0: "5"
+[HIGHLIGHT] row 4, col 0: "4"
+[HIGHLIGHT] row 5, col 0: "3"
+[HIGHLIGHT] row 6, col 0: "2"
+[HIGHLIGHT] row 7, col 0: "1"
+
+[SAY] Eight is now first, one is last. The entire file is reversed.
+[SAY] Colon g caret m zero. A classic Vim trick to flip a file upside down.

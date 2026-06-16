@@ -1,0 +1,198 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def outer():                        │ ◂ cursor (0,4)
+ 1 │  2     x = 10                          │
+ 2 │  3     y = 20                          │
+ 3 │  4     def inner():                    │
+ 4 │  5         a = 1                       │
+ 5 │  6         b = 2                       │
+ 6 │  7         return a + b                │
+ 7 │  8     return x + y                    │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │indent.py             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — [p ]p — Put with Indent
+[SAY] {key:[p} and {key:]p} paste like {key:P} and {key:p} but adjust the indent to match the current line.
+[SAY] Yank the return line from the inner function. It has 8 spaces of indent.
+[KEYS] '7G'
+[OVERLAY] 7G  go to line 7
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def outer():                        │
+ 1 │  2     x = 10                          │
+ 2 │  3     y = 20                          │
+ 3 │  4     def inner():                    │
+ 4 │  5         a = 1                       │
+ 5 │  6         b = 2                       │
+ 6 │  7         return a + b                │ ◂ cursor (6,4)
+ 7 │  8     return x + y                    │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │indent.py             7,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'yy'
+[OVERLAY] yy  yank line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def outer():                        │
+ 1 │  2     x = 10                          │
+ 2 │  3     y = 20                          │
+ 3 │  4     def inner():                    │
+ 4 │  5         a = 1                       │
+ 5 │  6         b = 2                       │
+ 6 │  7         return a + b                │ ◂ cursor (6,4)
+ 7 │  8     return x + y                    │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │indent.py             7,1            All│
+    ────────────────────────────────────────
+
+[SAY] Move to the outer function and paste with {key:]p}. Watch the indent adjust.
+[KEYS] '3G'
+[OVERLAY] 3G  go to line 3
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def outer():                        │
+ 1 │  2     x = 10                          │
+ 2 │  3     y = 20                          │ ◂ cursor (2,4)
+ 3 │  4     def inner():                    │
+ 4 │  5         a = 1                       │
+ 5 │  6         b = 2                       │
+ 6 │  7         return a + b                │
+ 7 │  8     return x + y                    │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │indent.py             3,1            All│
+    ────────────────────────────────────────
+
+[KEYS] ']p'
+[OVERLAY] ]p  paste with indent
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def outer():                        │
+ 1 │  2     x = 10                          │
+ 2 │  3     y = 20                          │
+ 3 │  4     return a + b                    │ ◂ cursor (3,8)
+ 4 │  5     def inner():                    │
+ 5 │  6         a = 1                       │
+ 6 │  7         b = 2                       │
+ 7 │  8         return a + b                │
+ 8 │  9     return x + y                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │indent.py [+]         4,5            All│
+    ────────────────────────────────────────
+
+[SAY] The line pasted with 4 spaces of indent. Matching the outer function. Regular {key:P} would keep 8 spaces.
+[SAY] Undo and try regular {key:P} to compare.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def outer():                        │
+ 1 │  2     x = 10                          │
+ 2 │  3     y = 20                          │ ◂ cursor (2,4)
+ 3 │  4     def inner():                    │
+ 4 │  5         a = 1                       │
+ 5 │  6         b = 2                       │
+ 6 │  7         return a + b                │
+ 7 │  8     return x + y                    │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │indent.py             3,1            All│
+19 │1 line less;...3 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'p'
+[OVERLAY] p  regular paste
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def outer():                        │
+ 1 │  2     x = 10                          │
+ 2 │  3     y = 20                          │
+ 3 │  4         return a + b                │ ◂ cursor (3,12)
+ 4 │  5     def inner():                    │
+ 5 │  6         a = 1                       │
+ 6 │  7         b = 2                       │
+ 7 │  8         return a + b                │
+ 8 │  9     return x + y                    │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │indent.py [+]         4,9            All│
+19 │1 line less;...3 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] See the extra indent? Regular {key:P} keeps the original spacing. {key:]p} fixes it.
+[SAY] {key:[p} and {key:]p}. Paste with automatic indent adjustment. No more fixing whitespace.

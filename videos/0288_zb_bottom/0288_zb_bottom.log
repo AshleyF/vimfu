@@ -1,0 +1,114 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Tower Defense                     │ ◂ cursor (0,4)
+ 1 │  2 # Small example for the VimFu zb dem│
+ 2 │    o.                                  │
+ 3 │  3 import math                         │
+ 4 │  4 import random                       │
+ 5 │  5                                     │
+ 6 │  6                                     │
+ 7 │  7 class Enemy:                        │
+ 8 │  8     def __init__(self, x, y, hp):   │
+ 9 │  9         self.x = x                  │
+10 │ 10         self.y = y                  │
+11 │ 11         self.hp = hp                │
+12 │ 12         self.alive = True           │
+13 │ 13                                     │
+14 │ 14     def take_damage(self, amount):  │
+15 │ 15         self.hp -= amount           │
+16 │ 16         if self.hp <= 0:            │
+17 │ 17             self.alive = False      │
+18 │tower.py              1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — zb — Scroll to Bottom
+[SAY] Z B scrolls so your cursor line is at the bottom of the screen. See everything above. Great for reviewing what you just wrote.
+[SAY] Jump to the end of the file first.
+[KEYS] 'G'
+[OVERLAY] ⇧G  to end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 33                                     │
+ 1 │ 34     def upgrade(self):              │
+ 2 │ 35         self.level += 1             │
+ 3 │ 36         self.damage *= 1.5          │
+ 4 │ 37         self.range += 1             │
+ 5 │ 38                                     │
+ 6 │ 39     def in_range(self, enemy):      │
+ 7 │ 40         dx = self.x - enemy.x       │
+ 8 │ 41         dy = self.y - enemy.y       │
+ 9 │ 42         dist = math.sqrt(dx*dx + dy*│
+10 │    dy)                                 │
+11 │ 43         return dist <= self.range   │
+12 │ 44                                     │
+13 │ 45     def fire(self, enemy):          │
+14 │ 46         if self.in_range(enemy):    │
+15 │ 47             enemy.hp -= self.damage │
+16 │ 48             return True             │
+17 │ 49         return False                │ ◂ cursor (17,4)
+18 │tower.py              49,1           Bot│
+    ────────────────────────────────────────
+
+[SAY] Now back to the upgrade method on line thirty-four. The init method is way off the top of the screen.
+[KEYS] '34G'
+[OVERLAY] 34G  line 34
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 33                                     │
+ 1 │ 34     def upgrade(self):              │ ◂ cursor (1,4)
+ 2 │ 35         self.level += 1             │
+ 3 │ 36         self.damage *= 1.5          │
+ 4 │ 37         self.range += 1             │
+ 5 │ 38                                     │
+ 6 │ 39     def in_range(self, enemy):      │
+ 7 │ 40         dx = self.x - enemy.x       │
+ 8 │ 41         dy = self.y - enemy.y       │
+ 9 │ 42         dist = math.sqrt(dx*dx + dy*│
+10 │    dy)                                 │
+11 │ 43         return dist <= self.range   │
+12 │ 44                                     │
+13 │ 45     def fire(self, enemy):          │
+14 │ 46         if self.in_range(enemy):    │
+15 │ 47             enemy.hp -= self.damage │
+16 │ 48             return True             │
+17 │ 49         return False                │
+18 │tower.py              34,1           Bot│
+    ────────────────────────────────────────
+
+[KEYS] 'zb'
+[OVERLAY] zb  scroll to bottom
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 17             self.alive = False      │
+ 1 │ 18         return self.alive           │
+ 2 │ 19                                     │
+ 3 │ 20     def step(self, dx, dy):         │
+ 4 │ 21         self.x += dx                │
+ 5 │ 22         self.y += dy                │
+ 6 │ 23                                     │
+ 7 │ 24                                     │
+ 8 │ 25 class Tower:                        │
+ 9 │ 26     def __init__(self, x, y):       │
+10 │ 27         self.x = x                  │
+11 │ 28         self.y = y                  │
+12 │ 29         self.range = 5              │
+13 │ 30         self.damage = 10            │
+14 │ 31         self.cooldown = 1.0         │
+15 │ 32         self.level = 1              │
+16 │ 33                                     │
+17 │ 34     def upgrade(self):              │ ◂ cursor (17,4)
+18 │tower.py              34,1           51%│
+    ────────────────────────────────────────
+
+[SAY] Cursor at the bottom. The whole Tower class above it is visible --- including the init method I wanted to check.
+[SAY] Z Z centers. Z T scrolls to top. Z B scrolls to bottom. Three scroll commands, three perspectives.
+[SAY] Z B. Cursor to the bottom. Use it when context is above you.

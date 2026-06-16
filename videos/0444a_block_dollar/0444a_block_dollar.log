@@ -1,0 +1,264 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │ ◂ cursor (0,0)
+ 1 │short = 1                               │
+ 2 │medium_var = 200                        │
+ 3 │long_variable = 30000                   │
+ 4 │x = 5                                   │
+ 5 │tiny = 99                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lines.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Block $ — Extend to EOL
+[SAY] In block visual mode, dollar extends the selection to the end of every line. Even when lines are different lengths.
+[SAY] Control V to start a block. Then move down.
+[KEYS] 'j0'
+[OVERLAY] j0
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │short = 1                               │ ◂ cursor (1,0)
+ 2 │medium_var = 200                        │
+ 3 │long_variable = 30000                   │
+ 4 │x = 5                                   │
+ 5 │tiny = 99                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lines.py              2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '\x16'
+[OVERLAY] ⌃v  Ctrl-V — block
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │short = 1                               │ ◂ cursor (1,0)
+ 2 │medium_var = 200                        │
+ 3 │long_variable = 30000                   │
+ 4 │x = 5                                   │
+ 5 │tiny = 99                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lines.py              2,1            All│
+19 │-- VISUAL BLOCK --           1x1        │
+    ────────────────────────────────────────
+
+[KEYS] '4j'
+[OVERLAY] 4j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │short = 1                               │
+ 2 │medium_var = 200                        │
+ 3 │long_variable = 30000                   │
+ 4 │x = 5                                   │
+ 5 │tiny = 99                               │ ◂ cursor (5,0)
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lines.py              6,1            All│
+19 │-- VISUAL BLOCK --           5x1        │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 0: "s"
+[HIGHLIGHT] row 2, col 0: "m"
+[HIGHLIGHT] row 3, col 0: "l"
+[HIGHLIGHT] row 4, col 0: "x"
+
+[SAY] Without dollar, the block is a fixed width rectangle. Watch what dollar does.
+[KEYS] '$'
+[OVERLAY] ⇧$  $ — extend to EOL
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │short = 1                               │
+ 2 │medium_var = 200                        │
+ 3 │long_variable = 30000                   │
+ 4 │x = 5                                   │
+ 5 │tiny = 99                               │ ◂ cursor (5,9)
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lines.py              6,10           All│
+19 │-- VISUAL BLOCK --           5x10       │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-8: "short = 1"
+[HIGHLIGHT] row 2, cols 0-15: "medium_var = 200"
+[HIGHLIGHT] row 3, cols 0-20: "long_variable = 30000"
+[HIGHLIGHT] row 4, cols 0-4: "x = 5"
+[HIGHLIGHT] row 5, cols 0-9: "tiny = 99"
+
+[SAY] Now the selection goes to the end of each line. The short lines and the long lines are all fully selected.
+[SAY] This is a ragged block. It follows each line to its end.
+[SAY] Append text with capital A.
+[KEYS] 'A'
+[OVERLAY] ⇧A  A — append
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │short = 1                               │ ◂ cursor (1,9)
+ 2 │medium_var = 200                        │
+ 3 │long_variable = 30000                   │
+ 4 │x = 5                                   │
+ 5 │tiny = 99                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lines.py              2,10           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[TYPE] '  # ok'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │short = 1  # ok                         │ ◂ cursor (1,15)
+ 2 │medium_var = 200                        │
+ 3 │long_variable = 30000                   │
+ 4 │x = 5                                   │
+ 5 │tiny = 99                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lines.py [+]          2,16           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │short = 1  # ok                         │ ◂ cursor (1,0)
+ 2 │medium_var = 200  # ok                  │
+ 3 │long_variable = 30000  # ok             │
+ 4 │x = 5  # ok                             │
+ 5 │tiny = 99  # ok                         │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lines.py [+]          2,1            All│
+    ────────────────────────────────────────
+
+[SAY] Comment added to the end of every line, regardless of length. Dollar made the block reach every line end.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │short = 1                               │ ◂ cursor (1,8)
+ 2 │medium_var = 200                        │
+ 3 │long_variable = 30000                   │
+ 4 │x = 5                                   │
+ 5 │tiny = 99                               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │lines.py              2,9            All│
+19 │5 changes; b...2 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Control V, move down, dollar. Extend the block to end of line on every row.

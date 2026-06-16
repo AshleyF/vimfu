@@ -1,0 +1,281 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │title = "hello"                         │ ◂ cursor (0,0)
+ 1 │coords = (10, 20)                       │
+ 2 │flag = enabled                          │
+ 3 │label = important                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │surround.py           1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — What Is Surround?
+[SAY] Surround lets you add, change, and delete wrappers: quotes, parentheses, brackets, and HTML tags.
+[SAY] We'll use each family once, and keep the edits on screen.
+[SAY] Think of it this way: {key:d}{key:s} deletes a surround. {key:c}{key:s} changes one. {key:y}{key:s} adds one.
+[SAY] Start with double quotes around hello. Delete them with {key:d}{key:s}{key:"}.
+[KEYS] 'f"'
+[OVERLAY] f"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │title = "hello"                         │ ◂ cursor (0,8)
+ 1 │coords = (10, 20)                       │
+ 2 │flag = enabled                          │
+ 3 │label = important                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │surround.py           1,9            All│
+    ────────────────────────────────────────
+
+[SAY] {key:d}{key:s}{key:"} deletes the surrounding quotes.
+[KEYS] 'ds"'
+[OVERLAY] ds"  ds"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │title = hello                           │ ◂ cursor (0,8)
+ 1 │coords = (10, 20)                       │
+ 2 │flag = enabled                          │
+ 3 │label = important                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │surround.py [+]       1,9            All│
+    ────────────────────────────────────────
+
+[SAY] Quotes gone. Now put back single quotes with {key:y}{key:s}{key:i}{key:w}{key:'}.
+[KEYS] "ysiw'"
+[OVERLAY] ysiw'  ysiw'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │title = 'hello'                         │ ◂ cursor (0,8)
+ 1 │coords = (10, 20)                       │
+ 2 │flag = enabled                          │
+ 3 │label = important                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │surround.py [+]       1,9            All│
+    ────────────────────────────────────────
+
+[SAY] Line two: change parentheses to brackets with {key:c}{key:s}{key:)}{key:]}.
+[KEYS] 'jf('
+[OVERLAY] jf(  coords
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │title = 'hello'                         │
+ 1 │coords = (10, 20)                       │ ◂ cursor (1,9)
+ 2 │flag = enabled                          │
+ 3 │label = important                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │surround.py [+]       2,10           All│
+    ────────────────────────────────────────
+
+[KEYS] 'cs)]'
+[OVERLAY] cs)]  cs)]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │title = 'hello'                         │
+ 1 │coords = [10, 20]                       │ ◂ cursor (1,9)
+ 2 │flag = enabled                          │
+ 3 │label = important                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │surround.py [+]       2,10           All│
+    ────────────────────────────────────────
+
+[SAY] Line three: add parentheses around enabled.
+[KEYS] 'j0ww'
+[OVERLAY] j0ww  enabled
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │title = 'hello'                         │
+ 1 │coords = [10, 20]                       │
+ 2 │flag = enabled                          │ ◂ cursor (2,7)
+ 3 │label = important                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │surround.py [+]       3,8            All│
+    ────────────────────────────────────────
+
+[KEYS] 'ysiw)'
+[OVERLAY] ysiw)  ysiw)
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │title = 'hello'                         │
+ 1 │coords = [10, 20]                       │
+ 2 │flag = (enabled)                        │ ◂ cursor (2,7)
+ 3 │label = important                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │surround.py [+]       3,8            All│
+    ────────────────────────────────────────
+
+[SAY] Line four: add an em tag around important.
+[KEYS] 'j0ww'
+[OVERLAY] j0ww  important
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │title = 'hello'                         │
+ 1 │coords = [10, 20]                       │
+ 2 │flag = (enabled)                        │
+ 3 │label = important                       │ ◂ cursor (3,8)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │surround.py [+]       4,9            All│
+    ────────────────────────────────────────
+
+[KEYS] 'ysiwtem>\r'
+[OVERLAY] ysiwtem>⏎  ysiwt em>
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │title = 'hello'                         │
+ 1 │coords = [10, 20]                       │
+ 2 │flag = (enabled)                        │
+ 3 │label = <em>important</em>              │ ◂ cursor (3,8)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │surround.py [+]       4,9            All│
+19 │Enter the HTML tag: em>                 │
+    ────────────────────────────────────────
+
+[SAY] Delete, change, add, and tags. That's the shape of surround.

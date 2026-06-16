@@ -1,0 +1,94 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │import os                               │ ◂ cursor (0,0)
+ 1 │x = 1                                   │
+ 2 │import sys                              │
+ 3 │y = 2                                   │
+ 4 │import json                             │
+ 5 │z = 3                                   │
+ 6 │import re                               │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :g with :m — Collect Matches
+[SAY] Global with move collects matching lines and puts them together.
+[SAY] The imports are scattered. Let's move them all to the top.
+[TYPE] ':g/^import/m 0'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │import os                               │
+ 1 │x = 1                                   │
+ 2 │import sys                              │
+ 3 │y = 2                                   │
+ 4 │import json                             │
+ 5 │z = 3                                   │
+ 6 │import re                               │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               3,1            All│
+19 │:g/^import/m 0                          │ ◂ cursor (19,14)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-5: "import"
+[HIGHLIGHT] row 2, cols 0-5: "import"
+[HIGHLIGHT] row 4, cols 0-5: "import"
+[HIGHLIGHT] row 6, cols 0-5: "import"
+
+[SAY] Colon G slash caret import slash matches any line starting with import. Then M zero moves each match to after line zero — that is, the very top of the file.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │import re                               │ ◂ cursor (0,0)
+ 1 │import json                             │
+ 2 │import sys                              │
+ 3 │import os                               │
+ 4 │x = 1                                   │
+ 5 │y = 2                                   │
+ 6 │z = 3                                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           1,1            All│
+19 │:g/^import/m 0                          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 1-5: "mport"
+[HIGHLIGHT] row 1, cols 0-5: "import"
+[HIGHLIGHT] row 2, cols 0-5: "import"
+[HIGHLIGHT] row 3, cols 0-5: "import"
+
+[SAY] All import lines collected at the top. The other lines kept their order below.
+[SAY] Global with M. Collect matching lines anywhere. Reorganize your file in one command.

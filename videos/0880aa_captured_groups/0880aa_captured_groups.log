@@ -1,0 +1,90 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │John Smith                              │ ◂ cursor (0,0)
+ 1 │Jane Doe                                │
+ 2 │Bob Jones                               │
+ 3 │Alice Lee                               │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │names.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :s Captured Groups
+[SAY] Capture groups let you rearrange matched text. Use escaped parentheses to capture, and backslash one through nine to refer to them.
+[SAY] Swap first and last names. Capture each word, then reverse them.
+[TYPE] ':%s/\\(\\w\\+\\) \\(\\w\\+\\)/\\2, \\1/'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Smith, John                             │
+ 1 │Doe, Jane                               │
+ 2 │Jones, Bob                              │
+ 3 │Lee, Alice                              │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │names.txt [+]         1,1            All│
+19 │:%s/\(\w\+\) \(\w\+\)/\2, \1/           │ ◂ cursor (19,29)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-10: "Smith, John"
+[HIGHLIGHT] row 1, cols 0-8: "Doe, Jane"
+[HIGHLIGHT] row 2, cols 0-9: "Jones, Bob"
+[HIGHLIGHT] row 3, cols 0-9: "Lee, Alice"
+
+[SAY] The escaped parens capture each word. In the replacement, backslash two then backslash one puts the last name first.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Smith, John                             │
+ 1 │Doe, Jane                               │
+ 2 │Jones, Bob                              │
+ 3 │Lee, Alice                              │ ◂ cursor (3,0)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │names.txt [+]         4,1            All│
+19 │4 substitutions on 4 lines              │
+    ────────────────────────────────────────
+
+[SAY] Last name comma first name on every line.
+[SAY] Escaped parentheses capture. Backslash one through nine recall them. Rearrange any text.

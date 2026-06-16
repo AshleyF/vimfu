@@ -1,0 +1,141 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def cleanup():                          │ ◂ cursor (0,0)
+ 1 │    remove_temp()                       │
+ 2 │    close_logs()                        │
+ 3 │                                        │
+ 4 │def process():                          │
+ 5 │    load_data()                         │
+ 6 │    transform()                         │
+ 7 │    save_results()                      │
+ 8 │                                        │
+ 9 │def setup():                            │
+10 │    init_config()                       │
+11 │    open_logs()                         │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │funcs.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Move Code Around
+[SAY] These functions are in the wrong order. Setup should come first. The m command moves lines.
+[SAY] Turn on line numbers.
+[TYPE] ':set number'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def cleanup():                          │
+ 1 │    remove_temp()                       │
+ 2 │    close_logs()                        │
+ 3 │                                        │
+ 4 │def process():                          │
+ 5 │    load_data()                         │
+ 6 │    transform()                         │
+ 7 │    save_results()                      │
+ 8 │                                        │
+ 9 │def setup():                            │
+10 │    init_config()                       │
+11 │    open_logs()                         │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │funcs.py              1,1            All│
+19 │:set number                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def cleanup():                      │ ◂ cursor (0,4)
+ 1 │  2     remove_temp()                   │
+ 2 │  3     close_logs()                    │
+ 3 │  4                                     │
+ 4 │  5 def process():                      │
+ 5 │  6     load_data()                     │
+ 6 │  7     transform()                     │
+ 7 │  8     save_results()                  │
+ 8 │  9                                     │
+ 9 │ 10 def setup():                        │
+10 │ 11     init_config()                   │
+11 │ 12     open_logs()                     │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │funcs.py              1,1            All│
+19 │:set number                             │
+    ────────────────────────────────────────
+
+[SAY] Move the setup function, lines ten through twelve, to the very top.
+[TYPE] ':10,12m 0'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def cleanup():                      │
+ 1 │  2     remove_temp()                   │
+ 2 │  3     close_logs()                    │
+ 3 │  4                                     │
+ 4 │  5 def process():                      │
+ 5 │  6     load_data()                     │
+ 6 │  7     transform()                     │
+ 7 │  8     save_results()                  │
+ 8 │  9                                     │
+ 9 │ 10 def setup():                        │
+10 │ 11     init_config()                   │
+11 │ 12     open_logs()                     │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │funcs.py              1,1            All│
+19 │:10,12m 0                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+
+[SAY] Ten comma twelve m zero. After line zero means before line one — the top of the file.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def setup():                        │
+ 1 │  2     init_config()                   │
+ 2 │  3     open_logs()                     │ ◂ cursor (2,4)
+ 3 │  4 def cleanup():                      │
+ 4 │  5     remove_temp()                   │
+ 5 │  6     close_logs()                    │
+ 6 │  7                                     │
+ 7 │  8 def process():                      │
+ 8 │  9     load_data()                     │
+ 9 │ 10     transform()                     │
+10 │ 11     save_results()                  │
+11 │ 12                                     │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │funcs.py [+]          3,1            All│
+19 │3 lines moved                           │
+    ────────────────────────────────────────
+
+[SAY] Setup is now at the top. No cutting and pasting needed.
+[SAY] Colon range m destination. Move any block of lines anywhere in the file.

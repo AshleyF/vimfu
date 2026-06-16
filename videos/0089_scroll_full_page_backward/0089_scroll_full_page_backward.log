@@ -1,0 +1,224 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Dungeon Generator                     │ ◂ cursor (0,0)
+ 1 │import random                           │
+ 2 │                                        │
+ 3 │ROOMS = 25                              │
+ 4 │MIN_SIZE = 4                            │
+ 5 │MAX_SIZE = 12                           │
+ 6 │                                        │
+ 7 │def roll_dice(n, sides):                │
+ 8 │    return sum(random.randint(1, sides) │
+ 9 │for _ in range(n))                      │
+10 │                                        │
+11 │def gen_room(room_id):                  │
+12 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+13 │E)                                      │
+14 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+15 │E)                                      │
+16 │    x = random.randint(0, 80 - w)       │
+17 │    y = random.randint(0, 50 - h)       │
+18 │dungeon.py            1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Scroll Full Page Backward
+[SAY] Control F goes forward a full page. Control B goes backward. B for back.
+[SAY] Let's start at the bottom.
+[KEYS] 'G'
+[OVERLAY] ⇧G  go to last line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    atk = roll_dice(difficulty, 6)      │
+ 1 │    return {"hp": hp, "atk": atk, "room"│
+ 2 │: room["id"]}                           │
+ 3 │                                        │
+ 4 │def connect_rooms(a, b):                │
+ 5 │    mid_x = (a["x"] + b["x"]) // 2      │
+ 6 │    mid_y = (a["y"] + b["y"]) // 2      │
+ 7 │    return {"from": a["id"], "to": b["id│
+ 8 │"]}                                     │
+ 9 │                                        │
+10 │def generate_dungeon():                 │
+11 │    rooms = [gen_room(i) for i in range(│
+12 │ROOMS)]                                 │
+13 │    for room in rooms:                  │
+14 │        place_treasure(room)            │
+15 │        spawn_monster(room, difficulty=3│
+16 │)                                       │
+17 │    return rooms                        │ ◂ cursor (17,0)
+18 │dungeon.py            38,1           Bot│
+    ────────────────────────────────────────
+
+[SAY] Control B.
+[KEYS] '\x02'
+[OVERLAY] ⌃b  Ctrl-B  full page backward
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+ 1 │E)                                      │
+ 2 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+ 3 │E)                                      │
+ 4 │    x = random.randint(0, 80 - w)       │
+ 5 │    y = random.randint(0, 50 - h)       │
+ 6 │    return {"id": room_id, "x": x, "y": │
+ 7 │y, "w": w, "h": h}                      │
+ 8 │                                        │
+ 9 │def place_treasure(room):               │
+10 │    gold = roll_dice(3, 6) * 10         │
+11 │    gems = roll_dice(1, 4)              │
+12 │    return {"gold": gold, "gems": gems} │
+13 │                                        │
+14 │def spawn_monster(room, difficulty):    │
+15 │    hp = roll_dice(difficulty, 8)       │
+16 │    atk = roll_dice(difficulty, 6)      │ ◂ cursor (16,0)
+17 │    return {"hp": hp, "atk": atk, "ro@@@│
+18 │dungeon.py            25,1           45%│
+    ────────────────────────────────────────
+
+[SAY] A full screen back. We can see the middle of the file.
+[SAY] One more.
+[KEYS] '\x02'
+[OVERLAY] ⌃b  Ctrl-B  full page backward
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Dungeon Generator                     │
+ 1 │import random                           │
+ 2 │                                        │
+ 3 │ROOMS = 25                              │
+ 4 │MIN_SIZE = 4                            │
+ 5 │MAX_SIZE = 12                           │
+ 6 │                                        │
+ 7 │def roll_dice(n, sides):                │
+ 8 │    return sum(random.randint(1, sides) │
+ 9 │for _ in range(n))                      │
+10 │                                        │
+11 │def gen_room(room_id):                  │
+12 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+13 │E)                                      │
+14 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+15 │E)                                      │
+16 │    x = random.randint(0, 80 - w)       │
+17 │    y = random.randint(0, 50 - h)       │ ◂ cursor (17,0)
+18 │dungeon.py            15,1           Top│
+    ────────────────────────────────────────
+
+[SAY] Back at the top. Two presses for the whole file.
+[SAY] Control F forward, Control B back. They're a pair.
+[KEYS] '\x06'
+[OVERLAY] ⌃f  Ctrl-F  full page forward
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    x = random.randint(0, 80 - w)       │ ◂ cursor (0,0)
+ 1 │    y = random.randint(0, 50 - h)       │
+ 2 │    return {"id": room_id, "x": x, "y": │
+ 3 │y, "w": w, "h": h}                      │
+ 4 │                                        │
+ 5 │def place_treasure(room):               │
+ 6 │    gold = roll_dice(3, 6) * 10         │
+ 7 │    gems = roll_dice(1, 4)              │
+ 8 │    return {"gold": gold, "gems": gems} │
+ 9 │                                        │
+10 │def spawn_monster(room, difficulty):    │
+11 │    hp = roll_dice(difficulty, 8)       │
+12 │    atk = roll_dice(difficulty, 6)      │
+13 │    return {"hp": hp, "atk": atk, "room"│
+14 │: room["id"]}                           │
+15 │                                        │
+16 │def connect_rooms(a, b):                │
+17 │    mid_x = (a["x"] + b["x"]) // 2      │
+18 │dungeon.py            14,1           59%│
+    ────────────────────────────────────────
+
+[KEYS] '\x06'
+[OVERLAY] ⌃f  Ctrl-F  full page forward
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def connect_rooms(a, b):                │ ◂ cursor (0,0)
+ 1 │    mid_x = (a["x"] + b["x"]) // 2      │
+ 2 │    mid_y = (a["y"] + b["y"]) // 2      │
+ 3 │    return {"from": a["id"], "to": b["id│
+ 4 │"]}                                     │
+ 5 │                                        │
+ 6 │def generate_dungeon():                 │
+ 7 │    rooms = [gen_room(i) for i in range(│
+ 8 │ROOMS)]                                 │
+ 9 │    for room in rooms:                  │
+10 │        place_treasure(room)            │
+11 │        spawn_monster(room, difficulty=3│
+12 │)                                       │
+13 │    return rooms                        │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │dungeon.py            28,1           Bot│
+    ────────────────────────────────────────
+
+[KEYS] '\x02'
+[OVERLAY] ⌃b  Ctrl-B  full page backward
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    x = random.randint(0, 80 - w)       │
+ 1 │    y = random.randint(0, 50 - h)       │
+ 2 │    return {"id": room_id, "x": x, "y": │
+ 3 │y, "w": w, "h": h}                      │
+ 4 │                                        │
+ 5 │def place_treasure(room):               │
+ 6 │    gold = roll_dice(3, 6) * 10         │
+ 7 │    gems = roll_dice(1, 4)              │
+ 8 │    return {"gold": gold, "gems": gems} │
+ 9 │                                        │
+10 │def spawn_monster(room, difficulty):    │
+11 │    hp = roll_dice(difficulty, 8)       │
+12 │    atk = roll_dice(difficulty, 6)      │
+13 │    return {"hp": hp, "atk": atk, "room"│
+14 │: room["id"]}                           │
+15 │                                        │
+16 │def connect_rooms(a, b):                │
+17 │    mid_x = (a["x"] + b["x"]) // 2      │ ◂ cursor (17,0)
+18 │dungeon.py            29,1           59%│
+    ────────────────────────────────────────
+
+[KEYS] '\x02'
+[OVERLAY] ⌃b  Ctrl-B  full page backward
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Dungeon Generator                     │
+ 1 │import random                           │
+ 2 │                                        │
+ 3 │ROOMS = 25                              │
+ 4 │MIN_SIZE = 4                            │
+ 5 │MAX_SIZE = 12                           │
+ 6 │                                        │
+ 7 │def roll_dice(n, sides):                │
+ 8 │    return sum(random.randint(1, sides) │
+ 9 │for _ in range(n))                      │
+10 │                                        │
+11 │def gen_room(room_id):                  │
+12 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+13 │E)                                      │
+14 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+15 │E)                                      │
+16 │    x = random.randint(0, 80 - w)       │
+17 │    y = random.randint(0, 50 - h)       │ ◂ cursor (17,0)
+18 │dungeon.py            15,1           Top│
+    ────────────────────────────────────────
+
+[SAY] The full set. D and U for half pages. F and B for full pages. Four keys to navigate anything.

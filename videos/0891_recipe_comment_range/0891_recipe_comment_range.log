@@ -1,0 +1,140 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def process():                          │ ◂ cursor (0,0)
+ 1 │    load_data()                         │
+ 2 │    validate()                          │
+ 3 │    transform()                         │
+ 4 │    save()                              │
+ 5 │    notify()                            │
+ 6 │    cleanup()                           │
+ 7 │    report()                            │
+ 8 │                                        │
+ 9 │def main():                             │
+10 │    process()                           │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │utils.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Comment Out a Range
+[SAY] We want to temporarily disable some steps. Comment out lines three through seven.
+[SAY] Turn on line numbers.
+[TYPE] ':set number'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def process():                          │
+ 1 │    load_data()                         │
+ 2 │    validate()                          │
+ 3 │    transform()                         │
+ 4 │    save()                              │
+ 5 │    notify()                            │
+ 6 │    cleanup()                           │
+ 7 │    report()                            │
+ 8 │                                        │
+ 9 │def main():                             │
+10 │    process()                           │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │utils.py              1,1            All│
+19 │:set number                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def process():                      │ ◂ cursor (0,4)
+ 1 │  2     load_data()                     │
+ 2 │  3     validate()                      │
+ 3 │  4     transform()                     │
+ 4 │  5     save()                          │
+ 5 │  6     notify()                        │
+ 6 │  7     cleanup()                       │
+ 7 │  8     report()                        │
+ 8 │  9                                     │
+ 9 │ 10 def main():                         │
+10 │ 11     process()                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │utils.py              1,1            All│
+19 │:set number                             │
+    ────────────────────────────────────────
+
+[SAY] Use norm to insert a comment marker at the start of each line.
+[TYPE] ':3,7norm I# '
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def process():                      │
+ 1 │  2     load_data()                     │
+ 2 │  3     validate()                      │
+ 3 │  4     transform()                     │
+ 4 │  5     save()                          │
+ 5 │  6     notify()                        │
+ 6 │  7     cleanup()                       │
+ 7 │  8     report()                        │
+ 8 │  9                                     │
+ 9 │ 10 def main():                         │
+10 │ 11     process()                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │utils.py              1,1            All│
+19 │:3,7norm I#                             │ ◂ cursor (19,12)
+    ────────────────────────────────────────
+
+[SAY] Range three comma seven, norm capital I hash space. Capital I inserts at the start of the text on every line in the range.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def process():                      │
+ 1 │  2     load_data()                     │
+ 2 │  3     # validate()                    │
+ 3 │  4     # transform()                   │
+ 4 │  5     # save()                        │
+ 5 │  6     # notify()                      │
+ 6 │  7     # cleanup()                     │ ◂ cursor (6,9)
+ 7 │  8     report()                        │
+ 8 │  9                                     │
+ 9 │ 10 def main():                         │
+10 │ 11     process()                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │utils.py [+]          7,6            All│
+    ────────────────────────────────────────
+
+[SAY] Lines three through seven are now commented out. The middle steps are disabled.
+[SAY] Colon range norm I comment character. Comment out any block of code instantly.

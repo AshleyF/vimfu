@@ -1,0 +1,193 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Word Search                           │ ◂ cursor (0,0)
+ 1 │log = "start"                           │
+ 2 │logger = get_logger()                   │
+ 3 │log_file = "app.log"                    │
+ 4 │blog = "my blog"                        │
+ 5 │catalog = load_catalog()                │
+ 6 │logging.info(log)                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │words.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — g* g# — Partial Word Search
+[SAY] Star searches for the exact whole word under the cursor. G star does a partial match. It finds the word even inside other words.
+[SAY] Cursor on log, line two. Try star first.
+[KEYS] '2G0'
+[OVERLAY] 2G0  on log
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Word Search                           │
+ 1 │log = "start"                           │ ◂ cursor (1,0)
+ 2 │logger = get_logger()                   │
+ 3 │log_file = "app.log"                    │
+ 4 │blog = "my blog"                        │
+ 5 │catalog = load_catalog()                │
+ 6 │logging.info(log)                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │words.py              2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '*'
+[OVERLAY] ⇧*  * — whole word
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Word Search                           │
+ 1 │log = "start"                           │
+ 2 │logger = get_logger()                   │
+ 3 │log_file = "app.log"                    │ ◂ cursor (3,16)
+ 4 │blog = "my blog"                        │
+ 5 │catalog = load_catalog()                │
+ 6 │logging.info(log)                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │words.py              4,17           All│
+19 │/\<log\>              [2/3]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "log"
+[HIGHLIGHT] row 3, cols 17-18: "og"
+[HIGHLIGHT] row 6, cols 13-15: "log"
+
+[SAY] Star only highlights exact matches of log. Not logger, not blog, not catalog. Just log.
+[SAY] Now go back and try G star.
+[KEYS] '2G0'
+[OVERLAY] 2G0  back to log
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Word Search                           │
+ 1 │log = "start"                           │ ◂ cursor (1,0)
+ 2 │logger = get_logger()                   │
+ 3 │log_file = "app.log"                    │
+ 4 │blog = "my blog"                        │
+ 5 │catalog = load_catalog()                │
+ 6 │logging.info(log)                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │words.py              2,1            All│
+19 │/\<log\>              [2/3]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 1-2: "og"
+[HIGHLIGHT] row 3, cols 16-18: "log"
+[HIGHLIGHT] row 6, cols 13-15: "log"
+
+[KEYS] 'g*'
+[OVERLAY] g*  g* — partial match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Word Search                           │
+ 1 │log = "start"                           │
+ 2 │logger = get_logger()                   │ ◂ cursor (2,0)
+ 3 │log_file = "app.log"                    │
+ 4 │blog = "my blog"                        │
+ 5 │catalog = load_catalog()                │
+ 6 │logging.info(log)                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │words.py              3,1            All│
+19 │/log                 [2/11]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "log"
+[HIGHLIGHT] row 2, cols 1-2: "og"
+[HIGHLIGHT] row 2, cols 13-15: "log"
+[HIGHLIGHT] row 3, cols 0-2: "log"
+[HIGHLIGHT] row 3, cols 16-18: "log"
+[HIGHLIGHT] row 4, cols 1-3: "log"
+[HIGHLIGHT] row 4, cols 12-14: "log"
+[HIGHLIGHT] row 5, cols 4-6: "log"
+[HIGHLIGHT] row 5, cols 19-21: "log"
+[HIGHLIGHT] row 6, cols 0-2: "log"
+[HIGHLIGHT] row 6, cols 13-15: "log"
+
+[SAY] G star highlights log everywhere. Inside logger, log file, blog, catalog. Partial matches.
+[SAY] G hash does the same thing backwards.
+[KEYS] 'g#'
+[OVERLAY] g#  g# — partial reverse
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Word Search                           │
+ 1 │log = "start"                           │
+ 2 │logger = get_logger()                   │ ◂ cursor (2,13)
+ 3 │log_file = "app.log"                    │
+ 4 │blog = "my blog"                        │
+ 5 │catalog = load_catalog()                │
+ 6 │logging.info(log)                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │words.py              3,14           All│
+19 │?logger             W [2/2]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-5: "logger"
+[HIGHLIGHT] row 2, cols 14-18: "ogger"
+
+[SAY] Searching backwards through the partial matches.
+[SAY] G star and G hash. Partial word search forward and backward. When whole word matching is too strict.

@@ -1,0 +1,207 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Calculator                        │ ◂ cursor (0,4)
+ 1 │  2                                     │
+ 2 │  3 def compute_total(items):           │
+ 3 │  4     tax_rate = 0.08                 │
+ 4 │  5     subtotal = 0                    │
+ 5 │  6     for item in items:              │
+ 6 │  7         price = item['price']       │
+ 7 │  8         qty = item['qty']           │
+ 8 │  9         subtotal += price * qty     │
+ 9 │ 10     tax = subtotal * tax_rate       │
+10 │ 11     total = subtotal + tax          │
+11 │ 12     return total                    │
+12 │ 13                                     │
+13 │ 14 def format_receipt(items):          │
+14 │ 15     lines = []                      │
+15 │ 16     for item in items:              │
+16 │ 17         name = item['name']         │
+17 │ 18         cost = item['price'] * it@@@│
+18 │calc.py               1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gd — Go to Local Definition
+[SAY] G D jumps to the local definition of the word under the cursor. Vim searches backward from the cursor for the first occurrence.
+[SAY] Go to line ten where tax rate is used.
+[KEYS] '10G'
+[OVERLAY] 10G  line 10
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Calculator                        │
+ 1 │  2                                     │
+ 2 │  3 def compute_total(items):           │
+ 3 │  4     tax_rate = 0.08                 │
+ 4 │  5     subtotal = 0                    │
+ 5 │  6     for item in items:              │
+ 6 │  7         price = item['price']       │
+ 7 │  8         qty = item['qty']           │
+ 8 │  9         subtotal += price * qty     │
+ 9 │ 10     tax = subtotal * tax_rate       │ ◂ cursor (9,4)
+10 │ 11     total = subtotal + tax          │
+11 │ 12     return total                    │
+12 │ 13                                     │
+13 │ 14 def format_receipt(items):          │
+14 │ 15     lines = []                      │
+15 │ 16     for item in items:              │
+16 │ 17         name = item['name']         │
+17 │ 18         cost = item['price'] * it@@@│
+18 │calc.py               10,1           Top│
+    ────────────────────────────────────────
+
+[KEYS] '$b'
+[OVERLAY] $b  on tax_rate
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Calculator                        │
+ 1 │  2                                     │
+ 2 │  3 def compute_total(items):           │
+ 3 │  4     tax_rate = 0.08                 │
+ 4 │  5     subtotal = 0                    │
+ 5 │  6     for item in items:              │
+ 6 │  7         price = item['price']       │
+ 7 │  8         qty = item['qty']           │
+ 8 │  9         subtotal += price * qty     │
+ 9 │ 10     tax = subtotal * tax_rate       │ ◂ cursor (9,25)
+10 │ 11     total = subtotal + tax          │
+11 │ 12     return total                    │
+12 │ 13                                     │
+13 │ 14 def format_receipt(items):          │
+14 │ 15     lines = []                      │
+15 │ 16     for item in items:              │
+16 │ 17         name = item['name']         │
+17 │ 18         cost = item['price'] * it@@@│
+18 │calc.py               10,22          Top│
+    ────────────────────────────────────────
+
+[SAY] G D. Jump to where tax rate is defined.
+[KEYS] 'gd'
+[OVERLAY] gd  local definition
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Calculator                        │
+ 1 │  2                                     │
+ 2 │  3 def compute_total(items):           │
+ 3 │  4     tax_rate = 0.08                 │ ◂ cursor (3,8)
+ 4 │  5     subtotal = 0                    │
+ 5 │  6     for item in items:              │
+ 6 │  7         price = item['price']       │
+ 7 │  8         qty = item['qty']           │
+ 8 │  9         subtotal += price * qty     │
+ 9 │ 10     tax = subtotal * tax_rate       │
+10 │ 11     total = subtotal + tax          │
+11 │ 12     return total                    │
+12 │ 13                                     │
+13 │ 14 def format_receipt(items):          │
+14 │ 15     lines = []                      │
+15 │ 16     for item in items:              │
+16 │ 17         name = item['name']         │
+17 │ 18         cost = item['price'] * it@@@│
+18 │calc.py               4,5            Top│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 3, cols 9-15: "ax_rate"
+[HIGHLIGHT] row 9, cols 25-32: "tax_rate"
+
+[SAY] Line four. That's where tax rate is first assigned.
+[SAY] Go to line eleven where total uses subtotal.
+[KEYS] '11G'
+[OVERLAY] 11G  line 11
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Calculator                        │
+ 1 │  2                                     │
+ 2 │  3 def compute_total(items):           │
+ 3 │  4     tax_rate = 0.08                 │
+ 4 │  5     subtotal = 0                    │
+ 5 │  6     for item in items:              │
+ 6 │  7         price = item['price']       │
+ 7 │  8         qty = item['qty']           │
+ 8 │  9         subtotal += price * qty     │
+ 9 │ 10     tax = subtotal * tax_rate       │
+10 │ 11     total = subtotal + tax          │ ◂ cursor (10,8)
+11 │ 12     return total                    │
+12 │ 13                                     │
+13 │ 14 def format_receipt(items):          │
+14 │ 15     lines = []                      │
+15 │ 16     for item in items:              │
+16 │ 17         name = item['name']         │
+17 │ 18         cost = item['price'] * it@@@│
+18 │calc.py               11,5           Top│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 3, cols 8-15: "tax_rate"
+[HIGHLIGHT] row 9, cols 25-32: "tax_rate"
+
+[KEYS] 'ww'
+[OVERLAY] ww  on subtotal
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Calculator                        │
+ 1 │  2                                     │
+ 2 │  3 def compute_total(items):           │
+ 3 │  4     tax_rate = 0.08                 │
+ 4 │  5     subtotal = 0                    │
+ 5 │  6     for item in items:              │
+ 6 │  7         price = item['price']       │
+ 7 │  8         qty = item['qty']           │
+ 8 │  9         subtotal += price * qty     │
+ 9 │ 10     tax = subtotal * tax_rate       │
+10 │ 11     total = subtotal + tax          │ ◂ cursor (10,16)
+11 │ 12     return total                    │
+12 │ 13                                     │
+13 │ 14 def format_receipt(items):          │
+14 │ 15     lines = []                      │
+15 │ 16     for item in items:              │
+16 │ 17         name = item['name']         │
+17 │ 18         cost = item['price'] * it@@@│
+18 │calc.py               11,13          Top│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 3, cols 8-15: "tax_rate"
+[HIGHLIGHT] row 9, cols 25-32: "tax_rate"
+
+[SAY] G D.
+[KEYS] 'gd'
+[OVERLAY] gd  gd
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Calculator                        │
+ 1 │  2                                     │
+ 2 │  3 def compute_total(items):           │
+ 3 │  4     tax_rate = 0.08                 │
+ 4 │  5     subtotal = 0                    │ ◂ cursor (4,8)
+ 5 │  6     for item in items:              │
+ 6 │  7         price = item['price']       │
+ 7 │  8         qty = item['qty']           │
+ 8 │  9         subtotal += price * qty     │
+ 9 │ 10     tax = subtotal * tax_rate       │
+10 │ 11     total = subtotal + tax          │
+11 │ 12     return total                    │
+12 │ 13                                     │
+13 │ 14 def format_receipt(items):          │
+14 │ 15     lines = []                      │
+15 │ 16     for item in items:              │
+16 │ 17         name = item['name']         │
+17 │ 18         cost = item['price'] * it@@@│
+18 │calc.py               5,5            Top│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 4, cols 9-15: "ubtotal"
+[HIGHLIGHT] row 8, cols 12-19: "subtotal"
+[HIGHLIGHT] row 9, cols 14-21: "subtotal"
+[HIGHLIGHT] row 10, cols 16-23: "subtotal"
+
+[SAY] Line five. Where subtotal is first defined.
+[SAY] G D. Jump to the local definition. It uses simple text search, not a language server, so it works in any file type.

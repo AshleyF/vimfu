@@ -15,7 +15,7 @@ import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-VROOT = REPO_ROOT / "shellpilot" / "videos"
+VROOT = REPO_ROOT / "videos"
 
 # Setup-only tokens — these should never appear on the first recorded
 # frame. They're commands the JSON `setup` block runs before recording

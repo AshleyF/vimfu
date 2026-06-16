@@ -1,0 +1,90 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO: server started                    │ ◂ cursor (0,0)
+ 1 │DEBUG: loading config                   │
+ 2 │ERROR: disk full                        │
+ 3 │INFO: request received                  │
+ 4 │DEBUG: parsing input                    │
+ 5 │ERROR: timeout                          │
+ 6 │INFO: response sent                     │
+ 7 │DEBUG: cleanup done                     │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :v with :d — Keep Only Matches
+[SAY] V with D is a powerful filter. It deletes everything except the lines you want.
+[SAY] This log has info, debug, and error lines. Let's keep only the errors.
+[TYPE] ':v/ERROR/d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │INFO: server started                    │
+ 1 │DEBUG: loading config                   │
+ 2 │ERROR: disk full                        │
+ 3 │INFO: request received                  │
+ 4 │DEBUG: parsing input                    │
+ 5 │ERROR: timeout                          │
+ 6 │INFO: response sent                     │
+ 7 │DEBUG: cleanup done                     │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt               3,1            All│
+19 │:v/ERROR/d                              │ ◂ cursor (19,10)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-4: "ERROR"
+[HIGHLIGHT] row 5, cols 0-4: "ERROR"
+
+[SAY] Colon V slash error slash D. V means anything not matching, so this deletes every line without the word error.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ERROR: disk full                        │
+ 1 │ERROR: timeout                          │ ◂ cursor (1,0)
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │log.txt [+]           2,1            All│
+19 │6 fewer lines                           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-4: "ERROR"
+[HIGHLIGHT] row 1, cols 1-4: "RROR"
+
+[SAY] Six lines deleted. Only the two error lines remain. The file is now a filtered error log.
+[SAY] Colon V slash pattern slash D. Instant filter.

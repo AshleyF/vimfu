@@ -1,0 +1,168 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# RPG System                            │ ◂ cursor (0,0)
+ 1 │MAX_LEVEL = 99                          │
+ 2 │BASE_HP = 100                           │
+ 3 │                                        │
+ 4 │def level_up(hero):                     │
+ 5 │    if hero.level < MAX_LEVEL:          │
+ 6 │        hero.hp += BASE_HP              │
+ 7 │        hero.level += 1                 │
+ 8 │                                        │
+ 9 │hero_hp = BASE_HP * 2                   │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │rpg.py                1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-W i — Split Declaration
+[SAY] Control W I splits the window and shows the first line that matches the word under the cursor. Like a quick declaration lookup.
+[SAY] Move to where MAX LEVEL is used inside the function.
+[KEYS] '6G'
+[OVERLAY] 6G  go to line 6
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# RPG System                            │
+ 1 │MAX_LEVEL = 99                          │
+ 2 │BASE_HP = 100                           │
+ 3 │                                        │
+ 4 │def level_up(hero):                     │
+ 5 │    if hero.level < MAX_LEVEL:          │ ◂ cursor (5,0)
+ 6 │        hero.hp += BASE_HP              │
+ 7 │        hero.level += 1                 │
+ 8 │                                        │
+ 9 │hero_hp = BASE_HP * 2                   │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │rpg.py                6,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '$'
+[OVERLAY] ⇧$  end of line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# RPG System                            │
+ 1 │MAX_LEVEL = 99                          │
+ 2 │BASE_HP = 100                           │
+ 3 │                                        │
+ 4 │def level_up(hero):                     │
+ 5 │    if hero.level < MAX_LEVEL:          │ ◂ cursor (5,29)
+ 6 │        hero.hp += BASE_HP              │
+ 7 │        hero.level += 1                 │
+ 8 │                                        │
+ 9 │hero_hp = BASE_HP * 2                   │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │rpg.py                6,30           All│
+    ────────────────────────────────────────
+
+[KEYS] 'b'
+[OVERLAY] b  back to MAX_LEVEL
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# RPG System                            │
+ 1 │MAX_LEVEL = 99                          │
+ 2 │BASE_HP = 100                           │
+ 3 │                                        │
+ 4 │def level_up(hero):                     │
+ 5 │    if hero.level < MAX_LEVEL:          │ ◂ cursor (5,20)
+ 6 │        hero.hp += BASE_HP              │
+ 7 │        hero.level += 1                 │
+ 8 │                                        │
+ 9 │hero_hp = BASE_HP * 2                   │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │rpg.py                6,21           All│
+    ────────────────────────────────────────
+
+[SAY] Cursor on MAX LEVEL. Split and find its declaration.
+[KEYS] '\x17i'
+[OVERLAY] ⌃wi  split to declaration
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │MAX_LEVEL = 99                          │ ◂ cursor (0,0)
+ 1 │BASE_HP = 100                           │
+ 2 │                                        │
+ 3 │def level_up(hero):                     │
+ 4 │    if hero.level < MAX_LEVEL:          │
+ 5 │        hero.hp += BASE_HP              │
+ 6 │        hero.level += 1                 │
+ 7 │                                        │
+ 8 │hero_hp = BASE_HP * 2                   │
+ 9 │rpg.py                2,1            Bot│
+10 │                                        │
+11 │def level_up(hero):                     │
+12 │    if hero.level < MAX_LEVEL:          │
+13 │        hero.hp += BASE_HP              │
+14 │        hero.level += 1                 │
+15 │                                        │
+16 │hero_hp = BASE_HP * 2                   │
+17 │~                                       │
+18 │rpg.py                6,21           Bot│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "rpg.py                2,1            Bot"
+
+[SAY] Split opened at the top where MAX LEVEL is defined. Usage below, definition above.
+[KEYS] '\x17c'
+[OVERLAY] ⌃wc  close
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# RPG System                            │
+ 1 │MAX_LEVEL = 99                          │
+ 2 │BASE_HP = 100                           │
+ 3 │                                        │
+ 4 │def level_up(hero):                     │
+ 5 │    if hero.level < MAX_LEVEL:          │ ◂ cursor (5,20)
+ 6 │        hero.hp += BASE_HP              │
+ 7 │        hero.level += 1                 │
+ 8 │                                        │
+ 9 │hero_hp = BASE_HP * 2                   │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │rpg.py                6,21           All│
+    ────────────────────────────────────────
+
+[SAY] Control W I. Split and jump to the first occurrence. Quick way to see where something is declared.

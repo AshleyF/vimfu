@@ -1,0 +1,141 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Buy groceries                           │ ◂ cursor (0,0)
+ 1 │Clean kitchen                           │
+ 2 │Fix the porch                           │
+ 3 │Wash the car                            │
+ 4 │Old task one                            │
+ 5 │Old task two                            │
+ 6 │Old task three                          │
+ 7 │Old task four                           │
+ 8 │Old task five                           │
+ 9 │Old task six                            │
+10 │Old task seven                          │
+11 │Old task eight                          │
+12 │Old task nine                           │
+13 │Old task ten                            │
+14 │Old task eleven                         │
+15 │Plan vacation                           │
+16 │Call dentist                            │
+17 │Read a book                             │
+18 │tasks.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Delete a Block of Lines
+[SAY] Need to delete a chunk of lines? Give Vim a range and the d command.
+[SAY] Turn on line numbers so we can see the range.
+[TYPE] ':set number'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Buy groceries                           │
+ 1 │Clean kitchen                           │
+ 2 │Fix the porch                           │
+ 3 │Wash the car                            │
+ 4 │Old task one                            │
+ 5 │Old task two                            │
+ 6 │Old task three                          │
+ 7 │Old task four                           │
+ 8 │Old task five                           │
+ 9 │Old task six                            │
+10 │Old task seven                          │
+11 │Old task eight                          │
+12 │Old task nine                           │
+13 │Old task ten                            │
+14 │Old task eleven                         │
+15 │Plan vacation                           │
+16 │Call dentist                            │
+17 │Read a book                             │
+18 │tasks.txt             1,1            All│
+19 │:set number                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Buy groceries                       │ ◂ cursor (0,4)
+ 1 │  2 Clean kitchen                       │
+ 2 │  3 Fix the porch                       │
+ 3 │  4 Wash the car                        │
+ 4 │  5 Old task one                        │
+ 5 │  6 Old task two                        │
+ 6 │  7 Old task three                      │
+ 7 │  8 Old task four                       │
+ 8 │  9 Old task five                       │
+ 9 │ 10 Old task six                        │
+10 │ 11 Old task seven                      │
+11 │ 12 Old task eight                      │
+12 │ 13 Old task nine                       │
+13 │ 14 Old task ten                        │
+14 │ 15 Old task eleven                     │
+15 │ 16 Plan vacation                       │
+16 │ 17 Call dentist                        │
+17 │ 18 Read a book                         │
+18 │tasks.txt             1,1            All│
+19 │:set number                             │
+    ────────────────────────────────────────
+
+[SAY] Lines 5 through 15 are old tasks. Use a range with d.
+[TYPE] ':5,15d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Buy groceries                       │
+ 1 │  2 Clean kitchen                       │
+ 2 │  3 Fix the porch                       │
+ 3 │  4 Wash the car                        │
+ 4 │  5 Old task one                        │
+ 5 │  6 Old task two                        │
+ 6 │  7 Old task three                      │
+ 7 │  8 Old task four                       │
+ 8 │  9 Old task five                       │
+ 9 │ 10 Old task six                        │
+10 │ 11 Old task seven                      │
+11 │ 12 Old task eight                      │
+12 │ 13 Old task nine                       │
+13 │ 14 Old task ten                        │
+14 │ 15 Old task eleven                     │
+15 │ 16 Plan vacation                       │
+16 │ 17 Call dentist                        │
+17 │ 18 Read a book                         │
+18 │tasks.txt             1,1            All│
+19 │:5,15d                                  │ ◂ cursor (19,6)
+    ────────────────────────────────────────
+
+[SAY] Five comma fifteen, d. Delete every line from five through fifteen inclusive.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Buy groceries                       │
+ 1 │  2 Clean kitchen                       │
+ 2 │  3 Fix the porch                       │
+ 3 │  4 Wash the car                        │
+ 4 │  5 Plan vacation                       │ ◂ cursor (4,4)
+ 5 │  6 Call dentist                        │
+ 6 │  7 Read a book                         │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tasks.txt [+]         5,1            All│
+19 │11 fewer lines                          │
+    ────────────────────────────────────────
+
+[SAY] Eleven lines gone in one command. Only the lines we wanted remain.
+[SAY] Colon range d. Start line, comma, end line, d. Done.

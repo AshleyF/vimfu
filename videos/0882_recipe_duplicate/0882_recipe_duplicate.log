@@ -1,0 +1,141 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │[server]                                │ ◂ cursor (0,0)
+ 1 │host = localhost                        │
+ 2 │port = 8080                             │
+ 3 │                                        │
+ 4 │[database]                              │
+ 5 │host = db.local                         │
+ 6 │port = 5432                             │
+ 7 │                                        │
+ 8 │[cache]                                 │
+ 9 │host = redis.local                      │
+10 │port = 6379                             │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │config.ini            1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Duplicate a Section
+[SAY] Need to copy a block of lines somewhere else? The t command copies a range to a destination line.
+[SAY] Turn on line numbers.
+[TYPE] ':set number'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │[server]                                │
+ 1 │host = localhost                        │
+ 2 │port = 8080                             │
+ 3 │                                        │
+ 4 │[database]                              │
+ 5 │host = db.local                         │
+ 6 │port = 5432                             │
+ 7 │                                        │
+ 8 │[cache]                                 │
+ 9 │host = redis.local                      │
+10 │port = 6379                             │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │config.ini            1,1            All│
+19 │:set number                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 [server]                            │ ◂ cursor (0,4)
+ 1 │  2 host = localhost                    │
+ 2 │  3 port = 8080                         │
+ 3 │  4                                     │
+ 4 │  5 [database]                          │
+ 5 │  6 host = db.local                     │
+ 6 │  7 port = 5432                         │
+ 7 │  8                                     │
+ 8 │  9 [cache]                             │
+ 9 │ 10 host = redis.local                  │
+10 │ 11 port = 6379                         │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │config.ini            1,1            All│
+19 │:set number                             │
+    ────────────────────────────────────────
+
+[SAY] Copy the server section, lines one through three, to the end of the file.
+[TYPE] ':1,3t 11'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 [server]                            │
+ 1 │  2 host = localhost                    │
+ 2 │  3 port = 8080                         │
+ 3 │  4                                     │
+ 4 │  5 [database]                          │
+ 5 │  6 host = db.local                     │
+ 6 │  7 port = 5432                         │
+ 7 │  8                                     │
+ 8 │  9 [cache]                             │
+ 9 │ 10 host = redis.local                  │
+10 │ 11 port = 6379                         │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │config.ini            1,1            All│
+19 │:1,3t 11                                │ ◂ cursor (19,8)
+    ────────────────────────────────────────
+
+[SAY] One comma three t eleven. Copy lines one through three, paste after line eleven.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 [server]                            │
+ 1 │  2 host = localhost                    │
+ 2 │  3 port = 8080                         │
+ 3 │  4                                     │
+ 4 │  5 [database]                          │
+ 5 │  6 host = db.local                     │
+ 6 │  7 port = 5432                         │
+ 7 │  8                                     │
+ 8 │  9 [cache]                             │
+ 9 │ 10 host = redis.local                  │
+10 │ 11 port = 6379                         │
+11 │ 12 [server]                            │
+12 │ 13 host = localhost                    │
+13 │ 14 port = 8080                         │ ◂ cursor (13,4)
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │config.ini [+]        14,1           All│
+19 │3 more lines                            │
+    ────────────────────────────────────────
+
+[SAY] The server block is duplicated at the bottom. The original stays in place.
+[SAY] Colon range t destination. T for copy-to. Duplicate any block anywhere.

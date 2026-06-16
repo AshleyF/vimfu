@@ -1,0 +1,116 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │ ◂ cursor (0,0)
+ 1 │old = "old old old"                     │
+ 2 │keep = "safe"                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :s — Substitute
+[SAY] Colon S slash old slash new slash. Replace the first occurrence of old with new on the current line.
+[SAY] Go to line two. It has old three times.
+[KEYS] 'j'
+[OVERLAY] j  to line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │old = "old old old"                     │ ◂ cursor (1,0)
+ 2 │keep = "safe"                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               2,1            All│
+    ────────────────────────────────────────
+
+[TYPE] ':s/old/new/'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │new = "old old old"                     │
+ 2 │keep = "safe"                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,1            All│
+19 │:s/old/new/                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "new"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │new = "old old old"                     │ ◂ cursor (1,0)
+ 2 │keep = "safe"                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,1            All│
+19 │:s/old/new/                             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 7-9: "old"
+[HIGHLIGHT] row 1, cols 11-13: "old"
+[HIGHLIGHT] row 1, cols 15-17: "old"
+
+[SAY] Only the first old changed to new. The other two are untouched. That's the default. One replacement per line.
+[SAY] Colon S. Search and replace on the current line. Add G at the end to replace all occurrences.

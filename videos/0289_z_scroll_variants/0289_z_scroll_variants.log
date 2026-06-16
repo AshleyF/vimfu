@@ -1,0 +1,143 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Game Engine                       │ ◂ cursor (0,4)
+ 1 │  2 class Engine:                       │
+ 2 │  3     def __init__(self):             │
+ 3 │  4         self.running = False        │
+ 4 │  5         self.fps = 60               │
+ 5 │  6         self.frame = 0              │
+ 6 │  7                                     │
+ 7 │  8     def start(self):                │
+ 8 │  9         self.running = True         │
+ 9 │ 10         self.loop()                 │
+10 │ 11                                     │
+11 │ 12     def loop(self):                 │
+12 │ 13         while self.running:         │
+13 │ 14             self.update()           │
+14 │ 15             self.render()           │
+15 │ 16             self.frame += 1         │
+16 │ 17                                     │
+17 │ 18     def update(self):               │
+18 │engine.py             1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — z. z+ z- z^ — Scroll Variants
+[SAY] Beyond Z Z, Z T, and Z B, there are more scroll variants. Z dot, Z plus, Z minus, and Z caret.
+[SAY] Z dot is like Z Z but moves the cursor to the first non blank character.
+[KEYS] '15G$'
+[OVERLAY] 15G$  end of line 15
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Game Engine                       │
+ 1 │  2 class Engine:                       │
+ 2 │  3     def __init__(self):             │
+ 3 │  4         self.running = False        │
+ 4 │  5         self.fps = 60               │
+ 5 │  6         self.frame = 0              │
+ 6 │  7                                     │
+ 7 │  8     def start(self):                │
+ 8 │  9         self.running = True         │
+ 9 │ 10         self.loop()                 │
+10 │ 11                                     │
+11 │ 12     def loop(self):                 │
+12 │ 13         while self.running:         │
+13 │ 14             self.update()           │
+14 │ 15             self.render()           │ ◂ cursor (14,28)
+15 │ 16             self.frame += 1         │
+16 │ 17                                     │
+17 │ 18     def update(self):               │
+18 │engine.py             15,25          Top│
+    ────────────────────────────────────────
+
+[KEYS] 'z.'
+[OVERLAY] z.  z. — center + first non-blank
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  7                                     │
+ 1 │  8     def start(self):                │
+ 2 │  9         self.running = True         │
+ 3 │ 10         self.loop()                 │
+ 4 │ 11                                     │
+ 5 │ 12     def loop(self):                 │
+ 6 │ 13         while self.running:         │
+ 7 │ 14             self.update()           │
+ 8 │ 15             self.render()           │ ◂ cursor (8,16)
+ 9 │ 16             self.frame += 1         │
+10 │ 17                                     │
+11 │ 18     def update(self):               │
+12 │ 19         pass                        │
+13 │ 20                                     │
+14 │ 21     def render(self):               │
+15 │ 22         pass                        │
+16 │ 23                                     │
+17 │ 24     def stop(self):                 │
+18 │engine.py             15,13          50%│
+    ────────────────────────────────────────
+
+[SAY] Centered, and cursor moved to the first non blank. Z Z would keep the cursor at the end.
+[SAY] Z plus shows the first line of the next page at the top.
+[KEYS] 'z+'
+[OVERLAY] z+  z+ — next page top
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 25         self.running = False        │ ◂ cursor (0,12)
+ 1 │ 26         print(f"Stopped at {self.fra│
+ 2 │    me}")                               │
+ 3 │ 27                                     │
+ 4 │ 28     def reset(self):                │
+ 5 │ 29         self.frame = 0              │
+ 6 │ 30         self.running = False        │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │engine.py             25,9           Bot│
+    ────────────────────────────────────────
+
+[SAY] Scrolled down a page. Cursor on the first non blank of the top line.
+[SAY] Z caret does the opposite. Previous page, last line.
+[KEYS] 'z^'
+[OVERLAY] z^  z^ — previous page
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  7                                     │
+ 1 │  8     def start(self):                │
+ 2 │  9         self.running = True         │
+ 3 │ 10         self.loop()                 │
+ 4 │ 11                                     │
+ 5 │ 12     def loop(self):                 │
+ 6 │ 13         while self.running:         │
+ 7 │ 14             self.update()           │
+ 8 │ 15             self.render()           │
+ 9 │ 16             self.frame += 1         │
+10 │ 17                                     │
+11 │ 18     def update(self):               │
+12 │ 19         pass                        │
+13 │ 20                                     │
+14 │ 21     def render(self):               │
+15 │ 22         pass                        │
+16 │ 23                                     │
+17 │ 24     def stop(self):                 │ ◂ cursor (17,8)
+18 │engine.py             24,5           50%│
+    ────────────────────────────────────────
+
+[SAY] Scrolled back up.
+[SAY] Z dot centers with cursor on first non blank. Z plus and Z caret page forward and back. Niche, but good to know.

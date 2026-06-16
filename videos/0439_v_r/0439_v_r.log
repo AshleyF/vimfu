@@ -1,0 +1,259 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# secrets                               │ ◂ cursor (0,0)
+ 1 │password = "hunter42"                   │
+ 2 │api_key = "abc123def"                   │
+ 3 │token = "xyz789"                        │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │secret.py             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — visual replace
+[SAY] Visual replace is useful for redaction: select the text, then use {key:r} and a mask character.
+[SAY] Select the password value inside the quotes.
+[KEYS] 'jf"'
+[OVERLAY] jf"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# secrets                               │
+ 1 │password = "hunter42"                   │ ◂ cursor (1,11)
+ 2 │api_key = "abc123def"                   │
+ 3 │token = "xyz789"                        │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │secret.py             2,12           All│
+    ────────────────────────────────────────
+
+[KEYS] 'vi"'
+[OVERLAY] vi"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# secrets                               │
+ 1 │password = "hunter42"                   │ ◂ cursor (1,19)
+ 2 │api_key = "abc123def"                   │
+ 3 │token = "xyz789"                        │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │secret.py             2,20           All│
+19 │-- VISUAL --                 8          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 12-19: "hunter4"
+
+[SAY] Now press {key:r}, then {key:*}.
+[KEYS] 'r*'
+[OVERLAY] r*  replace all
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# secrets                               │
+ 1 │password = "********"                   │ ◂ cursor (1,12)
+ 2 │api_key = "abc123def"                   │
+ 3 │token = "xyz789"                        │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │secret.py [+]         2,13           All│
+    ────────────────────────────────────────
+
+[SAY] Every character replaced with a star. Password redacted.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# secrets                               │
+ 1 │password = "hunter42"                   │ ◂ cursor (1,12)
+ 2 │api_key = "abc123def"                   │
+ 3 │token = "xyz789"                        │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │secret.py             2,13           All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Try it on the API key. Select the value.
+[KEYS] 'jf"'
+[OVERLAY] jf"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# secrets                               │
+ 1 │password = "hunter42"                   │
+ 2 │api_key = "abc123def"                   │ ◂ cursor (2,20)
+ 3 │token = "xyz789"                        │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │secret.py             3,21           All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'vi"'
+[OVERLAY] vi"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# secrets                               │
+ 1 │password = "hunter42"                   │
+ 2 │api_key = "abc123def"                   │ ◂ cursor (2,19)
+ 3 │token = "xyz789"                        │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │secret.py             3,20           All│
+19 │-- VISUAL --                 9          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 11-19: "abc123de"
+
+[SAY] Press {key:r}, then {key:x}.
+[KEYS] 'rx'
+[OVERLAY] rx  replace all
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# secrets                               │
+ 1 │password = "hunter42"                   │
+ 2 │api_key = "xxxxxxxxx"                   │ ◂ cursor (2,11)
+ 3 │token = "xyz789"                        │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │secret.py [+]         3,12           All│
+    ────────────────────────────────────────
+
+[SAY] All lowercase x's. Every selected character became a mask.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# secrets                               │
+ 1 │password = "hunter42"                   │
+ 2 │api_key = "abc123def"                   │ ◂ cursor (2,11)
+ 3 │token = "xyz789"                        │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │secret.py             3,12           All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Same shape, any mask character. The selection lets you confirm exactly what will be redacted.
+[SAY] Visual replace preserves the selected width while hiding the contents.

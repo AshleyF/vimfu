@@ -1,0 +1,383 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │ ◂ cursor (0,0)
+ 1 │print("Booting...")                     │
+ 2 │power = 100                             │
+ 3 │mood = "happy"                          │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │print("Goodnight.")                     │
+ 7 │power = 0                               │
+ 8 │mood = "sleepy"                         │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Visual Indent
+[SAY] Select lines in visual mode, then press greater-than to indent or less-than to unindent.
+[SAY] These function bodies aren't indented. Select with capital V.
+[KEYS] 'j'
+[OVERLAY] j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │print("Booting...")                     │ ◂ cursor (1,0)
+ 2 │power = 100                             │
+ 3 │mood = "happy"                          │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │print("Goodnight.")                     │
+ 7 │power = 0                               │
+ 8 │mood = "sleepy"                         │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py              2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │print("Booting...")                     │ ◂ cursor (1,0)
+ 2 │power = 100                             │
+ 3 │mood = "happy"                          │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │print("Goodnight.")                     │
+ 7 │power = 0                               │
+ 8 │mood = "sleepy"                         │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py              2,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 1-18: "rint("Booting...")"
+
+[KEYS] '2j'
+[OVERLAY] 2j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │print("Booting...")                     │
+ 2 │power = 100                             │
+ 3 │mood = "happy"                          │ ◂ cursor (3,0)
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │print("Goodnight.")                     │
+ 7 │power = 0                               │
+ 8 │mood = "sleepy"                         │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py              4,1            All│
+19 │-- VISUAL LINE --            3          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-18: "print("Booting...")"
+[HIGHLIGHT] row 2, cols 0-10: "power = 100"
+[HIGHLIGHT] row 3, cols 1-13: "ood = "happy""
+
+[SAY] Three body lines selected. Greater-than.
+[KEYS] '>'
+[OVERLAY] ⇧>  indent
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │    print("Booting...")                 │ ◂ cursor (1,0)
+ 2 │    power = 100                         │
+ 3 │    mood = "happy"                      │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │print("Goodnight.")                     │
+ 7 │power = 0                               │
+ 8 │mood = "sleepy"                         │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py [+]          2,1            All│
+19 │3 lines >ed 1 time                      │
+    ────────────────────────────────────────
+
+[SAY] Indented. Now they're properly nested under the def.
+[SAY] Same for shutdown.
+[KEYS] '5j'
+[OVERLAY] 5j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │    print("Booting...")                 │
+ 2 │    power = 100                         │
+ 3 │    mood = "happy"                      │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │print("Goodnight.")                     │ ◂ cursor (6,0)
+ 7 │power = 0                               │
+ 8 │mood = "sleepy"                         │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py [+]          7,1            All│
+19 │3 lines >ed 1 time                      │
+    ────────────────────────────────────────
+
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │    print("Booting...")                 │
+ 2 │    power = 100                         │
+ 3 │    mood = "happy"                      │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │print("Goodnight.")                     │ ◂ cursor (6,0)
+ 7 │power = 0                               │
+ 8 │mood = "sleepy"                         │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py [+]          7,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 1-18: "rint("Goodnight.")"
+
+[KEYS] '2j'
+[OVERLAY] 2j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │    print("Booting...")                 │
+ 2 │    power = 100                         │
+ 3 │    mood = "happy"                      │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │print("Goodnight.")                     │
+ 7 │power = 0                               │
+ 8 │mood = "sleepy"                         │ ◂ cursor (8,0)
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py [+]          9,1            All│
+19 │-- VISUAL LINE --            3          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 0-18: "print("Goodnight.")"
+[HIGHLIGHT] row 7, cols 0-8: "power = 0"
+[HIGHLIGHT] row 8, cols 1-14: "ood = "sleepy""
+
+[KEYS] '>'
+[OVERLAY] ⇧>  indent
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │    print("Booting...")                 │
+ 2 │    power = 100                         │
+ 3 │    mood = "happy"                      │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │    print("Goodnight.")                 │ ◂ cursor (6,0)
+ 7 │    power = 0                           │
+ 8 │    mood = "sleepy"                     │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py [+]          7,1            All│
+19 │3 lines >ed 1 time                      │
+    ────────────────────────────────────────
+
+[SAY] Clean.
+[SAY] Too much? Select and press less-than.
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │    print("Booting...")                 │
+ 2 │    power = 100                         │
+ 3 │    mood = "happy"                      │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │    print("Goodnight.")                 │ ◂ cursor (6,0)
+ 7 │    power = 0                           │
+ 8 │    mood = "sleepy"                     │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py [+]          7,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 1-22: "   print("Goodnight.")"
+
+[KEYS] '2j'
+[OVERLAY] 2j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │    print("Booting...")                 │
+ 2 │    power = 100                         │
+ 3 │    mood = "happy"                      │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │    print("Goodnight.")                 │
+ 7 │    power = 0                           │
+ 8 │    mood = "sleepy"                     │ ◂ cursor (8,0)
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py [+]          9,1            All│
+19 │-- VISUAL LINE --            3          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 6, cols 0-22: "    print("Goodnight.")"
+[HIGHLIGHT] row 7, cols 0-12: "    power = 0"
+[HIGHLIGHT] row 8, cols 1-18: "   mood = "sleepy""
+
+[KEYS] '<'
+[OVERLAY] ⇧<  unindent
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │    print("Booting...")                 │
+ 2 │    power = 100                         │
+ 3 │    mood = "happy"                      │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │print("Goodnight.")                     │ ◂ cursor (6,0)
+ 7 │power = 0                               │
+ 8 │mood = "sleepy"                         │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py [+]          7,1            All│
+19 │3 lines <ed 1 time                      │
+    ────────────────────────────────────────
+
+[SAY] Shifts back. Undo that.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def wake_up():                          │
+ 1 │    print("Booting...")                 │
+ 2 │    power = 100                         │
+ 3 │    mood = "happy"                      │
+ 4 │                                        │
+ 5 │def shutdown():                         │
+ 6 │    print("Goodnight.")                 │ ◂ cursor (6,0)
+ 7 │    power = 0                           │
+ 8 │    mood = "sleepy"                     │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │robot.py [+]          7,1            All│
+19 │3 changes; b...2 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Visual select, greater-than to indent, less-than to unindent. You pick the lines.

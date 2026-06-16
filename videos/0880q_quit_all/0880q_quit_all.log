@@ -1,0 +1,230 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File A                                │ ◂ cursor (0,0)
+ 1 │print("a")                              │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │a.py                  1,1            All│
+10 │# File B                                │
+11 │print("b")                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │b.py                  1,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "a.py                  1,1            All"
+
+[OVERLAY] VimFu — :qa — Quit All
+[SAY] Colon Q A quits all windows at once. If any buffer has unsaved changes, Vim will warn you. Add a bang to force quit.
+[SAY] First, make a change in this file.
+[KEYS] 'o'
+[OVERLAY] o  open below
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File A                                │
+ 1 │                                        │ ◂ cursor (1,0)
+ 2 │print("a")                              │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │a.py [+]              2,1            All│
+10 │# File B                                │
+11 │print("b")                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │b.py                  1,1            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "a.py [+]              2,1            All"
+
+[TYPE] '# changed'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File A                                │
+ 1 │# changed                               │ ◂ cursor (1,9)
+ 2 │print("a")                              │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │a.py [+]              2,10           All│
+10 │# File B                                │
+11 │print("b")                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │b.py                  1,1            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "a.py [+]              2,10           All"
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File A                                │
+ 1 │# changed                               │ ◂ cursor (1,8)
+ 2 │print("a")                              │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │a.py [+]              2,9            All│
+10 │# File B                                │
+11 │print("b")                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │b.py                  1,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "a.py [+]              2,9            All"
+
+[SAY] Now try to quit all.
+[TYPE] ':qa'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File A                                │
+ 1 │# changed                               │
+ 2 │print("a")                              │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │a.py [+]              2,9            All│
+10 │# File B                                │
+11 │print("b")                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │b.py                  1,1            All│
+19 │:qa                                     │ ◂ cursor (19,3)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "a.py [+]              2,9            All"
+
+[SAY] Q A — short for quit all — tries to close every buffer.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File A                                │
+ 1 │# changed                               │
+ 2 │print("a")                              │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │a.py [+]              2,9            All│
+10 │# File B                                │
+11 │print("b")                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │                                        │
+16 │E37: No write since last change         │
+17 │E162: No write since last change for buf│
+18 │fer "a.py"                              │
+19 │Press ENTER or type command to continue │ ◂ cursor (19,39)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "a.py [+]              2,9            All"
+
+[SAY] Vim refuses. Unsaved changes. Use Q A bang to discard them and quit anyway.
+[TYPE] ':qa!'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File A                                │
+ 1 │# changed                               │
+ 2 │print("a")                              │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │a.py [+]              2,9            All│
+10 │# File B                                │
+11 │print("b")                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │                                        │
+16 │E37: No write since last change         │
+17 │E162: No write since last change for buf│
+18 │fer "a.py"                              │
+19 │:qa!                                    │ ◂ cursor (19,4)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "a.py [+]              2,9            All"
+
+[SAY] The bang forces it. Everything closes, even modified buffers.
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# File A                                │
+ 1 │# changed                               │ ◂ cursor (1,8)
+ 2 │print("a")                              │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │a.py [+]              2,9            All│
+10 │# File B                                │
+11 │print("b")                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │b.py                  1,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "a.py [+]              2,9            All"
+
+[SAY] Colon Q A to quit all. Colon Q A bang to force it. The fastest way to exit everything.

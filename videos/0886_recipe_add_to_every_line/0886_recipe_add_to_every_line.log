@@ -1,0 +1,85 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │let x = 1                               │ ◂ cursor (0,0)
+ 1 │let y = 2                               │
+ 2 │let z = x + y                           │
+ 3 │console.log(x)                          │
+ 4 │console.log(y)                          │
+ 5 │console.log(z)                          │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.js               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Add to Every Line
+[SAY] Every line in this JavaScript file is missing a semicolon. Let's fix them all at once.
+[SAY] Use the norm command to run normal-mode keystrokes on every line.
+[TYPE] ':%norm A;'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │let x = 1                               │
+ 1 │let y = 2                               │
+ 2 │let z = x + y                           │
+ 3 │console.log(x)                          │
+ 4 │console.log(y)                          │
+ 5 │console.log(z)                          │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.js               1,1            All│
+19 │:%norm A;                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+
+[SAY] Percent norm A semicolon. Capital A appends at end of line; norm replays it on every line in the file.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │let x = 1;                              │
+ 1 │let y = 2;                              │
+ 2 │let z = x + y;                          │
+ 3 │console.log(x);                         │
+ 4 │console.log(y);                         │
+ 5 │console.log(z);                         │ ◂ cursor (5,14)
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │code.js [+]           6,15           All│
+    ────────────────────────────────────────
+
+[SAY] Every line now ends with a semicolon. Six lines fixed in one command.
+[SAY] Percent norm followed by keystrokes. Run any normal mode command on every line.

@@ -1,0 +1,143 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — header                     │ ◂ cursor (0,4)
+ 1 │  2 line 2 — intro                      │
+ 2 │  3 line 3 — IMPORTANT                  │
+ 3 │  4 line 4 — details                    │
+ 4 │  5 line 5 — summary                    │
+ 5 │  6 line 6 — footer                     │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :[range]d {reg}
+[SAY] You can delete lines into a named register. Just add a letter after the D.
+[SAY] Colon three d a. Delete line three into register A.
+[TYPE] ':3d a'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — header                     │
+ 1 │  2 line 2 — intro                      │
+ 2 │  3 line 3 — IMPORTANT                  │
+ 3 │  4 line 4 — details                    │
+ 4 │  5 line 5 — summary                    │
+ 5 │  6 line 6 — footer                     │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt             1,1            All│
+19 │:3d a                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — header                     │
+ 1 │  2 line 2 — intro                      │
+ 2 │  3 line 4 — details                    │ ◂ cursor (2,4)
+ 3 │  4 line 5 — summary                    │
+ 4 │  5 line 6 — footer                     │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt [+]         3,1            All│
+19 │:3d a                                   │
+    ────────────────────────────────────────
+
+[SAY] Line three is gone. But it's saved in register A.
+[SAY] Go to the end and paste from register A.
+[KEYS] 'G'
+[OVERLAY] ⇧G  go to end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — header                     │
+ 1 │  2 line 2 — intro                      │
+ 2 │  3 line 4 — details                    │
+ 3 │  4 line 5 — summary                    │
+ 4 │  5 line 6 — footer                     │ ◂ cursor (4,4)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt [+]         5,1            All│
+19 │:3d a                                   │
+    ────────────────────────────────────────
+
+[KEYS] '"ap'
+[OVERLAY] "ap  "ap paste reg a
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — header                     │
+ 1 │  2 line 2 — intro                      │
+ 2 │  3 line 4 — details                    │
+ 3 │  4 line 5 — summary                    │
+ 4 │  5 line 6 — footer                     │
+ 5 │  6 line 3 — IMPORTANT                  │ ◂ cursor (5,4)
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │items.txt [+]         6,1            All│
+19 │:3d a                                   │
+    ────────────────────────────────────────
+
+[SAY] There it is at the bottom. The important line was moved via a named register.
+[SAY] Colon D with a register letter. Delete and store. Paste later with quote A P.

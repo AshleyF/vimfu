@@ -1,0 +1,284 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │void cast_spell() {                     │ ◂ cursor (0,0)
+ 1 │int mana = 50;                          │
+ 2 │    if (mana > 0) {                     │
+ 3 │printf("Fireball!");                    │
+ 4 │        mana -= 25;                     │
+ 5 │}                                       │
+ 6 │printf("Done.");                        │
+ 7 │}                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │magic.c               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Auto-Indent
+[SAY] Equals equals auto-indents the current line. Vim figures out the right level for you.
+[SAY] This C file is a mess. Line two should be indented.
+[KEYS] 'j'
+[OVERLAY] j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │void cast_spell() {                     │
+ 1 │int mana = 50;                          │ ◂ cursor (1,0)
+ 2 │    if (mana > 0) {                     │
+ 3 │printf("Fireball!");                    │
+ 4 │        mana -= 25;                     │
+ 5 │}                                       │
+ 6 │printf("Done.");                        │
+ 7 │}                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │magic.c               2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '=='
+[OVERLAY] ==  auto-indent line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │void cast_spell() {                     │
+ 1 │    int mana = 50;                      │ ◂ cursor (1,0)
+ 2 │    if (mana > 0) {                     │
+ 3 │printf("Fireball!");                    │
+ 4 │        mana -= 25;                     │
+ 5 │}                                       │
+ 6 │printf("Done.");                        │
+ 7 │}                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │magic.c [+]           2,1            All│
+    ────────────────────────────────────────
+
+[SAY] Fixed. Vim knows it's inside a function.
+[SAY] Line four. Printf with no indent.
+[KEYS] '2j'
+[OVERLAY] 2j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │void cast_spell() {                     │
+ 1 │    int mana = 50;                      │
+ 2 │    if (mana > 0) {                     │
+ 3 │printf("Fireball!");                    │ ◂ cursor (3,0)
+ 4 │        mana -= 25;                     │
+ 5 │}                                       │
+ 6 │printf("Done.");                        │
+ 7 │}                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │magic.c [+]           4,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '=='
+[OVERLAY] ==  auto-indent line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │void cast_spell() {                     │
+ 1 │    int mana = 50;                      │
+ 2 │    if (mana > 0) {                     │
+ 3 │        printf("Fireball!");            │ ◂ cursor (3,7)
+ 4 │        mana -= 25;                     │
+ 5 │}                                       │
+ 6 │printf("Done.");                        │
+ 7 │}                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │magic.c [+]           4,1-8          All│
+    ────────────────────────────────────────
+
+[SAY] Bumped in to the right level. Inside the if block.
+[SAY] But why fix one line at a time? Undo all that.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │void cast_spell() {                     │
+ 1 │    int mana = 50;                      │
+ 2 │    if (mana > 0) {                     │
+ 3 │printf("Fireball!");                    │ ◂ cursor (3,0)
+ 4 │        mana -= 25;                     │
+ 5 │}                                       │
+ 6 │printf("Done.");                        │
+ 7 │}                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │magic.c [+]           4,1            All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │void cast_spell() {                     │
+ 1 │int mana = 50;                          │ ◂ cursor (1,0)
+ 2 │    if (mana > 0) {                     │
+ 3 │printf("Fireball!");                    │
+ 4 │        mana -= 25;                     │
+ 5 │}                                       │
+ 6 │printf("Done.");                        │
+ 7 │}                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │magic.c               2,1            All│
+19 │1 change; be...3 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Go to the top. Equals, capital G. Fix the whole file.
+[KEYS] 'gg'
+[OVERLAY] gg
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │void cast_spell() {                     │ ◂ cursor (0,0)
+ 1 │int mana = 50;                          │
+ 2 │    if (mana > 0) {                     │
+ 3 │printf("Fireball!");                    │
+ 4 │        mana -= 25;                     │
+ 5 │}                                       │
+ 6 │printf("Done.");                        │
+ 7 │}                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │magic.c               1,1            All│
+19 │1 change; be...3 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] '='
+[OVERLAY] =  auto-indent
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │void cast_spell() {                     │ ◂ cursor (0,0)
+ 1 │int mana = 50;                          │
+ 2 │    if (mana > 0) {                     │
+ 3 │printf("Fireball!");                    │
+ 4 │        mana -= 25;                     │
+ 5 │}                                       │
+ 6 │printf("Done.");                        │
+ 7 │}                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │magic.c               1,1            All│
+19 │1 change; be...3 seconds ago =          │
+    ────────────────────────────────────────
+
+[KEYS] 'G'
+[OVERLAY] ⇧G  to end of file
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │void cast_spell() {                     │ ◂ cursor (0,0)
+ 1 │    int mana = 50;                      │
+ 2 │    if (mana > 0) {                     │
+ 3 │        printf("Fireball!");            │
+ 4 │        mana -= 25;                     │
+ 5 │    }                                   │
+ 6 │    printf("Done.");                    │
+ 7 │}                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │magic.c [+]           1,1            All│
+19 │8 lines indented                        │
+    ────────────────────────────────────────
+
+[SAY] Every line snapped to the right indent. One command.
+[SAY] Equals equals for one line. Equals G for the whole file. Let Vim do the thinking.

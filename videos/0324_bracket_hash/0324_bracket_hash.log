@@ -1,0 +1,141 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #ifndef CONFIG_H                    │ ◂ cursor (0,4)
+ 1 │  2 #define CONFIG_H                    │
+ 2 │  3                                     │
+ 3 │  4 #ifdef DEBUG                        │
+ 4 │  5   int log_level = 3;                │
+ 5 │  6   int verbose = 1;                  │
+ 6 │  7   int trace = 1;                    │
+ 7 │  8 #endif                              │
+ 8 │  9                                     │
+ 9 │ 10 int max_hp = 100;                   │
+10 │ 11                                     │
+11 │ 12 #endif                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │config.h              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — [# ]# — Preprocessor
+[SAY] {key:[#} jumps to the previous unmatched if-def. {key:]#} jumps to the next unmatched end-if.
+[SAY] Cursor is inside the debug block on line five. {key:[#} to find the enclosing if-def.
+[KEYS] '5G'
+[OVERLAY] 5G  go to line 5
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #ifndef CONFIG_H                    │
+ 1 │  2 #define CONFIG_H                    │
+ 2 │  3                                     │
+ 3 │  4 #ifdef DEBUG                        │
+ 4 │  5   int log_level = 3;                │ ◂ cursor (4,4)
+ 5 │  6   int verbose = 1;                  │
+ 6 │  7   int trace = 1;                    │
+ 7 │  8 #endif                              │
+ 8 │  9                                     │
+ 9 │ 10 int max_hp = 100;                   │
+10 │ 11                                     │
+11 │ 12 #endif                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │config.h              5,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '[#'
+[OVERLAY] [#  enclosing #ifdef
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #ifndef CONFIG_H                    │
+ 1 │  2 #define CONFIG_H                    │
+ 2 │  3                                     │
+ 3 │  4 #ifdef DEBUG                        │ ◂ cursor (3,4)
+ 4 │  5   int log_level = 3;                │
+ 5 │  6   int verbose = 1;                  │
+ 6 │  7   int trace = 1;                    │
+ 7 │  8 #endif                              │
+ 8 │  9                                     │
+ 9 │ 10 int max_hp = 100;                   │
+10 │ 11                                     │
+11 │ 12 #endif                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │config.h              4,1            All│
+    ────────────────────────────────────────
+
+[SAY] Jumped to the if-def DEBUG on line four.
+[SAY] {key:]#} finds the matching end-if from inside the block.
+[KEYS] 'j'
+[OVERLAY] j  into block
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #ifndef CONFIG_H                    │
+ 1 │  2 #define CONFIG_H                    │
+ 2 │  3                                     │
+ 3 │  4 #ifdef DEBUG                        │
+ 4 │  5   int log_level = 3;                │ ◂ cursor (4,4)
+ 5 │  6   int verbose = 1;                  │
+ 6 │  7   int trace = 1;                    │
+ 7 │  8 #endif                              │
+ 8 │  9                                     │
+ 9 │ 10 int max_hp = 100;                   │
+10 │ 11                                     │
+11 │ 12 #endif                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │config.h              5,1            All│
+    ────────────────────────────────────────
+
+[KEYS] ']#'
+[OVERLAY] ]#  matching #endif
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #ifndef CONFIG_H                    │
+ 1 │  2 #define CONFIG_H                    │
+ 2 │  3                                     │
+ 3 │  4 #ifdef DEBUG                        │
+ 4 │  5   int log_level = 3;                │
+ 5 │  6   int verbose = 1;                  │
+ 6 │  7   int trace = 1;                    │
+ 7 │  8 #endif                              │ ◂ cursor (7,4)
+ 8 │  9                                     │
+ 9 │ 10 int max_hp = 100;                   │
+10 │ 11                                     │
+11 │ 12 #endif                              │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │config.h              8,1            All│
+    ────────────────────────────────────────
+
+[SAY] Landed on the end-if. Matches preprocessor blocks just like parens and braces.
+[SAY] {key:[#} and {key:]#}. Navigate C preprocessor blocks. Jump between if-def and end-if.

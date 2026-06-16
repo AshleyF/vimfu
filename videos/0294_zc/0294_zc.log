@@ -1,0 +1,145 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Combat System                         │ ◂ cursor (0,0)
+ 1 │def attack(target):                     │
+ 2 │    damage = 50                         │
+ 3 │    target.hp -= damage                 │
+ 4 │    return damage                       │
+ 5 │                                        │
+ 6 │def defend(shield):                     │
+ 7 │    block = shield * 2                  │
+ 8 │    absorbed = min(block, 100)          │
+ 9 │    return absorbed                     │
+10 │                                        │
+11 │def heal(potion):                       │
+12 │    restore = potion.power              │
+13 │    bonus = restore // 5                │
+14 │    return restore + bonus              │
+15 │                                        │
+16 │def flee(speed):                        │
+17 │    chance = speed / 100                │
+18 │combat.py             1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — zc — Close Fold
+[SAY] Z C closes a fold under the cursor. It hides the code block so you can see the big picture.
+[SAY] All four functions are expanded. Close the first one.
+[KEYS] '3G'
+[OVERLAY] 3G  go to line 3
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Combat System                         │
+ 1 │def attack(target):                     │
+ 2 │    damage = 50                         │ ◂ cursor (2,0)
+ 3 │    target.hp -= damage                 │
+ 4 │    return damage                       │
+ 5 │                                        │
+ 6 │def defend(shield):                     │
+ 7 │    block = shield * 2                  │
+ 8 │    absorbed = min(block, 100)          │
+ 9 │    return absorbed                     │
+10 │                                        │
+11 │def heal(potion):                       │
+12 │    restore = potion.power              │
+13 │    bonus = restore // 5                │
+14 │    return restore + bonus              │
+15 │                                        │
+16 │def flee(speed):                        │
+17 │    chance = speed / 100                │
+18 │combat.py             3,1            Top│
+    ────────────────────────────────────────
+
+[KEYS] 'zc'
+[OVERLAY] zc  close fold
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Combat System                         │
+ 1 │def attack(target):                     │
+ 2 │+--  3 lines: damage = 50···············│ ◂ cursor (2,0)
+ 3 │                                        │
+ 4 │def defend(shield):                     │
+ 5 │    block = shield * 2                  │
+ 6 │    absorbed = min(block, 100)          │
+ 7 │    return absorbed                     │
+ 8 │                                        │
+ 9 │def heal(potion):                       │
+10 │    restore = potion.power              │
+11 │    bonus = restore // 5                │
+12 │    return restore + bonus              │
+13 │                                        │
+14 │def flee(speed):                        │
+15 │    chance = speed / 100                │
+16 │    return chance > 0.5                 │
+17 │~                                       │
+18 │combat.py             3,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 1-39: "--  3 lines: damage = 50···············"
+
+[SAY] The body is hidden. Just the function signature remains.
+[SAY] Close the defend function too.
+[KEYS] '4j'
+[OVERLAY] 4j  jump down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Combat System                         │
+ 1 │def attack(target):                     │
+ 2 │+--  3 lines: damage = 50···············│
+ 3 │                                        │
+ 4 │def defend(shield):                     │
+ 5 │    block = shield * 2                  │
+ 6 │    absorbed = min(block, 100)          │ ◂ cursor (6,0)
+ 7 │    return absorbed                     │
+ 8 │                                        │
+ 9 │def heal(potion):                       │
+10 │    restore = potion.power              │
+11 │    bonus = restore // 5                │
+12 │    return restore + bonus              │
+13 │                                        │
+14 │def flee(speed):                        │
+15 │    chance = speed / 100                │
+16 │    return chance > 0.5                 │
+17 │~                                       │
+18 │combat.py             9,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  3 lines: damage = 50···············"
+
+[KEYS] 'zc'
+[OVERLAY] zc  close fold
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Combat System                         │
+ 1 │def attack(target):                     │
+ 2 │+--  3 lines: damage = 50···············│
+ 3 │                                        │
+ 4 │def defend(shield):                     │
+ 5 │+--  3 lines: block = shield * 2········│ ◂ cursor (5,0)
+ 6 │                                        │
+ 7 │def heal(potion):                       │
+ 8 │    restore = potion.power              │
+ 9 │    bonus = restore // 5                │
+10 │    return restore + bonus              │
+11 │                                        │
+12 │def flee(speed):                        │
+13 │    chance = speed / 100                │
+14 │    return chance > 0.5                 │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │combat.py             9,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  3 lines: damage = 50···············"
+[HIGHLIGHT] row 5, cols 1-39: "--  3 lines: block = shield * 2········"
+
+[SAY] Two functions folded. The file is much shorter now.
+[SAY] Z C. Close a fold to hide code you don't need right now. Use Z O to open it back.

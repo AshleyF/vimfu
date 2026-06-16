@@ -1,0 +1,366 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Setting a Mark
+[SAY] M followed by a letter drops a mark at the cursor. Like a bookmark you can jump back to.
+[SAY] I'm on the hero line. M A sets mark A here.
+[KEYS] 'm'
+[OVERLAY] m  set mark
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+19 │                             m          │
+    ────────────────────────────────────────
+
+[KEYS] 'a'
+[OVERLAY] a  mark a
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+    ────────────────────────────────────────
+
+[SAY] Done. No visible change, but the mark is set.
+[SAY] Now let me go somewhere else. Down to the heal function.
+[KEYS] 'G'
+[OVERLAY] ⇧G  go to last line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │ ◂ cursor (13,0)
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              14,1           All│
+    ────────────────────────────────────────
+
+[SAY] Single quote A jumps back to mark A.
+[KEYS] "'"
+[OVERLAY] '  jump to mark
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │ ◂ cursor (13,0)
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              14,1           All│
+19 │                             '          │
+    ────────────────────────────────────────
+
+[KEYS] 'a'
+[OVERLAY] a  mark a
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+    ────────────────────────────────────────
+
+[SAY] Back on the hero line. One jump from anywhere in the file.
+[SAY] You can have twenty six marks, A through Z. Let me set mark B on the attack function.
+[KEYS] '5j'
+[OVERLAY] 5j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │ ◂ cursor (5,0)
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              6,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'm'
+[OVERLAY] m  set mark
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │ ◂ cursor (5,0)
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              6,1            All│
+19 │                             m          │
+    ────────────────────────────────────────
+
+[KEYS] 'b'
+[OVERLAY] b  mark b
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │ ◂ cursor (5,0)
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              6,1            All│
+    ────────────────────────────────────────
+
+[SAY] Now I can bounce between hero and attack.
+[KEYS] "'"
+[OVERLAY] '  jump to mark
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │ ◂ cursor (5,0)
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              6,1            All│
+19 │                             '          │
+    ────────────────────────────────────────
+
+[KEYS] 'a'
+[OVERLAY] a  mark a
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+    ────────────────────────────────────────
+
+[KEYS] "'"
+[OVERLAY] '  jump to mark
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │ ◂ cursor (0,0)
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              1,1            All│
+19 │                             '          │
+    ────────────────────────────────────────
+
+[KEYS] 'b'
+[OVERLAY] b  mark b
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hero = "Kira"                           │
+ 1 │hp = 100                                │
+ 2 │mp = 40                                 │
+ 3 │weapon = "staff"                        │
+ 4 │                                        │
+ 5 │def attack(target):                     │ ◂ cursor (5,0)
+ 6 │    dmg = roll(2, 8)                    │
+ 7 │    target.hp -= dmg                    │
+ 8 │    return dmg                          │
+ 9 │                                        │
+10 │def heal(ally):                         │
+11 │    amt = roll(1, 6) + 5                │
+12 │    ally.hp += amt                      │
+13 │    return amt                          │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │quest.py              6,1            All│
+    ────────────────────────────────────────
+
+[SAY] Instant jumps between marked positions.
+[SAY] M plus a letter to set a mark. Single quote plus that letter to jump back. Pin your favorite spots.

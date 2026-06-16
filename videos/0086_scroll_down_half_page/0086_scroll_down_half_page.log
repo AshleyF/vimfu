@@ -1,0 +1,228 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Dungeon Generator                     │ ◂ cursor (0,0)
+ 1 │import random                           │
+ 2 │                                        │
+ 3 │ROOMS = 25                              │
+ 4 │MIN_SIZE = 4                            │
+ 5 │MAX_SIZE = 12                           │
+ 6 │                                        │
+ 7 │def roll_dice(n, sides):                │
+ 8 │    return sum(random.randint(1, sides) │
+ 9 │for _ in range(n))                      │
+10 │                                        │
+11 │def gen_room(room_id):                  │
+12 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+13 │E)                                      │
+14 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+15 │E)                                      │
+16 │    x = random.randint(0, 80 - w)       │
+17 │    y = random.randint(0, 50 - h)       │
+18 │dungeon.py            1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Scroll Down Half Page
+[SAY] Holding J to scroll through a file is slow. Control D jumps half a screen down.
+[SAY] Watch. Control D.
+[KEYS] '\x04'
+[OVERLAY] ⌃d  Ctrl-D  half page down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    return sum(random.randint(1, sides) │ ◂ cursor (0,0)
+ 1 │for _ in range(n))                      │
+ 2 │                                        │
+ 3 │def gen_room(room_id):                  │
+ 4 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+ 5 │E)                                      │
+ 6 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+ 7 │E)                                      │
+ 8 │    x = random.randint(0, 80 - w)       │
+ 9 │    y = random.randint(0, 50 - h)       │
+10 │    return {"id": room_id, "x": x, "y": │
+11 │y, "w": w, "h": h}                      │
+12 │                                        │
+13 │def place_treasure(room):               │
+14 │    gold = roll_dice(3, 6) * 10         │
+15 │    gems = roll_dice(1, 4)              │
+16 │    return {"gold": gold, "gems": gems} │
+17 │                                        │
+18 │dungeon.py            9,1            33%│
+    ────────────────────────────────────────
+
+[SAY] Half a screen. The cursor moved down with it.
+[SAY] Again.
+[KEYS] '\x04'
+[OVERLAY] ⌃d  Ctrl-D  half page down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │    y = random.randint(0, 50 - h)       │ ◂ cursor (0,0)
+ 1 │    return {"id": room_id, "x": x, "y": │
+ 2 │y, "w": w, "h": h}                      │
+ 3 │                                        │
+ 4 │def place_treasure(room):               │
+ 5 │    gold = roll_dice(3, 6) * 10         │
+ 6 │    gems = roll_dice(1, 4)              │
+ 7 │    return {"gold": gold, "gems": gems} │
+ 8 │                                        │
+ 9 │def spawn_monster(room, difficulty):    │
+10 │    hp = roll_dice(difficulty, 8)       │
+11 │    atk = roll_dice(difficulty, 6)      │
+12 │    return {"hp": hp, "atk": atk, "room"│
+13 │: room["id"]}                           │
+14 │                                        │
+15 │def connect_rooms(a, b):                │
+16 │    mid_x = (a["x"] + b["x"]) // 2      │
+17 │    mid_y = (a["y"] + b["y"]) // 2      │
+18 │dungeon.py            15,1           63%│
+    ────────────────────────────────────────
+
+[SAY] Now we're deep in the file. Two taps to get here.
+[SAY] One more.
+[KEYS] '\x04'
+[OVERLAY] ⌃d  Ctrl-D  half page down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def spawn_monster(room, difficulty):    │ ◂ cursor (0,0)
+ 1 │    hp = roll_dice(difficulty, 8)       │
+ 2 │    atk = roll_dice(difficulty, 6)      │
+ 3 │    return {"hp": hp, "atk": atk, "room"│
+ 4 │: room["id"]}                           │
+ 5 │                                        │
+ 6 │def connect_rooms(a, b):                │
+ 7 │    mid_x = (a["x"] + b["x"]) // 2      │
+ 8 │    mid_y = (a["y"] + b["y"]) // 2      │
+ 9 │    return {"from": a["id"], "to": b["id│
+10 │"]}                                     │
+11 │                                        │
+12 │def generate_dungeon():                 │
+13 │    rooms = [gen_room(i) for i in range(│
+14 │ROOMS)]                                 │
+15 │    for room in rooms:                  │
+16 │        place_treasure(room)            │
+17 │        spawn_monster(room, difficult@@@│
+18 │dungeon.py            23,1           91%│
+    ────────────────────────────────────────
+
+[SAY] Nearly at the bottom. Three presses covers most of the file.
+[SAY] Back to the top with G G.
+[KEYS] 'gg'
+[OVERLAY] gg  file start
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Dungeon Generator                     │ ◂ cursor (0,0)
+ 1 │import random                           │
+ 2 │                                        │
+ 3 │ROOMS = 25                              │
+ 4 │MIN_SIZE = 4                            │
+ 5 │MAX_SIZE = 12                           │
+ 6 │                                        │
+ 7 │def roll_dice(n, sides):                │
+ 8 │    return sum(random.randint(1, sides) │
+ 9 │for _ in range(n))                      │
+10 │                                        │
+11 │def gen_room(room_id):                  │
+12 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+13 │E)                                      │
+14 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+15 │E)                                      │
+16 │    x = random.randint(0, 80 - w)       │
+17 │    y = random.randint(0, 50 - h)       │
+18 │dungeon.py            1,1            Top│
+    ────────────────────────────────────────
+
+[SAY] You can also set how many lines it moves. 5 Control D sets the distance to five.
+[KEYS] '5'
+[OVERLAY] 5  count
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Dungeon Generator                     │ ◂ cursor (0,0)
+ 1 │import random                           │
+ 2 │                                        │
+ 3 │ROOMS = 25                              │
+ 4 │MIN_SIZE = 4                            │
+ 5 │MAX_SIZE = 12                           │
+ 6 │                                        │
+ 7 │def roll_dice(n, sides):                │
+ 8 │    return sum(random.randint(1, sides) │
+ 9 │for _ in range(n))                      │
+10 │                                        │
+11 │def gen_room(room_id):                  │
+12 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+13 │E)                                      │
+14 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+15 │E)                                      │
+16 │    x = random.randint(0, 80 - w)       │
+17 │    y = random.randint(0, 50 - h)       │
+18 │dungeon.py            1,1            Top│
+19 │                             5          │
+    ────────────────────────────────────────
+
+[KEYS] '\x04'
+[OVERLAY] ⌃d  Ctrl-D  half page down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │MAX_SIZE = 12                           │ ◂ cursor (0,0)
+ 1 │                                        │
+ 2 │def roll_dice(n, sides):                │
+ 3 │    return sum(random.randint(1, sides) │
+ 4 │for _ in range(n))                      │
+ 5 │                                        │
+ 6 │def gen_room(room_id):                  │
+ 7 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+ 8 │E)                                      │
+ 9 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+10 │E)                                      │
+11 │    x = random.randint(0, 80 - w)       │
+12 │    y = random.randint(0, 50 - h)       │
+13 │    return {"id": room_id, "x": x, "y": │
+14 │y, "w": w, "h": h}                      │
+15 │                                        │
+16 │def place_treasure(room):               │
+17 │    gold = roll_dice(3, 6) * 10         │
+18 │dungeon.py            6,1            20%│
+    ────────────────────────────────────────
+
+[SAY] Five lines. And it remembers. Next Control D also goes five.
+[KEYS] '\x04'
+[OVERLAY] ⌃d  Ctrl-D  half page down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │                                        │ ◂ cursor (0,0)
+ 1 │def gen_room(room_id):                  │
+ 2 │    w = random.randint(MIN_SIZE, MAX_SIZ│
+ 3 │E)                                      │
+ 4 │    h = random.randint(MIN_SIZE, MAX_SIZ│
+ 5 │E)                                      │
+ 6 │    x = random.randint(0, 80 - w)       │
+ 7 │    y = random.randint(0, 50 - h)       │
+ 8 │    return {"id": room_id, "x": x, "y": │
+ 9 │y, "w": w, "h": h}                      │
+10 │                                        │
+11 │def place_treasure(room):               │
+12 │    gold = roll_dice(3, 6) * 10         │
+13 │    gems = roll_dice(1, 4)              │
+14 │    return {"gold": gold, "gems": gems} │
+15 │                                        │
+16 │def spawn_monster(room, difficulty):    │
+17 │    hp = roll_dice(difficulty, 8)       │
+18 │dungeon.py            10,0-1         39%│
+    ────────────────────────────────────────
+
+[SAY] Control D. Half page down. Faster than J, smoother than page down.

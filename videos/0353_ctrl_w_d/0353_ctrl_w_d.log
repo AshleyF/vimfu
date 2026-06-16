@@ -1,0 +1,310 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │// Game Engine                          │ ◂ cursor (0,0)
+ 1 │int result = ATTACK * 2;                │
+ 2 │int block = DEFEND + 5;                 │
+ 3 │int hp = HP_MAX;                        │
+ 4 │int base_dmg = 10;                      │
+ 5 │int base_def = 5;                       │
+ 6 │                                        │
+ 7 │void swing(void) {                      │
+ 8 │    base_dmg += 1;                      │
+ 9 │}                                       │
+10 │                                        │
+11 │void parry(void) {                      │
+12 │    base_def += 1;                      │
+13 │}                                       │
+14 │                                        │
+15 │void rest(void) {                       │
+16 │    hp = HP_MAX;                        │
+17 │}                                       │
+18 │game.c                1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-W d — Split Definition
+[SAY] Control W D splits the window and jumps to the definition of the word under the cursor.
+[SAY] Move to where attack is used.
+[KEYS] '2G'
+[OVERLAY] 2G  go to line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │// Game Engine                          │
+ 1 │int result = ATTACK * 2;                │ ◂ cursor (1,0)
+ 2 │int block = DEFEND + 5;                 │
+ 3 │int hp = HP_MAX;                        │
+ 4 │int base_dmg = 10;                      │
+ 5 │int base_def = 5;                       │
+ 6 │                                        │
+ 7 │void swing(void) {                      │
+ 8 │    base_dmg += 1;                      │
+ 9 │}                                       │
+10 │                                        │
+11 │void parry(void) {                      │
+12 │    base_def += 1;                      │
+13 │}                                       │
+14 │                                        │
+15 │void rest(void) {                       │
+16 │    hp = HP_MAX;                        │
+17 │}                                       │
+18 │game.c                2,1            Top│
+    ────────────────────────────────────────
+
+[KEYS] '3w'
+[OVERLAY] 3w  to ATTACK
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │// Game Engine                          │
+ 1 │int result = ATTACK * 2;                │ ◂ cursor (1,13)
+ 2 │int block = DEFEND + 5;                 │
+ 3 │int hp = HP_MAX;                        │
+ 4 │int base_dmg = 10;                      │
+ 5 │int base_def = 5;                       │
+ 6 │                                        │
+ 7 │void swing(void) {                      │
+ 8 │    base_dmg += 1;                      │
+ 9 │}                                       │
+10 │                                        │
+11 │void parry(void) {                      │
+12 │    base_def += 1;                      │
+13 │}                                       │
+14 │                                        │
+15 │void rest(void) {                       │
+16 │    hp = HP_MAX;                        │
+17 │}                                       │
+18 │game.c                2,14           Top│
+    ────────────────────────────────────────
+
+[SAY] Cursor is on ATTACK. Split and jump to its define.
+[CTRL] w
+[OVERLAY] ⌃w  split to definition
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │// Game Engine                          │
+ 1 │int result = ATTACK * 2;                │ ◂ cursor (1,13)
+ 2 │int block = DEFEND + 5;                 │
+ 3 │int hp = HP_MAX;                        │
+ 4 │int base_dmg = 10;                      │
+ 5 │int base_def = 5;                       │
+ 6 │                                        │
+ 7 │void swing(void) {                      │
+ 8 │    base_dmg += 1;                      │
+ 9 │}                                       │
+10 │                                        │
+11 │void parry(void) {                      │
+12 │    base_def += 1;                      │
+13 │}                                       │
+14 │                                        │
+15 │void rest(void) {                       │
+16 │    hp = HP_MAX;                        │
+17 │}                                       │
+18 │game.c                2,14           Top│
+19 │                             ^W         │
+    ────────────────────────────────────────
+
+[KEYS] 'd'
+[OVERLAY] d  delete
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │int main(void) {                        │
+ 1 │    step();                             │
+ 2 │    rest();                             │
+ 3 │    return 0;                           │
+ 4 │}                                       │
+ 5 │                                        │
+ 6 │#define ATTACK 25                       │ ◂ cursor (6,8)
+ 7 │#define DEFEND 10                       │
+ 8 │#define HP_MAX 100                      │
+ 9 │game.c                31,9           Bot│
+10 │int result = ATTACK * 2;                │
+11 │int block = DEFEND + 5;                 │
+12 │int hp = HP_MAX;                        │
+13 │int base_dmg = 10;                      │
+14 │int base_def = 5;                       │
+15 │                                        │
+16 │void swing(void) {                      │
+17 │    base_dmg += 1;                      │
+18 │game.c                2,14            4%│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "game.c                31,9           Bot"
+
+[SAY] A new split opened showing the define for ATTACK. The call site is still visible below.
+[SAY] Close this split and try DEFEND.
+[CTRL] w
+[OVERLAY] ⌃w  close
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │int main(void) {                        │
+ 1 │    step();                             │
+ 2 │    rest();                             │
+ 3 │    return 0;                           │
+ 4 │}                                       │
+ 5 │                                        │
+ 6 │#define ATTACK 25                       │ ◂ cursor (6,8)
+ 7 │#define DEFEND 10                       │
+ 8 │#define HP_MAX 100                      │
+ 9 │game.c                31,9           Bot│
+10 │int result = ATTACK * 2;                │
+11 │int block = DEFEND + 5;                 │
+12 │int hp = HP_MAX;                        │
+13 │int base_dmg = 10;                      │
+14 │int base_def = 5;                       │
+15 │                                        │
+16 │void swing(void) {                      │
+17 │    base_dmg += 1;                      │
+18 │game.c                2,14            4%│
+19 │                             ^W         │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "game.c                31,9           Bot"
+
+[KEYS] 'c'
+[OVERLAY] c  change
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │// Game Engine                          │
+ 1 │int result = ATTACK * 2;                │ ◂ cursor (1,13)
+ 2 │int block = DEFEND + 5;                 │
+ 3 │int hp = HP_MAX;                        │
+ 4 │int base_dmg = 10;                      │
+ 5 │int base_def = 5;                       │
+ 6 │                                        │
+ 7 │void swing(void) {                      │
+ 8 │    base_dmg += 1;                      │
+ 9 │}                                       │
+10 │                                        │
+11 │void parry(void) {                      │
+12 │    base_def += 1;                      │
+13 │}                                       │
+14 │                                        │
+15 │void rest(void) {                       │
+16 │    hp = HP_MAX;                        │
+17 │}                                       │
+18 │game.c                2,14           Top│
+    ────────────────────────────────────────
+
+[KEYS] '3G0'
+[OVERLAY] 3G0  go to line 3
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │// Game Engine                          │
+ 1 │int result = ATTACK * 2;                │
+ 2 │int block = DEFEND + 5;                 │ ◂ cursor (2,0)
+ 3 │int hp = HP_MAX;                        │
+ 4 │int base_dmg = 10;                      │
+ 5 │int base_def = 5;                       │
+ 6 │                                        │
+ 7 │void swing(void) {                      │
+ 8 │    base_dmg += 1;                      │
+ 9 │}                                       │
+10 │                                        │
+11 │void parry(void) {                      │
+12 │    base_def += 1;                      │
+13 │}                                       │
+14 │                                        │
+15 │void rest(void) {                       │
+16 │    hp = HP_MAX;                        │
+17 │}                                       │
+18 │game.c                3,1            Top│
+    ────────────────────────────────────────
+
+[KEYS] '3w'
+[OVERLAY] 3w  to DEFEND
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │// Game Engine                          │
+ 1 │int result = ATTACK * 2;                │
+ 2 │int block = DEFEND + 5;                 │ ◂ cursor (2,12)
+ 3 │int hp = HP_MAX;                        │
+ 4 │int base_dmg = 10;                      │
+ 5 │int base_def = 5;                       │
+ 6 │                                        │
+ 7 │void swing(void) {                      │
+ 8 │    base_dmg += 1;                      │
+ 9 │}                                       │
+10 │                                        │
+11 │void parry(void) {                      │
+12 │    base_def += 1;                      │
+13 │}                                       │
+14 │                                        │
+15 │void rest(void) {                       │
+16 │    hp = HP_MAX;                        │
+17 │}                                       │
+18 │game.c                3,13           Top│
+    ────────────────────────────────────────
+
+[CTRL] w
+[OVERLAY] ⌃w  split to definition
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │// Game Engine                          │
+ 1 │int result = ATTACK * 2;                │
+ 2 │int block = DEFEND + 5;                 │ ◂ cursor (2,12)
+ 3 │int hp = HP_MAX;                        │
+ 4 │int base_dmg = 10;                      │
+ 5 │int base_def = 5;                       │
+ 6 │                                        │
+ 7 │void swing(void) {                      │
+ 8 │    base_dmg += 1;                      │
+ 9 │}                                       │
+10 │                                        │
+11 │void parry(void) {                      │
+12 │    base_def += 1;                      │
+13 │}                                       │
+14 │                                        │
+15 │void rest(void) {                       │
+16 │    hp = HP_MAX;                        │
+17 │}                                       │
+18 │game.c                3,13           Top│
+19 │                             ^W         │
+    ────────────────────────────────────────
+
+[KEYS] 'd'
+[OVERLAY] d  delete
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │int main(void) {                        │
+ 1 │    step();                             │
+ 2 │    rest();                             │
+ 3 │    return 0;                           │
+ 4 │}                                       │
+ 5 │                                        │
+ 6 │#define ATTACK 25                       │
+ 7 │#define DEFEND 10                       │ ◂ cursor (7,8)
+ 8 │#define HP_MAX 100                      │
+ 9 │game.c                32,9           Bot│
+10 │int result = ATTACK * 2;                │
+11 │int block = DEFEND + 5;                 │
+12 │int hp = HP_MAX;                        │
+13 │int base_dmg = 10;                      │
+14 │int base_def = 5;                       │
+15 │                                        │
+16 │void swing(void) {                      │
+17 │    base_dmg += 1;                      │
+18 │game.c                3,13            4%│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "game.c                32,9           Bot"
+
+[SAY] Jumped to the DEFEND define. Definition in one pane, usage in the other.
+[SAY] Control W D. Split and jump to definition. See both the call site and the source at once.

@@ -1,0 +1,395 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │ ◂ cursor (0,0)
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order =                                 │
+ 7 │    "large"                             │
+ 8 │                                        │
+ 9 │print(                                  │
+10 │    toppings                            │
+11 │)                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Join Lines
+[SAY] Capital J joins the current line with the next one. It adds a space between them.
+[SAY] This order assignment is split across two lines. Capital J joins them.
+[KEYS] '6j'
+[OVERLAY] 6j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order =                                 │ ◂ cursor (6,0)
+ 7 │    "large"                             │
+ 8 │                                        │
+ 9 │print(                                  │
+10 │    toppings                            │
+11 │)                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py              7,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'J'
+[OVERLAY] ⇧J  join lines
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order = "large"                         │ ◂ cursor (6,7)
+ 7 │                                        │
+ 8 │print(                                  │
+ 9 │    toppings                            │
+10 │)                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py [+]          7,8            All│
+    ────────────────────────────────────────
+
+[SAY] One line now. Vim added a space between equals and large.
+[SAY] The print call is split across three lines. Press J twice.
+[KEYS] '2j'
+[OVERLAY] 2j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order = "large"                         │
+ 7 │                                        │
+ 8 │print(                                  │ ◂ cursor (8,5)
+ 9 │    toppings                            │
+10 │)                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py [+]          9,6            All│
+    ────────────────────────────────────────
+
+[KEYS] 'J'
+[OVERLAY] ⇧J  join lines
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order = "large"                         │
+ 7 │                                        │
+ 8 │print( toppings                         │ ◂ cursor (8,6)
+ 9 │)                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py [+]          9,7            All│
+    ────────────────────────────────────────
+
+[KEYS] 'J'
+[OVERLAY] ⇧J  join lines
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order = "large"                         │
+ 7 │                                        │
+ 8 │print( toppings)                        │ ◂ cursor (8,15)
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py [+]          9,16           All│
+    ────────────────────────────────────────
+
+[SAY] All on one line. But see that extra space after the open paren? Vim adds a space at each join.
+[SAY] Find it with F space. Delete with X.
+[KEYS] 'F '
+[OVERLAY] F␣  find space
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order = "large"                         │
+ 7 │                                        │
+ 8 │print( toppings)                        │ ◂ cursor (8,6)
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py [+]          9,7            All│
+    ────────────────────────────────────────
+
+[KEYS] 'x'
+[OVERLAY] x  delete
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order = "large"                         │
+ 7 │                                        │
+ 8 │print(toppings)                         │ ◂ cursor (8,6)
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py [+]          9,7            All│
+    ────────────────────────────────────────
+
+[SAY] Clean. Next video covers joining without the space.
+[SAY] Use a count. Undo first.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order = "large"                         │
+ 7 │                                        │
+ 8 │print( toppings)                        │ ◂ cursor (8,6)
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py [+]          9,7            All│
+19 │1 change; be...5 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order = "large"                         │
+ 7 │                                        │
+ 8 │print( toppings                         │ ◂ cursor (8,6)
+ 9 │)                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py [+]          9,7            All│
+19 │1 more line;...7 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order = "large"                         │
+ 7 │                                        │
+ 8 │print(                                  │ ◂ cursor (8,5)
+ 9 │    toppings                            │
+10 │)                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py [+]          9,6            All│
+19 │1 more line;...9 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order =                                 │ ◂ cursor (6,0)
+ 7 │    "large"                             │
+ 8 │                                        │
+ 9 │print(                                  │
+10 │    toppings                            │
+11 │)                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py              7,1            All│
+19 │1 more line;...9 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Go to the print line. Three J joins this line with the next two.
+[KEYS] '3j'
+[OVERLAY] 3j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order =                                 │
+ 7 │    "large"                             │
+ 8 │                                        │
+ 9 │print(                                  │ ◂ cursor (9,0)
+10 │    toppings                            │
+11 │)                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py              10,1           All│
+19 │1 more line;...9 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] '3J'
+[OVERLAY] 3J  join 3 lines
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │toppings = [                            │
+ 1 │    "pepperoni",                        │
+ 2 │    "mushroom",                         │
+ 3 │    "olive",                            │
+ 4 │]                                       │
+ 5 │                                        │
+ 6 │order =                                 │
+ 7 │    "large"                             │
+ 8 │                                        │
+ 9 │print( toppings)                        │ ◂ cursor (9,15)
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │pizza.py [+]          10,16          All│
+19 │1 more line;...9 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Three lines collapsed into one.
+[SAY] Capital J to join lines. Add a count to join multiple. It adds a space at every join.

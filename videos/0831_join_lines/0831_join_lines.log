@@ -1,0 +1,281 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Jane Smith                          │ ◂ cursor (0,4)
+ 1 │  2 123 Main Street                     │
+ 2 │  3 Apartment 4B                        │
+ 3 │  4 New York                            │
+ 4 │  5 NY 10001                            │
+ 5 │  6 USA                                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │address.txt           1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :[range]j — Join Lines
+[SAY] Colon J joins a range of lines into one.
+[SAY] Format this address. Join the street and apartment with colon two comma three j.
+[TYPE] ':2,3j'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Jane Smith                          │
+ 1 │  2 123 Main Street                     │
+ 2 │  3 Apartment 4B                        │
+ 3 │  4 New York                            │
+ 4 │  5 NY 10001                            │
+ 5 │  6 USA                                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │address.txt           1,1            All│
+19 │:2,3j                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Jane Smith                          │
+ 1 │  2 123 Main Street Apartment 4B        │ ◂ cursor (1,4)
+ 2 │  3 New York                            │
+ 3 │  4 NY 10001                            │
+ 4 │  5 USA                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │address.txt [+]       2,1            All│
+19 │:2,3j                                   │
+    ────────────────────────────────────────
+
+[SAY] Street and apartment now share one line, with a space between.
+[SAY] Now join the city with the state and zip. Colon three comma four j.
+[TYPE] ':3,4j'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Jane Smith                          │
+ 1 │  2 123 Main Street Apartment 4B        │
+ 2 │  3 New York                            │
+ 3 │  4 NY 10001                            │
+ 4 │  5 USA                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │address.txt [+]       2,1            All│
+19 │:3,4j                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Jane Smith                          │
+ 1 │  2 123 Main Street Apartment 4B        │
+ 2 │  3 New York NY 10001                   │ ◂ cursor (2,4)
+ 3 │  4 USA                                 │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │address.txt [+]       3,1            All│
+19 │:3,4j                                   │
+    ────────────────────────────────────────
+
+[SAY] USA stays on its own line. The address is properly formatted.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Jane Smith                          │
+ 1 │  2 123 Main Street Apartment 4B        │
+ 2 │  3 New York                            │ ◂ cursor (2,4)
+ 3 │  4 NY 10001                            │
+ 4 │  5 USA                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │address.txt [+]       3,1            All│
+19 │1 more line;...6 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Jane Smith                          │
+ 1 │  2 123 Main Street                     │ ◂ cursor (1,4)
+ 2 │  3 Apartment 4B                        │
+ 3 │  4 New York                            │
+ 4 │  5 NY 10001                            │
+ 5 │  6 USA                                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │address.txt           2,1            All│
+19 │1 more line;...7 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Add a bang for no spaces. Colon two comma three j bang.
+[TYPE] ':2,3j!'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Jane Smith                          │
+ 1 │  2 123 Main Street                     │
+ 2 │  3 Apartment 4B                        │
+ 3 │  4 New York                            │
+ 4 │  5 NY 10001                            │
+ 5 │  6 USA                                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │address.txt           2,1            All│
+19 │:2,3j!                                  │ ◂ cursor (19,6)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Jane Smith                          │
+ 1 │  2 123 Main StreetApartment 4B         │ ◂ cursor (1,4)
+ 2 │  3 New York                            │
+ 3 │  4 NY 10001                            │
+ 4 │  5 USA                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │address.txt [+]       2,1            All│
+19 │:2,3j!                                  │
+    ────────────────────────────────────────
+
+[SAY] Same lines joined, but with no space between. The text is smashed together.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Jane Smith                          │
+ 1 │  2 123 Main Street                     │ ◂ cursor (1,4)
+ 2 │  3 Apartment 4B                        │
+ 3 │  4 New York                            │
+ 4 │  5 NY 10001                            │
+ 5 │  6 USA                                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │address.txt           2,1            All│
+19 │1 more line;...8 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Colon J joins lines with spaces. Add a bang to join without them.

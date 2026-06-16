@@ -1,0 +1,175 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Dungeon Crawler                   │ ◂ cursor (0,4)
+ 1 │  2 import random                       │
+ 2 │  3                                     │
+ 3 │  4 def gen_room():                     │
+ 4 │  5     w = random.randint(5, 15)       │
+ 5 │  6     h = random.randint(5, 15)       │
+ 6 │  7     return (w, h)                   │
+ 7 │  8                                     │
+ 8 │  9 def gen_monster():                  │
+ 9 │ 10     hp = random.randint(10, 50)     │
+10 │ 11     atk = random.randint(1, 10)     │
+11 │ 12     return {"hp": hp, "atk": atk}   │
+12 │ 13                                     │
+13 │ 14 def gen_loot():                     │
+14 │ 15     gold = random.randint(1, 100)   │
+15 │ 16     gems = random.randint(0, 5)     │
+16 │ 17     return {"gold": gold, "gems": ge│
+17 │    ms}                                 │
+18 │dungeon.py            1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — zz — Center Screen
+[SAY] Z Z centers the screen on your cursor. Wherever you are, Z Z puts that line in the middle so you can see context above and below.
+[SAY] Jump to line twenty. The gen trap function.
+[KEYS] '20G'
+[OVERLAY] 20G  line 20
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  4 def gen_room():                     │
+ 1 │  5     w = random.randint(5, 15)       │
+ 2 │  6     h = random.randint(5, 15)       │
+ 3 │  7     return (w, h)                   │
+ 4 │  8                                     │
+ 5 │  9 def gen_monster():                  │
+ 6 │ 10     hp = random.randint(10, 50)     │
+ 7 │ 11     atk = random.randint(1, 10)     │
+ 8 │ 12     return {"hp": hp, "atk": atk}   │
+ 9 │ 13                                     │
+10 │ 14 def gen_loot():                     │
+11 │ 15     gold = random.randint(1, 100)   │
+12 │ 16     gems = random.randint(0, 5)     │
+13 │ 17     return {"gold": gold, "gems": ge│
+14 │    ms}                                 │
+15 │ 18                                     │
+16 │ 19 def gen_trap():                     │
+17 │ 20     damage = random.randint(5, 20)  │ ◂ cursor (17,4)
+18 │dungeon.py            20,1           17%│
+    ────────────────────────────────────────
+
+[SAY] The line might be near the edge. Z Z.
+[KEYS] 'zz'
+[OVERLAY] zz  center!
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 12     return {"hp": hp, "atk": atk}   │
+ 1 │ 13                                     │
+ 2 │ 14 def gen_loot():                     │
+ 3 │ 15     gold = random.randint(1, 100)   │
+ 4 │ 16     gems = random.randint(0, 5)     │
+ 5 │ 17     return {"gold": gold, "gems": ge│
+ 6 │    ms}                                 │
+ 7 │ 18                                     │
+ 8 │ 19 def gen_trap():                     │
+ 9 │ 20     damage = random.randint(5, 20)  │ ◂ cursor (9,4)
+10 │ 21     return {"dmg": damage}          │
+11 │ 22                                     │
+12 │ 23 def gen_floor(rooms=10):            │
+13 │ 24     floor = []                      │
+14 │ 25     for i in range(rooms):          │
+15 │ 26         floor.append(gen_room())    │
+16 │ 27     return floor                    │
+17 │ 28                                     │
+18 │dungeon.py            20,1           64%│
+    ────────────────────────────────────────
+
+[SAY] Centered. Code above and below. Full context.
+[SAY] Search for main. Slash main enter.
+[TYPE] '/main'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 13                                     │
+ 1 │ 14 def gen_loot():                     │
+ 2 │ 15     gold = random.randint(1, 100)   │
+ 3 │ 16     gems = random.randint(0, 5)     │
+ 4 │ 17     return {"gold": gold, "gems": ge│
+ 5 │    ms}                                 │
+ 6 │ 18                                     │
+ 7 │ 19 def gen_trap():                     │
+ 8 │ 20     damage = random.randint(5, 20)  │
+ 9 │ 21     return {"dmg": damage}          │
+10 │ 22                                     │
+11 │ 23 def gen_floor(rooms=10):            │
+12 │ 24     floor = []                      │
+13 │ 25     for i in range(rooms):          │
+14 │ 26         floor.append(gen_room())    │
+15 │ 27     return floor                    │
+16 │ 28                                     │
+17 │ 29 def main():                         │
+18 │dungeon.py            29,5           70%│
+19 │/main                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 17, cols 8-11: "main"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 13                                     │
+ 1 │ 14 def gen_loot():                     │
+ 2 │ 15     gold = random.randint(1, 100)   │
+ 3 │ 16     gems = random.randint(0, 5)     │
+ 4 │ 17     return {"gold": gold, "gems": ge│
+ 5 │    ms}                                 │
+ 6 │ 18                                     │
+ 7 │ 19 def gen_trap():                     │
+ 8 │ 20     damage = random.randint(5, 20)  │
+ 9 │ 21     return {"dmg": damage}          │
+10 │ 22                                     │
+11 │ 23 def gen_floor(rooms=10):            │
+12 │ 24     floor = []                      │
+13 │ 25     for i in range(rooms):          │
+14 │ 26         floor.append(gen_room())    │
+15 │ 27     return floor                    │
+16 │ 28                                     │
+17 │ 29 def main():                         │ ◂ cursor (17,8)
+18 │dungeon.py            29,5           70%│
+19 │/main                 [1/3]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 17, cols 9-11: "ain"
+
+[KEYS] 'zz'
+[OVERLAY] zz  center on match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 21     return {"dmg": damage}          │
+ 1 │ 22                                     │
+ 2 │ 23 def gen_floor(rooms=10):            │
+ 3 │ 24     floor = []                      │
+ 4 │ 25     for i in range(rooms):          │
+ 5 │ 26         floor.append(gen_room())    │
+ 6 │ 27     return floor                    │
+ 7 │ 28                                     │
+ 8 │ 29 def main():                         │ ◂ cursor (8,8)
+ 9 │ 30     floors = [gen_floor() for _ in r│
+10 │    ange(5)]                            │
+11 │ 31     print(f"{len(floors)} floors")  │
+12 │ 32                                     │
+13 │ 33 if __name__ == "__main__":          │
+14 │ 34     main()                          │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │dungeon.py            29,5           Bot│
+19 │/main                 [1/3]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 8, cols 9-11: "ain"
+[HIGHLIGHT] row 13, cols 22-25: "main"
+[HIGHLIGHT] row 14, cols 8-11: "main"
+
+[SAY] Found it and centered. Z Z after any jump keeps your bearings.
+[SAY] Z Z. Center screen. Use it after jumps, searches, or any time you want your cursor line front and center.

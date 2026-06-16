@@ -1,0 +1,189 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │ ◂ cursor (0,0)
+ 1 │foo = 1                                 │
+ 2 │bar = foo                               │
+ 3 │foo = foo + 1                           │
+ 4 │baz = 99                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :%s///gc — Confirm
+[SAY] The C flag asks you to confirm each replacement. Y for yes, N for no, A for all remaining.
+[SAY] Replace foo with X, but confirm each one.
+[TYPE] ':%s/foo/X/gc'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │X = 1                                   │
+ 2 │bar = X                                 │
+ 3 │X = X + 1                               │
+ 4 │baz = 99                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,1            All│
+19 │:%s/foo/X/gc                            │ ◂ cursor (19,12)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, col 0: "X"
+[HIGHLIGHT] row 2, col 6: "X"
+[HIGHLIGHT] row 3, col 0: "X"
+[HIGHLIGHT] row 3, col 4: "X"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │foo = 1                                 │
+ 2 │bar = foo                               │
+ 3 │foo = foo + 1                           │
+ 4 │baz = 99                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │replace with X? (y)es/(n)o/(a)ll/(q)uit/│
+19 │(l)ast/scroll up(^E)/down(^Y)           │ ◂ cursor (19,29)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "foo"
+[HIGHLIGHT] row 2, cols 6-8: "foo"
+[HIGHLIGHT] row 3, cols 0-2: "foo"
+[HIGHLIGHT] row 3, cols 6-8: "foo"
+
+[SAY] First match highlighted. Press Y to replace.
+[KEYS] 'y'
+[OVERLAY] y  yes, replace
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │X = 1                                   │
+ 2 │bar = foo                               │
+ 3 │foo = foo + 1                           │
+ 4 │baz = 99                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │replace with X? (y)es/(n)o/(a)ll/(q)uit/│
+19 │(l)ast/scroll up(^E)/down(^Y)           │ ◂ cursor (19,29)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 6-8: "foo"
+[HIGHLIGHT] row 3, cols 0-2: "foo"
+[HIGHLIGHT] row 3, cols 6-8: "foo"
+
+[SAY] Replaced. Next match. Skip this one.
+[KEYS] 'n'
+[OVERLAY] n  no, skip
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │X = 1                                   │
+ 2 │bar = foo                               │
+ 3 │foo = foo + 1                           │
+ 4 │baz = 99                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │replace with X? (y)es/(n)o/(a)ll/(q)uit/│
+19 │(l)ast/scroll up(^E)/down(^Y)           │ ◂ cursor (19,29)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 6-8: "foo"
+[HIGHLIGHT] row 3, cols 0-2: "foo"
+[HIGHLIGHT] row 3, cols 6-8: "foo"
+
+[SAY] Skipped. Replace the rest with A.
+[KEYS] 'a'
+[OVERLAY] a  all remaining
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo                                  │
+ 1 │X = 1                                   │
+ 2 │bar = foo                               │
+ 3 │foo = foo + 1                           │
+ 4 │baz = 99                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │                                        │
+17 │replace with X? (y)es/(n)o/(a)ll/(q)uit/│
+18 │3 substitutions on 2 lines              │
+19 │Press ENTER or type command to continue │ ◂ cursor (19,39)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 6-8: "foo"
+[HIGHLIGHT] row 3, cols 0-2: "foo"
+[HIGHLIGHT] row 3, cols 6-8: "foo"
+
+[SAY] Done. Some replaced, some skipped. Full control over every match.
+[SAY] The C flag. Surgical search and replace.

@@ -5,7 +5,7 @@ Reads the frames JSON produced by ``capture_frames.py`` and renders
 an animated GIF with proper syntax-highlighting colors.
 
 Usage:
-    python gif_maker.py videos/0085_the_vim_grammar/0085_the_vim_grammar.frames.json
+    python gif_maker.py ../videos/0085_the_vim_grammar/0085_the_vim_grammar.frames.json
     python gif_maker.py frames.json --speed 3 --output demo.gif
 """
 

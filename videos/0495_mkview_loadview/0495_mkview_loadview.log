@@ -1,0 +1,326 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │ ◂ cursor (0,0)
+ 1 │  detail a                              │
+ 2 │  detail b                              │
+ 3 │  detail c                              │
+ 4 │Section Two                             │
+ 5 │  item x                                │
+ 6 │  item y                                │
+ 7 │Section Three                           │
+ 8 │  note 1                                │
+ 9 │  note 2                                │
+10 │  note 3                                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :mkview / :loadview
+[SAY] When you set up folds, you lose them when you close the file. Mkview saves them and load view restores them.
+[SAY] First, enable indent folding and close all folds.
+[TYPE] ':set foldmethod=indent shiftwidth=2'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │
+ 1 │  detail a                              │
+ 2 │  detail b                              │
+ 3 │  detail c                              │
+ 4 │Section Two                             │
+ 5 │  item x                                │
+ 6 │  item y                                │
+ 7 │Section Three                           │
+ 8 │  note 1                                │
+ 9 │  note 2                                │
+10 │  note 3                                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          1,1            All│
+19 │:set foldmethod=indent shiftwidth=2     │ ◂ cursor (19,35)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │ ◂ cursor (0,0)
+ 1 │+--  3 lines: detail a··················│
+ 2 │Section Two                             │
+ 3 │+--  2 lines: item x····················│
+ 4 │Section Three                           │
+ 5 │+--  3 lines: note 1····················│
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          1,1            All│
+19 │:set foldmethod=indent shiftw           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-39: "+--  3 lines: detail a··················"
+[HIGHLIGHT] row 3, cols 0-39: "+--  2 lines: item x····················"
+[HIGHLIGHT] row 5, cols 0-39: "+--  3 lines: note 1····················"
+
+[KEYS] 'zM'
+[OVERLAY] zM  close all
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │ ◂ cursor (0,0)
+ 1 │+--  3 lines: detail a··················│
+ 2 │Section Two                             │
+ 3 │+--  2 lines: item x····················│
+ 4 │Section Three                           │
+ 5 │+--  3 lines: note 1····················│
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          1,1            All│
+19 │:set foldmethod=indent shiftw           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-39: "+--  3 lines: detail a··················"
+[HIGHLIGHT] row 3, cols 0-39: "+--  2 lines: item x····················"
+[HIGHLIGHT] row 5, cols 0-39: "+--  3 lines: note 1····················"
+
+[SAY] Now open just section two.
+[KEYS] '3j'
+[OVERLAY] 3j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │
+ 1 │+--  3 lines: detail a··················│
+ 2 │Section Two                             │
+ 3 │+--  2 lines: item x····················│ ◂ cursor (3,0)
+ 4 │Section Three                           │
+ 5 │+--  3 lines: note 1····················│
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          6,1            All│
+19 │:set foldmethod=indent shiftw           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-39: "+--  3 lines: detail a··················"
+[HIGHLIGHT] row 3, cols 1-39: "--  2 lines: item x····················"
+[HIGHLIGHT] row 5, cols 0-39: "+--  3 lines: note 1····················"
+
+[KEYS] 'zo'
+[OVERLAY] zo  open fold
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │
+ 1 │+--  3 lines: detail a··················│
+ 2 │Section Two                             │
+ 3 │  item x                                │ ◂ cursor (3,0)
+ 4 │  item y                                │
+ 5 │Section Three                           │
+ 6 │+--  3 lines: note 1····················│
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          6,1            All│
+19 │:set foldmethod=indent shiftw           │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-39: "+--  3 lines: detail a··················"
+[HIGHLIGHT] row 6, cols 0-39: "+--  3 lines: note 1····················"
+
+[SAY] We have a custom fold layout. Save it with mkview.
+[TYPE] ':mkview'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │
+ 1 │+--  3 lines: detail a··················│
+ 2 │Section Two                             │
+ 3 │  item x                                │
+ 4 │  item y                                │
+ 5 │Section Three                           │
+ 6 │+--  3 lines: note 1····················│
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          6,1            All│
+19 │:mkview                                 │ ◂ cursor (19,7)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-39: "+--  3 lines: detail a··················"
+[HIGHLIGHT] row 6, cols 0-39: "+--  3 lines: note 1····················"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │
+ 1 │+--  3 lines: detail a··················│
+ 2 │Section Two                             │
+ 3 │  item x                                │ ◂ cursor (3,0)
+ 4 │  item y                                │
+ 5 │Section Three                           │
+ 6 │+--  3 lines: note 1····················│
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          6,1            All│
+19 │:mkview                                 │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-39: "+--  3 lines: detail a··················"
+[HIGHLIGHT] row 6, cols 0-39: "+--  3 lines: note 1····················"
+
+[SAY] Fold state saved. Now let's mess it up. Open all folds.
+[KEYS] 'zR'
+[OVERLAY] zR  open all
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │
+ 1 │  detail a                              │
+ 2 │  detail b                              │
+ 3 │  detail c                              │
+ 4 │Section Two                             │
+ 5 │  item x                                │ ◂ cursor (5,0)
+ 6 │  item y                                │
+ 7 │Section Three                           │
+ 8 │  note 1                                │
+ 9 │  note 2                                │
+10 │  note 3                                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          6,1            All│
+19 │:mkview                                 │
+    ────────────────────────────────────────
+
+[SAY] All folds are open. Restore our saved view with loadview.
+[TYPE] ':loadview'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │
+ 1 │  detail a                              │
+ 2 │  detail b                              │
+ 3 │  detail c                              │
+ 4 │Section Two                             │
+ 5 │  item x                                │
+ 6 │  item y                                │
+ 7 │Section Three                           │
+ 8 │  note 1                                │
+ 9 │  note 2                                │
+10 │  note 3                                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          6,1            All│
+19 │:loadview                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Section One                             │
+ 1 │+--  3 lines: detail a··················│
+ 2 │Section Two                             │
+ 3 │  item x                                │ ◂ cursor (3,0)
+ 4 │  item y                                │
+ 5 │Section Three                           │
+ 6 │+--  3 lines: note 1····················│
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │viewdemo.txt          6,1            All│
+19 │:loadview                               │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-39: "+--  3 lines: detail a··················"
+[HIGHLIGHT] row 6, cols 0-39: "+--  3 lines: note 1····················"
+
+[SAY] The fold state is restored exactly as we saved it. Section two open, the rest closed.
+[SAY] Mkview and loadview. Save and restore your fold layout across sessions.

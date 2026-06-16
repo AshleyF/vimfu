@@ -1,0 +1,173 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Readme                                │ ◂ cursor (0,0)
+ 1 │                                        │
+ 2 │This project is a small utility that hel│
+ 3 │ps developers manage their configuration│
+ 4 │ files across multiple machines and keep│
+ 5 │ everything in sync.                    │
+ 6 │                                        │
+ 7 │Features:                               │
+ 8 │- Fast sync                             │
+ 9 │- Encrypted backup                      │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │readme.txt            1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gw — Format Keep Cursor
+[SAY] G W formats text like G Q, but keeps the cursor where it was. The text reflows, the cursor stays put.
+[SAY] Line three is long. Cursor on line three.
+[KEYS] '3G0'
+[OVERLAY] 3G0  line 3, start
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Readme                                │
+ 1 │                                        │
+ 2 │This project is a small utility that hel│ ◂ cursor (2,0)
+ 3 │ps developers manage their configuration│
+ 4 │ files across multiple machines and keep│
+ 5 │ everything in sync.                    │
+ 6 │                                        │
+ 7 │Features:                               │
+ 8 │- Fast sync                             │
+ 9 │- Encrypted backup                      │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │readme.txt            3,1            All│
+    ────────────────────────────────────────
+
+[SAY] G Q Q. Format the line.
+[KEYS] 'gqq'
+[OVERLAY] gqq  gq — format
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Readme                                │
+ 1 │                                        │
+ 2 │This project is a small utility         │
+ 3 │that helps developers manage their      │
+ 4 │configuration files across multiple     │
+ 5 │machines and keep everything in         │
+ 6 │sync.                                   │ ◂ cursor (6,0)
+ 7 │                                        │
+ 8 │Features:                               │
+ 9 │- Fast sync                             │
+10 │- Encrypted backup                      │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │readme.txt [+]        7,1            All│
+19 │4 more lines                            │
+    ────────────────────────────────────────
+
+[SAY] Text is wrapped, but the cursor moved to the end of the formatted text. Undo.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Readme                                │
+ 1 │                                        │
+ 2 │This project is a small utility that hel│ ◂ cursor (2,0)
+ 3 │ps developers manage their configuration│
+ 4 │ files across multiple machines and keep│
+ 5 │ everything in sync.                    │
+ 6 │                                        │
+ 7 │Features:                               │
+ 8 │- Fast sync                             │
+ 9 │- Encrypted backup                      │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │readme.txt            3,1            All│
+19 │4 fewer line...2 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Now G W W. Same format, cursor stays.
+[KEYS] '3G0'
+[OVERLAY] 3G0  back to line 3
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Readme                                │
+ 1 │                                        │
+ 2 │This project is a small utility that hel│ ◂ cursor (2,0)
+ 3 │ps developers manage their configuration│
+ 4 │ files across multiple machines and keep│
+ 5 │ everything in sync.                    │
+ 6 │                                        │
+ 7 │Features:                               │
+ 8 │- Fast sync                             │
+ 9 │- Encrypted backup                      │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │readme.txt            3,1            All│
+19 │4 fewer line...2 seconds ago            │
+    ────────────────────────────────────────
+
+[KEYS] 'gww'
+[OVERLAY] gww  gw — format, keep cursor
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Readme                                │
+ 1 │                                        │
+ 2 │This project is a small utility         │ ◂ cursor (2,0)
+ 3 │that helps developers manage their      │
+ 4 │configuration files across multiple     │
+ 5 │machines and keep everything in         │
+ 6 │sync.                                   │
+ 7 │                                        │
+ 8 │Features:                               │
+ 9 │- Fast sync                             │
+10 │- Encrypted backup                      │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │readme.txt [+]        3,1            All│
+19 │4 more lines                            │
+    ────────────────────────────────────────
+
+[SAY] Same result, but the cursor is still at the top of the formatted text. Ready to keep editing.
+[SAY] G W. Format and stay. G Q moves the cursor, G W keeps it. Same formatting, different cursor behavior.

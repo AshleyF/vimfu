@@ -1,0 +1,308 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo = get_foo()                         │ ◂ cursor (0,0)
+ 1 │print(foo)                              │
+ 2 │if foo > 0:                             │
+ 3 │    save(foo)                           │
+ 4 │log(foo)                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │app.py                1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Star-Dot Pattern
+[SAY] The star-dot pattern lets you find a word and change each occurrence one at a time. Star finds the word, then you change it, then N dot repeats.
+[SAY] Put the cursor on foo and press star.
+[KEYS] '*'
+[OVERLAY] ⇧*  find word
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo = get_foo()                         │
+ 1 │print(foo)                              │ ◂ cursor (1,6)
+ 2 │if foo > 0:                             │
+ 3 │    save(foo)                           │
+ 4 │log(foo)                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │app.py                2,7            All│
+19 │/\<foo\>              [2/5]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "foo"
+[HIGHLIGHT] row 1, cols 7-8: "oo"
+[HIGHLIGHT] row 2, cols 3-5: "foo"
+[HIGHLIGHT] row 3, cols 9-11: "foo"
+[HIGHLIGHT] row 4, cols 4-6: "foo"
+
+[SAY] It jumped to the next foo and highlighted all matches. Now change this one with C W.
+[KEYS] 'cwbar'
+[OVERLAY] cwbar  change word
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo = get_foo()                         │
+ 1 │print(bar)                              │ ◂ cursor (1,9)
+ 2 │if foo > 0:                             │
+ 3 │    save(foo)                           │
+ 4 │log(foo)                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │app.py [+]            2,10           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "foo"
+[HIGHLIGHT] row 2, cols 3-5: "foo"
+[HIGHLIGHT] row 3, cols 9-11: "foo"
+[HIGHLIGHT] row 4, cols 4-6: "foo"
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo = get_foo()                         │
+ 1 │print(bar)                              │ ◂ cursor (1,8)
+ 2 │if foo > 0:                             │
+ 3 │    save(foo)                           │
+ 4 │log(foo)                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │app.py [+]            2,9            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "foo"
+[HIGHLIGHT] row 2, cols 3-5: "foo"
+[HIGHLIGHT] row 3, cols 9-11: "foo"
+[HIGHLIGHT] row 4, cols 4-6: "foo"
+
+[SAY] Press N to go to the next match, then dot to repeat the change.
+[KEYS] 'n'
+[OVERLAY] n  next match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo = get_foo()                         │
+ 1 │print(bar)                              │
+ 2 │if foo > 0:                             │ ◂ cursor (2,3)
+ 3 │    save(foo)                           │
+ 4 │log(foo)                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │app.py [+]            3,4            All│
+19 │/\<foo\>              [2/4]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "foo"
+[HIGHLIGHT] row 2, cols 4-5: "oo"
+[HIGHLIGHT] row 3, cols 9-11: "foo"
+[HIGHLIGHT] row 4, cols 4-6: "foo"
+
+[KEYS] '.'
+[OVERLAY] .  repeat change
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo = get_foo()                         │
+ 1 │print(bar)                              │
+ 2 │if bar > 0:                             │ ◂ cursor (2,5)
+ 3 │    save(foo)                           │
+ 4 │log(foo)                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │app.py [+]            3,6            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "foo"
+[HIGHLIGHT] row 3, cols 9-11: "foo"
+[HIGHLIGHT] row 4, cols 4-6: "foo"
+
+[SAY] Another one changed. N dot again.
+[KEYS] 'n'
+[OVERLAY] n  next match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo = get_foo()                         │
+ 1 │print(bar)                              │
+ 2 │if bar > 0:                             │
+ 3 │    save(foo)                           │ ◂ cursor (3,9)
+ 4 │log(foo)                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │app.py [+]            4,10           All│
+19 │/\<foo\>              [2/3]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "foo"
+[HIGHLIGHT] row 3, cols 10-11: "oo"
+[HIGHLIGHT] row 4, cols 4-6: "foo"
+
+[KEYS] '.'
+[OVERLAY] .  repeat
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo = get_foo()                         │
+ 1 │print(bar)                              │
+ 2 │if bar > 0:                             │
+ 3 │    save(bar)                           │ ◂ cursor (3,11)
+ 4 │log(foo)                                │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │app.py [+]            4,12           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "foo"
+[HIGHLIGHT] row 4, cols 4-6: "foo"
+
+[KEYS] 'n'
+[OVERLAY] n  next match
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo = get_foo()                         │
+ 1 │print(bar)                              │
+ 2 │if bar > 0:                             │
+ 3 │    save(bar)                           │
+ 4 │log(foo)                                │ ◂ cursor (4,4)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │app.py [+]            5,5            All│
+19 │/\<foo\>              [2/2]             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "foo"
+[HIGHLIGHT] row 4, cols 5-6: "oo"
+
+[KEYS] '.'
+[OVERLAY] .  repeat
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo = get_foo()                         │
+ 1 │print(bar)                              │
+ 2 │if bar > 0:                             │
+ 3 │    save(bar)                           │
+ 4 │log(bar)                                │ ◂ cursor (4,6)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │app.py [+]            5,7            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "foo"
+
+[SAY] Every foo is now bar. Star to search, change once, N dot to repeat. You can also skip occurrences with N N.

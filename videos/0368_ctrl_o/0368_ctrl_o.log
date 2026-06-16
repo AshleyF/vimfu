@@ -1,0 +1,389 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │ ◂ cursor (0,0)
+ 1 │greet()                                 │
+ 2 │    print("hello")                      │
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-O — One Normal Command
+[SAY] {key:Ctrl-O} lets you run one normal mode command without leaving insert mode. One shot, then back to typing.
+[SAY] Move down to the broken function and insert at the start of the line.
+[KEYS] 'j'
+[OVERLAY] j  down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │greet()                                 │ ◂ cursor (1,0)
+ 2 │    print("hello")                      │
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'I'
+[OVERLAY] ⇧I  insert at start
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │greet()                                 │ ◂ cursor (1,0)
+ 2 │    print("hello")                      │
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               2,1            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[TYPE] 'def '
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet()                             │ ◂ cursor (1,4)
+ 2 │    print("hello")                      │
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,5            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[SAY] Now {key:Ctrl-O} then dollar to jump to the end of the line, without leaving insert.
+[KEYS] '\x0f$'
+[OVERLAY] ⌃o$  end of line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet()                             │ ◂ cursor (1,11)
+ 2 │    print("hello")                      │
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,12           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[TYPE] ':'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet():                            │ ◂ cursor (1,12)
+ 2 │    print("hello")                      │
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,13           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[SAY] The function is fixed. {key:Ctrl-O} ran dollar, then dropped us back in insert mode to add the colon.
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet():                            │ ◂ cursor (1,11)
+ 2 │    print("hello")                      │
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,12           All│
+    ────────────────────────────────────────
+
+[SAY] Now let's expand the first print to hello world, and remove the redundant second print.
+[KEYS] 'j$'
+[OVERLAY] j$  down, end of line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet():                            │
+ 2 │    print("hello")                      │ ◂ cursor (2,17)
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           3,18           All│
+    ────────────────────────────────────────
+
+[KEYS] 'F"'
+[OVERLAY] F"  back to quote
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet():                            │
+ 2 │    print("hello")                      │ ◂ cursor (2,16)
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           3,17           All│
+    ────────────────────────────────────────
+
+[KEYS] 'i'
+[OVERLAY] i  insert
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet():                            │
+ 2 │    print("hello")                      │ ◂ cursor (2,16)
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           3,17           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[TYPE] ' world'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet():                            │
+ 2 │    print("hello world")                │ ◂ cursor (2,22)
+ 3 │    print("world")                      │
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           3,23           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[SAY] Now {key:Ctrl-O} J to step down, then {key:Ctrl-O} D D to delete the duplicate line.
+[KEYS] '\x0fj'
+[OVERLAY] ⌃oj  Ctrl-O j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet():                            │
+ 2 │    print("hello world")                │
+ 3 │    print("world")                      │ ◂ cursor (3,18)
+ 4 │    return True                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           4,19           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[KEYS] '\x0fdd'
+[OVERLAY] ⌃odd  Ctrl-O dd
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet():                            │
+ 2 │    print("hello world")                │
+ 3 │    return True                         │ ◂ cursor (3,15)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           4,16           All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[SAY] Duplicate gone. Still in insert mode, ready to keep typing.
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Demo File                             │
+ 1 │def greet():                            │
+ 2 │    print("hello world")                │
+ 3 │    return True                         │ ◂ cursor (3,14)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           4,15           All│
+    ────────────────────────────────────────
+
+[SAY] {key:Ctrl-O}. Run one normal mode command from insert. Jump, delete, yank. One shot, then back to insert.

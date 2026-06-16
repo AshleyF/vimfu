@@ -1,0 +1,208 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# demo                                  │ ◂ cursor (0,0)
+ 1 │foo = "foo"                             │
+ 2 │other = "foo"                           │
+ 3 │message = "foo foo"                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-B / Ctrl-E — Start/End
+[SAY] {key:Ctrl-B} jumps to the beginning of the command line. {key:Ctrl-E} jumps to the end.
+[SAY] Start with a local substitute: `:s/foo/bar`. Then decide it should cover the whole file and every match.
+[TYPE] ':s/foo/bar'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# demo                                  │
+ 1 │foo = "foo"                             │
+ 2 │other = "foo"                           │
+ 3 │message = "foo foo"                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+19 │:s/foo/bar                              │ ◂ cursor (19,10)
+    ────────────────────────────────────────
+
+[SAY] Use {key:Ctrl-B} to jump back and add `%` before the command.
+[CTRL] b
+[OVERLAY] ⌃b  beginning
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# demo                                  │
+ 1 │foo = "foo"                             │
+ 2 │other = "foo"                           │
+ 3 │message = "foo foo"                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+19 │:s/foo/bar                              │ ◂ cursor (19,1)
+    ────────────────────────────────────────
+
+[TYPE] '%'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# demo                                  │
+ 1 │bar = "foo"                             │
+ 2 │other = "bar"                           │
+ 3 │message = "bar foo"                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,1            All│
+19 │:%s/foo/bar                             │ ◂ cursor (19,2)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "bar"
+[HIGHLIGHT] row 2, cols 9-11: "bar"
+[HIGHLIGHT] row 3, cols 11-13: "bar"
+
+[SAY] Now use {key:Ctrl-E} to jump to the end and add `/g`.
+[CTRL] e
+[OVERLAY] ⌃e  end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# demo                                  │
+ 1 │bar = "foo"                             │
+ 2 │other = "bar"                           │
+ 3 │message = "bar foo"                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,1            All│
+19 │:%s/foo/bar                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "bar"
+[HIGHLIGHT] row 2, cols 9-11: "bar"
+[HIGHLIGHT] row 3, cols 11-13: "bar"
+
+[TYPE] '/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# demo                                  │
+ 1 │bar = "bar"                             │
+ 2 │other = "bar"                           │
+ 3 │message = "bar bar"                     │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           2,1            All│
+19 │:%s/foo/bar/g                           │ ◂ cursor (19,13)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "bar"
+[HIGHLIGHT] row 1, cols 7-9: "bar"
+[HIGHLIGHT] row 2, cols 9-11: "bar"
+[HIGHLIGHT] row 3, cols 11-13: "bar"
+[HIGHLIGHT] row 3, cols 15-17: "bar"
+
+[SAY] The command is now `:%s/foo/bar/g`: whole file, every match.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# demo                                  │
+ 1 │bar = "bar"                             │
+ 2 │other = "bar"                           │
+ 3 │message = "bar bar"                     │ ◂ cursor (3,0)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           4,1            All│
+19 │5 substitutions on 3 lines              │
+    ────────────────────────────────────────
+
+[SAY] {key:Ctrl-B} and {key:Ctrl-E} are useful when you need to edit both ends of a command before running it.

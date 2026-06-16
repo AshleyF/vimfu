@@ -1,0 +1,146 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │error in module A                       │ ◂ cursor (0,0)
+ 1 │warning from parser                     │
+ 2 │error in module B                       │
+ 3 │all good here                           │
+ 4 │error in module C                       │
+ 5 │warning from linter                     │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :s Flag n — Count Only
+[SAY] The N flag counts matches without replacing anything. A dry run.
+[SAY] How many lines have error? Use percent S with the N flag.
+[TYPE] ':%s/error//gn'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │error in module A                       │
+ 1 │warning from parser                     │
+ 2 │error in module B                       │
+ 3 │all good here                           │
+ 4 │error in module C                       │
+ 5 │warning from linter                     │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+19 │:%s/error//gn                           │ ◂ cursor (19,13)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │error in module A                       │ ◂ cursor (0,0)
+ 1 │warning from parser                     │
+ 2 │error in module B                       │
+ 3 │all good here                           │
+ 4 │error in module C                       │
+ 5 │warning from linter                     │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+19 │3 matches on 3 lines                    │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 1-4: "rror"
+[HIGHLIGHT] row 2, cols 0-4: "error"
+[HIGHLIGHT] row 4, cols 0-4: "error"
+
+[SAY] Three matches found. Nothing was changed.
+[SAY] Now count the warnings.
+[TYPE] ':%s/warning//gn'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │error in module A                       │
+ 1 │warning from parser                     │
+ 2 │error in module B                       │
+ 3 │all good here                           │
+ 4 │error in module C                       │
+ 5 │warning from linter                     │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              2,1            All│
+19 │:%s/warning//gn                         │ ◂ cursor (19,15)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │error in module A                       │ ◂ cursor (0,0)
+ 1 │warning from parser                     │
+ 2 │error in module B                       │
+ 3 │all good here                           │
+ 4 │error in module C                       │
+ 5 │warning from linter                     │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+19 │2 matches on 2 lines                    │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-6: "warning"
+[HIGHLIGHT] row 5, cols 0-6: "warning"
+
+[SAY] Two matches. Still no changes to the file. The N flag is safe.
+[SAY] The N flag. Count your matches before committing to the replace.

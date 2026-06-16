@@ -1,0 +1,224 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = Alice                            │ ◂ cursor (0,0)
+ 1 │age = 30                                │
+ 2 │city = Portland                         │
+ 3 │role = engineer                         │
+ 4 │id = 42                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Align with :s
+[SAY] A visual-range substitute can align text when the replacement is an expression. Let's align the equals signs.
+[SAY] First, select all lines with V G.
+[KEYS] 'V'
+[OVERLAY] ⇧V  visual line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = Alice                            │ ◂ cursor (0,0)
+ 1 │age = 30                                │
+ 2 │city = Portland                         │
+ 3 │role = engineer                         │
+ 4 │id = 42                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.txt              1,1            All│
+19 │-- VISUAL LINE --            1          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 1-11: "ame = Alice"
+
+[KEYS] 'G'
+[OVERLAY] ⇧G  to last line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = Alice                            │
+ 1 │age = 30                                │
+ 2 │city = Portland                         │
+ 3 │role = engineer                         │
+ 4 │id = 42                                 │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.txt              5,1            All│
+19 │-- VISUAL LINE --            5          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-11: "name = Alice"
+[HIGHLIGHT] row 1, cols 0-7: "age = 30"
+[HIGHLIGHT] row 2, cols 0-14: "city = Portland"
+[HIGHLIGHT] row 3, cols 0-14: "role = engineer"
+[HIGHLIGHT] row 4, cols 1-6: "d = 42"
+
+[SAY] First, type the command so we can read it.
+[KEYS] ':'
+[OVERLAY] ⇧:  command line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = Alice                            │
+ 1 │age = 30                                │
+ 2 │city = Portland                         │
+ 3 │role = engineer                         │
+ 4 │id = 42                                 │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.txt              5,1            All│
+19 │:'<,'>                                  │ ◂ cursor (19,6)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-11: "name = Alice"
+[HIGHLIGHT] row 1, cols 0-7: "age = 30"
+[HIGHLIGHT] row 2, cols 0-14: "city = Portland"
+[HIGHLIGHT] row 3, cols 0-14: "role = engineer"
+[HIGHLIGHT] row 4, cols 1-6: "d = 42"
+
+[TYPE] "s/\\s*=/\\=repeat(' ',6-col('.')).'='/"
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = Alice                            │
+ 1 │age  = 30                               │
+ 2 │city = Portland                         │
+ 3 │role = engineer                         │
+ 4 │id   = 42                               │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │:'<,'>s/\s*=/\=repeat(' ',6-col('.')).'=│
+19 │'/                                      │ ◂ cursor (19,2)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 4-5: " ="
+[HIGHLIGHT] row 1, cols 3-5: "  ="
+[HIGHLIGHT] row 2, cols 4-5: " ="
+[HIGHLIGHT] row 3, cols 4-5: " ="
+[HIGHLIGHT] row 4, cols 2-5: "   ="
+
+[SAY] The pattern `\s*=` finds any spaces before each equals sign. The replacement starts with `\=`, so Vim evaluates code instead of inserting literal text.
+[SAY] `repeat(' ', 6-col('.'))` makes enough spaces to put the equals sign in column 6. Now pause, read it, then run it.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = Alice                            │
+ 1 │age  = 30                               │
+ 2 │city = Portland                         │
+ 3 │role = engineer                         │
+ 4 │id   = 42                               │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │5 substitutions on 5 lines              │
+19 │Press ENTER or type command to continue │ ◂ cursor (19,39)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 4-5: " ="
+[HIGHLIGHT] row 1, cols 3-5: "  ="
+[HIGHLIGHT] row 2, cols 4-5: " ="
+[HIGHLIGHT] row 3, cols 4-5: " ="
+[HIGHLIGHT] row 4, cols 2-5: "   ="
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = Alice                            │
+ 1 │age  = 30                               │
+ 2 │city = Portland                         │
+ 3 │role = engineer                         │
+ 4 │id   = 42                               │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.txt [+]          5,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 4-5: " ="
+[HIGHLIGHT] row 1, cols 3-5: "  ="
+[HIGHLIGHT] row 2, cols 4-5: " ="
+[HIGHLIGHT] row 3, cols 4-5: " ="
+[HIGHLIGHT] row 4, cols 2-5: "   ="
+
+[SAY] The equals signs are now aligned. Each line has the right number of spaces so the equals column lines up neatly.
+[SAY] This technique works for aligning any character. Just change the column number and the target character.

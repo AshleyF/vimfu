@@ -1,0 +1,91 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Server settings                       │ ◂ cursor (0,0)
+ 1 │host = "localhost"                      │
+ 2 │port = 8080                             │
+ 3 │# Database config                       │
+ 4 │db_name = "myapp"                       │
+ 5 │# Enable debug mode                     │
+ 6 │debug = True                            │
+ 7 │# Timeout value                         │
+ 8 │timeout = 30                            │
+ 9 │user = "admin"                          │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │settings.py           1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Delete All Comments
+[SAY] This Python file has comment lines scattered throughout. Let's strip them all at once.
+[SAY] Use the global command to delete every comment line.
+[TYPE] ':g/^#/d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Server settings                       │
+ 1 │host = "localhost"                      │
+ 2 │port = 8080                             │
+ 3 │# Database config                       │
+ 4 │db_name = "myapp"                       │
+ 5 │# Enable debug mode                     │
+ 6 │debug = True                            │
+ 7 │# Timeout value                         │
+ 8 │timeout = 30                            │
+ 9 │user = "admin"                          │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │settings.py           4,1            All│
+19 │:g/^#/d                                 │ ◂ cursor (19,7)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, col 0: "#"
+[HIGHLIGHT] row 3, col 0: "#"
+[HIGHLIGHT] row 5, col 0: "#"
+[HIGHLIGHT] row 7, col 0: "#"
+
+[SAY] Colon g, pattern caret hash, d. For every line that starts with hash, run delete.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │host = "localhost"                      │
+ 1 │port = 8080                             │
+ 2 │db_name = "myapp"                       │
+ 3 │debug = True                            │
+ 4 │timeout = 30                            │ ◂ cursor (4,0)
+ 5 │user = "admin"                          │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │settings.py [+]       5,1            All│
+19 │4 fewer lines                           │
+    ────────────────────────────────────────
+
+[SAY] Four comment lines removed. Only the actual code remains.
+[SAY] For double-slash comments, change the pattern to slash slash. Same idea, any language.
+[SAY] Colon g pattern d. Global delete on any pattern. Comments, blank lines, anything.

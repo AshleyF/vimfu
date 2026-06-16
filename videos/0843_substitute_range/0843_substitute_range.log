@@ -1,0 +1,185 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │x = 1                                   │ ◂ cursor (0,0)
+ 1 │x = 2                                   │
+ 2 │x = 3                                   │
+ 3 │x = 4                                   │
+ 4 │x = 5                                   │
+ 5 │x = 6                                   │
+ 6 │x = 7                                   │
+ 7 │x = 8                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :[range]s — Substitute in Range
+[SAY] You can give colon S a line range. Only those lines get the substitution.
+[SAY] Replace X with Y on lines three through six only.
+[TYPE] ':3,6s/x/y/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │x = 1                                   │
+ 1 │x = 2                                   │
+ 2 │y = 3                                   │
+ 3 │y = 4                                   │
+ 4 │y = 5                                   │
+ 5 │y = 6                                   │
+ 6 │x = 7                                   │
+ 7 │x = 8                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          3,1            All│
+19 │:3,6s/x/y/g                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, col 0: "y"
+[HIGHLIGHT] row 3, col 0: "y"
+[HIGHLIGHT] row 4, col 0: "y"
+[HIGHLIGHT] row 5, col 0: "y"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │x = 1                                   │
+ 1 │x = 2                                   │
+ 2 │y = 3                                   │
+ 3 │y = 4                                   │
+ 4 │y = 5                                   │
+ 5 │y = 6                                   │ ◂ cursor (5,0)
+ 6 │x = 7                                   │
+ 7 │x = 8                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          6,1            All│
+19 │4 substitutions on 4 lines              │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, col 0: "x"
+[HIGHLIGHT] row 1, col 0: "x"
+[HIGHLIGHT] row 6, col 0: "x"
+[HIGHLIGHT] row 7, col 0: "x"
+
+[SAY] Lines three through six changed to Y. Lines one, two, seven, and eight still have X.
+[SAY] You can use dot for the current line and dollar for the last line. Let's change from here to the end.
+[KEYS] '6G'
+[OVERLAY] 6G  go to line 6
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │x = 1                                   │
+ 1 │x = 2                                   │
+ 2 │y = 3                                   │
+ 3 │y = 4                                   │
+ 4 │y = 5                                   │
+ 5 │y = 6                                   │ ◂ cursor (5,0)
+ 6 │x = 7                                   │
+ 7 │x = 8                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          6,1            All│
+19 │4 substitutions on 4 lines              │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, col 0: "x"
+[HIGHLIGHT] row 1, col 0: "x"
+[HIGHLIGHT] row 6, col 0: "x"
+[HIGHLIGHT] row 7, col 0: "x"
+
+[TYPE] ':.,$s/y/z/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │x = 1                                   │
+ 1 │x = 2                                   │
+ 2 │y = 3                                   │
+ 3 │y = 4                                   │
+ 4 │y = 5                                   │
+ 5 │z = 6                                   │
+ 6 │x = 7                                   │
+ 7 │x = 8                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          6,1            All│
+19 │:.,$s/y/z/g                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 5, col 0: "z"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │x = 1                                   │
+ 1 │x = 2                                   │
+ 2 │y = 3                                   │
+ 3 │y = 4                                   │
+ 4 │y = 5                                   │
+ 5 │z = 6                                   │ ◂ cursor (5,0)
+ 6 │x = 7                                   │
+ 7 │x = 8                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          6,1            All│
+19 │:.,$s/y/z/g                             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, col 0: "y"
+[HIGHLIGHT] row 3, col 0: "y"
+[HIGHLIGHT] row 4, col 0: "y"
+
+[SAY] Dot means line six, dollar means the last line. Only those lines changed.
+[SAY] Any range works with colon S. Line numbers, dot, dollar, even marks.

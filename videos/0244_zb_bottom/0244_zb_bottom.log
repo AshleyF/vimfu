@@ -1,0 +1,171 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Quest Tracker                     │ ◂ cursor (0,4)
+ 1 │  2 import json                         │
+ 2 │  3                                     │
+ 3 │  4 class Quest:                        │
+ 4 │  5     def __init__(self, name, reward)│
+ 5 │    :                                   │
+ 6 │  6         self.name = name            │
+ 7 │  7         self.reward = reward        │
+ 8 │  8         self.done = False           │
+ 9 │  9                                     │
+10 │ 10     def complete(self):             │
+11 │ 11         self.done = True            │
+12 │ 12         return self.reward          │
+13 │ 13                                     │
+14 │ 14 class Hero:                         │
+15 │ 15     def __init__(self, name):       │
+16 │ 16         self.name = name            │
+17 │ 17         self.gold = 0               │
+18 │quest.py              1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — zb Cursor to Bottom
+[SAY] Z B scrolls the screen so your cursor line is at the bottom. Use it when you want to see everything above.
+[SAY] Jump to line twenty three. The finish method.
+[KEYS] '23G'
+[OVERLAY] 23G  go to line 23
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  6         self.name = name            │
+ 1 │  7         self.reward = reward        │
+ 2 │  8         self.done = False           │
+ 3 │  9                                     │
+ 4 │ 10     def complete(self):             │
+ 5 │ 11         self.done = True            │
+ 6 │ 12         return self.reward          │
+ 7 │ 13                                     │
+ 8 │ 14 class Hero:                         │
+ 9 │ 15     def __init__(self, name):       │
+10 │ 16         self.name = name            │
+11 │ 17         self.gold = 0               │
+12 │ 18         self.quests = []            │
+13 │ 19                                     │
+14 │ 20     def accept(self, quest):        │
+15 │ 21         self.quests.append(quest)   │
+16 │ 22                                     │
+17 │ 23     def finish(self, quest):        │ ◂ cursor (17,4)
+18 │quest.py              23,1           23%│
+    ────────────────────────────────────────
+
+[SAY] Z B. Push the cursor to the bottom of the screen.
+[KEYS] 'zb'
+[OVERLAY] zb  cursor to bottom
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  6         self.name = name            │
+ 1 │  7         self.reward = reward        │
+ 2 │  8         self.done = False           │
+ 3 │  9                                     │
+ 4 │ 10     def complete(self):             │
+ 5 │ 11         self.done = True            │
+ 6 │ 12         return self.reward          │
+ 7 │ 13                                     │
+ 8 │ 14 class Hero:                         │
+ 9 │ 15     def __init__(self, name):       │
+10 │ 16         self.name = name            │
+11 │ 17         self.gold = 0               │
+12 │ 18         self.quests = []            │
+13 │ 19                                     │
+14 │ 20     def accept(self, quest):        │
+15 │ 21         self.quests.append(quest)   │
+16 │ 22                                     │
+17 │ 23     def finish(self, quest):        │ ◂ cursor (17,4)
+18 │quest.py              23,1           23%│
+    ────────────────────────────────────────
+
+[SAY] Now you can see the Hero class above and all the methods that lead up to this one.
+[SAY] Compare. Z Z centers it.
+[KEYS] 'zz'
+[OVERLAY] zz  center
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 15     def __init__(self, name):       │
+ 1 │ 16         self.name = name            │
+ 2 │ 17         self.gold = 0               │
+ 3 │ 18         self.quests = []            │
+ 4 │ 19                                     │
+ 5 │ 20     def accept(self, quest):        │
+ 6 │ 21         self.quests.append(quest)   │
+ 7 │ 22                                     │
+ 8 │ 23     def finish(self, quest):        │ ◂ cursor (8,4)
+ 9 │ 24         gold = quest.complete()     │
+10 │ 25         self.gold += gold           │
+11 │ 26                                     │
+12 │ 27     def active_quests(self):        │
+13 │ 28         return [q for q in self.ques│
+14 │    ts                                  │
+15 │ 29                 if not q.done]      │
+16 │ 30                                     │
+17 │ 31     def completed_quests(self):     │
+18 │quest.py              23,1           63%│
+    ────────────────────────────────────────
+
+[SAY] Z T moves it to the top.
+[KEYS] 'zt'
+[OVERLAY] zt  top
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │ 23     def finish(self, quest):        │ ◂ cursor (0,4)
+ 1 │ 24         gold = quest.complete()     │
+ 2 │ 25         self.gold += gold           │
+ 3 │ 26                                     │
+ 4 │ 27     def active_quests(self):        │
+ 5 │ 28         return [q for q in self.ques│
+ 6 │    ts                                  │
+ 7 │ 29                 if not q.done]      │
+ 8 │ 30                                     │
+ 9 │ 31     def completed_quests(self):     │
+10 │ 32         return [q for q in self.ques│
+11 │    ts                                  │
+12 │ 33                 if q.done]          │
+13 │ 34                                     │
+14 │ 35 def load_quests(path):              │
+15 │ 36     with open(path) as f:           │
+16 │ 37         data = json.load(f)         │
+17 │ 38     return [Quest(q['name'], q['r@@@│
+18 │quest.py              23,1           91%│
+    ────────────────────────────────────────
+
+[SAY] And Z B back to the bottom.
+[KEYS] 'zb'
+[OVERLAY] zb  bottom
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  6         self.name = name            │
+ 1 │  7         self.reward = reward        │
+ 2 │  8         self.done = False           │
+ 3 │  9                                     │
+ 4 │ 10     def complete(self):             │
+ 5 │ 11         self.done = True            │
+ 6 │ 12         return self.reward          │
+ 7 │ 13                                     │
+ 8 │ 14 class Hero:                         │
+ 9 │ 15     def __init__(self, name):       │
+10 │ 16         self.name = name            │
+11 │ 17         self.gold = 0               │
+12 │ 18         self.quests = []            │
+13 │ 19                                     │
+14 │ 20     def accept(self, quest):        │
+15 │ 21         self.quests.append(quest)   │
+16 │ 22                                     │
+17 │ 23     def finish(self, quest):        │ ◂ cursor (17,4)
+18 │quest.py              23,1           23%│
+    ────────────────────────────────────────
+
+[SAY] Same cursor line, three different viewports.
+[SAY] Z B. Cursor line to the bottom. Z Z for center, Z T for top, Z B for bottom.

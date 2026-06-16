@@ -1,0 +1,172 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │import os                               │ ◂ cursor (0,0)
+ 1 │import sys                              │
+ 2 │                                        │
+ 3 │def add(a, b):                          │
+ 4 │    return a + b                        │
+ 5 │                                        │
+ 6 │def subtract(a, b):                     │
+ 7 │    return a - b                        │
+ 8 │                                        │
+ 9 │def multiply(a, b):                     │
+10 │    return a * b                        │
+11 │                                        │
+12 │def main():                             │
+13 │    print(add(2, 3))                    │
+14 │    print(subtract(5, 1))               │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :set relativenumber
+[SAY] Relative line numbers show the distance from the cursor. This makes jump commands like 5 J or 3 K instant.
+[SAY] Enable relative numbers.
+[TYPE] ':set relativenumber'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │import os                               │
+ 1 │import sys                              │
+ 2 │                                        │
+ 3 │def add(a, b):                          │
+ 4 │    return a + b                        │
+ 5 │                                        │
+ 6 │def subtract(a, b):                     │
+ 7 │    return a - b                        │
+ 8 │                                        │
+ 9 │def multiply(a, b):                     │
+10 │    return a * b                        │
+11 │                                        │
+12 │def main():                             │
+13 │    print(add(2, 3))                    │
+14 │    print(subtract(5, 1))               │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+19 │:set relativenumber                     │ ◂ cursor (19,19)
+    ────────────────────────────────────────
+
+[SAY] Set relative number — each line shows its distance from the cursor instead of its absolute line number.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  0 import os                           │ ◂ cursor (0,4)
+ 1 │  1 import sys                          │
+ 2 │  2                                     │
+ 3 │  3 def add(a, b):                      │
+ 4 │  4     return a + b                    │
+ 5 │  5                                     │
+ 6 │  6 def subtract(a, b):                 │
+ 7 │  7     return a - b                    │
+ 8 │  8                                     │
+ 9 │  9 def multiply(a, b):                 │
+10 │ 10     return a * b                    │
+11 │ 11                                     │
+12 │ 12 def main():                         │
+13 │ 13     print(add(2, 3))                │
+14 │ 14     print(subtract(5, 1))           │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+19 │:set relativenumber                     │
+    ────────────────────────────────────────
+
+[SAY] Now each line shows its distance from the cursor. The cursor line shows zero.
+[SAY] Move down five lines. Watch the numbers update.
+[KEYS] '5j'
+[OVERLAY] 5j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  5 import os                           │
+ 1 │  4 import sys                          │
+ 2 │  3                                     │
+ 3 │  2 def add(a, b):                      │
+ 4 │  1     return a + b                    │
+ 5 │  0                                     │ ◂ cursor (5,4)
+ 6 │  1 def subtract(a, b):                 │
+ 7 │  2     return a - b                    │
+ 8 │  3                                     │
+ 9 │  4 def multiply(a, b):                 │
+10 │  5     return a * b                    │
+11 │  6                                     │
+12 │  7 def main():                         │
+13 │  8     print(add(2, 3))                │
+14 │  9     print(subtract(5, 1))           │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               6,0-1          All│
+19 │:set relativenumber                     │
+    ────────────────────────────────────────
+
+[SAY] The numbers shifted. The short form is set R N U.
+[SAY] Combine with set number to get hybrid mode. The current line shows its absolute number.
+[TYPE] ':set number'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  5 import os                           │
+ 1 │  4 import sys                          │
+ 2 │  3                                     │
+ 3 │  2 def add(a, b):                      │
+ 4 │  1     return a + b                    │
+ 5 │  0                                     │
+ 6 │  1 def subtract(a, b):                 │
+ 7 │  2     return a - b                    │
+ 8 │  3                                     │
+ 9 │  4 def multiply(a, b):                 │
+10 │  5     return a * b                    │
+11 │  6                                     │
+12 │  7 def main():                         │
+13 │  8     print(add(2, 3))                │
+14 │  9     print(subtract(5, 1))           │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               6,0-1          All│
+19 │:set number                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+
+[SAY] Add set number on top of relative number for hybrid mode — current line shows absolute, others show relative.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  5 import os                           │
+ 1 │  4 import sys                          │
+ 2 │  3                                     │
+ 3 │  2 def add(a, b):                      │
+ 4 │  1     return a + b                    │
+ 5 │6                                       │ ◂ cursor (5,4)
+ 6 │  1 def subtract(a, b):                 │
+ 7 │  2     return a - b                    │
+ 8 │  3                                     │
+ 9 │  4 def multiply(a, b):                 │
+10 │  5     return a * b                    │
+11 │  6                                     │
+12 │  7 def main():                         │
+13 │  8     print(add(2, 3))                │
+14 │  9     print(subtract(5, 1))           │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               6,0-1          All│
+19 │:set number                             │
+    ────────────────────────────────────────
+
+[SAY] Set relative number. Relative distances for easy jumps. Combine with set number for the best of both.

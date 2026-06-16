@@ -1,0 +1,174 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Quest Log                         │ ◂ cursor (0,4)
+ 1 │  2 task_1 = "Defeat the dragon"        │
+ 2 │  3 task_2 = "Find the treasure"        │
+ 3 │  4 task_3 = "Return the crown"         │
+ 4 │  5 # Shopping List                     │
+ 5 │  6 buy_sword = True                    │
+ 6 │  7 buy_armor = True                    │
+ 7 │  8 buy_potions = True                  │
+ 8 │  9 # Party Members                     │
+ 9 │ 10 hero = "Knight"                     │
+10 │ 11 sidekick = "Mage"                   │
+11 │ 12 pet = "Wolf"                        │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — zf — Create Manual Fold
+[SAY] Z F followed by a motion creates a fold. Set fold method to manual first.
+[SAY] Fold the quest log. Lines two through four. Go to line two and Z F two J.
+[KEYS] '2G'
+[OVERLAY] 2G  go to line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Quest Log                         │
+ 1 │  2 task_1 = "Defeat the dragon"        │ ◂ cursor (1,4)
+ 2 │  3 task_2 = "Find the treasure"        │
+ 3 │  4 task_3 = "Return the crown"         │
+ 4 │  5 # Shopping List                     │
+ 5 │  6 buy_sword = True                    │
+ 6 │  7 buy_armor = True                    │
+ 7 │  8 buy_potions = True                  │
+ 8 │  9 # Party Members                     │
+ 9 │ 10 hero = "Knight"                     │
+10 │ 11 sidekick = "Mage"                   │
+11 │ 12 pet = "Wolf"                        │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'zf2j'
+[OVERLAY] zf2j  fold 3 lines
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Quest Log                         │
+ 1 │  2 +--  3 lines: task_1 = "Defeat the d│ ◂ cursor (1,4)
+ 2 │  5 # Shopping List                     │
+ 3 │  6 buy_sword = True                    │
+ 4 │  7 buy_armor = True                    │
+ 5 │  8 buy_potions = True                  │
+ 6 │  9 # Party Members                     │
+ 7 │ 10 hero = "Knight"                     │
+ 8 │ 11 sidekick = "Mage"                   │
+ 9 │ 12 pet = "Wolf"                        │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               2,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 5-39: "--  3 lines: task_1 = "Defeat the d"
+
+[SAY] Three lines folded into one. The fold hides the tasks.
+[SAY] Fold the shopping list too. Z F three J.
+[KEYS] '5G'
+[OVERLAY] 5G  jump to section
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Quest Log                         │
+ 1 │  2 +--  3 lines: task_1 = "Defeat the d│
+ 2 │  5 # Shopping List                     │ ◂ cursor (2,4)
+ 3 │  6 buy_sword = True                    │
+ 4 │  7 buy_armor = True                    │
+ 5 │  8 buy_potions = True                  │
+ 6 │  9 # Party Members                     │
+ 7 │ 10 hero = "Knight"                     │
+ 8 │ 11 sidekick = "Mage"                   │
+ 9 │ 12 pet = "Wolf"                        │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               5,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 4-39: "+--  3 lines: task_1 = "Defeat the d"
+
+[KEYS] 'zf3j'
+[OVERLAY] zf3j  fold 4 lines
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Quest Log                         │
+ 1 │  2 +--  3 lines: task_1 = "Defeat the d│
+ 2 │  5 +--  4 lines: Shopping List·········│ ◂ cursor (2,4)
+ 3 │  9 # Party Members                     │
+ 4 │ 10 hero = "Knight"                     │
+ 5 │ 11 sidekick = "Mage"                   │
+ 6 │ 12 pet = "Wolf"                        │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               5,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 4-39: "+--  3 lines: task_1 = "Defeat the d"
+[HIGHLIGHT] row 2, cols 5-39: "--  4 lines: Shopping List·········"
+
+[SAY] Two custom folds. You choose exactly what to hide.
+[SAY] Z O to open a fold again.
+[KEYS] 'zo'
+[OVERLAY] zo  open fold
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Quest Log                         │
+ 1 │  2 +--  3 lines: task_1 = "Defeat the d│
+ 2 │  5 # Shopping List                     │ ◂ cursor (2,4)
+ 3 │  6 buy_sword = True                    │
+ 4 │  7 buy_armor = True                    │
+ 5 │  8 buy_potions = True                  │
+ 6 │  9 # Party Members                     │
+ 7 │ 10 hero = "Knight"                     │
+ 8 │ 11 sidekick = "Mage"                   │
+ 9 │ 12 pet = "Wolf"                        │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │todo.py               5,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 4-39: "+--  3 lines: task_1 = "Defeat the d"
+
+[SAY] Z F plus a motion. Create folds anywhere you want with manual fold method.

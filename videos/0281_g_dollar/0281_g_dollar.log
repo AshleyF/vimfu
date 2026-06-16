@@ -1,0 +1,198 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │ ◂ cursor (0,4)
+ 1 │  2     This is a very long indented lin│
+ 2 │    e that wraps around the screen multi│
+ 3 │    ple times because it has so many wor│
+ 4 │    ds in it.                           │
+ 5 │  3 Another short line.                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │wrap.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — g$ g0 g^ — Display Lines
+[SAY] When lines wrap, dollar and zero jump to the real line ends. G dollar and G zero move to the display line ends. The wrapped visual lines.
+[SAY] Go to line two. The long wrapped line.
+[KEYS] '2G0'
+[OVERLAY] 2G0  line 2, start
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2     This is a very long indented lin│ ◂ cursor (1,4)
+ 2 │    e that wraps around the screen multi│
+ 3 │    ple times because it has so many wor│
+ 4 │    ds in it.                           │
+ 5 │  3 Another short line.                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │wrap.txt              2,1            All│
+    ────────────────────────────────────────
+
+[SAY] Dollar. Jump to the end of the real line.
+[KEYS] '$'
+[OVERLAY] ⇧$  $ — real line end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2     This is a very long indented lin│
+ 2 │    e that wraps around the screen multi│
+ 3 │    ple times because it has so many wor│
+ 4 │    ds in it.                           │ ◂ cursor (4,12)
+ 5 │  3 Another short line.                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │wrap.txt              2,117          All│
+    ────────────────────────────────────────
+
+[SAY] The cursor jumped to the very end. All the way past all the wraps. Now go back.
+[KEYS] '2G0'
+[OVERLAY] 2G0
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2     This is a very long indented lin│ ◂ cursor (1,4)
+ 2 │    e that wraps around the screen multi│
+ 3 │    ple times because it has so many wor│
+ 4 │    ds in it.                           │
+ 5 │  3 Another short line.                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │wrap.txt              2,1            All│
+    ────────────────────────────────────────
+
+[SAY] G dollar. End of the display line.
+[KEYS] 'g$'
+[OVERLAY] g$  g$ — display line end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2     This is a very long indented lin│ ◂ cursor (1,39)
+ 2 │    e that wraps around the screen multi│
+ 3 │    ple times because it has so many wor│
+ 4 │    ds in it.                           │
+ 5 │  3 Another short line.                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │wrap.txt              2,36           All│
+    ────────────────────────────────────────
+
+[SAY] Only to the end of the first wrapped segment. The visual line.
+[SAY] G zero goes to the start of the display line. G caret goes to the first non blank of the display line.
+[KEYS] 'g0'
+[OVERLAY] g0  g0 — display start
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2     This is a very long indented lin│ ◂ cursor (1,4)
+ 2 │    e that wraps around the screen multi│
+ 3 │    ple times because it has so many wor│
+ 4 │    ds in it.                           │
+ 5 │  3 Another short line.                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │wrap.txt              2,1            All│
+    ────────────────────────────────────────
+
+[SAY] At the display line start.
+[KEYS] 'g^'
+[OVERLAY] g^  g^ — first non-blank
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2     This is a very long indented lin│ ◂ cursor (1,8)
+ 2 │    e that wraps around the screen multi│
+ 3 │    ple times because it has so many wor│
+ 4 │    ds in it.                           │
+ 5 │  3 Another short line.                 │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │wrap.txt              2,5            All│
+    ────────────────────────────────────────
+
+[SAY] G dollar, G zero, G caret. Navigate wrapped display lines. The G prefix means display line, not real line.

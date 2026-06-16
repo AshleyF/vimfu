@@ -1,0 +1,67 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │                                        │ ◂ cursor (0,0)
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :%norm — Normal on Every Line
+[SAY] Colon norm runs normal mode keystrokes on lines. Percent norm runs on every line in the file.
+[SAY] These JavaScript lines are missing semicolons. Let's add one to every line.
+[TYPE] ':%norm A;'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │let x = 1                               │
+ 1 │let y = 2                               │
+ 2 │let z = 3                               │
+ 3 │let w = 4                               │
+ 4 │let v = 5                               │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.js               1,1            All│
+19 │:%norm A;                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+
+[SAY] Percent means every line in the file. Capital A jumps to the end of a line and enters insert mode. Then we type a semicolon. Norm replays that sequence on each line.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │let x = 1;                              │
+ 1 │let y = 2;                              │
+ 2 │let z = 3;                              │
+ 3 │let w = 4;                              │
+ 4 │let v = 5;                              │ ◂ cursor (4,9)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.js [+]           5,10           All│
+    ────────────────────────────────────────
+
+[SAY] Done. Every line now ends with a semicolon.
+[SAY] Percent norm. Execute any normal mode keys on every line. Incredibly powerful.

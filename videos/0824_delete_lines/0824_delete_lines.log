@@ -1,0 +1,197 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — buy apples                 │ ◂ cursor (0,4)
+ 1 │  2 line 2 — fix the bug                │
+ 2 │  3 line 3 — call Mom                   │
+ 3 │  4 line 4 — send invoice               │
+ 4 │  5 line 5 — water plants               │
+ 5 │  6 line 6 — clean kitchen              │
+ 6 │  7 line 7 — read chapter 5             │
+ 7 │  8 line 8 — update resume              │
+ 8 │  9 line 9 — walk the dog               │
+ 9 │ 10 line 10 — write tests               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tasks.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :[range]d — Delete Lines
+[SAY] Colon D deletes lines by number. You can delete a single line or a range.
+[SAY] Colon three d. Delete line three.
+[TYPE] ':3d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — buy apples                 │
+ 1 │  2 line 2 — fix the bug                │
+ 2 │  3 line 3 — call Mom                   │
+ 3 │  4 line 4 — send invoice               │
+ 4 │  5 line 5 — water plants               │
+ 5 │  6 line 6 — clean kitchen              │
+ 6 │  7 line 7 — read chapter 5             │
+ 7 │  8 line 8 — update resume              │
+ 8 │  9 line 9 — walk the dog               │
+ 9 │ 10 line 10 — write tests               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tasks.txt             1,1            All│
+19 │:3d                                     │ ◂ cursor (19,3)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — buy apples                 │
+ 1 │  2 line 2 — fix the bug                │
+ 2 │  3 line 4 — send invoice               │ ◂ cursor (2,4)
+ 3 │  4 line 5 — water plants               │
+ 4 │  5 line 6 — clean kitchen              │
+ 5 │  6 line 7 — read chapter 5             │
+ 6 │  7 line 8 — update resume              │
+ 7 │  8 line 9 — walk the dog               │
+ 8 │  9 line 10 — write tests               │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tasks.txt [+]         3,1            All│
+19 │:3d                                     │
+    ────────────────────────────────────────
+
+[SAY] Line three is gone. Call Mom, deleted.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — buy apples                 │
+ 1 │  2 line 2 — fix the bug                │
+ 2 │  3 line 3 — call Mom                   │ ◂ cursor (2,4)
+ 3 │  4 line 4 — send invoice               │
+ 4 │  5 line 5 — water plants               │
+ 5 │  6 line 6 — clean kitchen              │
+ 6 │  7 line 7 — read chapter 5             │
+ 7 │  8 line 8 — update resume              │
+ 8 │  9 line 9 — walk the dog               │
+ 9 │ 10 line 10 — write tests               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tasks.txt             3,1            All│
+19 │1 more line;...5 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Delete a range. Colon five comma eight d.
+[TYPE] ':5,8d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — buy apples                 │
+ 1 │  2 line 2 — fix the bug                │
+ 2 │  3 line 3 — call Mom                   │
+ 3 │  4 line 4 — send invoice               │
+ 4 │  5 line 5 — water plants               │
+ 5 │  6 line 6 — clean kitchen              │
+ 6 │  7 line 7 — read chapter 5             │
+ 7 │  8 line 8 — update resume              │
+ 8 │  9 line 9 — walk the dog               │
+ 9 │ 10 line 10 — write tests               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tasks.txt             3,1            All│
+19 │:5,8d                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — buy apples                 │
+ 1 │  2 line 2 — fix the bug                │
+ 2 │  3 line 3 — call Mom                   │
+ 3 │  4 line 4 — send invoice               │
+ 4 │  5 line 9 — walk the dog               │ ◂ cursor (4,4)
+ 5 │  6 line 10 — write tests               │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tasks.txt [+]         5,1            All│
+19 │4 fewer lines                           │
+    ────────────────────────────────────────
+
+[SAY] Four lines removed. Lines five through eight.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — buy apples                 │
+ 1 │  2 line 2 — fix the bug                │
+ 2 │  3 line 3 — call Mom                   │
+ 3 │  4 line 4 — send invoice               │
+ 4 │  5 line 5 — water plants               │ ◂ cursor (4,4)
+ 5 │  6 line 6 — clean kitchen              │
+ 6 │  7 line 7 — read chapter 5             │
+ 7 │  8 line 8 — update resume              │
+ 8 │  9 line 9 — walk the dog               │
+ 9 │ 10 line 10 — write tests               │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tasks.txt             5,1            All│
+19 │4 more lines...5 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Colon D for delete. Single line or a range. The deleted text goes to the unnamed register.

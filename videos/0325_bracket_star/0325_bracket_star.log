@@ -1,0 +1,196 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 int mana = 100;                     │ ◂ cursor (0,4)
+ 1 │  2                                     │
+ 2 │  3 /*                                  │
+ 3 │  4  * Cast a fireball spell.           │
+ 4 │  5  * Costs 25 mana per cast.          │
+ 5 │  6  * Deals area damage.               │
+ 6 │  7  */                                 │
+ 7 │  8 void fireball() {                   │
+ 8 │  9     mana -= 25;                     │
+ 9 │ 10 }                                   │
+10 │ 11                                     │
+11 │ 12 /*                                  │
+12 │ 13  * Heal the entire party.           │
+13 │ 14  * Costs 50 mana.                   │
+14 │ 15  */                                 │
+15 │ 16 void heal() {                       │
+16 │ 17     mana -= 50;                     │
+17 │ 18 }                                   │
+18 │spell.c               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — [* ]* — Comment Blocks
+[SAY] {key:[*} jumps to the start of a C comment. {key:]*} jumps to the end.
+[SAY] Cursor is inside the comment block on line five. {key:[*} to find the start.
+[KEYS] '5G'
+[OVERLAY] 5G  go to line 5
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 int mana = 100;                     │
+ 1 │  2                                     │
+ 2 │  3 /*                                  │
+ 3 │  4  * Cast a fireball spell.           │
+ 4 │  5  * Costs 25 mana per cast.          │ ◂ cursor (4,4)
+ 5 │  6  * Deals area damage.               │
+ 6 │  7  */                                 │
+ 7 │  8 void fireball() {                   │
+ 8 │  9     mana -= 25;                     │
+ 9 │ 10 }                                   │
+10 │ 11                                     │
+11 │ 12 /*                                  │
+12 │ 13  * Heal the entire party.           │
+13 │ 14  * Costs 50 mana.                   │
+14 │ 15  */                                 │
+15 │ 16 void heal() {                       │
+16 │ 17     mana -= 50;                     │
+17 │ 18 }                                   │
+18 │spell.c               5,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '[*'
+[OVERLAY] [*  comment start
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 int mana = 100;                     │
+ 1 │  2                                     │
+ 2 │  3 /*                                  │ ◂ cursor (2,4)
+ 3 │  4  * Cast a fireball spell.           │
+ 4 │  5  * Costs 25 mana per cast.          │
+ 5 │  6  * Deals area damage.               │
+ 6 │  7  */                                 │
+ 7 │  8 void fireball() {                   │
+ 8 │  9     mana -= 25;                     │
+ 9 │ 10 }                                   │
+10 │ 11                                     │
+11 │ 12 /*                                  │
+12 │ 13  * Heal the entire party.           │
+13 │ 14  * Costs 50 mana.                   │
+14 │ 15  */                                 │
+15 │ 16 void heal() {                       │
+16 │ 17     mana -= 50;                     │
+17 │ 18 }                                   │
+18 │spell.c               3,1            All│
+    ────────────────────────────────────────
+
+[SAY] Jumped to the opening slash-star on line three.
+[SAY] Move down inside the comment, then {key:]*} to find the end.
+[KEYS] '3j'
+[OVERLAY] 3j  into comment
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 int mana = 100;                     │
+ 1 │  2                                     │
+ 2 │  3 /*                                  │
+ 3 │  4  * Cast a fireball spell.           │
+ 4 │  5  * Costs 25 mana per cast.          │
+ 5 │  6  * Deals area damage.               │ ◂ cursor (5,4)
+ 6 │  7  */                                 │
+ 7 │  8 void fireball() {                   │
+ 8 │  9     mana -= 25;                     │
+ 9 │ 10 }                                   │
+10 │ 11                                     │
+11 │ 12 /*                                  │
+12 │ 13  * Heal the entire party.           │
+13 │ 14  * Costs 50 mana.                   │
+14 │ 15  */                                 │
+15 │ 16 void heal() {                       │
+16 │ 17     mana -= 50;                     │
+17 │ 18 }                                   │
+18 │spell.c               6,1            All│
+    ────────────────────────────────────────
+
+[KEYS] ']*'
+[OVERLAY] ]*  comment end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 int mana = 100;                     │
+ 1 │  2                                     │
+ 2 │  3 /*                                  │
+ 3 │  4  * Cast a fireball spell.           │
+ 4 │  5  * Costs 25 mana per cast.          │
+ 5 │  6  * Deals area damage.               │
+ 6 │  7  */                                 │ ◂ cursor (6,6)
+ 7 │  8 void fireball() {                   │
+ 8 │  9     mana -= 25;                     │
+ 9 │ 10 }                                   │
+10 │ 11                                     │
+11 │ 12 /*                                  │
+12 │ 13  * Heal the entire party.           │
+13 │ 14  * Costs 50 mana.                   │
+14 │ 15  */                                 │
+15 │ 16 void heal() {                       │
+16 │ 17     mana -= 50;                     │
+17 │ 18 }                                   │
+18 │spell.c               7,3            All│
+    ────────────────────────────────────────
+
+[SAY] Landed on the closing star-slash. Quick way to navigate comment blocks.
+[SAY] Jump into the next comment and find its start.
+[KEYS] '6j'
+[OVERLAY] 6j  down to next comment
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 int mana = 100;                     │
+ 1 │  2                                     │
+ 2 │  3 /*                                  │
+ 3 │  4  * Cast a fireball spell.           │
+ 4 │  5  * Costs 25 mana per cast.          │
+ 5 │  6  * Deals area damage.               │
+ 6 │  7  */                                 │
+ 7 │  8 void fireball() {                   │
+ 8 │  9     mana -= 25;                     │
+ 9 │ 10 }                                   │
+10 │ 11                                     │
+11 │ 12 /*                                  │
+12 │ 13  * Heal the entire party.           │ ◂ cursor (12,6)
+13 │ 14  * Costs 50 mana.                   │
+14 │ 15  */                                 │
+15 │ 16 void heal() {                       │
+16 │ 17     mana -= 50;                     │
+17 │ 18 }                                   │
+18 │spell.c               13,3           All│
+    ────────────────────────────────────────
+
+[KEYS] '[*'
+[OVERLAY] [*  comment start
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 int mana = 100;                     │
+ 1 │  2                                     │
+ 2 │  3 /*                                  │
+ 3 │  4  * Cast a fireball spell.           │
+ 4 │  5  * Costs 25 mana per cast.          │
+ 5 │  6  * Deals area damage.               │
+ 6 │  7  */                                 │
+ 7 │  8 void fireball() {                   │
+ 8 │  9     mana -= 25;                     │
+ 9 │ 10 }                                   │
+10 │ 11                                     │
+11 │ 12 /*                                  │ ◂ cursor (11,4)
+12 │ 13  * Heal the entire party.           │
+13 │ 14  * Costs 50 mana.                   │
+14 │ 15  */                                 │
+15 │ 16 void heal() {                       │
+16 │ 17     mana -= 50;                     │
+17 │ 18 }                                   │
+18 │spell.c               12,1           All│
+    ────────────────────────────────────────
+
+[SAY] {key:[*} and {key:]*}. Navigate C-style block comments.

@@ -1,0 +1,120 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Selection Demo                        │ ◂ cursor (0,0)
+ 1 │alpha = 1                               │
+ 2 │beta = 2                                │
+ 3 │gamma = 3                               │
+ 4 │delta = 4                               │
+ 5 │epsilon = 5                             │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │gv.py                 1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gV — Avoid Reselect
+[SAY] G shift V is used in mappings to prevent the previous visual area from being reselected. It's a mapping helper, not a standalone command.
+[SAY] When you run a colon command from visual mode, Vim can auto-reselect the visual area. G shift V prevents that. Let's see the difference.
+[SAY] Select three lines.
+[KEYS] '2GV2j'
+[OVERLAY] 2GV2j  select 3 lines
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Selection Demo                        │
+ 1 │alpha = 1                               │
+ 2 │beta = 2                                │
+ 3 │gamma = 3                               │ ◂ cursor (3,0)
+ 4 │delta = 4                               │
+ 5 │epsilon = 5                             │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │gv.py                 4,1            All│
+19 │-- VISUAL LINE --            3          │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-8: "alpha = 1"
+[HIGHLIGHT] row 2, cols 0-7: "beta = 2"
+[HIGHLIGHT] row 3, cols 1-8: "amma = 3"
+
+[SAY] Run a substitution. Colon S, alpha, omega.
+[TYPE] ':s/alpha/omega/'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Selection Demo                        │
+ 1 │omega = 1                               │
+ 2 │beta = 2                                │
+ 3 │gamma = 3                               │
+ 4 │delta = 4                               │
+ 5 │epsilon = 5                             │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │gv.py [+]             2,1            All│
+19 │:'<,'>s/alpha/omega/                    │ ◂ cursor (19,20)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-4: "omega"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Selection Demo                        │
+ 1 │omega = 1                               │ ◂ cursor (1,0)
+ 2 │beta = 2                                │
+ 3 │gamma = 3                               │
+ 4 │delta = 4                               │
+ 5 │epsilon = 5                             │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │gv.py [+]             2,1            All│
+19 │:'<,'>s/alpha/omega/                    │
+    ────────────────────────────────────────
+
+[SAY] Done. Now if a mapping were to reselect here, G shift V would prevent it. It clears the pending visual selection inside a mapping.
+[SAY] This is mainly useful when writing custom mappings that execute colon commands on visual selections. You add G shift V at the end of the mapping to prevent re-highlighting.
+[SAY] G shift V. A mapping tool to suppress visual reselection. Niche, but handy for clean custom visual mode mappings.

@@ -221,7 +221,7 @@ def _ensure_gif(lesson_num: int) -> Path | None:
     """Return the GIF path for a lesson, generating it if needed.
 
     The GIF pipeline lives in shellpilot/ and must run with CWD there.
-    Generated files are cached in shellpilot/videos/<slug>/.
+    Generated files are cached in <repo>/videos/<slug>/.
     """
     lesson_json = _find_lesson_json(lesson_num)
     if lesson_json is None:
@@ -229,7 +229,7 @@ def _ensure_gif(lesson_num: int) -> Path | None:
         return None
 
     slug = lesson_json.stem
-    video_dir = _SHELLPILOT_DIR / "videos" / slug
+    video_dir = _root / "videos" / slug
     frames_path = video_dir / f"{slug}.frames.json"
     gif_path = video_dir / f"{slug}.frames.gif"
 

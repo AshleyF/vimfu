@@ -1,0 +1,223 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Battle Engine                     │ ◂ cursor (0,4)
+ 1 │  2 hp = 100                            │
+ 2 │  3 max_hp = 200                        │
+ 3 │  4 def heal():                         │
+ 4 │  5     global hp                       │
+ 5 │  6     hp += 50                        │
+ 6 │  7     if hp > max_hp:                 │
+ 7 │  8         hp = max_hp                 │
+ 8 │  9 def damage(amt):                    │
+ 9 │ 10     global hp                       │
+10 │ 11     hp -= amt                       │
+11 │ 12     if hp < 0:                      │
+12 │ 13         hp = 0                      │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │game.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — [I ]I — List Includes
+[SAY] {key:[I} lists every line that contains the word under the cursor. Like a quick grep inside Vim.
+[SAY] Cursor on H P on line two. {key:[I} to list every line with H P.
+[KEYS] '2G'
+[OVERLAY] 2G  go to line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Battle Engine                     │
+ 1 │  2 hp = 100                            │ ◂ cursor (1,4)
+ 2 │  3 max_hp = 200                        │
+ 3 │  4 def heal():                         │
+ 4 │  5     global hp                       │
+ 5 │  6     hp += 50                        │
+ 6 │  7     if hp > max_hp:                 │
+ 7 │  8         hp = max_hp                 │
+ 8 │  9 def damage(amt):                    │
+ 9 │ 10     global hp                       │
+10 │ 11     hp -= amt                       │
+11 │ 12     if hp < 0:                      │
+12 │ 13         hp = 0                      │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │game.py               2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '[I'
+[OVERLAY] [I  list all matches
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Battle Engine                     │
+ 1 │  2 hp = 100                            │
+ 2 │  3 max_hp = 200                        │
+ 3 │  4 def heal():                         │
+ 4 │  5     global hp                       │
+ 5 │  6     hp += 50                        │
+ 6 │  7     if hp > max_hp:                 │
+ 7 │  8         hp = max_hp                 │
+ 8 │                                        │
+ 9 │game.py                                 │
+10 │  1:    2 hp = 100                      │
+11 │  2:    5     global hp                 │
+12 │  3:    6     hp += 50                  │
+13 │  4:    7     if hp > max_hp:           │
+14 │  5:    8         hp = max_hp           │
+15 │  6:   10     global hp                 │
+16 │  7:   11     hp -= amt                 │
+17 │  8:   12     if hp < 0:                │
+18 │  9:   13         hp = 0                │
+19 │Press ENTER or type command to continue │ ◂ cursor (19,39)
+    ────────────────────────────────────────
+
+[SAY] Every line containing H P is listed with line numbers. A quick overview of everywhere it's used.
+[KEYS] '\r'
+[OVERLAY] ⏎
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Battle Engine                     │
+ 1 │  2 hp = 100                            │ ◂ cursor (1,4)
+ 2 │  3 max_hp = 200                        │
+ 3 │  4 def heal():                         │
+ 4 │  5     global hp                       │
+ 5 │  6     hp += 50                        │
+ 6 │  7     if hp > max_hp:                 │
+ 7 │  8         hp = max_hp                 │
+ 8 │  9 def damage(amt):                    │
+ 9 │ 10     global hp                       │
+10 │ 11     hp -= amt                       │
+11 │ 12     if hp < 0:                      │
+12 │ 13         hp = 0                      │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │game.py               2,1            All│
+    ────────────────────────────────────────
+
+[SAY] {key:]I} lists matches from the cursor position forward only.
+[KEYS] '7G'
+[OVERLAY] 7G  go to line 7
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Battle Engine                     │
+ 1 │  2 hp = 100                            │
+ 2 │  3 max_hp = 200                        │
+ 3 │  4 def heal():                         │
+ 4 │  5     global hp                       │
+ 5 │  6     hp += 50                        │
+ 6 │  7     if hp > max_hp:                 │ ◂ cursor (6,4)
+ 7 │  8         hp = max_hp                 │
+ 8 │  9 def damage(amt):                    │
+ 9 │ 10     global hp                       │
+10 │ 11     hp -= amt                       │
+11 │ 12     if hp < 0:                      │
+12 │ 13         hp = 0                      │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │game.py               7,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '2w'
+[OVERLAY] 2w  to hp
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Battle Engine                     │
+ 1 │  2 hp = 100                            │
+ 2 │  3 max_hp = 200                        │
+ 3 │  4 def heal():                         │
+ 4 │  5     global hp                       │
+ 5 │  6     hp += 50                        │
+ 6 │  7     if hp > max_hp:                 │ ◂ cursor (6,11)
+ 7 │  8         hp = max_hp                 │
+ 8 │  9 def damage(amt):                    │
+ 9 │ 10     global hp                       │
+10 │ 11     hp -= amt                       │
+11 │ 12     if hp < 0:                      │
+12 │ 13         hp = 0                      │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │game.py               7,8            All│
+    ────────────────────────────────────────
+
+[KEYS] ']I'
+[OVERLAY] ]I  list from here
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Battle Engine                     │
+ 1 │  2 hp = 100                            │
+ 2 │  3 max_hp = 200                        │
+ 3 │  4 def heal():                         │
+ 4 │  5     global hp                       │
+ 5 │  6     hp += 50                        │
+ 6 │  7     if hp > max_hp:                 │
+ 7 │  8         hp = max_hp                 │
+ 8 │  9 def damage(amt):                    │
+ 9 │ 10     global hp                       │
+10 │ 11     hp -= amt                       │
+11 │ 12     if hp < 0:                      │
+12 │                                        │
+13 │game.py                                 │
+14 │  1:    8         hp = max_hp           │
+15 │  2:   10     global hp                 │
+16 │  3:   11     hp -= amt                 │
+17 │  4:   12     if hp < 0:                │
+18 │  5:   13         hp = 0                │
+19 │Press ENTER or type command to continue │ ◂ cursor (19,39)
+    ────────────────────────────────────────
+
+[KEYS] '\r'
+[OVERLAY] ⏎
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 # Battle Engine                     │
+ 1 │  2 hp = 100                            │
+ 2 │  3 max_hp = 200                        │
+ 3 │  4 def heal():                         │
+ 4 │  5     global hp                       │
+ 5 │  6     hp += 50                        │
+ 6 │  7     if hp > max_hp:                 │ ◂ cursor (6,11)
+ 7 │  8         hp = max_hp                 │
+ 8 │  9 def damage(amt):                    │
+ 9 │ 10     global hp                       │
+10 │ 11     hp -= amt                       │
+11 │ 12     if hp < 0:                      │
+12 │ 13         hp = 0                      │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │game.py               7,8            All│
+    ────────────────────────────────────────
+
+[SAY] {key:[I} lists all matches. {key:]I} from cursor down. Built-in search results.

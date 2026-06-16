@@ -1,0 +1,155 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  alpha             │  alpha            │ ◂ cursor (0,2)
+ 1 │  bravo             │  BRAVO            │
+ 2 │  charlie           │  charlie          │
+ 3 │  delta             │  DELTA            │
+ 4 │~                   │~                  │
+ 5 │~                   │~                  │
+ 6 │~                   │~                  │
+ 7 │~                   │~                  │
+ 8 │~                   │~                  │
+ 9 │~                   │~                  │
+10 │~                   │~                  │
+11 │~                   │~                  │
+12 │~                   │~                  │
+13 │~                   │~                  │
+14 │~                   │~                  │
+15 │~                   │~                  │
+16 │~                   │~                  │
+17 │~                   │~                  │
+18 │left.txt  1,1    All <ight.txt 1,1   All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 2-6: "bravo"
+[HIGHLIGHT] row 1, cols 23-27: "BRAVO"
+[HIGHLIGHT] row 3, cols 2-6: "delta"
+[HIGHLIGHT] row 3, cols 23-27: "DELTA"
+
+[OVERLAY] VimFu — do / dp — Diff Obtain & Put
+[SAY] In diff mode, Vim shows two files side by side with differences highlighted. D O obtains a change from the other side. D P puts your change to the other side.
+[SAY] The cursor is in the left file. Move to the bravo line, which differs.
+[KEYS] 'j'
+[OVERLAY] j  down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  alpha             │  alpha            │
+ 1 │  bravo             │  BRAVO            │ ◂ cursor (1,2)
+ 2 │  charlie           │  charlie          │
+ 3 │  delta             │  DELTA            │
+ 4 │~                   │~                  │
+ 5 │~                   │~                  │
+ 6 │~                   │~                  │
+ 7 │~                   │~                  │
+ 8 │~                   │~                  │
+ 9 │~                   │~                  │
+10 │~                   │~                  │
+11 │~                   │~                  │
+12 │~                   │~                  │
+13 │~                   │~                  │
+14 │~                   │~                  │
+15 │~                   │~                  │
+16 │~                   │~                  │
+17 │~                   │~                  │
+18 │left.txt  2,1    All <ight.txt 2,1   All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 3-6: "ravo"
+[HIGHLIGHT] row 1, cols 23-27: "BRAVO"
+[HIGHLIGHT] row 3, cols 2-6: "delta"
+[HIGHLIGHT] row 3, cols 23-27: "DELTA"
+
+[SAY] Press D O to obtain the right side's version.
+[KEYS] 'do'
+[OVERLAY] do  do — diff obtain
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  alpha             │  alpha            │
+ 1 │  BRAVO             │  BRAVO            │ ◂ cursor (1,2)
+ 2 │  charlie           │  charlie          │
+ 3 │  delta             │  DELTA            │
+ 4 │~                   │~                  │
+ 5 │~                   │~                  │
+ 6 │~                   │~                  │
+ 7 │~                   │~                  │
+ 8 │~                   │~                  │
+ 9 │~                   │~                  │
+10 │~                   │~                  │
+11 │~                   │~                  │
+12 │~                   │~                  │
+13 │~                   │~                  │
+14 │~                   │~                  │
+15 │~                   │~                  │
+16 │~                   │~                  │
+17 │~                   │~                  │
+18 │<.txt [+] 2,1    All <ight.txt 2,1   All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 3, cols 2-6: "delta"
+[HIGHLIGHT] row 3, cols 23-27: "DELTA"
+
+[SAY] The left file now has BRAVO in uppercase, matching the right. We obtained the change.
+[SAY] Now move to the delta line. Let's push our version to the right side with D P.
+[KEYS] '2j'
+[OVERLAY] 2j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  alpha             │  alpha            │
+ 1 │  BRAVO             │  BRAVO            │
+ 2 │  charlie           │  charlie          │
+ 3 │  delta             │  DELTA            │ ◂ cursor (3,2)
+ 4 │~                   │~                  │
+ 5 │~                   │~                  │
+ 6 │~                   │~                  │
+ 7 │~                   │~                  │
+ 8 │~                   │~                  │
+ 9 │~                   │~                  │
+10 │~                   │~                  │
+11 │~                   │~                  │
+12 │~                   │~                  │
+13 │~                   │~                  │
+14 │~                   │~                  │
+15 │~                   │~                  │
+16 │~                   │~                  │
+17 │~                   │~                  │
+18 │<.txt [+] 4,1    All <ight.txt 4,1   All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 3, cols 3-6: "elta"
+[HIGHLIGHT] row 3, cols 23-27: "DELTA"
+
+[KEYS] 'dp'
+[OVERLAY] dp  dp — diff put
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │+ +--  4 lines: alph│+ +--  4 lines: alp│ ◂ cursor (0,2)
+ 1 │~                   │~                  │
+ 2 │~                   │~                  │
+ 3 │~                   │~                  │
+ 4 │~                   │~                  │
+ 5 │~                   │~                  │
+ 6 │~                   │~                  │
+ 7 │~                   │~                  │
+ 8 │~                   │~                  │
+ 9 │~                   │~                  │
+10 │~                   │~                  │
+11 │~                   │~                  │
+12 │~                   │~                  │
+13 │~                   │~                  │
+14 │~                   │~                  │
+15 │~                   │~                  │
+16 │~                   │~                  │
+17 │~                   │~                  │
+18 │<.txt [+] 4,1    All <.txt [+] 4,1   All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 3-19: "--  4 lines: alph"
+[HIGHLIGHT] row 0, cols 23-39: "+--  4 lines: alp"
+
+[SAY] The right file now has lowercase delta, matching the left. D O pulls in, D P pushes out. Two keys to resolve diffs.

@@ -1,0 +1,197 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — gather tools               │ ◂ cursor (0,4)
+ 1 │  2 line 2 — read manual                │
+ 2 │  3 line 3 — install app                │
+ 3 │  4 line 4 — configure                  │
+ 4 │  5 line 5 — run tests                  │
+ 5 │  6 line 6 — deploy                     │
+ 6 │  7 line 7 — monitor                    │
+ 7 │  8 line 8 — celebrate                  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │steps.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :[range]m {address} — Move
+[SAY] Colon M moves lines to after a target address. The lines are removed from their original position.
+[SAY] Move line two to after line six. Colon two m six.
+[TYPE] ':2m 6'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — gather tools               │
+ 1 │  2 line 2 — read manual                │
+ 2 │  3 line 3 — install app                │
+ 3 │  4 line 4 — configure                  │
+ 4 │  5 line 5 — run tests                  │
+ 5 │  6 line 6 — deploy                     │
+ 6 │  7 line 7 — monitor                    │
+ 7 │  8 line 8 — celebrate                  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │steps.txt             1,1            All│
+19 │:2m 6                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — gather tools               │
+ 1 │  2 line 3 — install app                │
+ 2 │  3 line 4 — configure                  │
+ 3 │  4 line 5 — run tests                  │
+ 4 │  5 line 6 — deploy                     │
+ 5 │  6 line 2 — read manual                │ ◂ cursor (5,4)
+ 6 │  7 line 7 — monitor                    │
+ 7 │  8 line 8 — celebrate                  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │steps.txt [+]         6,1            All│
+19 │:2m 6                                   │
+    ────────────────────────────────────────
+
+[SAY] Read manual moved down. It's now after deploy.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — gather tools               │ ◂ cursor (0,4)
+ 1 │  2 line 2 — read manual                │
+ 2 │  3 line 3 — install app                │
+ 3 │  4 line 4 — configure                  │
+ 4 │  5 line 5 — run tests                  │
+ 5 │  6 line 6 — deploy                     │
+ 6 │  7 line 7 — monitor                    │
+ 7 │  8 line 8 — celebrate                  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │steps.txt             1,1            All│
+19 │1 change; be...5 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Move a range. Colon five comma six m dollar. Move lines five and six to the end.
+[TYPE] ':5,6m $'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — gather tools               │
+ 1 │  2 line 2 — read manual                │
+ 2 │  3 line 3 — install app                │
+ 3 │  4 line 4 — configure                  │
+ 4 │  5 line 5 — run tests                  │
+ 5 │  6 line 6 — deploy                     │
+ 6 │  7 line 7 — monitor                    │
+ 7 │  8 line 8 — celebrate                  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │steps.txt             1,1            All│
+19 │:5,6m $                                 │ ◂ cursor (19,7)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — gather tools               │
+ 1 │  2 line 2 — read manual                │
+ 2 │  3 line 3 — install app                │
+ 3 │  4 line 4 — configure                  │
+ 4 │  5 line 7 — monitor                    │
+ 5 │  6 line 8 — celebrate                  │
+ 6 │  7 line 5 — run tests                  │
+ 7 │  8 line 6 — deploy                     │ ◂ cursor (7,4)
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │steps.txt [+]         8,1            All│
+19 │:5,6m $                                 │
+    ────────────────────────────────────────
+
+[SAY] Run tests and deploy are now at the bottom.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — gather tools               │
+ 1 │  2 line 2 — read manual                │
+ 2 │  3 line 3 — install app                │
+ 3 │  4 line 4 — configure                  │
+ 4 │  5 line 5 — run tests                  │ ◂ cursor (4,4)
+ 5 │  6 line 6 — deploy                     │
+ 6 │  7 line 7 — monitor                    │
+ 7 │  8 line 8 — celebrate                  │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │steps.txt             5,1            All│
+19 │2 changes; b...7 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Colon M. Move lines by address. Much faster than delete and paste for rearranging.

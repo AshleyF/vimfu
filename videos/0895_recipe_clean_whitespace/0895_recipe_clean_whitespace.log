@@ -1,0 +1,142 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = "Alice"                          │ ◂ cursor (0,0)
+ 1 │age = 30                                │
+ 2 │city = "NYC"                            │
+ 3 │score = 95                              │
+ 4 │grade = "A"                             │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Recipe: Clean Trailing Whitespace
+[SAY] This file has invisible trailing spaces on most lines. Let's reveal them and clean them up.
+[SAY] First make whitespace visible.
+[TYPE] ':set list listchars=tab:>-,trail:·,space:·'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = "Alice"                          │
+ 1 │age = 30                                │
+ 2 │city = "NYC"                            │
+ 3 │score = 95                              │
+ 4 │grade = "A"                             │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │                                        │
+18 │:set list listchars=tab:>-,trail:·,space│
+19 │:·                                      │ ◂ cursor (19,2)
+    ────────────────────────────────────────
+
+[SAY] List mode with custom list chars renders spaces as middle dots so the trailing ones become obvious.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name·=·"Alice"···                       │ ◂ cursor (0,0)
+ 1 │age·=·30·········                       │
+ 2 │city·=·"NYC"·····                       │
+ 3 │score·=·95·······                       │
+ 4 │grade·=·"A"                             │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py               1,1            All│
+    ────────────────────────────────────────
+
+[SAY] See the dots after each value? Those are trailing spaces.
+[SAY] Now strip them with a substitute.
+[TYPE] ':%s/\\s\\+$//g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name·=·"Alice"                          │
+ 1 │age·=·30                                │
+ 2 │city·=·"NYC"                            │
+ 3 │score·=·95                              │
+ 4 │grade·=·"A"                             │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py [+]           1,15           All│
+19 │:%s/\s\+$//g                            │ ◂ cursor (19,12)
+    ────────────────────────────────────────
+
+[SAY] Percent s, backslash s plus dollar, replace with nothing. Match one or more whitespace characters at end of line.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name·=·"Alice"                          │
+ 1 │age·=·30                                │
+ 2 │city·=·"NYC"                            │
+ 3 │score·=·95                              │ ◂ cursor (3,0)
+ 4 │grade·=·"A"                             │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py [+]           4,1            All│
+19 │4 substitutions on 4 lines              │
+    ────────────────────────────────────────
+
+[SAY] Four substitutions. The trailing dots are gone.
+[SAY] Percent s backslash s plus dollar, replace with nothing. A must-have recipe for clean code.

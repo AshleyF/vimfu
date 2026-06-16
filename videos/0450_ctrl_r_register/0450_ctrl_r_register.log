@@ -1,0 +1,232 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │ ◂ cursor (0,0)
+ 1 │old_name = "alpha"                      │
+ 2 │old_name = "beta"                       │
+ 3 │old_name = "gamma"                      │
+ 4 │result = old_name                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-R {reg} — Insert Register
+[SAY] On the command line, Control R followed by a register name pastes that register's contents. Great for building commands from text in your file.
+[SAY] First, yank a word into register A. Move to old underscore name and yank it.
+[KEYS] 'j0'
+[OVERLAY] j0
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │old_name = "alpha"                      │ ◂ cursor (1,0)
+ 2 │old_name = "beta"                       │
+ 3 │old_name = "gamma"                      │
+ 4 │result = old_name                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py               2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '"ayiw'
+[OVERLAY] "ayiw  yank word to a
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │old_name = "alpha"                      │ ◂ cursor (1,0)
+ 2 │old_name = "beta"                       │
+ 3 │old_name = "gamma"                      │
+ 4 │result = old_name                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py               2,1            All│
+    ────────────────────────────────────────
+
+[SAY] Now start a substitute command. Colon percent S slash.
+[TYPE] ':%s/'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │old_name = "alpha"                      │
+ 2 │old_name = "beta"                       │
+ 3 │old_name = "gamma"                      │
+ 4 │result = old_name                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py               2,1            All│
+19 │:%s/                                    │ ◂ cursor (19,4)
+    ────────────────────────────────────────
+
+[SAY] Press Control R then A to paste register A.
+[CTRL] r
+[OVERLAY] ⌃r  paste register
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │old_name = "alpha"                      │
+ 2 │old_name = "beta"                       │
+ 3 │old_name = "gamma"                      │
+ 4 │result = old_name                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py               2,1            All│
+19 │:%s/"                                   │ ◂ cursor (19,4)
+    ────────────────────────────────────────
+
+[TYPE] 'a'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │old_name = "alpha"                      │
+ 2 │old_name = "beta"                       │
+ 3 │old_name = "gamma"                      │
+ 4 │result = old_name                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py               2,1            All│
+19 │:%s/old_name                            │ ◂ cursor (19,12)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-7: "old_name"
+[HIGHLIGHT] row 2, cols 0-7: "old_name"
+[HIGHLIGHT] row 3, cols 0-7: "old_name"
+[HIGHLIGHT] row 4, cols 9-16: "old_name"
+
+[SAY] The word was inserted into the command line. Now finish the substitute.
+[TYPE] '/new_name/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │new_name = "alpha"                      │
+ 2 │new_name = "beta"                       │
+ 3 │new_name = "gamma"                      │
+ 4 │result = new_name                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py [+]           2,1            All│
+19 │:%s/old_name/new_name/g                 │ ◂ cursor (19,23)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-7: "new_name"
+[HIGHLIGHT] row 2, cols 0-7: "new_name"
+[HIGHLIGHT] row 3, cols 0-7: "new_name"
+[HIGHLIGHT] row 4, cols 9-16: "new_name"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# data                                  │
+ 1 │new_name = "alpha"                      │
+ 2 │new_name = "beta"                       │
+ 3 │new_name = "gamma"                      │
+ 4 │result = new_name                       │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │data.py [+]           5,1            All│
+19 │4 substitutions on 4 lines              │
+    ────────────────────────────────────────
+
+[SAY] Every old name became new name. Control R pastes any register right into the command line.
+[SAY] Control R then the register letter. Insert register contents on the command line.

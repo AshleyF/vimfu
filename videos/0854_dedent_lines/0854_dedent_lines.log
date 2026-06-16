@@ -1,0 +1,85 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def run():                              │ ◂ cursor (0,0)
+ 1 │        x = 1                           │
+ 2 │        y = 2                           │
+ 3 │        return x + y                    │
+ 4 │                                        │
+ 5 │result = run()                          │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :[range]< — Dedent Lines
+[SAY] Colon less than shifts lines to the left. It removes one shiftwidth of indentation.
+[SAY] Lines two through four are double indented. They only need one level. Dedent them.
+[TYPE] ':2,4<'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def run():                              │
+ 1 │        x = 1                           │
+ 2 │        y = 2                           │
+ 3 │        return x + y                    │
+ 4 │                                        │
+ 5 │result = run()                          │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+19 │:2,4<                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │def run():                              │
+ 1 │    x = 1                               │
+ 2 │    y = 2                               │
+ 3 │    return x + y                        │ ◂ cursor (3,4)
+ 4 │                                        │
+ 5 │result = run()                          │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           4,5            All│
+19 │3 lines <ed 1 time                      │
+    ────────────────────────────────────────
+
+[SAY] One level of indentation removed. They went from eight spaces to four.
+[SAY] Colon less than. Shift lines left. The opposite of colon greater than.

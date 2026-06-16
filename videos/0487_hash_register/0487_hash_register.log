@@ -1,0 +1,170 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │I am the first file.                    │ ◂ cursor (0,0)
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │first.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — The # Register
+[SAY] The hash register, quote hash, holds the alternate filename. That's the previously edited file.
+[SAY] We're in first dot txt. Let's open second dot txt.
+[TYPE] ':edit second.txt'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │I am the first file.                    │
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │first.txt             1,1            All│
+19 │:edit second.txt                        │ ◂ cursor (19,16)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │I am the second file.                   │ ◂ cursor (0,0)
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │second.txt            1,1            All│
+19 │:edit second.txt                        │
+    ────────────────────────────────────────
+
+[SAY] Now check the hash register.
+[TYPE] ':echo @#'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │I am the second file.                   │
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │second.txt            1,1            All│
+19 │:echo @                                 │ ◂ cursor (19,7)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │I am the second file.                   │ ◂ cursor (0,0)
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │second.txt            1,1            All│
+19 │first.txt                               │
+    ────────────────────────────────────────
+
+[SAY] It shows first dot txt. That's the file we were just editing.
+[SAY] You can switch to the alternate file with Control caret.
+[CTRL] ^
+[OVERLAY] ⌃^  alternate file
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │I am the first file.                    │ ◂ cursor (0,0)
+ 1 │~                                       │
+ 2 │~                                       │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │first.txt             1,1            All│
+19 │first.txt                               │
+    ────────────────────────────────────────
+
+[SAY] Back to first dot txt. Control caret toggles between the current and alternate files.
+[SAY] The hash register and control caret. Quick switching between two files.

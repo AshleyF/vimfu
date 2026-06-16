@@ -1,0 +1,278 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello beautiful world                   │ ◂ cursor (0,0)
+ 1 │foo bar baz                             │
+ 2 │one two three                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Map Y to y$
+[SAY] Capital D deletes to the end of the line. Capital C changes to the end of the line. But capital Y? It yanks the whole line, same as Y Y. That's inconsistent.
+[SAY] Watch. Move to beautiful and press capital Y.
+[KEYS] 'w'
+[OVERLAY] w  next word
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello beautiful world                   │ ◂ cursor (0,6)
+ 1 │foo bar baz                             │
+ 2 │one two three                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,7            All│
+    ────────────────────────────────────────
+
+[KEYS] 'Y'
+[OVERLAY] ⇧Y  yanks whole line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello beautiful world                   │ ◂ cursor (0,6)
+ 1 │foo bar baz                             │
+ 2 │one two three                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,7            All│
+    ────────────────────────────────────────
+
+[SAY] It yanked the entire line, not just from the cursor to the end. Now let's fix it.
+[TYPE] ':map Y y$'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello beautiful world                   │
+ 1 │foo bar baz                             │
+ 2 │one two three                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,7            All│
+19 │:map Y y$                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello beautiful world                   │ ◂ cursor (0,6)
+ 1 │foo bar baz                             │
+ 2 │one two three                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,7            All│
+19 │:map Y y$                               │
+    ────────────────────────────────────────
+
+[SAY] Now try capital Y again from the same position.
+[KEYS] '0w'
+[OVERLAY] 0w
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello beautiful world                   │ ◂ cursor (0,6)
+ 1 │foo bar baz                             │
+ 2 │one two three                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,7            All│
+19 │:map Y y$                               │
+    ────────────────────────────────────────
+
+[KEYS] 'Y'
+[OVERLAY] ⇧Y  yank to end
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello beautiful world                   │ ◂ cursor (0,6)
+ 1 │foo bar baz                             │
+ 2 │one two three                           │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,7            All│
+19 │:map Y y$                               │
+    ────────────────────────────────────────
+
+[SAY] Paste it on a new line to see what was yanked.
+[KEYS] 'o'
+[OVERLAY] o  open below
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello beautiful world                   │
+ 1 │                                        │ ◂ cursor (1,0)
+ 2 │foo bar baz                             │
+ 3 │one two three                           │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          2,1            All│
+19 │-- INSERT --                            │
+    ────────────────────────────────────────
+
+[ESCAPE]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello beautiful world                   │
+ 1 │                                        │ ◂ cursor (1,0)
+ 2 │foo bar baz                             │
+ 3 │one two three                           │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          2,0-1          All│
+    ────────────────────────────────────────
+
+[KEYS] 'p'
+[OVERLAY] p  paste
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │hello beautiful world                   │
+ 1 │beautiful world                         │ ◂ cursor (1,14)
+ 2 │foo bar baz                             │
+ 3 │one two three                           │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          2,15           All│
+    ────────────────────────────────────────
+
+[SAY] Only beautiful world was pasted, not the whole line. Now Y is consistent with C and D. Add this to your config.

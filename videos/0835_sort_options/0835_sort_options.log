@@ -1,0 +1,254 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 item 10                             │ ◂ cursor (0,4)
+ 1 │  2 item 2                              │
+ 2 │  3 Apple                               │
+ 3 │  4 apple                               │
+ 4 │  5 item 30                             │
+ 5 │  6 Banana                              │
+ 6 │  7 banana                              │
+ 7 │  8 item 1                              │
+ 8 │  9 Apple                               │
+ 9 │ 10 item 20                             │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │mixed.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :[range]sort Options
+[SAY] Sort has options. N for numeric. U for unique. I for case insensitive. They combine.
+[SAY] Notice this list isn't sorted — Apple appears three times, Banana twice.
+[SAY] First, a plain sort. Colon percent sort.
+[TYPE] ':%sort'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 item 10                             │
+ 1 │  2 item 2                              │
+ 2 │  3 Apple                               │
+ 3 │  4 apple                               │
+ 4 │  5 item 30                             │
+ 5 │  6 Banana                              │
+ 6 │  7 banana                              │
+ 7 │  8 item 1                              │
+ 8 │  9 Apple                               │
+ 9 │ 10 item 20                             │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │mixed.txt             1,1            All│
+19 │:%sort                                  │ ◂ cursor (19,6)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Apple                               │ ◂ cursor (0,4)
+ 1 │  2 Apple                               │
+ 2 │  3 Banana                              │
+ 3 │  4 apple                               │
+ 4 │  5 banana                              │
+ 5 │  6 item 1                              │
+ 6 │  7 item 10                             │
+ 7 │  8 item 2                              │
+ 8 │  9 item 20                             │
+ 9 │ 10 item 30                             │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │mixed.txt [+]         1,1            All│
+19 │:%sort                                  │
+    ────────────────────────────────────────
+
+[SAY] Item ten came before item two. Alphabetical, not numeric. And every duplicate is still there.
+[SAY] Add N for numeric. Colon percent sort N.
+[TYPE] ':%sort n'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Apple                               │
+ 1 │  2 Apple                               │
+ 2 │  3 Banana                              │
+ 3 │  4 apple                               │
+ 4 │  5 banana                              │
+ 5 │  6 item 1                              │
+ 6 │  7 item 10                             │
+ 7 │  8 item 2                              │
+ 8 │  9 item 20                             │
+ 9 │ 10 item 30                             │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │mixed.txt [+]         1,1            All│
+19 │:%sort n                                │ ◂ cursor (19,8)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Apple                               │ ◂ cursor (0,4)
+ 1 │  2 Apple                               │
+ 2 │  3 Banana                              │
+ 3 │  4 apple                               │
+ 4 │  5 banana                              │
+ 5 │  6 item 1                              │
+ 6 │  7 item 2                              │
+ 7 │  8 item 10                             │
+ 8 │  9 item 20                             │
+ 9 │ 10 item 30                             │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │mixed.txt [+]         1,1            All│
+19 │:%sort n                                │
+    ────────────────────────────────────────
+
+[SAY] Now items are in numeric order. One, two, ten, twenty, thirty. But Apple still appears three times.
+[SAY] Combine N and U for numeric unique. Colon percent sort N U.
+[TYPE] ':%sort nu'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Apple                               │
+ 1 │  2 Apple                               │
+ 2 │  3 Banana                              │
+ 3 │  4 apple                               │
+ 4 │  5 banana                              │
+ 5 │  6 item 1                              │
+ 6 │  7 item 2                              │
+ 7 │  8 item 10                             │
+ 8 │  9 item 20                             │
+ 9 │ 10 item 30                             │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │mixed.txt [+]         1,1            All│
+19 │:%sort nu                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Apple                               │ ◂ cursor (0,4)
+ 1 │  2 Banana                              │
+ 2 │  3 apple                               │
+ 3 │  4 banana                              │
+ 4 │  5 item 1                              │
+ 5 │  6 item 2                              │
+ 6 │  7 item 10                             │
+ 7 │  8 item 20                             │
+ 8 │  9 item 30                             │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │mixed.txt [+]         1,1            All│
+19 │:%sort nu                               │
+    ────────────────────────────────────────
+
+[SAY] U dropped one duplicate Apple. But lowercase apple is still separate. U is case sensitive.
+[SAY] Combine I and U for case insensitive unique. Colon percent sort I U.
+[TYPE] ':%sort iu'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Apple                               │
+ 1 │  2 Banana                              │
+ 2 │  3 apple                               │
+ 3 │  4 banana                              │
+ 4 │  5 item 1                              │
+ 5 │  6 item 2                              │
+ 6 │  7 item 10                             │
+ 7 │  8 item 20                             │
+ 8 │  9 item 30                             │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │mixed.txt [+]         1,1            All│
+19 │:%sort iu                               │ ◂ cursor (19,9)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Apple                               │ ◂ cursor (0,4)
+ 1 │  2 Banana                              │
+ 2 │  3 item 1                              │
+ 3 │  4 item 10                             │
+ 4 │  5 item 2                              │
+ 5 │  6 item 20                             │
+ 6 │  7 item 30                             │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │mixed.txt [+]         1,1            All│
+19 │:%sort iu                               │
+    ────────────────────────────────────────
+
+[SAY] Now all three Apples merge into one. Banana too. Case insensitive dedup.
+[SAY] Sort N for numbers. U for unique. I for case insensitive. Combine them as needed.

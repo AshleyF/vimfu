@@ -1,0 +1,251 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def aim():                          │ ◂ cursor (0,4)
+ 1 │  2     print("Targeting...")           │
+ 2 │  3                                     │
+ 3 │  4 def fire():                         │
+ 4 │  5     aim()                           │
+ 5 │  6     print("BOOM!")                  │
+ 6 │  7                                     │
+ 7 │  8 def reload():                       │
+ 8 │  9     print("Reloading...")           │
+ 9 │ 10                                     │
+10 │ 11 def defend():                       │
+11 │ 12     fire()                          │
+12 │ 13     reload()                        │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tower.py              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-T
+[SAY] Control T pops back in the tag stack. After control right bracket jumps to a definition, control T brings you back.
+[SAY] Let's chain some jumps. Go to the defend function. Cursor on fire.
+[KEYS] 'G'
+[OVERLAY] ⇧G  G  go to bottom
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def aim():                          │
+ 1 │  2     print("Targeting...")           │
+ 2 │  3                                     │
+ 3 │  4 def fire():                         │
+ 4 │  5     aim()                           │
+ 5 │  6     print("BOOM!")                  │
+ 6 │  7                                     │
+ 7 │  8 def reload():                       │
+ 8 │  9     print("Reloading...")           │
+ 9 │ 10                                     │
+10 │ 11 def defend():                       │
+11 │ 12     fire()                          │
+12 │ 13     reload()                        │ ◂ cursor (12,4)
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tower.py              13,1           All│
+    ────────────────────────────────────────
+
+[KEYS] 'k'
+[OVERLAY] k
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def aim():                          │
+ 1 │  2     print("Targeting...")           │
+ 2 │  3                                     │
+ 3 │  4 def fire():                         │
+ 4 │  5     aim()                           │
+ 5 │  6     print("BOOM!")                  │
+ 6 │  7                                     │
+ 7 │  8 def reload():                       │
+ 8 │  9     print("Reloading...")           │
+ 9 │ 10                                     │
+10 │ 11 def defend():                       │
+11 │ 12     fire()                          │ ◂ cursor (11,4)
+12 │ 13     reload()                        │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tower.py              12,1           All│
+    ────────────────────────────────────────
+
+[KEYS] 'w'
+[OVERLAY] w
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def aim():                          │
+ 1 │  2     print("Targeting...")           │
+ 2 │  3                                     │
+ 3 │  4 def fire():                         │
+ 4 │  5     aim()                           │
+ 5 │  6     print("BOOM!")                  │
+ 6 │  7                                     │
+ 7 │  8 def reload():                       │
+ 8 │  9     print("Reloading...")           │
+ 9 │ 10                                     │
+10 │ 11 def defend():                       │
+11 │ 12     fire()                          │ ◂ cursor (11,8)
+12 │ 13     reload()                        │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tower.py              12,5           All│
+    ────────────────────────────────────────
+
+[SAY] Jump to fire's definition.
+[CTRL] ]
+[OVERLAY] ⌃]  jump to definition
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def aim():                          │
+ 1 │  2     print("Targeting...")           │
+ 2 │  3                                     │
+ 3 │  4 def fire():                         │ ◂ cursor (3,8)
+ 4 │  5     aim()                           │
+ 5 │  6     print("BOOM!")                  │
+ 6 │  7                                     │
+ 7 │  8 def reload():                       │
+ 8 │  9     print("Reloading...")           │
+ 9 │ 10                                     │
+10 │ 11 def defend():                       │
+11 │ 12     fire()                          │
+12 │ 13     reload()                        │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tower.py              4,5            All│
+    ────────────────────────────────────────
+
+[SAY] Inside fire. Jump to aim's definition.
+[KEYS] 'j^'
+[OVERLAY] j^
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def aim():                          │
+ 1 │  2     print("Targeting...")           │
+ 2 │  3                                     │
+ 3 │  4 def fire():                         │
+ 4 │  5     aim()                           │ ◂ cursor (4,8)
+ 5 │  6     print("BOOM!")                  │
+ 6 │  7                                     │
+ 7 │  8 def reload():                       │
+ 8 │  9     print("Reloading...")           │
+ 9 │ 10                                     │
+10 │ 11 def defend():                       │
+11 │ 12     fire()                          │
+12 │ 13     reload()                        │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tower.py              5,5            All│
+    ────────────────────────────────────────
+
+[CTRL] ]
+[OVERLAY] ⌃]  jump to definition
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def aim():                          │ ◂ cursor (0,8)
+ 1 │  2     print("Targeting...")           │
+ 2 │  3                                     │
+ 3 │  4 def fire():                         │
+ 4 │  5     aim()                           │
+ 5 │  6     print("BOOM!")                  │
+ 6 │  7                                     │
+ 7 │  8 def reload():                       │
+ 8 │  9     print("Reloading...")           │
+ 9 │ 10                                     │
+10 │ 11 def defend():                       │
+11 │ 12     fire()                          │
+12 │ 13     reload()                        │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tower.py              1,5            All│
+    ────────────────────────────────────────
+
+[SAY] Two jumps deep. Now control T to pop back.
+[CTRL] t
+[OVERLAY] ⌃t  jump back (tag)
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def aim():                          │
+ 1 │  2     print("Targeting...")           │
+ 2 │  3                                     │
+ 3 │  4 def fire():                         │
+ 4 │  5     aim()                           │ ◂ cursor (4,8)
+ 5 │  6     print("BOOM!")                  │
+ 6 │  7                                     │
+ 7 │  8 def reload():                       │
+ 8 │  9     print("Reloading...")           │
+ 9 │ 10                                     │
+10 │ 11 def defend():                       │
+11 │ 12     fire()                          │
+12 │ 13     reload()                        │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tower.py              5,5            All│
+    ────────────────────────────────────────
+
+[SAY] Back in fire. One more control T.
+[CTRL] t
+[OVERLAY] ⌃t  jump back (tag)
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 def aim():                          │
+ 1 │  2     print("Targeting...")           │
+ 2 │  3                                     │
+ 3 │  4 def fire():                         │
+ 4 │  5     aim()                           │
+ 5 │  6     print("BOOM!")                  │
+ 6 │  7                                     │
+ 7 │  8 def reload():                       │
+ 8 │  9     print("Reloading...")           │
+ 9 │ 10                                     │
+10 │ 11 def defend():                       │
+11 │ 12     fire()                          │ ◂ cursor (11,8)
+12 │ 13     reload()                        │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tower.py              12,5           All│
+    ────────────────────────────────────────
+
+[SAY] Back in defend. Each control T pops one level off the tag stack.
+[SAY] Control T. Pop the tag stack. Control right bracket dives in, control T climbs out.

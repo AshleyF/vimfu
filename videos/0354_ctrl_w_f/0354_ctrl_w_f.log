@@ -1,0 +1,115 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Main Script                           │ ◂ cursor (0,0)
+ 1 │import utils                            │
+ 2 │                                        │
+ 3 │result = utils.double(5)                │
+ 4 │print(result)                           │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │main.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-W f — Split File
+[SAY] Control W F splits the window and opens the file under the cursor. Like G F but in a new split.
+[SAY] Main script imports utils. Put the cursor on the filename.
+[KEYS] 'j'
+[OVERLAY] j  down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Main Script                           │
+ 1 │import utils                            │ ◂ cursor (1,0)
+ 2 │                                        │
+ 3 │result = utils.double(5)                │
+ 4 │print(result)                           │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │main.py               2,1            All│
+    ────────────────────────────────────────
+
+[KEYS] 'w'
+[OVERLAY] w  to utils
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Main Script                           │
+ 1 │import utils                            │ ◂ cursor (1,7)
+ 2 │                                        │
+ 3 │result = utils.double(5)                │
+ 4 │print(result)                           │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │main.py               2,8            All│
+    ────────────────────────────────────────
+
+[SAY] Cursor is on utils. Split and open it.
+[KEYS] '\x17f'
+[OVERLAY] ⌃wf  split open file
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Utility Functions                     │ ◂ cursor (0,0)
+ 1 │def double(n):                          │
+ 2 │    return n * 2                        │
+ 3 │def triple(n):                          │
+ 4 │    return n * 3                        │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │utils.py              1,1            All│
+10 │# Main Script                           │
+11 │import utils                            │
+12 │                                        │
+13 │result = utils.double(5)                │
+14 │print(result)                           │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │main.py               2,8            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 9, cols 0-39: "utils.py              1,1            All"
+
+[SAY] Utils dot py opened in a new split. The main script is still visible below.
+[SAY] You can read the utility functions while keeping the import context.
+[SAY] Control W F. Split and open file under cursor. Perfect for exploring imports without losing your place.

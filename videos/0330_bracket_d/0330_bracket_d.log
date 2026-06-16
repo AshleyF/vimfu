@@ -1,0 +1,169 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define SIZE 10                     │ ◂ cursor (0,4)
+ 1 │  2 #define MAX 100                     │
+ 2 │  3 #define SIZE 20                     │
+ 3 │  4 #define MIN 1                       │
+ 4 │  5 #define SIZE 30                     │
+ 5 │  6                                     │
+ 6 │  7 int buf[SIZE];                      │
+ 7 │  8 int cap = MAX;                      │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │sizes.h               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — [D ]D — List Defines
+[SAY] Open bracket capital D lists all defines matching the word under the cursor. Not just the first one. All of them.
+[SAY] SIZE is defined three times. Cursor on SIZE on line seven. Open bracket capital D.
+[KEYS] '7G'
+[OVERLAY] 7G  go to line 7
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define SIZE 10                     │
+ 1 │  2 #define MAX 100                     │
+ 2 │  3 #define SIZE 20                     │
+ 3 │  4 #define MIN 1                       │
+ 4 │  5 #define SIZE 30                     │
+ 5 │  6                                     │
+ 6 │  7 int buf[SIZE];                      │ ◂ cursor (6,4)
+ 7 │  8 int cap = MAX;                      │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │sizes.h               7,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '3w'
+[OVERLAY] 3w  to SIZE
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define SIZE 10                     │
+ 1 │  2 #define MAX 100                     │
+ 2 │  3 #define SIZE 20                     │
+ 3 │  4 #define MIN 1                       │
+ 4 │  5 #define SIZE 30                     │
+ 5 │  6                                     │
+ 6 │  7 int buf[SIZE];                      │ ◂ cursor (6,12)
+ 7 │  8 int cap = MAX;                      │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │sizes.h               7,9            All│
+    ────────────────────────────────────────
+
+[KEYS] '[D'
+[OVERLAY] [D  list all defines
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define SIZE 10                     │
+ 1 │  2 #define MAX 100                     │
+ 2 │  3 #define SIZE 20                     │
+ 3 │  4 #define MIN 1                       │
+ 4 │  5 #define SIZE 30                     │
+ 5 │  6                                     │
+ 6 │  7 int buf[SIZE];                      │
+ 7 │  8 int cap = MAX;                      │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │                                        │
+15 │sizes.h                                 │
+16 │  1:    1 #define SIZE 10               │
+17 │  2:    3 #define SIZE 20               │
+18 │  3:    5 #define SIZE 30               │
+19 │Press ENTER or type command to continue │ ◂ cursor (19,39)
+    ────────────────────────────────────────
+
+[SAY] Three matches listed. Lines one, three, and five. Each with a different value.
+[KEYS] '\r'
+[OVERLAY] ⏎
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define SIZE 10                     │
+ 1 │  2 #define MAX 100                     │
+ 2 │  3 #define SIZE 20                     │
+ 3 │  4 #define MIN 1                       │
+ 4 │  5 #define SIZE 30                     │
+ 5 │  6                                     │
+ 6 │  7 int buf[SIZE];                      │ ◂ cursor (6,12)
+ 7 │  8 int cap = MAX;                      │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │sizes.h               7,9            All│
+    ────────────────────────────────────────
+
+[SAY] Compare with lowercase open bracket D. It only shows the first match.
+[KEYS] '[d'
+[OVERLAY] [d  first define only
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 #define SIZE 10                     │
+ 1 │  2 #define MAX 100                     │
+ 2 │  3 #define SIZE 20                     │
+ 3 │  4 #define MIN 1                       │
+ 4 │  5 #define SIZE 30                     │
+ 5 │  6                                     │
+ 6 │  7 int buf[SIZE];                      │ ◂ cursor (6,12)
+ 7 │  8 int cap = MAX;                      │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │sizes.h               7,9            All│
+19 │#define SIZE 10                         │
+    ────────────────────────────────────────
+
+[SAY] Open bracket capital D. List every define. Lowercase D shows just the first. Capital D shows all.

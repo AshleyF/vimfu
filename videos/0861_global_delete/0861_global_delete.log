@@ -1,0 +1,86 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │header                                  │ ◂ cursor (0,0)
+ 1 │                                        │
+ 2 │first item                              │
+ 3 │                                        │
+ 4 │                                        │
+ 5 │second item                             │
+ 6 │                                        │
+ 7 │third item                              │
+ 8 │                                        │
+ 9 │                                        │
+10 │                                        │
+11 │footer                                  │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :g with :d — Delete Blank Lines
+[SAY] A classic use of global. Delete all blank lines in the file.
+[SAY] This file is full of empty lines. Let's clean it up.
+[TYPE] ':g/^$/d'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │header                                  │
+ 1 │                                        │
+ 2 │first item                              │
+ 3 │                                        │
+ 4 │                                        │
+ 5 │second item                             │
+ 6 │                                        │
+ 7 │third item                              │
+ 8 │                                        │
+ 9 │                                        │
+10 │                                        │
+11 │footer                                  │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              2,0-1          All│
+19 │:g/^$/d                                 │ ◂ cursor (19,7)
+    ────────────────────────────────────────
+
+[SAY] Colon G is the global command. Caret dollar matches an empty line — caret is start of line, dollar is end, so nothing in between. And D for delete.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │header                                  │
+ 1 │first item                              │
+ 2 │second item                             │
+ 3 │third item                              │
+ 4 │footer                                  │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          5,1            All│
+19 │7 fewer lines                           │
+    ────────────────────────────────────────
+
+[SAY] All blank lines gone. The file went from twelve lines to five. Clean and compact.
+[SAY] G slash caret dollar slash D. A classic Vim one-liner.

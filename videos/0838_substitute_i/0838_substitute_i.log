@@ -1,0 +1,173 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Hello hello HELLO hElLo                 │ ◂ cursor (0,0)
+ 1 │World WORLD world                       │
+ 2 │foo Foo FOO                             │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :s Flag i — Case Insensitive
+[SAY] The I flag makes substitute ignore case.
+[SAY] Line one has hello in mixed cases. Without I, only exact case matches.
+[TYPE] ':s/hello/HI/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Hello HI HELLO hElLo                    │
+ 1 │World WORLD world                       │
+ 2 │foo Foo FOO                             │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          1,7            All│
+19 │:s/hello/HI/g                           │ ◂ cursor (19,13)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 6-7: "HI"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Hello HI HELLO hElLo                    │ ◂ cursor (0,0)
+ 1 │World WORLD world                       │
+ 2 │foo Foo FOO                             │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          1,1            All│
+19 │:s/hello/HI/g                           │
+    ────────────────────────────────────────
+
+[SAY] Only lowercase hello was replaced. The others survived.
+[SAY] Line three has foo in three cases. Add the I flag.
+[KEYS] '2j'
+[OVERLAY] 2j  move to line 3
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Hello HI HELLO hElLo                    │
+ 1 │World WORLD world                       │
+ 2 │foo Foo FOO                             │ ◂ cursor (2,0)
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          3,1            All│
+19 │:s/hello/HI/g                           │
+    ────────────────────────────────────────
+
+[TYPE] ':s/foo/bar/gi'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Hello HI HELLO hElLo                    │
+ 1 │World WORLD world                       │
+ 2 │bar bar bar                             │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          3,1            All│
+19 │:s/foo/bar/gi                           │ ◂ cursor (19,13)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-2: "bar"
+[HIGHLIGHT] row 2, cols 4-6: "bar"
+[HIGHLIGHT] row 2, cols 8-10: "bar"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Hello HI HELLO hElLo                    │
+ 1 │World WORLD world                       │
+ 2 │bar bar bar                             │ ◂ cursor (2,0)
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          3,1            All│
+19 │3 substitutions on 1 line               │
+    ────────────────────────────────────────
+
+[SAY] All three replaced. Foo, capital FOO, lowercase foo. The I flag matched them all.
+[SAY] The I flag. Case insensitive substitution. Combine with G to replace all on the line.

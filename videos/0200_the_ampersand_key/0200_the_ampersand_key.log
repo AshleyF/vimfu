@@ -1,0 +1,281 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │old = "foo"                             │ ◂ cursor (0,0)
+ 1 │old = "foo bar foo"                     │
+ 2 │old = "foo baz"                         │
+ 3 │old = "no match"                        │
+ 4 │old = "foo end"                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fix.py                1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — The & Key
+[SAY] The ampersand key repeats the last substitution on the current line.
+[SAY] First, do a substitution on line one. Colon S slash foo slash bar.
+[TYPE] ':s/foo/bar'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │old = "bar"                             │
+ 1 │old = "foo bar foo"                     │
+ 2 │old = "foo baz"                         │
+ 3 │old = "no match"                        │
+ 4 │old = "foo end"                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fix.py [+]            1,8            All│
+19 │:s/foo/bar                              │ ◂ cursor (19,10)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 7-9: "bar"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │old = "bar"                             │ ◂ cursor (0,0)
+ 1 │old = "foo bar foo"                     │
+ 2 │old = "foo baz"                         │
+ 3 │old = "no match"                        │
+ 4 │old = "foo end"                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fix.py [+]            1,1            All│
+19 │:s/foo/bar                              │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 7-9: "foo"
+[HIGHLIGHT] row 1, cols 15-17: "foo"
+[HIGHLIGHT] row 2, cols 7-9: "foo"
+[HIGHLIGHT] row 4, cols 7-9: "foo"
+
+[SAY] Foo became bar on line one. Now move to line three. Ampersand.
+[KEYS] '2j'
+[OVERLAY] 2j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │old = "bar"                             │
+ 1 │old = "foo bar foo"                     │
+ 2 │old = "foo baz"                         │ ◂ cursor (2,0)
+ 3 │old = "no match"                        │
+ 4 │old = "foo end"                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fix.py [+]            3,1            All│
+19 │:s/foo/bar                              │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 7-9: "foo"
+[HIGHLIGHT] row 1, cols 15-17: "foo"
+[HIGHLIGHT] row 2, cols 7-9: "foo"
+[HIGHLIGHT] row 4, cols 7-9: "foo"
+
+[KEYS] '&'
+[OVERLAY] ⇧&  repeat :s
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │old = "bar"                             │
+ 1 │old = "foo bar foo"                     │
+ 2 │old = "bar baz"                         │ ◂ cursor (2,0)
+ 3 │old = "no match"                        │
+ 4 │old = "foo end"                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fix.py [+]            3,1            All│
+19 │:&&                                     │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 7-9: "foo"
+[HIGHLIGHT] row 1, cols 15-17: "foo"
+[HIGHLIGHT] row 4, cols 7-9: "foo"
+
+[SAY] Same substitution, applied to line three. Foo became bar.
+[SAY] Line four has no foo. Ampersand.
+[KEYS] 'j'
+[OVERLAY] j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │old = "bar"                             │
+ 1 │old = "foo bar foo"                     │
+ 2 │old = "bar baz"                         │
+ 3 │old = "no match"                        │ ◂ cursor (3,0)
+ 4 │old = "foo end"                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fix.py [+]            4,1            All│
+19 │:&&                                     │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 7-9: "foo"
+[HIGHLIGHT] row 1, cols 15-17: "foo"
+[HIGHLIGHT] row 4, cols 7-9: "foo"
+
+[KEYS] '&'
+[OVERLAY] ⇧&  repeat :s
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │old = "bar"                             │
+ 1 │old = "foo bar foo"                     │
+ 2 │old = "bar baz"                         │
+ 3 │old = "no match"                        │ ◂ cursor (3,0)
+ 4 │old = "foo end"                         │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fix.py [+]            4,1            All│
+19 │E486: Pattern not found: foo            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 7-9: "foo"
+[HIGHLIGHT] row 1, cols 15-17: "foo"
+[HIGHLIGHT] row 4, cols 7-9: "foo"
+
+[SAY] No match, nothing changed. Safe to use on any line.
+[SAY] Line five has foo. Ampersand.
+[KEYS] 'j'
+[OVERLAY] j
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │old = "bar"                             │
+ 1 │old = "foo bar foo"                     │
+ 2 │old = "bar baz"                         │
+ 3 │old = "no match"                        │
+ 4 │old = "foo end"                         │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fix.py [+]            5,1            All│
+19 │E486: Pattern not found: foo            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 7-9: "foo"
+[HIGHLIGHT] row 1, cols 15-17: "foo"
+[HIGHLIGHT] row 4, cols 7-9: "foo"
+
+[KEYS] '&'
+[OVERLAY] ⇧&  repeat :s
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │old = "bar"                             │
+ 1 │old = "foo bar foo"                     │
+ 2 │old = "bar baz"                         │
+ 3 │old = "no match"                        │
+ 4 │old = "bar end"                         │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │fix.py [+]            5,1            All│
+19 │:&&                                     │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 7-9: "foo"
+[HIGHLIGHT] row 1, cols 15-17: "foo"
+
+[SAY] Done. Foo to bar on line five. Ampersand replays the substitution one line at a time.
+[SAY] Ampersand. Repeat the last substitution on the current line. Quick redo without retyping the command.

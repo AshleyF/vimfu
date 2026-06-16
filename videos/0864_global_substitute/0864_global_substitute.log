@@ -1,0 +1,89 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │class Dog(Animal):                      │ ◂ cursor (0,0)
+ 1 │    name = "old"                        │
+ 2 │class Cat(Animal):                      │
+ 3 │    name = "old"                        │
+ 4 │def helper():                           │
+ 5 │    name = "old"                        │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :g with :s — Substitute on Matches
+[SAY] Global with S. Run a substitution only on lines that match a different pattern.
+[SAY] Let's replace old with new, but only on the name lines that follow class definitions.
+[TYPE] ':g/class/+1s/old/new/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │class Dog(Animal):                      │
+ 1 │    name = "old"                        │
+ 2 │class Cat(Animal):                      │
+ 3 │    name = "old"                        │
+ 4 │def helper():                           │
+ 5 │    name = "old"                        │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               3,1            All│
+19 │:g/class/+1s/old/new/g                  │ ◂ cursor (19,22)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-4: "class"
+[HIGHLIGHT] row 2, cols 0-4: "class"
+
+[SAY] Colon G slash class slash matches every line containing class. Plus one shifts the target down one line. Then S slash old slash new slash G substitutes on that next line.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │class Dog(Animal):                      │
+ 1 │    name = "new"                        │
+ 2 │class Cat(Animal):                      │
+ 3 │    name = "new"                        │ ◂ cursor (3,4)
+ 4 │def helper():                           │
+ 5 │    name = "old"                        │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           4,5            All│
+19 │:g/class/+1s/old/new/g                  │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 5, cols 12-14: "old"
+
+[SAY] Old became new on the lines after class. The helper function's name still says old.
+[SAY] Global with S. Two patterns working together — one to filter, one to transform.

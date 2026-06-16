@@ -1,0 +1,168 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 void battle() {                     │ ◂ cursor (0,4)
+ 1 │  2     if (hp > 0) {                   │
+ 2 │  3         attack();                   │
+ 3 │  4         if (crit) {                 │
+ 4 │  5             damage *= 2;            │
+ 5 │  6         }                           │
+ 6 │  7     }                               │
+ 7 │  8 }                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │hero.c                1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — [{ ]} — Unmatched Braces
+[SAY] {key:[{} jumps to the unmatched opening brace. {key:]\}} jumps to the closing one.
+[SAY] Cursor is deep inside nested braces on line five. {key:[{} to find the enclosing brace.
+[KEYS] '5G'
+[OVERLAY] 5G  go to line 5
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 void battle() {                     │
+ 1 │  2     if (hp > 0) {                   │
+ 2 │  3         attack();                   │
+ 3 │  4         if (crit) {                 │
+ 4 │  5             damage *= 2;            │ ◂ cursor (4,4)
+ 5 │  6         }                           │
+ 6 │  7     }                               │
+ 7 │  8 }                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │hero.c                5,1            All│
+    ────────────────────────────────────────
+
+[KEYS] '[{'
+[OVERLAY] [{  enclosing brace
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 void battle() {                     │
+ 1 │  2     if (hp > 0) {                   │
+ 2 │  3         attack();                   │
+ 3 │  4         if (crit) {                 │ ◂ cursor (3,22)
+ 4 │  5             damage *= 2;            │
+ 5 │  6         }                           │
+ 6 │  7     }                               │
+ 7 │  8 }                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │hero.c                4,19           All│
+    ────────────────────────────────────────
+
+[SAY] Jumped to the if-crit brace. Again to go up another level.
+[KEYS] '[{'
+[OVERLAY] [{  outer brace
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 void battle() {                     │
+ 1 │  2     if (hp > 0) {                   │ ◂ cursor (1,20)
+ 2 │  3         attack();                   │
+ 3 │  4         if (crit) {                 │
+ 4 │  5             damage *= 2;            │
+ 5 │  6         }                           │
+ 6 │  7     }                               │
+ 7 │  8 }                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │hero.c                2,17           All│
+    ────────────────────────────────────────
+
+[KEYS] '[{'
+[OVERLAY] [{  function brace
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 void battle() {                     │ ◂ cursor (0,18)
+ 1 │  2     if (hp > 0) {                   │
+ 2 │  3         attack();                   │
+ 3 │  4         if (crit) {                 │
+ 4 │  5             damage *= 2;            │
+ 5 │  6         }                           │
+ 6 │  7     }                               │
+ 7 │  8 }                                   │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │hero.c                1,15           All│
+    ────────────────────────────────────────
+
+[SAY] Now at the function opening brace. Three levels of nesting.
+[SAY] {key:]\}} finds the matching close.
+[KEYS] ']}'
+[OVERLAY] ]}  closing brace
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 void battle() {                     │
+ 1 │  2     if (hp > 0) {                   │
+ 2 │  3         attack();                   │
+ 3 │  4         if (crit) {                 │
+ 4 │  5             damage *= 2;            │
+ 5 │  6         }                           │
+ 6 │  7     }                               │
+ 7 │  8 }                                   │ ◂ cursor (7,4)
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │hero.c                8,1            All│
+    ────────────────────────────────────────
+
+[SAY] {key:[{} and {key:]\}}. Navigate brace-delimited blocks. Essential for C-style code.

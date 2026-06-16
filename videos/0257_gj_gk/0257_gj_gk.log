@@ -1,0 +1,254 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │ ◂ cursor (0,4)
+ 1 │  2 This is a much longer line that will│
+ 2 │     definitely wrap around the screen b│
+ 3 │    ecause it has so many words in it th│
+ 4 │    at forty columns cannot contain it a│
+ 5 │    ll on one row.                      │
+ 6 │  3 Another short line.                 │
+ 7 │  4 Here is another very long line with │
+ 8 │    lots of text that wraps around multi│
+ 9 │    ple times on the display because the│
+10 │     terminal is narrow.                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │prose.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gj gk — Screen Lines
+[SAY] When lines wrap, J and K skip the whole logical line. G J and G K move by screen lines instead, one visual row at a time.
+[SAY] The cursor is on line one. Press J.
+[KEYS] 'j'
+[OVERLAY] j  j — next logical line
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2 This is a much longer line that will│ ◂ cursor (1,4)
+ 2 │     definitely wrap around the screen b│
+ 3 │    ecause it has so many words in it th│
+ 4 │    at forty columns cannot contain it a│
+ 5 │    ll on one row.                      │
+ 6 │  3 Another short line.                 │
+ 7 │  4 Here is another very long line with │
+ 8 │    lots of text that wraps around multi│
+ 9 │    ple times on the display because the│
+10 │     terminal is narrow.                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │prose.txt             2,1            All│
+    ────────────────────────────────────────
+
+[SAY] J jumped to line two. But line two wraps across several rows. Press J again.
+[KEYS] 'j'
+[OVERLAY] j  j — skips all wrapped rows
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2 This is a much longer line that will│
+ 2 │     definitely wrap around the screen b│
+ 3 │    ecause it has so many words in it th│
+ 4 │    at forty columns cannot contain it a│
+ 5 │    ll on one row.                      │
+ 6 │  3 Another short line.                 │ ◂ cursor (6,4)
+ 7 │  4 Here is another very long line with │
+ 8 │    lots of text that wraps around multi│
+ 9 │    ple times on the display because the│
+10 │     terminal is narrow.                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │prose.txt             3,1            All│
+    ────────────────────────────────────────
+
+[SAY] It jumped past all the wrapped rows to line three.
+[SAY] Go back to line one.
+[KEYS] 'gg'
+[OVERLAY] gg  top
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │ ◂ cursor (0,4)
+ 1 │  2 This is a much longer line that will│
+ 2 │     definitely wrap around the screen b│
+ 3 │    ecause it has so many words in it th│
+ 4 │    at forty columns cannot contain it a│
+ 5 │    ll on one row.                      │
+ 6 │  3 Another short line.                 │
+ 7 │  4 Here is another very long line with │
+ 8 │    lots of text that wraps around multi│
+ 9 │    ple times on the display because the│
+10 │     terminal is narrow.                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │prose.txt             1,1            All│
+    ────────────────────────────────────────
+
+[SAY] Now G J.
+[KEYS] 'gj'
+[OVERLAY] gj  gj — one screen row
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2 This is a much longer line that will│ ◂ cursor (1,4)
+ 2 │     definitely wrap around the screen b│
+ 3 │    ecause it has so many words in it th│
+ 4 │    at forty columns cannot contain it a│
+ 5 │    ll on one row.                      │
+ 6 │  3 Another short line.                 │
+ 7 │  4 Here is another very long line with │
+ 8 │    lots of text that wraps around multi│
+ 9 │    ple times on the display because the│
+10 │     terminal is narrow.                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │prose.txt             2,1            All│
+    ────────────────────────────────────────
+
+[SAY] One screen row down. G J again.
+[KEYS] 'gj'
+[OVERLAY] gj  gj
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2 This is a much longer line that will│
+ 2 │     definitely wrap around the screen b│ ◂ cursor (2,4)
+ 3 │    ecause it has so many words in it th│
+ 4 │    at forty columns cannot contain it a│
+ 5 │    ll on one row.                      │
+ 6 │  3 Another short line.                 │
+ 7 │  4 Here is another very long line with │
+ 8 │    lots of text that wraps around multi│
+ 9 │    ple times on the display because the│
+10 │     terminal is narrow.                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │prose.txt             2,37           All│
+    ────────────────────────────────────────
+
+[KEYS] 'gj'
+[OVERLAY] gj  gj
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2 This is a much longer line that will│
+ 2 │     definitely wrap around the screen b│
+ 3 │    ecause it has so many words in it th│ ◂ cursor (3,4)
+ 4 │    at forty columns cannot contain it a│
+ 5 │    ll on one row.                      │
+ 6 │  3 Another short line.                 │
+ 7 │  4 Here is another very long line with │
+ 8 │    lots of text that wraps around multi│
+ 9 │    ple times on the display because the│
+10 │     terminal is narrow.                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │prose.txt             2,73           All│
+    ────────────────────────────────────────
+
+[SAY] Moving through the wrapped text one row at a time. Still on logical line two.
+[SAY] G K goes up one screen row.
+[KEYS] 'gk'
+[OVERLAY] gk  gk — up one screen row
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2 This is a much longer line that will│
+ 2 │     definitely wrap around the screen b│ ◂ cursor (2,4)
+ 3 │    ecause it has so many words in it th│
+ 4 │    at forty columns cannot contain it a│
+ 5 │    ll on one row.                      │
+ 6 │  3 Another short line.                 │
+ 7 │  4 Here is another very long line with │
+ 8 │    lots of text that wraps around multi│
+ 9 │    ple times on the display because the│
+10 │     terminal is narrow.                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │prose.txt             2,37           All│
+    ────────────────────────────────────────
+
+[KEYS] 'gk'
+[OVERLAY] gk  gk
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 Short line.                         │
+ 1 │  2 This is a much longer line that will│ ◂ cursor (1,4)
+ 2 │     definitely wrap around the screen b│
+ 3 │    ecause it has so many words in it th│
+ 4 │    at forty columns cannot contain it a│
+ 5 │    ll on one row.                      │
+ 6 │  3 Another short line.                 │
+ 7 │  4 Here is another very long line with │
+ 8 │    lots of text that wraps around multi│
+ 9 │    ple times on the display because the│
+10 │     terminal is narrow.                │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │prose.txt             2,1            All│
+    ────────────────────────────────────────
+
+[SAY] Back up through the wrapped lines, one row at a time.
+[SAY] G J and G K. Move by screen rows instead of logical lines. Essential for editing prose or any text that wraps.

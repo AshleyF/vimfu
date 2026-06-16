@@ -1,0 +1,254 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │one = ((x + y) * z)                     │ ◂ cursor (0,0)
+ 1 │two = ((x + y) * z)                     │
+ 2 │html1 = <div><span>hi</span></div>      │
+ 3 │html2 = <div><span>hi</span></div>      │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │nested.py             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Delete with Count
+[SAY] A count before {key:d}{key:s} deletes that many enclosing surrounds, moving outward through nested structures.
+[SAY] Line one: {key:d}{key:s}{key:)} removes one parenthesis level.
+[KEYS] 'fx'
+[OVERLAY] fx
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │one = ((x + y) * z)                     │ ◂ cursor (0,8)
+ 1 │two = ((x + y) * z)                     │
+ 2 │html1 = <div><span>hi</span></div>      │
+ 3 │html2 = <div><span>hi</span></div>      │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │nested.py             1,9            All│
+    ────────────────────────────────────────
+
+[OVERLAY] ds)
+[KEYS] 'ds)'
+[OVERLAY] ds)
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │one = (x + y * z)                       │ ◂ cursor (0,7)
+ 1 │two = ((x + y) * z)                     │
+ 2 │html1 = <div><span>hi</span></div>      │
+ 3 │html2 = <div><span>hi</span></div>      │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │nested.py [+]         1,8            All│
+    ────────────────────────────────────────
+
+[SAY] The outer pair remains. Line two: {key:2}{key:d}{key:s}{key:)} removes two parenthesis levels.
+[KEYS] 'jfx'
+[OVERLAY] jfx
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │one = (x + y * z)                       │
+ 1 │two = ((x + y) * z)                     │ ◂ cursor (1,8)
+ 2 │html1 = <div><span>hi</span></div>      │
+ 3 │html2 = <div><span>hi</span></div>      │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │nested.py [+]         2,9            All│
+    ────────────────────────────────────────
+
+[OVERLAY] 2ds)
+[KEYS] '2ds)'
+[OVERLAY] 2ds)
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │one = (x + y * z)                       │
+ 1 │two = x + y * z                         │ ◂ cursor (1,6)
+ 2 │html1 = <div><span>hi</span></div>      │
+ 3 │html2 = <div><span>hi</span></div>      │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │nested.py [+]         2,7            All│
+    ────────────────────────────────────────
+
+[SAY] Compare the two lines. One level leaves outer parentheses; two levels removes both.
+[SAY] Tags work the same way. Line three: {key:d}{key:s}{key:t} removes the inner span tag.
+[KEYS] 'jfh'
+[OVERLAY] jfh
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │one = (x + y * z)                       │
+ 1 │two = x + y * z                         │
+ 2 │html1 = <div><span>hi</span></div>      │ ◂ cursor (2,19)
+ 3 │html2 = <div><span>hi</span></div>      │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │nested.py [+]         3,20           All│
+    ────────────────────────────────────────
+
+[OVERLAY] dst
+[KEYS] 'dst'
+[OVERLAY] dst
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │one = (x + y * z)                       │
+ 1 │two = x + y * z                         │
+ 2 │html1 = <div>hi</div>                   │ ◂ cursor (2,13)
+ 3 │html2 = <div><span>hi</span></div>      │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │nested.py [+]         3,14           All│
+    ────────────────────────────────────────
+
+[SAY] Line four: {key:2}{key:d}{key:s}{key:t} removes the span and the outer div.
+[KEYS] 'jfh'
+[OVERLAY] jfh
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │one = (x + y * z)                       │
+ 1 │two = x + y * z                         │
+ 2 │html1 = <div>hi</div>                   │
+ 3 │html2 = <div><span>hi</span></div>      │ ◂ cursor (3,19)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │nested.py [+]         4,20           All│
+    ────────────────────────────────────────
+
+[OVERLAY] 2dst
+[KEYS] '2dst'
+[OVERLAY] 2dst
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │one = (x + y * z)                       │
+ 1 │two = x + y * z                         │
+ 2 │html1 = <div>hi</div>                   │
+ 3 │html2 = hi                              │ ◂ cursor (3,8)
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │nested.py [+]         4,9            All│
+    ────────────────────────────────────────
+
+[SAY] Counted delete is not outer-only. It deletes one level, then the next level outward.

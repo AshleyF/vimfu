@@ -1,0 +1,251 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — preheat oven               │ ◂ cursor (0,4)
+ 1 │  2 line 2 — mix flour                  │
+ 2 │  3 line 3 — add eggs                   │
+ 3 │  4 line 4 — stir well                  │
+ 4 │  5 line 5 — pour batter                │
+ 5 │  6 line 6 — bake 30 min                │
+ 6 │  7 line 7 — let cool                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.txt            1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :[range]t — Copy (Synonym)
+[SAY] Colon T is the same as colon C O. It copies lines. T stands for to. Copy this line to there.
+[SAY] Colon four t seven. Copy line four to after line seven.
+[TYPE] ':4t 7'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — preheat oven               │
+ 1 │  2 line 2 — mix flour                  │
+ 2 │  3 line 3 — add eggs                   │
+ 3 │  4 line 4 — stir well                  │
+ 4 │  5 line 5 — pour batter                │
+ 5 │  6 line 6 — bake 30 min                │
+ 6 │  7 line 7 — let cool                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.txt            1,1            All│
+19 │:4t 7                                   │ ◂ cursor (19,5)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — preheat oven               │
+ 1 │  2 line 2 — mix flour                  │
+ 2 │  3 line 3 — add eggs                   │
+ 3 │  4 line 4 — stir well                  │
+ 4 │  5 line 5 — pour batter                │
+ 5 │  6 line 6 — bake 30 min                │
+ 6 │  7 line 7 — let cool                   │
+ 7 │  8 line 4 — stir well                  │ ◂ cursor (7,4)
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.txt [+]        8,1            All│
+19 │:4t 7                                   │
+    ────────────────────────────────────────
+
+[SAY] Stir well is duplicated at the bottom. The original is still on line four.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — preheat oven               │
+ 1 │  2 line 2 — mix flour                  │
+ 2 │  3 line 3 — add eggs                   │
+ 3 │  4 line 4 — stir well                  │
+ 4 │  5 line 5 — pour batter                │
+ 5 │  6 line 6 — bake 30 min                │
+ 6 │  7 line 7 — let cool                   │ ◂ cursor (6,4)
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.txt            7,1            All│
+19 │1 line less;...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] A common pattern. Colon t dollar. Duplicate the current line to the end of the file.
+[TYPE] ':3'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — preheat oven               │
+ 1 │  2 line 2 — mix flour                  │
+ 2 │  3 line 3 — add eggs                   │
+ 3 │  4 line 4 — stir well                  │
+ 4 │  5 line 5 — pour batter                │
+ 5 │  6 line 6 — bake 30 min                │
+ 6 │  7 line 7 — let cool                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.txt            7,1            All│
+19 │:3                                      │ ◂ cursor (19,2)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — preheat oven               │
+ 1 │  2 line 2 — mix flour                  │
+ 2 │  3 line 3 — add eggs                   │ ◂ cursor (2,4)
+ 3 │  4 line 4 — stir well                  │
+ 4 │  5 line 5 — pour batter                │
+ 5 │  6 line 6 — bake 30 min                │
+ 6 │  7 line 7 — let cool                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.txt            3,1            All│
+19 │:3                                      │
+    ────────────────────────────────────────
+
+[TYPE] ':t$'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — preheat oven               │
+ 1 │  2 line 2 — mix flour                  │
+ 2 │  3 line 3 — add eggs                   │
+ 3 │  4 line 4 — stir well                  │
+ 4 │  5 line 5 — pour batter                │
+ 5 │  6 line 6 — bake 30 min                │
+ 6 │  7 line 7 — let cool                   │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.txt            3,1            All│
+19 │:t$                                     │ ◂ cursor (19,3)
+    ────────────────────────────────────────
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — preheat oven               │
+ 1 │  2 line 2 — mix flour                  │
+ 2 │  3 line 3 — add eggs                   │
+ 3 │  4 line 4 — stir well                  │
+ 4 │  5 line 5 — pour batter                │
+ 5 │  6 line 6 — bake 30 min                │
+ 6 │  7 line 7 — let cool                   │
+ 7 │  8 line 3 — add eggs                   │ ◂ cursor (7,4)
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.txt [+]        8,1            All│
+19 │:t$                                     │
+    ────────────────────────────────────────
+
+[SAY] Line three was copied to the very end. T dollar is quick and handy.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │  1 line 1 — preheat oven               │
+ 1 │  2 line 2 — mix flour                  │
+ 2 │  3 line 3 — add eggs                   │
+ 3 │  4 line 4 — stir well                  │
+ 4 │  5 line 5 — pour batter                │
+ 5 │  6 line 6 — bake 30 min                │
+ 6 │  7 line 7 — let cool                   │ ◂ cursor (6,4)
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │recipe.txt            7,1            All│
+19 │1 line less;...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Colon T. Same as colon C O but shorter to type. Many Vim users prefer it.

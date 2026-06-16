@@ -1,0 +1,179 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │foo bar foo baz foo                     │ ◂ cursor (0,0)
+ 1 │old old old old old                     │
+ 2 │no repeats here                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :s Flag g — All on Line
+[SAY] Without the G flag, colon S only replaces the first match. The G flag replaces all of them.
+[SAY] Line one has foo three times. Without G, only the first is replaced.
+[TYPE] ':s/foo/NEW/'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │NEW bar foo baz foo                     │
+ 1 │old old old old old                     │
+ 2 │no repeats here                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          1,1            All│
+19 │:s/foo/NEW/                             │ ◂ cursor (19,11)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-2: "NEW"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │NEW bar foo baz foo                     │ ◂ cursor (0,0)
+ 1 │old old old old old                     │
+ 2 │no repeats here                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          1,1            All│
+19 │:s/foo/NEW/                             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 8-10: "foo"
+[HIGHLIGHT] row 0, cols 16-18: "foo"
+
+[SAY] One replacement. Two foo's remain.
+[SAY] Now line two. Old appears five times. Use the G flag.
+[KEYS] 'j'
+[OVERLAY] j  down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │NEW bar foo baz foo                     │
+ 1 │old old old old old                     │ ◂ cursor (1,0)
+ 2 │no repeats here                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          2,1            All│
+19 │:s/foo/NEW/                             │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 8-10: "foo"
+[HIGHLIGHT] row 0, cols 16-18: "foo"
+
+[TYPE] ':s/old/new/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │NEW bar foo baz foo                     │
+ 1 │new new new new new                     │
+ 2 │no repeats here                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          2,1            All│
+19 │:s/old/new/g                            │ ◂ cursor (19,12)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 1, cols 0-2: "new"
+[HIGHLIGHT] row 1, cols 4-6: "new"
+[HIGHLIGHT] row 1, cols 8-10: "new"
+[HIGHLIGHT] row 1, cols 12-14: "new"
+[HIGHLIGHT] row 1, cols 16-18: "new"
+
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │NEW bar foo baz foo                     │
+ 1 │new new new new new                     │ ◂ cursor (1,0)
+ 2 │no repeats here                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.txt [+]          2,1            All│
+19 │5 substitutions on 1 line               │
+    ────────────────────────────────────────
+
+[SAY] All five replaced in one command. The G flag means global across the line.
+[SAY] Add G at the end of your substitute command to replace every occurrence on the line.

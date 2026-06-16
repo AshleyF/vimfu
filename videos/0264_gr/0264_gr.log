@@ -1,0 +1,143 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Name>---Score>--Rank                    │ ◂ cursor (0,0)
+ 1 │Alice>--95>-----A                       │
+ 2 │Bob>----82>-----B                       │
+ 3 │Carol>--78>-----C                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tabs.txt              1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — gr — Virtual Replace
+[SAY] G R replaces a character virtually. It works like R, but it respects tab alignment. The screen columns stay lined up.
+[SAY] Go to line two. Alice's score. Move to the tab before ninety five.
+[KEYS] '2Gf\t'
+[OVERLAY] 2Gf⇥  line 2, on tab
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Name>---Score>--Rank                    │
+ 1 │Alice>--95>-----A                       │ ◂ cursor (1,5)
+ 2 │Bob>----82>-----B                       │
+ 3 │Carol>--78>-----C                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tabs.txt              2,6            All│
+    ────────────────────────────────────────
+
+[SAY] Normal R, then a dash. It replaces the tab character with a single dash. The columns break.
+[KEYS] 'r-'
+[OVERLAY] r-  replace
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Name>---Score>--Rank                    │
+ 1 │Alice-95>-------A                       │ ◂ cursor (1,5)
+ 2 │Bob>----82>-----B                       │
+ 3 │Carol>--78>-----C                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tabs.txt [+]          2,6            All│
+    ────────────────────────────────────────
+
+[SAY] The alignment is ruined. Undo.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Name>---Score>--Rank                    │
+ 1 │Alice>--95>-----A                       │ ◂ cursor (1,5)
+ 2 │Bob>----82>-----B                       │
+ 3 │Carol>--78>-----C                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tabs.txt              2,6            All│
+19 │1 change; be...6 seconds ago            │
+    ────────────────────────────────────────
+
+[SAY] Now G R, then a dash. Virtual replace.
+[KEYS] 'gr-'
+[OVERLAY] gr-  virtual replace
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │Name>---Score>--Rank                    │
+ 1 │Alice->-95>-----A                       │ ◂ cursor (1,5)
+ 2 │Bob>----82>-----B                       │
+ 3 │Carol>--78>-----C                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │tabs.txt [+]          2,6            All│
+    ────────────────────────────────────────
+
+[SAY] The dash fills the tab space visually. The columns stay aligned.
+[SAY] G R. Virtual replace. Preserves the visual layout when replacing tab characters. Niche but invaluable for tab-aligned data.

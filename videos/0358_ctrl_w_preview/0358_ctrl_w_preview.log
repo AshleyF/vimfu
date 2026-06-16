@@ -1,0 +1,198 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Battle System                         │ ◂ cursor (0,0)
+ 1 │# Combat resolution                     │
+ 2 │hit = slash(15)                         │
+ 3 │def_val = block(8)                      │
+ 4 │                                        │
+ 5 │# Stats tracking                        │
+ 6 │hp = 100                                │
+ 7 │mp = 50                                 │
+ 8 │stamina = 75                            │
+ 9 │armor = 12                              │
+10 │attack = 18                             │
+11 │defense = 9                             │
+12 │speed = 14                              │
+13 │luck = 7                                │
+14 │                                        │
+15 │# Status flags                          │
+16 │poisoned = False                        │
+17 │stunned = False                         │
+18 │battle.py             1,1            Top│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — Ctrl-W } — Preview Tag
+[SAY] Control W right brace opens the tag definition in a preview window. You stay where you are. The definition appears above.
+[SAY] Move to where slash is called.
+[KEYS] '3G'
+[OVERLAY] 3G  line 3
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Battle System                         │
+ 1 │# Combat resolution                     │
+ 2 │hit = slash(15)                         │ ◂ cursor (2,0)
+ 3 │def_val = block(8)                      │
+ 4 │                                        │
+ 5 │# Stats tracking                        │
+ 6 │hp = 100                                │
+ 7 │mp = 50                                 │
+ 8 │stamina = 75                            │
+ 9 │armor = 12                              │
+10 │attack = 18                             │
+11 │defense = 9                             │
+12 │speed = 14                              │
+13 │luck = 7                                │
+14 │                                        │
+15 │# Status flags                          │
+16 │poisoned = False                        │
+17 │stunned = False                         │
+18 │battle.py             3,1            Top│
+    ────────────────────────────────────────
+
+[KEYS] 'w'
+[OVERLAY] w  next word
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Battle System                         │
+ 1 │# Combat resolution                     │
+ 2 │hit = slash(15)                         │ ◂ cursor (2,4)
+ 3 │def_val = block(8)                      │
+ 4 │                                        │
+ 5 │# Stats tracking                        │
+ 6 │hp = 100                                │
+ 7 │mp = 50                                 │
+ 8 │stamina = 75                            │
+ 9 │armor = 12                              │
+10 │attack = 18                             │
+11 │defense = 9                             │
+12 │speed = 14                              │
+13 │luck = 7                                │
+14 │                                        │
+15 │# Status flags                          │
+16 │poisoned = False                        │
+17 │stunned = False                         │
+18 │battle.py             3,5            Top│
+    ────────────────────────────────────────
+
+[KEYS] 'w'
+[OVERLAY] w  to slash
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Battle System                         │
+ 1 │# Combat resolution                     │
+ 2 │hit = slash(15)                         │ ◂ cursor (2,6)
+ 3 │def_val = block(8)                      │
+ 4 │                                        │
+ 5 │# Stats tracking                        │
+ 6 │hp = 100                                │
+ 7 │mp = 50                                 │
+ 8 │stamina = 75                            │
+ 9 │armor = 12                              │
+10 │attack = 18                             │
+11 │defense = 9                             │
+12 │speed = 14                              │
+13 │luck = 7                                │
+14 │                                        │
+15 │# Status flags                          │
+16 │poisoned = False                        │
+17 │stunned = False                         │
+18 │battle.py             3,7            Top│
+    ────────────────────────────────────────
+
+[SAY] Preview the slash definition.
+[KEYS] '\x17}'
+[OVERLAY] ⌃w}  preview tag
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Status flags                          │
+ 1 │poisoned = False                        │
+ 2 │stunned = False                         │
+ 3 │burning = False                         │
+ 4 │frozen = False                          │
+ 5 │                                        │
+ 6 │# Definitions                           │
+ 7 │def slash(power):                       │
+ 8 │    return power * 2                    │
+ 9 │                                        │
+10 │def block(armor):                       │
+11 │    return armor + 10                   │
+12 │battle.py [Preview]   23,1           Bot│
+13 │hit = slash(15)                         │ ◂ cursor (13,6)
+14 │def_val = block(8)                      │
+15 │                                        │
+16 │# Stats tracking                        │
+17 │hp = 100                                │
+18 │battle.py             3,7             9%│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 12, cols 0-39: "battle.py [Preview]   23,1           Bot"
+
+[KEYS] '\r'
+[OVERLAY] ⏎
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Status flags                          │
+ 1 │poisoned = False                        │
+ 2 │stunned = False                         │
+ 3 │burning = False                         │
+ 4 │frozen = False                          │
+ 5 │                                        │
+ 6 │# Definitions                           │
+ 7 │def slash(power):                       │
+ 8 │    return power * 2                    │
+ 9 │                                        │
+10 │def block(armor):                       │
+11 │    return armor + 10                   │
+12 │battle.py [Preview]   23,1           Bot│
+13 │hit = slash(15)                         │
+14 │def_val = block(8)                      │ ◂ cursor (14,0)
+15 │                                        │
+16 │# Stats tracking                        │
+17 │hp = 100                                │
+18 │battle.py             4,1             9%│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 12, cols 0-39: "battle.py [Preview]   23,1           Bot"
+
+[SAY] Preview window appeared at the top showing the definition. The cursor stayed in the main window.
+[SAY] Control W Z to close the preview.
+[KEYS] '\x17z'
+[OVERLAY] ⌃wz  close preview
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Battle System                         │
+ 1 │# Combat resolution                     │
+ 2 │hit = slash(15)                         │
+ 3 │def_val = block(8)                      │ ◂ cursor (3,0)
+ 4 │                                        │
+ 5 │# Stats tracking                        │
+ 6 │hp = 100                                │
+ 7 │mp = 50                                 │
+ 8 │stamina = 75                            │
+ 9 │armor = 12                              │
+10 │attack = 18                             │
+11 │defense = 9                             │
+12 │speed = 14                              │
+13 │luck = 7                                │
+14 │                                        │
+15 │# Status flags                          │
+16 │poisoned = False                        │
+17 │stunned = False                         │
+18 │battle.py             4,1            Top│
+    ────────────────────────────────────────
+
+[SAY] Preview gone. Back to full screen.
+[SAY] Control W right brace. Peek at a tag definition without jumping. Control W Z to dismiss.

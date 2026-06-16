@@ -6,7 +6,7 @@ This file lists video recordings that completed "successfully" but are silently 
 
 When Oh-My-Zsh's auto-update timer fires, it injects a `[oh-my-zsh] Would you like to update? [Y/n]` prompt at the top of the terminal *before* the recording starts. The prompt's `[Y/n]` reader eats the first keystrokes the script sends, so the demo never runs as authored. The recording then completes silently with a broken video.
 
-This was found by scanning all logs under `shellpilot/videos/` for `[oh-my-zsh]` + `would you like to (update|check for updates)`. `shellpilot/viewer.py:start_recording` now hard-fails on this so future recordings can't slip through — see `curriculum/Instructions.md` under *Oh-My-Zsh update prompt corrupts recordings*.
+This was found by scanning all logs under `videos/` for `[oh-my-zsh]` + `would you like to (update|check for updates)`. `shellpilot/viewer.py:start_recording` now hard-fails on this so future recordings can't slip through — see `curriculum/Instructions.md` under *Oh-My-Zsh update prompt corrupts recordings*.
 
 ### Affected lessons
 

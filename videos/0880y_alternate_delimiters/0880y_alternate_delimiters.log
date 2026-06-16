@@ -1,0 +1,180 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │/usr/local/bin/python                   │ ◂ cursor (0,0)
+ 1 │/usr/local/lib/libfoo.so                │
+ 2 │/usr/local/share/docs                   │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │paths.txt             1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :s Alternate Delimiters
+[SAY] When your search or replacement contains slashes, escaping them gets ugly. Use a different delimiter instead.
+[SAY] Replace slash usr slash local with slash opt — using hash as the delimiter.
+[TYPE] ':%s#/usr/local#/opt#g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │/opt/bin/python                         │
+ 1 │/opt/lib/libfoo.so                      │
+ 2 │/opt/share/docs                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │paths.txt [+]         1,1            All│
+19 │:%s#/usr/local#/opt#g                   │ ◂ cursor (19,21)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-3: "/opt"
+[HIGHLIGHT] row 1, cols 0-3: "/opt"
+[HIGHLIGHT] row 2, cols 0-3: "/opt"
+
+[SAY] Whatever character follows the S becomes the separator for this command. No escaped slashes needed.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │/opt/bin/python                         │
+ 1 │/opt/lib/libfoo.so                      │
+ 2 │/opt/share/docs                         │ ◂ cursor (2,0)
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │paths.txt [+]         3,1            All│
+19 │3 substitutions on 3 lines              │
+    ────────────────────────────────────────
+
+[SAY] All three paths rewritten cleanly.
+[SAY] Undo, then try exclamation mark instead.
+[KEYS] 'u'
+[OVERLAY] u  undo
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │/usr/local/bin/python                   │ ◂ cursor (0,0)
+ 1 │/usr/local/lib/libfoo.so                │
+ 2 │/usr/local/share/docs                   │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │paths.txt             1,1            All│
+19 │3 changes; b...7 seconds ago            │
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 1-9: "usr/local"
+[HIGHLIGHT] row 1, cols 0-9: "/usr/local"
+[HIGHLIGHT] row 2, cols 0-9: "/usr/local"
+
+[TYPE] ':%s!/usr/local!/opt!g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │/opt/bin/python                         │
+ 1 │/opt/lib/libfoo.so                      │
+ 2 │/opt/share/docs                         │
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │paths.txt [+]         1,1            All│
+19 │:%s!/usr/local!/opt!g                   │ ◂ cursor (19,21)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 0-3: "/opt"
+[HIGHLIGHT] row 1, cols 0-3: "/opt"
+[HIGHLIGHT] row 2, cols 0-3: "/opt"
+
+[SAY] Bang works just as well. Pick any character that doesn't appear in your pattern.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │/opt/bin/python                         │
+ 1 │/opt/lib/libfoo.so                      │
+ 2 │/opt/share/docs                         │ ◂ cursor (2,0)
+ 3 │~                                       │
+ 4 │~                                       │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │paths.txt [+]         3,1            All│
+19 │3 substitutions on 3 lines              │
+    ────────────────────────────────────────
+
+[SAY] Same result.
+[SAY] Any character works as a delimiter. Hash, bang, pipe, at sign. Pick one that avoids escaping.

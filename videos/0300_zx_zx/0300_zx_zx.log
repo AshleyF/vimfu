@@ -1,0 +1,302 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Item Shop                             │ ◂ cursor (0,0)
+ 1 │def buy(item, gold):                    │
+ 2 │+--  4 lines: if gold >= item.price:····│
+ 3 │                                        │
+ 4 │def sell(item):                         │
+ 5 │+--  2 lines: refund = item.price // 2··│
+ 6 │                                        │
+ 7 │def browse(stock):                      │
+ 8 │+--  3 lines: for item in stock:········│
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │shop.py               1,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  4 lines: if gold >= item.price:····"
+[HIGHLIGHT] row 5, cols 0-39: "+--  2 lines: refund = item.price // 2··"
+[HIGHLIGHT] row 8, cols 0-39: "+--  3 lines: for item in stock:········"
+
+[OVERLAY] VimFu — zx zX — Reapply Folds
+[SAY] Z X reapplies the fold level and opens folds at the cursor line. Capital Z capital X just reapplies fold level.
+[SAY] All folds are closed. Let me open two of them manually.
+[KEYS] '2G'
+[OVERLAY] 2G  line 2
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Item Shop                             │
+ 1 │def buy(item, gold):                    │ ◂ cursor (1,0)
+ 2 │+--  4 lines: if gold >= item.price:····│
+ 3 │                                        │
+ 4 │def sell(item):                         │
+ 5 │+--  2 lines: refund = item.price // 2··│
+ 6 │                                        │
+ 7 │def browse(stock):                      │
+ 8 │+--  3 lines: for item in stock:········│
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │shop.py               2,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  4 lines: if gold >= item.price:····"
+[HIGHLIGHT] row 5, cols 0-39: "+--  2 lines: refund = item.price // 2··"
+[HIGHLIGHT] row 8, cols 0-39: "+--  3 lines: for item in stock:········"
+
+[KEYS] 'j'
+[OVERLAY] j  into fold
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Item Shop                             │
+ 1 │def buy(item, gold):                    │
+ 2 │+--  4 lines: if gold >= item.price:····│ ◂ cursor (2,0)
+ 3 │                                        │
+ 4 │def sell(item):                         │
+ 5 │+--  2 lines: refund = item.price // 2··│
+ 6 │                                        │
+ 7 │def browse(stock):                      │
+ 8 │+--  3 lines: for item in stock:········│
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │shop.py               3,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 1-39: "--  4 lines: if gold >= item.price:····"
+[HIGHLIGHT] row 5, cols 0-39: "+--  2 lines: refund = item.price // 2··"
+[HIGHLIGHT] row 8, cols 0-39: "+--  3 lines: for item in stock:········"
+
+[KEYS] 'zo'
+[OVERLAY] zo  open
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Item Shop                             │
+ 1 │def buy(item, gold):                    │
+ 2 │    if gold >= item.price:              │ ◂ cursor (2,0)
+ 3 │+---  2 lines: gold -= item.price·······│
+ 4 │    return False                        │
+ 5 │                                        │
+ 6 │def sell(item):                         │
+ 7 │+--  2 lines: refund = item.price // 2··│
+ 8 │                                        │
+ 9 │def browse(stock):                      │
+10 │+--  3 lines: for item in stock:········│
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │shop.py               3,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 3, cols 0-39: "+---  2 lines: gold -= item.price·······"
+[HIGHLIGHT] row 7, cols 0-39: "+--  2 lines: refund = item.price // 2··"
+[HIGHLIGHT] row 10, cols 0-39: "+--  3 lines: for item in stock:········"
+
+[KEYS] '8j'
+[OVERLAY] 8j  jump down
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Item Shop                             │
+ 1 │def buy(item, gold):                    │
+ 2 │    if gold >= item.price:              │
+ 3 │+---  2 lines: gold -= item.price·······│
+ 4 │    return False                        │
+ 5 │                                        │
+ 6 │def sell(item):                         │
+ 7 │+--  2 lines: refund = item.price // 2··│
+ 8 │                                        │
+ 9 │def browse(stock):                      │
+10 │+--  3 lines: for item in stock:········│ ◂ cursor (10,0)
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │shop.py               13,1           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 3, cols 0-39: "+---  2 lines: gold -= item.price·······"
+[HIGHLIGHT] row 7, cols 0-39: "+--  2 lines: refund = item.price // 2··"
+[HIGHLIGHT] row 10, cols 1-39: "--  3 lines: for item in stock:········"
+
+[KEYS] 'zo'
+[OVERLAY] zo  open
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Item Shop                             │
+ 1 │def buy(item, gold):                    │
+ 2 │    if gold >= item.price:              │
+ 3 │+---  2 lines: gold -= item.price·······│
+ 4 │    return False                        │
+ 5 │                                        │
+ 6 │def sell(item):                         │
+ 7 │+--  2 lines: refund = item.price // 2··│
+ 8 │                                        │
+ 9 │def browse(stock):                      │
+10 │    for item in stock:                  │ ◂ cursor (10,0)
+11 │        print(item.name)                │
+12 │    return len(stock)                   │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │shop.py               13,1           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 3, cols 0-39: "+---  2 lines: gold -= item.price·······"
+[HIGHLIGHT] row 7, cols 0-39: "+--  2 lines: refund = item.price // 2··"
+
+[SAY] Two folds open. Now Z X reapplies the fold level. Since fold level is zero, it closes them.
+[KEYS] 'zx'
+[OVERLAY] zx  reapply folds
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Item Shop                             │
+ 1 │def buy(item, gold):                    │
+ 2 │+--  4 lines: if gold >= item.price:····│
+ 3 │                                        │
+ 4 │def sell(item):                         │
+ 5 │+--  2 lines: refund = item.price // 2··│
+ 6 │                                        │
+ 7 │def browse(stock):                      │
+ 8 │    for item in stock:                  │ ◂ cursor (8,0)
+ 9 │        print(item.name)                │
+10 │    return len(stock)                   │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │shop.py               13,1           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  4 lines: if gold >= item.price:····"
+[HIGHLIGHT] row 5, cols 0-39: "+--  2 lines: refund = item.price // 2··"
+
+[SAY] Everything is closed again. But the cursor line fold opened because Z X does that.
+[SAY] Capital Z capital X is the same but does not open the cursor fold.
+[KEYS] 'zo'
+[OVERLAY] zo  open one
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Item Shop                             │
+ 1 │def buy(item, gold):                    │
+ 2 │+--  4 lines: if gold >= item.price:····│
+ 3 │                                        │
+ 4 │def sell(item):                         │
+ 5 │+--  2 lines: refund = item.price // 2··│
+ 6 │                                        │
+ 7 │def browse(stock):                      │
+ 8 │    for item in stock:                  │ ◂ cursor (8,0)
+ 9 │        print(item.name)                │
+10 │    return len(stock)                   │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │shop.py               13,1           All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  4 lines: if gold >= item.price:····"
+[HIGHLIGHT] row 5, cols 0-39: "+--  2 lines: refund = item.price // 2··"
+
+[KEYS] 'gg'
+[OVERLAY] gg  top of file
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Item Shop                             │ ◂ cursor (0,0)
+ 1 │def buy(item, gold):                    │
+ 2 │+--  4 lines: if gold >= item.price:····│
+ 3 │                                        │
+ 4 │def sell(item):                         │
+ 5 │+--  2 lines: refund = item.price // 2··│
+ 6 │                                        │
+ 7 │def browse(stock):                      │
+ 8 │    for item in stock:                  │
+ 9 │        print(item.name)                │
+10 │    return len(stock)                   │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │shop.py               1,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  4 lines: if gold >= item.price:····"
+[HIGHLIGHT] row 5, cols 0-39: "+--  2 lines: refund = item.price // 2··"
+
+[KEYS] 'zX'
+[OVERLAY] zX  reapply only
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │# Item Shop                             │ ◂ cursor (0,0)
+ 1 │def buy(item, gold):                    │
+ 2 │+--  4 lines: if gold >= item.price:····│
+ 3 │                                        │
+ 4 │def sell(item):                         │
+ 5 │+--  2 lines: refund = item.price // 2··│
+ 6 │                                        │
+ 7 │def browse(stock):                      │
+ 8 │+--  3 lines: for item in stock:········│
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │shop.py               1,1            All│
+    ────────────────────────────────────────
+[HIGHLIGHT] row 2, cols 0-39: "+--  4 lines: if gold >= item.price:····"
+[HIGHLIGHT] row 5, cols 0-39: "+--  2 lines: refund = item.price // 2··"
+[HIGHLIGHT] row 8, cols 0-39: "+--  3 lines: for item in stock:········"
+
+[SAY] Z X reapplies fold level and reveals the cursor. Capital Z capital X just reapplies. Great for resetting after browsing.

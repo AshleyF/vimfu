@@ -1,0 +1,89 @@
+[RECORDING_START] Screen state at recording start:
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = "foo"                            │ ◂ cursor (0,0)
+ 1 │print(name)                             │
+ 2 │if name == "foo":                       │
+ 3 │    greet(name)                         │
+ 4 │# name is foo                           │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py               1,1            All│
+    ────────────────────────────────────────
+
+[OVERLAY] VimFu — :%s/old/new/g — Whole File
+[SAY] Percent S is the most common way to do find and replace across an entire file.
+[SAY] The word foo appears on several lines. Let's rename it to bar everywhere.
+[TYPE] ':%s/foo/bar/g'
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = "bar"                            │
+ 1 │print(name)                             │
+ 2 │if name == "bar":                       │
+ 3 │    greet(name)                         │
+ 4 │# name is bar                           │
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           1,9            All│
+19 │:%s/foo/bar/g                           │ ◂ cursor (19,13)
+    ────────────────────────────────────────
+[HIGHLIGHT] row 0, cols 8-10: "bar"
+[HIGHLIGHT] row 2, cols 12-14: "bar"
+[HIGHLIGHT] row 4, cols 10-12: "bar"
+
+[SAY] Percent means the entire file. The G flag means every occurrence on each line, not just the first. Neovim is previewing the matches that are about to change.
+[ENTER]
+
+              1         2         3         
+    0123456789012345678901234567890123456789
+    ────────────────────────────────────────
+ 0 │name = "bar"                            │
+ 1 │print(name)                             │
+ 2 │if name == "bar":                       │
+ 3 │    greet(name)                         │
+ 4 │# name is bar                           │ ◂ cursor (4,0)
+ 5 │~                                       │
+ 6 │~                                       │
+ 7 │~                                       │
+ 8 │~                                       │
+ 9 │~                                       │
+10 │~                                       │
+11 │~                                       │
+12 │~                                       │
+13 │~                                       │
+14 │~                                       │
+15 │~                                       │
+16 │~                                       │
+17 │~                                       │
+18 │demo.py [+]           5,1            All│
+19 │3 substitutions on 3 lines              │
+    ────────────────────────────────────────
+
+[SAY] Every foo is now bar.
+[SAY] Without percent, colon S only affects the current line. Percent is the key to whole file substitution.
