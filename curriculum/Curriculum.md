@@ -1061,14 +1061,14 @@ _**Installing in Neovim:** Neovim ships with [lazy.nvim](https://github.com/folk
 | 723 | Surround with Motion | `ys$"` `ysf."` `yst,)` | Any Vim motion works as the first argument. `ys$"` wraps to end of line in quotes, `ysf."` wraps up to the next period. |
 | 724 | Surround the Whole Line | `yss)` or `yssb` | Wrap the entire current line in parentheses, ignoring leading whitespace. `yss` is a special double-key shortcut like `dd` or `yy`. |
 | 725 | Surround with Tag | `ysiwt` then `em>` | Wrap a word in an HTML/XML tag. nvim-surround prompts for the tag at the bottom. |
-| 726 | Surround with Tag on Separate Lines | `ysiw<C-T>` | Like surrounding with a tag, but `<C-T>` places the opening and closing tags on their own lines with the content indented. |
-| 727 | Surround with Self-Closing Tag | `ysiw<br/>` | End the tag with `/` to produce a self-closing tag like `<br />` with no closing pair. |
+| 726 | 🚫 Surround with Tag on Separate Lines | `ysiw<C-T>` _(tpope only)_ | **Skipped — tpope-only.** This is a feature of tpope's `vim-surround`, not `nvim-surround` (which VimFu uses). nvim-surround has no `<C-T>` keymap for "tag on separate lines" mode. See `curriculum/Instructions.md` → *nvim-surround — limited delimiters* for the canonical list of unsupported tpope features. |
+| 727 | 🚫 Surround with Self-Closing Tag | `ysiw<br/>` _(tpope only)_ | **Skipped — tpope-only.** nvim-surround does not detect self-closing tags. Typing `br/>` at the tag prompt produces `<br/>...</br/>` (a mismatched pair), not `<br/>`. See `curriculum/Instructions.md` → *nvim-surround — limited delimiters*. |
 | 728 | Surround with Function Call | `ysiwfprint↵` | Wrap a word in a function call: `print(word)`. `f` prompts for the function name and wraps in `name(...)`. |
 | 729 | Change Function Name | `csf` then `debug` | Change an existing function-call surround name through the bottom prompt while keeping the arguments. |
 | 730 | Delete Function Call | `dsf` | Remove a surrounding function call and keep its arguments. `print(value)` becomes `value`. |
 | 731 | Surround with Arbitrary Character | `ysiw/` `ysiw\|` | Any undefined, non-alphabetic character wraps symmetrically. `ysiw/` → `/word/`, `ysiw\|` → `\|word\|`. Great for Markdown emphasis, Ruby symbols, etc. |
 | 732 | Surround with Code Block | `ySS{` | Wrap the current line in braces on separate lines, with the content indented like a code block. |
-| 733 | Surround with LaTeX Environment | `ysiwl` or `ysiw\` | Prompts for an environment name and wraps in `\begin{env}...\end{env}`. Both `l` and `\` trigger the LaTeX prompt. |
+| 733 | 🚫 Surround with LaTeX Environment | `ysiwl` or `ysiw\` _(tpope only)_ | **Skipped — tpope-only.** nvim-surround does not define `l` or `\` as the LaTeX-environment delimiter. The keystroke falls through to the generic "Enter the right delimiter" prompt instead of producing `\begin{env}...\end{env}`. See `curriculum/Instructions.md` → *nvim-surround — limited delimiters*. |
 | 734 | Delete with s Alias | `dss` | Delete the nearest common surround using `s` as an alias set for brackets, parens, braces, angle brackets, and quotes. |
 | 735 | Surround on Separate Lines | `ySiw(` | Like `ys`, but `yS` indents the surrounded text and places it on its own line between the surround characters. |
 | 736 | Surround Entire Line on Separate Lines | `ySS{` | Wrap the current line in braces, each on a new line with proper indentation. Perfect for wrapping a statement in a block. |
@@ -1605,7 +1605,7 @@ _Tracks which lessons have generated shorts (JSON files in `curriculum/shorts/`)
 | Part 18 — Advanced Topics | 481–500 | ⬜ Not yet generated (20) |
 | Part 19 — Tmux & Shell | 501–544 | ✅ All 58 generated (incl. 530a–c, 531a–k) |
 | Part 20 — Advanced | 600–601 | ⬜ Not yet generated (2) |
-| Part 21 — Surround | 700–742 | ⬜ Not yet generated (43) |
+| Part 21 — Surround | 700–742 | ✅ 40 generated, 🚫 3 tpope-only skipped (726, 727, 733) |
 | Part 22 — Ex Commands | 800–895 | ⬜ Not yet generated (96 + 14 new) |
 
 **Total generated:** 299 shorts (lessons 1–240 + 501–544 + 15 interleaved)
