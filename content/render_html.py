@@ -27,7 +27,7 @@ except Exception:
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
-from lib.videos import _index as _videos_index, video_for_lesson, videos_for_topic  # noqa: E402
+from lib.videos import _index as _videos_index, video_for_lesson, videos_for_topic, _normalize_lesson_key  # noqa: E402
 from render_latex import _atomize_key  # noqa: E402  shared key-splitting rules
 from lib.audience import visible as _visible  # noqa: E402
 from lib.site_config import contact_email  # noqa: E402
@@ -120,11 +120,10 @@ def _compute_parts_with_videos(parts_map) -> set[str]:
             if not _visible(t, AUDIENCE):
                 continue
             for n in (t.get("lessons") or []):
-                try:
-                    ni = int(n)
-                except (TypeError, ValueError):
+                key = _normalize_lesson_key(n)
+                if key is None:
                     continue
-                if video_for_lesson(ni) is not None:
+                if video_for_lesson(key) is not None:
                     out.add(part_dir)
                     break
             if part_dir in out:
@@ -259,10 +258,10 @@ def _videos_section(t: dict) -> str:
             link = (f'<a href="{escape(v["url"])}" target="_blank" rel="noopener">'
                     f'{escape(v["title"])}</a>')
             items.append(f'<li>{iframe}<span class="lesson-meta">'
-                         f'#{v["lesson"]:04d} — {link}</span></li>')
+                         f'#{v["display_id"]} — {link}</span></li>')
         else:
             items.append(f'<li class="lesson-pending">'
-                         f'<div class="placeholder">📺 #{v["lesson"]:04d} '
+                         f'<div class="placeholder">📺 #{v["display_id"]} '
                          f'{escape(v["title"])} (not yet published)</div></li>')
     return ('<section class="watch"><h2>Watch</h2>'
             '<ul class="lesson-grid">' + "".join(items) + '</ul></section>')
@@ -991,15 +990,14 @@ def _build_lesson_backlinks(parts_map: dict) -> dict[int, tuple[str, str, str]]:
             stem = t["__file_stem"]
             ttl = t.get("title", stem)
             for n in (t.get("lessons") or []):
-                try:
-                    n = int(n)
-                except (TypeError, ValueError):
+                key = _normalize_lesson_key(n)
+                if key is None:
                     continue
-                back.setdefault(n, (part_dir, stem, ttl))
+                back.setdefault(key, (part_dir, stem, ttl))
     return back
 
 
-def render_part_videos_page(part_dir: str, lessons: list[int],
+def render_part_videos_page(part_dir: str, lessons: "list[int | str]",
                             backlinks: dict) -> str:
     label = _part_label(part_dir)
     vids = []
@@ -1045,12 +1043,11 @@ def render_master_videos_page(parts_map: dict, backlinks: dict) -> str:
             if not _visible(t, AUDIENCE):
                 continue
             for n in (t.get("lessons") or []):
-                try:
-                    n = int(n)
-                except (TypeError, ValueError):
+                key = _normalize_lesson_key(n)
+                if key is None:
                     continue
-                if n in idx:
-                    by_part.setdefault(part_dir, []).append(n)
+                if key in idx:
+                    by_part.setdefault(part_dir, []).append(key)
     # Letter-suffixed sub-lessons (e.g. 0430a, 0531b) follow their numeric
     # parent's part assignment if the parent is referenced anywhere.
     parent_part: dict[int, str] = {}
@@ -1665,12 +1662,12 @@ def main() -> int:
             if not _visible(t, AUDIENCE):
                 continue
             for n in (t.get("lessons") or []):
-                try:
-                    ni = int(n)
-                except (TypeError, ValueError):
+                key = _normalize_lesson_key(n)
+                if key is None:
                     continue
-                part_lessons.setdefault(part_dir, []).append(ni)
-                parent_part.setdefault(ni, part_dir)
+                part_lessons.setdefault(part_dir, []).append(key)
+                if isinstance(key, int):
+                    parent_part.setdefault(key, part_dir)
     for key, v in idx_all.items():
         if isinstance(key, str) and v.get("suffix"):
             pd = parent_part.get(v["num"])

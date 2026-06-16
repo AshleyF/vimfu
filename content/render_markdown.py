@@ -347,9 +347,9 @@ def render_topic(t: dict[str, Any], index, examples: dict[str, dict]) -> str:
         out.append("")
         for v in vids:
             if v.get("videoId"):
-                out.append(f"- 📺 **[{v['title']}]({v['url']})** — Lesson {v['lesson']:04d}")
+                out.append(f"- 📺 **[{v['title']}]({v['url']})** — Lesson {v['display_id']}")
             else:
-                out.append(f"- 📺 *Lesson {v['lesson']:04d} — {v['title']} (not yet published)*")
+                out.append(f"- 📺 *Lesson {v['display_id']} — {v['title']} (not yet published)*")
         out.append("")
 
     see_also = t.get("see_also") or []

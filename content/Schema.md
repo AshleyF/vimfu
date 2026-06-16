@@ -40,7 +40,7 @@ once a topic ships.
   "part": "basic-editing",
   "summary": "w / b / e / ge — and the WORD variants.",
   "keys": ["w", "W", "b", "B", "e", "E", "ge", "gE"],
-  "lessons": [21, 22, 23, 24],
+  "lessons": [21, 22, 23, 24, "0124a", "0880aa"],
   "see_also": ["motion.line", "motion.find-on-line", "operators.delete"],
   "blocks": [ ... ]
 }
@@ -56,7 +56,7 @@ once a topic ships.
 | `part`     | string    | yes      | Part slug (e.g. `"basic-editing"`). Must match folder.   |
 | `summary`  | string    | no       | One-sentence summary for cards and ToC.                  |
 | `keys`     | string[]  | no       | All keys covered. Used for the keyboard heatmap and search. |
-| `lessons`  | int[]     | no       | Curriculum lesson numbers (matches `curriculum/shorts/NNNN_*.json`). |
+| `lessons`  | (int\|str)[] | no    | Curriculum lesson IDs (matches `curriculum/shorts/NNNN[a-z]*_*.json`). Use `int` for numeric-only lessons (`880`), and `str` for sub-lettered lessons (`"880aa"`, `"0124a"`). String entries are accepted with or without the 4-digit zero-padding. |
 | `see_also` | string[]  | no       | Related topic IDs.                                       |
 | `blocks`   | block[]   | yes      | Ordered content blocks (see below).                      |
 
@@ -365,7 +365,7 @@ The new format is mostly a superset of the old:
 |--------------------------------------|---------------------------------------------|
 | `format: "vimfu-book-page"`          | `format: "vimfu-content-topic"`             |
 | no `id` field                        | `id` is required and stable                 |
-| `lessons: int[]`                     | unchanged                                   |
+| `lessons: int[]`                     | extended — now `(int \| string)[]`          |
 | no `part` field                      | `part: string` — required                   |
 | no `see_also` field                  | `see_also: string[]`                        |
 | `content: block[]`                   | renamed to `blocks: block[]`                |

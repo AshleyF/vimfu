@@ -391,7 +391,7 @@ def render_topic_body(t, index, examples) -> str:
     if vids:
         out.append(para("Heading2", "Watch Online"))
         for v in vids:
-            line = (f"#{v['lesson']:04d} — {v['title']}"
+            line = (f"#{v['display_id']} — {v['title']}"
                     + (f" — {v['url']}" if v.get("url") else " (not yet published)"))
             out.append(para("Body", tt_escape(line)))
 
