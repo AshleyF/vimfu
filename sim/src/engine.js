@@ -608,6 +608,7 @@ export class VimEngine {
   _undo() {
     if (this._undoStack.length <= 1) return;
     this._changeCount--;
+    const _preLines = this.buffer.lineCount;
     // Pop the most recent pre-change snapshot
     const snap = this._undoStack.pop();
     // Push current state to redo stack.
@@ -631,11 +632,15 @@ export class VimEngine {
     this.cursor.col = Math.min(this.cursor.col, Math.max(0, this.buffer.lineLength(this.cursor.row) - 1));
     this.scrollTop = snap.scrollTop;
     this._updateDesiredCol();
+    // Post the "1 change; before #N 0 seconds ago" style message that nvim
+    // emits after every undo. Line delta = pre - post; positive = lines lost.
+    this._postUndoMessage(_preLines - this.buffer.lineCount, /*isRedo*/ false);
   }
 
   _redo() {
     if (this._redoStack.length === 0) return;
     this._changeCount++;
+    const _preLines = this.buffer.lineCount;
     const snap = this._redoStack.pop();
     const redoCursor = { ...snap.redoCursor };
     // Push current state back onto undo stack.
@@ -655,6 +660,41 @@ export class VimEngine {
     this.cursor.row = Math.min(this.cursor.row, this.buffer.lineCount - 1);
     this.cursor.col = Math.min(this.cursor.col, Math.max(0, this.buffer.lineLength(this.cursor.row) - 1));
     this._updateDesiredCol();
+    // Redo prints the "1 change; after #N 0 seconds ago" style message.
+    this._postUndoMessage(_preLines - this.buffer.lineCount, /*isRedo*/ true);
+  }
+
+  // Build the cmdline message that nvim shows after every undo/redo and post
+  // it on `commandLine`. lineDelta is (pre - post): positive when lines were
+  // removed, negative when lines were added back. Format mirrors nvim:
+  //   <delta>; (before|after) #<seq> 0 seconds ago
+  // where <delta> is "N change[s]", "N line[s] less"/"N fewer lines", or
+  // "N more line[s]". Because the full string usually overflows the 40-col
+  // sim screen, it gets middle-truncated to (cols - 12) chars with `...`,
+  // matching the truncation pattern observed in real nvim captures.
+  _postUndoMessage(lineDelta, isRedo) {
+    let delta;
+    if (lineDelta > 0) {
+      delta = lineDelta === 1 ? '1 line less' : `${lineDelta} fewer lines`;
+    } else if (lineDelta < 0) {
+      const n = -lineDelta;
+      delta = n === 1 ? '1 more line' : `${n} more lines`;
+    } else {
+      delta = '1 change';
+    }
+    this._undoMsgSeq = (this._undoMsgSeq || 0) + 1;
+    const word = isRedo ? 'after' : 'before';
+    const full = `${delta}; ${word} #${this._undoMsgSeq} 0 seconds ago`;
+    const cols = this.cols || 40;
+    const maxLen = Math.max(1, cols - 12);
+    if (full.length > maxLen) {
+      const prefixLen = 12;
+      const suffixLen = Math.max(0, maxLen - prefixLen - 3);
+      this.commandLine = full.slice(0, prefixLen) + '...' + full.slice(full.length - suffixLen);
+    } else {
+      this.commandLine = full;
+    }
+    this._stickyCommandLine = true;
   }
 
   _saveForDot(key) {
@@ -11997,7 +12037,18 @@ export class VimEngine {
   _textObjTag(inner) {
     // Flatten buffer into a single string for easier scanning
     const lines = this.buffer.lines;
-    const cursorOffset = this._offsetFromPos(this.cursor.row, this.cursor.col);
+    let cursorOffset = this._offsetFromPos(this.cursor.row, this.cursor.col);
+    // If the cursor is sitting on whitespace before a tag on the same line,
+    // advance to the first non-whitespace column. Matches Vim's `it`/`at`
+    // which find the tag block whose opening tag starts at or after the
+    // cursor on the cursor's line, not just tags strictly enclosing the
+    // cursor offset.
+    const _curLine = lines[this.cursor.row] || '';
+    let _advCol = this.cursor.col;
+    while (_advCol < _curLine.length && (_curLine[_advCol] === ' ' || _curLine[_advCol] === '\t')) _advCol++;
+    if (_advCol > this.cursor.col && _advCol < _curLine.length) {
+      cursorOffset = this._offsetFromPos(this.cursor.row, _advCol);
+    }
 
     // Search backward from cursor for an opening tag that encloses the cursor
     let searchFrom = cursorOffset;
