@@ -496,3 +496,89 @@ When a lesson appears in multiple topics (e.g. lesson 21 lives both in
 `editing.word-motions` and in `appendix.keyboard-walk`'s `w` entry), only
 the *primary* topic embeds the video; the appendix entry uses a `crossref`
 to the primary topic.
+
+
+---
+
+## Outline Part ↔ Video Curriculum Part — Cross-Reference
+
+This outline's Parts use the same labels ("Part N") as
+`curriculum/Curriculum.md`, but the two schemes mean different things.
+This outline is organised by **conceptual topic** (Search, Marks,
+Registers, Macros) — how a reader looks something up. The video
+curriculum is organised by **how a viewer walks through the keyboard
+chronologically** — how production schedules and the YouTube playlist
+scan. The lesson IDs (`1`–`895`, plus sub-lettered entries like
+`880aa`) are stable across both.
+
+If you're switching between this file and Curriculum.md, this section
+is the canonical translation table. The same table appears in
+`curriculum/Curriculum.md` as Appendix H — keep them in sync if you
+edit either.
+
+> **No code consumes the Part numbers in either Markdown file.** Every
+> renderer, the video index, the website router, and the book layout
+> read from `content/parts/<NN-slug>/` directory names (which match
+> *this* outline's numbering), from the `part` slug inside each topic
+> JSON, and from individual lesson IDs in `curriculum/shorts/`.
+
+### Video Part → Book Part
+
+How each section of the video curriculum is distributed across this
+outline.
+
+| Video Part | Title (Curriculum.md) | Lessons | Maps to Book Part(s) |
+|-----------:|-----------------------|---------|----------------------|
+| 1  | Survival                         | 1–15    | **01** Foundations (1, 3, 15); **02** Survival (2, 4–14) |
+| 2  | Basic Editing                    | 16–45   | **03** Basic Editing |
+| 3  | Becoming Productive              | 46–90   | **04** Search/Find (46–57); **05** Counts (58–63); **18** Visual Mode (64–70); **06** Dot Command (71–73); **07** Text Objects (74–84); **01**+**07** (85 grammar); **09** Scrolling (86–90) |
+| 4  | Intermediate Power               | 91–135  | **08** Wider Motions (91–96); **10** Marks/Jumps (97–104); **03** Basic Editing (105–106 replace mode); **11** Transform (107–118); **12** Registers (119–125); **13** Macros (126–130); **14** Windows (131–135) |
+| 5  | Walking the Keyboard: Lowercase  | 136–161 | **99** Appendix: Keyboard Walk |
+| 6  | Walking the Keyboard: Uppercase  | 162–187 | **99** Appendix: Keyboard Walk |
+| 7  | Walking the Keyboard: Symbols    | 188–218 | **99** Appendix: Keyboard Walk |
+| 8  | Walking the Keyboard: Ctrl Keys  | 219–248 | **99** Appendix; **09** Scrolling (Ctrl-D/U/F/B/E/Y); **16** Insert Mode (insert-mode Ctrl-keys) |
+| 9  | The `g` Commands                 | 249–285 | **15** Prefix Families overview; per-command also in **04**/**09**/**10**/**11**/**16**/**18** |
+| 10 | The `z` Commands                 | 286–316 | **15** Prefix Families; **09** Scrolling (`zz`/`zt`/`zb`); **21** Advanced (folding, spell) |
+| 11 | Bracket Commands `[` and `]`     | 317–333 | **15** Prefix Families; **08** Wider Motions |
+| 12 | Window Commands `Ctrl-W`         | 334–365 | **14** Windows; **15** Prefix Families |
+| 13 | Insert Mode Keys                 | 366–395 | **16** Insert-Mode Power |
+| 14 | Ex Commands Essentials           | 396–430 | **17** Ex Commands |
+| 15 | Visual Mode in Depth             | 431–445 | **18** Visual Mode in Depth |
+| 16 | Command-Line Mode Tips           | 446–460 | **19** Command-Line Power |
+| 17 | Practical Patterns & Tips        | 461–480 | **20** Patterns and Recipes |
+| 18 | Advanced Topics                  | 481–499 | **21** Advanced Topics; **02** Survival (481 undo-tree) |
+| 19 | Tmux & Shell                     | 501–544 | **22** Tmux |
+| 20 | Advanced                         | 600–601 | **21** Advanced Topics |
+| 21 | Surround                         | 700–742 | **07** Text Objects (`07-text-objects/08-surround.json`); **99** Appendix D |
+| 22 | Ex Commands (deep dive)          | 800–895 | **17** Ex Commands (most); **14** Windows (`880b`–`880l`); **10**/**11**/**12** cross-refs; **20** Patterns/Recipes (`881`–`895`) |
+
+### Book Part → Video Part
+
+The mirror direction. Each row tells you which sections of the video
+curriculum authored the videos this Part of the book embeds.
+
+| Book Part | Title (this file) | Maps to Video Part(s) |
+|----------:|-------------------|-----------------------|
+| 01 | Foundations                 | **1** subset (lessons 1, 3, 15); **3** (lesson 85) |
+| 02 | Survival                    | **1** main; **18** (lesson 481 undo-tree) |
+| 03 | Basic Editing               | **2**; **4** (lessons 105–106 replace mode) |
+| 04 | Search and Find             | **3** (lessons 46–57); subset of **9** (`gd`/`gf`) |
+| 05 | Counts and Visual Mode      | **3** (lessons 58–63 counts; 64–70 visual basics) |
+| 06 | The Dot Command             | **3** (lessons 71–73) |
+| 07 | Text Objects                | **3** (lessons 74–85); **21** Surround (700–742) |
+| 08 | Wider Motions               | **4** (lessons 91–96); **11** bracket commands |
+| 09 | Scrolling and Screen Position | **3** (86–90); subset of **8** (Ctrl-D/U/F/B/E/Y); subset of **10** (`zz`/`zt`/`zb`) |
+| 10 | Marks and Jump List         | **4** (97–104); subset of **9** (`g;`/`g,`) |
+| 11 | Transform                   | **4** (107–118); subset of **9** (`gq`, `g~`/`gU`/`gu`) |
+| 12 | Registers (deep dive)       | **4** (119–125); **18** (special registers) |
+| 13 | Macros                      | **4** (126–130) |
+| 14 | Windows, Buffers, Tabs      | **4** (131–135); **12** Ctrl-W; **22** (`880b`–`880l`) |
+| 15 | Prefix Families             | Overview of **9**, **10**, **11**, **12** |
+| 16 | Insert-Mode Power           | **13** (366–395); subset of **8** (insert-mode Ctrl-keys) |
+| 17 | Ex Commands                 | **14** (396–430); **22** deep dive (800–895) |
+| 18 | Visual Mode in Depth        | **15** (431–445); **3** (lessons 64–70) |
+| 19 | Command-Line Power          | **16** (446–460) |
+| 20 | Patterns and Recipes        | **17** (461–480); recipes from **22** (881–895) |
+| 21 | Advanced Topics             | **18** (481–499); **20** (600–601) |
+| 22 | Tmux                        | **19** (501–544) |
+| 99 | Appendices                  | **5**, **6**, **7**, **8** (Keyboard Walk, 136–248); **21** (Surround, mirrored as Appendix D) |

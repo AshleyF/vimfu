@@ -1655,3 +1655,127 @@ These are new entries in sections that don't have shorts yet. They'll be generat
 - **Part 15** (442a, 444a): visual `p` replace, block `$` extend to EOL
 - **Part 22** (879a–879f): wrap, list, splitbelow, splitright, spell, fileformat
 - **Part 22** (880a–880ab): filter, buffers/tabs, splits, additional file cmds, substitution details
+
+
+---
+
+## Appendix H — Cross-Reference: Video Part ↔ Book Part
+
+The Parts in this file (the **video curriculum**) and the Parts in
+`content/Outline.md` (the **book / website outline**) use the same labels
+("Part N") but mean different things. This is intentional — the video
+curriculum is organized by **how a viewer walks through the keyboard
+chronologically**, while the book/site is organized by **conceptual
+topic** for reference reading. The lesson IDs (`1`–`895`, plus
+sub-lettered entries like `880aa`) are stable across both.
+
+If you're switching between Curriculum.md and Outline.md (or wondering
+why "Part 22" means *Ex Commands* here but *Tmux* in the outline), this
+appendix is the canonical translation table.
+
+> **No code consumes the Part numbers in this file.** Every renderer,
+> the video index, the website router, and the book layout read from
+> `content/parts/<NN-slug>/`, from the `part` field inside each topic
+> JSON (slug-based, not numbered), and from individual lesson IDs in
+> `curriculum/shorts/`. Renumbering or relabeling Parts in either
+> Markdown doc has no effect on the published site or the book.
+
+### H.1 Video Part → Book Part
+
+How each section of *this* curriculum file is distributed across the
+book/site outline.
+
+| Video Part | Title | Lessons | Maps to Book Part(s) |
+|-----------:|-------|---------|----------------------|
+| 1  | Survival                         | 1–15    | **01** Foundations (1, 3, 15); **02** Survival (2, 4–14) |
+| 2  | Basic Editing                    | 16–45   | **03** Basic Editing |
+| 3  | Becoming Productive              | 46–90   | **04** Search/Find (46–57); **05** Counts (58–63); **18** Visual Mode (64–70); **06** Dot Command (71–73); **07** Text Objects (74–84); **01** Foundations + **07** (85 grammar); **09** Scrolling (86–90) |
+| 4  | Intermediate Power               | 91–135  | **08** Wider Motions (91–96); **10** Marks/Jumps (97–104); **03** Basic Editing (105–106 replace mode); **11** Transform (107–118); **12** Registers (119–125); **13** Macros (126–130); **14** Windows (131–135) |
+| 5  | Walking the Keyboard: Lowercase  | 136–161 | **99** Appendix: Keyboard Walk |
+| 6  | Walking the Keyboard: Uppercase  | 162–187 | **99** Appendix: Keyboard Walk |
+| 7  | Walking the Keyboard: Symbols    | 188–218 | **99** Appendix: Keyboard Walk |
+| 8  | Walking the Keyboard: Ctrl Keys  | 219–248 | **99** Appendix: Keyboard Walk (primary); **09** Scrolling (Ctrl-D/U/F/B/E/Y); **16** Insert Mode (insert-mode Ctrl-keys) |
+| 9  | The `g` Commands                 | 249–285 | **15** Prefix Families (overview); per-command also in **04**/**09**/**10**/**11**/**16**/**18** |
+| 10 | The `z` Commands                 | 286–316 | **15** Prefix Families (overview); **09** Scrolling (`zz`/`zt`/`zb`); **21** Advanced (folding, spell) |
+| 11 | Bracket Commands `[` and `]`     | 317–333 | **15** Prefix Families; **08** Wider Motions |
+| 12 | Window Commands `Ctrl-W`         | 334–365 | **14** Windows; **15** Prefix Families |
+| 13 | Insert Mode Keys                 | 366–395 | **16** Insert-Mode Power |
+| 14 | Ex Commands Essentials           | 396–430 | **17** Ex Commands |
+| 15 | Visual Mode in Depth             | 431–445 | **18** Visual Mode in Depth |
+| 16 | Command-Line Mode Tips           | 446–460 | **19** Command-Line Power |
+| 17 | Practical Patterns & Tips        | 461–480 | **20** Patterns and Recipes |
+| 18 | Advanced Topics                  | 481–499 | **21** Advanced Topics (most); **02** Survival (481 undo-tree) |
+| 19 | Tmux & Shell                     | 501–544 | **22** Tmux |
+| 20 | Advanced                         | 600–601 | **21** Advanced Topics |
+| 21 | Surround                         | 700–742 | **07** Text Objects (`07-text-objects/08-surround.json`); **99** Appendix D — Surround Plugin |
+| 22 | Ex Commands (deep dive)          | 800–895 | **17** Ex Commands (most); **14** Windows (`880b`–`880l`); **10**/**11**/**12** cross-references for `:marks`/`:jumps`/`:changes`/`:reg`; **20** Patterns/Recipes (`881`–`895`) |
+
+### H.2 Book Part → Video Part
+
+The mirror direction. Each row tells you which sections of *this*
+curriculum file authored the videos you'll see embedded in the book/site.
+
+| Book Part | Title (from Outline.md) | Maps to Video Part(s) |
+|----------:|-------------------------|-----------------------|
+| 01 | Foundations                 | **1** subset (lessons 1, 3, 15); **3** (lesson 85 universal grammar) |
+| 02 | Survival                    | **1** main; **18** (lesson 481 undo-tree) |
+| 03 | Basic Editing               | **2**; **4** (lessons 105–106 replace mode) |
+| 04 | Search and Find             | **3** (lessons 46–57); subset of **9** (`gd`/`gf`) |
+| 05 | Counts and Visual Mode      | **3** (lessons 58–63 counts; 64–70 visual basics) |
+| 06 | The Dot Command             | **3** (lessons 71–73) |
+| 07 | Text Objects                | **3** (lessons 74–85); **21** Surround (700–742) |
+| 08 | Wider Motions               | **4** (lessons 91–96); **11** bracket commands (317–333) |
+| 09 | Scrolling and Screen Position | **3** (86–90); subset of **8** (Ctrl-D/U/F/B/E/Y); subset of **10** (`zz`/`zt`/`zb`) |
+| 10 | Marks and Jump List         | **4** (97–104); subset of **9** (`g;`/`g,` changelist) |
+| 11 | Transform                   | **4** (107–118); subset of **9** (`gq`, `g~`/`gU`/`gu`) |
+| 12 | Registers (deep dive)       | **4** (119–125); **18** (special registers) |
+| 13 | Macros                      | **4** (126–130) |
+| 14 | Windows, Buffers, Tabs      | **4** (131–135); **12** Ctrl-W (334–365); **22** (`880b`–`880l` ex commands) |
+| 15 | Prefix Families             | Overview of **9**, **10**, **11**, **12** (the four keyboard-walk prefix sections) |
+| 16 | Insert-Mode Power           | **13** (366–395); subset of **8** (insert-mode Ctrl-keys) |
+| 17 | Ex Commands                 | **14** (396–430); **22** deep dive (800–895) |
+| 18 | Visual Mode in Depth        | **15** (431–445); **3** (lessons 64–70 visual basics) |
+| 19 | Command-Line Power          | **16** (446–460) |
+| 20 | Patterns and Recipes        | **17** (461–480); recipes from **22** (881–895) |
+| 21 | Advanced Topics             | **18** (481–499); **20** (600–601) |
+| 22 | Tmux                        | **19** (501–544) |
+| 99 | Appendices                  | **5**, **6**, **7**, **8** (Keyboard Walk, lessons 136–248); **21** (Surround, 700–742, mirrored as Appendix D) |
+
+### H.3 Why two schemes?
+
+The video curriculum is the **production pipeline**: each video is a
+sub-60-second short, generated in the order a learner would naturally
+encounter the keys ("walk the keyboard"). Numbering Parts by *prefix
+key* (`g`, `z`, `[`/`]`, `Ctrl-W`) makes the production schedule and
+the YouTube playlist scan well.
+
+The book/site outline is the **finished reference**: organized by
+*topic* (Search, Marks, Registers, Macros), the way a reader looks
+something up. Numbering Parts by topic makes the book's table of
+contents scan well.
+
+Splitting them lets each form be optimized for its job. The translation
+table above is the bridge — author it once here, never have to think
+about it again at the code level.
+
+### H.4 What the renderers actually use
+
+For the record (and to defuse any "but won't this break the build?"
+worry when someone proposes editing this file):
+
+* The HTML/Markdown/InDesign renderers (`content/render_*.py`) read
+  `content/parts/<NN-slug>/*.json`. The `NN` prefix here is the **Book
+  Part number** (Outline.md scheme). The `<slug>` matches the topic's
+  `part` field.
+* The video index (`content/lib/videos.py`) reads
+  `curriculum/shorts/NNNN[a-z]*_*.json` filenames. No Part numbers
+  anywhere in its model.
+* The book chapter files (`book/content/chNN_*.json`) match the **Book
+  Part number** (Outline.md scheme).
+* URLs and cross-references between topics use **topic slugs** (e.g.
+  `ex.substitute`, `windows.buffers`), never Part numbers.
+
+So: editing `Curriculum.md` headings does nothing to the build. Editing
+`Outline.md` headings does nothing to the build. Renaming the
+`content/parts/NN-slug/` directories *would* break the build — those
+are the canonical Part identifiers as far as code is concerned.
