@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>vt-term — standalone VT/xterm emulator</title>
+  <style>
+    :root {
+      --bg: #1b1d22;
+      --panel: #24272e;
+      --fg: #d4d4d4;
+      --accent: #7aa2f7;
+      --on: #b3f6c0;
+      --off: #aaa;
+      --pending: #fce094;
+      --pane-border: #3a3d44;
+    }
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background: var(--bg); color: var(--fg);
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+    body { display: flex; flex-direction: column; }
+    header {
+      padding: 8px 14px; background: var(--panel);
+      display: flex; gap: 14px; align-items: center;
+      border-bottom: 1px solid #000;
+    }
+    header h1 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 600; letter-spacing: 0.5px; }
+    header .spacer { flex: 1; }
+    header .status { font-size: 12px; padding: 2px 8px; border-radius: 3px; background: #000; }
+    header .status.on { color: var(--on); }
+    header .status.off { color: var(--off); }
+    header .status.pending { color: var(--pending); }
+    header #size-info {
+      font: 11px ui-monospace, Consolas, monospace;
+      color: var(--off);
+      padding: 2px 8px; border-radius: 3px; background: #000;
+    }
+    input[type=text] { background: #000; color: var(--fg); border: 1px solid #333; padding: 3px 6px; border-radius: 3px; font: 12px ui-monospace, Consolas, monospace; }
+    button { background: #333; color: var(--fg); border: 1px solid #555; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; }
+    button:hover { background: #444; }
+
+    .layout { flex: 1; display: flex; min-height: 0; }
+    aside {
+      width: 220px; background: var(--panel); padding: 12px; overflow: auto;
+      border-right: 1px solid #000;
+    }
+    aside h2 { margin: 12px 0 6px; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+    aside button { width: 100%; margin-bottom: 4px; text-align: left; }
+    aside .zoom-row { display: flex; gap: 4px; margin-bottom: 4px; }
+    aside .zoom-row button { flex: 1; text-align: center; }
+
+    /* Main pane: flex-center the canvas so any sub-cell slack is split
+       on each side, and the actual terminal area is visually obvious. */
+    main {
+      flex: 1; padding: 8px; overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Outline the actual canvas so the active terminal area is
+       visually distinct from the surrounding pane padding. */
+    canvas {
+      background: #000;
+      outline: 1px solid var(--pane-border);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    }
+    canvas:focus { outline: 1px solid var(--accent); }
+    canvas.bell { box-shadow: 0 0 0 3px #f55, 0 4px 24px rgba(0,0,0,0.5); transition: box-shadow 0.05s; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>vt-term</h1>
+    <span style="opacity:0.6;font-size:12px">standalone VT/xterm emulator</span>
+    <span id="size-info">—</span>
+    <div class="spacer"></div>
+    <input type="text" id="ws-url" value="ws://127.0.0.1:7681" size="22">
+    <button id="connect">Connect</button>
+    <span id="status" class="status off">disconnected</span>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <h2>View</h2>
+      <div class="zoom-row">
+        <button id="zoom-out" title="Ctrl-−">A−</button>
+        <button id="zoom-reset" title="Ctrl-0">100%</button>
+        <button id="zoom-in" title="Ctrl-+">A+</button>
+      </div>
+
+      <h2>Smoke tests</h2>
+      <button id="demo-reset">Reset terminal</button>
+      <button id="demo-hello">Hello, terminal!</button>
+      <button id="demo-colors">Color palette</button>
+      <button id="demo-sgr">Bold / italic / underline / reverse</button>
+      <button id="demo-cursor">Cycle cursor style</button>
+      <button id="demo-alt">Enter alt screen</button>
+      <button id="demo-leave-alt">Leave alt screen</button>
+      <button id="demo-boxes">DEC line drawing</button>
+      <button id="demo-wrap">Long-line wrap</button>
+      <button id="demo-scroll-region">Scroll region</button>
+
+      <h2>Sixel graphics</h2>
+      <button id="demo-sixel-flag">Sixel: tricolor flag</button>
+      <button id="demo-sixel-gradient">Sixel: color stripes</button>
+      <button id="demo-sixel-pattern">Sixel: shaded sphere</button>
+      <button id="demo-sixel-clear">Clear sixel images</button>
+
+      <h2>Real-world sixel files</h2>
+      <button id="demo-sixel-snake">Snake (600×450 photo)</button>
+      <button id="demo-sixel-me">Me (160×160)</button>
+      <button id="demo-sixel-3color">3-color test pattern</button>
+
+      <h2>Tips</h2>
+      <p style="font-size:11px;line-height:1.4;opacity:0.7">
+        Click the terminal to focus, then type.  Without a shell
+        connected, keystrokes echo locally (CR → CRLF).<br><br>
+        Use <b>A−/A+</b> or <b>Ctrl-−/Ctrl-+</b> to zoom; the grid
+        auto-fits the pane.  Resize the window and the rows/cols
+        update.<br><br>
+        To connect to a real shell, run<br>
+        <code style="font-size:11px">python bridge/proxy.py</code><br>
+        then click <b>Connect</b>.
+      </p>
+    </aside>
+    <main>
+      <canvas id="term"></canvas>
+    </main>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

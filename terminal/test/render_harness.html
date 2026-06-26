@@ -1,0 +1,150 @@
+<!doctype html>
+<!--
+  Test harness for canvas-rendering tests.  Loads the same renderer the
+  demo uses, but exposes a small JS API on `window.vt` so Playwright
+  can drive it:
+
+      window.vt.reset(rows, cols)
+      window.vt.write(bytes)
+      window.vt.cellColor(row, col)       → 'rgba(r,g,b,a)' avg
+      window.vt.pixelAt(x, y)             → 'rgba(...)' single pixel
+      window.vt.cellRect(row, col)        → {x,y,w,h}
+      window.vt.dataUrl()                 → full canvas PNG data URL
+
+  Coordinates are in CSS pixels (the harness uses devicePixelRatio = 1
+  so they map 1:1 to canvas pixels).
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>vt-term render harness</title>
+  <style>
+    body { margin: 0; padding: 0; background: #000; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="term"></canvas>
+  <script type="module">
+    import { Terminal } from '../src/terminal.js';
+    import { Renderer, CURSOR_STYLE } from '../src/renderer.js';
+    import { SixelDecoder } from '../src/sixel.js';
+
+    // Force DPR=1 so test coords are reliable across machines.
+    Object.defineProperty(window, 'devicePixelRatio', { get: () => 1 });
+
+    let term, ren;
+    const canvas = document.getElementById('term');
+
+    function reset(rows = 6, cols = 20, fontSize = 16) {
+      term = new Terminal({ rows, cols, scrollback: 100 });
+      ren  = new Renderer(canvas, { fontSize, padding: 2 });
+      term.onSixel = (payload) => {
+        const dec = new SixelDecoder();
+        dec.decode(payload);
+        const bmp = dec.toCanvas();
+        ren.sixels.push({
+          row: term.screen.cy,
+          col: term.screen.cx,
+          width: bmp.width,
+          height: bmp.height,
+          bitmap: bmp,
+        });
+        // Match xterm sixel-scrolling default: advance cursor past
+        // the image so subsequent text doesn't land on it.
+        const rowsCovered = Math.ceil(bmp.height / ren.cellH);
+        term.screen.cx = 0;
+        for (let i = 0; i < rowsCovered; i++) term.screen.lf();
+      };
+      // Always-on steady cursor so blink state doesn't make tests flaky.
+      ren.cursorStyle = CURSOR_STYLE.BLOCK_STEADY;
+      // Hide the cursor by default — tests that care about the cursor
+      // can re-show it.  Otherwise the cursor block overlays whatever
+      // we just printed and confuses pixel inspection.
+      term.screen.cursorVisible = false;
+      ren.draw(term.toFrame());
+    }
+
+    function showCursor() {
+      term.screen.cursorVisible = true;
+      ren.draw(term.toFrame());
+    }
+
+    function write(bytes) {
+      term.write(bytes);
+      ren.draw(term.toFrame());
+    }
+
+    function cellRect(row, col) {
+      return {
+        x: ren.padding + col * ren.cellW,
+        y: ren.padding + row * ren.cellH,
+        w: ren.cellW,
+        h: ren.cellH,
+      };
+    }
+
+    function pixelAt(x, y) {
+      const ctx = canvas.getContext('2d');
+      const data = ctx.getImageData(x, y, 1, 1).data;
+      return [data[0], data[1], data[2], data[3]];
+    }
+
+    function cellAverage(row, col) {
+      const ctx = canvas.getContext('2d');
+      const r = cellRect(row, col);
+      const img = ctx.getImageData(r.x, r.y, r.w, r.h).data;
+      let R = 0, G = 0, B = 0, A = 0;
+      const n = img.length / 4;
+      for (let i = 0; i < img.length; i += 4) {
+        R += img[i]; G += img[i+1]; B += img[i+2]; A += img[i+3];
+      }
+      return [Math.round(R/n), Math.round(G/n), Math.round(B/n), Math.round(A/n)];
+    }
+
+    /** Count how many pixels in the cell are "inked" (non-bg). */
+    function cellInkRatio(row, col, bg = [0,0,0]) {
+      const ctx = canvas.getContext('2d');
+      const r = cellRect(row, col);
+      const img = ctx.getImageData(r.x, r.y, r.w, r.h).data;
+      let lit = 0;
+      const n = img.length / 4;
+      for (let i = 0; i < img.length; i += 4) {
+        const dr = img[i] - bg[0], dg = img[i+1] - bg[1], db = img[i+2] - bg[2];
+        if (dr*dr + dg*dg + db*db > 1500) lit++;
+      }
+      return lit / n;
+    }
+
+    function dataUrl() { return canvas.toDataURL('image/png'); }
+
+    function geometry() {
+      return {
+        cellW: ren.cellW,
+        cellH: ren.cellH,
+        padding: ren.padding,
+        canvasW: canvas.width,
+        canvasH: canvas.height,
+      };
+    }
+
+    function frameDigest() {
+      // A quick text-only fingerprint (for engine-vs-render parity).
+      const f = term.toFrame();
+      return f.lines.map(l => l.text).join('\n');
+    }
+
+    window.vt = {
+      reset, write, showCursor, cellRect, pixelAt, cellAverage, cellInkRatio,
+      dataUrl, geometry, frameDigest,
+      get term()   { return term; },
+      get ren()    { return ren; },
+      CURSOR_STYLE,
+    };
+
+    // Default boot so a page reload "just works" for interactive poking.
+    reset();
+    window.dispatchEvent(new Event('vt-ready'));
+  </script>
+</body>
+</html>
