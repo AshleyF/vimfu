@@ -47,6 +47,7 @@ CASES = {
         "description": 'Save and Quit',
         "keys": 'iprint("hello")\x1b:wq\rA\rprint("world")\x1b:x\roprint("done")\x1bZZ',
         "initial": '',
+        "skip": 'scenario continues sending keys after Neovim exits; requires a shell/session oracle',
     },
     '0010_quit_without_saving': {
         "description": 'Quit Without Saving',

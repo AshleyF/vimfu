@@ -46,15 +46,28 @@ CASES_DIR = _here / "cases"
 
 
 def discover_suites() -> dict[str, dict]:
-    """Import all test_*.py modules from cases/ and return {suite_name: {cases, nvim_cmd}}."""
+    """Load every Neovim case suite, including generated curriculum suites.
+
+    ``test_tmux_screen.py`` uses a different step-based schema and belongs to
+    ``tmux_ground_truth_real.py``.  Keeping that suite out of this discovery
+    path prevents a Neovim batch capture from overwriting real tmux truth.
+    """
     suites = {}
-    for py_file in sorted(CASES_DIR.glob("test_*.py")):
+    for py_file in sorted(CASES_DIR.rglob("test_*.py")):
+        if py_file.name == "test_tmux_screen.py":
+            continue
         module_name = py_file.stem  # e.g. "test_motions_basic"
         suite_name = module_name.removeprefix("test_")  # e.g. "motions_basic"
         spec = importlib.util.spec_from_file_location(module_name, py_file)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         if hasattr(mod, "CASES") and isinstance(mod.CASES, dict):
+            invalid = [name for name, case in mod.CASES.items() if "keys" not in case]
+            if invalid:
+                raise ValueError(
+                    f"{py_file} contains non-Neovim cases without 'keys': "
+                    f"{', '.join(invalid[:5])}"
+                )
             nvim_cmd = getattr(mod, "NVIM_CMD", None)
             suites[suite_name] = {"cases": mod.CASES, "nvim_cmd": nvim_cmd}
         else:
@@ -76,16 +89,22 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
 
     # Ensure nvim enables termguicolors (needed for true-color capture via pyte)
     import os
+    os.environ['TERM'] = 'xterm-256color'
     os.environ['COLORTERM'] = 'truecolor'
 
     # Use custom nvim command if provided, otherwise plain nvim with user's config
     cmd = nvim_cmd or 'nvim'
 
-    # Create a wrapper vimrc with a null clipboard provider
-    # This prevents live system clipboard content and errors in :di/:reg output
-    # The null provider makes "* and "+ appear as empty characterwise registers
+    # The ShellPilot configuration is the recording/oracle configuration: it
+    # defines the Monokai palette, cursor, status line, and other visible UI
+    # behavior the simulator is intended to reproduce.
+    pinned_init = (_root / "shellpilot" / "nvim" / "init.vim").resolve()
+
+    # The wrapper adds capture isolation: no synchronized terminal updates
+    # (which pyte cannot model reliably) and a deterministic null clipboard.
     wrapper_vimrc = Path(tempfile.mktemp(suffix='.lua', dir='.'))
     wrapper_vimrc.write_text(
+        f"vim.cmd('source ' .. vim.fn.fnameescape({str(pinned_init)!r}))\n"
         "-- Null clipboard provider: no system clipboard, no warnings\n"
         "vim.g.clipboard = {\n"
         "  name = 'null',\n"
@@ -99,9 +118,7 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
         "  },\n"
         "  cache_enabled = 0,\n"
         "}\n"
-        "local init_path = vim.fn.stdpath('config') .. '/init.lua'\n"
-        "local f = io.open(init_path, 'r')\n"
-        "if f then f:close(); dofile(init_path) end\n"
+        "vim.opt.termsync = false\n"
     )
     shell = ShellPilot(
         shell=f'{cmd} -u {wrapper_vimrc} -n -i NONE {tmp.name}',
@@ -299,6 +316,8 @@ def main():
     print(f"\n{'='*60}")
     print(f"Done: {completed} cases, {errors} errors")
     print(f"{'='*60}")
+    if errors:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

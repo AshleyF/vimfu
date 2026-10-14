@@ -20,6 +20,7 @@ Usage:
 
 from __future__ import annotations
 
+import base64
 import importlib.util
 import json
 import sys
@@ -118,7 +119,15 @@ def run_case(name: str, case: dict) -> dict | None:
 
         # Execute steps
         for step in steps:
-            if step[0] == "__inject_write_files__":
+            if step[0] == "__inject_nvim_init__":
+                init_bytes = (_root / "shellpilot" / "nvim" / "init.vim").read_bytes()
+                encoded = base64.b64encode(init_bytes).decode("ascii")
+                shell.send_line(
+                    f"printf '%s' '{encoded}' | base64 -d > /tmp/vimfu_nvim_init.vim"
+                )
+                time.sleep(0.3)
+                continue
+            elif step[0] == "__inject_write_files__":
                 # Create files INSIDE the tmux pane (after rm -rf cleaned the dir)
                 for fname, content in write_files.items():
                     escaped = content.replace("'", "'\\''")
@@ -127,6 +136,14 @@ def run_case(name: str, case: dict) -> dict | None:
                 if write_files:
                     shell.send_line("clear")
                     time.sleep(0.3)
+                # Discard startup/login-shell residue that predates tmux, then
+                # ask tmux to redraw its current pane into a clean emulator.
+                # A terminal clear alone does not reliably erase pyte's stale
+                # rows when tmux switches screen buffers on macOS.
+                for row in range(ROWS - 1):
+                    shell.screen.buffer[row].clear()
+                shell.send_keys("\x0c")  # Ctrl-L: redraw active pane
+                time.sleep(0.3)
                 continue
             elif step[0] == "line":
                 shell.send_line(step[1])
@@ -269,6 +286,8 @@ def main():
         final = json.loads(out_file.read_text("utf-8")) if out_file.exists() else {}
         print(f"Ground truth file has {len(final)} cases")
         print(f"{'='*60}")
+        if failed:
+            sys.exit(1)
         return
 
     # ── Single case + merge mode ──
@@ -339,6 +358,8 @@ def main():
         print(f"Wrote {len(results)} cases → {out_file.name}")
         print(f"Errors: {errors}")
         print(f"{'='*60}")
+    if errors:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

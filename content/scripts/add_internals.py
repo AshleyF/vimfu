@@ -96,7 +96,7 @@ CALLOUTS = [
      "Count parsing is a tiny lexer with context",
      "Counts aren't a separate argument — they're a prefix accumulated by a small state machine. The first digit must be `1-9` (because `0` is itself a motion to column zero); subsequent digits can include `0`. The accumulated count multiplies with any operator-applied count, so {key:2}{key:d}{key:3}{key:w} deletes six words. Internally it's `count = command_count * motion_count`, both defaulting to one."),
 
-    ("parts/18-visual-modes/01-char-visual.json",
+    ("parts/05-counts/03-visual-mode.json",
      "Visual mode is anchor + endpoint",
      "Charwise visual mode stores two positions: the anchor (where you pressed {key:v}) and the current cursor. Motions move the cursor; the selection is always the inclusive range between the two. There's no selection object being copied around — the renderer paints whatever sits between anchor and cursor each frame. Operators consume the resolved range and exit back to normal mode."),
 

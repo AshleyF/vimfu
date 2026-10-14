@@ -57,7 +57,7 @@ from lib.redirects import (  # noqa: E402
     BOOK_SLUG, REPORT_BOOK_ISSUE_SLUG, SIM_TMUX_SLUG,
     errata_slug, part_videos_slug, redirect_url, sim_example_slug, video_slug,
 )
-from lib.parts import part_label as _part_label  # noqa: E402
+from lib.parts import part_label as _part_label, part_sort_key as _part_sort_key  # noqa: E402
 from lib.theses import thesis_for as _thesis_for  # noqa: E402
 from lib.site_config import (  # noqa: E402
     contact_email, current_edition, current_edition_label,
@@ -1440,16 +1440,11 @@ def render_block(b, *, index, examples) -> list[str]:
         # don't need a separate fallback path here. We deliberately drop
         # the inline caption: it's almost always the same words as the
         # video title, and the QR title already says "Watch: <title>".
-        if isinstance(lesson, int) or (isinstance(lesson, str) and str(lesson).strip().isdigit()):
-            qr_p, qr_url = _qr_for_slug(video_slug(int(lesson)))
-            out.append(
-                "\\qrcallout{" + latex_path(qr_p)
-                + "}{\\playicon}{" + title_tex + "}{" + tex_escape(qr_url) + "}"
-            )
-        else:
-            out.append("\\begin{videocallout}")
-            out.append(f"\\playicon\\iconsep {title_tex}")
-            out.append("\\end{videocallout}")
+        qr_p, qr_url = _qr_for_slug(video_slug(lesson))
+        out.append(
+            "\\qrcallout{" + latex_path(qr_p)
+            + "}{\\playicon}{" + title_tex + "}{" + tex_escape(qr_url) + "}"
+        )
 
     elif bt == "internals":
         raw_title = b.get("title", "Under the Hood")
@@ -1628,7 +1623,7 @@ def render_topic_body(t, index, examples, *, thesis: str | None = None) -> str:
             lesson_n = v.get("lesson")
             title = tex_escape(v.get("title") or f"Lesson {lesson_n}")
             if v.get("published") and lesson_n is not None:
-                qr_p, qr_url = _qr_for_slug(video_slug(int(lesson_n)))
+                qr_p, qr_url = _qr_for_slug(video_slug(lesson_n))
                 out.append(
                     "\\qrcallout{" + latex_path(qr_p)
                     + "}{\\playicon}{" + title + "}{" + tex_escape(qr_url) + "}"
@@ -2192,7 +2187,7 @@ def main() -> int:
     (out_dir / "preamble.tex").write_text(PREAMBLE, encoding="utf-8")
 
     book_parts: list[str] = []
-    for part_dir in sorted(parts_map.keys()):
+    for part_dir in sorted(parts_map.keys(), key=_part_sort_key):
         plist = [t for t in parts_map[part_dir] if _visible(t, AUDIENCE)]
         if not plist:
             continue
@@ -2430,4 +2425,3 @@ Layout:
 
 if __name__ == "__main__":
     sys.exit(main())
-

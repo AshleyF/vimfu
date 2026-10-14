@@ -5,10 +5,14 @@ A tkinter-based window that renders the terminal screen in real-time.
 Watch your automation happen at human-readable speed!
 """
 
+import os
 import random
+import queue
+import sys
 import threading
 import time
 import tkinter as tk
+from pathlib import Path
 from tkinter import font as tkfont
 from typing import Optional
 
@@ -169,6 +173,9 @@ class TerminalViewer:
         
         self._running = False
         self._ui_thread: Optional[threading.Thread] = None
+        self._ui_thread_id: Optional[int] = None
+        self._ui_ready = threading.Event()
+        self._ui_calls = queue.Queue()
         
         # Current key display state
         self._current_keys: list[str] = []
@@ -176,7 +183,7 @@ class TerminalViewer:
         self._key_fade_duration: float = 5.0  # seconds to show key
         
         # Display settings
-        self.font_family = "Consolas" if __import__('sys').platform == 'win32' else "Monaco"
+        self.font_family = "Consolas" if sys.platform == 'win32' else "Cascadia Mono"
         self.font_size = 14
         self.bg_color = "#000000"  # Pure black background
         self.fg_color = "#d4d4d4"  # Light text
@@ -381,20 +388,55 @@ class TerminalViewer:
         self._running = True
         self._ui_thread = threading.Thread(target=self._run_ui, daemon=True)
         self._ui_thread.start()
-        # Give UI time to initialize
-        time.sleep(0.2)
+        if not self._ui_ready.wait(timeout=10.0):
+            raise RuntimeError("ShellPilot viewer did not initialize")
+
+    def start_on_current_thread(self) -> None:
+        """Initialize the viewer on the current thread without blocking."""
+        self._running = True
+        self._initialize_ui()
+
+    def run_mainloop(self) -> None:
+        """Run the already-initialized viewer event loop."""
+        if not self.root:
+            raise RuntimeError("ShellPilot viewer is not initialized")
+        self.root.mainloop()
+
+    def call_on_ui(self, callback, wait: bool = True):
+        """Run a callback on the Tk owner thread."""
+        if threading.get_ident() == self._ui_thread_id:
+            return callback()
+
+        done = threading.Event()
+        result = {}
+        self._ui_calls.put((callback, done, result))
+        if not wait:
+            return None
+        if not done.wait(timeout=30.0):
+            raise RuntimeError("Timed out waiting for ShellPilot UI thread")
+        if "error" in result:
+            raise result["error"]
+        return result.get("value")
     
     def stop(self) -> None:
         """Stop the viewer."""
-        self._running = False
         if self.root:
-            try:
+            def stop_ui():
+                self._running = False
                 self.root.quit()
-            except:
-                pass
+
+            self.call_on_ui(stop_ui, wait=False)
+        else:
+            self._running = False
     
     def _run_ui(self) -> None:
         """Run the tkinter main loop."""
+        self._initialize_ui()
+        self.root.mainloop()
+
+    def _initialize_ui(self) -> None:
+        """Create all Tk objects on the current thread."""
+        self._ui_thread_id = threading.get_ident()
         self.root = tk.Tk()
         self.root.title(self.title)
         self.root.configure(bg=self.bg_color)
@@ -407,7 +449,18 @@ class TerminalViewer:
         # Target window size - configurable (default 1080x1080 for YouTube Shorts)
         target_width = self.target_width
         target_height = self.target_height
-        padding = 60  # Padding on each side
+        self._display_scale = 1.0
+        if sys.platform == "darwin":
+            max_width = max(640, self.root.winfo_screenwidth() - 80)
+            max_height = max(640, self.root.winfo_screenheight() - 160)
+            self._display_scale = min(
+                1.0,
+                max_width / target_width,
+                max_height / target_height,
+            )
+            target_width = round(target_width * self._display_scale)
+            target_height = round(target_height * self._display_scale)
+        padding = max(24, round(60 * self._display_scale))
         
         # Available space for terminal content
         available_width = target_width - (padding * 2)
@@ -480,7 +533,11 @@ class TerminalViewer:
         )
         
         # Key label with extra large font for visibility in videos (108pt)
-        key_font = tkfont.Font(family=self.font_family, size=108, weight='bold')
+        key_font = tkfont.Font(
+            family=self.font_family,
+            size=164 if sys.platform == 'darwin' else 108,
+            weight='bold',
+        )
         self.key_label = tk.Label(
             self.key_canvas,
             text="",
@@ -509,17 +566,25 @@ class TerminalViewer:
         
         # Handle window close
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
-        
-        self.root.mainloop()
+        self._ui_ready.set()
     
     def _refresh(self) -> None:
         """Refresh the display with current terminal contents."""
+        self._drain_ui_calls()
         if not self._running or not self.canvas:
             return
         
         try:
             # Clear canvas
             self.canvas.delete("all")
+            self.canvas.create_rectangle(
+                0,
+                0,
+                self.canvas.winfo_width(),
+                self.canvas.winfo_height(),
+                fill=self.bg_color,
+                outline="",
+            )
             
             # Get current screen buffer with colors
             buffer = self.shell.get_screen_buffer()
@@ -584,6 +649,164 @@ class TerminalViewer:
         # Schedule next refresh (60 FPS-ish)
         if self._running:
             self.root.after(16, self._refresh)
+
+    def _drain_ui_calls(self) -> None:
+        """Execute callbacks submitted by worker threads."""
+        while True:
+            try:
+                callback, done, result = self._ui_calls.get_nowait()
+            except queue.Empty:
+                return
+            try:
+                result["value"] = callback()
+            except BaseException as exc:
+                result["error"] = exc
+            finally:
+                done.set()
+
+    def capture_image(self):
+        """Render the Tk canvases directly to a Pillow image."""
+        return self.call_on_ui(self._capture_image_on_ui)
+
+    def _capture_image_on_ui(self):
+        """Capture the viewer without macOS Screen Recording permission."""
+        from io import BytesIO
+        from PIL import Image, ImageStat
+
+        if not self.root or not self.canvas:
+            return None
+
+        self.root.update_idletasks()
+        width = self.root.winfo_width()
+        height = self.root.winfo_height()
+
+        def render(canvas, image_width, image_height):
+            fontmap = f"shellpilot_fontmap_{id(canvas)}"
+            try:
+                canvas.tk.call("unset", fontmap)
+            except tk.TclError:
+                pass
+
+            for item in canvas.find_all():
+                if canvas.type(item) != "text":
+                    continue
+                font_name = canvas.itemcget(item, "font")
+                if not font_name:
+                    continue
+                font = tkfont.Font(font=font_name)
+                actual = font.actual()
+                postscript_prefix = {
+                    "Cascadia Mono": "CascadiaMono",
+                    "Ubuntu Mono": "UbuntuMono",
+                }.get(actual["family"])
+                if not postscript_prefix:
+                    continue
+                suffix = ""
+                if actual["weight"] == "bold":
+                    suffix += "Bold"
+                if actual["slant"] == "italic":
+                    suffix += "Italic"
+                postscript_name = f"{postscript_prefix}-{suffix or 'Regular'}"
+                canvas.tk.call(
+                    "set",
+                    f"{fontmap}({font_name})",
+                    (postscript_name, abs(int(actual["size"]))),
+                )
+
+            eps = canvas.postscript(
+                colormode="color",
+                fontmap=fontmap,
+                x=0,
+                y=0,
+                width=image_width,
+                height=image_height,
+                pagewidth=image_width,
+                pageheight=image_height,
+            )
+            try:
+                canvas.tk.call("unset", fontmap)
+            except tk.TclError:
+                pass
+
+            previous_font_path = os.environ.get("GS_FONTPATH")
+            os.environ["GS_FONTPATH"] = str(Path.home() / "Library" / "Fonts")
+            try:
+                # Ghostscript otherwise rasterizes the PostScript at its
+                # low default resolution.  Enlarging that bitmap later makes
+                # both terminal and overlay glyphs look jagged on macOS.
+                # Render the vector canvas at 4x and reduce it once with a
+                # high-quality filter so the recorded text is antialiased.
+                image = Image.open(BytesIO(eps.encode("utf-8")))
+                image.load(scale=4)
+                image = image.convert("RGB")
+            finally:
+                if previous_font_path is None:
+                    os.environ.pop("GS_FONTPATH", None)
+                else:
+                    os.environ["GS_FONTPATH"] = previous_font_path
+            if image.size != (image_width, image_height):
+                image = image.resize((image_width, image_height), Image.Resampling.LANCZOS)
+            # Ghostscript can leave a pale one-pixel PostScript page edge.
+            # It is outside the Tk canvas content, so normalize only the
+            # outermost pixels to the viewer background before compositing.
+            image.paste(self.bg_color, (0, 0, image_width, 1))
+            image.paste(
+                self.bg_color,
+                (0, image_height - 1, image_width, image_height),
+            )
+            image.paste(self.bg_color, (0, 0, 1, image_height))
+            image.paste(
+                self.bg_color,
+                (image_width - 1, 0, image_width, image_height),
+            )
+            return image
+
+        def capture_canvases():
+            image = render(self.canvas, width, height)
+            if self.key_canvas and self.key_canvas.winfo_ismapped():
+                overlay_width = self.key_canvas.winfo_width()
+                overlay_height = self.key_canvas.winfo_height()
+                overlay = render(self.key_canvas, overlay_width, overlay_height)
+                # Ghostscript can leave a pale one-pixel page edge around a
+                # separately rendered canvas. Replace only those outermost
+                # pixels with the surrounding background; do not extend the
+                # red fill or alter the overlay's visible dimensions.
+                overlay.paste(self.bg_color, (0, 0, overlay_width, 1))
+                overlay.paste(
+                    self.bg_color,
+                    (0, overlay_height - 1, overlay_width, overlay_height),
+                )
+                overlay.paste(self.bg_color, (0, 0, 1, overlay_height))
+                overlay.paste(
+                    self.bg_color,
+                    (overlay_width - 1, 0, overlay_width, overlay_height),
+                )
+                x = self.key_canvas.winfo_rootx() - self.root.winfo_rootx()
+                y = self.key_canvas.winfo_rooty() - self.root.winfo_rooty()
+                image.paste(overlay, (x, y))
+            return image
+
+        def terminal_score(candidate):
+            # Key/title overlays occupy the right side and can make an
+            # incomplete terminal raster look deceptively bright. Validate
+            # only the left terminal region where the text and status bars
+            # live.
+            terminal_region = candidate.crop(
+                (0, 0, round(candidate.width * 0.6), candidate.height)
+            )
+            return ImageStat.Stat(terminal_region.convert("L")).mean[0]
+
+        image = capture_canvases()
+        score = terminal_score(image)
+        previous_score = getattr(self, "_last_capture_score", None)
+        if previous_score is not None and score < previous_score * 0.9:
+            retry = capture_canvases()
+            retry_score = terminal_score(retry)
+            if retry_score > score:
+                image = retry
+                score = retry_score
+        self._last_capture_score = score
+        return image
     
     def _resolve_color(self, color: str, bold: bool, is_fg: bool) -> str:
         """Convert pyte color name to hex color."""
@@ -786,7 +1009,8 @@ class TerminalViewer:
             text_height = self._key_font.metrics()["linespace"]
             
             # Caption font (smaller)
-            caption_font = (self.font_family, 20)
+            caption_size = 26 if sys.platform == 'darwin' else 20
+            caption_font = (self.font_family, caption_size)
             
             # Calculate caption size if present
             caption_height = 0
@@ -794,7 +1018,7 @@ class TerminalViewer:
             if self._current_caption:
                 # Use a temporary font object to measure
                 import tkinter.font as tkfont
-                temp_font = tkfont.Font(family=self.font_family, size=20)
+                temp_font = tkfont.Font(family=self.font_family, size=caption_size)
                 caption_width = temp_font.measure(self._current_caption)
                 caption_height = temp_font.metrics()["linespace"] + 8  # Extra spacing
             
@@ -808,19 +1032,34 @@ class TerminalViewer:
             
             # Configure and show canvas at right edge, vertically centered
             self.key_canvas.config(width=canvas_width, height=canvas_height)
-            self.key_canvas.place(relx=1.0, rely=0.5, anchor='e', x=-60)
+            self.key_canvas.place(
+                relx=1.0,
+                rely=0.5,
+                anchor='e',
+                x=-60,
+            )
             
             # Clear and redraw
             self.key_canvas.delete("all")
+            self.key_canvas.create_rectangle(
+                0,
+                0,
+                canvas_width,
+                canvas_height,
+                fill=self.bg_color,
+                outline="",
+            )
             
-            # Draw semi-transparent red rounded rectangle
+            # Draw the red rounded rectangle without an edge stroke. A stroke
+            # centered on the canvas boundary is clipped by PostScript and can
+            # leave a pale one-pixel line along the top and right edges.
             self._draw_rounded_rect(
                 self.key_canvas,
                 0, 0, canvas_width, canvas_height,
                 radius,
-                fill=self.key_bg_color,  # Semi-transparent red
-                outline="#3a1010",  # Subtle darker border
-                width=1
+                fill=self.key_bg_color,
+                outline="",
+                width=0,
             )
             
             # Draw key text centered (or above center if caption)
@@ -1138,20 +1377,60 @@ class ScriptedDemo:
             
             # Start recording if enabled and auto-start is on
             if self.recorder and self.viewer.root and self.auto_start_recording:
-                self.recorder.start(self.viewer.root)
-                set_active_recorder(self.recorder)
+                self._start_video_recorder()
         
         # Initial delay for shell to start
         self.wait(1.0)
+
+    def run_with_main_thread_ui(self, callback) -> None:
+        """Run a demo worker while Tk owns the macOS main thread."""
+        self.shell.start()
+        self.log.shell = self.shell
+        self.viewer = TerminalViewer(
+            self.shell,
+            title=self.title,
+            borderless=self.borderless,
+            target_width=self.target_width,
+            target_height=self.target_height,
+        )
+        self.viewer.start_on_current_thread()
+
+        failure = []
+
+        def worker():
+            try:
+                self.wait(1.0)
+                callback()
+            except BaseException as exc:
+                failure.append(exc)
+            finally:
+                self.stop()
+
+        worker_thread = threading.Thread(target=worker, daemon=True)
+        worker_thread.start()
+        self.viewer.run_mainloop()
+        worker_thread.join()
+        if failure:
+            raise failure[0]
+
+    def _start_video_recorder(self) -> None:
+        """Start recording on the Tk owner thread."""
+        if not self.recorder or not self.viewer or not self.viewer.root:
+            return
+
+        def start():
+            self.recorder._viewer = self.viewer
+            self.recorder.start(self.viewer.root)
+
+        self.viewer.call_on_ui(start)
+        set_active_recorder(self.recorder)
     
     def start_recording(self) -> None:
         """Start video recording (call after setup steps)."""
         self.log.enable()
         if self.recorder and self.viewer and self.viewer.root:
             if not self.recorder._recording:  # Only start if not already recording
-                self.recorder._viewer = self.viewer  # For overlay-aware thumbnail capture
-                self.recorder.start(self.viewer.root)
-                set_active_recorder(self.recorder)
+                self._start_video_recorder()
         # Give the reader thread a moment to finish processing any
         # remaining output from setup commands before we start logging.
         time.sleep(0.3)

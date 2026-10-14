@@ -3,9 +3,9 @@
   "version": 1,
   "id": "survival.open-save-quit",
   "title": "Open, Save, Quit",
-  "subtitle": "Launch Neovim, write your work, and get out — three ways each",
+  "subtitle": "Start here: choose an editor, open a file, make a change, save it, and get out",
   "part": "survival",
-  "summary": "Open a file with `nvim`. Write with `:w`. Quit with `:q`. Combine with `:wq`, `:x`, or {key:Z}{key:Z}. Discard with `:q!` or {key:Z}{key:Q}.",
+  "summary": "Start from nothing. Install Neovim or enable Vim controls in your current editor, then open a file, type, move, select, delete, copy, save, and quit.",
   "keys": [
     "`:w`",
     "`:q`",
@@ -13,7 +13,19 @@
     "`:x`",
     "ZZ",
     "`:q!`",
-    "ZQ"
+    "ZQ",
+    "i",
+    "Esc",
+    "h",
+    "j",
+    "k",
+    "l",
+    "v",
+    "d",
+    "y",
+    "p",
+    "x",
+    "u"
   ],
   "lessons": [
     2,
@@ -36,7 +48,74 @@
     },
     {
       "type": "prose",
-      "text": "The single most-googled question about Vim is \"how do I exit?\" Let's get that out of the way first, then make it a real skill."
+      "text": "Start here. This section assumes that you have never opened Vim and do not know what its modes are. You do not need a configuration, a plugin manager, or a new terminal. By the end, you will be able to do enough ordinary editing to leave Vim controls turned on all day. You will be slow. That is fine. Speed comes later."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Choose where to use Vim"
+    },
+    {
+      "type": "prose",
+      "text": "The simplest standalone route is a terminal and **Neovim**, the modern editor used throughout this book. But learning Vim does not require abandoning the editor you already know. VS Code, Visual Studio, and JetBrains IDEs all have good Vim emulators. Start where you already work; the editing language travels with you."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Where you work",
+        "What to install or enable"
+      ],
+      "rows": [
+        [
+          "Linux, including Ubuntu under WSL",
+          "Try `vi --version` or `vim --version` first; one is commonly already installed. Otherwise install [Neovim](https://neovim.io/doc/install/) with your package manager."
+        ],
+        [
+          "macOS Terminal",
+          "Try `vi --version` first; macOS includes a `vi`-compatible editor. For modern Neovim, install [Homebrew](https://brew.sh/) and run `brew install neovim`."
+        ],
+        [
+          "Windows Terminal or PowerShell",
+          "Windows itself does not normally include Vim. Run `winget install Neovim.Neovim`, or install [WSL](https://learn.microsoft.com/windows/wsl/install) and use the Linux editor inside it."
+        ],
+        [
+          "Traditional Vim",
+          "Use the [Vim downloads page](https://www.vim.org/download.php). Vim is completely suitable for everything in this book."
+        ],
+        [
+          "VS Code",
+          "[VSCodeVim](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim) for easy setup; [VSCode Neovim](https://marketplace.visualstudio.com/items?itemName=asvetliakov.vscode-neovim) to use real Neovim as the editing engine"
+        ],
+        [
+          "Visual Studio",
+          "[VsVim](https://marketplace.visualstudio.com/items?itemName=JaredParMSFT.VsVim), a mature Vim emulator whose core is written in F#"
+        ],
+        [
+          "JetBrains IDEs",
+          "[IdeaVim](https://plugins.jetbrains.com/plugin/164-ideavim)"
+        ]
+      ]
+    },
+    {
+      "type": "tip",
+      "text": "Already productive in another editor? Keep it. Install its Vim extension and learn the keys in familiar surroundings. You can move to Neovim later — or never."
+    },
+    {
+      "type": "prose",
+      "text": "In VS Code, open the Extensions view, search for `VSCodeVim`, and select **Install**. In Visual Studio, open **Extensions → Manage Extensions** and search for `VsVim`. In a JetBrains IDE, open **Settings → Plugins**, search for `IdeaVim`, and select **Install**. Restart the editor if it asks. Then open any disposable text file and continue with \"Your first edit\" below."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "What may already be installed"
+    },
+    {
+      "type": "prose",
+      "text": "Do not install anything until you check. Run `nvim --version`, `vim --version`, and `vi --version`, in that order. If one prints a version banner, you already have an editor with which to begin. Full Linux installations and Linux distributions under WSL commonly include `vi` or Vim; minimal containers may not. macOS includes a `vi`-compatible editor. Native Windows normally requires Neovim, Vim, WSL, or an editor extension."
+    },
+    {
+      "type": "prose",
+      "text": "If only `vi` is available, use it for this first session. Install Neovim when convenient. On macOS with Homebrew, run `brew install neovim`. On Windows, run `winget install Neovim.Neovim`. On Ubuntu, Debian, or Ubuntu under WSL, run `sudo apt install neovim`. Other distributions use their normal package managers. The [official Neovim installation page](https://neovim.io/doc/install/) has current commands and direct downloads."
     },
     {
       "type": "heading",
@@ -53,12 +132,119 @@
     },
     {
       "type": "prose",
-      "text": "If the file exists, you see its contents. If it doesn't, you see an empty buffer that *will* be saved as `hello.txt` the first time you write. Vim doesn't create the file on disk until you save."
+      "text": "Open a terminal, move to a directory in which you can create a file, and run `nvim hello.txt`. If you are using Vim or the built-in Unix editor, use `vim hello.txt` or `vi hello.txt` instead. If the file exists, you see its contents. If it does not, you see an empty buffer that *will* be saved as `hello.txt` the first time you write. Vim does not create the file on disk until you save."
     },
     {
       "type": "embed",
       "lesson": 2,
       "caption": "Opening a file"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Your first edit"
+    },
+    {
+      "type": "prose",
+      "text": "Vim opens in *normal mode,* where letter keys issue commands instead of inserting text. Press {key:i} once to enter *insert mode.* Type `Hello from Vim!` just as you would in any editor. Then press {key:Esc} to return to *normal mode.*"
+    },
+    {
+      "type": "prose",
+      "text": "Now try the four movement keys: {key:h} moves left, {key:j} moves down, {key:k} moves up, and {key:l} moves right. Arrow keys work too. For this first minute, use whichever keys let you stay oriented."
+    },
+    {
+      "type": "tip",
+      "text": "If typing letters moves the cursor or changes text unexpectedly, press {key:Esc} once. You are back in *normal mode.* Press {key:i} whenever you want to type more text. That small loop — {key:i}, type, {key:Esc} — is enough to begin."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Save and return to the shell"
+    },
+    {
+      "type": "prose",
+      "text": "Press {key:Esc} to make sure you are in *normal mode.* Type `:wq`, then press {key:Enter}. The colon opens Vim's command line, `w` writes the file, and `q` quits the editor. Back at the shell, run `cat hello.txt` to confirm that your line reached the disk."
+    },
+    {
+      "type": "prose",
+      "text": "That was a complete Vim session. Everything below gives you separate commands for saving, quitting, and recovering when Vim refuses to exit."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The Minimum for Your First Day"
+    },
+    {
+      "type": "prose",
+      "text": "You do not have to learn the whole keyboard before using Vim for real work. For your first day, remember one loop: press {key:i} to type, press {key:Esc} when you finish typing, move somewhere else, and press {key:i} again. Save with `:w`. Leave with `:x`. If anything feels wrong, press {key:Esc} and begin the loop again."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Goal",
+        "What to do today"
+      ],
+      "rows": [
+        [
+          "Type text",
+          "Press {key:i}, type normally, then press {key:Esc}."
+        ],
+        [
+          "Move",
+          "Use the arrow keys, or begin trying {key:h}, {key:j}, {key:k}, and {key:l}."
+        ],
+        [
+          "Delete one character",
+          "In *normal mode,* press {key:x}."
+        ],
+        [
+          "Undo",
+          "In *normal mode,* press {key:u}."
+        ],
+        [
+          "Save",
+          "Type `:w`, then press {key:Enter}."
+        ],
+        [
+          "Save and leave",
+          "Type `:x`, then press {key:Enter}."
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Arrow Keys Are Allowed"
+    },
+    {
+      "type": "prose",
+      "text": "The arrow keys work in Vim. Use them while you are learning. Reaching for them is slower than keeping your hand on {key:hjkl}, but being temporarily slow is better than being lost. Begin substituting {key:h}, {key:j}, {key:k}, and {key:l} when you remember. Do not disable the arrows or punish yourself for using them. The home-row motions will take over naturally as the rest of the grammar becomes familiar."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Select First, Act Second -- for Now"
+    },
+    {
+      "type": "prose",
+      "text": "If you are used to selecting text before cutting or copying it, Vim lets you work that way. Press {key:Esc} to enter *normal mode,* move to the start of some text, and press {key:v} to enter *visual mode.* Move with the arrows or {key:hjkl}; Vim highlights the selection. Then press {key:d} to delete it, which also saves it for pasting, or press {key:y} to copy it without deleting it. Press {key:p} to put the saved text after the cursor. Press {key:u} if the result is wrong."
+    },
+    {
+      "type": "tip",
+      "text": "Selection-first editing is a bridge, not a mistake. Later you will usually skip the selection and describe the edit directly: {key:d}{key:w} deletes a word, {key:y}{key:y} copies a line, and {key:c}{key:i}{key:w} changes the word under the cursor. For now, {key:v}, move, then {key:d} or {key:y} is perfectly good Vim."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The First-Week Bargain"
+    },
+    {
+      "type": "prose",
+      "text": "If your work allows it, leave Vim controls enabled for ordinary editing this week. Keep the arrow keys. Keep using the mouse when you need it. Keep a familiar editor around for emergencies. The only commitment is to perform routine edits with the small set above instead of turning Vim off whenever you slow down."
+    },
+    {
+      "type": "prose",
+      "text": "Expect to be slower for weeks and uneven for months. Vim becomes fast by replacing conscious key recall with muscle memory, and muscle memory cannot be rushed. The immediate goal is not speed. It is reaching the point at which you can finish a normal day without escaping back to a different editing model."
     },
     {
       "type": "heading",

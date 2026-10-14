@@ -936,8 +936,9 @@ export class Screen {
     // Left-truncate long sticky status messages (e.g. ":w" success messages)
     // with a "<" prefix, matching nvim's behaviour when the message exceeds
     // the available cmdline width.
-    if (engine._stickyCommandLine && rawCmd && engine.mode !== 'command') {
-      const maxMsgWidth = Math.max(1, this.cols - 12);
+    const isSearchCount = /^[/?].*\[\d+\/\d+\]$/.test(rawCmd);
+    if (engine._stickyCommandLine && rawCmd && engine.mode !== 'command' && !isSearchCount) {
+      const maxMsgWidth = this.cols;
       if (rawCmd.length > maxMsgWidth && !rawCmd.startsWith('<')) {
         rawCmd = '<' + rawCmd.slice(rawCmd.length - (maxMsgWidth - 1));
       }

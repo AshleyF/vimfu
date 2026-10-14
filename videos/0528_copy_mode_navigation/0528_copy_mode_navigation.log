@@ -3,27 +3,28 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │ready                                   │
- 1 │➜  vimfu                                │ ◂ cursor (1,9)
- 2 │    climb(altitude=100)                 │
- 3 │➜  vimfu echo '    orbit()'             │
+ 0 │    if fuel < 50:                       │
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
  4 │    orbit()                             │
- 5 │➜  vimfu echo ''                        │
- 6 │                                        │
- 7 │➜  vimfu echo 'def check_systems():'    │
- 8 │def check_systems():                    │
- 9 │➜  vimfu echo '    nav = ping("nav")'   │
-10 │    nav = ping("nav")                   │
-11 │➜  vimfu echo '    comms = ping("comms")│
-12 │'                                       │
-13 │    comms = ping("comms")               │
-14 │➜  vimfu echo '    return nav and comms'│
+ 5 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
+10 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │    return nav and comms                │
-17 │➜  vimfu clear; echo 'ready'            │
+16 │begin_mission()                         │ ◂ cursor (16,0)
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:zsh*       "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:nvim*      "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [OVERLAY] VimFu — Copy Mode Navigation
 [SAY] In copy mode, all your Vim motions work.
@@ -34,27 +35,28 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │ready                                   │
- 1 │➜  vimfu                                │ ◂ cursor (1,9)
- 2 │    climb(altitude=100)                 │
- 3 │➜  vimfu echo '    orbit()'             │
+ 0 │    if fuel < 50:                       │
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
  4 │    orbit()                             │
- 5 │➜  vimfu echo ''                        │
- 6 │                                        │
- 7 │➜  vimfu echo 'def check_systems():'    │
- 8 │def check_systems():                    │
- 9 │➜  vimfu echo '    nav = ping("nav")'   │
-10 │    nav = ping("nav")                   │
-11 │➜  vimfu echo '    comms = ping("comms")│
-12 │'                                       │
-13 │    comms = ping("comms")               │
-14 │➜  vimfu echo '    return nav and comms'│
+ 5 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
+10 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │    return nav and comms                │
-17 │➜  vimfu clear; echo 'ready'            │
+16 │begin_mission()                         │ ◂ cursor (16,0)
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:zsh*       "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:nvim*      "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [KEYS] '['
 [OVERLAY] [  copy mode
@@ -62,28 +64,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │ready                             [0/28]│
- 1 │➜  vimfu                                │ ◂ cursor (1,9)
- 2 │                                        │
- 3 │                                        │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │ ◂ cursor (16,0)
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[0/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [SAY] H J K L move the cursor.
 [KEYS] 'k'
@@ -92,28 +95,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │ready                             [0/28]│ ◂ cursor (0,5)
- 1 │➜  vimfu                                │
- 2 │                                        │
- 3 │                                        │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
-15 │                                        │
-16 │                                        │
-17 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
+15 │                                        │ ◂ cursor (15,0)
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[0/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [KEYS] 'k'
 [OVERLAY] k  up
@@ -121,28 +125,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │➜  vimfu clear; echo 'ready'      [1/28]│ ◂ cursor (0,28)
- 1 │ready                                   │
- 2 │➜  vimfu                                │
- 3 │                                        │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │ ◂ cursor (14,0)
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[1/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [KEYS] 'k'
 [OVERLAY] k  up
@@ -150,28 +155,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │    return nav and comms          [2/28]│ ◂ cursor (0,24)
- 1 │➜  vimfu clear; echo 'ready'            │
- 2 │ready                                   │
- 3 │➜  vimfu                                │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │
+13 │    launch_rocket(fuel=100)             │ ◂ cursor (13,0)
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[2/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [KEYS] 'h'
 [OVERLAY] h  left
@@ -179,28 +185,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │    return nav and comms          [2/28]│ ◂ cursor (0,23)
- 1 │➜  vimfu clear; echo 'ready'            │
- 2 │ready                                   │
- 3 │➜  vimfu                                │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │ ◂ cursor (12,19)
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[2/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [KEYS] 'h'
 [OVERLAY] h  left
@@ -208,28 +215,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │    return nav and comms          [2/28]│ ◂ cursor (0,22)
- 1 │➜  vimfu clear; echo 'ready'            │
- 2 │ready                                   │
- 3 │➜  vimfu                                │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │ ◂ cursor (12,18)
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[2/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [SAY] W jumps by words. Zero to the start. Dollar to the end.
 [KEYS] '0'
@@ -238,28 +246,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │    return nav and comms          [2/28]│ ◂ cursor (0,0)
- 1 │➜  vimfu clear; echo 'ready'            │
- 2 │ready                                   │
- 3 │➜  vimfu                                │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │ ◂ cursor (12,0)
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[2/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [KEYS] 'w'
 [OVERLAY] w  word
@@ -267,28 +276,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │    return nav and comms          [2/28]│ ◂ cursor (0,4)
- 1 │➜  vimfu clear; echo 'ready'            │
- 2 │ready                                   │
- 3 │➜  vimfu                                │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │ ◂ cursor (12,4)
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[2/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [KEYS] 'w'
 [OVERLAY] w  word
@@ -296,28 +306,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │    return nav and comms          [2/28]│ ◂ cursor (0,11)
- 1 │➜  vimfu clear; echo 'ready'            │
- 2 │ready                                   │
- 3 │➜  vimfu                                │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │ ◂ cursor (12,17)
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[2/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [KEYS] 'w'
 [OVERLAY] w  word
@@ -325,28 +336,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │    return nav and comms          [2/28]│ ◂ cursor (0,15)
- 1 │➜  vimfu clear; echo 'ready'            │
- 2 │ready                                   │
- 3 │➜  vimfu                                │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │
+13 │    launch_rocket(fuel=100)             │ ◂ cursor (13,4)
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[2/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [KEYS] '$'
 [OVERLAY] ⇧$  end
@@ -354,28 +366,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │    return nav and comms          [2/28]│ ◂ cursor (0,24)
- 1 │➜  vimfu clear; echo 'ready'            │
- 2 │ready                                   │
- 3 │➜  vimfu                                │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │
+13 │    launch_rocket(fuel=100)             │ ◂ cursor (13,27)
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[2/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [SAY] G goes to the bottom. Double G goes to the top.
 [KEYS] 'G'
@@ -384,28 +397,29 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │ready                             [0/28]│
- 1 │➜  vimfu                                │
- 2 │                                        │
- 3 │                                        │
- 4 │                                        │
+ 0 │    if fuel < 50:                  [0/1]│
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │
+17 │flight.py             18,1           Bot│
 18 │                                        │ ◂ cursor (18,0)
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 34-39: "[0/28]"
+[HIGHLIGHT] row 0, cols 35-39: "[0/1]"
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [KEYS] 'gg'
 [OVERLAY] gg  top
@@ -413,28 +427,28 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │                                 [28/28]│ ◂ cursor (0,0)
- 1 │➜  vimfu echo 'def launch_rocket(fuel):'│
- 2 │                                        │
- 3 │def launch_rocket(fuel):                │
- 4 │➜  vimfu echo '    if fuel < 50:'       │
- 5 │    if fuel < 50:                       │
- 6 │➜  vimfu echo '        abort("low fuel")│
- 7 │'                                       │
- 8 │        abort("low fuel")               │
- 9 │➜  vimfu echo '    ignite(fuel)'        │
-10 │    ignite(fuel)                        │
-11 │➜  vimfu echo '    climb(altitude=100)' │
-12 │    climb(altitude=100)                 │
-13 │➜  vimfu echo '    orbit()'             │
-14 │    orbit()                             │
-15 │➜  vimfu echo ''                        │
+ 0 │                          21:22:00 [1/1]│ ◂ cursor (0,0)
+ 1 │    if fuel < 50:                       │
+ 2 │        abort("low fuel")               │
+ 3 │    ignite(fuel)                        │
+ 4 │    climb(altitude=100)                 │
+ 5 │    orbit()                             │
+ 6 │                                        │
+ 7 │def check_systems():                    │
+ 8 │    nav = ping("nav")                   │
+ 9 │    comms = ping("comms")               │
+10 │    return nav and comms                │
+11 │                                        │
+12 │def begin_mission():                    │
+13 │    check_systems()                     │
+14 │    launch_rocket(fuel=100)             │
+15 │    transmit("orbit achieved")          │
 16 │                                        │
-17 │➜  vimfu echo 'def check_systems():'    │
-18 │def check_systems():                    │
-19 │[0] 0:[tmux]*    "vimfu" 19:33 26-Feb-26│
+17 │begin_mission()                         │
+18 │flight.py             18,1           Bot│
+19 │[0] 0:[tmux]*    "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
-[HIGHLIGHT] row 0, cols 33-39: "[28/28]"
+[HIGHLIGHT] row 0, cols 26-39: "21:22:00 [1/1]"
 
 [SAY] Q to exit copy mode.
 [KEYS] 'q'
@@ -443,26 +457,27 @@
               1         2         3         
     0123456789012345678901234567890123456789
     ────────────────────────────────────────
- 0 │ready                                   │
- 1 │➜  vimfu                                │ ◂ cursor (1,9)
- 2 │                                        │
- 3 │                                        │
- 4 │                                        │
+ 0 │    if fuel < 50:                       │
+ 1 │        abort("low fuel")               │
+ 2 │    ignite(fuel)                        │
+ 3 │    climb(altitude=100)                 │
+ 4 │    orbit()                             │
  5 │                                        │
- 6 │                                        │
- 7 │                                        │
- 8 │                                        │
- 9 │                                        │
+ 6 │def check_systems():                    │
+ 7 │    nav = ping("nav")                   │
+ 8 │    comms = ping("comms")               │
+ 9 │    return nav and comms                │
 10 │                                        │
-11 │                                        │
-12 │                                        │
-13 │                                        │
-14 │                                        │
+11 │def begin_mission():                    │
+12 │    check_systems()                     │
+13 │    launch_rocket(fuel=100)             │
+14 │    transmit("orbit achieved")          │
 15 │                                        │
-16 │                                        │
-17 │                                        │
+16 │begin_mission()                         │ ◂ cursor (16,0)
+17 │flight.py             18,1           Bot│
 18 │                                        │
-19 │[0] 0:zsh*       "vimfu" 19:33 26-Feb-26│
+19 │[0] 0:nvim*      "vimfu" 21:22 16-Jul-26│
     ────────────────────────────────────────
+[HIGHLIGHT] row 17, cols 0-39: "flight.py             18,1           Bot"
 
 [SAY] All your Vim motions work in copy mode. No new keys to learn.

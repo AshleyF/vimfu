@@ -99,7 +99,7 @@ boundaries vs `g*`; search wrapping and `'wrapscan'`.
 
 ---
 
-## Part 05 — Counts and Visual Mode
+## Part 05 — Counts and Visual Basics
 
 _Multiply commands; select first, act second._
 
@@ -107,13 +107,11 @@ _Multiply commands; select first, act second._
 |-------------------------------|-----------------------------|---------------------|---------------------------------|
 | `counts.counts`        | Counts                      | 58, 59, 60, 61      | `{n}`, `{n}{motion}`, `{n}{op}` |
 | `counts.percent-bar`   | Jump by Percentage / Column | 62, 63              | `{n}%`, `{n}\|`                 |
-| `visual-modes.char-visual`   | Character Visual Mode       | 64, 68              | `v`, `o`                        |
-| `visual-modes.line-block`    | Line and Block Visual       | 65, 66, 67          | `V`, `Ctrl-V`                   |
-| `visual-modes.tricks`        | Visual Mode Tricks          | 69, 70              | `O`, `gv`                       |
+| `visual-modes.char-visual`   | Visual Mode as a Learning Tool | 64               | `v`, `Esc`, `d`, `y`, `c`       |
 
-**Internals:** counts compose multiplicatively (`2d3w` = 6 words); the visual
-selection is a buffer-relative *anchor + cursor* pair; `gv` reuses the
-`'<` / `'>` marks that get set automatically.
+**Internals:** counts compose multiplicatively (`2d3w` = 6 words); basic
+character-wise visual selection makes motion destinations visible while the
+operator-first grammar remains the preferred editing model.
 
 ---
 
@@ -293,7 +291,8 @@ shown in many windows. `:ls` lists buffers; `Ctrl-W` is the window prefix;
 
 ## Part 15 — Prefix Families
 
-_The hidden keyboards behind `g`, `z`, `[`/`]`, and `Ctrl-W`._
+_A late-book map of the hidden keymaps behind `g`, `z`, `[`/`]`, and
+`Ctrl-W`. Some are coherent namespaces; others are historical collections._
 
 | ID                            | Title                        | Lessons       | Keys                             |
 |-------------------------------|------------------------------|---------------|----------------------------------|
@@ -303,7 +302,10 @@ _The hidden keyboards behind `g`, `z`, `[`/`]`, and `Ctrl-W`._
 | `prefixes.ctrl-w`             | The `Ctrl-W` Family          | 334–365       | `Ctrl-W` + 30+ keys              |
 
 Each prefix gets one *narrative* topic explaining the family, plus a flat
-reference table.
+reference table. This part appears after the feature chapters in the
+reader-facing order so that it synthesizes commands already encountered.
+Uppercase `Z` is not included: `ZZ` and `ZQ` are a small command pair rather
+than a broad prefix namespace.
 
 ---
 
@@ -349,6 +351,8 @@ _Block edits, automatic ranges, the o/O secret._
 
 | ID                            | Title                       | Lessons     | Keys                                    |
 |-------------------------------|-----------------------------|-------------|-----------------------------------------|
+| `visual-modes.line-block`     | Line and Block Visual       | 65, 66, 67  | `V`, `Ctrl-V`                           |
+| `visual-modes.tricks`         | Visual-Mode Tricks          | 69, 70      | `O`, `gv`                               |
 | `visual.modes`                | The Three Visual Modes      | 431, 432    | `v`, `V`, `Ctrl-V`                      |
 | `visual.block-insert-append`  | Block Insert and Append     | 433, 434    | `Ctrl-V` → `I` / `A`                    |
 | `visual.endpoints`            | Switch Endpoints            | 435         | `o`, `O`                                |
@@ -396,7 +400,7 @@ _Undo trees, special registers, op-pending mode, terminal, folding, config._
 
 | ID                            | Title                          | Lessons        | Keys                              |
 |-------------------------------|--------------------------------|----------------|-----------------------------------|
-| `survival.undo-tree`          | The Undo Tree                  | 481, 482       | `g-`, `g+`, `:earlier`, `:later`  |
+| `survival.undo-tree`          | The Undo Tree                  | 481, 483, 880v | `g-`, `g+`, `:earlier`, `:later`  |
 | `advanced.special-registers`  | The Special Registers in Depth | 483–488        | `"/`, `":`, `".`, `"%`, `"#`, `"=` |
 | `text-objects.op-pending`         | Operator-Pending Mode          | 489, 490       | `g@`, `operatorfunc`              |
 | `advanced.terminal`           | Terminal Mode                  | 491, 492       | `:term`, `Ctrl-\ Ctrl-N`          |
@@ -410,10 +414,10 @@ _Undo trees, special registers, op-pending mode, terminal, folding, config._
 
 ---
 
-## Part 22 — Tmux
+## Part 22 — Bonus: tmux
 
-_The other half of a terminal workflow: terminal multiplexing with vim-flavored
-keys._
+_A separate, compact program that supplies the session management and windowing
+layer of a complete terminal-based Vim workflow._
 
 | ID                            | Title                                | Lessons                          | Keys                                                  |
 |-------------------------------|--------------------------------------|----------------------------------|-------------------------------------------------------|
@@ -531,7 +535,7 @@ outline.
 |-----------:|-----------------------|---------|----------------------|
 | 1  | Survival                         | 1–15    | **01** Foundations (1, 3, 15); **02** Survival (2, 4–14) |
 | 2  | Basic Editing                    | 16–45   | **03** Basic Editing |
-| 3  | Becoming Productive              | 46–90   | **04** Search/Find (46–57); **05** Counts (58–63); **18** Visual Mode (64–70); **06** Dot Command (71–73); **07** Text Objects (74–84); **01**+**07** (85 grammar); **09** Scrolling (86–90) |
+| 3  | Becoming Productive              | 46–90   | **04** Search/Find (46–57); **05** Counts and Visual Basics (58–64); **18** Visual Mode in Depth (65–70); **06** Dot Command (71–73); **07** Text Objects (74–84); **01**+**07** (85 grammar); **09** Scrolling (86–90) |
 | 4  | Intermediate Power               | 91–135  | **08** Wider Motions (91–96); **10** Marks/Jumps (97–104); **03** Basic Editing (105–106 replace mode); **11** Transform (107–118); **12** Registers (119–125); **13** Macros (126–130); **14** Windows (131–135) |
 | 5  | Walking the Keyboard: Lowercase  | 136–161 | **99** Appendix: Keyboard Walk |
 | 6  | Walking the Keyboard: Uppercase  | 162–187 | **99** Appendix: Keyboard Walk |
@@ -546,7 +550,7 @@ outline.
 | 15 | Visual Mode in Depth             | 431–445 | **18** Visual Mode in Depth |
 | 16 | Command-Line Mode Tips           | 446–460 | **19** Command-Line Power |
 | 17 | Practical Patterns & Tips        | 461–480 | **20** Patterns and Recipes |
-| 18 | Advanced Topics                  | 481–499 | **21** Advanced Topics; **02** Survival (481 undo-tree) |
+| 18 | Advanced Topics                  | 481–499 | **21** Advanced Topics |
 | 19 | Tmux & Shell                     | 501–544 | **22** Tmux |
 | 20 | Advanced                         | 600–601 | **21** Advanced Topics |
 | 21 | Surround                         | 700–742 | **07** Text Objects (`07-text-objects/08-surround.json`); **99** Appendix D |
@@ -560,10 +564,10 @@ curriculum authored the videos this Part of the book embeds.
 | Book Part | Title (this file) | Maps to Video Part(s) |
 |----------:|-------------------|-----------------------|
 | 01 | Foundations                 | **1** subset (lessons 1, 3, 15); **3** (lesson 85) |
-| 02 | Survival                    | **1** main; **18** (lesson 481 undo-tree) |
+| 02 | Survival                    | **1** main |
 | 03 | Basic Editing               | **2**; **4** (lessons 105–106 replace mode) |
 | 04 | Search and Find             | **3** (lessons 46–57); subset of **9** (`gd`/`gf`) |
-| 05 | Counts and Visual Mode      | **3** (lessons 58–63 counts; 64–70 visual basics) |
+| 05 | Counts and Visual Basics    | **3** (lessons 58–63 counts; 64 character-wise visual basics) |
 | 06 | The Dot Command             | **3** (lessons 71–73) |
 | 07 | Text Objects                | **3** (lessons 74–85); **21** Surround (700–742) |
 | 08 | Wider Motions               | **4** (lessons 91–96); **11** bracket commands |
@@ -576,7 +580,7 @@ curriculum authored the videos this Part of the book embeds.
 | 15 | Prefix Families             | Overview of **9**, **10**, **11**, **12** |
 | 16 | Insert-Mode Power           | **13** (366–395); subset of **8** (insert-mode Ctrl-keys) |
 | 17 | Ex Commands                 | **14** (396–430); **22** deep dive (800–895) |
-| 18 | Visual Mode in Depth        | **15** (431–445); **3** (lessons 64–70) |
+| 18 | Visual Mode in Depth        | **15** (431–445); **3** (lessons 65–70) |
 | 19 | Command-Line Power          | **16** (446–460) |
 | 20 | Patterns and Recipes        | **17** (461–480); recipes from **22** (881–895) |
 | 21 | Advanced Topics             | **18** (481–499); **20** (600–601) |

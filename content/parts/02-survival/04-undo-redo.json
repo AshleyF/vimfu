@@ -3,9 +3,9 @@
   "version": 1,
   "id": "survival.undo-redo",
   "title": "Undo and Redo",
-  "subtitle": "{key:u} to undo. {key:Ctrl-R} to redo. You cannot lose work.",
+  "subtitle": "{key:u} to undo. {key:Ctrl-R} to redo. Experiment without fear.",
   "part": "survival",
-  "summary": "{key:u} undoes the last change. {key:Ctrl-R} redoes it. Vim's undo is a tree, not a stack — you literally cannot lose work.",
+  "summary": "{key:u} undoes the last change. {key:Ctrl-R} redoes it. Repeat either command to walk through multiple changes, and experiment without fear.",
   "keys": [
     "u",
     "{key:Ctrl-R}",
@@ -28,7 +28,7 @@
     },
     {
       "type": "prose",
-      "text": "Vim is safe. Whatever you just did, you can undo. Whatever you just undid, you can redo. There is no \"oh no\" key — only {key:u}."
+      "text": "Undo is your permission to experiment. Try the unfamiliar motion. Run the command whose effect you cannot predict. If it changes the wrong text, press {key:u}. If you decide that the change was right after all, press {key:Ctrl-R}. You do not need to understand every command before trying it."
     },
     {
       "type": "keys",
@@ -46,7 +46,7 @@
     },
     {
       "type": "prose",
-      "text": "Press {key:u} repeatedly to undo further. Press {key:Ctrl-R} repeatedly to redo. Counts work too: {key:5}{key:u} undoes the last five changes."
+      "text": "Press {key:u} repeatedly to walk backward through multiple changes. Press {key:Ctrl-R} repeatedly to walk forward again. Counts work too: {key:5}{key:u} undoes the last five changes. Make a mess on purpose, undo it, and keep going. Fearlessness is a practical Vim skill."
     },
     {
       "type": "embed",
@@ -63,9 +63,8 @@
       "text": "What counts as \"a change\"? An entire Insert-mode session, from {key:i} to {key:Esc}, is one change. An operator+motion (like {key:d}{key:w}) is one change. A single {key:x} or {key:r} is one change. So {key:u} undoes the *last meaningful action*, not the last keystroke."
     },
     {
-      "type": "internals",
-      "title": "Vim's Undo Is a Tree",
-      "text": "In every other editor, undo is a stack. Undo pops; redo pushes. If you undo three steps and then make a new edit, the redo stack is destroyed — those three changes are gone forever.\n\nVim's undo is a *tree*. Every change creates a new node. Undo walks toward the root. Redo walks back the way you came. **Branching changes do not destroy history**: when you undo three steps and then make a new edit, you create a new branch from that point. The old branch is still there, and Vim can walk to it.\n\nThe practical consequences:\n\n  • {key:u} and {key:Ctrl-R} walk along the *current branch*.\n  • {key:g}{key:-} and {key:g}{key:+} walk *chronologically* — they can hop to a different branch if it was edited more recently.\n  • `:earlier` {N}{m,s,h} jumps the buffer to its state N minutes/seconds/hours ago — across branches.\n  • `:later` does the opposite.\n  • If you have `undofile` set, the undo tree is saved to disk between sessions. Reopen the file tomorrow and you can still undo today's edits. (`undofile` and `undodir` are options — the option system itself is covered in *Ex Commands*.)\n\nFull treatment in `survival.undo-tree`. For now: you literally cannot lose work in Vim. If you make a change you regret, {key:u}. If you regret the undo, {key:Ctrl-R}. If hours have passed and you don't even remember the right sequence of presses, `:earlier` {key:1}{key:0}{key:m} ({key:Enter})."
+      "type": "note",
+      "text": "Vim stores undo history as a tree rather than throwing away an old redo path when you undo and then make a different change. You do not need the tree commands yet: {key:u} and {key:Ctrl-R} are enough for ordinary editing. [Undo as a Tree](#survival.undo-tree) later explains branches, chronological traversal, `:undolist`, `:earlier`, and persistent undo."
     },
     {
       "type": "heading",
@@ -106,22 +105,6 @@
         [
           "{n}{key:u}",
           "Undo last *n* changes"
-        ],
-        [
-          "{key:g}{key:-}",
-          "Earlier in time (across branches)"
-        ],
-        [
-          "{key:g}{key:+}",
-          "Later in time"
-        ],
-        [
-          "`:earlier {N}m`",
-          "Jump back N minutes"
-        ],
-        [
-          "`:later {N}s`",
-          "Jump forward N seconds"
         ]
       ]
     },
@@ -132,7 +115,7 @@
     {
       "type": "internals",
       "title": "Undo units are command-shaped, not keystroke-shaped",
-      "text": "The undo system batches edits at command boundaries, not per keystroke. One normal-mode command — including a complete insert session from {key:i} through {key:Esc} — collapses into a single undo unit. That's why hitting {key:u} after typing a paragraph rips out the whole paragraph at once: the editor only inserted one undo boundary, at the moment you returned to *normal mode*. Internally undo is a tree of state snapshots; redo is a forward walk through that tree."
+      "text": "The undo system batches edits at command boundaries, not per keystroke. One normal-mode command — including a complete insert session from {key:i} through {key:Esc} — collapses into a single undo unit. That's why hitting {key:u} after typing a paragraph rips out the whole paragraph at once: the editor only inserted one undo boundary, at the moment you returned to *normal mode.* Internally undo is a tree of state snapshots; redo is a forward walk through that tree."
     },
     {
       "type": "qr",

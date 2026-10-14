@@ -28,23 +28,50 @@ CTRL_B = "\x02"  # tmux prefix key
 
 # ── Tmux launch preamble (shared by all cases) ──
 # Kill any existing sessions, launch tmux with a clean bash shell
-# that uses PS1='$ ' to match the simulator's prompt exactly.
-# We create a tiny bashrc that sets PS1 and use it for all panes.
-# We also use -f /dev/null to skip the user's tmux.conf.
-_SETUP_BASHRC = "printf 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\\nPS1=\"\\$ \"\\n' > /tmp/vimfu_test_bashrc"
-_BASH_CMD = "bash --rcfile /tmp/vimfu_test_bashrc --noprofile"
+# with the simulator's visible prompt text. Matching its width matters: in a
+# narrow pane, a shorter prompt changes wrapping and therefore screen state.
+# We create a tiny bashrc and tmux config and use them for every pane.
+_SETUP_BASHRC = (
+    "printf 'export PATH=/opt/homebrew/bin:/usr/local/sbin:/usr/local/bin:"
+    "/usr/sbin:/usr/bin:/sbin:/bin\\n"
+    "export COLORTERM=truecolor\\n"
+    "PS1=\"➜  vimfu \"\\n"
+    "vim() { nvim -n -i NONE -u /tmp/vimfu_nvim_init.vim \"$@\"; }\\n' "
+    "> /tmp/vimfu_test_bashrc"
+)
+_BASH_CMD = (
+    "env BASH_SILENCE_DEPRECATION_WARNING=1 "
+    "bash --rcfile /tmp/vimfu_test_bashrc --noprofile"
+)
+_SETUP_TMUX_CONF = (
+    "printf \"set -as terminal-features ',xterm-256color:RGB'\\n"
+    "bind h select-pane -L\\n"
+    "bind j select-pane -D\\n"
+    "bind k select-pane -U\\n"
+    "bind l select-pane -R\\n"
+    "bind L last-window\\n\" "
+    "> /tmp/vimfu_tmux.conf"
+)
 _TEST_DIR = "/tmp/vimfu_test_workdir"
 _TMUX_LAUNCH = [
+    # ShellPilot's Unix PTY may inherit TERM unset (notably on macOS).
+    # tmux refuses to launch without a terminal description.
+    ("line", "export TERM=xterm-256color"),
+    ("sleep", 0.2),
     # Create a minimal bashrc that sets the sim-matching prompt
     ("line", _SETUP_BASHRC),
     ("sleep", 0.3),
+    ("line", _SETUP_TMUX_CONF),
+    ("sleep", 0.2),
+    # The ground-truth generator writes the recording configuration here.
+    ("__inject_nvim_init__",),
     # Create and clean a temp working directory (avoids swap file leftovers)
     ("line", f"rm -rf {_TEST_DIR}; mkdir -p {_TEST_DIR}; cd {_TEST_DIR}"),
     ("sleep", 0.3),
     # Kill any existing tmux (with a delay for socket cleanup), then launch
     ("line", "tmux kill-server 2>/dev/null; sleep 0.5"),
     ("sleep", 0.8),
-    ("line", f"cd {_TEST_DIR} && SHELL=/bin/bash tmux new-session -s test '{_BASH_CMD}'"),
+    ("line", f"cd {_TEST_DIR} && SHELL=/bin/bash tmux -f /tmp/vimfu_tmux.conf new-session -s test '{_BASH_CMD}'"),
     ("wait", "[test]", 15.0),
     ("sleep", 0.8),
     # Set default-command so splits/new-panes also get our controlled shell
@@ -1097,7 +1124,7 @@ CASES = {
     },
 
     "int_window_last_active": {
-        "description": "Toggle last window with Ctrl-B l",
+        "description": "Toggle last window with Ctrl-B L",
         "steps": _tmux(
             ("line", "echo WIN0"),
             ("sleep", 0.3),
@@ -1105,7 +1132,7 @@ CASES = {
             ("sleep", 0.5),
             ("line", "echo WIN1"),
             ("sleep", 0.3),
-            ("keys", CTRL_B + "l"),
+            ("keys", CTRL_B + "L"),
             ("sleep", 0.3),
         ),
         "sim_keys": [
@@ -1113,7 +1140,7 @@ CASES = {
             "echo WIN0", "Enter",
             "Ctrl-B", "c",
             "echo WIN1", "Enter",
-            "Ctrl-B", "l",
+            "Ctrl-B", "L",
         ],
     },
 

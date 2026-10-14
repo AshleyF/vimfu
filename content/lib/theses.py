@@ -121,10 +121,15 @@ PART_THESES: dict[str, str] = {
         "multi-file editing in Vim stops feeling strange."
     ),
     "15-prefix-families": (
-        "Vim has a handful of prefix keys -- `g`, `z`, `Ctrl-W`, `[`, "
-        "`]` -- and each opens up a whole sub-menu of commands. "
-        "Learning a family at a time is more efficient than "
-        "memorising commands one by one."
+        "Some Vim keys open a second keymap instead of performing an "
+        "action by themselves. These prefix namespaces are not all "
+        "organized alike: `g` holds extensions and assorted commands, "
+        "`z` contains several historical clusters, `[` and `]` express "
+        "directional pairs, and `Ctrl-W` consistently means windows. "
+        "This chapter gathers commands you have met throughout the book "
+        "and shows which families are predictable -- and which are maps "
+        "you simply consult. Uppercase `Z` is not one of these broad "
+        "families; `ZZ` and `ZQ` are a small command pair."
     ),
     "16-insert-mode-power": (
         "*Insert mode* is more than just typing. It offers "
@@ -171,11 +176,14 @@ PART_THESES: dict[str, str] = {
         "live without."
     ),
     "22-tmux": (
-        "This chapter is not about Vim. `tmux` is a separate program "
-        "that *complements* Vim -- panes, windows, sessions, copy "
-        "mode, prefix keys -- and is most of why Vim users live "
-        "happily on the command line. If you only ever read one "
-        "non-Vim chapter, this is the one."
+        "This chapter covers the half of a terminal-based Vim workflow "
+        "that Vim deliberately leaves to another program. `tmux` "
+        "provides panes, windows, persistent sessions, and scrollback; "
+        "Vim edits text. Put them together and you get a complete, "
+        "composable working environment. If VS Code or another IDE "
+        "already manages your terminals and workspace, this chapter is "
+        "optional. If you use Vim at the command line, `tmux` is close "
+        "to essential."
     ),
     "99-appendices": (
         "Here is the reference material: a keyboard walk, a complete "

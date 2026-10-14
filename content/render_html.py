@@ -32,7 +32,7 @@ from render_latex import _atomize_key  # noqa: E402  shared key-splitting rules
 from lib.audience import visible as _visible  # noqa: E402
 from lib.site_config import contact_email  # noqa: E402
 from lib.sim_link import SIM_LINK_VERSION as _SIM_LINK_VERSION, practice_filename  # noqa: E402
-from lib.parts import part_label as _part_label  # noqa: E402
+from lib.parts import part_label as _part_label, part_sort_key as _part_sort_key  # noqa: E402
 
 
 def _report_footer(prefix: str = "") -> str:
@@ -136,6 +136,7 @@ def _compute_parts_with_videos(parts_map) -> set[str]:
 # Order matters: do `code`, **strong**, *em* AFTER escape, BEFORE link/key
 _KEY_RE   = re.compile(r"\{key:([^}]+|\})\}")
 _LINK_RE  = re.compile(r"\[([^\]]+)\]\(#([^)]+)\)")
+_EXTLINK_RE = re.compile(r"\[([^\]]+)\]\((https?://[^)]+)\)")
 _CODE_RE  = re.compile(r"`([^`]+)`")
 _STRONG_RE = re.compile(r"\*\*([^*]+)\*\*")
 _EM_RE    = re.compile(r"(?<!\*)\*([^*\n]+)\*(?!\*)")
@@ -166,6 +167,7 @@ def render_inline(text: str, *, current_part: str, index) -> str:
     combined = re.compile(
         r"(?P<key>\{key:(?:[^}]+|\})\})"
         r"|(?P<link>\[[^\]]+\]\(#[^)]+\))"
+        r"|(?P<extlink>\[[^\]]+\]\(https?://[^)]+\))"
         r"|(?P<code>`[^`]+`)"
         r"|(?P<strong>\*\*[^*]+\*\*)"
         r"|(?P<em>(?<!\*)\*[^*\n]+\*(?!\*))"
@@ -198,6 +200,13 @@ def render_inline(text: str, *, current_part: str, index) -> str:
                 else:
                     href = f"../{target_part}/{target_file}"
                 out_parts.append(f'<a href="{escape(href)}">{escape(label)}</a>')
+        elif kind == "extlink":
+            mm = _EXTLINK_RE.match(raw)
+            label, href = mm.group(1), mm.group(2)
+            out_parts.append(
+                f'<a href="{escape(href)}">'
+                f'{render_inline(label, current_part=current_part, index=index)}</a>'
+            )
         elif kind == "code":
             inner = _CODE_RE.match(raw).group(1)
             out_parts.append(f'<code>{escape(inner)}</code>')
@@ -826,6 +835,24 @@ PART_INDEX = """<!doctype html>
 </body></html>
 """
 
+LEGACY_TOPIC_REDIRECTS = {
+    "18-visual-modes/01-char-visual.html": "../05-counts/03-visual-mode.html",
+    "02-survival/05-undo-tree.html": "../21-advanced/00-undo-tree.html",
+}
+
+
+def _legacy_topic_redirect(target: str) -> str:
+    safe = escape(target, quote=True)
+    return f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0;url={safe}">
+<link rel="canonical" href="{safe}">
+</head><body><p>This page has moved. <a href="{safe}">Continue to the lesson</a>.</p>
+<script>location.replace({target!r});</script></body></html>
+"""
+
 
 def render_part_index(part_dir, topics_in_part, all_parts=None) -> str:
     label = _part_label(part_dir)
@@ -876,7 +903,7 @@ THEME_TOGGLE_PLACEHOLDER
 
 def render_root_index(parts_map, index) -> str:
     sections = []
-    for part_dir in sorted(parts_map.keys()):
+    for part_dir in sorted(parts_map.keys(), key=_part_sort_key):
         topics = [t for t in parts_map[part_dir] if _visible(t, AUDIENCE)]
         if not topics:
             continue
@@ -983,7 +1010,7 @@ def _build_lesson_backlinks(parts_map: dict) -> dict[int, tuple[str, str, str]]:
     """Map lesson# → (part_dir, topic_stem, topic_title) of the first topic
     that references it."""
     back: dict[int, tuple[str, str, str]] = {}
-    for part_dir in sorted(parts_map.keys()):
+    for part_dir in sorted(parts_map.keys(), key=_part_sort_key):
         for t in parts_map[part_dir]:
             if not _visible(t, AUDIENCE):
                 continue
@@ -1038,7 +1065,7 @@ def render_master_videos_page(parts_map: dict, backlinks: dict) -> str:
     idx = _videos_index()
     # Numeric lessons referenced from topic JSONs.
     by_part: dict[str, list] = {}
-    for part_dir in sorted(parts_map.keys()):
+    for part_dir in sorted(parts_map.keys(), key=_part_sort_key):
         for t in parts_map[part_dir]:
             if not _visible(t, AUDIENCE):
                 continue
@@ -1066,7 +1093,7 @@ def render_master_videos_page(parts_map: dict, backlinks: dict) -> str:
         return idx[k]["display_id"]
 
     sections = []
-    for part_dir in sorted(by_part.keys()):
+    for part_dir in sorted(by_part.keys(), key=_part_sort_key):
         label = _part_label(part_dir)
         lessons = sorted(set(by_part[part_dir]), key=_sortkey)
         sections.append(f'<h2 id="part-{escape(part_dir)}">'
@@ -1622,13 +1649,13 @@ def main() -> int:
     # the prev/next pager. Filter audience BEFORE flattening so book-only
     # topics don't appear in the website's pagination.
     ordered: list[tuple[str, str, str]] = []
-    for part_dir in sorted(parts_map.keys()):
+    for part_dir in sorted(parts_map.keys(), key=_part_sort_key):
         for t in parts_map[part_dir]:
             if _visible(t, AUDIENCE):
                 ordered.append((part_dir, t["__file_stem"], t.get("title", t["__file_stem"])))
 
     written = 0
-    visible_parts = [p for p in sorted(parts_map.keys())
+    visible_parts = [p for p in sorted(parts_map.keys(), key=_part_sort_key)
                      if any(_visible(t, AUDIENCE) for t in parts_map[p])]
     # Pre-compute which parts have at least one published video so we
     # can suppress dead "Videos" links to empty per-part videos pages.
@@ -1649,6 +1676,10 @@ def main() -> int:
 
     (out_dir / "index.html").write_text(render_root_index(parts_map, index), encoding="utf-8")
     (out_dir / "style.css").write_text(STYLE_CSS, encoding="utf-8")
+    for legacy, target in LEGACY_TOPIC_REDIRECTS.items():
+        legacy_path = out_dir / legacy
+        legacy_path.parent.mkdir(parents=True, exist_ok=True)
+        legacy_path.write_text(_legacy_topic_redirect(target), encoding="utf-8")
 
     # Per-part and master video pages at /videos/...
     backlinks = _build_lesson_backlinks(parts_map)

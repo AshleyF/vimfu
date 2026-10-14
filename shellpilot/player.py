@@ -263,7 +263,7 @@ class Demo:
         else:
             title = self.title
 
-        with ScriptedDemo(
+        demo = ScriptedDemo(
             rows=self.rows,
             cols=self.cols,
             speed=self.speed,
@@ -282,7 +282,9 @@ class Demo:
             auto_start_recording=False,
             target_width=self.target_width,
             target_height=self.target_height,
-        ) as demo:
+        )
+
+        def execute_lesson():
             # Pre-setup: silently dismiss any pending Oh-My-Zsh update prompt
             # in the outer shell so it cannot leak into a fresh tmux pane or
             # window spawned by the setup steps below. The start_recording
@@ -317,6 +319,12 @@ class Demo:
 
             # Teardown (not recorded)
             self._run_fast(demo, self.teardown)
+
+        if sys.platform == "darwin" and show_viewer:
+            demo.run_with_main_thread_ui(execute_lesson)
+        else:
+            with demo:
+                execute_lesson()
 
     def _generate_extras(self, demo, title: str) -> None:
         """Generate thumbnail PNG after recording."""

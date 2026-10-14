@@ -431,6 +431,15 @@ export class SessionManager {
 
   /** @private */
   _handleExCommand(cmd) {
+    // VimEngine provides standalone fallbacks for commands that need a
+    // filesystem or shell. In a SessionManager run we have those services,
+    // so discard the provisional error/cursor state before handling the
+    // command against the VFS.
+    this.engine._messagePrompt = null;
+    this.engine._editCursorAtCmdline = false;
+    this.engine._errorCmdLineCursor = false;
+    this.engine._stickyCommandLine = false;
+
     // Parse ex command
     const trimmed = cmd.trim();
 
@@ -509,6 +518,8 @@ export class SessionManager {
         }
         this._savedChangeCount = this.engine._changeCount;
         this._updateVimStatus();
+        this.engine.commandLine = this.engine._lastExTyped || `:${trimmed}`;
+        this.engine._stickyCommandLine = true;
       }
       return;
     }
@@ -532,6 +543,8 @@ export class SessionManager {
         }
         this._savedChangeCount = this.engine._changeCount;
         this._updateVimStatus();
+        this.engine.commandLine = this.engine._lastExTyped || `:${trimmed}`;
+        this.engine._stickyCommandLine = true;
       } else {
         this.engine.commandLine = 'E32: No file name';
         this.engine._stickyCommandLine = true;

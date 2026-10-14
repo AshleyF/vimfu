@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from lib.videos import video_for_lesson, videos_for_topic  # noqa: E402
 from lib.audience import visible as _visible  # noqa: E402
+from lib.parts import part_label as _part_label, part_sort_key as _part_sort_key  # noqa: E402
 
 AUDIENCE = "all"
 
@@ -372,7 +373,7 @@ def render_topic(t: dict[str, Any], index, examples: dict[str, dict]) -> str:
 # -------- index pages ------------------------------------------------------ #
 
 def render_part_index(part_dir: str, topics_in_part: list[dict[str, Any]]) -> str:
-    out = [f"# {part_dir.split('-', 1)[-1].replace('-', ' ').title()}", ""]
+    out = [f"# {_part_label(part_dir)}", ""]
     out.append("| # | Topic | ID |")
     out.append("|---|---|---|")
     for t in topics_in_part:
@@ -390,9 +391,9 @@ def render_part_index(part_dir: str, topics_in_part: list[dict[str, Any]]) -> st
 def render_root_index(parts_map: dict[str, list[dict[str, Any]]]) -> str:
     out = ["# VimFu Content — Markdown Preview", "",
            "_Auto-generated from `content/parts/**/*.json`. Don't edit by hand._", ""]
-    for part_dir in sorted(parts_map.keys()):
+    for part_dir in sorted(parts_map.keys(), key=_part_sort_key):
         topics = parts_map[part_dir]
-        title = part_dir.split('-', 1)[-1].replace('-', ' ').title()
+        title = _part_label(part_dir)
         nn = part_dir.split('-', 1)[0]
         out.append(f"## Part {nn} — [{title}]({part_dir}/index.md)")
         out.append("")
@@ -431,7 +432,8 @@ def main() -> int:
 
     # write topic files + part indexes
     written = 0
-    for part_dir, plist in parts_map.items():
+    for part_dir in sorted(parts_map, key=_part_sort_key):
+        plist = parts_map[part_dir]
         plist = [t for t in plist if _visible(t, AUDIENCE)]
         if not plist:
             continue

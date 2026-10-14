@@ -1,0 +1,109 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "survival.undo-tree",
+  "title": "Undo as a Tree",
+  "subtitle": "{key:g}{key:-} and {key:g}{key:+} walk by time. `:undolist` shows the branches.",
+  "part": "advanced",
+  "summary": "Vim's undo is a tree. Every undo branch is preserved. {key:g}{key:-} and {key:g}{key:+} walk by chronological time; `:undolist` shows the branches; `:earlier` and `:later` jump through time.",
+  "keys": [
+    "u",
+    "{key:Ctrl-R}",
+    "g-",
+    "g+"
+  ],
+  "lessons": [
+    481,
+    483,
+    "880v"
+  ],
+  "see_also": [
+    "survival.undo-redo"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Undo as a Tree"
+    },
+    {
+      "type": "prose",
+      "text": "Ordinary {key:u} and {key:Ctrl-R} are enough until history branches. The branch appears when you undo several changes and then make a different change. Many editors discard the old redo path at that moment. Vim keeps both futures."
+    },
+    {
+      "type": "prose",
+      "text": "That design extends the fearless editing model. A speculative edit does not have to destroy the path you abandoned. Vim records the new experiment as another branch, and the chronological commands can still reach the older states."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Key or command",
+        "Action"
+      ],
+      "rows": [
+        [
+          "{key:u}",
+          "Undo the previous change along the current branch"
+        ],
+        [
+          "{key:Ctrl-R}",
+          "Redo along the current branch"
+        ],
+        [
+          "{key:g}{key:-}",
+          "Go to an older state by chronological time"
+        ],
+        [
+          "{key:g}{key:+}",
+          "Go to a newer state by chronological time"
+        ],
+        [
+          "`:undolist`",
+          "Show the undo branches"
+        ],
+        [
+          "`:earlier 5m`",
+          "Restore the state from five minutes earlier"
+        ],
+        [
+          "`:later 30s`",
+          "Move forward by thirty seconds"
+        ],
+        [
+          "`:earlier 10`",
+          "Move backward by ten changes"
+        ]
+      ]
+    },
+    {
+      "type": "internals",
+      "title": "The Tree Structure",
+      "text": "Each change -- one insert session, one deletion, one substitution -- creates a node in the undo tree. {key:u} walks toward the parent of the current node; {key:Ctrl-R} walks toward its most recent child.\n\nWhen you edit, undo, then edit again, the new edit becomes a new branch. The previous redo path survives as a sibling. Without {key:g}{key:-} and {key:g}{key:+}, that sibling is difficult to reach.\n\n{key:g}{key:-} and {key:g}{key:+} walk by creation time rather than tree shape, so they can cross branches. `:undolist` shows the leaves of the tree with their sequence numbers, timestamps, and save numbers. `:undo {N}` jumps to a particular sequence number. `:earlier 5m` and `:later 30s` navigate by wall-clock time."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Persistent Undo"
+    },
+    {
+      "type": "prose",
+      "text": "With `undofile` enabled, Vim saves undo history when the file is written and restores it in a later session. Neovim enables persistent undo only when your configuration turns the option on. The `undodir` option controls where those undo files live."
+    },
+    {
+      "type": "tip",
+      "text": "Plugins such as *undotree* draw the branches in a sidebar. The history already exists inside Vim; the plugin makes its shape easier to inspect."
+    },
+    {
+      "type": "internals",
+      "title": "Undo Is a Directed Graph",
+      "text": "Linear edits build a chain of undo nodes. An edit after an undo creates a branch. {key:u} and {key:Ctrl-R} walk one chain; {key:g}{key:-} and {key:g}{key:+} walk by chronological time across branches; `:earlier` and `:later` walk by wall-clock time. The buffer state is reconstructed from the selected node rather than from a single destructive stack."
+    },
+    {
+      "type": "qr",
+      "topic": "survival.undo-tree"
+    },
+    {
+      "type": "buy-prompt"
+    }
+  ]
+}

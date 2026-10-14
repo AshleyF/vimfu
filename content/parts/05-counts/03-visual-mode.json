@@ -1,0 +1,166 @@
+{
+  "format": "vimfu-content-topic",
+  "version": 1,
+  "id": "visual-modes.char-visual",
+  "title": "Visual Mode as a Learning Tool",
+  "subtitle": "Use {key:v} to see motions, select familiar ranges, and build confidence.",
+  "part": "counts",
+  "summary": "{key:v} enters character-wise *visual mode.* Motions extend a visible selection, making this a useful bridge from other editors and a way to learn what motions do.",
+  "keys": [
+    "{key:v}",
+    "{key:Esc}",
+    "{key:d}",
+    "{key:y}",
+    "{key:c}"
+  ],
+  "lessons": [
+    64
+  ],
+  "see_also": [
+    "editing.word-motions",
+    "editing.line-motions",
+    "visual-modes.line-block",
+    "visual.ops",
+    "appendix.motion-classification"
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Visual Mode as a Learning Tool"
+    },
+    {
+      "type": "prose",
+      "text": "Most editors teach you to select text first and choose an action second. Vim supports that familiar order. Press {key:v} in *normal mode* to enter character-wise *visual mode.* Move the cursor, and the text between your starting point and the cursor is highlighted. Press {key:d} to delete the selection, {key:y} to yank it, or {key:c} to replace it."
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "{key:v}"
+      ],
+      "label": "Start a character-wise selection"
+    },
+    {
+      "type": "keys",
+      "sequence": [
+        "{key:v}",
+        "{key:w}",
+        "{key:d}"
+      ],
+      "label": "Select with a word motion, then delete"
+    },
+    {
+      "type": "embed",
+      "lesson": 64,
+      "caption": "Character-wise *visual mode* with {key:v}"
+    },
+    {
+      "type": "tip",
+      "text": "Press {key:Esc} to cancel the selection and return to *normal mode.* Pressing {key:v} again also leaves character-wise *visual mode.*"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Make Motions Visible"
+    },
+    {
+      "type": "prose",
+      "text": "*Visual mode* is a useful laboratory for motions. Start a selection with {key:v}, try a motion, and watch where the cursor lands. {key:w} moves toward the next word, {key:e} moves to a word ending, {key:$} reaches the end of the line, and {key:G} reaches the end of the file. The highlight makes the direction and scale of each motion visible. Press {key:Esc}, return to the starting point, and try another."
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Try",
+        "What the highlight teaches"
+      ],
+      "rows": [
+        [
+          "{key:v}{key:w}",
+          "Where the next-word motion lands"
+        ],
+        [
+          "{key:v}{key:e}",
+          "Where the current or next word ends"
+        ],
+        [
+          "{key:v}{key:0} and {key:v}{key:$}",
+          "The two ends of the current line"
+        ],
+        [
+          "{key:v}{key:g}{key:g} and {key:v}{key:G}",
+          "The beginning and end of the file"
+        ],
+        [
+          "{key:v}{key:/}{pattern}{key:Enter}",
+          "How far a search motion travels"
+        ]
+      ]
+    },
+    {
+      "type": "note",
+      "text": "The highlight shows where a motion travels, but it is not always a byte-for-byte preview of an operator followed by that motion. Motions can be inclusive, exclusive, or linewise, and operators honor those shapes. [Motion Classification](#appendix.motion-classification) explains the edge cases."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The More Vim-Like Order"
+    },
+    {
+      "type": "prose",
+      "text": "Selection-first editing is useful, especially while learning, but it is not usually the shortest Vim path. Vim's native grammar puts the operator first and the motion second. Instead of selecting a word and then deleting it, press {key:d}{key:w}. Instead of selecting the word under the cursor and then copying it, press {key:y}{key:i}{key:w}. Instead of selecting to the end of the line and then replacing it, press {key:c}{key:$}."
+    },
+    {
+      "type": "prose",
+      "text": "Nothing flashes on the screen before those commands act. You learn to trust the motion. The operator and motion resolve the range together, without creating a visible selection first. This is faster, composes with counts, and records one clean action for the dot command."
+    },
+    {
+      "type": "tip",
+      "text": "Use *visual mode* when you need reassurance, when the range is irregular, or when seeing the selection helps you decide. As a motion becomes familiar, remove the preview. Trust the motion by itself, then replace select-then-act with an operator followed directly by that motion."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reference"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Key",
+        "Action"
+      ],
+      "rows": [
+        [
+          "{key:v}",
+          "Enter or leave character-wise *visual mode*"
+        ],
+        [
+          "{key:Esc}",
+          "Cancel the selection"
+        ],
+        [
+          "{key:d}",
+          "Delete the selection and save it for putting"
+        ],
+        [
+          "{key:y}",
+          "Yank the selection"
+        ],
+        [
+          "{key:c}",
+          "Delete the selection and enter *insert mode*"
+        ]
+      ]
+    },
+    {
+      "type": "example",
+      "ref": "visual.char"
+    },
+    {
+      "type": "qr",
+      "topic": "visual-modes.char-visual"
+    },
+    {
+      "type": "buy-prompt"
+    }
+  ]
+}

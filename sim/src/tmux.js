@@ -187,9 +187,10 @@ class TmuxPane {
     // Each pane has its own independent SessionManager (injected)
     this.session = session;
 
-    // Vim in tmux uses laststatus=1: no status line for single window.
-    // This gives one extra row to the buffer area (rows-1 vs rows-2).
-    this.session.screen.showStatusLine = false;
+    // The simulator targets the pinned Neovim configuration, whose status
+    // line remains visible inside tmux.  The pane must therefore reserve two
+    // rows: one for Neovim's status line and one for its command line.
+    this.session.screen.showStatusLine = true;
 
     // Copy mode scrollback
     this._copyModeScroll = 0;

@@ -271,7 +271,30 @@ def play_audio(audio_path: Path, wait: bool = True) -> None:
             import time
             time.sleep(0.05)
         
-        sound = pygame.mixer.Sound(str(audio_path))
+        try:
+            sound = pygame.mixer.Sound(str(audio_path))
+        except pygame.error:
+            # Some macOS pygame/SDL builds cannot decode MP3 even though
+            # CoreAudio playback works. Decode to 44.1 kHz stereo WAV in
+            # memory so playback and recorder audio use the same PCM data.
+            from io import BytesIO
+            import subprocess
+            import imageio_ffmpeg
+
+            decoded = subprocess.run(
+                [
+                    imageio_ffmpeg.get_ffmpeg_exe(),
+                    "-v", "error",
+                    "-i", str(audio_path),
+                    "-ar", "44100",
+                    "-ac", "2",
+                    "-f", "wav",
+                    "pipe:1",
+                ],
+                capture_output=True,
+                check=True,
+            )
+            sound = pygame.mixer.Sound(file=BytesIO(decoded.stdout))
         sound.play()
         
         # Send audio to video recorder

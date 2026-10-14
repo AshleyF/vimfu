@@ -111,7 +111,10 @@ function freezeStatusBarTime(frame) {
  */
 function normalizePrompt(textLines) {
   return textLines.map(line =>
-    line.replace(/[a-zA-Z0-9_-]+@[a-zA-Z0-9_.-]+:[~/.a-zA-Z0-9_-]*\$\s/g, '$ ')
+    line
+      .replace(/[a-zA-Z0-9_-]+@[a-zA-Z0-9_.-]+:[~/.a-zA-Z0-9_-]*\$\s/g, '$ ')
+      // macOS login shell prompt: "host:directory user$ "
+      .replace(/[a-zA-Z0-9_.-]+:[~/.a-zA-Z0-9_-]+\s+[a-zA-Z0-9_-]+\$\s/g, '$ ')
   );
 }
 
@@ -131,6 +134,8 @@ function normalizeForComparison(text) {
   t = t.replace(/➜\s+\S+\s/g, '$ ');
   // Normalize bash prompt: user@host:~$ → $
   t = t.replace(/[a-zA-Z0-9_-]+@[a-zA-Z0-9_.-]+:[~/.a-zA-Z0-9_-]*\$\s/g, '$ ');
+  // Normalize the default macOS login prompt: host:directory user$ → $
+  t = t.replace(/[a-zA-Z0-9_.-]+:[~/.a-zA-Z0-9_-]+\s+[a-zA-Z0-9_-]+\$\s/g, '$ ');
   // Normalize session name in status bar: [test] → [0]
   t = t.replace(/\[test\]/g, '[0]');
   // Normalize session name in window tree header: "- test:" → "- 0:"
@@ -222,20 +227,12 @@ const UNORDERED_CASES = new Set([
   'int_pane_swap', 'int_vim_quit_types_ZQ',
 ]);
 
-// Cases where the ground truth capture has known artifacts (pyte rendering
-// bugs, nvim "Press ENTER" messages, terminal clear residue, etc.)
-// These are skipped rather than compared.
-// VERIFIED pyte rendering bugs — sim output manually confirmed correct for all.
-// Each failure is a pyte terminal emulator limitation, NOT a sim bug.
-// Re-verified after full GT re-capture (89/89 OK) on 2025-07-15.
+// Cases where the real-program capture itself is demonstrably corrupt.
+// Keep this list narrow: every skip is an oracle gap.
 const GT_ARTIFACT_SKIP = new Set([
-  'int_vsplit_vim_left',        // pyte: missing vim ~ tildes in left pane
-  'int_vsplit_vim_both',        // pyte: right pane blank (2nd vim not rendered)
-  'int_split_vim_echo',         // pyte: nvim "INSERT" UI fragments in capture
-  'int_three_panes_vim_center', // pyte: renders 2-col instead of 3-col layout
-  'int_detach_vim_reattach',    // pyte: shows attach cmd instead of vim content
-  'int_zoom_vim',               // pyte: zoom not reflected (shows unzoomed)
-  'int_navigate_vim_shell',     // pyte: shows single pane instead of split
+  // At nine columns, pyte records every other Neovim grid row as blank and
+  // loses the edited first line after tmux resizes the pane.
+  'int_three_panes_vim_center',
   'int_shell_clear_type',       // pyte: extra char after clear ("AFTER_CLEARR")
 ]);
 
@@ -820,7 +817,7 @@ const simScenarios = {
     "echo WIN0", "Enter",
     "Ctrl-B", "c",
     "echo WIN1", "Enter",
-    "Ctrl-B", "l",
+    "Ctrl-B", "L",
   ],
 
   int_window_rename_verify: [
@@ -920,7 +917,16 @@ const simScenarios = {
     "i", "After relaunch", "Escape",
   ],
 
-  // int_double_relaunch removed — too timing-sensitive in real tmux via ShellPilot
+  int_double_relaunch: [
+    "tmux", "Enter",
+    "echo SESSION_1", "Enter",
+    "exit", "Enter",
+    "tmux", "Enter",
+    "echo SESSION_2", "Enter",
+    "exit", "Enter",
+    "tmux", "Enter",
+    "echo SESSION_3_OK", "Enter",
+  ],
 
   // ── Zoom ──
 
@@ -1167,6 +1173,7 @@ const caseEntries = Object.entries(groundTruth);
 let passed = 0;
 let failed = 0;
 let skipped = 0;
+let groundTruthErrors = 0;
 const allFailures = [];
 
 console.log(`\n${'='.repeat(60)}`);
@@ -1183,6 +1190,7 @@ for (const [name, gt] of caseEntries) {
   if (gt.error) {
     console.log(`  SKIP  ${name} (ground truth error: ${gt.error})`);
     skipped++;
+    groundTruthErrors++;
     continue;
   }
 
@@ -1345,6 +1353,9 @@ for (const [name, gt] of caseEntries) {
 // ── Summary ──
 console.log(`\n${'='.repeat(60)}`);
 console.log(`RESULTS: ${passed} passed, ${failed} failed, ${skipped} skipped`);
+if (groundTruthErrors > 0) {
+  console.log(`INVALID GROUND TRUTH: ${groundTruthErrors} case(s) contain capture errors`);
+}
 console.log(`${'='.repeat(60)}`);
 
 if (allFailures.length > 0) {
@@ -1363,5 +1374,4 @@ if (allFailures.length > 0) {
   }
 }
 
-if (failed > 0) process.exit(1);
-
+if (failed > 0 || groundTruthErrors > 0) process.exit(1);

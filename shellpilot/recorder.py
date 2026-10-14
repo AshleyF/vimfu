@@ -9,6 +9,7 @@ Includes audio recording for keyboard clicks and TTS.
 import ctypes
 import json
 import re
+import sys
 import threading
 import time
 import wave
@@ -16,7 +17,8 @@ from pathlib import Path
 from typing import Optional, List, Tuple
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont, ImageGrab
+import imageio.v2 as imageio
+from PIL import Image, ImageDraw, ImageFont, ImageGrab, ImageOps
 
 # Enable DPI awareness on Windows for correct screen capture
 try:
@@ -175,6 +177,7 @@ class VideoRecorder:
         self.target_height = target_height
         
         self._widget = None  # The widget to capture (not the root window)
+        self._capture_bbox = None
         self._writer = None
         self._recording = False
         self._record_thread: Optional[threading.Thread] = None
@@ -241,6 +244,14 @@ class VideoRecorder:
         import imageio
         
         self._widget = widget
+        # Resolve Tk geometry before the recording thread starts. Tk calls
+        # must remain on the UI owner thread, especially on macOS.
+        widget.update_idletasks()
+        x = widget.winfo_rootx()
+        y = widget.winfo_rooty()
+        width = widget.winfo_width()
+        height = widget.winfo_height()
+        self._capture_bbox = (x, y, x + width, y + height)
         self._start_time = time.time()
         self._candidate_frames = []
         self._last_candidate_time = 0
@@ -257,6 +268,7 @@ class VideoRecorder:
             codec='libx264',
             quality=8,
             pixelformat='yuv420p',
+            macro_block_size=2,
         )
         
         # Start audio track
@@ -343,14 +355,31 @@ class VideoRecorder:
             return None
         
         try:
-            # Force update to ensure widget is rendered
-            self._widget.update_idletasks()
-            
-            # Get widget position and size on screen
-            x = self._widget.winfo_rootx()
-            y = self._widget.winfo_rooty()
-            width = self._widget.winfo_width()
-            height = self._widget.winfo_height()
+            if sys.platform == "darwin" and self._viewer:
+                screenshot = self._viewer.capture_image()
+                if screenshot is None:
+                    return None
+                screenshot = ImageOps.pad(
+                    screenshot,
+                    (self.target_width, self.target_height),
+                    method=Image.Resampling.LANCZOS,
+                    color=(0, 0, 0),
+                    centering=(0.5, 0.5),
+                )
+                frame = np.array(screenshot)
+                h, w = frame.shape[:2]
+                if h % 2 == 1:
+                    frame = frame[:-1, :, :]
+                if w % 2 == 1:
+                    frame = frame[:, :-1, :]
+                return frame
+
+            if not self._capture_bbox:
+                return None
+
+            x, y, right, bottom = self._capture_bbox
+            width = right - x
+            height = bottom - y
             
             # Debug: print dimensions on first frame
             if not hasattr(self, '_first_frame_logged'):
@@ -363,8 +392,7 @@ class VideoRecorder:
             
             # Capture the screen region
             # Use all_screens=True for multi-monitor support
-            bbox = (x, y, x + width, y + height)
-            screenshot = ImageGrab.grab(bbox, all_screens=True)
+            screenshot = ImageGrab.grab(self._capture_bbox, all_screens=True)
             
             # Convert to numpy array (RGB)
             frame = np.array(screenshot)
@@ -389,6 +417,21 @@ class VideoRecorder:
         # Track frames written to maintain real-time sync
         frames_written = 0
         last_frame = None
+        last_frame_score = None
+        pending_drop_score = None
+
+        # Seed the recording with the most complete of several captures. The
+        # macOS PostScript path can return a sparse image without raising an
+        # exception, and a bad first frame would otherwise become the baseline
+        # for both validation and the opening half-second of video.
+        initial_frames = []
+        for _ in range(3):
+            initial_frame = self._capture_frame()
+            if initial_frame is not None:
+                initial_frames.append(initial_frame)
+        if initial_frames:
+            last_frame = max(initial_frames, key=self._score_frame)
+            last_frame_score = self._score_frame(last_frame)
         
         while self._recording:
             # Calculate how many frames should have been written by now
@@ -398,8 +441,33 @@ class VideoRecorder:
             # Capture new frame
             frame = self._capture_frame()
             if frame is not None:
-                last_frame = frame
-                
+                frame_score = self._score_frame(frame)
+                if (
+                    last_frame_score is not None
+                    and frame_score < last_frame_score * 0.9
+                ):
+                    # Ghostscript can occasionally return a partially
+                    # rasterized Tk canvas without reporting an error. A real
+                    # clear or low-content transition persists, so require a
+                    # second similar sparse frame before accepting the drop.
+                    confirmed_drop = (
+                        pending_drop_score is not None
+                        and abs(frame_score - pending_drop_score)
+                        <= max(pending_drop_score, 0.001) * 0.25
+                    )
+                    if confirmed_drop:
+                        last_frame = frame
+                        last_frame_score = frame_score
+                        pending_drop_score = None
+                    else:
+                        pending_drop_score = frame_score
+                        frame = None
+                else:
+                    last_frame = frame
+                    last_frame_score = frame_score
+                    pending_drop_score = None
+
+            if frame is not None:
                 # Sample candidate frames for thumbnail generation
                 if elapsed - self._last_candidate_time >= self._candidate_interval:
                     overlay_visible = self._is_overlay_visible()
@@ -484,7 +552,26 @@ class VideoRecorder:
         Returns:
             Path to the saved thumbnail, or None if no frames available
         """
-        # Hide the key overlay so it doesn't appear in the thumbnail
+        # Decode frame zero from the finalized MP4. Re-rendering the title with
+        # Pillow uses a separate font/layout pipeline, while sampled overlay
+        # candidates can already have advanced to the first key card on slow
+        # capture paths. The encoded first frame is the authoritative preview.
+        if self.output_path.exists():
+            reader = None
+            try:
+                reader = imageio.get_reader(str(self.output_path))
+                first_frame = reader.get_data(0)
+                Image.fromarray(first_frame).save(str(self.thumbnail_path), "PNG")
+                print(f"[THUMB] Thumbnail saved: {self.thumbnail_path}")
+                return self.thumbnail_path
+            except Exception as exc:
+                print(f"[THUMB] Could not decode video frame zero: {exc}")
+            finally:
+                if reader is not None:
+                    reader.close()
+
+        # Fallback for lessons without a captured title-card frame: hide the
+        # key overlay and render the legacy branded thumbnail.
         viewer = self._viewer
         key_hidden = False
         if viewer and viewer.key_canvas:

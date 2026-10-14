@@ -1,5 +1,5 @@
 {
-  "title": "VimFu \u2014 Copy Mode Navigation",
+  "title": "VimFu — Copy Mode Navigation",
   "description": "In tmux copy mode, navigate with all the Vim motions you already know. H J K L, W B, zero dollar, G and double G.",
   "speed": 0.55,
   "rows": 20,
@@ -22,11 +22,11 @@
   ],
   "youtube": {
     "categoryId": "27",
-    "privacyStatus": "private",
+    "privacyStatus": "public",
     "madeForKids": false,
     "language": "en",
-    "videoId": "cDCo1jN4tKE",
-    "url": "https://youtube.com/watch?v=cDCo1jN4tKE"
+    "videoId": "xZUFOjKOSdI",
+    "url": "https://youtube.com/watch?v=xZUFOjKOSdI"
   },
   "setup": [
     {
@@ -51,7 +51,14 @@
       "comment": "Prepare workspace"
     },
     {
+      "line": "export VIMFU_REPO=\"$PWD\""
+    },
+    {
       "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "writeFile": "flight.py",
+      "content": "def launch_rocket(fuel):\n    if fuel < 50:\n        abort(\"low fuel\")\n    ignite(fuel)\n    climb(altitude=100)\n    orbit()\n\ndef check_systems():\n    nav = ping(\"nav\")\n    comms = ping(\"comms\")\n    return nav and comms\n\ndef begin_mission():\n    check_systems()\n    launch_rocket(fuel=100)\n    transmit(\"orbit achieved\")\n\nbegin_mission()\n"
     },
     {
       "line": "clear"
@@ -63,47 +70,32 @@
       "line": "tmux"
     },
     {
-      "waitForScreen": "All",
+      "waitForScreen": "[0]",
       "timeout": 30.0
     },
     {
-      "comment": "Generate code-like scrollback"
+      "waitForScreen": "\"vimfu\"",
+      "timeout": 30.0
     },
     {
-      "line": "echo 'def launch_rocket(fuel):'"
+      "comment": "Open the document before recording"
     },
     {
-      "line": "echo '    if fuel < 50:'"
+      "line": "nvim -u \"$VIMFU_REPO/shellpilot/nvim/init.vim\" flight.py"
     },
     {
-      "line": "echo '        abort(\"low fuel\")'"
+      "waitForScreen": "launch_rocket",
+      "timeout": 30.0
     },
     {
-      "line": "echo '    ignite(fuel)'"
+      "waitForScreen": "flight.py",
+      "timeout": 30.0
     },
     {
-      "line": "echo '    climb(altitude=100)'"
+      "comment": "Put the pane cursor near the bottom so upward copy-mode motions are visible"
     },
     {
-      "line": "echo '    orbit()'"
-    },
-    {
-      "line": "echo ''"
-    },
-    {
-      "line": "echo 'def check_systems():'"
-    },
-    {
-      "line": "echo '    nav = ping(\"nav\")'"
-    },
-    {
-      "line": "echo '    comms = ping(\"comms\")'"
-    },
-    {
-      "line": "echo '    return nav and comms'"
-    },
-    {
-      "line": "clear; echo 'ready'"
+      "keys": "G"
     }
   ],
   "steps": [
@@ -291,9 +283,15 @@
   ],
   "teardown": [
     {
-      "comment": "Clean up tmux"
+      "comment": "Quit nvim without saving"
     },
     "escape",
+    {
+      "keys": ":qa!\r"
+    },
+    {
+      "comment": "Clean up tmux"
+    },
     {
       "line": "tmux kill-server"
     }

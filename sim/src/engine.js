@@ -118,6 +118,7 @@ export class VimEngine {
     this._showCurSearch = false; // true only after user-initiated search navigation
     this._curSearchPos = null; // {row, col} of the match for CurSearch highlight
     this._hlsearchActive = true; // false after :noh, true again on next search
+    this._pendingSpellMenu = null; // { row, startCol, endCol, word, suggestions, digits }
 
     // Message prompt ("Press ENTER or type command to continue")
     this._messagePrompt = null; // null or { error: 'E486: ...' }
@@ -475,6 +476,29 @@ export class VimEngine {
     if (this._pendingSubstConfirm) {
       this._handleSubstConfirmKey(key);
       return;
+    }
+
+    // z= spelling menu accepts a numeric choice followed by Enter.
+    if (this._pendingSpellMenu) {
+      if (/^[0-9]$/.test(key)) {
+        this._pendingSpellMenu.digits += key;
+        return;
+      }
+      if (key === 'Enter' || key === 'Ctrl-J' || key === 'Ctrl-M') {
+        const choice = parseInt(this._pendingSpellMenu.digits || '0', 10);
+        this._applySpellSuggestion(this._pendingSpellMenu, choice);
+        this._pendingSpellMenu = null;
+        this._messagePrompt = null;
+        this.commandLine = '';
+        this._updateStatus();
+        return;
+      }
+      if (key === 'Escape' || key === 'Esc') {
+        this._pendingSpellMenu = null;
+        this._messagePrompt = null;
+        this.commandLine = '';
+        return;
+      }
     }
 
     // If in message prompt mode, most keys dismiss it.
@@ -4207,11 +4231,18 @@ export class VimEngine {
 
       case '=': {
         // z= — show spelling suggestions for word under cursor
-        if (this._settings.spell) {
+        {
+          const numberedChoice = this._hasCount() ? this._getCount() : null;
           const w = this._getWordAtCursor();
           if (w && this._isSpellBad(w.word)) {
             const suggestions = this._spellSuggest(w.word);
             if (suggestions.length > 0) {
+              if (numberedChoice !== null) {
+                this._applySpellSuggestion({
+                  row: this.cursor.row, ...w, suggestions, digits: ''
+                }, numberedChoice);
+                break;
+              }
               const normalFg = 'd4d4d4', normalBg = '000000';
               const cols = this.cols;
               const mkLine = (text, runs) => ({ text, runs });
@@ -4224,6 +4255,9 @@ export class VimEngine {
                 promptLines.push(mkLine(lineText, [{ n: cols, fg: normalFg, bg: normalBg }]));
               }
               this._messagePrompt = { lines: promptLines };
+              this._pendingSpellMenu = {
+                row: this.cursor.row, ...w, suggestions, digits: ''
+              };
             } else {
               this.commandLine = 'Sorry, no strggestions';
               this._stickyCommandLine = true;
@@ -5114,16 +5148,27 @@ export class VimEngine {
     'beleive': 'believe',
     'beleived': 'believed',
     'definately': 'definitely',
+    'buton': 'button',
+    'engne': 'engine',
+    'erro': 'error',
+    'fixd': 'fixed',
     'goverment': 'government',
+    'missle': 'missile',
     'occured': 'occurred',
     'occuring': 'occurring',
+    'pasword': 'password',
     'recieve': 'receive',
     'recieved': 'received',
     'recieving': 'receiving',
     'reciept': 'receipt',
     'seperate': 'separate',
     'seperated': 'separated',
+    'succss': 'success',
+    'successfuly': 'successfully',
+    'systms': 'systems',
     'teh': 'the',
+    'the': 'thee',
+    'tets': 'tests',
     'truely': 'truly',
     'untill': 'until',
     'wierd': 'weird',
@@ -5986,6 +6031,8 @@ export class VimEngine {
           this._showCurSearch = true; // normal search navigation
           this._hlsearchActive = true;
           this._updateDesiredCol();
+          this.commandLine = this._formatSearchCount(prefix + cmd);
+          this._stickyCommandLine = true;
         }
         // Restore visual mode after a successful search from visual: keep
         // the original anchor, let the new cursor extend the selection.
@@ -6008,7 +6055,7 @@ export class VimEngine {
           return;
         }
       }
-      this.commandLine = '';
+      if (!this.commandLine.startsWith(prefix)) this.commandLine = '';
       return;
     }
 
@@ -11230,6 +11277,39 @@ export class VimEngine {
     return false;
   }
 
+  _formatSearchCount(displayPattern) {
+    const caseFlag = this._searchCaseFlag();
+    let re;
+    try {
+      re = new RegExp(this._vimPatternToJs(this._searchPattern), 'g' + caseFlag);
+    } catch {
+      return displayPattern;
+    }
+
+    const matches = [];
+    for (let row = 0; row < this.buffer.lineCount; row++) {
+      re.lastIndex = 0;
+      let match;
+      while ((match = re.exec(this.buffer.lines[row])) !== null) {
+        matches.push({ row, col: match.index });
+        if (match[0].length === 0) re.lastIndex++;
+      }
+    }
+    if (matches.length === 0) return displayPattern;
+
+    let current = matches.findIndex(
+      match => match.row === this.cursor.row && match.col === this.cursor.col
+    );
+    if (current < 0) current = 0;
+    const count = `[${current + 1}/${matches.length}]`;
+    // Neovim leaves its ruler-width message area free at the right edge.
+    // The pinned 40-column oracle therefore places a five-character count at
+    // column 22 and leaves thirteen cells after it.
+    const messageWidth = Math.max(displayPattern.length + count.length + 1, this.cols - 13);
+    const gap = Math.max(1, messageWidth - displayPattern.length - count.length);
+    return displayPattern + ' '.repeat(gap) + count;
+  }
+
   /**
    * Find the next (or previous) search match, returning { row, col, len } or null.
    * For gn: if cursor is inside a match on the current line, return that match.
@@ -13036,7 +13116,7 @@ export class VimEngine {
    * OR if it's explicitly in the bad words list.
    */
   _isSpellBad(word) {
-    if (!word || !this._settings.spell) return false;
+    if (!word) return false;
     const lower = word.toLowerCase();
     if (this._spellBadWords.has(lower)) return true;
     if (this._spellGoodWords.has(lower)) return false;
@@ -13100,6 +13180,8 @@ export class VimEngine {
     if (!word) return [];
     const lower = word.toLowerCase();
     const suggestions = [];
+    const known = VimEngine._SPELL_CORRECTIONS[lower];
+    if (known) suggestions.push(known);
     // Simple edit distance 1: substitution, deletion, insertion, transposition
     for (const dictWord of DICTIONARY) {
       if (suggestions.length >= 5) break;
@@ -13110,11 +13192,28 @@ export class VimEngine {
         if (dictWord[i] !== lower[i]) dist++;
         if (dist > 1) break;
       }
-      if (dist <= 1 && dictWord !== lower) {
+      if (dist <= 1 && dictWord !== lower && !suggestions.includes(dictWord)) {
         suggestions.push(dictWord);
       }
     }
     return suggestions;
+  }
+
+  _applySpellSuggestion(menu, choice) {
+    const replacement = menu.suggestions[choice - 1];
+    if (!replacement) return false;
+    const line = this.buffer.lines[menu.row] || '';
+    const cased = /^[A-Z]/.test(menu.word)
+      ? replacement[0].toUpperCase() + replacement.slice(1)
+      : replacement;
+    this._saveSnapshot();
+    this.buffer.lines[menu.row] =
+      line.slice(0, menu.startCol) + cased + line.slice(menu.endCol + 1);
+    this.cursor.row = menu.row;
+    this.cursor.col = menu.startCol;
+    this._updateDesiredCol();
+    this._redoStack = [];
+    return true;
   }
 
   /** Compute the 0-indexed virtual (screen) column for a byte position in a line. */

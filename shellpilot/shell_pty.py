@@ -50,14 +50,30 @@ class _TerminalFilter:
 
     @staticmethod
     def _normalize_csi(m: re.Match) -> str:
-        return m.group(1) + m.group(2).replace(':', ';') + m.group(3)
+        params = m.group(2)
+        # SGR 4:x selects an underline style. Replacing its colon with a
+        # semicolon changes the meaning to two independent attributes (for
+        # example, 4:3 became underline + italic) and can poison every later
+        # captured cell. pyte has no underline-style model, so preserve the
+        # base underline attribute. In practice Neovim can emit an isolated
+        # undercurl selector before a full-screen erase; pyte then paints every
+        # erased cell as underlined because it cannot model the subtype/reset
+        # semantics. Disable extended underline styles entirely rather than
+        # manufacturing a screen-wide underline that no real terminal shows.
+        if m.group(3) == 'm':
+            params = re.sub(r'(^|;)4:[0-5](?=;|$)', r'\g<1>24', params)
+        return m.group(1) + params.replace(':', ';') + m.group(3)
 
     def __init__(self):
         self._in_string_seq = False   # True while inside DCS/APC/PM body
         self._prev_was_esc = False    # True if last char of previous chunk was ESC
+        self._csi_pending = ''         # Incomplete CSI carried across reads
 
     def filter(self, data: str) -> str:
         """Return *data* with unsupported sequences removed."""
+        if self._csi_pending:
+            data = self._csi_pending + data
+            self._csi_pending = ''
         out: list[str] = []
         i = 0
         n = len(data)
@@ -156,6 +172,14 @@ class _TerminalFilter:
                 i += 1
 
         result = "".join(out)
+        # A PTY read may split a CSI sequence anywhere, including inside a
+        # colon parameter. Do not feed that partial sequence to pyte: once it
+        # has parsed the prefix as a complete command, the following chunk can
+        # no longer be repaired.
+        incomplete = re.search(r'(?:\x1b\[|\x9b)[0-9;:?>=! ]*$', result)
+        if incomplete:
+            self._csi_pending = incomplete.group(0)
+            result = result[:incomplete.start()]
         # Normalize colon sub-parameters in CSI sequences
         if ':' in result:
             result = self._CSI_COLON_RE.sub(self._normalize_csi, result)
@@ -229,6 +253,7 @@ class ShellPilot:
         import fcntl
         import os
         import pty
+        import shlex
         import struct
         import termios
         
@@ -236,7 +261,8 @@ class ShellPilot:
         
         if pid == 0:
             # Child process - exec the shell
-            os.execvp(self.shell, [self.shell])
+            argv = shlex.split(self.shell)
+            os.execvp(argv[0], argv)
         else:
             # Parent process
             self._pid = pid

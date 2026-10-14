@@ -146,8 +146,12 @@ function diffRuns(gtFrame, simFrame, textRows) {
     const gtRuns = gtFrame.lines[i].runs;
     const simRuns = simFrame.lines[i].runs;
     // Compare serialised runs (fg, bg, n)
-    const gtStr = gtRuns.map(r => `${r.n}:${r.fg}/${r.bg}`).join(' ');
-    const simStr = simRuns.map(r => `${r.n}:${r.fg}/${r.bg}`).join(' ');
+    const runString = runs => runs.map(r => {
+      const attrs = `${r.b ? 'b' : ''}${r.i ? 'i' : ''}${r.u ? 'u' : ''}${r.s ? 's' : ''}` || '-';
+      return `${r.n}:${r.fg}/${r.bg}/${attrs}`;
+    }).join(' ');
+    const gtStr = runString(gtRuns);
+    const simStr = runString(simRuns);
     if (gtStr !== simStr) {
       diffs.push({ row: i, expected: gtStr, actual: simStr });
     }
@@ -180,6 +184,7 @@ if (Object.keys(suites).length === 0) {
 let totalPassed = 0;
 let totalFailed = 0;
 let totalSkipped = 0;
+let totalGroundTruthErrors = 0;
 const allFailures = [];
 
 for (const [suiteName, cases] of Object.entries(suites)) {
@@ -201,6 +206,7 @@ for (const [suiteName, cases] of Object.entries(suites)) {
     if (gt.error) {
       console.log(`  SKIP  ${name} (ground truth error)`);
       suiteSkipped++;
+      totalGroundTruthErrors++;
       continue;
     }
 
@@ -239,7 +245,11 @@ for (const [suiteName, cases] of Object.entries(suites)) {
 
     const gtCursor = gt.cursor;
     const simCursor = frame.cursor;
-    const cursorMatch = (gtCursor.row === simCursor.row && gtCursor.col === simCursor.col);
+    const cursorMatch = (
+      gtCursor.row === simCursor.row
+      && gtCursor.col === simCursor.col
+      && (gtCursor.visible ?? true) === (simCursor.visible ?? true)
+    );
 
     // Compare runs/colours if ground truth has frame data
     let colorDiffs = [];
@@ -294,6 +304,9 @@ for (const [suiteName, cases] of Object.entries(suites)) {
 // ── Summary ──
 console.log(`\n${'='.repeat(60)}`);
 console.log(`TOTAL: ${totalPassed} passed, ${totalFailed} failed, ${totalSkipped} skipped`);
+if (totalGroundTruthErrors > 0) {
+  console.log(`INVALID GROUND TRUTH: ${totalGroundTruthErrors} case(s) contain capture errors`);
+}
 console.log(`${'='.repeat(60)}`);
 
 if (allFailures.length > 0 && allFailures.length <= 20) {
@@ -303,4 +316,4 @@ if (allFailures.length > 0 && allFailures.length <= 20) {
   }
 }
 
-if (totalFailed > 0) process.exit(1);
+if (totalFailed > 0 || totalGroundTruthErrors > 0) process.exit(1);

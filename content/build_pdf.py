@@ -147,7 +147,7 @@ def compile_pdf() -> int:
     if have("latexmk") and have("perl"):
         print("[3/3] Compiling with latexmk…")
         rc, tail = run(
-            ["latexmk", "-pdf", "-interaction=nonstopmode", "-halt-on-error",
+            ["latexmk", "-g", "-xelatex", "-interaction=nonstopmode", "-halt-on-error",
              "-file-line-error", "book.tex"],
             cwd=LATEX_DIR,
         )
@@ -264,4 +264,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
