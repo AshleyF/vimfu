@@ -1157,6 +1157,7 @@ STYLE_CSS = """:root {
   --bg-elev: #ffffff;
   --accent: #800000;
   --accent-hover: #a00000;
+  --accent-button-fg: #ffffff;
   --accent-soft: #fbe8e8;
   --accent-border: #e6c0c0;
   --code-bg: #f0f0f0;
@@ -1196,6 +1197,7 @@ STYLE_CSS = """:root {
     --bg-elev: #1c1f26;
     --accent: #e07070;
     --accent-hover: #ff8c8c;
+    --accent-button-fg: #14161b;
     --accent-soft: #2a1818;
     --accent-border: #5a2828;
     --code-bg: #22262d;
@@ -1235,6 +1237,7 @@ STYLE_CSS = """:root {
   --bg-elev: #1c1f26;
   --accent: #e07070;
   --accent-hover: #ff8c8c;
+  --accent-button-fg: #14161b;
   --accent-soft: #2a1818;
   --accent-border: #5a2828;
   --code-bg: #22262d;
@@ -1299,11 +1302,11 @@ nav a { color: var(--accent); text-decoration: none; }
 nav a:hover { text-decoration: underline; }
 
 a.practice-link {
-  display: inline-block; background: var(--accent); color: #fff;
+  display: inline-block; background: var(--accent); color: var(--accent-button-fg);
   padding: 4px 14px; border-radius: 4px; font-weight: 600;
   text-decoration: none;
 }
-a.practice-link:hover { background: var(--accent-hover); text-decoration: none; }
+a.practice-link:hover { background: var(--accent-hover); color: var(--accent-button-fg); text-decoration: none; }
 p.example-try {
   margin: 0.6rem 0 0; text-align: right; font-size: 0.92rem;
 }
