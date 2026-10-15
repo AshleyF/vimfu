@@ -215,7 +215,7 @@ console.log('============================================================');
 }
 
 // ════════════════════════════════════════════════════════════════
-// Constants (True, False, None)
+// Built-in constants (True, False, None); pythonBuiltin links to Function
 // ════════════════════════════════════════════════════════════════
 console.log('============================================================');
 console.log('Suite: Constants');
@@ -223,17 +223,17 @@ console.log('============================================================');
 
 {
   const { parts } = tokenize('x = True');
-  assert(hasToken(parts, 'constant', 'True'), 'constant: True');
+  assert(hasToken(parts, 'function.builtin', 'True'), 'builtin constant: True');
 }
 
 {
   const { parts } = tokenize('x = False');
-  assert(hasToken(parts, 'constant', 'False'), 'constant: False');
+  assert(hasToken(parts, 'function.builtin', 'False'), 'builtin constant: False');
 }
 
 {
   const { parts } = tokenize('x = None');
-  assert(hasToken(parts, 'constant', 'None'), 'constant: None');
+  assert(hasToken(parts, 'function.builtin', 'None'), 'builtin constant: None');
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -309,23 +309,23 @@ console.log('============================================================');
 
 {
   const { parts } = tokenize('print("hello")');
-  assert(hasToken(parts, 'builtin', 'print'), 'builtin: print');
+  assert(hasToken(parts, 'function.builtin', 'print'), 'builtin: print');
 }
 
 {
   const { parts } = tokenize('x = len(data)');
-  assert(hasToken(parts, 'builtin', 'len'), 'builtin: len');
+  assert(hasToken(parts, 'function.builtin', 'len'), 'builtin: len');
 }
 
 {
   const { parts } = tokenize('r = range(10)');
-  assert(hasToken(parts, 'builtin', 'range'), 'builtin: range');
+  assert(hasToken(parts, 'function.builtin', 'range'), 'builtin: range');
 }
 
 {
   // Built-in even without () (nvim highlights builtins everywhere)
   const { parts } = tokenize('my_range = range');
-  assert(hasToken(parts, 'builtin', 'range'), 'builtin: range without paren still matches');
+  assert(hasToken(parts, 'function.builtin', 'range'), 'builtin: range without paren still matches');
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -477,7 +477,7 @@ console.log('============================================================');
   const { parts } = tokenize('result = [x**2 for x in range(10)]');
   assert(hasToken(parts, 'keyword', 'for'), 'complex: for in comprehension');
   assert(hasToken(parts, 'keyword', 'in'), 'complex: in');
-  assert(hasToken(parts, 'builtin', 'range'), 'complex: range()');
+  assert(hasToken(parts, 'function.builtin', 'range'), 'complex: range()');
   assert(hasToken(parts, 'number', '10'), 'complex: 10');
   assert(hasToken(parts, 'number', '2'), 'complex: 2 in x**2');
 }
@@ -497,10 +497,10 @@ console.log('============================================================');
 
 {
   const { parts } = tokenize('x = True if y else False');
-  assert(hasToken(parts, 'constant', 'True'), 'complex: True');
+  assert(hasToken(parts, 'function.builtin', 'True'), 'complex: True');
   assert(hasToken(parts, 'keyword', 'if'), 'complex: ternary if');
   assert(hasToken(parts, 'keyword', 'else'), 'complex: ternary else');
-  assert(hasToken(parts, 'constant', 'False'), 'complex: False');
+  assert(hasToken(parts, 'function.builtin', 'False'), 'complex: False');
 }
 
 // ════════════════════════════════════════════════════════════════

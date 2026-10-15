@@ -80,6 +80,7 @@ const THEMES = {
       'function.def': '8cf8f7', // def name          (NvimDarkCyan)
       'class.def': '8cf8f7',    // class name        (NvimDarkCyan)
       builtin: '8cf8f7',        // print, len, str…  (NvimDarkCyan)
+      'function.builtin': '8cf8f7', // pythonBuiltin links to Function
       special: '8cf8f7',        // __init__ etc      (NvimDarkCyan)
       // NOT highlighted in nvim default: number, keyword, keyword.import, operator
       // Markdown scopes – verified against nvim -u NONE + treesitter
@@ -671,7 +672,9 @@ export class Screen {
               // Vim's Python Statement-derived groups retain the default
               // syntax definition's bold attribute when our colorscheme
               // overrides only guifg.
-              if (tok.scope === 'keyword' || tok.scope === 'keyword.import') {
+              const tokenText = raw.slice(tok.start, tok.end);
+              if (tok.scope === 'keyword'
+                  && /^(?:def|class|return|yield|pass|assert|global|nonlocal)$/.test(tokenText)) {
                 colB[sc - sliceStart] = true;
               }
             }
@@ -963,7 +966,7 @@ export class Screen {
     // ── Command / message line (row rows-1) ──
     // When showStatusLine is false (vim laststatus=1), merge the ruler from
     // statusLine onto the right side of the command line.
-    let rawCmd = engine.commandLine ?? '';
+    let rawCmd = engine._specialCommandLine?.text ?? engine.commandLine ?? '';
     if (!this.showStatusLine) {
       const ruler = (engine.statusLine ?? '').trim();
       if (ruler && !rawCmd) {
@@ -987,7 +990,18 @@ export class Screen {
     }
     const cmdText = this._padOrTruncate(rawCmd, this.cols);
     // Recording indicator gets special color (green in nvim_default)
-    if (t.recordingFg && engine._macroRecording && engine.mode === 'normal'
+    if (engine._specialCommandLine?.kind === 'spell-wrap') {
+      const specialLen = Math.min(28, this.cols);
+      lines.push({
+        text: cmdText,
+        runs: [
+          { n: specialLen, fg: t.curSearchBg, bg: t.cmdBg },
+          { n: this.cols - specialLen, fg: t.cmdFg, bg: t.cmdBg },
+        ],
+      });
+    } else if (engine._specialCommandLine?.kind === 'expression') {
+      lines.push({ text: cmdText, runs: this._expressionCommandRuns(rawCmd, this.cols, t) });
+    } else if (t.recordingFg && engine._macroRecording && engine.mode === 'normal'
         && (engine.commandLine ?? '').startsWith('recording @')) {
       const recLen = ('recording @' + engine._macroRecording).length;
       lines.push({
@@ -1437,10 +1451,19 @@ export class Screen {
     engine._changeCount = savedChangeCount;
 
     // Add shared command line at the bottom
-    const cmdText = this._padOrTruncate(engine.commandLine || '', cols);
+    const displayCmd = engine._specialCommandLine?.text ?? engine.commandLine ?? '';
+    const cmdText = this._padOrTruncate(displayCmd, cols);
     // Apply command line styling (recording, error, mode indicator)
     let cmdRuns;
-    if (t.recordingFg && engine._macroRecording && engine.mode === 'normal'
+    if (engine._specialCommandLine?.kind === 'spell-wrap') {
+      const specialLen = Math.min(28, cols);
+      cmdRuns = [
+        { n: specialLen, fg: t.curSearchBg, bg: t.cmdBg },
+        { n: cols - specialLen, fg: t.cmdFg, bg: t.cmdBg },
+      ];
+    } else if (engine._specialCommandLine?.kind === 'expression') {
+      cmdRuns = this._expressionCommandRuns(displayCmd, cols, t);
+    } else if (t.recordingFg && engine._macroRecording && engine.mode === 'normal'
         && (engine.commandLine ?? '').startsWith('recording @')) {
       const recLen = ('recording @' + engine._macroRecording).length;
       cmdRuns = [
@@ -1870,9 +1893,18 @@ export class Screen {
     }
 
     // Shared command line at bottom.
-    const cmdText = this._padOrTruncate(engine.commandLine || '', totalCols);
+    const displayCmd = engine._specialCommandLine?.text ?? engine.commandLine ?? '';
+    const cmdText = this._padOrTruncate(displayCmd, totalCols);
     let cmdRuns;
-    if (t.recordingFg && engine._macroRecording && engine.mode === 'normal'
+    if (engine._specialCommandLine?.kind === 'spell-wrap') {
+      const specialLen = Math.min(28, totalCols);
+      cmdRuns = [
+        { n: specialLen, fg: t.curSearchBg, bg: t.cmdBg },
+        { n: totalCols - specialLen, fg: t.cmdFg, bg: t.cmdBg },
+      ];
+    } else if (engine._specialCommandLine?.kind === 'expression') {
+      cmdRuns = this._expressionCommandRuns(displayCmd, totalCols, t);
+    } else if (t.recordingFg && engine._macroRecording && engine.mode === 'normal'
         && (engine.commandLine ?? '').startsWith('recording @')) {
       const recLen = ('recording @' + engine._macroRecording).length;
       cmdRuns = [
@@ -1962,6 +1994,27 @@ export class Screen {
       }
     }
     return null;
+  }
+
+  /** @private */
+  _expressionCommandRuns(text, width, t) {
+    const runs = [];
+    const push = (n, fg) => {
+      if (!n) return;
+      const last = runs[runs.length - 1];
+      if (last && last.fg === fg && last.bg === t.cmdBg) last.n += n;
+      else runs.push({ n, fg, bg: t.cmdBg });
+    };
+    for (const ch of text.slice(0, width)) {
+      const fg = /[0-9]/.test(ch)
+        ? (t.syntax?.number || t.cmdFg)
+        : /[+\-*/%]/.test(ch)
+          ? (t.syntax?.operator || t.cmdFg)
+          : t.cmdFg;
+      push(1, fg);
+    }
+    push(Math.max(0, width - Math.min(text.length, width)), t.cmdFg);
+    return runs;
   }
 
   /** @private */

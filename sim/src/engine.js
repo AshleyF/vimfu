@@ -425,6 +425,18 @@ export class VimEngine {
   }
 
   feedKey(key) {
+    this._suppressInsertModeMessage = false;
+    // Some messages are rendered from richer metadata than commandLine alone
+    // (for example expression-register syntax colors).  They normally last
+    // until the next key, except that insert-mode Escape leaves the completed
+    // expression visible just as Neovim does.
+    if (this._specialCommandLine) {
+      if (key === 'Escape' && this._specialCommandLine.keepThroughEscape) {
+        this._specialCommandLine.keepThroughEscape = false;
+      } else {
+        this._specialCommandLine = null;
+      }
+    }
     // Ctrl-[ is the terminal equivalent of Escape
     if (key === 'Ctrl-[') key = 'Escape';
 
@@ -619,7 +631,10 @@ export class VimEngine {
           // Normal command completed with no pending state — return to insert
           this._insertOneShot = false;
           this.mode = Mode.INSERT;
-          this.commandLine = '-- INSERT --';
+          // With the pinned recording config's 'noshowmode', completing the
+          // one-shot command returns silently to insert mode.
+          this.commandLine = '';
+          this._suppressInsertModeMessage = true;
         }
         // else: still pending (e.g. operator-pending like d waiting for motion) — stay in normal
       }
@@ -8660,9 +8675,15 @@ export class VimEngine {
     // until Enter, then evaluate via _evalSubExpr and insert the result.
     if (this._pendingCtrlRExpr !== undefined && this._pendingCtrlRExpr !== null) {
       if (key === 'Enter' || key === 'Ctrl-J') {
-        const result = String(this._evalSubExpr(this._pendingCtrlRExpr, this.cursor.row, []));
+        const expression = this._pendingCtrlRExpr;
+        const result = String(this._evalSubExpr(expression, this.cursor.row, []));
         this._pendingCtrlRExpr = null;
         this.commandLine = '-- INSERT --';
+        this._specialCommandLine = {
+          kind: 'expression',
+          text: '=' + expression,
+          keepThroughEscape: true,
+        };
         for (const ch of result) {
           if (ch === '\n') {
             this.buffer.splitLine(this.cursor.row, this.cursor.col);
@@ -12536,11 +12557,20 @@ export class VimEngine {
       case '[s': {
         // [s — previous misspelled word
         if (this._settings.spell) {
-          const pos = this._findNextSpellError(this.cursor.row, this.cursor.col, false);
+          const oldRow = this.cursor.row;
+          const oldCol = this.cursor.col;
+          const pos = this._findNextSpellError(oldRow, oldCol, false);
           if (pos) {
+            const wrapped = pos.row > oldRow || (pos.row === oldRow && pos.col >= oldCol);
             this.cursor.row = pos.row;
             this.cursor.col = pos.col;
             this._updateDesiredCol();
+            if (wrapped) {
+              this._specialCommandLine = {
+                kind: 'spell-wrap',
+                text: 'search hit TOP, continuing at BOTTOM',
+              };
+            }
           }
         } else {
           this._messagePrompt = { error: 'E756: Spell checking is not possible' };
@@ -12644,8 +12674,9 @@ export class VimEngine {
         break;
       }
       case '[d': case ']d': case '[D': case ']D':
-        // Diagnostic navigation — sim has no LSP diagnostics, always "no more"
-        this._messagePrompt = { warn: 'No more valid diagnostics to move to' };
+        // Built-in definition search (after any LSP mappings are removed).
+        // Without an include/definition database Neovim reports E388.
+        this._messagePrompt = { error: "E388: Couldn't find definition" };
         break;
       case '[f': case ']f':
         // Edit file under cursor — sim has no VFS, always error
@@ -15063,7 +15094,8 @@ export class VimEngine {
     }
     const gap = Math.max(1, this.cols - left.length - right.length);
     this.statusLine = left + ' '.repeat(gap) + right;
-    if (this.mode === Mode.INSERT) this.commandLine = '-- INSERT --';
+    if (this.mode === Mode.INSERT && !this._suppressInsertModeMessage) this.commandLine = '-- INSERT --';
+    else if (this.mode === Mode.INSERT) this.commandLine = '';
     else if (this.mode === Mode.REPLACE) this.commandLine = '-- REPLACE --';
     else if (this.mode === Mode.VISUAL) this.commandLine = '-- VISUAL --';
     else if (this.mode === Mode.VISUAL_LINE) this.commandLine = '-- VISUAL LINE --';

@@ -166,21 +166,21 @@ console.log('============================================================');
   const noneLine = frame.lines[0];
   const nonePos = noneLine.text.indexOf('None');
   if (nonePos >= 0) {
-    assert(fgAt(noneLine, nonePos) === t.syntax.constant, 'colour: None is cyan');
+    assert(fgAt(noneLine, nonePos) === t.syntax['function.builtin'], 'colour: None is cyan');
   }
 
   // IS_OK = True (next line after EMPTY)
   const trueLine = frame.lines[1];
   const truePos = trueLine.text.indexOf('True');
   if (truePos >= 0) {
-    assert(fgAt(trueLine, truePos) === t.syntax.constant, 'colour: True is cyan');
+    assert(fgAt(trueLine, truePos) === t.syntax['function.builtin'], 'colour: True is cyan');
   }
 
   // NOPE = False (two lines after EMPTY)
   const falseLine = frame.lines[2];
   const falsePos = falseLine.text.indexOf('False');
   if (falsePos >= 0) {
-    assert(fgAt(falseLine, falsePos) === t.syntax.constant, 'colour: False is cyan');
+    assert(fgAt(falseLine, falsePos) === t.syntax['function.builtin'], 'colour: False is cyan');
   }
 }
 
@@ -208,7 +208,7 @@ console.log('============================================================');
     const pl = frame.lines[0];
     const printPos = pl.text.indexOf('print');
     // In nvim_default, builtin IS highlighted as 8cf8f7
-    assert(printPos >= 0 && fgAt(pl, printPos) === t.syntax.builtin, 'builtin: print is cyan');
+    assert(printPos >= 0 && fgAt(pl, printPos) === t.syntax['function.builtin'], 'builtin: print is cyan');
   }
 }
 

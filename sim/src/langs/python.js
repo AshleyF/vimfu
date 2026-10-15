@@ -64,7 +64,9 @@ export const pythonGrammar = {
     { match: '\\b(?:and|or|not|in|is)\\b', scope: 'keyword' },
 
     // ── Built-in constants ─────────────────────────────────
-    { match: '\\b(?:True|False|None)\\b', scope: 'constant' },
+    // Vim's pythonBuiltin group links these names to Function under the
+    // pinned Monokai configuration, rather than to Constant.
+    { match: '\\b(?:True|False|None)\\b', scope: 'function.builtin' },
 
     // ── Numeric literals ───────────────────────────────────
     // Hex, binary, octal
