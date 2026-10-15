@@ -198,7 +198,8 @@ scale with page count. Examples:
 | 400   | 0.901 | 16.151 × 9.50 |
 | 413   | 0.930 | 16.180 × 9.50 |
 | 422   | 0.950 | 16.200 × 9.50 |
-| 427   | 0.962 | 16.212 × 9.50 | ← current (`build_cover.py` default)
+| 427   | 0.962 | 16.212 × 9.50 |
+| 437   | 0.984 | 16.234 × 9.50 | ← current (`build_cover.py` default)
 
 (`spine = pages × 0.002252`, `width = 2 × 0.125 + 2 × 7.5 + spine`,
 `height = 2 × 0.125 + 9.25 = 9.50`.)
