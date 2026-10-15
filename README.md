@@ -1,39 +1,60 @@
 # VimFu
 
-Learn Vim from zero to fluency — through short videos, an interactive simulator, and an online book.
+Learn Vim from zero to fluency — through short videos, an interactive
+simulator, and a book/site built from one content graph.
+
+**Site:** [vimfubook.com](https://vimfubook.com)
 
 ## YouTube Shorts
 
-The `curriculum/` folder contains a structured curriculum of 188 short-form video lessons covering Vim, Tmux, and shell skills. Each lesson is a JSON file that drives the automated video pipeline in `shellpilot/` — recording real Neovim/Tmux sessions with TTS narration, keystroke overlays, and auto-generated thumbnails. Videos are published to the [VimFu YouTube playlist](https://www.youtube.com/playlist?list=PLxHt4V1mEKqcZprbsh4Dw90_wV_BttExs).
+The `curriculum/` folder holds a structured curriculum of short-form
+video lessons covering Vim, tmux, and shell skills. Each lesson is a
+JSON file that drives the automated video pipeline in `shellpilot/` —
+recording real Neovim/`tmux` sessions with TTS narration, keystroke
+overlays, and auto-generated thumbnails.
 
 ## Vim Simulator
 
-A web-based Vim simulator that runs entirely in the browser. Practice normal mode, insert mode, motions, operators, text objects, registers, macros, and more — no install required.
+A web-based Vim simulator that runs entirely in the browser. Practice
+*normal mode*, *insert mode*, motions, operators, text objects,
+registers, macros, and more — no install required.
 
-**Try it live:** [ashleyf.github.io/vimfu/sim](https://ashleyf.github.io/vimfu/sim/)
+**Try it live:** [vimfubook.com/sim](https://vimfubook.com/sim/)
 
-Source is in the `sim/` folder. Tests compare simulator output against real Neovim for pixel-perfect fidelity.
+Source is in the `sim/` folder. Tests compare simulator output against
+real Neovim for fidelity.
 
-## Book
+## Book and website
 
-An online companion book covering the full curriculum — from survival basics through advanced topics and surround.vim.
+The **canonical source** is `content/parts/**/*.json`. From there we
+render the website (`content/deploy_site.py` → `docs/`), the PDF book
+(`content/build_pdf.py`), InDesign Tagged Text, and SVG screenshots of
+worked examples.
 
-**Read it online:** [ashleyf.github.io/vimfu/book/output](https://ashleyf.github.io/vimfu/book/output/)
+**Read it online:** [vimfubook.com](https://vimfubook.com)
 
-Source content is in `book/content/` as JSON; rendered to HTML by `book/render_page.py`.
+Do **not** author in `book/content/` — that tree is a legacy prototype.
+See `AGENTS.md` and `content/StyleGuide.md` before editing prose.
 
 ## Keyboard Explorer
 
-An interactive SVG keyboard that shows what every Vim key does.
+An interactive SVG keyboard that shows what every Vim key does (shipped
+with the site).
 
-**Try it live:** [ashleyf.github.io/vimfu](https://ashleyf.github.io/vimfu/)
-
-## Project Structure
+## Project structure
 
 | Folder | Description |
 |---|---|
-| `curriculum/` | Lesson curriculum and 188 video JSON files |
+| `content/` | **Source of truth** — topics, examples, style guide, renderers |
+| `docs/` | Published GitHub Pages site (generated; see `deploy_site.py`) |
+| `curriculum/` | Video curriculum / short lesson JSON |
 | `shellpilot/` | Video recording/playback engine (PTY, TTS, GIF/MP4) |
 | `sim/` | Browser-based Vim simulator |
-| `book/` | Online book content and renderer |
+| `book/` | Marketing/cover, illustrations; `book/content/` is **legacy** |
 | `archive/` | Legacy DemoGen (F# automation, retired) |
+
+## Agent / author entry points
+
+- `AGENTS.md` — how to work in this repo
+- `content/StyleGuide.md` — prose/key/mode markup contract (read before any prose edit)
+- `content/README.md` — content system layout and build commands

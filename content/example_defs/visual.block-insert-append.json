@@ -1,0 +1,52 @@
+{
+  "format": "vimfu-example-def",
+  "version": 1,
+  "id": "visual.block-insert-append",
+  "title": "Block insert with {key:Ctrl-V}{key:I}",
+  "summary": "Prefix every line in a column selection at once.",
+  "topic": "visual.block-insert-append",
+  "content": [
+    "alpha",
+    "bravo",
+    "charlie"
+  ],
+  "cursor": [
+    0,
+    0
+  ],
+  "frames": [
+    {},
+    {
+      "actions": [
+        {
+          "keys": "\u0016"
+        },
+        {
+          "keys": "jj"
+        }
+      ],
+      "keys": "Ctrl-V jj",
+      "caption": "{key:Ctrl-V}{key:j}{key:j} — a one-column block."
+    },
+    {
+      "actions": [
+        {
+          "keys": "I"
+        },
+        {
+          "type": "# "
+        }
+      ],
+      "keys": "I# ",
+      "caption": "{key:I} types on the first row only — for now."
+    },
+    {
+      "actions": [
+        "escape"
+      ],
+      "keys": "Esc",
+      "caption": "{key:Esc} replays the insert on every selected row.",
+      "narration": "Block {key:A} appends past the right edge the same way. This is the fastest column edit in Vim."
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "format": "vimfu-example-def",
+  "version": 1,
+  "id": "pattern.block-comment",
+  "title": "Ctrl-V  jjj  I//<Esc>",
+  "summary": "Block-prefix many lines at once.",
+  "topic": "patterns.block-comment",
+  "content": [
+    "x = 1",
+    "y = 2",
+    "z = 3"
+  ],
+  "cursor": [
+    0,
+    0
+  ],
+  "frames": [
+    {},
+    {
+      "actions": [
+        {
+          "keys": "\u0016"
+        },
+        {
+          "keys": "jj"
+        }
+      ],
+      "caption": "{key:Ctrl-V} {key:j}{key:j} — three rows selected.",
+      "keys": "Ctrl-V jj"
+    },
+    {
+      "actions": [
+        {
+          "keys": "I"
+        },
+        {
+          "type": "//"
+        }
+      ],
+      "caption": "{key:I}{key:/}{key:/} — typing on the first row only.",
+      "keys": "I//"
+    },
+    {
+      "actions": [
+        "escape"
+      ],
+      "caption": "{key:Esc} — Vim replays the insertion on every selected row.",
+      "narration": "The trick: in block-Insert mode, the typing only shows on row one until you press Esc.",
+      "keys": "Esc"
+    }
+  ]
+}

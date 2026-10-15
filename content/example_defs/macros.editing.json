@@ -1,0 +1,64 @@
+{
+  "format": "vimfu-example-def",
+  "version": 1,
+  "id": "macros.editing",
+  "title": "Edit a macro as text",
+  "summary": "Paste register `a`, fix a typo, yank it back.",
+  "topic": "macros.editing",
+  "content": [
+    "item"
+  ],
+  "cursor": [
+    0,
+    0
+  ],
+  "frames": [
+    {},
+    {
+      "actions": [
+        {
+          "keys": "qa"
+        },
+        {
+          "keys": "A"
+        },
+        {
+          "type": "!"
+        },
+        "escape",
+        {
+          "keys": "q"
+        }
+      ],
+      "keys": "qa A! Esc q",
+      "caption": "Record a macro that appends `!`."
+    },
+    {
+      "actions": [
+        {
+          "keys": "o"
+        },
+        "escape",
+        {
+          "keys": "\"ap"
+        }
+      ],
+      "keys": "o Esc \"ap",
+      "caption": "{key:\"}{key:a}{key:p} pastes the macro as editable text.",
+      "narration": "Macros are register contents. Fix the keystrokes on the line, then {key:\"}{key:a}{key:y}{key:y} to put the corrected sequence back."
+    },
+    {
+      "actions": [
+        {
+          "keys": "rx"
+        },
+        {
+          "keys": "\"ayy"
+        }
+      ],
+      "keys": "rx \"ayy",
+      "caption": "Change `!` to `x`, yank back into `a`.",
+      "narration": "Next {key:@}{key:a} plays the edited version — no re-recording required."
+    }
+  ]
+}

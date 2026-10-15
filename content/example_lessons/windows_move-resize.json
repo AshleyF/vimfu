@@ -1,0 +1,75 @@
+{
+  "title": "VimFu — windows.move-resize (example screenshots)",
+  "description": "Lesson used by content/examples/windows.move-resize.json to capture authentic Vim frames. Not intended for video.",
+  "speed": 1.0,
+  "humanize": 0,
+  "rows": 10,
+  "cols": 40,
+  "ttsEnabled": false,
+  "recordVideo": false,
+  "clickKeys": false,
+  "captureDedup": false,
+  "setup": [
+    {
+      "line": "export TERM=xterm-256color"
+    },
+    {
+      "line": "mkdir -p ~/vimfu && cd ~/vimfu"
+    },
+    {
+      "line": "rm -f main.txt .main.txt.swp"
+    },
+    {
+      "line": "find ~/.local/state/nvim/swap -mindepth 1 -delete 2>/dev/null"
+    },
+    {
+      "writeFile": "main.txt",
+      "content": "pane\n",
+      "noDedent": true
+    },
+    {
+      "line": "clear"
+    },
+    {
+      "line": "nvim -c 'set noshowmode' main.txt"
+    },
+    {
+      "waitForScreen": "main.txt",
+      "timeout": 30.0
+    },
+    {
+      "ifScreen": "swap file",
+      "thenKeys": "d"
+    }
+  ],
+  "steps": [
+    {
+      "keys": "\u0017"
+    },
+    {
+      "keys": "v"
+    },
+    {
+      "keys": "\u0017"
+    },
+    {
+      "keys": "10>"
+    },
+    {
+      "keys": "\u0017"
+    },
+    {
+      "keys": "="
+    }
+  ],
+  "teardown": [
+    "escape",
+    {
+      "type": ":q!"
+    },
+    "enter",
+    {
+      "line": "rm -f main.txt"
+    }
+  ]
+}

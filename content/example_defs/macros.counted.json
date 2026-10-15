@@ -1,0 +1,52 @@
+{
+  "format": "vimfu-example-def",
+  "version": 1,
+  "id": "macros.counted",
+  "title": "{n}{key:@}{key:a} — run until done",
+  "summary": "A counted macro stops cleanly when an iteration fails.",
+  "topic": "macros.counted",
+  "content": [
+    "alpha",
+    "bravo",
+    "charlie"
+  ],
+  "cursor": [
+    0,
+    0
+  ],
+  "frames": [
+    {},
+    {
+      "actions": [
+        {
+          "keys": "qa"
+        },
+        {
+          "keys": "I"
+        },
+        {
+          "type": "- "
+        },
+        "escape",
+        {
+          "keys": "j0"
+        },
+        {
+          "keys": "q"
+        }
+      ],
+      "keys": "qa I- Esc j0 q",
+      "caption": "Record: prefix with `- `, move to next line, stop."
+    },
+    {
+      "actions": [
+        {
+          "keys": "2@a"
+        }
+      ],
+      "keys": "2@a",
+      "caption": "{key:2}{key:@}{key:a} finishes the remaining lines.",
+      "narration": "Give a big count when the macro advances itself — playback stops at the first error instead of looping forever."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "format": "vimfu-example-def",
+  "version": 1,
+  "id": "registers.special",
+  "title": "The {key:\"}{key::} and {key:\"}{key:.} registers",
+  "summary": "Last Ex command and last inserted text are registers you can paste.",
+  "topic": "registers.special",
+  "content": [
+    "hello"
+  ],
+  "cursor": [
+    0,
+    0
+  ],
+  "prep": [
+    {
+      "ex": "echo hi"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "After `:echo hi`, the command lives in {key:\"}{key::}."
+    },
+    {
+      "actions": [
+        {
+          "keys": "o"
+        },
+        {
+          "keys": "\u0012"
+        },
+        {
+          "keys": ":"
+        },
+        "escape"
+      ],
+      "keys": "o Ctrl-R : Esc",
+      "caption": "From *insert mode,* {key:Ctrl-R}{key::} pastes the last Ex command.",
+      "narration": "Special registers are read-only mirrors of recent editor state — handy when you want to reuse a command or a typed phrase."
+    }
+  ]
+}
