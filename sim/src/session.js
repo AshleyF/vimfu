@@ -239,6 +239,14 @@ export class SessionManager {
 
     // Create a fresh engine
     this.engine = new VimEngine({ rows: this.rows, cols: this.cols });
+    this.engine._sessionManaged = true;
+    this.engine._resolveFile = (requested) => {
+      const candidates = [requested];
+      if (!/\.[^/]+$/.test(requested)) candidates.push(`${requested}.py`);
+      const name = candidates.find(candidate => this.fs.exists(candidate));
+      return name ? { name, content: this.fs.read(name) } : null;
+    };
+    this.engine._listFiles = () => this.fs.ls();
     this.engine.filename = filename;  // for syntax highlighting
 
     // Sync engine text rows with screen layout
@@ -250,9 +258,9 @@ export class SessionManager {
     // Load file from VFS if it exists, otherwise start empty
     if (filename && this.fs.exists(filename)) {
       const content = this.fs.read(filename);
-      this.engine.loadFile(content);
+      this.engine.loadFile(content, filename);
     } else {
-      this.engine.loadFile('');
+      this.engine.loadFile('', filename || null);
     }
     // Track undo-position at load time for dirty detection
     this._savedChangeCount = this.engine._changeCount;
@@ -289,9 +297,9 @@ export class SessionManager {
    *   - vim.opt.number = true / vim.o.scrolloff = 8
    *   - vim.cmd("nnoremap Y y$") / vim.cmd("set number")
    */
-  _loadInitLua() {
+  _loadInitLua(filename = 'init.lua') {
     if (!this.engine || !this.fs) return;
-    const content = this.fs.read('init.lua');
+    const content = this.fs.read(filename);
     if (!content) return;
 
     const lines = content.split('\n');
@@ -426,6 +434,14 @@ export class SessionManager {
     // Clear the flag
     this.engine._lastExCommand = null;
 
+    // Some deterministic filters have a standalone-engine implementation.
+    // Do not run them a second time merely because the engine also exposes
+    // the command to SessionManager for command-history/session bookkeeping.
+    if (this.engine._lastExHandledInternally) {
+      this.engine._lastExHandledInternally = false;
+      return;
+    }
+
     this._handleExCommand(cmd);
   }
 
@@ -442,6 +458,83 @@ export class SessionManager {
 
     // Parse ex command
     const trimmed = cmd.trim();
+
+    // Commands that created a window/tab in VimEngine still need the session
+    // VFS to populate a named file. The engine deliberately cannot read host
+    // files on its own, so replace its provisional empty buffer here.
+    const openInLayout = trimmed.match(
+      /^(?:sp(?:l(?:it?)?)?|vs(?:p(?:l(?:it?)?)?)?|tabnew|tabe(?:d(?:it?)?)?)\s+(\S.*?)\s*$/
+    );
+    if (openInLayout) {
+      const arg = openInLayout[1];
+      const lineMatch = arg.match(/^\+(\d+)\s+(.+)$/);
+      const filename = lineMatch ? lineMatch[2] : arg;
+      this._vimFilename = filename;
+      this.engine.filename = filename;
+      this.engine.loadFile(this.fs.exists(filename) ? this.fs.read(filename) : '', filename);
+      this._savedChangeCount = this.engine._changeCount;
+      this._updateVimStatus();
+      if (lineMatch) {
+        this.engine.cursor.row = Math.min(Number(lineMatch[1]) - 1, this.engine.buffer.lineCount - 1);
+        this.engine.cursor.col = this.engine._firstNonBlank(this.engine.cursor.row);
+        this.engine._updateDesiredCol();
+      }
+      this.engine.commandLine = this.engine._lastExTyped || `:${trimmed}`;
+      this.engine._stickyCommandLine = true;
+      return;
+    }
+
+    const luaFile = trimmed.match(/^luafile\s+(\S.*?)\s*$/);
+    if (luaFile) {
+      this._loadInitLua(luaFile[1]);
+      this.engine.commandLine = this.engine._lastExTyped || `:${trimmed}`;
+      this.engine._stickyCommandLine = true;
+      return;
+    }
+
+    // :wa writes every named buffer, not only the active one.
+    if (/^wa!?$/.test(trimmed)) {
+      this.engine._saveCurrentBufState();
+      for (const entry of this.engine._bufferList) {
+        if (!entry.fileName) continue;
+        this.fs.write(entry.fileName, entry.buffer.lines.join('\n'));
+        entry.changeCount = 0;
+      }
+      this.engine._changeCount = 0;
+      this._savedChangeCount = 0;
+      this.engine.commandLine = this.engine._lastExTyped || `:${trimmed}`;
+      this.engine._stickyCommandLine = true;
+      return;
+    }
+
+    // :qa[ll][!] closes the editor session.  Without !, preserve Neovim's
+    // refusal when any loaded buffer has unsaved changes.
+    if (/^qa(?:ll)?!?$/.test(trimmed)) {
+      const forced = trimmed.endsWith('!');
+      const dirty = this.engine._bufferList.some(entry => (entry.changeCount || 0) > 0)
+        || this._isDirty();
+      if (dirty && !forced) {
+        const fname = this._vimFilename || '[No Name]';
+        this.engine._messagePrompt = {
+          error: `E37: No write since last change\nE162: No write since last change for buffer "${fname}"`,
+        };
+        this.engine.commandLine = '';
+      } else {
+        this._exitVim();
+      }
+      return;
+    }
+
+    // :wqa[ll][!] / :xa[ll][!] writes every named buffer, then exits.
+    if (/^(?:wqa(?:ll)?|xa(?:ll)?)!?$/.test(trimmed)) {
+      this.engine._saveCurrentBufState();
+      for (const entry of this.engine._bufferList) {
+        if (!entry.fileName) continue;
+        this.fs.write(entry.fileName, entry.buffer.lines.join('\n'));
+      }
+      this._exitVim();
+      return;
+    }
 
     // :w[rite] [filename] – write
     if (/^w(r(i(te?)?)?)?(\s|$)/.test(trimmed)) {
@@ -512,9 +605,9 @@ export class SessionManager {
         this._vimFilename = filename;
         this.engine.filename = filename;
         if (this.fs.exists(filename)) {
-          this.engine.loadFile(this.fs.read(filename));
+          this.engine.loadFile(this.fs.read(filename), filename);
         } else {
-          this.engine.loadFile('');
+          this.engine.loadFile('', filename);
         }
         this._savedChangeCount = this.engine._changeCount;
         this._updateVimStatus();
@@ -705,7 +798,11 @@ export class SessionManager {
 
   /** @private – save current vim buffer to VFS */
   _saveFile(filename) {
-    const content = this.engine.buffer.lines.join('\n');
+    // A :write to another pathname creates a normal line-oriented file with
+    // a final newline. Rewriting the current no-eol buffer preserves its
+    // existing end-of-line state.
+    const saveAs = filename !== this._vimFilename;
+    const content = this.engine.buffer.lines.join('\n') + (saveAs ? '\n' : '');
     this.fs.write(filename, content);
     this._savedChangeCount = this.engine._changeCount;
   }

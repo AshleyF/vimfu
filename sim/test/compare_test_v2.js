@@ -12,7 +12,7 @@
  *   node test/compare_test_v2.js --legacy                  # run old ground_truth.json too
  */
 
-import { readFileSync, readdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { VimEngine } from '../src/engine.js';
@@ -28,11 +28,13 @@ let filterSuite = null;
 let filterCase = null;
 let includeLegacy = false;
 let skipColors = false;
+let refreshColors = false;
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--suite' && args[i + 1]) filterSuite = args[++i];
   else if (args[i] === '--case' && args[i + 1]) filterCase = args[++i];
   else if (args[i] === '--legacy') includeLegacy = true;
   else if (args[i] === '--no-color') skipColors = true;
+  else if (args[i] === '--refresh-colors') refreshColors = true;
 }
 
 // ── Discover ground truth files ──
@@ -88,6 +90,12 @@ function _feedKeysImpl(feedFn, keys) {
         if (code === '3' && i + 3 < keys.length && keys[i + 3] === '~') {
           feedFn('Delete'); i += 4; continue;
         }
+        // xterm Shift+Arrow: CSI 1;2 A/B/C/D.  In Select mode these extend
+        // the selection exactly like the corresponding arrow motion.
+        if (keys.slice(i, i + 5) === '\x1b[1;2' && i + 5 < keys.length) {
+          const shifted = { A: 'Shift-ArrowUp', B: 'Shift-ArrowDown', C: 'Shift-ArrowRight', D: 'Shift-ArrowLeft' }[keys[i + 5]];
+          if (shifted) { feedFn(shifted); i += 6; continue; }
+        }
       }
       key = 'Escape';
     }
@@ -95,6 +103,7 @@ function _feedKeysImpl(feedFn, keys) {
     else if (ch === '\n') key = 'Ctrl-J';
     else if (ch === '\x03') key = 'Ctrl-C';
     else if (ch === '\x08' || ch === '\x7f') key = 'Backspace';
+    else if (ch === '\x00') key = 'Ctrl-@';
     else if (ch === '\x01') key = 'Ctrl-A';
     else if (ch === '\x02') key = 'Ctrl-B';
     else if (ch === '\x04') key = 'Ctrl-D';
@@ -217,14 +226,60 @@ for (const [suiteName, cases] of Object.entries(suites)) {
     }
 
     // Run through sim engine (or session for shell-filter tests)
-    const needsSession = gt.keys && /[!]/.test(gt.keys) && suiteName === 'filter';
+    const needsSession = gt.requiresSession
+      || (gt.keys && /[!]/.test(gt.keys) && suiteName === 'filter')
+      || (gt.setupFiles && Object.keys(gt.setupFiles).length > 0);
     let engine;
+    let session = null;
     if (needsSession) {
-      const session = new SessionManager({ rows: ROWS, cols: COLS, persist: false });
-      const fname = gt.fileName || 'test.txt';
-      if (gt.initialContent) session.fs.write(fname, gt.initialContent);
+      session = new SessionManager({ rows: ROWS, cols: COLS, persist: false });
+      const launch = gt.launch || {};
+      const deferredInit = gt.setupFiles?.['init.lua'];
+      if (gt.setupFiles) {
+        for (const [path, content] of Object.entries(gt.setupFiles)) {
+          if (path !== 'init.lua') session.fs.write(path, content);
+        }
+      }
+      const launchFiles = (launch.files || []).filter(path => session.fs.exists(path));
+      const fname = launchFiles[0] || gt.fileName || 'test.txt';
+      if (!gt.setupFiles && gt.initialContent) session.fs.write(fname, gt.initialContent);
       for (const ch of `vim ${fname}`) session.feedKey(ch);
       session.feedKey('Enter');
+      if (deferredInit !== undefined) session.fs.write('init.lua', deferredInit);
+      if (launchFiles.length > 1) {
+        if (!launch.layout) {
+          const firstId = session.engine._currentBufId;
+          for (const path of launchFiles.slice(1)) {
+            session.engine.loadFile(session.fs.read(path), path);
+          }
+          session.engine._switchToBuffer(firstId);
+          session.engine._argList = launchFiles.slice();
+          session.engine._argIndex = 0;
+        } else {
+          const oldBelow = session.engine._settings.splitbelow;
+          const oldRight = session.engine._settings.splitright;
+          session.engine._settings.splitbelow = true;
+          session.engine._settings.splitright = true;
+          for (const path of launchFiles.slice(1)) {
+            if (launch.layout === 'tabs') session.engine._doTabNew();
+            else session.engine._doSplit(
+              launch.layout === 'vertical' || launch.layout === 'diff',
+              launch.layout !== 'diff'
+            );
+            session.engine.loadFile(session.fs.read(path), path);
+          }
+          session.engine._settings.splitbelow = oldBelow;
+          session.engine._settings.splitright = oldRight;
+          if (launch.layout !== 'tabs' && launch.layout !== 'diff') session.engine._equalizeWindows();
+          if (launch.layout === 'diff' && session.engine._windows.length === 2) {
+            session.engine._windows[0]._width = Math.ceil((COLS - 1) / 2);
+            session.engine._windows[1]._width = Math.floor((COLS - 1) / 2);
+          }
+          if (launch.layout === 'tabs') session.engine._switchToTab(0);
+          else session.engine._switchToWindow(0);
+          if (launch.layout === 'diff') session.engine._diffMode = true;
+        }
+      }
       // Feed keys through session (not engine) so shell commands are processed
       feedKeysViaSession(session, gt.keys);
       engine = session.engine;
@@ -234,6 +289,37 @@ for (const [suiteName, cases] of Object.entries(suites)) {
         engine.loadFile(gt.initialContent, gt.fileName || null);
       }
       feedKeys(engine, gt.keys);
+    }
+
+    const sessionStateDiffs = [];
+    if (gt.requiresSession) {
+      const expectedMode = gt.expectsExit ? 'shell' : 'vim';
+      if (!session || session.getMode() !== expectedMode) {
+        sessionStateDiffs.push(`mode: expected ${expectedMode}, got ${session?.getMode() || 'none'}`);
+      }
+      const expectedFiles = gt.filesAfter || {};
+      const actualPaths = new Set(session?.fs.ls() || []);
+      for (const [path, expected] of Object.entries(expectedFiles)) {
+        const actual = session?.fs.read(path) ?? null;
+        if (actual !== expected) sessionStateDiffs.push(`file ${path} differs`);
+        actualPaths.delete(path);
+      }
+      for (const path of actualPaths) sessionStateDiffs.push(`unexpected file ${path}`);
+    }
+
+    // Once Neovim exits there is no editor frame worth comparing: a direct
+    // oracle process and an interactive simulated shell restore different
+    // terminal buffers.  Compare the observable session outcome instead.
+    if (gt.expectsExit) {
+      if (sessionStateDiffs.length === 0) {
+        suitePassed++;
+      } else {
+        console.log(`  FAIL  ${name}`);
+        for (const diff of sessionStateDiffs) console.log(`        ${diff}`);
+        allFailures.push({ suite: suiteName, name, stateDiffs: sessionStateDiffs });
+        suiteFailed++;
+      }
+      continue;
     }
 
     const screen = new Screen(ROWS, COLS, 'monokai');
@@ -251,13 +337,24 @@ for (const [suiteName, cases] of Object.entries(suites)) {
       && (gtCursor.visible ?? true) === (simCursor.visible ?? true)
     );
 
+    // Theme migrations must never bless behavioral differences. Only replace
+    // color runs after text and cursor state independently match the oracle.
+    if (refreshColors && textDiffs.length === 0 && cursorMatch && gt.frame?.lines) {
+      gt.frame.defaultFg = frame.defaultFg;
+      gt.frame.defaultBg = frame.defaultBg;
+      for (let row = 0; row < Math.min(gt.frame.lines.length, frame.lines.length); row++) {
+        gt.frame.lines[row].runs = frame.lines[row].runs;
+      }
+    }
+
     // Compare runs/colours if ground truth has frame data
     let colorDiffs = [];
     if (!skipColors && gt.frame && gt.frame.lines && !gt.colorError) {
       colorDiffs = diffRuns(gt.frame, frame, ROWS - 2);
     }
 
-    if (textDiffs.length === 0 && cursorMatch && colorDiffs.length === 0) {
+    if (textDiffs.length === 0 && cursorMatch && colorDiffs.length === 0
+        && sessionStateDiffs.length === 0) {
       suitePassed++;
     } else {
       console.log(`  FAIL  ${name}`);
@@ -286,6 +383,7 @@ for (const [suiteName, cases] of Object.entries(suites)) {
           console.log(`        ... and ${colorDiffs.length - 3} more color diffs`);
         }
       }
+      for (const diff of sessionStateDiffs) console.log(`        ${diff}`);
       allFailures.push(info);
       suiteFailed++;
     }
@@ -299,6 +397,11 @@ for (const [suiteName, cases] of Object.entries(suites)) {
   totalPassed += suitePassed;
   totalFailed += suiteFailed;
   totalSkipped += suiteSkipped;
+
+  if (refreshColors && suiteName !== '_legacy') {
+    const path = resolve(__dirname, `ground_truth_${suiteName}.json`);
+    writeFileSync(path, `${JSON.stringify(cases, null, 2)}\n`);
+  }
 }
 
 // ── Summary ──

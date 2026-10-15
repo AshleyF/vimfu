@@ -41,6 +41,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -50,6 +51,45 @@ OUT_DIR = Path(__file__).resolve().parent / "cases" / "auto"
 
 LESSON_RE = re.compile(r"^(\d{4})([a-z]*)_(.+)\.json$")
 CTRL_KEY_RE = re.compile(r"^(\d*)(?:ctrl|c)[\+\-](.+)$", re.IGNORECASE)
+
+# These lessons cross the pure-Neovim boundary used by this oracle.  They are
+# retained in the generated SKIPPED inventory until equivalent SessionManager
+# integration cases cover the shell/filesystem lifecycle.
+ORACLE_SKIP_OVERRIDES = {
+    "0002_opening_a_file": "starts in the shell; requires session oracle",
+    "0008_quitting_vim": "continues after Neovim exits; requires session oracle",
+    "0009_save_and_quit": "continues after Neovim exits; requires session oracle",
+    "0010_quit_without_saving": "continues after Neovim exits; requires session oracle",
+    "0187_the_ZZ_ZQ_keys": "exits Neovim; requires session oracle",
+    "0133_navigate_windows": "nested mixed split layout is not supported by the flat window model",
+    "0430l_pwd": "depends on the host working directory; requires session oracle",
+    "0430d_qa": "exits Neovim; requires session oracle",
+    "0430f_wqa": "exits Neovim; requires session oracle",
+    "0495_mkview_loadview": "depends on persistent view files; requires session filesystem oracle",
+    "0496_gx_open_url": "depends on the host URL opener and platform-specific error output",
+    "0498_vimrc_init_lua": "oracle capture does not observe the sourced config before the final frame",
+    "0499_help_system": "depends on Neovim runtime help files; requires runtime integration oracle",
+    "0880q_quit_all": "exits Neovim; requires session oracle",
+    "0880s_write_quit_all": "exits Neovim; requires session oracle",
+    "0880w_pwd": "depends on the host working directory; requires session oracle",
+}
+
+# These lessons cross the Neovim/shell boundary but finish in a deterministic
+# editor state that SessionManager can reproduce.  Keep this list explicit:
+# arbitrary host commands are not safe or stable oracle inputs.
+SESSION_ORACLE_CASES = {
+    "0419_shell_command",
+    "0420_repeat_shell",
+    "0421_filter",
+    "0814_write_to_file",
+    "0880_shell_command",
+    "0880a_filter_lines",
+}
+
+SESSION_EXIT_CASES = {
+    "0430d_qa",
+    "0430f_wqa",
+}
 
 
 def _ctrl_byte(letter: str) -> str:
@@ -91,6 +131,105 @@ def _initial_from_setup(setup: list) -> str:
     return content
 
 
+def _setup_files(setup: list) -> dict[str, str]:
+    """Return every deterministic file created before Neovim starts."""
+    return {
+        str(step["writeFile"]): str(step.get("content", ""))
+        for step in setup or []
+        if isinstance(step, dict) and "writeFile" in step
+    }
+
+
+def _launch_file_from_setup(setup: list, files: dict[str, str]) -> str | None:
+    """Find the file argument from the final nvim launch command."""
+    result = None
+    for step in setup or []:
+        if not isinstance(step, dict) or "line" not in step:
+            continue
+        try:
+            words = shlex.split(str(step["line"]))
+        except ValueError:
+            continue
+        indexes = [i for i, word in enumerate(words) if Path(word).name in {"vim", "nvim"}]
+        if not indexes:
+            continue
+        args = words[indexes[-1] + 1:]
+        i = 0
+        candidates = []
+        while i < len(args):
+            if args[i] in {"-c", "--cmd", "-S", "-u"}:
+                i += 2
+            elif args[i].startswith("-"):
+                i += 1
+            else:
+                candidates.append(args[i])
+                i += 1
+        if candidates:
+            result = candidates[-1]
+    if result in files:
+        return result
+    return next(reversed(files), None) if files else None
+
+
+def _nvim_launch_from_setup(setup: list) -> dict | None:
+    """Preserve multi-file launch semantics that affect visible state."""
+    result = None
+    for step in setup or []:
+        if not isinstance(step, dict) or "line" not in step:
+            continue
+        try:
+            words = shlex.split(str(step["line"]))
+        except ValueError:
+            continue
+        indexes = [i for i, word in enumerate(words) if Path(word).name in {"vim", "nvim"}]
+        if not indexes:
+            continue
+        args = words[indexes[-1] + 1:]
+        layout = None
+        files: list[str] = []
+        i = 0
+        while i < len(args):
+            arg = args[i]
+            if arg in {"-o", "-O", "-p"}:
+                layout = {"-o": "horizontal", "-O": "vertical", "-p": "tabs"}[arg]
+                i += 1
+            elif arg == "-d":
+                layout = "diff"
+                i += 1
+            elif arg in {"-c", "--cmd", "-S", "-u"}:
+                i += 2
+            elif arg.startswith("-"):
+                i += 1
+            else:
+                files.append(arg)
+                i += 1
+        result = {"layout": layout, "files": files}
+    return result
+
+
+_NVIM_C_COMMAND_RE = re.compile(r"(?:^|\s)-c\s+(['\"])(.*?)\1")
+
+
+def _nvim_prelude_from_setup(setup: list) -> str:
+    """Preserve ``nvim -c '...'`` launch configuration as Ex keystrokes.
+
+    The fidelity harness starts its own pinned Neovim instance, so silently
+    dropping launch-time options creates an oracle gap: the captured editor is
+    not the editor used by the video.  Replaying the commands immediately after
+    startup is equivalent for the option/plugin setup used by the curriculum.
+    """
+    commands: list[str] = []
+    for step in setup or []:
+        if not isinstance(step, dict) or "line" not in step:
+            continue
+        line = str(step["line"])
+        if not re.search(r"(?:^|\s)(?:n?vim)(?:\s|$)", line):
+            continue
+        for match in _NVIM_C_COMMAND_RE.finditer(line):
+            commands.append(":" + match.group(2) + "\r")
+    return "".join(commands)
+
+
 _RANGE_PREFIX_RE = re.compile(r"^[%$.\d,;'+\-/?\s<>]*$")
 
 
@@ -110,12 +249,16 @@ def _is_blocking_ex(cmd: str) -> str | None:
         if _RANGE_PREFIX_RE.match(head_before_bang):
             return "shell escape (:!)"
     head = c.strip().split()[0] if c.strip() else ""
+    if re.match(r"^(?:r(?:ead)?|w(?:rite)?)\s+!", c.strip()):
+        return "shell command through Ex; requires session oracle"
     if head in {"term", "terminal"}:
         return ":term"
     return None
 
 
-def _emit_key_step(step, keys: list[str], skip: list[str]) -> None:
+def _emit_key_step(
+    step, keys: list[str], skip: list[str], *, allow_shell: bool = False
+) -> None:
     if isinstance(step, str):
         if step == "escape":
             keys.append("\x1b")
@@ -133,7 +276,7 @@ def _emit_key_step(step, keys: list[str], skip: list[str]) -> None:
     if "type" in step:
         t = step["type"]
         reason = _is_blocking_ex(t)
-        if reason:
+        if reason and not allow_shell:
             skip.append(reason)
             return
         keys.append(t)
@@ -141,11 +284,12 @@ def _emit_key_step(step, keys: list[str], skip: list[str]) -> None:
 
     if "ex" in step:
         e = step["ex"]
-        reason = _is_blocking_ex(":" + e)
-        if reason:
+        command = e if e.startswith(":") else ":" + e
+        reason = _is_blocking_ex(command)
+        if reason and not allow_shell:
             skip.append(reason)
             return
-        keys.append(":" + e + "\r")
+        keys.append(command + "\r")
         return
 
     if "keys" in step:
@@ -186,24 +330,37 @@ def _emit_key_step(step, keys: list[str], skip: list[str]) -> None:
 
 def extract_case(video_path: Path) -> dict:
     data = json.loads(video_path.read_text(encoding="utf-8"))
-    keys: list[str] = []
+    setup = data.get("setup", [])
+    keys: list[str] = [_nvim_prelude_from_setup(setup)]
     skip: list[str] = []
+    setup_files = _setup_files(setup)
+    launch_file = _launch_file_from_setup(setup, setup_files)
+    launch = _nvim_launch_from_setup(setup)
+    expects_exit = video_path.stem in SESSION_EXIT_CASES
+    requires_session = video_path.stem in SESSION_ORACLE_CASES or expects_exit
     # Tag-based skip: tmux / shell lessons exercise programs we don't
     # simulate. Mark the whole video as skipped so it doesn't pollute
     # the sim-vs-nvim fidelity pass rate.
     tags = data.get("tags", []) or []
     if "tmux" in tags:
         skip.append("tmux lesson (not vim)")
-    elif "shell" in tags:
+    elif "shell" in tags and not requires_session:
         skip.append("shell lesson (not vim)")
+    if video_path.stem in ORACLE_SKIP_OVERRIDES and not expects_exit:
+        skip.append(ORACLE_SKIP_OVERRIDES[video_path.stem])
     for step in data.get("steps", []):
-        _emit_key_step(step, keys, skip)
-    initial = _initial_from_setup(data.get("setup", []))
+        _emit_key_step(step, keys, skip, allow_shell=requires_session)
+    initial = setup_files.get(launch_file, _initial_from_setup(setup))
     return {
         "stem": video_path.stem,
         "title": data.get("title", video_path.stem),
         "description": data.get("description", ""),
         "initial": initial,
+        "file_name": launch_file,
+        "setup_files": setup_files,
+        "launch": launch,
+        "requires_session": requires_session,
+        "expects_exit": expects_exit,
         "keys": "".join(keys),
         "skip_reasons": sorted(set(skip)),
     }
@@ -238,6 +395,15 @@ def render_module(cases: list[dict]) -> str:
         lines.append(f'        "description": {desc!r},')
         lines.append(f'        "keys": {c["keys"]!r},')
         lines.append(f'        "initial": {c["initial"]!r},')
+        if c["requires_session"]:
+            lines.append('        "requiresSession": True,')
+        if c["expects_exit"]:
+            lines.append('        "expectsExit": True,')
+        if len(c["setup_files"]) > 1:
+            lines.append(f'        "fileName": {c["file_name"]!r},')
+            lines.append(f'        "setupFiles": {c["setup_files"]!r},')
+            if c["launch"]:
+                lines.append(f'        "launch": {c["launch"]!r},')
         lines.append('    },')
     lines.append('}')
     if skipped:

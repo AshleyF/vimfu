@@ -23,6 +23,8 @@ from __future__ import annotations
 import importlib
 import importlib.util
 import json
+import shlex
+import shutil
 import sys
 import time
 import tempfile
@@ -82,15 +84,28 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
     settle = case.get("settle", 0.3)
     key_delay = case.get("key_delay", 0.04)
 
-    # Write initial content to a temp file in the current directory
-    # (short path avoids ConPTY escaping issues)
-    tmp = Path(tempfile.mktemp(suffix=".txt", dir="."))
-    tmp.write_text(initial, encoding="utf-8")
+    # Give every case an isolated working directory. Commands such as
+    # ``:write backup.py`` must not leak files into later oracle captures.
+    work_dir = Path(tempfile.mkdtemp(prefix="vimfu-oracle-", dir="."))
+    setup_files = case.get("setupFiles", {})
+    for relative, content in setup_files.items():
+        target = work_dir / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(content, encoding="utf-8")
+    requested_name = case.get("fileName")
+    if requested_name and requested_name in setup_files:
+        tmp = work_dir / requested_name
+    else:
+        tmp = work_dir / Path(tempfile.mktemp(suffix=".txt")).name
+        tmp.write_text(initial, encoding="utf-8")
 
     # Ensure nvim enables termguicolors (needed for true-color capture via pyte)
     import os
     os.environ['TERM'] = 'xterm-256color'
     os.environ['COLORTERM'] = 'truecolor'
+    # Keep sandbox/socket warnings out of the repository during large oracle
+    # recaptures. They are unrelated to the terminal state under test.
+    os.environ['NVIM_LOG_FILE'] = os.devnull
 
     # Use custom nvim command if provided, otherwise plain nvim with user's config
     cmd = nvim_cmd or 'nvim'
@@ -102,7 +117,7 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
 
     # The wrapper adds capture isolation: no synchronized terminal updates
     # (which pyte cannot model reliably) and a deterministic null clipboard.
-    wrapper_vimrc = Path(tempfile.mktemp(suffix='.lua', dir='.'))
+    wrapper_vimrc = work_dir / 'init.lua'
     wrapper_vimrc.write_text(
         f"vim.cmd('source ' .. vim.fn.fnameescape({str(pinned_init)!r}))\n"
         "-- Null clipboard provider: no system clipboard, no warnings\n"
@@ -120,8 +135,18 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
         "}\n"
         "vim.opt.termsync = false\n"
     )
+    launch_spec = case.get("launch") or {}
+    launch_files = [name for name in launch_spec.get("files", []) if name in setup_files]
+    layout_flag = {"horizontal": "-o", "vertical": "-O", "tabs": "-p", "diff": "-d"}.get(
+        launch_spec.get("layout"), ""
+    )
+    file_args = launch_files or [tmp.name]
+    launch = (f'cd {shlex.quote(str(work_dir.resolve()))} && '
+              f'{cmd} -u {shlex.quote(str(wrapper_vimrc.resolve()))} '
+              f'-n -i NONE {layout_flag} '
+              + ' '.join(shlex.quote(name) for name in file_args))
     shell = ShellPilot(
-        shell=f'{cmd} -u {wrapper_vimrc} -n -i NONE {tmp.name}',
+        shell=f'/bin/sh -lc {shlex.quote(launch)}',
         rows=ROWS,
         cols=COLS,
     )
@@ -129,7 +154,10 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
         shell.start()
 
         # Wait for nvim to render
-        first_line = initial.split('\n')[0] if initial else ''
+        wait_content = initial
+        if launch_files:
+            wait_content = setup_files.get(launch_files[0], initial)
+        first_line = wait_content.split('\n')[0] if wait_content else ''
         # Tabs render as 8 spaces in nvim (default tabstop), so expand for the wait check
         wait_text = first_line.replace('\t', '        ')[:10].strip()
         wait_for = wait_text if wait_text else '~'
@@ -175,11 +203,23 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
         # Capture frame
         frame = capture_frame(shell.screen)
         text_lines = [line["text"] for line in frame["lines"][:ROWS - 2]]
+        files_after = {}
+        if case.get("requiresSession"):
+            for target in sorted(path for path in work_dir.rglob("*") if path.is_file()):
+                relative = str(target.relative_to(work_dir))
+                if relative == "init.lua":
+                    continue
+                files_after[relative] = target.read_text(encoding="utf-8")
 
         return {
             "keys": keys,
             "initialContent": initial,
             "fileName": tmp.name,
+            **({"setupFiles": setup_files} if setup_files else {}),
+            **({"launch": launch_spec} if launch_spec else {}),
+            **({"requiresSession": True} if case.get("requiresSession") else {}),
+            **({"filesAfter": files_after} if case.get("requiresSession") else {}),
+            **({"expectsExit": True} if case.get("expectsExit") else {}),
             "frame": frame,
             "textLines": text_lines,
             "cursor": frame["cursor"],
@@ -196,14 +236,7 @@ def run_case(name: str, case: dict, nvim_cmd: str | None = None) -> dict:
             shell.stop()
         except Exception:
             pass
-        try:
-            tmp.unlink()
-        except Exception:
-            pass
-        try:
-            wrapper_vimrc.unlink()
-        except Exception:
-            pass
+        shutil.rmtree(work_dir, ignore_errors=True)
 
 
 def run_suite(suite_name: str, cases: dict, case_filter: str | None = None, nvim_cmd: str | None = None) -> dict:

@@ -82,6 +82,7 @@ console.log('Running spell checking unit tests...\n');
 {
   const e = new VimEngine({ rows: 20, cols: 40 });
   e.loadFile('xyzzyplugh\n', 'test.txt');
+  feedKeys(e, ':set spellfile=/tmp/vimfu-spell.add\r');
   feedKeys(e, ':set spell\r');
   assert('before_zg', true, e._isSpellBad('xyzzyplugh'));
   feedKeys(e, 'zg');
@@ -93,6 +94,7 @@ console.log('Running spell checking unit tests...\n');
 {
   const e = new VimEngine({ rows: 20, cols: 40 });
   e.loadFile('hello\n', 'test.txt');
+  feedKeys(e, ':set spellfile=/tmp/vimfu-spell.add\r');
   feedKeys(e, ':set spell\r');
   assert('before_zw', false, e._isSpellBad('hello'));
   feedKeys(e, 'zw');
@@ -103,6 +105,7 @@ console.log('Running spell checking unit tests...\n');
 {
   const e = new VimEngine({ rows: 20, cols: 40 });
   e.loadFile('xyzzyplugh\n', 'test.txt');
+  feedKeys(e, ':set spellfile=/tmp/vimfu-spell.add\r');
   feedKeys(e, ':set spell\r');
   feedKeys(e, 'zg'); // add to good list
   assert('zg_good', false, e._isSpellBad('xyzzyplugh'));
@@ -114,6 +117,7 @@ console.log('Running spell checking unit tests...\n');
 {
   const e = new VimEngine({ rows: 20, cols: 40 });
   e.loadFile('hello\n', 'test.txt');
+  feedKeys(e, ':set spellfile=/tmp/vimfu-spell.add\r');
   feedKeys(e, ':set spell\r');
   feedKeys(e, 'zw');
   assert('zw_bad', true, e._isSpellBad('hello'));

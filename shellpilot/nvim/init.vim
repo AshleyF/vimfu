@@ -36,6 +36,7 @@ highlight Underlined   guifg=#66d9ef gui=underline
 highlight Error        guifg=#e95678 guibg=#000000
 highlight Todo         guifg=#e6db74 guibg=#000000 gui=bold
 highlight LineNr       guifg=#d4d4d4 guibg=#000000
+highlight CursorLine   guibg=#2c2e33
 highlight CursorLineNr guifg=#fd971f guibg=#26292c gui=bold
 highlight StatusLine   guifg=#b1b1b1 guibg=#2e323c
 highlight StatusLineNC guifg=#8f908a guibg=#2e323c

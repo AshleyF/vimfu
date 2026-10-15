@@ -48,13 +48,13 @@ console.log('Running buffer list unit tests...\n');
   assert('initial_alt', 'alternate buffer is null', null, e._alternateBufId);
 }
 
-// ── Test: loadFile creates new buffer ──
+// ── Test: the first load reuses Neovim's initial unnamed buffer ──
 {
   const e = new VimEngine({ rows: 20, cols: 40 });
   e.loadFile('hello world\n', 'file1.txt');
-  assert('loadfile_count', '2 buffers after loadFile', 2, e._bufferList.length);
-  assert('loadfile_id', 'current buffer id is 2', 2, e._currentBufId);
-  assert('loadfile_alt', 'alternate is 1', 1, e._alternateBufId);
+  assert('loadfile_count', '1 buffer after first loadFile', 1, e._bufferList.length);
+  assert('loadfile_id', 'current buffer id remains 1', 1, e._currentBufId);
+  assert('loadfile_alt', 'no phantom alternate buffer', null, e._alternateBufId);
   assert('loadfile_name', 'fileName is file1.txt', 'file1.txt', e._fileName);
 }
 
@@ -64,7 +64,7 @@ console.log('Running buffer list unit tests...\n');
   e.loadFile('hello\n', 'file1.txt');
   const id = e._currentBufId;
   e.loadFile('updated\n', 'file1.txt');
-  assert('reload_count', 'still 2 buffers after reload', 2, e._bufferList.length);
+  assert('reload_count', 'still 1 buffer after reload', 1, e._bufferList.length);
   assert('reload_id', 'same buffer id', id, e._currentBufId);
 }
 
@@ -73,8 +73,8 @@ console.log('Running buffer list unit tests...\n');
   const e = new VimEngine({ rows: 20, cols: 40 });
   e.loadFile('hello\n', 'file1.txt');
   feedKeys(e, ':enew\r');
-  assert('enew_count', '3 buffers after :enew', 3, e._bufferList.length);
-  assert('enew_id', 'current is 3', 3, e._currentBufId);
+  assert('enew_count', '2 buffers after :enew', 2, e._bufferList.length);
+  assert('enew_id', 'current is 2', 2, e._currentBufId);
   assert('enew_content', 'empty buffer', '', e.buffer.lines[0]);
 }
 
@@ -83,12 +83,12 @@ console.log('Running buffer list unit tests...\n');
   const e = new VimEngine({ rows: 20, cols: 40 });
   e.loadFile('first\n', 'first.txt');
   e.loadFile('second\n', 'second.txt');
-  // Now on buffer 3 (second.txt). :bn should go to buffer 1 (initial empty)
+  // Now on buffer 2 (second.txt). :bn wraps to buffer 1 (first.txt).
   feedKeys(e, ':bn\r');
   assert('bn_wraps', ':bn wraps to first', 1, e._currentBufId);
+  assert('bn_name', 'first.txt', 'first.txt', e._fileName);
   feedKeys(e, ':bn\r');
   assert('bn_next', ':bn goes to second', 2, e._currentBufId);
-  assert('bn_name', 'first.txt', 'first.txt', e._fileName);
 }
 
 // ── Test: :bp cycles to previous buffer ──
@@ -96,9 +96,9 @@ console.log('Running buffer list unit tests...\n');
   const e = new VimEngine({ rows: 20, cols: 40 });
   e.loadFile('first\n', 'first.txt');
   e.loadFile('second\n', 'second.txt');
-  // Buffer 3 (second.txt). :bp should go to buffer 2 (first.txt)
+  // Buffer 2 (second.txt). :bp should go to buffer 1 (first.txt)
   feedKeys(e, ':bp\r');
-  assert('bp_prev', ':bp goes to prev', 2, e._currentBufId);
+  assert('bp_prev', ':bp goes to prev', 1, e._currentBufId);
   assert('bp_name', 'first.txt', 'first.txt', e._fileName);
 }
 
@@ -107,8 +107,8 @@ console.log('Running buffer list unit tests...\n');
   const e = new VimEngine({ rows: 20, cols: 40 });
   e.loadFile('first\n', 'first.txt');
   e.loadFile('second\n', 'second.txt');
-  feedKeys(e, ':b 2\r');
-  assert('b_num', ':b 2 switches to buffer 2', 2, e._currentBufId);
+  feedKeys(e, ':b 1\r');
+  assert('b_num', ':b 1 switches to buffer 1', 1, e._currentBufId);
   assert('b_num_name', 'first.txt', 'first.txt', e._fileName);
 }
 
@@ -118,14 +118,14 @@ console.log('Running buffer list unit tests...\n');
   e.loadFile('first\n', 'first.txt');
   e.loadFile('second\n', 'second.txt');
   feedKeys(e, ':b first\r');
-  assert('b_name', ':b first matches', 2, e._currentBufId);
+  assert('b_name', ':b first matches', 1, e._currentBufId);
 }
 
 // ── Test: :b invalid shows error ──
 {
   const e = new VimEngine({ rows: 20, cols: 40 });
   feedKeys(e, ':b 999\r');
-  assert('b_invalid', 'error for invalid buffer', true, e.commandLine.includes('E86'));
+  assert('b_invalid', 'error for invalid buffer', true, e._messagePrompt?.error?.includes('E86') || false);
 }
 
 // ── Test: Ctrl-^ toggles alternate buffer ──
@@ -133,13 +133,13 @@ console.log('Running buffer list unit tests...\n');
   const e = new VimEngine({ rows: 20, cols: 40 });
   e.loadFile('first\n', 'first.txt');
   e.loadFile('second\n', 'second.txt');
-  // On buffer 3 (second.txt), alternate is 2 (first.txt)
+  // On buffer 2 (second.txt), alternate is 1 (first.txt)
   e.feedKey('Ctrl-^');
-  assert('ctrl6_toggle', 'Ctrl-^ goes to alternate', 2, e._currentBufId);
+  assert('ctrl6_toggle', 'Ctrl-^ goes to alternate', 1, e._currentBufId);
   assert('ctrl6_name', 'on first.txt', 'first.txt', e._fileName);
   // Toggle back
   e.feedKey('Ctrl-^');
-  assert('ctrl6_back', 'Ctrl-^ returns', 3, e._currentBufId);
+  assert('ctrl6_back', 'Ctrl-^ returns', 2, e._currentBufId);
   assert('ctrl6_back_name', 'on second.txt', 'second.txt', e._fileName);
 }
 
@@ -156,8 +156,8 @@ console.log('Running buffer list unit tests...\n');
   e.loadFile('first\n', 'first.txt');
   e.loadFile('second\n', 'second.txt');
   feedKeys(e, ':bd\r');
-  assert('bd_count', 'buffer removed', 2, e._bufferList.length);
-  assert('bd_not_third', 'buffer 3 is gone', null, e._getBufEntry(3));
+  assert('bd_count', 'buffer removed', 1, e._bufferList.length);
+  assert('bd_not_second', 'buffer 2 is gone', null, e._getBufEntry(2));
 }
 
 // ── Test: :bd on last buffer clears it ──

@@ -106,6 +106,7 @@ const THEMES = {
     // Tab line
     tabSelFg: 'd4d4d4',        // TabLineSel fg (active tab)
     tabSelBg: '333842',        // TabLineSel bg (active tab)
+    tabSelBold: true,
     tabFg: 'd4d4d4',           // TabLine fg (inactive tab)
     tabBg: '000000',           // TabLine bg (inactive tab)
     tabFillFg: 'd4d4d4',       // TabLineFill fg (remainder)
@@ -125,12 +126,15 @@ const THEMES = {
     lineNrFg: 'd4d4d4',          // LineNr (fg=default → terminal default)
     cursorLineNrFg: 'fd971f',    // CursorLineNr (orange)
     cursorLineNrBg: '26292c',      // CursorLineNr bg (monokai)
-    cursorLineBg: '2e323c',        // CursorLine background (monokai)
+    cursorLineBg: '2c2e33',        // CursorLine background from the pinned recording config
+    listFg: '4d5154',              // NonText/SpecialKey used by tabs/fillers
+    listSpaceFg: '4f5258',         // Whitespace used by space/trail listchars
     // Folded lines
     foldedFg: '8f908a',        // Folded fg (monokai Folded)
     foldedBg: '2e323c',        // Folded bg (dark)
     matchParenBg: null,              // MatchParen – monokai sets fg only, bg inherits Normal
     matchParenFg: 'f92672',        // MatchParen (pink)
+    matchParenBold: true,
     // Spell checking
     spellBadFg: 'e95678',           // SpellBad (red/pink underline, fallback to fg color)
     // Syntax highlighting – tanvirtin/monokai.nvim palette
@@ -143,6 +147,7 @@ const THEMES = {
       'keyword.import': 'f92672', // Keyword (pink)
       decorator: 'e6db74',       // String (yellow)
       'function.def': 'a6e22e',  // Function (green)
+      'function.builtin': 'a6e22e', // pythonBuiltin links to Function
       'class.def': 'a6e22e',     // Function (green)
       builtin: '66d9ef',         // Type/Constant (blue)
       operator: 'f92672',        // Operator (pink)
@@ -205,6 +210,10 @@ export class Screen {
   render(engine) {
     // If multiple windows, delegate to split rendering
     if (engine._windows && engine._windows.length > 1) {
+      const layout = engine._splitLayout;
+      const nested = layout && layout.type !== 'leaf'
+        && layout.children.some(child => child.type !== 'leaf');
+      if (nested) return this._renderNestedSplit(engine);
       return this._renderSplit(engine);
     }
 
@@ -223,12 +232,30 @@ export class Screen {
     // ── Tab line (when ≥2 tabs exist) ──
     if (hasTabLine) {
       const tabInfo = engine.getTabLineInfo();
+      // Neovim keeps room for the tab-line fill and close button.  When the
+      // labels overflow that budget it shortens the leftmost label from the
+      // left, while retaining the label's leading separator space.
+      const minFill = 5;
+      const maxLabelWidth = Math.max(0, this.cols - minFill - 1);
+      const labels = tabInfo.map(tab => ({
+        ...tab,
+        text: ' ' + tab.label + ' ',
+      }));
+      let overflow = labels.reduce((n, tab) => n + tab.text.length, 0) - maxLabelWidth;
+      for (const tab of labels) {
+        if (overflow <= 0) break;
+        const removable = Math.max(0, tab.text.length - 2);
+        const count = Math.min(overflow, removable);
+        tab.text = tab.text[0] + tab.text.slice(1 + count);
+        overflow -= count;
+      }
       let tabText = '';
       const tabRuns = [];
-      for (const tab of tabInfo) {
-        const label = ' ' + tab.label + ' ';
+      for (const tab of labels) {
+        const label = tab.text;
         if (tab.active) {
-          tabRuns.push({ n: label.length, fg: t.tabSelFg || t.normalFg, bg: t.tabSelBg || t.normalBg });
+          tabRuns.push({ n: label.length, fg: t.tabSelFg || t.normalFg, bg: t.tabSelBg || t.normalBg,
+            ...(t.tabSelBold ? { b: true } : {}) });
         } else {
           tabRuns.push({ n: label.length, fg: t.tabFg || t.statusFg || t.normalFg, bg: t.tabBg || t.statusBg || t.normalBg });
         }
@@ -331,7 +358,7 @@ export class Screen {
 
     // ── Syntax highlighting setup ──
     let syntaxTokens = null; // array indexed by bufRow → token array
-    const grammar = grammarForFile(engine.filename);
+    const grammar = grammarForFile(engine._fileName || engine.filename);
     if (grammar && t.syntax) {
       const hl = new SyntaxHighlighter(grammar);
       // Tokenize all lines through the end of the buffer so multi-line
@@ -388,6 +415,7 @@ export class Screen {
       const bufToScreen = [];
       // Positions in expanded that are "list" special chars (tab markers etc.)
       const listCols = new Set();
+      const listSpaceCols = new Set();
       // Positions in expanded that are control-char display (^X, ^[, ...).
       const specialCols = new Set();
       // Identify trailing whitespace span (for trail:char rendering in list mode).
@@ -412,6 +440,7 @@ export class Screen {
           // Render space using listchars (trail takes precedence for trailing spaces).
           const ch = (i >= trailStart && lc.trail) ? lc.trail : lc.space;
           listCols.add(expanded.length);
+          listSpaceCols.add(expanded.length);
           expanded += ch;
         } else {
           const code = raw.charCodeAt(i);
@@ -427,7 +456,7 @@ export class Screen {
         }
       }
       bufToScreen[raw.length] = expanded.length; // sentinel
-      return { expanded, bufToScreen, listCols, specialCols };
+      return { expanded, bufToScreen, listCols, listSpaceCols, specialCols };
     };
 
     // ── Helper: how many screen rows does a buffer line consume? ──
@@ -562,7 +591,8 @@ export class Screen {
             : (t.lineNrFg || t.normalFg);
           const nrBg = (isCursorLine && engine._settings.cursorline)
             ? (t.cursorLineNrBg || t.normalBg) : t.normalBg;
-          gutterRuns.push({ n: gutterWidth, fg: nrFg, bg: nrBg });
+          gutterRuns.push({ n: gutterWidth, fg: nrFg, bg: nrBg,
+            ...(isCursorLine && engine._settings.cursorline ? { b: true } : {}) });
         }
 
         // Fold line styling
@@ -584,7 +614,7 @@ export class Screen {
       }
 
       const raw = buf.lines[bufRow];
-      const { expanded, bufToScreen, listCols, specialCols } = expandLine(raw);
+      const { expanded, bufToScreen, listCols, listSpaceCols, specialCols } = expandLine(raw);
       const numWraps = noWrap ? 1 : wrapRows(expanded);
 
       for (let wrapIdx = 0; wrapIdx < numWraps && screenRow < textRows; wrapIdx++) {
@@ -608,6 +638,7 @@ export class Screen {
         // Build per-column colour arrays for this screen row
         const colFg = new Array(textCols).fill(t.normalFg);
         const colBg = new Array(textCols).fill(t.normalBg);
+        const colB = new Array(textCols).fill(false);
         const colU = new Array(textCols).fill(false);
 
         // Apply :set list special chars (tab markers etc.) — dim gray.
@@ -615,6 +646,7 @@ export class Screen {
           const listFg = t.listFg || '4d5154';
           for (let sc = sliceStart; sc < sliceEnd; sc++) {
             if (listCols.has(sc)) colFg[sc - sliceStart] = listFg;
+            if (listSpaceCols.has(sc)) colFg[sc - sliceStart] = t.listSpaceFg || listFg;
           }
         }
 
@@ -636,6 +668,12 @@ export class Screen {
             // Map to this wrap slice
             for (let sc = Math.max(scrStart, sliceStart); sc <= Math.min(scrEnd, sliceEnd - 1); sc++) {
               colFg[sc - sliceStart] = color;
+              // Vim's Python Statement-derived groups retain the default
+              // syntax definition's bold attribute when our colorscheme
+              // overrides only guifg.
+              if (tok.scope === 'keyword' || tok.scope === 'keyword.import') {
+                colB[sc - sliceStart] = true;
+              }
             }
           }
         }
@@ -803,6 +841,7 @@ export class Screen {
               if (scrCol >= sliceStart && scrCol < sliceEnd) {
                 if (t.matchParenBg) colBg[scrCol - sliceStart] = t.matchParenBg;
                 if (t.matchParenFg) colFg[scrCol - sliceStart] = t.matchParenFg;
+                if (t.matchParenBold) colB[scrCol - sliceStart] = true;
               }
             }
           }
@@ -840,7 +879,8 @@ export class Screen {
           const nrFg = useCursorLine ? (t.cursorLineNrFg || t.lineNrFg || t.normalFg)
                                      : (t.lineNrFg || t.normalFg);
           const nrBg = useCursorLine ? (t.cursorLineNrBg || t.normalBg) : t.normalBg;
-          gutterRuns.push({ n: gutterWidth, fg: nrFg, bg: nrBg });
+          gutterRuns.push({ n: gutterWidth, fg: nrFg, bg: nrBg,
+            ...(useCursorLine ? { b: true } : {}) });
         }
 
         // Compress colour arrays into runs
@@ -855,8 +895,10 @@ export class Screen {
         const textRuns = [];
         let runStart = 0;
         for (let c = 1; c <= textCols; c++) {
-          if (c === textCols || colFg[c] !== colFg[runStart] || colBg[c] !== colBg[runStart] || colU[c] !== colU[runStart]) {
+          if (c === textCols || colFg[c] !== colFg[runStart] || colBg[c] !== colBg[runStart]
+              || colB[c] !== colB[runStart] || colU[c] !== colU[runStart]) {
             const r = { n: c - runStart, fg: colFg[runStart], bg: colBg[runStart] };
+            if (colB[runStart]) r.b = true;
             if (colU[runStart]) r.u = true;
             textRuns.push(r);
             runStart = c;
@@ -1197,6 +1239,24 @@ export class Screen {
       }
     }
 
+    // Ctrl-D after a broad :set completion produces a paginated, full-screen
+    // listing. The first page replaces the normal buffer/status rendering
+    // while the command line remains active at the bottom.
+    if (engine._cmdCompletionPage) {
+      const page = engine._cmdCompletionPage.slice(0, this.rows - 1);
+      lines.length = 0;
+      for (let row = 0; row < this.rows - 1; row++) {
+        const text = this._padOrTruncate(page[row] || '', this.cols);
+        lines.push({ text, runs: [{ n: this.cols, fg: t.cmdFg, bg: t.cmdBg }] });
+      }
+      lines.push({
+        text: this._padOrTruncate(engine.commandLine || ':', this.cols),
+        runs: [{ n: this.cols, fg: t.cmdFg, bg: t.cmdBg }],
+      });
+      finalCursorRow = this.rows - 1;
+      finalCursorCol = Math.min((engine.commandLine || ':').length, this.cols - 1);
+    }
+
     return {
       rows: this.rows,
       cols: this.cols,
@@ -1428,6 +1488,118 @@ export class Screen {
     };
   }
 
+  _renderNestedSplit(engine) {
+    const t = this.theme;
+    const rects = engine._layoutRects();
+    const canvas = Array.from({ length: this.rows }, () =>
+      Array.from({ length: this.cols }, () => ({ ch: ' ', fg: t.normalFg, bg: t.normalBg })));
+    const saved = {
+      buffer: engine.buffer, cursor: { ...engine.cursor }, scrollTop: engine.scrollTop,
+      folds: engine._folds, mode: engine.mode,
+      visualStart: engine._visualStart ? { ...engine._visualStart } : null,
+      desiredCol: engine._desiredCol, commandLine: engine.commandLine,
+      sticky: engine._stickyCommandLine, lineNrLen: engine._commandLineLineNrLen,
+      echo: engine._echoMessage, fileName: engine._fileName,
+      changeCount: engine._changeCount, rows: engine.rows, cols: engine.cols,
+      textRows: engine._textRows, windows: engine._windows,
+    };
+    let cursor = { row: 0, col: 0, visible: false };
+
+    const paintLine = (row, col, line, width) => {
+      let x = col;
+      for (const run of line.runs || []) {
+        for (let i = 0; i < run.n && x < col + width && x < this.cols; i++, x++) {
+          canvas[row][x] = {
+            ch: (line.text || '')[x - col] || ' ', fg: run.fg, bg: run.bg,
+            b: run.b, i: run.i, u: run.u, s: run.s,
+          };
+        }
+      }
+    };
+
+    for (let wi = 0; wi < saved.windows.length; wi++) {
+      const win = saved.windows[wi];
+      const rect = rects.get(win);
+      if (!rect || rect.width < 1 || rect.height < 1) continue;
+      const active = wi === engine._activeWin;
+      engine.buffer = win.buffer;
+      engine.cursor = active ? { ...saved.cursor } : { ...win.cursor };
+      engine.scrollTop = active ? saved.scrollTop : win.scrollTop;
+      engine._folds = active ? saved.folds : win.folds;
+      engine._desiredCol = active ? saved.desiredCol : (win._desiredCol || 0);
+      engine.mode = active ? saved.mode : 'normal';
+      engine._visualStart = active ? saved.visualStart : null;
+      const entry = win.bufId != null && engine._getBufEntry ? engine._getBufEntry(win.bufId) : null;
+      engine._fileName = entry?.fileName ?? saved.fileName;
+      engine._changeCount = entry?.changeCount ?? saved.changeCount;
+      engine.rows = rect.height + 1;
+      engine.cols = rect.width;
+      engine._textRows = Math.max(0, rect.height - 1);
+      engine._windows = [];
+      engine._updateStatus();
+      const mini = new Screen(rect.height + 1, rect.width, this.themeName);
+      mini.showStatusLine = true;
+      const frame = mini.render(engine);
+      const leafLines = frame.lines.slice(0, rect.height);
+      if (rect.width <= 20 && leafLines.length && entry?.fileName) {
+        const base = entry.fileName.replace(/\\/g, '/').split('/').pop();
+        const pos = `${engine.cursor.row + 1},${engine.cursor.col + 1}`;
+        leafLines[leafLines.length - 1].text = `${base}   ${pos}   All`.padEnd(rect.width).slice(0, rect.width);
+      }
+      if (!active && leafLines.length) {
+        const status = leafLines[leafLines.length - 1];
+        status.runs = [{ n: rect.width, fg: t.statusNcFg || t.statusFg, bg: t.statusNcBg || t.statusBg }];
+      }
+      for (let r = 0; r < leafLines.length && rect.y + r < this.rows - 1; r++) {
+        paintLine(rect.y + r, rect.x, leafLines[r], rect.width);
+      }
+      if (active && frame.cursor.visible && frame.cursor.row < rect.height) {
+        cursor = { row: rect.y + frame.cursor.row, col: rect.x + frame.cursor.col, visible: true };
+      }
+    }
+
+    // Vertical separators occupy columns not covered by any leaf rectangle.
+    const covered = new Set();
+    for (const rect of rects.values()) {
+      for (let x = rect.x; x < rect.x + rect.width; x++) covered.add(x);
+    }
+    for (let x = 0; x < this.cols; x++) {
+      if (covered.has(x)) continue;
+      for (let y = 0; y < this.rows - 1; y++) {
+        const bottomStatus = y === this.rows - 2;
+        canvas[y][x] = bottomStatus
+          ? { ch: '│', fg: t.statusFg || t.normalFg, bg: t.statusBg || t.normalBg }
+          : { ch: '│', fg: t.normalFg, bg: t.normalBg };
+      }
+    }
+
+    Object.assign(engine, {
+      buffer: saved.buffer, cursor: saved.cursor, scrollTop: saved.scrollTop,
+      _folds: saved.folds, mode: saved.mode, _visualStart: saved.visualStart,
+      _desiredCol: saved.desiredCol, commandLine: saved.commandLine,
+      _stickyCommandLine: saved.sticky, _commandLineLineNrLen: saved.lineNrLen,
+      _echoMessage: saved.echo, _fileName: saved.fileName, _changeCount: saved.changeCount,
+      rows: saved.rows, cols: saved.cols, _textRows: saved.textRows, _windows: saved.windows,
+    });
+
+    const cmd = this._padOrTruncate(engine.commandLine || '', this.cols);
+    for (let x = 0; x < this.cols; x++) {
+      canvas[this.rows - 1][x] = { ch: cmd[x] || ' ', fg: t.cmdFg || t.normalFg, bg: t.cmdBg || t.normalBg };
+    }
+    const lines = canvas.map(cells => {
+      const text = cells.map(c => c.ch).join('');
+      const runs = [];
+      for (const c of cells) {
+        const prev = runs[runs.length - 1];
+        if (prev && prev.fg === c.fg && prev.bg === c.bg && !!prev.b === !!c.b
+            && !!prev.i === !!c.i && !!prev.u === !!c.u && !!prev.s === !!c.s) prev.n++;
+        else runs.push({ n: 1, fg: c.fg, bg: c.bg, b: c.b, i: c.i, u: c.u, s: c.s });
+      }
+      return { text, runs };
+    });
+    return { rows: this.rows, cols: this.cols, cursor, defaultFg: t.normalFg, defaultBg: t.normalBg, lines };
+  }
+
   /**
    * Render multiple vertical splits side-by-side.
    * Each window gets a column slice; windows are separated by `│`.
@@ -1546,6 +1718,60 @@ export class Screen {
       engine._windows = [];
       const frame = miniScreen.render(engine);
       engine._windows = savedWindows;
+
+      if (engine._diffMode) {
+        const otherWin = savedWindows.find(candidate => candidate !== win);
+        const identical = otherWin
+          && win.buffer.lines.join('\n') === otherWin.buffer.lines.join('\n');
+        if (identical && textRows > 0) {
+          const summary = `+ +--  ${win.buffer.lineCount} lines: ${win.buffer.lines[0] || ''}`;
+          frame.lines[0].text = summary.padEnd(w).slice(0, w);
+          frame.lines[0].runs = [
+            { n: Math.min(2, w), fg: '4f5258', bg: t.normalBg },
+            { n: Math.max(0, w - 2), fg: t.foldedFg || t.normalFg, bg: t.foldedBg || t.normalBg },
+          ].filter(run => run.n > 0);
+          for (let r = 1; r < textRows; r++) {
+            frame.lines[r].text = '~'.padEnd(w);
+            frame.lines[r].runs = [{ n: w, fg: t.tildeFg, bg: t.tildeBg }];
+          }
+          if (isActive) {
+            frame.cursor.row = 0;
+            frame.cursor.col = 2;
+          }
+        }
+        for (let r = 0; r < textRows; r++) {
+          const line = frame.lines[r];
+          if (!line || (line.text || '').startsWith('~')) continue;
+          if (identical && r === 0) continue;
+          line.text = ('  ' + (line.text || '')).slice(0, w).padEnd(w);
+          const own = win.buffer.lines[r] || '';
+          const other = otherWin?.buffer?.lines?.[r] || '';
+          if (own !== other) {
+            let prefix = 0;
+            while (prefix < own.length && prefix < other.length && own[prefix] === other[prefix]) prefix++;
+            let suffix = 0;
+            while (suffix < own.length - prefix && suffix < other.length - prefix
+                && own[own.length - 1 - suffix] === other[other.length - 1 - suffix]) suffix++;
+            const changed = Math.max(0, own.length - prefix - suffix);
+            const tail = Math.max(0, w - 2 - prefix - changed);
+            line.runs = [
+              { n: 2, fg: '4f5258', bg: t.normalBg },
+              { n: prefix, fg: 'eef1f8', bg: '4f5258' },
+              { n: changed, fg: 'eef1f8', bg: '007373' },
+              { n: tail, fg: 'eef1f8', bg: '4f5258' },
+            ].filter(run => run.n > 0);
+          } else {
+            line.runs = [{ n: 2, fg: '4f5258', bg: t.normalBg }, ...(line.runs || [])];
+            let total = 0;
+            line.runs = line.runs.map(run => {
+              const n = Math.max(0, Math.min(run.n, w - total));
+              total += n;
+              return { ...run, n };
+            }).filter(run => run.n > 0);
+          }
+        }
+        if (isActive && frame.cursor.visible && !identical) frame.cursor.col = Math.min(w - 1, frame.cursor.col + 2);
+      }
 
       if (isActive) {
         win.scrollTop = engine.scrollTop;

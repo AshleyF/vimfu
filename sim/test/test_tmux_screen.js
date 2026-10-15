@@ -67,6 +67,8 @@ function freezeStatusBarTime(frame) {
   let text = frame.lines[lastRow].text;
   text = text.replace(/\d{2}:\d{2}/, '00:00');
   text = text.replace(/\d{1,2}-[A-Z][a-z]{2}-\d{2}/, '01-Jan-26');
+  // Narrow status bars may truncate the date to only the day number.
+  text = text.replace(/(00:00 )\d{1,2}(?=\s*$)/, (_, prefix) => `${prefix}01`);
   frame.lines[lastRow].text = text;
 }
 
@@ -812,7 +814,8 @@ for (const [name, gt] of Object.entries(groundTruth)) {
   freezeStatusBarTime(frame);
 
   // Compare text lines
-  const gtTextLines = gt.textLines;
+  freezeStatusBarTime(gt.frame);
+  const gtTextLines = gt.frame.lines.map(l => l.text);
   const simTextLines = frame.lines.map(l => l.text);
   const textDiffs = diffLines(gtTextLines, simTextLines);
 

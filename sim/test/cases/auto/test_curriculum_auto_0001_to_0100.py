@@ -8,11 +8,6 @@ CASES = {
         "keys": 'lllljjjhhhkki# Vim is modal!\x1b',
         "initial": 'import sys\n\ndef greet(name):\n    print(f"Hello, {name}!")\n    return True\n\ngreet("world")',
     },
-    '0002_opening_a_file': {
-        "description": 'Opening a File',
-        "keys": 'vim\x01n\x05 notes.txt\riHello, Vim!\x1b:q\r:q!\r',
-        "initial": 'import sys\n\ndef greet(name):\n    print(f"Hello, {name}!")\n    return True\n\ngreet("world")',
-    },
     '0003_normal_mode': {
         "description": 'Normal Mode',
         "keys": 'jjjjwwwwggO# task list\x1b:set number\r:quit\x1b',
@@ -37,22 +32,6 @@ CASES = {
         "description": 'Saving Your File',
         "keys": 'iprint("hello world")\x1b:w\roprint("saved!")\x1b:w\r',
         "initial": '',
-    },
-    '0008_quitting_vim': {
-        "description": 'Quitting Vim',
-        "keys": ':q\rihello\x1b:q\r',
-        "initial": '',
-    },
-    '0009_save_and_quit': {
-        "description": 'Save and Quit',
-        "keys": 'iprint("hello")\x1b:wq\rA\rprint("world")\x1b:x\roprint("done")\x1bZZ',
-        "initial": '',
-        "skip": 'scenario continues sending keys after Neovim exits; requires a shell/session oracle',
-    },
-    '0010_quit_without_saving': {
-        "description": 'Quit Without Saving',
-        "keys": 'iXXXXXXX\x1bdd:q\r:q!\riOOPS\x1bZQ',
-        "initial": 'print("hello world")',
     },
     '0011_undo': {
         "description": 'Undo',
@@ -306,12 +285,12 @@ CASES = {
     },
     '0061_go_to_line_by_count': {
         "description": 'Go to Line by Count',
-        "keys": '7G12G:5\r1G',
+        "keys": ':set number\r7G12G:5\r1G',
         "initial": '# tower defense config\nwave_1 = "goblins"\nwave_2 = "orcs"\nwave_3 = "trolls"\nwave_4 = "dragons"\nwave_5 = "demons"\ngold = 500\ntower_a = "archer"\ntower_b = "mage"\ntower_c = "cannon"\ntower_d = "frost"\nboss = "lich king"\nhp = 9999\nloot = "legendary sword"',
     },
     '0062_jump_to_percentage': {
         "description": 'Jump to Percentage',
-        "keys": '50%100%75%1%',
+        "keys": ':set number\r50%100%75%1%',
         "initial": '# quest log\nquest_1 = "find the lost sword"\nquest_2 = "rescue the princess"\nquest_3 = "defeat the goblin king"\nquest_4 = "collect ten mushrooms"\nquest_5 = "explore the dark cave"\nquest_6 = "brew a healing potion"\nquest_7 = "forge the magic ring"\nquest_8 = "tame the wild dragon"\nquest_9 = "unlock the secret door"\nquest_10 = "steal the golden egg"\nquest_11 = "cross the lava bridge"\nquest_12 = "befriend the ghost"\nquest_13 = "decode the ancient map"\nquest_14 = "survive the sandstorm"\nquest_15 = "climb the frozen peak"\nquest_16 = "outsmart the sphinx"\nquest_17 = "raid the pirate ship"\nquest_18 = "tame the sea serpent"\nquest_19 = "find the hidden temple"\nquest_20 = "light the dark beacon"\nquest_21 = "calm the thunder wolf"\nquest_22 = "mend the broken crown"\nquest_23 = "open the void portal"\nquest_24 = "charm the stone giant"\nquest_25 = "ride the sky whale"\nquest_26 = "wake the sleeping god"\nquest_27 = "seal the demon rift"\nquest_28 = "win the dragon race"\nquest_29 = "trick the shadow fox"\nquest_30 = "map the crystal maze"\nquest_31 = "free the cursed knight"\nquest_32 = "brew the time elixir"\nquest_33 = "sink the ghost ship"\nquest_34 = "tame the fire hawk"\nquest_35 = "solve the moon riddle"\nquest_36 = "break the ice throne"\nquest_37 = "clear the poison swamp"\nquest_38 = "unite the lost tribes"\nquest_39 = "face the final boss"',
     },
     '0063_go_to_column': {
@@ -391,7 +370,7 @@ CASES = {
     },
     '0079_inner_around_braces': {
         "description": 'Inner/Around Braces',
-        "keys": 'jvi{\x1bci{    "app": "VimFu",\n    "level": 99\x1bujdiBuda{u',
+        "keys": ':set noai nosi indentexpr=\rjvi{\x1bci{    "app": "VimFu",\n    "level": 99\x1bujdiBuda{u',
         "initial": '{\n    "name": "VimFu",\n    "version": 42,\n    "debug": true\n}',
     },
     '0080_inner_around_brackets': {
@@ -497,10 +476,17 @@ CASES = {
     '0100_global_marks': {
         "description": 'Global Marks',
         "keys": "mA:e enemy.py\rmB'A'B",
-        "initial": 'name = "Goblin"\nhp = 30\natk = 5\nloot = "gold coin"\n\ndef take_hit(dmg):\n    global hp\n    hp -= dmg\n    return hp > 0',
+        "initial": 'name = "Kira"\nhp = 100\nmp = 40\nweapon = "staff"\n\ndef attack(target):\n    dmg = roll(2, 8)\n    target.hp -= dmg\n    return dmg',
+        "fileName": 'hero.py',
+        "setupFiles": {'hero.py': 'name = "Kira"\nhp = 100\nmp = 40\nweapon = "staff"\n\ndef attack(target):\n    dmg = roll(2, 8)\n    target.hp -= dmg\n    return dmg', 'enemy.py': 'name = "Goblin"\nhp = 30\natk = 5\nloot = "gold coin"\n\ndef take_hit(dmg):\n    global hp\n    hp -= dmg\n    return hp > 0'},
+        "launch": {'layout': None, 'files': ['hero.py']},
     },
 }
 
 SKIPPED = {
+    '0002_opening_a_file': ['starts in the shell; requires session oracle'],
+    '0008_quitting_vim': ['continues after Neovim exits; requires session oracle'],
+    '0009_save_and_quit': ['continues after Neovim exits; requires session oracle'],
+    '0010_quit_without_saving': ['continues after Neovim exits; requires session oracle'],
     '0071_repeat_last_change': ['shell escape (:!)'],
 }

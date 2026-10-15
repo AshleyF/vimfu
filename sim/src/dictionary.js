@@ -724,6 +724,10 @@ volatile voltage
 warrant watershed welfare whirl wholesale wilderness wield wilt withstand
 zeal zenith
 words mat hat bat rat pat tap gap map nap cap lap rap wrap strap trap snap notes fox jumps
+fixed improved validates
+knight rode glowed handy demos renders hover passwords sanitize mage fireball spell rogue
+healer brewed potion paladin wore shiny armor handled errors handles autosave changes looks
+missile success systems passed
 `.trim();
 
 export const DICTIONARY = new Set(
@@ -732,3 +736,7 @@ export const DICTIONARY = new Set(
     .filter(w => w.length > 0)
     .map(w => w.toLowerCase())
 );
+
+// Vim's stock dictionary intentionally does not accept these project/domain
+// words; lessons use them to demonstrate zg/zG and zw/zW.
+for (const word of ['dropdown', 'navbar']) DICTIONARY.delete(word);

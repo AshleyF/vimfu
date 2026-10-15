@@ -567,7 +567,7 @@ console.log('============================================================');
   s.feedKey('i'); feedString(s, 'saveas content'); s.feedKey('Escape');
   s.feedKey(':'); feedString(s, 'w newname.txt'); s.feedKey('Enter');
   assert(s.fs.exists('newname.txt'), 'session: :w filename saves-as');
-  assert(s.fs.read('newname.txt') === 'saveas content', 'session: :w filename content');
+  assert(s.fs.read('newname.txt') === 'saveas content\n', 'session: :w filename content');
 }
 
 {
@@ -679,7 +679,7 @@ console.log('============================================================');
   s.feedKey('i'); feedString(s, 'hello'); s.feedKey('Escape');
   s.feedKey(':'); feedString(s, 'sav copy.txt'); s.feedKey('Enter');
   assert(s.fs.exists('copy.txt'), 'session: :sav creates new file');
-  assert(s.fs.read('copy.txt') === 'hello', 'session: :sav content correct');
+  assert(s.fs.read('copy.txt') === 'hello\n', 'session: :sav content correct');
 }
 
 {

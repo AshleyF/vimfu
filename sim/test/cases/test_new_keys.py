@@ -38,10 +38,9 @@ CASES = {
         "initial": "aaa\nbbbbbbb\nccc",
     },
     "Q_no_macro_recorded": {
-        "description": "Q with no macro recorded (nvim enters ex-mode, we no-op)",
+        "description": "Q with no macro recorded reports the invalid-register error",
         "keys": "Q",
         "initial": "hello",
-        "skip": "nvim enters ex-mode which we don't implement",
     },
 
     # ================================================================

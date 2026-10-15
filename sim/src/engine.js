@@ -180,6 +180,7 @@ export class VimEngine {
     // Jump list (for Ctrl-O / Ctrl-I)
     this._jumpList = [];
     this._jumpListPos = -1;
+    this._fileJumpStack = [];
     this._lastJumpPos = null; // for '' / `` marks (position before last jump)
 
     // Ex command hook — set by _executeCommand when it processes :w/:q etc.
@@ -207,6 +208,9 @@ export class VimEngine {
     // Command-line history
     this._cmdHistory = [];
     this._cmdHistoryPos = -1;
+    this._searchHistory = [];
+    this._cmdlineWindow = null; // { prefix: ':'|'/'|'?', history, index }
+    this._commandLineEditor = null; // { prefix, engine } for command-line Ctrl-F
 
     // Current working directory (for :pwd / :cd)
     this._cwd = '/home/user';
@@ -215,6 +219,7 @@ export class VimEngine {
     this._cmdCompletions = [];     // current list of matching completions
     this._cmdCompletionIdx = -1;   // index into _cmdCompletions (-1 = not cycling)
     this._cmdCompletionBase = '';  // the original prefix before first Tab
+    this._cmdCompletionPage = null; // full-screen completion listing from Ctrl-D
 
     // Settings (:set)
     this._settings = {
@@ -238,7 +243,17 @@ export class VimEngine {
       splitright: false,   // :set splitright / :set nosplitright (spr/nospr)
       startofline: false,  // :set startofline / :set nostartofline (sol/nosol) — nvim default OFF
       spell: false,        // :set spell / :set nospell
+      spellfile: '',       // :set spellfile=path enables zg/zw persistence semantics
+      dictionary: '',      // :set dictionary=path, used by insert-mode ^X^K
+      foldmethod: 'manual', // :set foldmethod=indent/syntax/manual
+      foldlevel: 0,
+      operatorfunc: '',    // :set operatorfunc=Name, used by g@
     };
+
+    // Small Vimscript function model used by custom operator demos.  Function
+    // bodies are retained as Ex command strings and interpreted when g@ runs.
+    this._userFunctions = new Map();
+    this._definingFunction = null; // { name, body: string[] }
 
     // Spell checking
     this._spellGoodWords = new Set(); // words added with zg
@@ -273,6 +288,10 @@ export class VimEngine {
       _desiredCol: 0,
     }];
     this._activeWin = 0;
+    // Structural split tree. Leaves point at window objects; branch direction
+    // is `v` (side-by-side) or `h` (stacked). The legacy flat window array is
+    // retained as traversal/order state for commands that operate on a list.
+    this._splitLayout = { type: 'leaf', win: this._windows[0] };
 
     // ── Buffer list ──
     this._nextBufId = 1;
@@ -293,7 +312,7 @@ export class VimEngine {
     this._windows[0].bufId = this._currentBufId;
 
     // ── Tab pages ──
-    this._tabs = [{ windows: this._windows, activeWin: this._activeWin }];
+    this._tabs = [{ windows: this._windows, activeWin: this._activeWin, layout: this._splitLayout }];
     this._activeTab = 0;
     this._lastTab = -1; // last accessed tab index (for g<Tab>)
   }
@@ -414,6 +433,26 @@ export class VimEngine {
     // by the buffer. Drop them so screen state matches the post-exit
     // tmux capture.
     if (this._quitDone) return;
+
+    // Ctrl-F from the command line opens an editable command-line window.
+    // Model it with a one-line nested Vim engine so normal insert/change/find
+    // grammar works naturally, then execute that line on Enter.
+    if (this._commandLineEditor) {
+      const editor = this._commandLineEditor;
+      if ((key === 'Enter' || key === 'Ctrl-J' || key === 'Ctrl-M')
+          && editor.engine.mode === Mode.NORMAL) {
+        const edited = editor.engine.buffer.lines.join('');
+        this._commandLineEditor = null;
+        this.mode = Mode.COMMAND;
+        this._searchInput = edited;
+        this._cmdCursor = edited.length;
+        this.commandLine = editor.prefix + edited;
+        this._executeCommand();
+        return;
+      }
+      editor.engine.feedKey(key);
+      return;
+    }
 
     // ── Key mapping resolution ──
     // Skip mapping lookup when feeding rhs of a noremap, or during macro playback of noremap
@@ -776,7 +815,7 @@ export class VimEngine {
         } else {
           this._namedRegs[lower] = { text, type };
         }
-      } else {
+      } else if ((reg !== '+' && reg !== '*') || this._onClipboardWrite) {
         this._namedRegs[reg] = { text, type };
       }
       // Notify controller when writing to clipboard registers
@@ -910,11 +949,54 @@ export class VimEngine {
     // Pending q (waiting for register letter to start recording)
     if (this._pendingQ) {
       this._pendingQ = false;
+      if (key === ':' || key === '/' || key === '?') {
+        const history = key === ':' ? this._cmdHistory : this._searchHistory;
+        this._cmdlineWindow = {
+          prefix: key,
+          history: [...history],
+          // The command-line window opens on the blank line below history.
+          index: history.length,
+        };
+        this._pendingCount = '';
+        return;
+      }
       if (key.length === 1 && key >= 'a' && key <= 'z') {
         this._macroRecording = key;
         this._macroKeys = [];
       }
       this._pendingCount = '';
+      return;
+    }
+
+    // Minimal command-line-window behavior.  The full scratch-buffer UI is
+    // not needed by the simulator, but choosing and executing history with
+    // q:, q/, k/j, and Enter is observable editor behavior.
+    if (this._cmdlineWindow) {
+      const win = this._cmdlineWindow;
+      if (key === 'k' || key === 'ArrowUp') {
+        win.index = Math.max(0, win.index - 1);
+        return;
+      }
+      if (key === 'j' || key === 'ArrowDown') {
+        win.index = Math.min(win.history.length, win.index + 1);
+        return;
+      }
+      if (key === 'Escape' || key === 'q') {
+        this._cmdlineWindow = null;
+        return;
+      }
+      if (key === 'Enter' || key === 'Ctrl-J' || key === 'Ctrl-M') {
+        const selected = win.history[win.index];
+        this._cmdlineWindow = null;
+        if (selected != null) {
+          this.mode = Mode.COMMAND;
+          this._searchInput = selected;
+          this._cmdCursor = selected.length;
+          this.commandLine = win.prefix + selected;
+          this._executeCommand();
+        }
+        return;
+      }
       return;
     }
 
@@ -1668,10 +1750,29 @@ export class VimEngine {
 
     // Operator pending: second key
     if (this._pendingOp) {
-      // do / dp — diff obtain/put. No diff mode is supported, so
-      // report E99 (Press-ENTER prompt) and abandon the operator.
+      // do / dp — obtain the current diff line from the other window, or
+      // put the active line into it.
       if (this._pendingOp === 'd' && (key === 'o' || key === 'p')) {
-        this._messagePrompt = { error: 'E99: Current buffer is not in diff mode' };
+        if (this._diffMode && this._windows.length === 2) {
+          const other = this._windows.find((_, i) => i !== this._activeWin);
+          const row = this.cursor.row;
+          if (other) {
+            this._saveSnapshot();
+            if (key === 'o') {
+              this.buffer.lines[row] = other.buffer.lines[row] ?? '';
+              this._changeCount++;
+              const entry = this._getBufEntry(this._currentBufId);
+              if (entry) entry.changeCount = this._changeCount;
+            } else {
+              other.buffer.lines[row] = this.buffer.lines[row] ?? '';
+              const entry = this._getBufEntry(other.bufId);
+              if (entry) entry.changeCount++;
+            }
+          }
+          this._messagePrompt = null;
+        } else {
+          this._messagePrompt = { error: 'E99: Current buffer is not in diff mode' };
+        }
         this._pendingOp = ''; this._pendingCount = '';
         return;
       }
@@ -2343,7 +2444,11 @@ export class VimEngine {
       case 'y': this._pendingOp = 'y'; this._opStartPos = { ...this.cursor }; return;
       case '>': this._pendingOp = '>'; this._opStartPos = { ...this.cursor }; return;
       case '<': this._pendingOp = '<'; this._opStartPos = { ...this.cursor }; return;
-      case '=': this._pendingOp = '='; this._opStartPos = { ...this.cursor }; return;
+      case '=':
+        this._pendingOp = '=';
+        this._opStartPos = { ...this.cursor };
+        this._opStartDesiredCol = this._desiredCol;
+        return;
       case '!': this._pendingOp = '!'; this._opStartPos = { ...this.cursor }; return;
 
       // & (repeat last :s on current line)
@@ -2646,19 +2751,39 @@ export class VimEngine {
       case 'Ctrl-D': {
         if (this._hasCount()) this._scrollHalf = this._getCount();
         const c = this._scrollHalf || Math.floor(this._textRows / 2);
-        const lastLine = Math.max(0, this.buffer.lineCount - 1);
-        const maxST = this._maxScrollTop();
-        this.cursor.row = Math.min(this._advanceByScreenRows(this.cursor.row, c), lastLine);
-        this.scrollTop = Math.min(this._advanceByScreenRows(this.scrollTop, c), maxST);
-        this._applyStartOfLine();
+        if (this._hasWrappedLines()) {
+          const screenRow = this._cursorVisualRow() - this._lineStartVisualRow(this.scrollTop);
+          this.scrollTop = this._lineAtOrBeforeVisualRow(
+            this._lineStartVisualRow(this.scrollTop) + c
+          ).row;
+          this._setCursorAtVisualRow(
+            this._lineStartVisualRow(this.scrollTop) + Math.max(0, Math.min(this._textRows - 1, screenRow))
+          );
+        } else {
+          const lastLine = Math.max(0, this.buffer.lineCount - 1);
+          const maxST = this._maxScrollTop();
+          this.cursor.row = Math.min(this._advanceByScreenRows(this.cursor.row, c), lastLine);
+          this.scrollTop = Math.min(this._advanceByScreenRows(this.scrollTop, c), maxST);
+          this._applyStartOfLine();
+        }
         break;
       }
       case 'Ctrl-U': {
         if (this._hasCount()) this._scrollHalf = this._getCount();
         const c = this._scrollHalf || Math.floor(this._textRows / 2);
-        this.cursor.row = this._retreatByScreenRows(this.cursor.row, c);
-        this.scrollTop = this._retreatByScreenRows(this.scrollTop, c);
-        this._applyStartOfLine();
+        if (this._hasWrappedLines()) {
+          const screenRow = this._cursorVisualRow() - this._lineStartVisualRow(this.scrollTop);
+          this.scrollTop = this._lineAtOrAfterVisualRow(
+            Math.max(0, this._lineStartVisualRow(this.scrollTop) - c)
+          ).row;
+          this._setCursorAtVisualRow(
+            this._lineStartVisualRow(this.scrollTop) + Math.max(0, Math.min(this._textRows - 1, screenRow))
+          );
+        } else {
+          this.cursor.row = this._retreatByScreenRows(this.cursor.row, c);
+          this.scrollTop = this._retreatByScreenRows(this.scrollTop, c);
+          this._applyStartOfLine();
+        }
         break;
       }
       case 'Ctrl-F': {
@@ -2835,6 +2960,15 @@ export class VimEngine {
 
       // Jump list
       case 'Ctrl-O': {
+        if (this._fileJumpStack.length > 0) {
+          const jump = this._fileJumpStack.pop();
+          this._switchToBuffer(jump.bufId);
+          this.cursor.row = Math.min(jump.row, this.buffer.lineCount - 1);
+          this.cursor.col = Math.min(jump.col, this._maxCol());
+          this._updateDesiredCol();
+          this._pendingCount = '';
+          break;
+        }
         if (this._jumpList.length > 0 && this._jumpListPos > 0) {
           if (this._jumpListPos >= this._jumpList.length) {
             // Save current position before jumping back.
@@ -3038,6 +3172,11 @@ export class VimEngine {
         this._opStartPos = { ...this.cursor };
         break;
       }
+      case '@': {
+        this._pendingOp = 'g@';
+        this._opStartPos = { ...this.cursor };
+        break;
+      }
       case '-': {
         // g- — go to older text state (like :earlier 1)
         const n = Math.max(1, this._getCount());
@@ -3081,6 +3220,15 @@ export class VimEngine {
           this.cursor = { ...this._lastVisual.end };
           this.commandLine = this.mode === Mode.VISUAL_LINE ? '-- VISUAL LINE --' : '-- VISUAL --';
         }
+        break;
+      }
+      case 'H': {
+        // gH — start Select line mode.  It shares Visual-line selection
+        // geometry, but printable input replaces the selected lines.
+        this.mode = Mode.VISUAL_LINE;
+        this._visualStart = { ...this.cursor };
+        this._visualSelectMode = true;
+        this.commandLine = '-- SELECT LINE --';
         break;
       }
       case 'i':
@@ -3792,15 +3940,11 @@ export class VimEngine {
       // non-quote characters surrounding the cursor.
       case 'f':
       case 'F': {
-        const line = this.buffer.lines[this.cursor.row] || '';
-        const isFnameChar = (ch) => ch && !/[\s"'<>`|;{}()\[\]]/.test(ch);
-        let s = this.cursor.col, e = this.cursor.col;
-        while (s > 0 && isFnameChar(line[s - 1])) s--;
-        while (e < line.length && isFnameChar(line[e])) e++;
-        let fname = line.slice(s, e);
-        // gF strips trailing :N[:M] line/column refs from the filename
-        if (key === 'F') fname = fname.replace(/:\d+(:\d+)?$/, '');
-        if (fname) {
+        const ref = this._fileRefUnderCursor();
+        const fname = ref?.name;
+        if (fname && this._openResolvedFile(ref, { rememberJump: true, useLine: key === 'F' })) {
+          // opened
+        } else if (fname) {
           this._messagePrompt = { error: 'E447: Can\'t find file "' + fname + '" in path' };
         } else {
           this._messagePrompt = { error: 'E446: No file name under cursor' };
@@ -3958,9 +4102,14 @@ export class VimEngine {
     // Handle pending zu (for zug/zuw)
     if (this._pendingZu) {
       this._pendingZu = false;
-      if (key === 'g' || key === 'w') {
-        // zug/zuw also need a spellfile; nvim errors out the same way as zg/zw
-        this._messagePrompt = { error: "E764: Option 'spellfile' is not set" };
+      if (key === 'g' || key === 'w' || key === 'G' || key === 'W') {
+        if ((key === 'g' || key === 'w') && !this._settings.spellfile) {
+          this._messagePrompt = { error: "E764: Option 'spellfile' is not set" };
+        } else {
+          const word = this._getWordAtCursor()?.word.toLowerCase();
+          if (word && (key === 'g' || key === 'G')) this._spellGoodWords.delete(word);
+          if (word && (key === 'w' || key === 'W')) this._spellBadWords.delete(word);
+        }
       }
       return;
     }
@@ -4268,12 +4417,46 @@ export class VimEngine {
       }
       case 'g': {
         // zg — add word under cursor to good words list (writes to spellfile)
-        this._messagePrompt = { error: "E764: Option 'spellfile' is not set" };
+        if (!this._settings.spellfile) {
+          this._messagePrompt = { error: "E764: Option 'spellfile' is not set" };
+        } else {
+          const word = this._getWordAtCursor()?.word.toLowerCase();
+          if (word) {
+            this._spellGoodWords.add(word);
+            this._spellBadWords.delete(word);
+          }
+        }
+        break;
+      }
+      case 'G': {
+        // zG — mark word good for this session only.
+        const word = this._getWordAtCursor()?.word.toLowerCase();
+        if (word) {
+          this._spellGoodWords.add(word);
+          this._spellBadWords.delete(word);
+        }
         break;
       }
       case 'w': {
         // zw — mark word under cursor as bad (writes to spellfile)
-        this._messagePrompt = { error: "E764: Option 'spellfile' is not set" };
+        if (!this._settings.spellfile) {
+          this._messagePrompt = { error: "E764: Option 'spellfile' is not set" };
+        } else {
+          const word = this._getWordAtCursor()?.word.toLowerCase();
+          if (word) {
+            this._spellBadWords.add(word);
+            this._spellGoodWords.delete(word);
+          }
+        }
+        break;
+      }
+      case 'W': {
+        // zW — mark word bad for this session only.
+        const word = this._getWordAtCursor()?.word.toLowerCase();
+        if (word) {
+          this._spellBadWords.add(word);
+          this._spellGoodWords.delete(word);
+        }
         break;
       }
       case 'u': {
@@ -4342,9 +4525,84 @@ export class VimEngine {
     this._restoreWindowState();
   }
 
-  _doSplit(vertical = false) {
+  _replaceLayoutLeaf(node, win, replacement) {
+    if (!node) return false;
+    if (node.type === 'leaf') return node.win === win ? replacement : false;
+    for (let i = 0; i < node.children.length; i++) {
+      const found = this._replaceLayoutLeaf(node.children[i], win, replacement);
+      if (found) {
+        if (found !== true) node.children[i] = found;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  _insertSiblingInLayout(node, win, newWin, type, after, oldSize, newSize) {
+    if (!node || node.type === 'leaf') return false;
+    for (let i = 0; i < node.children.length; i++) {
+      const child = node.children[i];
+      if (child.type === 'leaf' && child.win === win && node.type === type) {
+        const at = after ? i + 1 : i;
+        node.children.splice(at, 0, { type: 'leaf', win: newWin });
+        if (!node.sizes) node.sizes = node.children.map(() => 1);
+        else node.sizes.splice(at, 0, newSize);
+        node.sizes[after ? i : i + 1] = oldSize;
+        return true;
+      }
+      if (this._insertSiblingInLayout(child, win, newWin, type, after, oldSize, newSize)) return true;
+    }
+    return false;
+  }
+
+  _removeLayoutLeaf(node, win) {
+    if (!node) return null;
+    if (node.type === 'leaf') return node.win === win ? null : node;
+    node.children = node.children.map(child => this._removeLayoutLeaf(child, win)).filter(Boolean);
+    if (node.children.length === 0) return null;
+    if (node.children.length === 1) return node.children[0];
+    return node;
+  }
+
+  _layoutRects(node = this._splitLayout, x = 0, y = 0, width = this.cols, height = this.rows - 1, out = new Map()) {
+    if (!node) return out;
+    if (node.type === 'leaf') {
+      out.set(node.win, { x, y, width, height });
+      return out;
+    }
+    const vertical = node.type === 'v';
+    const total = vertical ? width : height;
+    const separators = vertical ? node.children.length - 1 : 0;
+    const usable = Math.max(node.children.length, total - separators);
+    const weights = node.sizes || node.children.map(() => 1);
+    const weightTotal = weights.reduce((a, b) => a + b, 0) || 1;
+    const sizes = [];
+    let assigned = 0;
+    for (let i = 0; i < node.children.length; i++) {
+      const size = i === node.children.length - 1
+        ? usable - assigned
+        : Math.max(1, Math.floor(usable * weights[i] / weightTotal));
+      sizes.push(size);
+      assigned += size;
+    }
+    let offset = 0;
+    for (let i = 0; i < node.children.length; i++) {
+      const size = sizes[i];
+      this._layoutRects(node.children[i],
+        vertical ? x + offset : x,
+        vertical ? y : y + offset,
+        vertical ? size : width,
+        vertical ? height : size,
+        out);
+      offset += size + (vertical ? 1 : 0);
+    }
+    return out;
+  }
+
+  _doSplit(vertical = false, extraToActive = false) {
     this._saveWindowState();
     const cur = this._windows[this._activeWin];
+    const currentRect = this._layoutRects().get(cur) || { width: this.cols, height: this.rows - 1 };
     const newWin = {
       buffer: cur.buffer,
       bufId: cur.bufId,
@@ -4361,6 +4619,27 @@ export class VimEngine {
     const splitAfter = vertical
       ? !!this._settings.splitright
       : !!this._settings.splitbelow;
+    const usable = vertical ? Math.max(2, currentRect.width - 1) : Math.max(2, currentRect.height);
+    const lower = Math.floor(usable / 2);
+    const upper = usable - lower;
+    const newGetsExtra = !vertical || extraToActive;
+    const oldSize = newGetsExtra ? lower : upper;
+    const newSize = newGetsExtra ? upper : lower;
+    const oldLeaf = { type: 'leaf', win: cur };
+    const newLeaf = { type: 'leaf', win: newWin };
+    const children = splitAfter ? [oldLeaf, newLeaf] : [newLeaf, oldLeaf];
+    const sizes = splitAfter ? [oldSize, newSize] : [newSize, oldSize];
+    const branch = { type: vertical ? 'v' : 'h', children, sizes };
+    if (this._splitLayout.type === 'leaf' && this._splitLayout.win === cur) {
+      this._splitLayout = branch;
+    } else if (this._insertSiblingInLayout(
+      this._splitLayout, cur, newWin, vertical ? 'v' : 'h', splitAfter, oldSize, newSize
+    )) {
+      // Same-direction splits form one sibling group instead of a needless
+      // nested branch, matching Vim's equalization and traversal behavior.
+    } else {
+      this._replaceLayoutLeaf(this._splitLayout, cur, branch);
+    }
     if (splitAfter) {
       this._windows.splice(this._activeWin + 1, 0, newWin);
       this._activeWin = this._activeWin + 1;
@@ -4368,7 +4647,8 @@ export class VimEngine {
       this._windows.splice(this._activeWin, 0, newWin);
     }
     if (vertical) {
-      // Distribute columns evenly. The new window gets the extra column.
+      // Distribute columns evenly. Ctrl-W v gives an indivisible remainder
+      // to the newly active window; :vsplit assigns it at the right edge.
       const availableCols = this.cols;
       const numWindows = this._windows.length;
       // Account for (numWindows - 1) separator columns.
@@ -4380,12 +4660,12 @@ export class VimEngine {
         // Clear stale heights from any prior horizontal split.
         delete this._windows[i]._height;
       }
-      if (extras > 0) {
+      if (extraToActive && extras > 0) {
         this._windows[this._activeWin]._width += 1;
         extras--;
       }
-      for (let i = 0; i < numWindows && extras > 0; i++) {
-        if (i === this._activeWin) continue;
+      for (let i = numWindows - 1; i >= 0 && extras > 0; i--) {
+        if (extraToActive && i === this._activeWin) continue;
         this._windows[i]._width += 1;
         extras--;
       }
@@ -4417,13 +4697,38 @@ export class VimEngine {
     this._restoreWindowState();
   }
 
+  /** Replace the active window with a new empty buffer, optionally named. */
+  _openNewBuffer(fileName = null) {
+    this._saveCurrentBufState();
+    this._alternateBufId = this._currentBufId;
+    this.buffer = new Buffer(['']);
+    this.cursor = { row: 0, col: 0 };
+    this.scrollTop = 0;
+    this.scrollLeft = 0;
+    this._fileName = fileName || null;
+    this._undoStack = [];
+    this._redoStack = [];
+    this._changeCount = 0;
+    this._marks = {};
+    this._folds = [];
+    this._desiredCol = 0;
+    this._currentBufId = this._registerBuffer(this.buffer, this._fileName);
+    this._saveWindowState();
+  }
+
   _doCloseWindow(fromEx = false) {
     if (this._windows.length <= 1) {
+      if (this._sessionManaged) {
+        this._lastExCommand = 'q';
+        return;
+      }
       // Can't close last window
       this._reportCmdMessage({ error: 'E444: Cannot close last window' }, fromEx);
       return;
     }
+    const closing = this._windows[this._activeWin];
     this._windows.splice(this._activeWin, 1);
+    this._splitLayout = this._removeLayoutLeaf(this._splitLayout, closing);
     if (this._activeWin >= this._windows.length) {
       this._activeWin = this._windows.length - 1;
     }
@@ -4438,6 +4743,7 @@ export class VimEngine {
     this._saveWindowState();
     const cur = this._windows[this._activeWin];
     this._windows = [cur];
+    this._splitLayout = { type: 'leaf', win: cur };
     this._activeWin = 0;
     this._restoreWindowState();
   }
@@ -4598,6 +4904,7 @@ export class VimEngine {
     this._tabs[this._activeTab] = {
       windows: this._windows,
       activeWin: this._activeWin,
+      layout: this._splitLayout,
     };
   }
 
@@ -4608,6 +4915,7 @@ export class VimEngine {
     const tab = this._tabs[this._activeTab];
     this._windows = tab.windows;
     this._activeWin = tab.activeWin;
+    this._splitLayout = tab.layout || { type: 'leaf', win: this._windows[0] };
     this._restoreWindowState();
   }
 
@@ -4654,10 +4962,12 @@ export class VimEngine {
       folds: [],
       _desiredCol: 0,
     };
-    this._tabs.splice(this._activeTab + 1, 0, { windows: [newWin], activeWin: 0 });
+    const newLayout = { type: 'leaf', win: newWin };
+    this._tabs.splice(this._activeTab + 1, 0, { windows: [newWin], activeWin: 0, layout: newLayout });
     this._activeTab++;
     this._windows = this._tabs[this._activeTab].windows;
     this._activeWin = 0;
+    this._splitLayout = newLayout;
   }
 
   /**
@@ -4736,7 +5046,7 @@ export class VimEngine {
         this._doSplit();
         break;
       case 'v': case 'Ctrl-V':
-        this._doSplit(true);
+        this._doSplit(true, true);
         break;
       case 'n': case 'Ctrl-N':
         // Ctrl-W n: open new window with empty buffer (like :new)
@@ -4794,28 +5104,16 @@ export class VimEngine {
         }
         break;
       case 'j': case 'Ctrl-J': case 'ArrowDown':
-        // Move to window below
-        if (this._activeWin < this._windows.length - 1) {
-          this._switchToWindow(this._activeWin + 1);
-        }
+        this._moveToAdjacentWindow('down');
         break;
       case 'k': case 'Ctrl-K': case 'ArrowUp':
-        // Move to window above
-        if (this._activeWin > 0) {
-          this._switchToWindow(this._activeWin - 1);
-        }
+        this._moveToAdjacentWindow('up');
         break;
       case 'h': case 'Ctrl-H': case 'ArrowLeft':
-        // Move to window left (same as up for horizontal-only splits)
-        if (this._activeWin > 0) {
-          this._switchToWindow(this._activeWin - 1);
-        }
+        this._moveToAdjacentWindow('left');
         break;
       case 'l': case 'Ctrl-L': case 'ArrowRight':
-        // Move to window right (same as down for horizontal-only splits)
-        if (this._activeWin < this._windows.length - 1) {
-          this._switchToWindow(this._activeWin + 1);
-        }
+        this._moveToAdjacentWindow('right');
         break;
       case 'H': case 'J': case 'K': case 'L':
         // Move window to far left/bottom/top/right — in flat model, swap positions
@@ -4878,48 +5176,72 @@ export class VimEngine {
         this._doOnlyWindow(true);
         break;
       case '=':
-        // Equalize window sizes (handled by renderer)
+        this._equalizeWindows();
         break;
       case '_':
-        // Maximize current window height (handled by renderer)
+        this._resizeActiveWindow('height', this._pendingCount ? Number(this._pendingCount) + 1 : Infinity, true);
         break;
+      case '^': case 'Ctrl-^': case 'Ctrl-6': {
+        // Split the current window and show the alternate buffer in the new
+        // window. Preserve the id before splitting: both windows initially
+        // point at the current buffer and _switchToBuffer updates alternate
+        // bookkeeping as it changes buffers.
+        const alternate = this._alternateBufId;
+        if (alternate != null) {
+          this._doSplit();
+          this._switchToBuffer(alternate);
+        } else {
+          this.commandLine = 'E23: No alternate file';
+          this._stickyCommandLine = true;
+        }
+        break;
+      }
       case '+':
-        // Increase window height (no-op for now)
+        this._resizeActiveWindow('height', this._getCount());
         break;
       case '-':
-        // Decrease window height (no-op for now)
+        this._resizeActiveWindow('height', -this._getCount());
         break;
       case '<':
-        // Decrease window width (no-op for flat horizontal model)
+        this._resizeActiveWindow('width', -this._getCount());
         break;
       case '>':
-        // Increase window width (no-op for flat horizontal model)
+        this._resizeActiveWindow('width', this._getCount());
         break;
       case '|':
-        // Set window width to N or maximize (no-op for flat horizontal model)
+        this._resizeActiveWindow('width', this._pendingCount ? Number(this._pendingCount) : Infinity, true);
         break;
       case 'T':
         // Ctrl-W T — move current window to a new tab
         if (this._windows.length > 1) {
           this._saveWindowState();
           const win = this._windows.splice(this._activeWin, 1)[0];
+          this._splitLayout = this._removeLayoutLeaf(this._splitLayout, win);
           if (this._activeWin >= this._windows.length) {
             this._activeWin = this._windows.length - 1;
           }
           // Save current tab state (without the removed window)
           this._tabs[this._activeTab].windows = this._windows;
           this._tabs[this._activeTab].activeWin = this._activeWin;
+          this._tabs[this._activeTab].layout = this._splitLayout;
           // Create new tab with the removed window
-          this._tabs.splice(this._activeTab + 1, 0, { windows: [win], activeWin: 0 });
+          const newLayout = { type: 'leaf', win };
+          this._tabs.splice(this._activeTab + 1, 0, { windows: [win], activeWin: 0, layout: newLayout });
           this._activeTab++;
           this._windows = this._tabs[this._activeTab].windows;
           this._activeWin = 0;
+          this._splitLayout = newLayout;
           this._restoreWindowState();
         }
         break;
       case ']': case 'Ctrl-]':
         // Ctrl-W ] / Ctrl-W Ctrl-] — split + tag jump. No tag DB in sim.
         this._reportCmdMessage({ error: 'E433: No tags file' });
+        break;
+      case 'd':
+        // Ctrl-W d — split to a definition. Without an include/definition
+        // database the built-in command reports E388.
+        this._messagePrompt = { error: "E388: Couldn't find definition" };
         break;
       case '}':
         // Ctrl-W } — open preview window for tag matching word under cursor.
@@ -4952,9 +5274,12 @@ export class VimEngine {
       case 'F': {
         // Ctrl-W f / Ctrl-W F — split + open file under cursor (with line
         // for F). We have no VFS, so emit the same E447 nvim shows.
-        const fname = this._fileUnderCursor();
+        const ref = this._fileRefUnderCursor();
+        const fname = ref?.name;
         if (!fname) {
           this._messagePrompt = { error: 'E446: No file name under cursor' };
+        } else if (this._openResolvedFile(ref, { split: true, useLine: key === 'F' })) {
+          // opened
         } else {
           this._messagePrompt = { error: `E447: Can't find file "${fname}" in path` };
         }
@@ -4969,14 +5294,88 @@ export class VimEngine {
     }
   }
 
+  _equalizeWindows() {
+    const vertical = this._windows.some(w => w._splitType === 'v');
+    const prop = vertical ? '_width' : '_height';
+    const available = vertical ? this.cols - (this._windows.length - 1) : this.rows - 1;
+    const base = Math.floor(available / this._windows.length);
+    const extras = available - base * this._windows.length;
+    for (let i = 0; i < this._windows.length; i++) {
+      const getsExtra = vertical
+        ? i >= this._windows.length - extras
+        : i < extras;
+      this._windows[i][prop] = base + (getsExtra ? 1 : 0);
+    }
+  }
+
+  _moveToAdjacentWindow(direction) {
+    if (this._windows.length < 2) return;
+    const rects = this._layoutRects();
+    const current = this._windows[this._activeWin];
+    const a = rects.get(current);
+    if (!a) return;
+    const ax = a.x + a.width / 2;
+    const ay = a.y + a.height / 2;
+    let best = null;
+    for (let i = 0; i < this._windows.length; i++) {
+      if (i === this._activeWin) continue;
+      const b = rects.get(this._windows[i]);
+      if (!b) continue;
+      const bx = b.x + b.width / 2;
+      const by = b.y + b.height / 2;
+      const primary = direction === 'left' ? ax - bx
+        : direction === 'right' ? bx - ax
+        : direction === 'up' ? ay - by
+        : by - ay;
+      if (primary <= 0) continue;
+      const secondary = (direction === 'left' || direction === 'right')
+        ? Math.abs(by - ay) : Math.abs(bx - ax);
+      const score = primary * 1000 + secondary;
+      if (!best || score < best.score) best = { i, score };
+    }
+    if (best) this._switchToWindow(best.i);
+  }
+
+  _resizeActiveWindow(kind, delta, absolute = false) {
+    if (this._windows.length < 2) return;
+    const prop = kind === 'width' ? '_width' : '_height';
+    const available = kind === 'width'
+      ? this.cols - (this._windows.length - 1)
+      : this.rows - 1;
+    if (!this._windows.every(w => Number.isFinite(w[prop]) && w[prop] > 0)) {
+      this._equalizeWindows();
+    }
+    const active = this._windows[this._activeWin];
+    const max = available - (this._windows.length - 1);
+    const target = delta === Infinity
+      ? max
+      : Math.max(1, Math.min(max, absolute ? delta : active[prop] + delta));
+    let change = target - active[prop];
+    active[prop] = target;
+    if (change > 0) {
+      for (let step = 1; change > 0 && step < this._windows.length; step++) {
+        const other = this._windows[(this._activeWin + step) % this._windows.length];
+        const take = Math.min(change, other[prop] - 1);
+        other[prop] -= take;
+        change -= take;
+      }
+    } else if (change < 0) {
+      const other = this._windows[(this._activeWin + 1) % this._windows.length];
+      other[prop] += -change;
+    }
+  }
+
   _handleCtrlWG(key) {
     switch (key) {
       case 'f': case 'F': {
         // Ctrl-W gf / Ctrl-W gF — open file under cursor in new tab.
         // No VFS in sim, so report the same E447 as gf/gF.
-        const fname = this._fileUnderCursor();
+        const ref = this._fileRefUnderCursor();
+        const fname = ref?.name;
         if (!fname) {
           this._messagePrompt = { error: 'E446: No file name under cursor' };
+        } else if (this._openResolvedFile(ref, { tab: true, useLine: key === 'F' })) {
+          // opened
         } else {
           this._messagePrompt = { error: `E447: Can't find file "${fname}" in path` };
         }
@@ -5009,6 +5408,10 @@ export class VimEngine {
    * around the cursor, or null if the cursor is on whitespace.
    */
   _fileUnderCursor() {
+    return this._fileRefUnderCursor()?.name || null;
+  }
+
+  _fileRefUnderCursor() {
     const line = this.buffer.lines[this.cursor.row] || '';
     const isFc = (ch) => ch && !/[\s"'<>`|;{}()\[\]]/.test(ch);
     let s = this.cursor.col;
@@ -5016,10 +5419,29 @@ export class VimEngine {
     while (s > 0 && isFc(line[s - 1])) s--;
     let e = this.cursor.col;
     while (e < line.length && isFc(line[e])) e++;
-    let name = line.slice(s, e);
-    // strip trailing :N[:M] line/col suffix (gF style)
-    name = name.replace(/:\d+(?::\d+)?$/, '');
-    return name || null;
+    const raw = line.slice(s, e);
+    const match = raw.match(/^(.*?)(?::(\d+)(?::(\d+))?)?$/);
+    const name = match?.[1] || raw;
+    return name ? { name, line: match?.[2] ? Number(match[2]) : null, col: match?.[3] ? Number(match[3]) : null } : null;
+  }
+
+  _openResolvedFile(ref, options = {}) {
+    if (!ref?.name || typeof this._resolveFile !== 'function') return false;
+    const resolved = this._resolveFile(ref.name);
+    if (!resolved) return false;
+    if (options.rememberJump) {
+      this._fileJumpStack.push({ bufId: this._currentBufId, row: this.cursor.row, col: this.cursor.col });
+    }
+    if (options.tab) this._doTabNew();
+    else if (options.split) this._doSplit();
+    this.loadFile(resolved.content, resolved.name);
+    if (options.useLine && ref.line) {
+      this.cursor.row = Math.min(Math.max(ref.line - 1, 0), this.buffer.lineCount - 1);
+      this.cursor.col = ref.col ? Math.max(ref.col - 1, 0) : this._firstNonBlank(this.cursor.row);
+      this._updateDesiredCol();
+    }
+    this._messagePrompt = null;
+    return true;
   }
 
   // ── Fold helpers ──
@@ -5278,6 +5700,9 @@ export class VimEngine {
     if (this._cmdCursor < 0) this._cmdCursor = 0;
 
     if (key === 'Escape') {
+      // A long wildmenu listing is paginated by nvim. Escape stops at the
+      // first page but leaves the command line active and visible.
+      if (this._cmdCompletionPage) return;
       this.mode = Mode.NORMAL; this.commandLine = '';
       this._pendingOpForSearch = '';
       this._opStartPosForSearch = null;
@@ -5378,7 +5803,40 @@ export class VimEngine {
       if (this.commandLine[0] === ':') {
         const { matches } = this._getCompletions(this._searchInput);
         this._cmdCompletions = matches;
+        if (/^set\s+$/.test(this._searchInput)) {
+          this._cmdCompletionPage = [
+            'all               modelines',
+            'allowrevins       modifiable',
+            'ambiwidth         modified',
+            'arabic            more',
+            'arabicshape       mouse',
+            'autochdir         mousefocus',
+            'autoindent        mousehide',
+            'autoread          mousemodel',
+            'autowrite         mousemoveevent',
+            'autowriteall      mousescroll',
+            'background        mousetime',
+            'backspace         nrformats',
+            'backup            number',
+            'backupcopy        numberwidth',
+            'backupdir         omnifunc',
+            'backupext         operatorfunc',
+            'backupskip        packpath',
+            'belloff           paragraphs',
+            'binary            paste',
+          ];
+        }
       }
+      return;
+    }
+    if (key === 'Ctrl-F') {
+      const nested = new VimEngine({ rows: this.rows, cols: this.cols });
+      nested.loadFile(this._searchInput);
+      nested.cursor.row = 0;
+      nested.cursor.col = Math.max(0, this._searchInput.length - 1);
+      nested._updateDesiredCol();
+      this._commandLineEditor = { prefix: this.commandLine[0], engine: nested };
+      this.mode = Mode.NORMAL;
       return;
     }
     if (key === 'Backspace') {
@@ -5967,11 +6425,55 @@ export class VimEngine {
     this._lastExTyped = (prefix || '') + rawTyped;
     this.mode = Mode.NORMAL;
 
-    // Push to command history
+    // Ex and search histories are separate in Vim.  q: reads the former;
+    // q/ and q? read the latter.
     if (cmd) {
-      this._cmdHistory.push(cmd);
+      if (prefix === ':') this._cmdHistory.push(cmd);
+      else if (prefix === '/' || prefix === '?') this._searchHistory.push(cmd);
     }
     this._cmdHistoryPos = -1;
+
+    // Execute simple Ex command chains separated by a standalone bar. This
+    // covers startup commands such as `-c 'sp | vs'` without treating bars
+    // inside substitute patterns as separators.
+    if (prefix === ':' && /\s\|\s/.test(cmd)) {
+      for (const part of cmd.split(/\s+\|\s+/).filter(Boolean)) {
+        this.commandLine = ':' + part;
+        this._searchInput = part;
+        this._executeCommand();
+      }
+      return;
+    }
+
+    // :function definitions use a multiline Ex prompt.  Keep collecting
+    // command lines until :endfunction, then return to normal mode.
+    if (this._definingFunction) {
+      if (/^endf(?:u(?:n(?:c(?:t(?:i(?:o(?:n)?)?)?)?)?)?)?!?\s*$/.test(cmd)) {
+        this._userFunctions.set(
+          this._definingFunction.name,
+          [...this._definingFunction.body],
+        );
+        this._definingFunction = null;
+        this.commandLine = '';
+      } else {
+        this._definingFunction.body.push(cmd);
+        this.mode = Mode.COMMAND;
+        this._searchInput = '';
+        this._cmdCursor = 0;
+        this.commandLine = ':';
+      }
+      return;
+    }
+
+    const functionStart = cmd.match(/^fu(?:n(?:c(?:t(?:i(?:o(?:n)?)?)?)?)?)?!?\s+([A-Za-z_][\w#]*)\s*\([^)]*\)\s*$/);
+    if (functionStart) {
+      this._definingFunction = { name: functionStart[1], body: [] };
+      this.mode = Mode.COMMAND;
+      this._searchInput = '';
+      this._cmdCursor = 0;
+      this.commandLine = ':';
+      return;
+    }
 
     if (prefix === '/' || prefix === '?') {
       const visResume = this._visualSearchResume;
@@ -6072,6 +6574,7 @@ export class VimEngine {
       const shellCmd = cmd.slice(bangIdx + 1).trim();
       if (this._tryBuiltinFilter(fr.sr, fr.er, shellCmd)) {
         this._lastExCommand = cmd;
+        this._lastExHandledInternally = true;
         this._filterRange = null;
         return;
       }
@@ -6088,6 +6591,7 @@ export class VimEngine {
         const shellCmd = parsed.rest.slice(1).trim();
         if (this._tryBuiltinFilter(parsed.sr, parsed.er, shellCmd)) {
           this._lastExCommand = cmd;
+          this._lastExHandledInternally = true;
           return;
         }
         this._lastExCommand = cmd;
@@ -6262,6 +6766,8 @@ export class VimEngine {
     // :sp[lit] — horizontal split
     if (/^sp(l(it?)?)?(\s|$)/.test(cmd)) {
       this._doSplit();
+      const splitArg = cmd.match(/^sp(?:l(?:it?)?)?\s+(.+?)\s*$/);
+      if (splitArg) this._openNewBuffer(splitArg[1]);
       this.commandLine = this._lastExTyped;
       this._stickyCommandLine = true;
       return;
@@ -6269,7 +6775,9 @@ export class VimEngine {
 
     // :vsp[lit] — vertical split
     if (/^vs(p(l(it?)?)?)?(\s|$)/.test(cmd)) {
-      this._doSplit(true);
+      const splitArg = cmd.match(/^vs(?:p(?:l(?:it?)?)?)?\s+(.+?)\s*$/);
+      this._doSplit(true, !splitArg);
+      if (splitArg) this._openNewBuffer(splitArg[1]);
       this.commandLine = this._lastExTyped;
       this._stickyCommandLine = true;
       return;
@@ -6525,6 +7033,12 @@ export class VimEngine {
     // :tabnew / :tabe[dit] — open a new tab page
     if (/^tabnew(\s|$)/.test(cmd) || /^tabe(d(it?)?)?(\s|$)/.test(cmd)) {
       this._doTabNew();
+      const tabArg = cmd.match(/^(?:tabnew|tabe(?:d(?:it?)?)?)\s+(.+?)\s*$/);
+      if (tabArg) {
+        this._fileName = tabArg[1];
+        const entry = this._getBufEntry(this._currentBufId);
+        if (entry) entry.fileName = this._fileName;
+      }
       this.commandLine = this._lastExTyped;
       this._stickyCommandLine = true;
       return;
@@ -6897,6 +7411,7 @@ export class VimEngine {
       if (earlierMatch) {
         const n = earlierMatch[1] ? parseInt(earlierMatch[1], 10) : 1;
         for (let i = 0; i < n; i++) this._undo();
+        if (n > 1) this._messagePrompt = { lines: [] };
         if (this._showCurSearch) this._updateCurSearchPos();
         this.commandLine = '';
         return;
@@ -6909,6 +7424,7 @@ export class VimEngine {
       if (laterMatch) {
         const n = laterMatch[1] ? parseInt(laterMatch[1], 10) : 1;
         for (let i = 0; i < n; i++) this._redo();
+        if (n > 1) this._messagePrompt = { lines: [] };
         if (this._showCurSearch) this._updateCurSearchPos();
         this.commandLine = '';
         return;
@@ -7971,7 +8487,7 @@ export class VimEngine {
       }
 
       // String-valued settings: option=word (e.g. :set fileformat=unix, ff=dos)
-      const eqStrMatch = arg.match(/^(\w+)=([A-Za-z_][\w.-]*)$/);
+      const eqStrMatch = arg.match(/^(\w+)=(.+)$/);
       if (eqStrMatch) {
         const optName = shortAliases[eqStrMatch[1]] || eqStrMatch[1];
         if (optName in this._settings && typeof this._settings[optName] === 'string') {
@@ -8067,7 +8583,9 @@ export class VimEngine {
     if (this._pendingInsertCtrlX) {
       this._pendingInsertCtrlX = false;
       if (key === 'Ctrl-]') {
-        this._insertError = 'E433: No tags file';
+        // With no tags file Neovim leaves the insertion unchanged.  Keep the
+        // completion submode alive just enough for the following completion
+        // navigation key to be ignored; ordinary insert commands then resume.
         this._insertCompletionAttempted = true;
         return;
       }
@@ -8099,6 +8617,21 @@ export class VimEngine {
         this._handleInsertLineCompletion();
         return;
       }
+      if (key === 'Ctrl-K') {
+        // ^X^K: complete from the configured dictionary file. SessionManager
+        // supplies the file resolver; without one this is simply no match.
+        const path = this._settings.dictionary;
+        const resolved = path && typeof this._resolveFile === 'function'
+          ? this._resolveFile(path)
+          : null;
+        this._handleInsertExternalCompletion(resolved?.content || '');
+        return;
+      }
+      if (key === 'Ctrl-F') {
+        const files = typeof this._listFiles === 'function' ? this._listFiles() : [];
+        this._handleInsertExternalCompletion(files);
+        return;
+      }
       return;
     }
 
@@ -8106,8 +8639,8 @@ export class VimEngine {
     // consumed as no-ops (no popup menu to navigate/accept/reject).
     // Any other key cancels the submode and is processed normally.
     if (this._insertCompletionAttempted) {
-      if (key === 'Ctrl-N' || key === 'Ctrl-P'
-          || key === 'Ctrl-Y' || key === 'Ctrl-E') {
+      if (key === 'Ctrl-N' || key === 'Ctrl-P') {
+        this._insertCompletionAttempted = false;
         return;
       }
       this._insertCompletionAttempted = false;
@@ -8203,8 +8736,15 @@ export class VimEngine {
       } else if (key === 'S') {
         // <C-g>S<delim> — block-style surround in insert mode (nvim-surround).
         this._pendingInsertCtrlGS = true;
+      } else if (key === 'u') {
+        // Start a new undo block without leaving insert mode.  The snapshot
+        // captures text and cursor at the boundary so :earlier/:later can
+        // traverse insert chunks exactly as normal u/Ctrl-R can.
+        this._saveSnapshot();
+        this._redoStack = [];
       }
-      // <C-g>u, <C-g>U: undo break / no-cursor-undo-break — no-op for sim
+      // <C-g>U prevents cursor movement from starting a new undo block; the
+      // simulator does not create such implicit breaks, so U is a no-op.
       return;
     }
 
@@ -8271,7 +8811,6 @@ export class VimEngine {
         } else {
           const r = this._getReg();
           regText = r.text || '';
-          if (key === ':' && regText) regText = ':' + regText;
         }
       }
       if (regText) {
@@ -8411,6 +8950,20 @@ export class VimEngine {
         } else {
           this._insertError = 'E29: No inserted text yet';
         }
+        break;
+      }
+      case 'Ctrl-@': {
+        // Insert the previously inserted text, then leave insert mode.
+        if (this._lastInsertedText) {
+          for (const ch of this._lastInsertedText) {
+            this.buffer.insertChar(this.cursor.row, this.cursor.col, ch);
+            this.cursor.col++;
+          }
+        }
+        this.mode = Mode.NORMAL;
+        if (this.cursor.col > 0) this.cursor.col--;
+        this._recording = false;
+        this._updateDesiredCol();
         break;
       }
       case 'Ctrl-C':
@@ -8868,6 +9421,17 @@ export class VimEngine {
   // ── Visual mode ──
 
   _visualKey(key) {
+    // Neovim's terminal Select-line mappings for shifted vertical arrows
+    // extend to the file boundary (the behavior emitted by xterm's
+    // CSI 1;2 A/B sequences in the recorded lesson).
+    if (this._visualSelectMode && this.mode === Mode.VISUAL_LINE
+        && (key === 'Shift-ArrowDown' || key === 'Shift-ArrowUp')) {
+      this._visualStart = { row: 0, col: 0 };
+      this.cursor.row = this.buffer.lineCount - 1;
+      this.cursor.col = 0;
+      this._updateDesiredCol();
+      return;
+    }
     if ((key >= '1' && key <= '9') || (key === '0' && this._pendingCount !== '')) {
       this._pendingCount += key; return;
     }
@@ -10277,10 +10841,19 @@ export class VimEngine {
         this.cursor.row = sr; this.cursor.col = sc; this._redoStack = [];
         break;
       }
+      case 'g@': {
+        this._applyOperatorFunction(sr, sc, er, ecSlice, isLinewise);
+        this.cursor.row = isLinewise ? er : sr;
+        this.cursor.col = isLinewise ? this._firstNonBlank(er) : sc;
+        this._redoStack = [];
+        break;
+      }
       case '=': {
+        const wantedCol = this._opStartDesiredCol ?? this._desiredCol;
         this._cindent(sr, er);
         this.cursor.row = sr;
-        this.cursor.col = 0;
+        this.cursor.col = this._byteColForVirtCol(sr, wantedCol);
+        this._desiredCol = wantedCol;
         const lineCount = er - sr + 1;
         if (lineCount > 2) {
           this.commandLine = lineCount + ' lines indented';
@@ -10351,6 +10924,51 @@ export class VimEngine {
       }
     } catch {
       this._curSearchPos = null;
+    }
+  }
+
+  /** Apply the useful subset of operatorfunc Vimscript used by the lessons.
+   * The function body remains data; g@ recognizes substitutions over '[,']
+   * and applies their replacement to the motion range. */
+  _applyOperatorFunction(sr, sc, er, ecSlice, isLinewise) {
+    const name = this._settings.operatorfunc;
+    const body = this._userFunctions.get(name) || [];
+    const script = body.join('\n');
+
+    const transform = (text) => {
+      if (/\\U&/.test(script)) return text.toUpperCase();
+      if (/\[&\]/.test(script)) return `[${text}]`;
+      return text;
+    };
+
+    // The lesson functions operate on Vim's '[ and '] *line* marks via an Ex
+    // range.  Even when g@ receives a characterwise motion such as `iw`, the
+    // substitution consequently runs over each touched line in full.
+    if (script.includes("'[,']")) {
+      for (let row = sr; row <= er; row++) {
+        this.buffer.lines[row] = transform(this.buffer.lines[row]);
+      }
+      return;
+    }
+
+    if (isLinewise) {
+      for (let row = sr; row <= er; row++) {
+        this.buffer.lines[row] = transform(this.buffer.lines[row]);
+      }
+      return;
+    }
+    if (sr === er) {
+      const line = this.buffer.lines[sr];
+      this.buffer.lines[sr] = line.slice(0, sc)
+        + transform(line.slice(sc, ecSlice)) + line.slice(ecSlice);
+      return;
+    }
+    for (let row = sr; row <= er; row++) {
+      const line = this.buffer.lines[row];
+      const start = row === sr ? sc : 0;
+      const end = row === er ? ecSlice : line.length;
+      this.buffer.lines[row] = line.slice(0, start)
+        + transform(line.slice(start, end)) + line.slice(end);
     }
   }
 
@@ -10502,6 +11120,14 @@ export class VimEngine {
           this._redoStack = [];
           break;
         }
+        case 'g@': {
+          this._applyOperatorFunction(startRow, 0, endRow,
+            this.buffer.lineLength(endRow), true);
+          this.cursor.row = endRow;
+          this.cursor.col = this._firstNonBlank(endRow);
+          this._redoStack = [];
+          break;
+        }
       }
       this._updateDesiredCol();
       return;
@@ -10624,6 +11250,13 @@ export class VimEngine {
         this.cursor.row = startRow; this.cursor.col = startCol; this._redoStack = [];
         break;
       }
+      case 'g@': {
+        this._applyOperatorFunction(startRow, startCol, endRow, endCol, false);
+        this.cursor.row = startRow;
+        this.cursor.col = startCol;
+        this._redoStack = [];
+        break;
+      }
     }
     this._updateDesiredCol();
   }
@@ -10706,6 +11339,7 @@ export class VimEngine {
       case '=': {
         this._cindent(sr, er);
         this.cursor.col = 0;
+        this._desiredCol = this._virtColEnd(sr, this.cursor.col);
         const lineCount = er - sr + 1;
         if (lineCount > 2) {
           this.commandLine = lineCount + ' lines indented';
@@ -10744,7 +11378,7 @@ export class VimEngine {
         break;
       }
     }
-    if (op !== '>' && op !== '<') this._updateDesiredCol();
+    if (op !== '>' && op !== '<' && op !== '=') this._updateDesiredCol();
     this._pendingOp = '';
   }
 
@@ -11673,6 +12307,37 @@ export class VimEngine {
   _handleBracketCommand(bracket, key) {
     const combo = bracket + key;
     switch (combo) {
+      case '[c':
+      case ']c': {
+        if (!this._diffMode || this._windows.length !== 2) break;
+        const other = this._windows.find((_, i) => i !== this._activeWin);
+        if (!other) break;
+        const different = [];
+        const count = Math.max(this.buffer.lineCount, other.buffer.lineCount);
+        for (let r = 0; r < count; r++) {
+          if ((this.buffer.lines[r] ?? '') !== (other.buffer.lines[r] ?? '')) different.push(r);
+        }
+        if (!different.length) break;
+        const backwards = combo === '[c';
+        const candidates = backwards
+          ? different.filter(r => r < this.cursor.row).reverse()
+          : different.filter(r => r > this.cursor.row);
+        this.cursor.row = candidates[0] ?? (backwards ? different[different.length - 1] : different[0]);
+        this.cursor.col = this._firstNonBlank(this.cursor.row);
+        this._updateDesiredCol();
+        break;
+      }
+      case '[f':
+      case ']f': {
+        const ref = this._fileRefUnderCursor();
+        const fname = ref?.name;
+        if (!fname) {
+          this._messagePrompt = { error: 'E446: No file name under cursor' };
+        } else if (!this._openResolvedFile(ref, { rememberJump: true })) {
+          this._messagePrompt = { error: `E447: Can't find file "${fname}" in path` };
+        }
+        break;
+      }
       case '[(':
         this._gotoPrevUnmatched('(', ')');
         break;
@@ -11892,6 +12557,9 @@ export class VimEngine {
             }
           }
         }
+        if (!best && this._settings.foldmethod === 'indent') {
+          best = this._indentFoldAt(this.cursor.row);
+        }
         if (best) {
           this.cursor.row = best.startRow;
           this.cursor.col = 0;
@@ -11908,6 +12576,9 @@ export class VimEngine {
               best = f;
             }
           }
+        }
+        if (!best && this._settings.foldmethod === 'indent') {
+          best = this._indentFoldAt(this.cursor.row);
         }
         if (best) {
           this.cursor.row = best.endRow;
@@ -13110,6 +13781,33 @@ export class VimEngine {
 
   // ── Spell checking helpers ──
 
+  /** Return the smallest indentation fold containing a row. */
+  _indentFoldAt(row) {
+    const indentOf = (line) => {
+      if (!line || !line.trim()) return null;
+      let n = 0;
+      for (const ch of line.match(/^[ \t]*/)[0]) {
+        n += ch === '\t' ? (this._settings.tabstop || 8) : 1;
+      }
+      return n;
+    };
+    const indent = indentOf(this.buffer.lines[row]);
+    if (!indent) return null;
+    let startRow = row;
+    while (startRow > 0) {
+      const prior = indentOf(this.buffer.lines[startRow - 1]);
+      if (prior == null || prior >= indent) startRow--;
+      else break;
+    }
+    let endRow = row;
+    while (endRow + 1 < this.buffer.lineCount) {
+      const next = indentOf(this.buffer.lines[endRow + 1]);
+      if (next == null || next >= indent) endRow++;
+      else break;
+    }
+    return endRow > startRow ? { startRow, endRow, closed: false } : null;
+  }
+
   /**
    * Check if a word is misspelled.
    * Returns true if the word is NOT in the dictionary and NOT in the good words list,
@@ -13538,6 +14236,36 @@ export class VimEngine {
     this._applyInsertCompletion();
   }
 
+  _handleInsertExternalCompletion(content) {
+    const line = this.buffer.lines[this.cursor.row] || '';
+    const isKW = (c) => /[A-Za-z0-9_]/.test(c);
+    let p = this.cursor.col;
+    while (p > 0 && isKW(line[p - 1])) p--;
+    const prefix = line.slice(p, this.cursor.col);
+    if (!prefix) return;
+    const seen = new Set();
+    const matches = [];
+    const words = Array.isArray(content)
+      ? content
+      : (String(content).match(/[A-Za-z_][A-Za-z0-9_]*/g) || []);
+    for (const word of words) {
+      if (word.startsWith(prefix) && word !== prefix && !seen.has(word)) {
+        seen.add(word);
+        matches.push(word);
+      }
+    }
+    if (matches.length === 0) return;
+    this._insertCompletion = {
+      matches,
+      idx: 0,
+      anchorRow: this.cursor.row,
+      anchorCol: p,
+      prefix,
+      originalDirection: 1,
+    };
+    this._applyInsertCompletion();
+  }
+
   // ── Insert-mode ^X^S: spell suggestion ──
   // Replaces the keyword at the cursor with a known correction. Sim does
   // not run a spell engine, so it consults a small static map covering the
@@ -13708,6 +14436,81 @@ export class VimEngine {
     const line = this.buffer.lines[br] || '';
     const cols = Math.max(1, this.cols);
     return line.length === 0 ? 1 : Math.ceil(line.length / cols);
+  }
+
+  _lineStartVisualRow(row) {
+    let visual = 0;
+    for (let r = 0; r < Math.min(row, this.buffer.lineCount); r++) {
+      visual += this._lineScreenRows(r);
+    }
+    return visual;
+  }
+
+  _hasWrappedLines() {
+    if (!this._settings.wrap) return false;
+    for (let row = 0; row < this.buffer.lineCount; row++) {
+      if (this._lineScreenRows(row) > 1) return true;
+    }
+    return false;
+  }
+
+  _lineAtOrAfterVisualRow(target) {
+    let visual = 0;
+    for (let row = 0; row < this.buffer.lineCount; row++) {
+      if (visual >= target) return { row, wrap: 0, visual };
+      const rows = this._lineScreenRows(row);
+      if (visual + rows > target) {
+        // A viewport cannot begin halfway through a wrapped logical line in
+        // our model, so match Neovim by advancing to the next line start.
+        const next = Math.min(row + 1, this.buffer.lineCount - 1);
+        return { row: next, wrap: 0, visual: visual + rows };
+      }
+      visual += rows;
+    }
+    const row = Math.max(0, this.buffer.lineCount - 1);
+    return { row, wrap: 0, visual: this._lineStartVisualRow(row) };
+  }
+
+  _lineAtOrBeforeVisualRow(target) {
+    let visual = 0;
+    let prior = { row: 0, wrap: 0, visual: 0 };
+    for (let row = 0; row < this.buffer.lineCount; row++) {
+      if (visual > target) return prior;
+      prior = { row, wrap: 0, visual };
+      visual += this._lineScreenRows(row);
+    }
+    return prior;
+  }
+
+  _positionAtVisualRow(target) {
+    let visual = 0;
+    for (let row = 0; row < this.buffer.lineCount; row++) {
+      const rows = this._lineScreenRows(row);
+      if (target < visual + rows) return { row, wrap: target - visual };
+      visual += rows;
+    }
+    return { row: Math.max(0, this.buffer.lineCount - 1), wrap: 0 };
+  }
+
+  _cursorVisualRow() {
+    const width = Math.max(1, this.cols);
+    const wrap = this._settings.wrap
+      ? Math.floor(this._virtColAt(this.cursor.row, this.cursor.col) / width)
+      : 0;
+    return this._lineStartVisualRow(this.cursor.row) + wrap;
+  }
+
+  _setCursorAtVisualRow(target) {
+    const width = Math.max(1, this.cols);
+    const totalRows = this._lineStartVisualRow(this.buffer.lineCount);
+    const pos = this._positionAtVisualRow(Math.max(0, Math.min(totalRows - 1, target)));
+    this.cursor.row = pos.row;
+    if (pos.wrap > 0) {
+      this.cursor.col = this._byteColForVirtCol(pos.row, pos.wrap * width);
+      this._desiredCol = 0;
+    } else {
+      this._applyStartOfLine();
+    }
   }
 
   // Reflow a range of lines into wrapped paragraph form, as used by
@@ -14202,7 +15005,11 @@ export class VimEngine {
           continuation = true;
         }
       }
-      const virtIndent = level * sw + (continuation ? sw : 0);
+      // cindent gives the first item after an opening `[` one additional
+      // continuation level; later comma-separated items return to the normal
+      // continuation column.
+      const bracketContinuation = prevTrimmed.endsWith('[') ? sw : 0;
+      const virtIndent = level * sw + (continuation ? sw : 0) + bracketContinuation;
       let indentStr;
       if (et) {
         indentStr = ' '.repeat(virtIndent);

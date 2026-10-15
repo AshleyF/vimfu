@@ -81,7 +81,7 @@ export const pythonGrammar = {
 
     // ── Built-in functions / types ──────────────────────────
     // nvim highlights these everywhere (as function calls AND type annotations)
-    { match: '\\b(?:print|len|range|enumerate|zip|map|filter|sorted|reversed|list|dict|set|tuple|int|str|float|bool|bytes|type|isinstance|issubclass|hasattr|getattr|setattr|delattr|super|open|input|abs|min|max|sum|any|all|iter|next|repr|id|hash|callable|format|round|chr|ord|hex|oct|bin|pow|vars|dir|help|eval|exec|compile|globals|locals|__import__|staticmethod|classmethod|property)\\b', scope: 'builtin' },
+    { match: '\\b(?:print|len|range|enumerate|zip|map|filter|sorted|reversed|list|dict|set|tuple|int|str|float|bool|bytes|type|isinstance|issubclass|hasattr|getattr|setattr|delattr|super|open|input|abs|min|max|sum|any|all|iter|next|repr|id|hash|callable|format|round|chr|ord|hex|oct|bin|pow|vars|dir|help|eval|exec|compile|globals|locals|__import__|staticmethod|classmethod|property)\\b', scope: 'function.builtin' },
 
     // ── Dunder (magic) names ───────────────────────────────
     // nvim does NOT highlight self or cls

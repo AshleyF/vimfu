@@ -12,6 +12,7 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { VimEngine } from '../src/engine.js';
 import { Screen } from '../src/screen.js';
+import { SessionManager } from '../src/session.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const ROWS = 20;
@@ -27,7 +28,7 @@ function feedKeys(feed, keys) {
     }
     const controls = {
       '\x1b': 'Escape', '\r': 'Enter', '\n': 'Ctrl-J', '\x03': 'Ctrl-C',
-      '\x08': 'Backspace', '\x7f': 'Backspace', '\x01': 'Ctrl-A',
+      '\x08': 'Backspace', '\x7f': 'Backspace', '\x00': 'Ctrl-@', '\x01': 'Ctrl-A',
       '\x02': 'Ctrl-B', '\x04': 'Ctrl-D', '\x05': 'Ctrl-E', '\x06': 'Ctrl-F',
       '\x07': 'Ctrl-G', '\x09': 'Tab', '\x0b': 'Ctrl-K', '\x0c': 'Ctrl-L',
       '\x0e': 'Ctrl-N', '\x0f': 'Ctrl-O', '\x10': 'Ctrl-P', '\x12': 'Ctrl-R',
@@ -48,6 +49,41 @@ function runCase(gt, mutateKey = null) {
     if (replacement !== null) originalFeed(replacement);
   }, gt.keys);
   return new Screen(ROWS, COLS, 'monokai').render(engine);
+}
+
+function runSessionCase(gt, configure = null) {
+  const session = new SessionManager({ rows: ROWS, cols: COLS, persist: false });
+  for (const [path, content] of Object.entries(gt.setupFiles || {})) {
+    if (path !== 'init.lua') session.fs.write(path, content);
+  }
+  const launch = gt.launch || {};
+  const launchFiles = (launch.files || []).filter(path => session.fs.exists(path));
+  const fileName = launchFiles[0] || gt.fileName || 'test.txt';
+  if (!gt.setupFiles && gt.initialContent != null) session.fs.write(fileName, gt.initialContent);
+  for (const ch of `vim ${fileName}`) session.feedKey(ch);
+  session.feedKey('Enter');
+  if (launchFiles.length > 1) {
+    for (const path of launchFiles.slice(1)) {
+      session.engine._doSplit(launch.layout === 'vertical', false);
+      session.engine.loadFile(session.fs.read(path), path);
+    }
+    session.engine._switchToWindow(0);
+  }
+  if (configure) configure(session);
+  feedKeys(key => session.feedKey(key), gt.keys);
+  return session;
+}
+
+function matchesSessionOracle(gt, session) {
+  const expectedMode = gt.expectsExit ? 'shell' : 'vim';
+  if (session.getMode() !== expectedMode) return false;
+  const actualPaths = new Set(session.fs.ls());
+  for (const [path, content] of Object.entries(gt.filesAfter || {})) {
+    if (session.fs.read(path) !== content) return false;
+    actualPaths.delete(path);
+  }
+  if (actualPaths.size > 0) return false;
+  return gt.expectsExit || matchesOracle(gt, session.renderFrame());
 }
 
 function runSignature(run) {
@@ -83,7 +119,7 @@ function loadCases() {
     const suite = file.slice('ground_truth_'.length, -'.json'.length);
     const data = JSON.parse(readFileSync(resolve(here, file), 'utf8'));
     for (const [name, gt] of Object.entries(data)) {
-      if (!gt.error && !gt.skip && gt.keys != null) cases.push({ suite, name, gt });
+      if (!gt.error && !gt.skip && gt.keys != null && !gt.setupFiles) cases.push({ suite, name, gt });
     }
   }
   return cases;
@@ -109,11 +145,39 @@ const behavioralMutants = [
   ['ignore normal-mode left motion', (key, e) => key === 'h' && idleNormal(e) ? null : key],
   ['ignore normal-mode down motion', (key, e) => key === 'j' && idleNormal(e) ? null : key],
   ['ignore normal-mode right motion', (key, e) => key === 'l' && idleNormal(e) ? null : key],
+  ['ignore normal-mode word motion', (key, e) => key === 'w' && idleNormal(e) ? null : key],
+  ['ignore normal-mode backward-word motion', (key, e) => key === 'b' && idleNormal(e) ? null : key],
+  ['ignore normal-mode end-of-word motion', (key, e) => key === 'e' && idleNormal(e) ? null : key],
+  ['ignore entry to insert mode', (key, e) => key === 'i' && idleNormal(e) ? null : key],
   ['ignore normal-mode delete character', (key, e) => key === 'x' && idleNormal(e) ? null : key],
+  ['ignore normal-mode delete operator', (key, e) => key === 'd' && idleNormal(e) ? null : key],
+  ['ignore normal-mode change operator', (key, e) => key === 'c' && idleNormal(e) ? null : key],
+  ['ignore normal-mode yank operator', (key, e) => key === 'y' && idleNormal(e) ? null : key],
   ['ignore normal-mode undo', (key, e) => key === 'u' && idleNormal(e) ? null : key],
   ['ignore normal-mode put', (key, e) => key === 'p' && idleNormal(e) ? null : key],
+  ['ignore normal-mode dot repeat', (key, e) => key === '.' && idleNormal(e) ? null : key],
+  ['ignore visual-mode entry', (key, e) => key === 'v' && idleNormal(e) ? null : key],
+  ['ignore insert-mode newline', (key, e) => key === 'Enter' && e.mode === 'insert' ? null : key],
+  ['ignore insert-mode backspace', (key, e) => key === 'Backspace' && e.mode === 'insert' ? null : key],
   ['ignore normal-mode search repeat', (key, e) => key === 'n' && idleNormal(e) && e._searchPattern ? null : key],
   ['reverse normal-mode half-page scroll', (key, e) => key === 'Ctrl-U' && idleNormal(e) ? 'Ctrl-D' : key],
+  ['reverse normal-mode forward half-page scroll', (key, e) => key === 'Ctrl-D' && idleNormal(e) ? 'Ctrl-U' : key],
+  ['ignore insert-mode escape', (key, e) => key === 'Escape' && e.mode === 'insert' ? null : key],
+  ['ignore normal-mode line-start motion', (key, e) => key === '0' && idleNormal(e) ? null : key],
+  ['ignore normal-mode line-end motion', (key, e) => key === '$' && idleNormal(e) ? null : key],
+  ['ignore normal-mode file-end motion', (key, e) => key === 'G' && idleNormal(e) ? null : key],
+  ['ignore normal-mode line join', (key, e) => key === 'J' && idleNormal(e) ? null : key],
+  ['ignore normal-mode append', (key, e) => key === 'a' && idleNormal(e) ? null : key],
+  ['ignore normal-mode open-below', (key, e) => key === 'o' && idleNormal(e) ? null : key],
+  ['ignore normal-mode replace', (key, e) => key === 'r' && idleNormal(e) ? null : key],
+  ['ignore normal-mode search entry', (key, e) => key === '/' && idleNormal(e) ? null : key],
+  ['ignore command-line execution', (key, e) => key === 'Enter' && e.mode === 'command' ? null : key],
+  ['ignore command-line completion', (key, e) => key === 'Tab' && e.mode === 'command' ? null : key],
+  ['ignore command-line completion listing', (key, e) => key === 'Ctrl-D' && e.mode === 'command' ? null : key],
+  ['ignore window-command prefix', (key, e) => key === 'Ctrl-W' && idleNormal(e) ? null : key],
+  ['ignore macro-recording prefix', (key, e) => key === 'q' && idleNormal(e) ? null : key],
+  ['ignore mark-setting prefix', (key, e) => key === 'm' && idleNormal(e) ? null : key],
+  ['ignore visual delete', (key, e) => key === 'd' && e.mode.startsWith('visual') ? null : key],
 ];
 
 let killed = 0;
@@ -121,6 +185,38 @@ for (const [name, mutateKey] of behavioralMutants) {
   const killer = passing.find(({ gt }) => !matchesOracle(gt, runCase(gt, mutateKey)));
   if (killer) {
     killed++;
+    console.log(`KILLED   ${name} (${killer.suite}/${killer.name})`);
+  } else {
+    console.error(`SURVIVED ${name}`);
+  }
+}
+
+const sessionCases = [];
+for (const file of readdirSync(here).filter(name =>
+  name.startsWith('ground_truth_') && name.endsWith('.json'))) {
+  const suite = file.slice('ground_truth_'.length, -'.json'.length);
+  const data = JSON.parse(readFileSync(resolve(here, file), 'utf8'));
+  for (const [name, gt] of Object.entries(data)) {
+    if (gt.requiresSession && !gt.error && !gt.skip) sessionCases.push({ suite, name, gt });
+  }
+}
+
+const sessionMutants = [
+  ['discard session file writes', session => { session._saveFile = () => {}; }],
+  ['skip session filter transformation', session => {
+    session.engine._tryBuiltinFilter = () => true;
+  }],
+  ['refuse to exit the editor session', session => { session._exitVim = () => {}; }],
+];
+let sessionKilled = 0;
+for (const [name, configure] of sessionMutants) {
+  const killer = sessionCases.find(({ gt }) => {
+    const baseline = runSessionCase(gt);
+    if (!matchesSessionOracle(gt, baseline)) return false;
+    return !matchesSessionOracle(gt, runSessionCase(gt, configure));
+  });
+  if (killer) {
+    sessionKilled++;
     console.log(`KILLED   ${name} (${killer.suite}/${killer.name})`);
   } else {
     console.error(`SURVIVED ${name}`);
@@ -156,6 +252,8 @@ for (const [name, mutate] of Object.entries(observationMutants)) {
 }
 
 console.log(`\nBehavior mutation score: ${killed}/${behavioralMutants.length}`);
+console.log(`Session mutation score: ${sessionKilled}/${sessionMutants.length}`);
 console.log(`Observation sensitivity: ${observed}/${Object.keys(observationMutants).length}`);
 console.log(`Baseline oracle cases used: ${passing.length}`);
-if (killed !== behavioralMutants.length || observed !== Object.keys(observationMutants).length) process.exit(1);
+if (killed !== behavioralMutants.length || sessionKilled !== sessionMutants.length
+    || observed !== Object.keys(observationMutants).length) process.exit(1);

@@ -20,53 +20,59 @@ CASES = {
     },
     '0804_go_to_line_number': {
         "description": 'Go to a Line Number',
-        "keys": ':5\r:10\r:1\r',
+        "keys": ':set number\r:5\r:10\r:1\r',
         "initial": 'line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima',
     },
     '0805_current_line_dot': {
         "description": 'The Current Line .',
-        "keys": ':5\r:.d\ru:.,.+3d\ru',
+        "keys": ':set number\r:5\r:.d\ru:.,.+3d\ru',
         "initial": 'line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima',
     },
     '0806_last_line_dollar': {
         "description": 'The Last Line $',
-        "keys": ':$\r:1\r:10,$d\ru',
+        "keys": ':set number\r:$\r:1\r:10,$d\ru',
         "initial": 'line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima',
     },
     '0807_range_of_lines': {
         "description": 'A Range of Lines',
-        "keys": ':3,7d\ru:1,3d\ru',
+        "keys": ':set number\r:3,7d\ru:1,3d\ru',
         "initial": 'line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima',
     },
     '0808_entire_file_percent': {
         "description": 'The Entire File %',
-        "keys": ':%d\ru',
+        "keys": ':set number\r:%d\ru',
         "initial": 'line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima',
     },
     '0809_visual_range': {
         "description": "Visual Range '<,'>",
-        "keys": ':3\rVjjj:d\ru',
+        "keys": ':set number\r:3\rVjjj:d\ru',
         "initial": '# Colors\nred = "#ff0000"\ngreen = "#00ff00"\nblue = "#0000ff"\nyellow = "#ffff00"\ncyan = "#00ffff"\nmagenta = "#ff00ff"\nwhite = "#ffffff"\nblack = "#000000"\norange = "#ffa500"',
     },
     '0810_mark_based_ranges': {
         "description": 'Mark-Based Ranges',
-        "keys": ":3\rma:7\rmb:'a,'bd\ru",
+        "keys": ":set number\r:3\rma:7\rmb:'a,'bd\ru",
         "initial": 'line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima',
     },
     '0811_offsets_in_ranges': {
         "description": 'Offsets in Ranges',
-        "keys": ':3\r:.,.+4d\ru:.+2\r',
+        "keys": ':set number\r:3\r:.,.+4d\ru:.+2\r',
         "initial": 'line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima',
     },
     '0812_combining_range_forms': {
         "description": 'Combining Range Forms',
-        "keys": ":5\rma:'a,$d\ru:1,.d\ru",
+        "keys": ":set number\r:5\rma:'a,$d\ru:1,.d\ru",
         "initial": 'line 1 — alpha\nline 2 — bravo\nline 3 — charlie\nline 4 — delta\nline 5 — echo\nline 6 — foxtrot\nline 7 — golf\nline 8 — hotel\nline 9 — india\nline 10 — juliet\nline 11 — kilo\nline 12 — lima',
     },
     '0813_write_save': {
         "description": ':w — Write (Save)',
         "keys": 'GoOwner: Team Alpha\x1b:w\r',
         "initial": 'Project Notes\n\nDeadline: Friday\nStatus: In Progress\nPriority: High',
+    },
+    '0814_write_to_file': {
+        "description": ':w {file} — Write to a File',
+        "keys": ':w backup.txt\r:!cat backup.txt\r\r',
+        "initial": 'Once upon a time,\nthere was a programmer\nwho loved Vim.\nThe end.',
+        "requiresSession": True,
     },
     '0815_write_and_quit': {
         "description": ':wq — Write and Quit',
@@ -91,7 +97,10 @@ CASES = {
     '0819_edit_file': {
         "description": ':e {file} — Edit a File',
         "keys": ':e utils.py\r:e main.py\r',
-        "initial": '# Utilities\n\ndef helper():\n    return "I am helping!"\n\ndef format(text):\n    return text.strip().upper()',
+        "initial": '# Main Module\n\nfrom utils import helper\n\ndef main():\n    result = helper()\n    print(result)',
+        "fileName": 'main.py',
+        "setupFiles": {'main.py': '# Main Module\n\nfrom utils import helper\n\ndef main():\n    result = helper()\n    print(result)', 'utils.py': '# Utilities\n\ndef helper():\n    return "I am helping!"\n\ndef format(text):\n    return text.strip().upper()'},
+        "launch": {'layout': None, 'files': ['main.py']},
     },
     '0820_revert_to_saved': {
         "description": ':e! — Revert to Saved',
@@ -106,71 +115,69 @@ CASES = {
     '0822_read_file': {
         "description": ':r {file} — Read a File',
         "keys": 'G:r sig.txt\r',
-        "initial": '-- \nJane Smith\nSenior Developer\njane@example.com',
-    },
-    '0823_read_shell_output': {
-        "description": ':r !{cmd} — Read Shell Output',
-        "keys": 'G:r !date\r:r !ls\r',
-        "initial": 'Build Log\n\nTimestamp:',
+        "initial": 'Dear Team,\n\nGreat work this week.\nKeep it up!\n\nBest regards,',
+        "fileName": 'letter.txt',
+        "setupFiles": {'letter.txt': 'Dear Team,\n\nGreat work this week.\nKeep it up!\n\nBest regards,', 'sig.txt': '-- \nJane Smith\nSenior Developer\njane@example.com'},
+        "launch": {'layout': None, 'files': ['letter.txt']},
     },
     '0824_delete_lines': {
         "description": ':[range]d — Delete Lines',
-        "keys": ':3d\ru:5,8d\ru',
+        "keys": ':set number\r:3d\ru:5,8d\ru',
         "initial": 'line 1 — buy apples\nline 2 — fix the bug\nline 3 — call Mom\nline 4 — send invoice\nline 5 — water plants\nline 6 — clean kitchen\nline 7 — read chapter 5\nline 8 — update resume\nline 9 — walk the dog\nline 10 — write tests',
     },
     '0825_delete_into_register': {
         "description": ':[range]d {reg} — Delete into Register',
-        "keys": ':3d a\rG"ap',
+        "keys": ':set number\r:3d a\rG"ap',
         "initial": 'line 1 — header\nline 2 — intro\nline 3 — IMPORTANT\nline 4 — details\nline 5 — summary\nline 6 — footer',
     },
     '0826_yank_lines': {
         "description": ':[range]y — Yank Lines',
-        "keys": ':2,4y\rGpu',
+        "keys": ':set number\r:2,4y\rGpu',
         "initial": 'line 1 — Alice\nline 2 — Bob\nline 3 — Charlie\nline 4 — Diana\nline 5 — Eve\nline 6 — Frank\nline 7 — Grace\nline 8 — Hank',
     },
     '0827_yank_into_register': {
         "description": ':[range]y {reg} — Yank into Register',
-        "keys": ':2,3y a\r:6,7y b\rG"ap"bp',
+        "keys": ':set number\r:2,3y a\r:6,7y b\rG"ap"bp',
         "initial": 'line 1 — apple\nline 2 — banana\nline 3 — cherry\nline 4 — date\nline 5 — elderberry\nline 6 — fig\nline 7 — grape\nline 8 — honeydew',
     },
     '0828_move_lines': {
         "description": ':[range]m {address} — Move Lines',
-        "keys": ':2m 6\ru:5,6m $\ru',
+        "keys": ':set number\r:2m 6\ru:5,6m $\ru',
         "initial": 'line 1 — gather tools\nline 2 — read manual\nline 3 — install app\nline 4 — configure\nline 5 — run tests\nline 6 — deploy\nline 7 — monitor\nline 8 — celebrate',
     },
     '0829_copy_lines': {
         "description": ':[range]co {address} — Copy Lines',
-        "keys": ':1co 7\ru:1,3co $\ru',
+        "keys": ':set number\r:1co 7\ru:1,3co $\ru',
         "initial": 'line 1 — Monday\nline 2 — Tuesday\nline 3 — Wednesday\nline 4 — Thursday\nline 5 — Friday\nline 6 — Saturday\nline 7 — Sunday',
     },
     '0830_copy_synonym': {
         "description": ':[range]t {address} — Copy (Synonym)',
-        "keys": ':4t 7\ru:3\r:t$\ru',
+        "keys": ':set number\r:4t 7\ru:3\r:t$\ru',
         "initial": 'line 1 — preheat oven\nline 2 — mix flour\nline 3 — add eggs\nline 4 — stir well\nline 5 — pour batter\nline 6 — bake 30 min\nline 7 — let cool',
     },
     '0831_join_lines': {
         "description": ':[range]j — Join Lines',
-        "keys": ':2,3j\r:3,4j\ruu:2,3j!\ru',
+        "keys": ':set number\r:2,3j\r:3,4j\ruu:2,3j!\ru',
         "initial": 'Jane Smith\n123 Main Street\nApartment 4B\nNew York\nNY 10001\nUSA',
     },
     '0832_put_register': {
         "description": ':pu {reg} — Put Register',
-        "keys": ':1y a\r:3\r:pu a\ru:3\r:pu! a\ru',
+        "keys": ':set number\r:1y a\r:3\r:pu a\ru:3\r:pu! a\ru',
         "initial": 'line 1 — header\nline 2 — navigation\nline 3 — sidebar\nline 4 — content\nline 5 — footer',
     },
     '0833_sort_lines': {
         "description": ':[range]sort — Sort Lines',
-        "keys": ':%sort\ru:1,4sort\ru',
+        "keys": ':set number\r:%sort\ru:1,4sort\ru',
         "initial": 'banana\ncherry\napple\nfig\ndate\nelderberry\ngrape\nkiwi',
     },
     '0834_reverse_sort': {
         "description": ':[range]sort! — Reverse Sort',
-        "keys": ':%sort\ru:%sort!\ru',
+        "keys": ':set number\r:%sort\ru:%sort!\ru',
         "initial": 'Paris\nTokyo\nBerlin\nSydney\nCairo\nLondon\nRome\nNew York',
     },
     '0835_sort_options': {
         "description": ':[range]sort Options',
-        "keys": ':%sort\r:%sort n\r:%sort nu\r:%sort iu\r',
+        "keys": ':set number\r:%sort\r:%sort n\r:%sort nu\r:%sort iu\r',
         "initial": 'item 10\nitem 2\nApple\napple\nitem 30\nBanana\nbanana\nitem 1\nApple\nitem 20',
     },
     '0836_substitute_on_line': {
@@ -215,7 +222,7 @@ CASES = {
     },
     '0844_noh': {
         "description": ':noh Clear Search Highlighting',
-        "keys": '/hello\r:noh\r',
+        "keys": ':set hlsearch\r/hello\r:noh\r',
         "initial": 'def hello():\n    print("hello")\n    return "hello"\n\ndef world():\n    print("world")',
     },
     '0845_marks': {
@@ -260,22 +267,22 @@ CASES = {
     },
     '0853_indent_lines': {
         "description": ':[range]> Indent Lines',
-        "keys": ':2>\r:3,4>\r',
+        "keys": ':set shiftwidth=4\r:2>\r:3,4>\r',
         "initial": 'def greet():\nprint("hello")\nprint("world")\nreturn True\n\nx = greet()',
     },
     '0854_dedent_lines': {
         "description": ':[range]< Dedent Lines',
-        "keys": ':2,4<\r',
+        "keys": ':set shiftwidth=4\r:2,4<\r',
         "initial": 'def run():\n        x = 1\n        y = 2\n        return x + y\n\nresult = run()',
     },
     '0855_visual_indent': {
         "description": 'Visual + :> :< Indent Selection',
-        "keys": 'jV2j:>\rgvgv:<\r',
+        "keys": ':set shiftwidth=4\rjV2j:>\rgvgv:<\r',
         "initial": 'if True:\nprint("a")\nprint("b")\nprint("c")\nprint("done")',
     },
     '0856_multiple_shifts': {
         "description": 'Multiple Shifts :>> :<<<',
-        "keys": ':3,5>>\r:3<<<\r',
+        "keys": ':set shiftwidth=4\r:3,5>>\r:3<<<\r',
         "initial": 'class Game:\n    def run(self):\nstart()\nupdate()\nrender()\n    def stop(self):\n        pass',
     },
     '0857_norm_keys': {
@@ -376,5 +383,5 @@ CASES = {
 }
 
 SKIPPED = {
-    '0814_write_to_file': ['shell escape (:!)'],
+    '0823_read_shell_output': ['shell command through Ex; requires session oracle'],
 }

@@ -46,7 +46,6 @@ CASES = {
         "keys": ":vs\x09\r\x1b",
         "initial": "hello\nworld\n",
         "settle": 0.5,
-        "skip": "vsplit rendering differs from nvim (pre-existing: sim uses flat split model)",
     },
 
     # ── Tab with command that has unique match ──
@@ -86,7 +85,6 @@ CASES = {
     "ctrl_d_set_then_escape": {
         "keys": ":set \x04\x1b",
         "initial": "test\n",
-        "skip": "nvim shows paginated set options list that fills entire screen",
     },
 
     # ── Edge cases ──
