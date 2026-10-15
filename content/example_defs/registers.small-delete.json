@@ -1,0 +1,50 @@
+{
+  "format": "vimfu-example-def",
+  "version": 1,
+  "id": "registers.small-delete",
+  "title": "{key:x} goes to {key:\"}{key:-}",
+  "summary": "Charwise tiny deletes leave the numbered registers alone.",
+  "topic": "registers.small-delete",
+  "content": [
+    "keep this line",
+    "typo here"
+  ],
+  "cursor": [
+    1,
+    0
+  ],
+  "prep": [
+    {
+      "keys": "yy"
+    }
+  ],
+  "frames": [
+    {
+      "caption": "Line yanked — it sits in {key:\"}{key:1}.",
+      "narration": "A full-line yank fills the numbered register. Next we'll make a *small* delete."
+    },
+    {
+      "actions": [
+        {
+          "keys": "jw"
+        },
+        {
+          "keys": "x"
+        }
+      ],
+      "keys": "jwx",
+      "caption": "{key:x} deletes one character into {key:\"}{key:-}.",
+      "narration": "Small charwise deletes go to the small-delete register, so {key:\"}{key:1} still holds the yanked line."
+    },
+    {
+      "actions": [
+        {
+          "keys": "\"1p"
+        }
+      ],
+      "keys": "\"1p",
+      "caption": "{key:\"}{key:1}{key:p} still pastes the line.",
+      "narration": "That's the point of {key:\"}{key:-}: typos don't clobber the delete you meant to keep."
+    }
+  ]
+}

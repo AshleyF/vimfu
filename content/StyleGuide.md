@@ -421,6 +421,14 @@ font already disambiguates them, so the quotes are noise.
 - ✅ `` `incsearch` ``, `` `wildmenu` ``, `` `autoindent` ``
 - ❌ `` `'incsearch'` ``, `` `'wildmenu'` ``
 
+### Worked examples live under `content/example_defs/`
+
+Author captions, narration, initial buffers, and keystroke actions in
+`content/example_defs/<id>.json` (`vimfu-example-def`). Run
+`python content/build_examples.py` to regenerate `content/examples/` and
+`content/example_lessons/`. Do not hand-edit those generated trees.
+See `content/Examples.md` and `content/README.md` §4.
+
 ### Cross-references use the section title, not the slug
 
 When linking to another topic with a markdown link, the label should

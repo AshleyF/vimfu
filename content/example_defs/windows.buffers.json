@@ -1,0 +1,47 @@
+{
+  "format": "vimfu-example-def",
+  "version": 1,
+  "id": "windows.buffers",
+  "title": ":ls and :b",
+  "summary": "Edit many files in one Vim session.",
+  "topic": "windows.buffers",
+  "content": "main.py contents",
+  "cursor": [
+    0,
+    0
+  ],
+  "filename": "main.py",
+  "nvim_args": [
+    "-c",
+    "badd lib.py"
+  ],
+  "frames": [
+    {},
+    {
+      "actions": [
+        {
+          "ex": "ls"
+        }
+      ],
+      "caption": ":ls — list of loaded buffers.",
+      "keys": ":ls"
+    },
+    {
+      "actions": [
+        "enter",
+        {
+          "ex": "b lib"
+        }
+      ],
+      "caption": ":b lib — switch to lib.py.",
+      "keys": ":b lib"
+    }
+  ],
+  "pre_setup": [
+    {
+      "writeFile": "lib.py",
+      "content": "def helper():\n    pass\n",
+      "noDedent": true
+    }
+  ]
+}
