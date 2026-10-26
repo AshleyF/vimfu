@@ -51,16 +51,16 @@
   &middot; <a class="practice-link" href="../sim/?v=4" target="_blank" rel="noopener">▶ Practice in the simulator</a>
 </nav>
 <nav class="pager pager-top">
-  <span class="pager-prev"><a class="pager-link" href="../14-windows-buffers-tabs/06-buffers-vs-windows-vs-tabs.html" rel="prev">← Buffer vs Window vs Tab</a></span>
-  <span class="pager-pos">72 / 139</span>
+  <span class="pager-prev"><a class="pager-link" href="../21-advanced/09-mappings.html" rel="prev">← Mappings — <code>:map</code>, <code>:noremap</code>, and Friends</a></span>
+  <span class="pager-pos">122 / 139</span>
   <span class="pager-next"><a class="pager-link" href="02-z-overview.html" rel="next">The <kbd>z</kbd> Family →</a></span>
 </nav>
 <article>
 <h1>The <kbd>g</kbd> Family</h1>
 <p class="subtitle">30+ commands hide behind the <kbd>g</kbd> prefix.</p>
 <p class="meta">Keys: <kbd>g</kbd><kbd>d</kbd>, <kbd>g</kbd><kbd>f</kbd>, <kbd>g</kbd><kbd>v</kbd>, <kbd>g</kbd><kbd>i</kbd>, <kbd>g</kbd><kbd>q</kbd>, <kbd>g</kbd><kbd>;</kbd>, <kbd>g</kbd><kbd>,</kbd>, <kbd>g</kbd><kbd>~</kbd>, <kbd>g</kbd><kbd>U</kbd>, <kbd>g</kbd><kbd>u</kbd></p>
-<blockquote class="summary"><kbd>g</kbd> is a meta prefix: it gates a second, hidden keyboard of commands. From <kbd>g</kbd><kbd>d</kbd> (go to definition) and <kbd>g</kbd><kbd>f</kbd> (go to file) to <kbd>g</kbd><kbd>q</kbd> (reformat) and <kbd>g</kbd><kbd>v</kbd> (re-select), the <kbd>g</kbd> family covers everything that didn&#x27;t fit elsewhere.</blockquote>
-<p>The <kbd>g</kbd> prefix is Vim&#x27;s <em>miscellaneous drawer</em> — and it&#x27;s huge. Roughly thirty commands live behind it. The unifying theme is &quot;this didn&#x27;t fit on a one-key shortcut, so it got the <kbd>g</kbd> prefix.&quot; Worth a flat reference table.</p>
+<blockquote class="summary"><kbd>g</kbd> opens a second keymap containing extended versions of familiar commands and unrelated commands that needed more keyboard space. It is useful as an index, but it does not obey one universal rule.</blockquote>
+<p>The <kbd>g</kbd> prefix opens a second keymap of roughly thirty commands. Many are extended versions of familiar ideas: screen-line motions, case operators, jumps, formatting, and navigation. Others simply needed an available two-key spelling. There is no rule from which you can derive every <kbd>g</kbd> command, so treat this chapter as an organized index rather than a new grammar.</p>
 <h3>Reference (most-used)</h3>
 <table>
 <thead><tr>
@@ -85,7 +85,7 @@
 </tr>
 <tr>
 <td><kbd>g</kbd><kbd>v</kbd></td>
-<td>Re-select last <em>visual mode</em> selection (see <em>Visual Modes</em>)</td>
+<td>Re-select last <em>visual mode</em> selection (see <em>Visual Mode in Depth</em>)</td>
 </tr>
 <tr>
 <td><kbd>g</kbd><kbd>i</kbd></td>
@@ -157,11 +157,11 @@
 </tr>
 <tr>
 <td><kbd>g</kbd><kbd>n</kbd></td>
-<td>Enter <em>visual mode</em> on the next search match (see <em>Visual Modes</em>)</td>
+<td>Enter <em>visual mode</em> on the next search match (see <em>Visual Mode in Depth</em>)</td>
 </tr>
 <tr>
 <td><kbd>g</kbd><kbd>N</kbd></td>
-<td>Enter <em>visual mode</em> on the previous search match (see <em>Visual Modes</em>)</td>
+<td>Enter <em>visual mode</em> on the previous search match (see <em>Visual Mode in Depth</em>)</td>
 </tr>
 <tr>
 <td><kbd>g</kbd><kbd>p</kbd> / <kbd>g</kbd><kbd>P</kbd></td>
@@ -194,23 +194,23 @@
 <p class="example-summary">The &#x27;g&#x27; prefix is a grab-bag of useful commands.</p>
 <figure class="example-step">
 <figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
-<div class="screenshot"><img src="../screenshots/prefix.g/frame_01.color.svg" alt="prefix.g"></div>
+<div class="screenshot missing">[missing screenshot prefix.g/frame_01.color.svg — run python content/render_screenshots.py]</div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 2</span> · <kbd>g</kbd><kbd>U</kbd><kbd>i</kbd><kbd>w</kbd> · <span class="step-cap">gUiw — uppercase inner word.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/prefix.g/frame_02.color.svg" alt="gUiw — uppercase inner word."></div>
+<figcaption><span class="step-n">Step 2</span> · <kbd>g</kbd><kbd>U</kbd><kbd>i</kbd><kbd>w</kbd> · <span class="step-cap"><kbd>g</kbd><kbd>U</kbd><kbd>i</kbd><kbd>w</kbd> — uppercase inner word.</span></figcaption>
+<div class="screenshot missing">[missing screenshot prefix.g/frame_02.color.svg — run python content/render_screenshots.py]</div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 3</span> · <kbd>g</kbd><kbd>u</kbd><kbd>i</kbd><kbd>w</kbd> · <span class="step-cap">guiw — lowercase inner word.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/prefix.g/frame_03.color.svg" alt="guiw — lowercase inner word."></div>
+<figcaption><span class="step-n">Step 3</span> · <kbd>g</kbd><kbd>u</kbd><kbd>i</kbd><kbd>w</kbd> · <span class="step-cap"><kbd>g</kbd><kbd>u</kbd><kbd>i</kbd><kbd>w</kbd> — lowercase inner word.</span></figcaption>
+<div class="screenshot missing">[missing screenshot prefix.g/frame_03.color.svg — run python content/render_screenshots.py]</div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 4</span> · <kbd>g</kbd><kbd>~</kbd><kbd>i</kbd><kbd>w</kbd> · <span class="step-cap">g~iw — toggle case of inner word.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/prefix.g/frame_04.color.svg" alt="g~iw — toggle case of inner word."></div>
+<figcaption><span class="step-n">Step 4</span> · <kbd>g</kbd><kbd>~</kbd><kbd>i</kbd><kbd>w</kbd> · <span class="step-cap"><kbd>g</kbd><kbd>~</kbd><kbd>i</kbd><kbd>w</kbd> — toggle case of inner word.</span></figcaption>
+<div class="screenshot missing">[missing screenshot prefix.g/frame_04.color.svg — run python content/render_screenshots.py]</div>
 </figure>
 <figure class="example-step">
-<figcaption><span class="step-n">Step 5</span> · <kbd>g</kbd><kbd>a</kbd> · <span class="step-cap">ga — character info under cursor.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/prefix.g/frame_05.color.svg" alt="ga — character info under cursor."></div>
+<figcaption><span class="step-n">Step 5</span> · <kbd>g</kbd><kbd>a</kbd> · <span class="step-cap"><kbd>g</kbd><kbd>a</kbd> — character info under cursor.</span></figcaption>
+<div class="screenshot missing">[missing screenshot prefix.g/frame_05.color.svg — run python content/render_screenshots.py]</div>
 </figure>
 </section>
 <aside class="buy-prompt"><a class="buy-prompt-link" href="../r/book/"><img class="buy-prompt-cover" src="../cover_thumb.jpg" width="200" height="245" alt="VimFu book cover"><span class="buy-prompt-text"><span class="buy-prompt-headline">📖 Want the full story?</span><span class="buy-prompt-cta">Get the VimFu book →</span></span></a></aside>
@@ -218,8 +218,8 @@
 <p class="see-also"><strong>See also:</strong> <a href="02-z-overview.html">The <kbd>z</kbd> Family</a>, <a href="03-bracket-pairs.html">The <kbd>[</kbd> and <kbd>]</kbd> Family</a>, <a href="04-ctrl-w.html">The <kbd>Ctrl-W</kbd> Family</a>, <a href="../99-appendices/08-complete-key-reference.html">Complete Key Reference</a></p>
 </article>
 <nav class="pager pager-bottom">
-  <span class="pager-prev"><a class="pager-link" href="../14-windows-buffers-tabs/06-buffers-vs-windows-vs-tabs.html" rel="prev">← Buffer vs Window vs Tab</a></span>
-  <span class="pager-pos">72 / 139</span>
+  <span class="pager-prev"><a class="pager-link" href="../21-advanced/09-mappings.html" rel="prev">← Mappings — <code>:map</code>, <code>:noremap</code>, and Friends</a></span>
+  <span class="pager-pos">122 / 139</span>
   <span class="pager-next"><a class="pager-link" href="02-z-overview.html" rel="next">The <kbd>z</kbd> Family →</a></span>
 </nav>
 <nav class="bottomnav">

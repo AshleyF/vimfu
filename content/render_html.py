@@ -885,7 +885,7 @@ THEME_TOGGLE_PLACEHOLDER
     </span>
   </a>
   <p>This is the <strong>online reference</strong> half of <em>VimFu</em>. Quick to scan, deep-linkable, packed with embedded videos. Every topic in the book has a page here so you can look something up without flipping pages.</p>
-  <p>The site is the cheat sheet; the book is the why.</p>
+  <p>The site is the cheat sheet; the book is the why. The book has hundreds of QR codes throughout, linking to videos and to examples you can practice yourself.</p>
   <p class="hero-cta">
     <a class="practice-link" href="sim/" target="_blank" rel="noopener">▶ Open the simulator</a>
     <a class="practice-link" href="videos/">🎬 All videos</a>

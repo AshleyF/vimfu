@@ -24,7 +24,7 @@
     },
     {
       "type": "prose",
-      "text": "A macro that does its work and moves to the next item is a loop. {n}{key:@}{key:a} runs that loop n times — but it *stops as soon as the macro errors*. So you can confidently say \"do this 1000 times\" knowing it'll stop when there's nothing left."
+      "text": "A macro that does its work and moves to the next item is a loop. {n}{key:@}{key:a} runs that loop n times — but it *stops as soon as the macro errors.* So you can confidently say \"do this 1000 times\" knowing it'll stop when there's nothing left."
     },
     {
       "type": "keys",
@@ -45,7 +45,7 @@
     {
       "type": "internals",
       "title": "Why Errors Are Helpful Here",
-      "text": "Vim's macro playback halts on an error. Search misses, edge-of-buffer motions, failed operations — anything that beeps interactively also aborts a macro mid-stream.\n\nThis is a *feature*. If your macro processes a list and you don't know how long it is, write the macro to fail gracefully when it runs out of work. Then run it with a count larger than you'll ever need:\n\n  • Macro that searches forward for `TODO`, edits, moves to next: {key:1}{key:0}{key:0}{key:0}{key:@}{key:a}. When `/TODO` finds no more matches, the macro aborts cleanly.\n  • Macro that processes a CSV row by jumping to columns: {key:1}{key:0}{key:0}{key:@}{key:a}. When the cursor falls off the end of the file, the next motion errors and playback stops.\n\nBig counts don't cost much — Vim doesn't run the macro 1000 times unless there's work for it to do."
+      "text": "Vim's macro playback halts on an error. Search misses, edge-of-buffer motions, failed operations — anything that beeps interactively also aborts a macro mid-stream.\n\nThis is a *feature.* If your macro processes a list and you don't know how long it is, write the macro to fail gracefully when it runs out of work. Then run it with a count larger than you'll ever need:\n\n  • Macro that searches forward for `TODO`, edits, moves to next: {key:1}{key:0}{key:0}{key:0}{key:@}{key:a}. When `/TODO` finds no more matches, the macro aborts cleanly.\n  • Macro that processes a CSV row by jumping to columns: {key:1}{key:0}{key:0}{key:@}{key:a}. When the cursor falls off the end of the file, the next motion errors and playback stops.\n\nBig counts don't cost much — Vim doesn't run the macro 1000 times unless there's work for it to do."
     },
     {
       "type": "tip",

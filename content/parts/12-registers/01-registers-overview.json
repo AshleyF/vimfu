@@ -185,7 +185,7 @@
         [
           "{key:\"}{key:.}",
           "Last inserted text",
-          "Each Insert-mode session",
+          "Each *insert mode* session",
           "Read-only; useful in mappings"
         ],
         [
@@ -222,7 +222,7 @@
     {
       "type": "internals",
       "title": "The Type Field",
-      "text": "Every register stores not just text but a *type*: `char` (charwise), `line` (linewise), or `block` (blockwise). The type is set by the operation that wrote the register: {key:y}{key:y} writes linewise; {key:y}{key:w} writes charwise; {key:Ctrl-V}-then-{key:y} writes blockwise.\n\nThe type changes how {key:p} behaves. A linewise put inserts the text on its own line(s), below the current line. A charwise put inserts inline, after the cursor. A blockwise put inserts a rectangular block to the right of the cursor. So the same key, {key:p}, dispatches on the type of the current register.\n\nThis is why it matters that {key:x} (a charwise delete) overwrites the unnamed register's type. If your last yank was {key:y}{key:y} (linewise), then a single {key:x} flips the unnamed register to charwise containing one character, and your next {key:p} pastes one character inline rather than a whole line. The fix: yank the line into a named register (`\"ayy`) before you start deleting."
+      "text": "Every register stores not just text but a *type:* `char` (charwise), `line` (linewise), or `block` (blockwise). The type is set by the operation that wrote the register: {key:y}{key:y} writes linewise; {key:y}{key:w} writes charwise; {key:Ctrl-V}-then-{key:y} writes blockwise.\n\nThe type changes how {key:p} behaves. A linewise put inserts the text on its own line(s), below the current line. A charwise put inserts inline, after the cursor. A blockwise put inserts a rectangular block to the right of the cursor. So the same key, {key:p}, dispatches on the type of the current register.\n\nThis is why it matters that {key:x} (a charwise delete) overwrites the unnamed register's type. If your last yank was {key:y}{key:y} (linewise), then a single {key:x} flips the unnamed register to charwise containing one character, and your next {key:p} pastes one character inline rather than a whole line. The fix: yank the line into a named register (`\"ayy`) before you start deleting."
     },
     {
       "type": "internals",
@@ -246,7 +246,7 @@
       "rows": [
         [
           "{key:\"}{key:0}{key:p}",
-          "Paste the last *yank*, ignoring intervening deletes."
+          "Paste the last *yank,* ignoring intervening deletes."
         ],
         [
           "{key:\"}{key:_}{key:d}{key:d}",

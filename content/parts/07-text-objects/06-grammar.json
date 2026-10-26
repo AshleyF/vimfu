@@ -29,22 +29,22 @@
     },
     {
       "type": "prose",
-      "text": "Most editors have *commands*: \"delete word,\" \"select to end of line,\" \"comment block.\" Vim doesn't. Vim has a **grammar** — a small set of verbs and nouns that you compose into sentences. Once you see it, you stop memorizing keys."
+      "text": "Most editors have *commands:* \"delete word,\" \"select to end of line,\" \"comment block.\" Vim doesn't. Vim has a **grammar** — a small set of verbs and nouns that you compose into sentences. Once you see it, you stop memorizing keys."
     },
     {
       "type": "internals",
       "title": "The Grammar in One Line",
-      "text": "Every editing action in *normal mode* follows the form:\n\n```\n[count] [\"register] operator [count] {motion | text-object}\n```\n\nAll the brackets are optional. Concrete examples:\n\n  • {key:d}{key:w} — delete one word (no count, default register, motion).\n  • {key:5}{key:d}{key:w} — delete five words.\n  • {key:\"}{key:a}{key:5}{key:d}{key:w} — delete five words *into register a*.\n  • {key:c}{key:i}{key:p} — change the inner paragraph (text object).\n  • {key:>}{key:a}{key:{} — indent the brace block including its braces.\n  • {key:g}{key:U}{key:t}{key:Z} — uppercase up to the next `Z`.\n\nThere is no command list to memorize. There are operators. There are motions and text objects. Multiplication is the count. The register is *where the result goes*."
+      "text": "Every editing action in *normal mode* follows the form:\n\n```\n[count] [\"register] operator [count] {motion | text-object}\n```\n\nAll the brackets are optional. Concrete examples:\n\n  • {key:d}{key:w} — delete one word (no count, default register, motion).\n  • {key:5}{key:d}{key:w} — delete five words.\n  • {key:\"}{key:a}{key:5}{key:d}{key:w} — delete five words *into register a.*\n  • {key:c}{key:i}{key:p} — change the inner paragraph (text object).\n  • {key:>}{key:a}{key:{} — indent the brace block including its braces.\n  • {key:g}{key:U}{key:t}{key:Z} — uppercase up to the next `Z`.\n\nThere is no command list to memorize. There are operators. There are motions and text objects. Multiplication is the count. The register is *where the result goes.*"
     },
     {
       "type": "internals",
       "title": "The Operators",
-      "text": "The full operator set (the verbs):\n\n  • {key:d} — delete (cut into a register).\n  • {key:c} — change (delete + Insert).\n  • {key:y} — yank (copy).\n  • {key:>} {key:<} — indent / dedent.\n  • {key:=} — re-indent (use language indenter).\n  • {key:g}{key:u} {key:g}{key:U} {key:g}{key:~} — lowercase / uppercase / toggle case.\n  • {key:g}{key:q} — reformat (text-wrap).\n  • {key:!} — filter through external command.\n  • {key:g}{key:@} — call user-defined `operatorfunc` (advanced).\n\nThat's it. ~10 verbs. Each one takes any motion or text object. Pair them up: that's the language."
+      "text": "The full operator set (the verbs):\n\n  • {key:d} — delete (cut into a register).\n  • {key:c} — change (delete + Insert).\n  • {key:y} — yank (copy).\n  • {key:>}, {key:<} — indent / dedent.\n  • {key:=} — re-indent (use language indenter).\n  • {key:g}{key:u}, {key:g}{key:U}, {key:g}{key:~} — lowercase / uppercase / toggle case.\n  • {key:g}{key:q} — reformat (text-wrap).\n  • {key:!} — filter through external command.\n  • {key:g}{key:@} — call user-defined `operatorfunc` (advanced).\n\nThat's it. ~10 verbs. Each one takes any motion or text object. Pair them up: that's the language."
     },
     {
       "type": "internals",
       "title": "Doubled Operators",
-      "text": "Every operator has a *doubled* form that means \"act on the current line\":\n\n  • {key:d}{key:d} — delete line.\n  • {key:c}{key:c} — change line.\n  • {key:y}{key:y} — yank line.\n  • {key:>}{key:>} {key:<}{key:<} — indent / dedent line.\n  • {key:=}{key:=} — re-indent line.\n  • {key:g}{key:U}{key:U} or {key:g}{key:U}{key:u} — uppercase line.\n\nThis is a special case in the grammar, not a separate command. The pattern *is* the rule: doubled operator = current line."
+      "text": "Every operator has a *doubled* form that means \"act on the current line\":\n\n  • {key:d}{key:d} — delete line.\n  • {key:c}{key:c} — change line.\n  • {key:y}{key:y} — yank line.\n  • {key:>}{key:>}, {key:<}{key:<} — indent / dedent line.\n  • {key:=}{key:=} — re-indent line.\n  • {key:g}{key:U}{key:U} — uppercase line.\n\nThis is a special case in the grammar, not a separate command. The pattern *is* the rule: a doubled operator means the current line."
     },
     {
       "type": "internals",
@@ -54,7 +54,7 @@
     {
       "type": "internals",
       "title": "Operator-Pending Is a Real Mode",
-      "text": "Between pressing the operator and pressing the motion or text object, Vim is in a fourth major mode: **operator-pending**. It's not a UI flourish — it's a named state in the editor's state machine, with its own keymap. Until a motion resolves, no buffer change has happened: the operator is staged with its count, the motion will produce `(start, end, type)`, and only then does the operator function execute.\n\nThe practical consequence is that op-pending has its *own* mapping table. `:onoremap` (op-pending non-recursive map) defines mappings that *only fire after an operator*. So `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" without breaking {key:p} (paste) in *normal mode.* This is the mechanism every custom text-object plugin uses — vim-surround, targets.vim, vim-textobj-* — and it's why operator-pending shows up in Vim's `:help map-modes` matrix as its own column (`o`). Full treatment in [*Operator-Pending Mode*](#text-objects.op-pending)."
+      "text": "Between pressing the operator and pressing the motion or text object, Vim is in a fourth major mode: *operator-pending mode.* It's not a UI flourish — it's a named state in the editor's state machine, with its own keymap. Until a motion resolves, no buffer change has happened: the operator is staged with its count, the motion will produce `(start, end, type)`, and only then does the operator function execute.\n\nThe practical consequence is that op-pending has its *own* mapping table. `:onoremap` (op-pending non-recursive map) defines mappings that *only fire after an operator.* So `:onoremap p i(` makes {key:d}{key:p} mean \"delete inside parens\" without breaking {key:p} (paste) in *normal mode.* This is the mechanism every custom text-object plugin uses — vim-surround, targets.vim, vim-textobj-* — and it's why *operator-pending mode* shows up in Vim's `:help map-modes` matrix as its own column (`o`). Full treatment in [*Operator-Pending Mode*](#text-objects.op-pending)."
     },
     {
       "type": "tip",

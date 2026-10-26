@@ -51,8 +51,8 @@
   &middot; <a class="practice-link" href="../sim/?v=4" target="_blank" rel="noopener">▶ Practice in the simulator</a>
 </nav>
 <nav class="pager pager-top">
-  <span class="pager-prev"><span class="pager-disabled">← start of book</span></span>
-  <span class="pager-pos">1 / 139</span>
+  <span class="pager-prev"><a class="pager-link" href="../02-survival/04-undo-redo.html" rel="prev">← Undo and Redo</a></span>
+  <span class="pager-pos">5 / 139</span>
   <span class="pager-next"><a class="pager-link" href="02-modes-overview.html" rel="next">The Modes →</a></span>
 </nav>
 <article>
@@ -62,20 +62,20 @@
 <blockquote class="summary">Vim is modal: the same keys mean different things in different modes. <em>Normal mode</em> is your resting state.</blockquote>
 <p>You spend more time reading, navigating, and restructuring code than typing new code from scratch. Think about your last hour of editing. How much of it was actually inserting new characters? Maybe twenty percent. The rest was scrolling, searching, selecting, deleting, copying, moving, and rearranging.</p>
 <p>Most editors give you a full keyboard for the typing — and then make you reach for the mouse, hold modifier keys, or chase menus for everything else. Vim flips this. It gives you a full keyboard for the <em>eighty</em> percent.</p>
-<p>That is what &quot;modal&quot; means. In <strong>normal mode</strong>, every key on your keyboard is a command. <kbd>j</kbd> moves down. <kbd>w</kbd> jumps forward by a word. <kbd>d</kbd><kbd>w</kbd> deletes a word. <kbd>c</kbd><kbd>i</kbd><kbd>&quot;</kbd> changes the text inside quotes. No mouse. No Ctrl-Shift-Arrow. Just keystrokes.</p>
+<p>That is what &quot;modal&quot; means. In <em>normal mode,</em> every key on your keyboard is a command. <kbd>j</kbd> moves down. <kbd>w</kbd> jumps forward by a word. <kbd>d</kbd><kbd>w</kbd> deletes a word. <kbd>c</kbd><kbd>i</kbd><kbd>&quot;</kbd> changes the text inside quotes. No mouse. No <kbd>Ctrl-S</kbd><kbd>Ctrl-h</kbd><kbd>Ctrl-i</kbd><kbd>Ctrl-f</kbd><kbd>Ctrl-t</kbd><kbd>Ctrl--</kbd><kbd>Ctrl-A</kbd><kbd>Ctrl-r</kbd><kbd>Ctrl-r</kbd><kbd>Ctrl-o</kbd><kbd>Ctrl-w</kbd>. Just keystrokes.</p>
 <aside class="tip"><strong>Tip.</strong> Don&#x27;t try to memorize the key sequences sprinkled through these early chapters — they&#x27;re just examples, here to give the flavor of the language. Each one gets its own section later in the book.</aside>
-<p>When you need to type, press <kbd>i</kbd> to enter <strong>insert mode</strong>. Type what you need. Press <kbd>Esc</kbd> to come back. <em>Normal mode</em> is your resting state — the mode you spend most of your time in.</p>
+<p>When you need to type, press <kbd>i</kbd> to enter <em>insert mode.</em> Type what you need. Press <kbd>Esc</kbd> to come back. <em>Normal mode</em> is your resting state — the mode where you spend most of your time.</p>
 <figure class="lesson-embed" data-lesson="1"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/uOrfphZBjew?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="What Is Vim?" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>What Is Vim — a 60-second tour</figcaption></figure>
 <aside class="tip"><strong>Tip.</strong> The productivity payoff isn&#x27;t really about speed — it&#x27;s about fluency. You stop translating between <em>what</em> you want to do and <em>how</em> to do it. The editing language becomes invisible, like touch typing.</aside>
 <figure class="photo">
 <img src="../images/ASR_33.jpg" width="1280" height="1550" alt="A Teletype Model 33 (ASR-33) — no screen, just paper. Ken Thompson wrote `ed`, the ancestor of `vi`, on a machine like this.">
-<figcaption>A Teletype Model 33 (ASR-33) — no screen, just paper. Ken Thompson wrote <code>ed</code>, the ancestor of <code>vi</code>, on a machine like this. <span class="credit">Photo: Jud McCranie, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), via Wikimedia Commons.</span></figcaption>
+<figcaption>A Teletype Model 33 (ASR-33) — no screen, just paper. Ken Thompson wrote <code>ed</code>, the ancestor of <code>vi</code>, on a machine like this. <span class="credit">Photo: Jud McCranie, <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>, via Wikimedia Commons.</span></figcaption>
 </figure>
 <hr>
 <h3>Why this feels backwards (at first)</h3>
-<p>Every other editor starts in what Vim calls <em>insert mode</em>: keys type text. Vim starts in what every other editor might call <em>command mode</em>: keys do things. The learning curve is real. New users press <kbd>j</kbd> expecting a <code>j</code> and instead see the cursor move. They press <kbd>d</kbd><kbd>d</kbd> expecting two letters and the line vanishes.</p>
+<p>Every other editor starts in what Vim calls <em>insert mode:</em> keys type text. Vim starts in what every other editor might call <em>command mode:</em> keys do things. The learning curve is real. New users press <kbd>j</kbd> expecting a <code>j</code> and instead see the cursor move. They press <kbd>d</kbd><kbd>d</kbd> expecting two letters and the line vanishes.</p>
 <p>Push through this. Once you internalize the grammar — once <kbd>d</kbd> feels like <em>delete</em> and <kbd>j</kbd> feels like <em>down</em> — you stop thinking in keystrokes and start thinking in edits and motions: &quot;delete this word,&quot; &quot;change inside these quotes,&quot; &quot;yank this paragraph,&quot; &quot;jump to the matching bracket.&quot; Your hands just execute.</p>
-<aside class="tip"><strong>Tip.</strong> The <kbd>Esc</kbd> habit is the single most important reflex. After every thought, press <kbd>Esc</kbd>. Make it automatic. Your default state is Normal, not Insert. Each <kbd>Esc</kbd> also closes an undo unit, so <kbd>u</kbd> walks you back one thought at a time.</aside>
+<aside class="tip"><strong>Tip.</strong> The <kbd>Esc</kbd> habit is the single most important reflex. After every thought, press <kbd>Esc</kbd>. Make it automatic. Your default state is <em>normal mode,</em> not <em>insert mode.</em> Each <kbd>Esc</kbd> also closes an undo unit, so <kbd>u</kbd> walks you back one thought at a time.</aside>
 <figure class="lesson-embed" data-lesson="15"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/1T7OEvSUh5g?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="The Escape Habit" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>The Escape Habit</figcaption></figure>
 <hr>
 <h3>Reference</h3>
@@ -116,8 +116,8 @@
 <p class="see-also"><strong>See also:</strong> <a href="02-modes-overview.html">The Modes</a>, <a href="03-universal-grammar.html">The Universal Grammar</a>, <a href="../02-survival/02-insert-and-back.html">Insert and Back Again</a></p>
 </article>
 <nav class="pager pager-bottom">
-  <span class="pager-prev"><span class="pager-disabled">← start of book</span></span>
-  <span class="pager-pos">1 / 139</span>
+  <span class="pager-prev"><a class="pager-link" href="../02-survival/04-undo-redo.html" rel="prev">← Undo and Redo</a></span>
+  <span class="pager-pos">5 / 139</span>
   <span class="pager-next"><a class="pager-link" href="02-modes-overview.html" rel="next">The Modes →</a></span>
 </nav>
 <nav class="bottomnav">

@@ -226,12 +226,12 @@ When editing or reviewing book / website content:
 
 ## Mode names
 
-Mode names — *normal mode*, *insert mode*, *visual mode*, *visual-line
-mode*, *visual-block mode*, *command-line mode*, *replace mode*,
-*operator-pending mode*, *terminal mode*, *select mode* — are always
-**lowercase italic**, even mid-sentence. They are common-noun terms,
-not proper nouns. The italic distinguishes the term from prose without
-the visual shout of bold or all-caps.
+In body prose, mode names — *normal mode*, *insert mode*, *visual
+mode*, *visual-line mode*, *visual-block mode*, *command-line mode*,
+*replace mode*, *operator-pending mode*, *terminal mode*, *select
+mode* — are always **lowercase italic**, even mid-sentence. They are
+common-noun terms, not proper nouns. The italic distinguishes the
+term from prose without the visual shout of bold or all-caps.
 
 - ✅ "Press {key:i} to enter *insert mode*."
 - ✅ "*Normal mode* is the default." (sentence-start; capital N stays
@@ -241,6 +241,19 @@ the visual shout of bold or all-caps.
 - ❌ "Press i to enter INSERT MODE." (all-caps)
 
 Markup in JSON: standard Markdown italic, `*insert mode*`.
+
+### Titles
+
+Topic titles, part titles, and the level-1 heading that repeats the
+topic title stay in **title case**. A mode name there is capitalized
+with the rest of the title. It is not forced into lowercase italics.
+
+- ✅ `"title": "Replace Mode"`
+- ✅ `"title": "Exiting Insert Mode"`
+- ✅ The matching level-1 heading: `"text": "Exiting Insert Mode"`
+- ❌ `"title": "Exiting *insert mode*"`
+
+Sentences under that title still follow the body rule: *insert mode*.
 
 ### Punctuation after italic
 
@@ -367,8 +380,8 @@ title, summary, or example anywhere in `content/parts/`,
    `gg`, `ZZ`, `ZQ`, etc.** in narrative prose.
 2. Are all ex commands written as backticked monospace
    (`` `:wq` ``)? **No `{key::}{key:w}{key:q}` pill chains.**
-3. Are mode names in lowercase italic with punctuation inside the
-   span (`*insert mode.*`)?
+3. Are mode names in body prose lowercase italic with punctuation
+   inside the span (`*insert mode.*`)? Titles stay in title case.
 4. Are option names, file paths, unix command names, and family
    names in backticks (`` `hlsearch` ``, `` `~/.vimrc` ``, `` `nvim` ``,
    `` `g` family ``)?
@@ -419,7 +432,10 @@ to disambiguate them from regex literals. In the book, the monospace
 font already disambiguates them, so the quotes are noise.
 
 - ✅ `` `incsearch` ``, `` `wildmenu` ``, `` `autoindent` ``
+- ✅ `` `:help {option}` `` — the braces mark the placeholder. No
+  single quotes inside the command.
 - ❌ `` `'incsearch'` ``, `` `'wildmenu'` ``
+- ❌ `` `:help '{option}'` ``
 
 ### Cross-references use the section title, not the slug
 

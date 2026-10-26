@@ -144,15 +144,17 @@ def build_map(base_url: str) -> dict[str, str]:
     # --- "report a problem" mailto links ---------------------------------
     from urllib.parse import quote
     email = contact_email()
+    issue_body = "Where: (page or URL)\nIssue: \n"
+    book_body = "Page: \nLocation: \nIssue: \nSuggested correction: \n"
     m[REPORT_ISSUE_SLUG] = (
         f"mailto:{email}"
         f"?subject={quote('VimFu — issue report')}"
-        f"&body={quote('Where: (page or URL)\nIssue: \n')}"
+        f"&body={quote(issue_body)}"
     )
     m[REPORT_BOOK_ISSUE_SLUG] = (
         f"mailto:{email}"
         f"?subject={quote('VimFu book — errata report')}"
-        f"&body={quote('Page: \nLocation: \nIssue: \nSuggested correction: \n')}"
+        f"&body={quote(book_body)}"
     )
 
     # --- hand-curated overrides (last so they always win) -----------------

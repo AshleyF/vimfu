@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visual Mode as a Learning Tool — VimFu</title>
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script>
+(function(){
+  try {
+    var t = localStorage.getItem('vimfu-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">🌓</button>
+<script>
+(function(){
+  var btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function current(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paint(){
+    btn.textContent = current() === 'dark' ? '☀' : '☾';
+  }
+  paint();
+  btn.addEventListener('click', function(){
+    var next = current() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('vimfu-theme', next); } catch(e) {}
+    paint();
+  });
+  // React to OS preference flips while no explicit choice is set.
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){
+    if (!localStorage.getItem('vimfu-theme')) paint();
+  });
+})();
+</script>
+<nav class="topnav">
+  <a href="../index.html">📚 Contents</a>
+  &middot; <a href="../index.html#part-05-counts">↑ Counts and Visual Basics</a>
+  &middot; <a href="../videos/05-counts/">🎬 Videos</a>
+  &middot; <a class="practice-link" href="../sim/?v=4" target="_blank" rel="noopener">▶ Practice in the simulator</a>
+</nav>
+<nav class="pager pager-top">
+  <span class="pager-prev"><a class="pager-link" href="02-percent-bar.html" rel="prev">← Percentage and Column Jumps</a></span>
+  <span class="pager-pos">24 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="../06-dot-repeat/01-repeat.html" rel="next">Repeat Last Change →</a></span>
+</nav>
+<article>
+<h1>Visual Mode as a Learning Tool</h1>
+<p class="subtitle">Use <kbd>v</kbd> to see motions, select familiar ranges, and build confidence.</p>
+<p class="meta">Keys: <kbd>v</kbd>, <kbd>Esc</kbd>, <kbd>d</kbd>, <kbd>y</kbd>, <kbd>c</kbd></p>
+<blockquote class="summary"><kbd>v</kbd> enters character-wise <em>visual mode.</em> Motions extend a visible selection, making this a useful bridge from other editors and a way to learn what motions do.</blockquote>
+<p>Most editors teach you to select text first and choose an action second. Vim supports that familiar order. Press <kbd>v</kbd> in <em>normal mode</em> to enter character-wise <em>visual mode.</em> Move the cursor, and the text between your starting point and the cursor is highlighted. Press <kbd>d</kbd> to delete the selection, <kbd>y</kbd> to yank it, or <kbd>c</kbd> to replace it.</p>
+<figure class="keys">
+<figcaption>Start a character-wise selection</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>v</kbd><kbd>}</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="keys">
+<figcaption>Select with a word motion, then delete</figcaption>
+<table><thead><tr><th>Key</th><th>Note</th></tr></thead><tbody>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>v</kbd><kbd>}</kbd></td><td></td></tr>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>w</kbd><kbd>}</kbd></td><td></td></tr>
+<tr><td><kbd>{</kbd><kbd>k</kbd><kbd>e</kbd><kbd>y</kbd><kbd>:</kbd><kbd>d</kbd><kbd>}</kbd></td><td></td></tr>
+</tbody></table></figure>
+<figure class="lesson-embed" data-lesson="64"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/j6qyLG1xc9I?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Character Visual Mode" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Character-wise <em>visual mode</em> with <kbd>v</kbd></figcaption></figure>
+<aside class="tip"><strong>Tip.</strong> Press <kbd>Esc</kbd> to cancel the selection and return to <em>normal mode.</em> Pressing <kbd>v</kbd> again also leaves character-wise <em>visual mode.</em></aside>
+<h3>Make Motions Visible</h3>
+<p><em>Visual mode</em> is a useful laboratory for motions. Start a selection with <kbd>v</kbd>, try a motion, and watch where the cursor lands. <kbd>w</kbd> moves toward the next word, <kbd>e</kbd> moves to a word ending, <kbd>$</kbd> reaches the end of the line, and <kbd>G</kbd> reaches the end of the file. The highlight makes the direction and scale of each motion visible. Press <kbd>Esc</kbd>, return to the starting point, and try another.</p>
+<table>
+<thead><tr>
+<th>Try</th>
+<th>What the highlight teaches</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>v</kbd><kbd>w</kbd></td>
+<td>Where the next-word motion lands</td>
+</tr>
+<tr>
+<td><kbd>v</kbd><kbd>e</kbd></td>
+<td>Where the current or next word ends</td>
+</tr>
+<tr>
+<td><kbd>v</kbd><kbd>0</kbd> and <kbd>v</kbd><kbd>$</kbd></td>
+<td>The two ends of the current line</td>
+</tr>
+<tr>
+<td><kbd>v</kbd><kbd>g</kbd><kbd>g</kbd> and <kbd>v</kbd><kbd>G</kbd></td>
+<td>The beginning and end of the file</td>
+</tr>
+<tr>
+<td><kbd>v</kbd><kbd>/</kbd>{pattern}<kbd>Enter</kbd></td>
+<td>How far a search motion travels</td>
+</tr>
+</tbody></table>
+<!-- unknown block type: note -->
+<h3>The More Vim-Like Order</h3>
+<p>Selection-first editing is useful, especially while learning, but it is not usually the shortest Vim path. Vim&#x27;s native grammar puts the operator first and the motion second. Instead of selecting a word and then deleting it, press <kbd>d</kbd><kbd>w</kbd>. Instead of selecting the word under the cursor and then copying it, press <kbd>y</kbd><kbd>i</kbd><kbd>w</kbd>. Instead of selecting to the end of the line and then replacing it, press <kbd>c</kbd><kbd>$</kbd>.</p>
+<p>Nothing flashes on the screen before those commands act. You learn to trust the motion. The operator and motion resolve the range together, without creating a visible selection first. This is faster, composes with counts, and records one clean action for the dot command.</p>
+<aside class="tip"><strong>Tip.</strong> Use <em>visual mode</em> when you need reassurance, when the range is irregular, or when seeing the selection helps you decide. As a motion becomes familiar, remove the preview. Trust the motion by itself, then replace select-then-act with an operator followed directly by that motion.</aside>
+<h3>Reference</h3>
+<table>
+<thead><tr>
+<th>Key</th>
+<th>Action</th>
+</tr></thead><tbody>
+<tr>
+<td><kbd>v</kbd></td>
+<td>Enter or leave character-wise <em>visual mode</em></td>
+</tr>
+<tr>
+<td><kbd>Esc</kbd></td>
+<td>Cancel the selection</td>
+</tr>
+<tr>
+<td><kbd>d</kbd></td>
+<td>Delete the selection and save it for putting</td>
+</tr>
+<tr>
+<td><kbd>y</kbd></td>
+<td>Yank the selection</td>
+</tr>
+<tr>
+<td><kbd>c</kbd></td>
+<td>Delete the selection and enter <em>insert mode</em></td>
+</tr>
+</tbody></table>
+<section class="example">
+<h3 class="example-title">Worked example — v and motion</h3>
+<p class="example-summary">Character-wise visual selection.</p>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 1</span> · <span class="step-cap"></span></figcaption>
+<div class="screenshot missing">[missing screenshot visual.char/frame_01.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 2</span> · <kbd>v</kbd><kbd>w</kbd> · <span class="step-cap"><kbd>v</kbd><kbd>w</kbd> — selected through next word.</span></figcaption>
+<div class="screenshot missing">[missing screenshot visual.char/frame_02.color.svg — run python content/render_screenshots.py]</div>
+</figure>
+<figure class="example-step">
+<figcaption><span class="step-n">Step 3</span> · <kbd>d</kbd> · <span class="step-cap"><kbd>d</kbd> — delete the selection.</span></figcaption>
+<div class="screenshot missing">[missing screenshot visual.char/frame_03.color.svg — run python content/render_screenshots.py]</div>
+<p class="narration">Visual mode picks a range <em>first</em>, then you apply an operator. Useful when the right motion is hard to compose.</p>
+</figure>
+</section>
+<aside class="buy-prompt"><a class="buy-prompt-link" href="../r/book/"><img class="buy-prompt-cover" src="../cover_thumb.jpg" width="200" height="245" alt="VimFu book cover"><span class="buy-prompt-text"><span class="buy-prompt-headline">📖 Want the full story?</span><span class="buy-prompt-cta">Get the VimFu book →</span></span></a></aside>
+<p class="see-also"><strong>See also:</strong> <a href="../03-basic-editing/02-word-motions.html">Word Motions</a>, <a href="../03-basic-editing/03-line-motions.html">Line Motions</a>, <a href="../18-visual-modes/02-line-block.html">Line and Block Visual</a>, <a href="../18-visual-modes/07-ops.html">Operators on Visual Selections</a>, <a href="../99-appendices/05-motion-classification.html">Motion Classification</a></p>
+</article>
+<nav class="pager pager-bottom">
+  <span class="pager-prev"><a class="pager-link" href="02-percent-bar.html" rel="prev">← Percentage and Column Jumps</a></span>
+  <span class="pager-pos">24 / 139</span>
+  <span class="pager-next"><a class="pager-link" href="../06-dot-repeat/01-repeat.html" rel="next">Repeat Last Change →</a></span>
+</nav>
+<nav class="bottomnav">
+  <a href="../index.html#part-05-counts">↑ back to Counts and Visual Basics</a>
+  &middot; <a href="../index.html">📚 contents</a>
+</nav>
+<footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>
+</body>
+</html>

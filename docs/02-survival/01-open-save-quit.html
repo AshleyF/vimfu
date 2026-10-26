@@ -46,21 +46,62 @@
 </script>
 <nav class="topnav">
   <a href="../index.html">📚 Contents</a>
-  &middot; <a href="../index.html#part-02-survival">↑ Survival</a>
+  &middot; <a href="../index.html#part-02-survival">↑ Getting Started</a>
   &middot; <a href="../videos/02-survival/">🎬 Videos</a>
   &middot; <a class="practice-link" href="../sim/?v=4" target="_blank" rel="noopener">▶ Practice in the simulator</a>
 </nav>
 <nav class="pager pager-top">
-  <span class="pager-prev"><a class="pager-link" href="../01-foundations/05-vi-vim-neovim.html" rel="prev">← <code>vi</code> → Vim → Neovim</a></span>
-  <span class="pager-pos">6 / 139</span>
+  <span class="pager-prev"><span class="pager-disabled">← start of book</span></span>
+  <span class="pager-pos">1 / 139</span>
   <span class="pager-next"><a class="pager-link" href="02-insert-and-back.html" rel="next">Insert and Back Again →</a></span>
 </nav>
 <article>
 <h1>Open, Save, Quit</h1>
-<p class="subtitle">Launch Neovim, write your work, and get out — three ways each</p>
-<p class="meta">Keys: <code>:w</code>, <code>:q</code>, <code>:wq</code>, <code>:x</code>, <kbd>Z</kbd><kbd>Z</kbd>, <code>:q!</code>, <kbd>Z</kbd><kbd>Q</kbd></p>
-<blockquote class="summary">Open a file with <code>nvim</code>. Write with <code>:w</code>. Quit with <code>:q</code>. Combine with <code>:wq</code>, <code>:x</code>, or <kbd>Z</kbd><kbd>Z</kbd>. Discard with <code>:q!</code> or <kbd>Z</kbd><kbd>Q</kbd>.</blockquote>
-<p>The single most-googled question about Vim is &quot;how do I exit?&quot; Let&#x27;s get that out of the way first, then make it a real skill.</p>
+<p class="subtitle">Start here: choose an editor, open a file, make a change, save it, and get out</p>
+<p class="meta">Keys: <code>:w</code>, <code>:q</code>, <code>:wq</code>, <code>:x</code>, <kbd>Z</kbd><kbd>Z</kbd>, <code>:q!</code>, <kbd>Z</kbd><kbd>Q</kbd>, <kbd>i</kbd>, <kbd>Esc</kbd>, <kbd>h</kbd>, <kbd>j</kbd>, <kbd>k</kbd>, <kbd>l</kbd>, <kbd>v</kbd>, <kbd>d</kbd>, <kbd>y</kbd>, <kbd>p</kbd>, <kbd>x</kbd>, <kbd>u</kbd></p>
+<blockquote class="summary">Start from nothing. Install Neovim or enable Vim controls in your current editor, then open a file, type, move, select, delete, copy, save, and quit.</blockquote>
+<p>Start here. This section assumes that you have never opened Vim and do not know what its modes are. You do not need a configuration, a plugin manager, or a new terminal. By the end, you will be able to do enough ordinary editing to leave Vim controls turned on all day. You will be slow. That is fine. Speed comes later.</p>
+<h3>Choose where to use Vim</h3>
+<p>The simplest standalone route is a terminal and <strong>Neovim</strong>, the modern editor used throughout this book. But learning Vim does not require abandoning the editor you already know. VS Code, Visual Studio, and JetBrains IDEs all have good Vim emulators. Start where you already work; the editing language travels with you.</p>
+<table>
+<thead><tr>
+<th>Where you work</th>
+<th>What to install or enable</th>
+</tr></thead><tbody>
+<tr>
+<td>Linux, including Ubuntu under WSL</td>
+<td>Try <code>vi --version</code> or <code>vim --version</code> first; one is commonly already installed. Otherwise install <a href="https://neovim.io/doc/install/">Neovim</a> with your package manager.</td>
+</tr>
+<tr>
+<td>macOS Terminal</td>
+<td>Try <code>vi --version</code> first; macOS includes a <code>vi</code>-compatible editor. For modern Neovim, install <a href="https://brew.sh/">Homebrew</a> and run <code>brew install neovim</code>.</td>
+</tr>
+<tr>
+<td>Windows Terminal or PowerShell</td>
+<td>Windows itself does not normally include Vim. Run <code>winget install Neovim.Neovim</code>, or install <a href="https://learn.microsoft.com/windows/wsl/install">WSL</a> and use the Linux editor inside it.</td>
+</tr>
+<tr>
+<td>Traditional Vim</td>
+<td>Use the <a href="https://www.vim.org/download.php">Vim downloads page</a>. Vim is completely suitable for everything in this book.</td>
+</tr>
+<tr>
+<td>VS Code</td>
+<td><a href="https://marketplace.visualstudio.com/items?itemName=vscodevim.vim">VSCodeVim</a> for easy setup; <a href="https://marketplace.visualstudio.com/items?itemName=asvetliakov.vscode-neovim">VSCode Neovim</a> to use real Neovim as the editing engine</td>
+</tr>
+<tr>
+<td>Visual Studio</td>
+<td><a href="https://marketplace.visualstudio.com/items?itemName=JaredParMSFT.VsVim">VsVim</a>, a mature Vim emulator whose core is written in F#</td>
+</tr>
+<tr>
+<td>JetBrains IDEs</td>
+<td><a href="https://plugins.jetbrains.com/plugin/164-ideavim">IdeaVim</a></td>
+</tr>
+</tbody></table>
+<aside class="tip"><strong>Tip.</strong> Already productive in another editor? Keep it. Install its Vim extension and learn the keys in familiar surroundings. You can move to Neovim later — or never.</aside>
+<p>In VS Code, open the Extensions view, search for <code>VSCodeVim</code>, and select <strong>Install</strong>. In Visual Studio, open <strong>Extensions → Manage Extensions</strong> and search for <code>VsVim</code>. In a JetBrains IDE, open <strong>Settings → Plugins</strong>, search for <code>IdeaVim</code>, and select <strong>Install</strong>. Restart the editor if it asks. Then open any disposable text file and continue with &quot;Your first edit&quot; below.</p>
+<h3>What may already be installed</h3>
+<p>Do not install anything until you check. Run <code>nvim --version</code>, <code>vim --version</code>, and <code>vi --version</code>, in that order. If one prints a version banner, you already have an editor with which to begin. Full Linux installations and Linux distributions under WSL commonly include <code>vi</code> or Vim; minimal containers may not. macOS includes a <code>vi</code>-compatible editor. Native Windows normally requires Neovim, Vim, WSL, or an editor extension.</p>
+<p>If only <code>vi</code> is available, use it for this first session. Install Neovim when convenient. On macOS with Homebrew, run <code>brew install neovim</code>. On Windows, run <code>winget install Neovim.Neovim</code>. On Ubuntu, Debian, or Ubuntu under WSL, run <code>sudo apt install neovim</code>. Other distributions use their normal package managers. The <a href="https://neovim.io/doc/install/">official Neovim installation page</a> has current commands and direct downloads.</p>
 <h3>Opening a file</h3>
 <figure class="keys">
 <figcaption>Launch Neovim editing hello.txt</figcaption>
@@ -68,8 +109,55 @@
 <tr><td><kbd>@</kbd><kbd>n</kbd><kbd>v</kbd><kbd>i</kbd><kbd>m</kbd><kbd>h</kbd><kbd>e</kbd><kbd>l</kbd><kbd>l</kbd><kbd>o</kbd><kbd>.</kbd><kbd>t</kbd><kbd>x</kbd><kbd>t</kbd></td><td></td></tr>
 <tr><td><kbd>Enter</kbd></td><td></td></tr>
 </tbody></table></figure>
-<p>If the file exists, you see its contents. If it doesn&#x27;t, you see an empty buffer that <em>will</em> be saved as <code>hello.txt</code> the first time you write. Vim doesn&#x27;t create the file on disk until you save.</p>
+<p>Open a terminal, move to a directory in which you can create a file, and run <code>nvim hello.txt</code>. If you are using Vim or the built-in Unix editor, use <code>vim hello.txt</code> or <code>vi hello.txt</code> instead. If the file exists, you see its contents. If it does not, you see an empty buffer that <em>will</em> be saved as <code>hello.txt</code> the first time you write. Vim does not create the file on disk until you save.</p>
 <figure class="lesson-embed" data-lesson="2"><iframe class="lesson-iframe" src="https://www.youtube-nocookie.com/embed/Nz6Tdf_JWco?rel=0&amp;playsinline=1&amp;modestbranding=1&amp;controls=0&amp;iv_load_policy=3&amp;disablekb=1" title="Opening a File" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe><figcaption>Opening a file</figcaption></figure>
+<h3>Your first edit</h3>
+<p>Vim opens in <em>normal mode,</em> where letter keys issue commands instead of inserting text. Press <kbd>i</kbd> once to enter <em>insert mode.</em> Type <code>Hello from Vim!</code> just as you would in any editor. Then press <kbd>Esc</kbd> to return to <em>normal mode.</em></p>
+<p>Now try the four movement keys: <kbd>h</kbd> moves left, <kbd>j</kbd> moves down, <kbd>k</kbd> moves up, and <kbd>l</kbd> moves right. Arrow keys work too. For this first minute, use whichever keys let you stay oriented.</p>
+<aside class="tip"><strong>Tip.</strong> If typing letters moves the cursor or changes text unexpectedly, press <kbd>Esc</kbd> once. You are back in <em>normal mode.</em> Press <kbd>i</kbd> whenever you want to type more text. That small loop — <kbd>i</kbd>, type, <kbd>Esc</kbd> — is enough to begin.</aside>
+<h3>Save and return to the shell</h3>
+<p>Press <kbd>Esc</kbd> to make sure you are in <em>normal mode.</em> Type <code>:wq</code>, then press <kbd>Enter</kbd>. The colon opens Vim&#x27;s command line, <code>w</code> writes the file, and <code>q</code> quits the editor. Back at the shell, run <code>cat hello.txt</code> to confirm that your line reached the disk.</p>
+<p>That was a complete Vim session. Everything below gives you separate commands for saving, quitting, and recovering when Vim refuses to exit.</p>
+<h3>The Minimum for Your First Day</h3>
+<p>You do not have to learn the whole keyboard before using Vim for real work. For your first day, remember one loop: press <kbd>i</kbd> to type, press <kbd>Esc</kbd> when you finish typing, move somewhere else, and press <kbd>i</kbd> again. Save with <code>:w</code>. Leave with <code>:x</code>. If anything feels wrong, press <kbd>Esc</kbd> and begin the loop again.</p>
+<table>
+<thead><tr>
+<th>Goal</th>
+<th>What to do today</th>
+</tr></thead><tbody>
+<tr>
+<td>Type text</td>
+<td>Press <kbd>i</kbd>, type normally, then press <kbd>Esc</kbd>.</td>
+</tr>
+<tr>
+<td>Move</td>
+<td>Use the arrow keys, or begin trying <kbd>h</kbd>, <kbd>j</kbd>, <kbd>k</kbd>, and <kbd>l</kbd>.</td>
+</tr>
+<tr>
+<td>Delete one character</td>
+<td>In <em>normal mode,</em> press <kbd>x</kbd>.</td>
+</tr>
+<tr>
+<td>Undo</td>
+<td>In <em>normal mode,</em> press <kbd>u</kbd>.</td>
+</tr>
+<tr>
+<td>Save</td>
+<td>Type <code>:w</code>, then press <kbd>Enter</kbd>.</td>
+</tr>
+<tr>
+<td>Save and leave</td>
+<td>Type <code>:x</code>, then press <kbd>Enter</kbd>.</td>
+</tr>
+</tbody></table>
+<h3>Arrow Keys Are Allowed</h3>
+<p>The arrow keys work in Vim. Use them while you are learning. Reaching for them is slower than keeping your hand on <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd>, but being temporarily slow is better than being lost. Begin substituting <kbd>h</kbd>, <kbd>j</kbd>, <kbd>k</kbd>, and <kbd>l</kbd> when you remember. Do not disable the arrows or punish yourself for using them. The home-row motions will take over naturally as the rest of the grammar becomes familiar.</p>
+<h3>Select First, Act Second -- for Now</h3>
+<p>If you are used to selecting text before cutting or copying it, Vim lets you work that way. Press <kbd>Esc</kbd> to enter <em>normal mode,</em> move to the start of some text, and press <kbd>v</kbd> to enter <em>visual mode.</em> Move with the arrows or <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd>; Vim highlights the selection. Then press <kbd>d</kbd> to delete it, which also saves it for pasting, or press <kbd>y</kbd> to copy it without deleting it. Press <kbd>p</kbd> to put the saved text after the cursor. Press <kbd>u</kbd> if the result is wrong.</p>
+<aside class="tip"><strong>Tip.</strong> Selection-first editing is a bridge, not a mistake. Later you will usually skip the selection and describe the edit directly: <kbd>d</kbd><kbd>w</kbd> deletes a word, <kbd>y</kbd><kbd>y</kbd> copies a line, and <kbd>c</kbd><kbd>i</kbd><kbd>w</kbd> changes the word under the cursor. For now, <kbd>v</kbd>, move, then <kbd>d</kbd> or <kbd>y</kbd> is perfectly good Vim.</aside>
+<h3>The First-Week Bargain</h3>
+<p>If your work allows it, leave Vim controls enabled for ordinary editing this week. Keep the arrow keys. Keep using the mouse when you need it. Keep a familiar editor around for emergencies. The only commitment is to perform routine edits with the small set above instead of turning Vim off whenever you slow down.</p>
+<p>Expect to be slower for weeks and uneven for months. Vim becomes fast by replacing conscious key recall with muscle memory, and muscle memory cannot be rushed. The immediate goal is not speed. It is reaching the point at which you can finish a normal day without escaping back to a different editing model.</p>
 <h3>Saving</h3>
 <figure class="keys">
 <figcaption>Write the buffer to its file</figcaption>
@@ -102,7 +190,7 @@
 </tr>
 <tr>
 <td><code>:x</code></td>
-<td>Write <em>if changed</em>, then quit. Quieter than <code>:wq</code>.</td>
+<td>Write <em>if changed,</em> then quit. Quieter than <code>:wq</code>.</td>
 </tr>
 <tr>
 <td><kbd>Z</kbd><kbd>Z</kbd></td>
@@ -177,11 +265,11 @@
 <p class="example-summary">Save and quit from the Ex prompt.</p>
 <figure class="example-step">
 <figcaption><span class="step-n">Step 1</span> · <span class="step-cap">Modified buffer ([+]).</span></figcaption>
-<div class="screenshot"><img src="../screenshots/survival.open-save-quit/frame_01.color.svg" alt="Modified buffer ([+])."></div>
+<div class="screenshot missing">[missing screenshot survival.open-save-quit/frame_01.color.svg — run python content/render_screenshots.py]</div>
 </figure>
 <figure class="example-step">
 <figcaption><span class="step-n">Step 2</span> · <kbd>:</kbd><kbd>w</kbd> · <span class="step-cap">:w writes the file.</span></figcaption>
-<div class="screenshot"><img src="../screenshots/survival.open-save-quit/frame_02.color.svg" alt=":w writes the file."></div>
+<div class="screenshot missing">[missing screenshot survival.open-save-quit/frame_02.color.svg — run python content/render_screenshots.py]</div>
 <p class="narration">Status loses [+]; the file is on disk. :q would now leave Vim.</p>
 </figure>
 </section>
@@ -189,12 +277,12 @@
 <p class="see-also"><strong>See also:</strong> <a href="02-insert-and-back.html">Insert and Back Again</a>, <a href="04-undo-redo.html">Undo and Redo</a>, <a href="../17-ex-commands/01-file-ops.html">File Operations</a>, <a href="../14-windows-buffers-tabs/04-buffers.html">Buffers</a></p>
 </article>
 <nav class="pager pager-bottom">
-  <span class="pager-prev"><a class="pager-link" href="../01-foundations/05-vi-vim-neovim.html" rel="prev">← <code>vi</code> → Vim → Neovim</a></span>
-  <span class="pager-pos">6 / 139</span>
+  <span class="pager-prev"><span class="pager-disabled">← start of book</span></span>
+  <span class="pager-pos">1 / 139</span>
   <span class="pager-next"><a class="pager-link" href="02-insert-and-back.html" rel="next">Insert and Back Again →</a></span>
 </nav>
 <nav class="bottomnav">
-  <a href="../index.html#part-02-survival">↑ back to Survival</a>
+  <a href="../index.html#part-02-survival">↑ back to Getting Started</a>
   &middot; <a href="../index.html">📚 contents</a>
 </nav>
 <footer class="site-footer">Found a problem? <a href="mailto:ashleyf@briefrobotics.com?subject=VimFu%20%E2%80%94%20issue%20report">ashleyf@briefrobotics.com</a> · <a href="../r/github" rel="noopener">GitHub issues</a> · <a href="../r/errata" rel="noopener">Book errata</a></footer>

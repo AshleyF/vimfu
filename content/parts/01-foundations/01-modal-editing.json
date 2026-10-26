@@ -36,7 +36,7 @@
     },
     {
       "type": "prose",
-      "text": "That is what \"modal\" means. In **normal mode**, every key on your keyboard is a command. {key:j} moves down. {key:w} jumps forward by a word. {key:d}{key:w} deletes a word. {key:c}{key:i}{key:\"} changes the text inside quotes. No mouse. No Ctrl-Shift-Arrow. Just keystrokes."
+      "text": "That is what \"modal\" means. In *normal mode,* every key on your keyboard is a command. {key:j} moves down. {key:w} jumps forward by a word. {key:d}{key:w} deletes a word. {key:c}{key:i}{key:\"} changes the text inside quotes. No mouse. No {key:Ctrl-Shift-Arrow}. Just keystrokes."
     },
     {
       "type": "tip",
@@ -44,7 +44,7 @@
     },
     {
       "type": "prose",
-      "text": "When you need to type, press {key:i} to enter **insert mode**. Type what you need. Press {key:Esc} to come back. *Normal mode* is your resting state — the mode you spend most of your time in."
+      "text": "When you need to type, press {key:i} to enter *insert mode.* Type what you need. Press {key:Esc} to come back. *Normal mode* is your resting state — the mode where you spend most of your time."
     },
     {
       "type": "embed",
@@ -58,12 +58,12 @@
     {
       "type": "internals",
       "title": "Vim Is a State Machine",
-      "text": "Vim is a finite state machine. The states are the modes — *normal*, *insert*, *visual* (with three sub-states: char / line / block), *replace*, *command-line*, *operator-pending*, *terminal*. Every keystroke is interpreted *relative to the current state*. {key:i} in *normal mode* enters *insert mode;* in *insert mode* it inserts the letter `i`. The transition function is, in effect, the entire Vim manual.\n\nThis is why learning Vim feels different from learning an editor. You're learning a state machine. Once you have the states in your head, each key is just an edge in the graph."
+      "text": "Vim is a finite state machine. The states are the modes — *normal,* *insert,* *visual* (with three sub-states: char / line / block), *replace,* *command-line,* *operator-pending,* *terminal.* Every keystroke is interpreted *relative to the current state.* {key:i} in *normal mode* enters *insert mode;* in *insert mode* it inserts the letter `i`. The transition function is, in effect, the entire Vim manual.\n\nThis is why learning Vim feels different from learning an editor. You're learning a state machine. Once you have the states in your head, each key is just an edge in the graph."
     },
     {
       "type": "anecdote",
       "title": "Ken Thompson and the grandparent of modal editing",
-      "text": "Modal editing did not start with `vi`. It started with `ed`, the line editor Ken Thompson wrote for the very first Unix in 1969. `ed` had two modes: a *command* mode where single letters meant operations — {key:p} for print, {key:d} for delete, {key:s} for substitute — and an *input* mode you entered with {key:a} (append) or {key:i} (insert) and left by typing a single dot on its own line.\n\nKen worked on a Teletype Model 33 — no screen, just paper rolling out under a print head. Every byte of communication was expensive; every keystroke audible. A program that let one letter mean one verb wasn't a stylistic preference; it was the only design that fit the machine. `vi` — the direct ancestor of Vim — was the *visual* mode eventually built on top of `ex`, the descendant of `ed`. The colon prompt you reach in Vim by pressing {key::} is the direct great-grandchild of Ken's *command mode* — same single-letter verbs, same modal separation between *talking to the editor* and *adding text to the file*. Half a century later, you still type {key:d} and get a delete because Ken Thompson once had to save bytes and paper on a teletype."
+      "text": "Modal editing did not start with `vi`. It started with `ed`, the line editor Ken Thompson wrote for the very first Unix in 1969. `ed` had two modes: a *command* mode where single letters meant operations — {key:p} for print, {key:d} for delete, {key:s} for substitute — and an *input* mode you entered with {key:a} (append) or {key:i} (insert) and left by typing a single dot on its own line.\n\nKen worked on a Teletype Model 33 — no screen, just paper rolling out under a print head. Every byte of communication was expensive; every keystroke audible. A program that let one letter mean one verb wasn't a stylistic preference; it was the only design that fit the machine. `vi` — the direct ancestor of Vim — was the *visual* mode eventually built on top of `ex`, the descendant of `ed`. The colon prompt you reach in Vim by pressing {key::} is the direct great-grandchild of Ken's *command mode* — same single-letter verbs, same modal separation between *talking to the editor* and *adding text to the file.* Half a century later, you still type {key:d} and get a delete because Ken Thompson once had to save bytes and paper on a teletype."
     },
     {
       "type": "figure",
@@ -82,7 +82,7 @@
     },
     {
       "type": "prose",
-      "text": "Every other editor starts in what Vim calls *insert mode:* keys type text. Vim starts in what every other editor might call *command mode*: keys do things. The learning curve is real. New users press {key:j} expecting a `j` and instead see the cursor move. They press {key:dd} expecting two letters and the line vanishes."
+      "text": "Every other editor starts in what Vim calls *insert mode:* keys type text. Vim starts in what every other editor might call *command mode:* keys do things. The learning curve is real. New users press {key:j} expecting a `j` and instead see the cursor move. They press {key:dd} expecting two letters and the line vanishes."
     },
     {
       "type": "prose",
@@ -90,7 +90,7 @@
     },
     {
       "type": "tip",
-      "text": "The {key:Esc} habit is the single most important reflex. After every thought, press {key:Esc}. Make it automatic. Your default state is Normal, not Insert. Each {key:Esc} also closes an undo unit, so {key:u} walks you back one thought at a time."
+      "text": "The {key:Esc} habit is the single most important reflex. After every thought, press {key:Esc}. Make it automatic. Your default state is *normal mode,* not *insert mode.* Each {key:Esc} also closes an undo unit, so {key:u} walks you back one thought at a time."
     },
     {
       "type": "embed",

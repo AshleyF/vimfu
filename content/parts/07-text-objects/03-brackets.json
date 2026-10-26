@@ -102,11 +102,11 @@
     {
       "type": "internals",
       "title": "How Bracket Matching Works",
-      "text": "Bracket objects walk *outward* from the cursor looking for an unbalanced opener of the requested type. They respect nesting — {key:i}{key:(} on the inner of `f(g(x))` selects `g(x)`; from outside the inner parens it selects `g(x)` if you're inside the outer pair.\n\nMatching uses the `matchpairs` option (default `(:),{:},[:],<:>`). It does **not** understand language syntax — strings and comments don't shield brackets, which is occasionally surprising in code with mismatched brackets in comments.\n\nBracket objects are *charwise*. Even {key:i}{key:{} on a multi-line block selects character-by-character — meaning the leading and trailing newlines are part of the range. That's usually what you want for change/delete, but it surprises people the first time {key:y}{key:i}{key:{} pastes back as a multi-line span starting in the middle of a line."
+      "text": "Bracket objects walk *outward* from the cursor looking for an unbalanced opener of the requested type. They respect nesting — {key:i}{key:(} on the inner of `f(g(x))` selects `g(x)`; from outside the inner parens it selects `g(x)` if you're inside the outer pair.\n\nMatching uses the `matchpairs` option (default `(:),{:},[:],<:>`). It does **not** understand language syntax — strings and comments don't shield brackets, which is occasionally surprising in code with mismatched brackets in comments.\n\nBracket objects are *charwise.* Even {key:i}{key:{} on a multi-line block selects character-by-character — meaning the leading and trailing newlines are part of the range. That's usually what you want for change/delete, but it surprises people the first time {key:y}{key:i}{key:{} pastes back as a multi-line span starting in the middle of a line."
     },
     {
       "type": "tip",
-      "text": "Pair these with the grammar's other halves: {key:>}{key:i}{key:{} indents inside braces, {key:=}{key:a}{key:(} re-indents the entire parenthesised expression, {key:g}{key:U}{key:i}{key:[} uppercases everything inside the brackets."
+      "text": "Pair these with the grammar's other halves: {key:>}{key:i}{key:{} indents inside braces, {key:=}{key:a}{key:(} re-indents the entire parenthesized expression, {key:g}{key:U}{key:i}{key:[} uppercases everything inside the brackets."
     },
     {
       "type": "divider"

@@ -3,7 +3,7 @@
 This is the description used in the KDP listing's "Book Description" field. KDP
 accepts a limited subset of HTML (`<b>`, `<i>`, `<br>`, `<ul>`, `<li>`, `<h2>`)
 and has a 4,000-character limit including tags. The version below comes in
-around 1,300 characters.
+around 1,550 characters.
 
 Paste the contents of the fenced block below straight into the KDP description
 field.
@@ -20,12 +20,11 @@ field.
 <li><b>Hidden state</b> &mdash; registers, marks, macros, the jumplist, and what Vim is always tracking for you.</li>
 <li><b>Search, substitution, and Ex</b> &mdash; the line editor still living one colon away.</li>
 <li><b>Windows, buffers, tabs, and sessions</b> &mdash; what they actually are, not what they look like.</li>
-<li><b>Modern Neovim</b> &mdash; LSP, Treesitter, plugins, and the ecosystem.</li>
 </ul>
 
 <h2>The book is the <i>why</i>. The site is the <i>show me</i>.</h2>
 
-Every part ends with a QR code that opens the matching collection of short, screen-recorded demos at <b>vimfubook.com</b> &mdash; every technique in motion, at speed, in the real editor. Read the chapter. Scan the code. See it happen.
+Hundreds of QR codes throughout the book link to videos and to examples you can practice yourself at <b>vimfubook.com</b>. Read a page. Scan a code. Try it yourself.
 
 <br><br>
 

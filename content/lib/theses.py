@@ -55,7 +55,7 @@ PART_THESES: dict[str, str] = {
     ),
     "05-counts": (
         "Most Vim commands take a numeric prefix that means \"do this "
-        "$N$ times.\" Once you internalise {key:5}{key:j}, "
+        "{n} times.\" Once you internalize {key:5}{key:j}, "
         "{key:3}{key:d}{key:w}, {key:1}{key:0}{key:p}, the count "
         "stops being a feature and becomes a *thought* that comes for "
         "free with every motion or operator."
@@ -138,7 +138,7 @@ PART_THESES: dict[str, str] = {
         "commands that work without ever leaving *insert mode.*"
     ),
     "17-ex-commands": (
-        "You've been using the {key::} line since Part 2 -- `:w`, `:q`, "
+        "You've been using the {key::} line since *Getting Started* -- `:w`, `:q`, "
         "`:wq`, `:s`, `:set`, `:ls`, `:b`. Here is the full model: "
         "ranges, address arithmetic, executing arbitrary normal-mode "
         "keystrokes against arbitrary lines, and the complete operator "
